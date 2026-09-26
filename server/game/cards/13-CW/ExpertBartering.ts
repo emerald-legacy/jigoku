@@ -16,7 +16,7 @@ class ExpertBartering extends DrawCard {
             .target('target', {
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card !== context.source,
-                controller: context => (context.costs.optionalFateCost === undefined || (context.costs.optionalFateCost as number) > 0) ? Players.Any : Players.Self
+                controller: context => (context.costs.optionalFateCost === undefined || context.costs.optionalFateCost > 0) ? Players.Any : Players.Self
             })
             .gameAction(AbilityDsl.actions.joint([
                 AbilityDsl.actions.ifAble((context) => ({

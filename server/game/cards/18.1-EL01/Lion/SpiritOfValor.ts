@@ -4,12 +4,12 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import DrawCard from '../../../DrawCard.js';
 
-function captureParentCost(): Cost {
+function captureParentCost(): Cost<{ captureParentCost: DrawCard | null }> {
     return {
         canPay() {
             return true;
         },
-        resolve(context: AbilityContext) {
+        resolve(context) {
             context.costs.captureParentCost = context.source.parentCharacter;
         },
         pay() {}

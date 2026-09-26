@@ -14,7 +14,7 @@ export default class CallingInFavors extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.ifAble((context) => ({
                 ifAbleAction: AbilityDsl.actions.attach({
-                    target: context.costs.dishonor as DrawCard,
+                    target: context.costs.dishonor,
                     attachment: context.target,
                     takeControl: true
                 }),

@@ -10,11 +10,12 @@ export type Result = {
     cancelled?: boolean;
 };
 
-export interface Cost<Results extends object = object> {
-    canPay(context: AbilityContext): boolean;
+/** A context whose `costs` holds what this cost records there, once it is paid. */
+export type CostContext<Results extends object, C extends AbilityContext = AbilityContext> = C & { costs: Partial<Results> };
 
-    /** Type only, never set: what paying this cost records on `context.costs`. */
-    readonly results?: Results;
+/** `Results` is what paying the cost records on `context.costs`; its callbacks read and write it typed. */
+export interface Cost<Results extends object = object> {
+    canPay(context: CostContext<Results>): boolean;
 
     action?: GameAction;
     activePromptTitle?: string;
@@ -28,10 +29,10 @@ export interface Cost<Results extends object = object> {
     payFateCostToOpponent?: boolean;
 
     getActionName?(context: AbilityContext): string;
-    getCostMessage?(context: AbilityContext): MsgArg[];
+    getCostMessage?(context: CostContext<Results>): MsgArg[];
     hasTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
     addEventsToArray?(events: Event[], context: AbilityContext, result?: Result): void;
-    resolve?(context: AbilityContext, result: Result): void;
-    payEvent?(context: TriggeredAbilityContext): Event | Event[];
-    pay?(context: TriggeredAbilityContext): void;
+    resolve?(context: CostContext<Results>, result: Result): void;
+    payEvent?(context: CostContext<Results, TriggeredAbilityContext>): Event | Event[];
+    pay?(context: CostContext<Results, TriggeredAbilityContext>): void;
 }

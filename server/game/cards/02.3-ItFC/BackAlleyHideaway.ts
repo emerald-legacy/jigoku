@@ -126,7 +126,7 @@ export default class BackAlleyHideaway extends DrawCard {
                     context.player.removeCardFromPile(card);
                     card.leavesPlay();
                     card.moveTo(context.source.uuid as Location);
-                    (context.source as BackAlleyHideaway).attachments.push(card);
+                    context.source.attachments.push(card);
                     card.parent = context.source;
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });

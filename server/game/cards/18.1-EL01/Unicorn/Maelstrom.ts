@@ -7,7 +7,7 @@ import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
-const maelstromCost = function (): Cost {
+const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
     return {
         getActionName(_context) {
             return 'maelstromCost';
@@ -44,7 +44,9 @@ const maelstromCost = function (): Cost {
                                 location: Location.Hand,
                                 controller: Players.Self,
                                 onSelect: (player: Player, card: BaseCard) => {
-                                    context.costs.maelstromCost = card;
+                                    if(card.isDrawCard()) {
+                                        context.costs.maelstromCost = card;
+                                    }
                                     return true;
                                 },
                                 onCancel: () => {
@@ -62,7 +64,7 @@ const maelstromCost = function (): Cost {
             if(context.costs.maelstromCostPaid) {
                 let events = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost as DrawCard });
+                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
                 events.push(discardAction.getEvent(context.costs.maelstromCost, context));
                 context.game.addMessage('{0} chooses to discard a card', context.player);
 

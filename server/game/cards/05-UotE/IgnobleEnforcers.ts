@@ -12,8 +12,8 @@ class IgnobleEnforcers extends DrawCard {
                 onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.card === context.source
             })
             .cost(ability.costs.variableHonorCost(() => 3))
-            .gameAction(ability.actions.placeFate((context) => ({ amount: context.costs.variableHonorCost as number })))
-            .effect('place {1} fate on {0}', (context) => context.costs.variableHonorCost as number);
+            .gameAction(ability.actions.placeFate((context) => ({ amount: context.costs.variableHonorCost })))
+            .effect('place {1} fate on {0}', (context) => context.costs.variableHonorCost);
     }
 }
 

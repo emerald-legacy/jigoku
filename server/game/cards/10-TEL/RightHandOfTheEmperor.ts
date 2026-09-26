@@ -11,28 +11,24 @@ class RightHandOfTheEmperor extends DrawCard {
             location: Location.ConflictDiscardPile,
             effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
-        this.action({
-            title: 'Ready characters',
-            target: {
+        this.action('Ready characters')
+            .targetCards('target', {
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',
-                cardStat: (card: DrawCard) => card.getCost() ?? 0,
+                cardStat: (card) => card.getCost() ?? 0,
                 maxStat: () => 6,
                 numCards: 0,
                 optional: true,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.ready()
-            },
-            gameAction: AbilityDsl.actions.moveCard((context) => ({
+                cardCondition: (card) => card.hasTrait('bushi')
+            }, AbilityDsl.actions.ready())
+            .gameAction(AbilityDsl.actions.moveCard((context) => ({
                 target: context.source,
                 destination: Location.ConflictDeck,
                 bottom: true
-            })),
-            effect: 'ready {0}{1}.  {2} is placed on the bottom of {3}\'s conflict deck',
-            effectArgs: (context) => [(context.targets.target as DrawCard[]).length > 0 ? '' : 'no one', context.source, context.source.owner]
-        });
+            })))
+            .effect('ready {0}{1}.  {2} is placed on the bottom of {3}\'s conflict deck', (context) => [(context.targets.target).length > 0 ? '' : 'no one', context.source, context.source.owner]);
     }
 }
 

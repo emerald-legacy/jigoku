@@ -18,18 +18,15 @@ export default class TwentyFourSteps extends DrawCard {
             ]))
             .effect('ready {0} and move it into the conflict');
 
-        this.action({
-            title: 'Move two monks to the conflict',
-            condition: (context) => context.game.isDuringConflict('military'),
-            target: {
+        this.action('Move two monks to the conflict')
+            .condition((context) => context.game.isDuringConflict('military'))
+            .targetCards('target', {
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('monk'),
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                cardCondition: (card) => card.hasTrait('monk')
+            }, AbilityDsl.actions.moveToConflict());
     }
 }

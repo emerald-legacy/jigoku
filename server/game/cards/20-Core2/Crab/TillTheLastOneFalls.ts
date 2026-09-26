@@ -1,7 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TillTheLastOneFalls extends DrawCard {
@@ -25,7 +24,7 @@ export default class TillTheLastOneFalls extends DrawCard {
     }
 
     #bonus(context: AbilityContext): number {
-        const conflict = context.game.currentConflict as Conflict;
+        const conflict = context.game.requireConflict();
         const opponentCount = conflict.getNumberOfParticipantsFor(context.player.opponent);
         return 2 * opponentCount;
     }

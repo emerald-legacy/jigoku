@@ -1,4 +1,3 @@
-import { TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -7,29 +6,24 @@ class Truthseeker extends DrawCard {
     static id = 'truthseeker';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at top 3 cards',
-            when: {
+        this.reaction('Look at top 3 cards')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            target: {
-                mode: TargetMode.Select,
+            })
+            .selectIf('target', {
                 targets: true,
-                activePromptTitle: 'Choose which deck to look at:',
-                choices: {
-                    [this.getChoiceName('OppDynasty')]: (context: AbilityContext) =>
-                        !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
-                    [this.getChoiceName('OppConflict')]: (context: AbilityContext) =>
-                        !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
-                    [this.getChoiceName('MyDynasty')]: (context: AbilityContext) =>
-                        !!context.player && context.player.dynastyDeck.length > 0,
-                    [this.getChoiceName('MyConflict')]: (context: AbilityContext) =>
-                        !!context.player && context.player.conflictDeck.length > 0
-                }
-            },
-            effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: (context: AbilityContext) => this.mapChoiceToEffectArgs(context) as [Player, string],
-            handler: (context: AbilityContext) => {
+                activePromptTitle: 'Choose which deck to look at:'
+            }, {
+                [this.getChoiceName('OppDynasty')]: (context) =>
+                    !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
+                [this.getChoiceName('OppConflict')]: (context) =>
+                    !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
+                [this.getChoiceName('MyDynasty')]: (context) =>
+                    !!context.player && context.player.dynastyDeck.length > 0,
+                [this.getChoiceName('MyConflict')]: (context) =>
+                    !!context.player && context.player.conflictDeck.length > 0
+            })
+            .handler((context) => {
                 const cardsToSort = this.mapChoiceToCards(context);
                 this.truthSeekerPrompt(
                     context,
@@ -37,8 +31,8 @@ class Truthseeker extends DrawCard {
                     [],
                     'Select the card you would like to place on top of the deck.'
                 );
-            }
-        });
+            })
+            .effect('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
     }
 
     getChoiceName(key: string) {

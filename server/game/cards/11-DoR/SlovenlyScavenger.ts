@@ -1,32 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { TargetMode, Location } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SlovenlyScavenger extends DrawCard {
     static id = 'slovenly-scavenger';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Shuffle a discard pile into a deck',
-            when: {
+        this.reaction('Shuffle a discard pile into a deck')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
-                mode: TargetMode.Select,
+            })
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .selectIf('target', {
                 targets: true,
-                activePromptTitle: 'Choose which discard pile to shuffle:',
-                choices: {
-                    [this.getChoiceName('MyDynasty')]: (context: AbilityContext) => context.player.dynastyDiscardPile.length > 0,
-                    [this.getChoiceName('MyConflict')]: (context: AbilityContext) => context.player.conflictDiscardPile.length > 0,
-                    [this.getChoiceName('OppDynasty')]: (context: AbilityContext) => !!(context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0),
-                    [this.getChoiceName('OppConflict')]: (context: AbilityContext) => !!(context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0)
-                }
-            },
-            effect: 'shuffle {1} into their deck',
-            effectArgs: context => this.getEffectArg(context ? context.select : ''),
-            handler: context => {
+                activePromptTitle: 'Choose which discard pile to shuffle:'
+            }, {
+                [this.getChoiceName('MyDynasty')]: (context) => context.player.dynastyDiscardPile.length > 0,
+                [this.getChoiceName('MyConflict')]: (context) => context.player.conflictDiscardPile.length > 0,
+                [this.getChoiceName('OppDynasty')]: (context) => !!(context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0),
+                [this.getChoiceName('OppConflict')]: (context) => !!(context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0)
+            })
+            .handler(context => {
                 if(context.select === this.getChoiceName('MyDynasty')) {
                     this.owner.dynastyDiscardPile.forEach(card => {
                         this.owner.moveCard(card, Location.DynastyDeck);
@@ -52,8 +46,8 @@ class SlovenlyScavenger extends DrawCard {
                     });
                     opponent.shuffleConflictDeck();
                 }
-            }
-        });
+            })
+            .effect('shuffle {1} into their deck', context => this.getEffectArg(context ? context.select : ''));
     }
 
     getEffectArg(selection: string) {

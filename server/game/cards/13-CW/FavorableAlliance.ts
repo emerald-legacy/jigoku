@@ -15,7 +15,7 @@ class FavorableAlliance extends DrawCard {
             }))
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.player.conflictDeck.slice(0, (context.costs.variableFateCost as number)),
+                    target: context.player.conflictDeck.slice(0, context.costs.variableFateCost),
                     message: '{0} sets aside the top {1} card{3} from their conflict deck: {2}',
                     messageArgs: (cards) => [context.player, cards.length, cards, cards.length > 1 ? 's' : '']
                 })),
@@ -38,7 +38,7 @@ class FavorableAlliance extends DrawCard {
                     }
                 })
             ]))
-            .effect('set aside {1} card{2}', (context) => [(context.costs.variableFateCost as number), (context.costs.variableFateCost as number) > 1 ? 's' : '']);
+            .effect('set aside {1} card{2}', (context) => [context.costs.variableFateCost, (context.costs.variableFateCost as number) > 1 ? 's' : '']);
     }
 }
 

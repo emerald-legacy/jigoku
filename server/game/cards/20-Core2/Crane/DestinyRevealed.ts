@@ -9,10 +9,8 @@ export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
 
     setupCardAbilities() {
-        this.duelStrike({
-            title: 'Place a fate on a character',
-            duelCondition: (duel, context) => duel.winnerController === context.player,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.duelStrike('Place a fate on a character', (duel, context) => duel.winnerController === context.player)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
@@ -23,8 +21,7 @@ export default class DestinyRevealed extends DrawCard {
                 gameAction: AbilityDsl.actions.placeFate((context) => ({
                     origin: context.player
                 }))
-            }))
-        });
+            })));
 
         this.wouldInterrupt('Cancel a ring effect')
             .when({

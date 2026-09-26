@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, Location } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
 
@@ -8,25 +8,20 @@ class DanceOfChikushoDo extends DrawCard {
     static id = 'dance-of-chikusho-do';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put cards into provinces',
-            target: {
-                mode: TargetMode.Select,
+        this.action('Put cards into provinces')
+            .select('target', {
                 targets: true,
-                activePromptTitle: 'Choose any number of players',
-                choices: {
-                    [this.owner.name]: this.fillProvinces(this.owner),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: this.fillProvinces(this.owner.opponent),
-                    [this.owner.name + ' and ' + (this.owner.opponent && this.owner.opponent.name || 'NA')]: AbilityDsl.actions.multiple([
-                        this.fillProvinces(this.owner),
-                        this.fillProvinces(this.owner.opponent)
-                    ])
-                }
-            },
-            effect: 'have {1} place 2 cards in each unbroken province they control',
-            effectArgs: context => context.select,
-            max: AbilityDsl.limit.perRound(1)
-        });
+                activePromptTitle: 'Choose any number of players'
+            }, {
+                [this.owner.name]: this.fillProvinces(this.owner),
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: this.fillProvinces(this.owner.opponent),
+                [this.owner.name + ' and ' + (this.owner.opponent && this.owner.opponent.name || 'NA')]: AbilityDsl.actions.multiple([
+                    this.fillProvinces(this.owner),
+                    this.fillProvinces(this.owner.opponent)
+                ])
+            })
+            .effect('have {1} place 2 cards in each unbroken province they control', context => context.select)
+            .max(AbilityDsl.limit.perRound(1));
     }
 
     fillProvinces(player: Player | undefined) {

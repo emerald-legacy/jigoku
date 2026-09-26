@@ -174,7 +174,7 @@ export function chooseFate(type: PlayType): Cost {
     };
 }
 
-export function discardCardsUpToVariableX(amountDerivable: Derivable<number, TriggeredAbilityContext>): Cost {
+export function discardCardsUpToVariableX(amountDerivable: Derivable<number, TriggeredAbilityContext>): Cost<{ discardCardsUpToVariableX: DrawCard[] }> {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
@@ -216,7 +216,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Tri
     };
 }
 
-export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, TriggeredAbilityContext>): Cost {
+export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, TriggeredAbilityContext>): Cost<{ discardCardsExactlyVariableX: DrawCard[] }> {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
@@ -257,7 +257,7 @@ export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, 
     };
 }
 
-export function discardHand(): Cost {
+export function discardHand(): Cost<{ discardHand: DrawCard[] }> {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
@@ -326,7 +326,7 @@ export function optional(cost: Cost): Cost {
     };
 }
 
-export function optionalFateCost(amount: number, forcePayment: (context: TriggeredAbilityContext) => boolean = () => false): Cost {
+export function optionalFateCost(amount: number, forcePayment: (context: TriggeredAbilityContext) => boolean = () => false): Cost<{ optionalFateCost: number }> {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
@@ -438,7 +438,7 @@ export function optionalOpponentLoseHonor(
     };
 }
 
-export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: TriggeredAbilityContext) => true): Cost {
+export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: TriggeredAbilityContext) => true): Cost<{ optionalHonorTransferFromOpponentCostPaid: boolean }> {
     return {
         promptsPlayer: true,
         canPay() {
@@ -492,7 +492,7 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: Tr
     };
 }
 
-export function nameCard(): Cost {
+export function nameCard(): Cost<{ nameCardCost: string }> {
     return {
         selectCardName(player: Player, cardName: string, context: AbilityContext) {
             context.costs.nameCardCost = cardName;

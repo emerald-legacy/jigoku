@@ -16,31 +16,24 @@ export default class HonoredVeterans extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
 
-        this.action({
-            title: 'Honor characters',
-            condition: () => this.canBePlayed(),
-            targets: {
-                myCharacter: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card),
-                    gameAction: AbilityDsl.actions.honor()
-                },
-                oppCharacter: {
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card),
-                    gameAction: AbilityDsl.actions.honor()
-                }
-            },
-            effect: 'honor {1}',
-            effectArgs: (context) => [this.getCharacters(context)]
-        });
+        this.action('Honor characters')
+            .condition(() => this.canBePlayed())
+            .target('myCharacter', {
+                cardType: CardType.Character,
+                controller: Players.Self,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
+            }, AbilityDsl.actions.honor())
+            .target('oppCharacter', {
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
+            }, AbilityDsl.actions.honor())
+            .effect('honor {1}', (context) => [this.getCharacters(context)]);
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {

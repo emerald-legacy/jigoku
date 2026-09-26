@@ -1,14 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const steedOfTheSteppesCaptureParentCost = function(): Cost {
+const steedOfTheSteppesCaptureParentCost = function(): Cost<{ steedOfTheSteppesCaptureParentCost: DrawCard | null }> {
     return {
         canPay: function() {
             return true;
         },
-        resolve: function(context: AbilityContext) {
+        resolve: function(context) {
             context.costs.steedOfTheSteppesCaptureParentCost = context.source.parentCharacter;
         },
         pay: function() {

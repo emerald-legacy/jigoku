@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, TargetMode, Element } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'kuni-yori-earth';
@@ -14,20 +14,16 @@ class KuniYori extends DrawCard {
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
-        this.action({
-            title: 'Select a player to discard a card at random',
-            condition: () => this.game.isDuringConflict(),
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
-                mode: TargetMode.Select,
-                activePromptTitle:'Select a player to discard a random card from his/her hand',
-                targets: true,
-                choices: {
-                    [this.owner.name]: AbilityDsl.actions.discardAtRandom({ target: this.owner }),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.discardAtRandom({ target: this.owner.opponent })
-                }
-            }
-        });
+        this.action('Select a player to discard a card at random')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .condition(() => this.game.isDuringConflict())
+            .select('target', {
+                activePromptTitle: 'Select a player to discard a random card from his/her hand',
+                targets: true
+            }, {
+                [this.owner.name]: AbilityDsl.actions.discardAtRandom({ target: this.owner }),
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.discardAtRandom({ target: this.owner.opponent })
+            });
     }
 
     getPrintedElementSymbols() {

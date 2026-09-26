@@ -1,5 +1,4 @@
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,16 +6,13 @@ export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';
 
     setupCardAbilities() {
-        this.duelChallenge({
-            title: 'Apply status tokens to the duel',
-            duelCondition: (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player,
-            gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as TriggeredAbilityContext).event.duel,
+        this.duelChallenge('Apply status tokens to the duel', (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player)
+            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
+                target: context.event.duel,
                 effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
                 duration: Duration.UntilEndOfDuel
-            })),
-            effect: 'ignore printed skill when resolving this duel'
-        });
+            })))
+            .effect('ignore printed skill when resolving this duel');
 
         this.action('Set shinobi\'s skills to that of an enemy')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))

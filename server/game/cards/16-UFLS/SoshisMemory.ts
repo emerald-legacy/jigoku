@@ -2,27 +2,22 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, Location, Decks } from '../../Constants.js';
+import { Location, Decks } from '../../Constants.js';
 
 class SoshisMemory extends DrawCard {
     static id = 'soshi-s-memory';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a card into a player\'s hand',
-            condition: context => context.source.controller.isTraitInPlay('shugenja'),
-            effect: 'let {1} look at the top {2} cards of their conflict deck',
-            effectArgs: context => [context.select, context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0)],
-            target: {
-                mode: TargetMode.Select,
+        this.action('Put a card into a player\'s hand')
+            .condition(context => context.source.controller.isTraitInPlay('shugenja'))
+            .select('target', {
                 targets: true,
-                activePromptTitle: 'Choose a player',
-                choices: {
-                    [this.owner.name]: this.drawAbility(this.owner),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: this.drawAbility(this.owner.opponent)
-                }
-            }
-        });
+                activePromptTitle: 'Choose a player'
+            }, {
+                [this.owner.name]: this.drawAbility(this.owner),
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: this.drawAbility(this.owner.opponent)
+            })
+            .effect('let {1} look at the top {2} cards of their conflict deck', context => [context.select, context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0)]);
     }
 
     drawAbility(player: Player | undefined) {

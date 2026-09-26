@@ -7,10 +7,8 @@ class KeenWarrior extends DrawCard {
     static id = 'keen-warrior';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Draw 2 cards and return 1',
-            collectiveTrigger: true,
-            when: {
+        this.reaction('Draw 2 cards and return 1')
+            .when({
                 onCardRevealed: (event, context) => {
                     const raw = event.card;
                     const cards = Array.isArray(raw) ? raw : [raw];
@@ -21,8 +19,8 @@ class KeenWarrior extends DrawCard {
                     const cards = Array.isArray(raw) ? raw : raw ? [raw] : [];
                     return cards.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent);
                 }
-            },
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.draw(context => ({ target: context.player, amount: 2 })),
                 AbilityDsl.actions.chosenReturnToDeck(context => ({
                     target: context.player,
@@ -31,9 +29,9 @@ class KeenWarrior extends DrawCard {
                     bottom: true,
                     amount: 1
                 }))
-            ]),
-            effect: 'draw 2 cards, then place a card on the bottom of their deck'
-        });
+            ]))
+            .effect('draw 2 cards, then place a card on the bottom of their deck')
+            .collectiveTrigger();
     }
 }
 

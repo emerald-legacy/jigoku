@@ -1,6 +1,5 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { Conflict } from '../Conflict.js';
 import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
@@ -38,6 +37,6 @@ export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext>
 
     eventHandler(event: ActionEvent<EventName.OnSwitchConflictType, C>): void {
         const context = event.context;
-        (context.game.currentConflict as Conflict).switchType();
+        context.game.requireConflict().switchType();
     }
 }

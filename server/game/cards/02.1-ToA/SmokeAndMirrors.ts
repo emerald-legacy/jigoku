@@ -1,23 +1,20 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SmokeAndMirrors extends DrawCard {
     static id = 'smoke-and-mirrors';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move shinobi home',
-            condition: context => context.player.isAttackingPlayer(),
-            target: {
+        this.action('Move shinobi home')
+            .condition(context => context.player.isAttackingPlayer())
+            .targetCards('target', {
+                mode: TargetMode.Unlimited,
                 activePromptTitle: 'Choose characters',
-                numCards: 0,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('shinobi') && card.isAttacking(),
-                gameAction: ability.actions.sendHome()
-            }
-        });
+                cardCondition: card => card.hasTrait('shinobi') && card.isAttacking()
+            }, ability.actions.sendHome());
     }
 }
 

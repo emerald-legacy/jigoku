@@ -11,8 +11,8 @@ class IAmReady extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('unicorn') && card.bowed
             }))
-            .handler((context) => ability.actions.ready().resolve(context.costs.removeFate as DrawCard, context))
-            .effect('ready {1}', (context) => context.costs.removeFate as DrawCard)
+            .handler((context) => ability.actions.ready().resolve(context.costs.removeFate, context))
+            .effect('ready {1}', (context) => context.costs.removeFate)
             .cannotBeMirrored();
     }
 }

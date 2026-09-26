@@ -10,11 +10,11 @@ export default class ExemplaryNegotiator extends DrawCard {
             .cost(AbilityDsl.costs.discardCardsUpToVariableX(() => 2))
             .condition(context => context.player.anyCardsInPlay(card => card.isDishonored))
             .gameAction(AbilityDsl.actions.discardAtRandom(context => ({
-                amount: (context.costs.discardCardsUpToVariableX as BaseCard[])?.length || 1,
+                amount: context.costs.discardCardsUpToVariableX?.length || 1,
                 target: context.player.opponent
             })))
             .effect('discard {1} to make {2} discard {3} card{4} at random', (context) => [
-                context.costs.discardCardsUpToVariableX as BaseCard[],
+                context.costs.discardCardsUpToVariableX,
                 context.player.opponent,
                 (context.costs.discardCardsUpToVariableX as BaseCard[]).length,
                 (context.costs.discardCardsUpToVariableX as BaseCard[]).length > 1 ? 's' : ''

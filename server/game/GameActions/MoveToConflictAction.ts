@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type { Conflict } from '../Conflict.js';
 import type DrawCard from '../DrawCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
@@ -53,7 +52,7 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
     eventHandler(event: ActionEvent<EventName.OnMoveToConflict, C>): void {
         const context = event.context;
         const player = event.side as Player;
-        const conflict = context.game.currentConflict as Conflict;
+        const conflict = context.game.requireConflict();
 
         if(player.isAttackingPlayer()) {
             conflict.addAttacker(event.card);

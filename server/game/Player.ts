@@ -1,3 +1,4 @@
+import { isEnumValue } from './utils/helpers.js';
 import { shuffle } from './utils/shuffle.js';
 import { HonorTracker } from './HonorTracker.js';
 import { PlayerZones, type AdditionalPile } from './PlayerZones.js';
@@ -354,9 +355,6 @@ class Player extends GameObject {
         return this.zones.getSourceList(source);
     }
 
-    updateSourceList(source: string, targetList: BaseCard[]): void {
-        this.zones.updateSourceList(source, targetList);
-    }
 
     createAdditionalPile(name: string, properties?: Record<string, unknown>): void {
         this.zones.createAdditionalPile(name, properties);
@@ -421,11 +419,12 @@ class Player extends GameObject {
         return this.findCard(list, (card) => card.uuid === uuid);
     }
 
-    findCardInPlayByUuid(uuid: string): DrawCard | null {
-        return this.findCard(this.cardsInPlay, (card) => card.uuid === uuid) as DrawCard | null;
+    findCardInPlayByUuid(uuid: string): DrawCard | undefined {
+        return this.findCard(this.cardsInPlay, (card) => card.uuid === uuid);
     }
 
-    findCard(cardList: BaseCard[], predicate: (card: BaseCard) => boolean): BaseCard | undefined {
+    /** The first matching card in the list, or attached to a card in it. */
+    findCard<T extends BaseCard>(cardList: T[], predicate: (card: T | DrawCard) => boolean): T | DrawCard | undefined {
         const cards = this.findCards(cardList, predicate);
         if(!cards || cards.length === 0) {
             return undefined;
@@ -434,12 +433,12 @@ class Player extends GameObject {
         return cards[0];
     }
 
-    findCards(cardList: BaseCard[], predicate: (card: BaseCard) => boolean): BaseCard[] {
+    findCards<T extends BaseCard>(cardList: T[], predicate: (card: T | DrawCard) => boolean): Array<T | DrawCard> {
         if(!cardList) {
             return [];
         }
 
-        const cardsToReturn: BaseCard[] = [];
+        const cardsToReturn: Array<T | DrawCard> = [];
 
         for(const card of cardList) {
             if(predicate(card)) {
@@ -462,7 +461,7 @@ class Player extends GameObject {
                 card.hasTrait(trait) &&
                 card.isFaceup() &&
                 (card.location === Location.PlayArea ||
-                    (card.isProvince && !(card as ProvinceCard).isBroken) ||
+                    (card.isProvinceCard() && !card.isBroken) ||
                     (card.isInProvince() && card.type === CardType.Holding))
             );
         });
@@ -475,9 +474,7 @@ class Player extends GameObject {
                 card.controller === this &&
                 card.hasTrait(trait) &&
                 card.isFaceup() &&
-                (card.location === Location.PlayArea ||
-                    (card.isProvince && !(card as ProvinceCard).isBroken) ||
-                    (card.isInProvince() && (card.type as CardType) === CardType.Holding))
+                (card.location === Location.PlayArea || (card.isProvinceCard() && !card.isBroken))
             );
         });
     }
@@ -506,25 +503,25 @@ class Player extends GameObject {
             Location.ProvinceFour,
             Location.StrongholdProvince
         ].slice(0, gameModeProvinceCount);
-        return locations.map((location) => this.getProvinceCardInProvince(location) as ProvinceCard);
+        return locations.flatMap((location) => this.getProvinceCardInProvince(location) ?? []);
     }
 
     anyCardsInPlay(predicate: (card: DrawCard) => boolean): boolean {
         return this.game.allCards.some(
-            (card) => card.controller === this && card.location === Location.PlayArea && predicate(card as DrawCard)
+            (card) => card.controller === this && card.location === Location.PlayArea && card.isDrawCard() && predicate(card)
         );
     }
 
     getAllConflictCards(predicate: (card: DrawCard) => boolean = () => true): DrawCard[] {
         return this.game.allCards.filter(
-            (card) => card.owner === this && card.isConflict && predicate(card as DrawCard)
-        ) as DrawCard[];
+            (card): card is DrawCard => card.owner === this && card.isConflictCard() && predicate(card)
+        );
     }
 
     filterCardsInPlay(predicate: (card: DrawCard) => boolean): DrawCard[] {
         return this.game.allCards.filter(
-            (card) => card.controller === this && card.location === Location.PlayArea && predicate(card as DrawCard)
-        ) as DrawCard[];
+            (card): card is DrawCard => card.controller === this && card.location === Location.PlayArea && card.isDrawCard() && predicate(card)
+        );
     }
 
     hasComposure(): boolean {
@@ -570,8 +567,8 @@ class Player extends GameObject {
                 (array: ProvinceCard[], location: Location) =>
                     array.concat(
                         this.getSourceList(location).filter(
-                            (card) => card.type === CardType.Province && predicate(card as ProvinceCard)
-                        ) as ProvinceCard[]
+                            (card): card is ProvinceCard => card.type === CardType.Province && card.isProvinceCard() && predicate(card)
+                        )
                     ),
                 []
             );
@@ -595,7 +592,7 @@ class Player extends GameObject {
 
     getNumberOfCardsInPlay(predicate: (card: DrawCard) => boolean): number {
         return this.game.allCards.reduce((num: number, card) => {
-            if(card.controller === this && card.location === Location.PlayArea && predicate(card as DrawCard)) {
+            if(card.controller === this && card.location === Location.PlayArea && card.isDrawCard() && predicate(card)) {
                 return num + 1;
             }
             return num;
@@ -635,7 +632,7 @@ class Player extends GameObject {
 
         return this.findCard(this.cardsInPlay, (playCard) => {
             return playCard !== card && (playCard.id === card.id || playCard.name === card.name);
-        }) as DrawCard | undefined;
+        });
     }
 
     drawCardsToHand(numCards: number): void {
@@ -984,7 +981,7 @@ class Player extends GameObject {
 
         let category: LocationCategory = card.type;
         if(location === Location.DynastyDiscardPile || location === Location.ConflictDiscardPile) {
-            category = (card.printedType as CardType) || card.type;
+            category = isEnumValue(CardType, card.printedType) ? card.printedType : card.type;
         }
 
         if(category === CardType.Character) {
@@ -1177,11 +1174,11 @@ class Player extends GameObject {
 
             card.leavesPlay(targetLocation);
             card.controller = this;
-        } else if(targetLocation === Location.PlayArea) {
-            (card as DrawCard).setDefaultController(this);
+        } else if(targetLocation === Location.PlayArea && card.isDrawCard()) {
+            card.setDefaultController(this);
             card.controller = this;
             if(card.type === CardType.Attachment) {
-                this.promptForAttachment(card as DrawCard);
+                this.promptForAttachment(card);
                 return;
             }
         } else if(location === Location.BeingPlayed && card.owner !== this) {
@@ -1222,13 +1219,7 @@ class Player extends GameObject {
             return;
         }
 
-        const originalLocation = card.location;
-        let originalPile = this.getSourceList(originalLocation);
-
-        if(originalPile) {
-            originalPile = this.removeCardByUuid(originalPile, card.uuid);
-            this.updateSourceList(originalLocation, originalPile);
-        }
+        this.zones.removeCard(card.location, card.uuid);
     }
 
     getTotalIncome(): number {

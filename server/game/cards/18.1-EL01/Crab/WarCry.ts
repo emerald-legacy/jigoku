@@ -17,7 +17,7 @@ export default class WarCry extends DrawCard {
                     event.conflict.winner === context.player &&
                     event.conflict.attackingPlayer === context.player &&
                     event.conflict.conflictType === ConflictType.Military &&
-                    !(context.game.currentConflict as Conflict).isAtStrongholdProvince() &&
+                    !context.game.requireConflict().isAtStrongholdProvince() &&
                     areAllAttackersBerserker(event.conflict)
             })
             .gameAction(AbilityDsl.actions.selectCard((context) => ({

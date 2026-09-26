@@ -8,11 +8,9 @@ export default class PurveyorOfRarities extends DrawCard {
     static id = 'purveyor-of-rarities';
 
     setupCardAbilities() {
-        this.conflictAction({
-            title: 'Discard a card for bonuses',
-            max: AbilityDsl.limit.perConflict(1),
-            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
-            gameAction: AbilityDsl.actions.conditional((context: AbilityContext) => ({
+        this.conflictAction('Discard a card for bonuses')
+            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .gameAction(AbilityDsl.actions.conditional((context) => ({
                 condition: () => this.#cardCondition(context),
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
@@ -27,12 +25,11 @@ export default class PurveyorOfRarities extends DrawCard {
                     target: context.source,
                     effect: AbilityDsl.effects.modifyBothSkills(3)
                 })
-            })),
-            effect: 'give +{1}{2}/+{1}{3} to {4}{5}',
-            effectArgs: context => this.#cardCondition(context) ?
+            })))
+            .effect('give +{1}{2}/+{1}{3} to {4}{5}', context => this.#cardCondition(context) ?
                 [1, 'military', 'political', context.source, ' and gain 1 fate'] :
-                [3, 'military', 'political', context.source, '']
-        });
+                [3, 'military', 'political', context.source, ''])
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
     #cardCondition(context: AbilityContext) {

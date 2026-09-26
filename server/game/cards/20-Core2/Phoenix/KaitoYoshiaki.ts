@@ -1,7 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 
 function isEvil(character: DrawCard): boolean {
     return character.isTainted || character.hasTrait('shadowlands');
@@ -18,7 +17,7 @@ export default class KaitoYoshiaki extends DrawCard {
                 cardCondition: (card, context) =>
                     card !== context.source &&
                     card.isParticipating() &&
-                    (context.game.currentConflict as Conflict)
+                    context.game.requireConflict()
                         .getCharacters(context.player)
                         .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
             }, AbilityDsl.actions.multiple([

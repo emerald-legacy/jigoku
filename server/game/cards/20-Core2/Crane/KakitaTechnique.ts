@@ -9,16 +9,14 @@ export default class KakitaTechnique extends DrawCard {
     static id = 'kakita-technique';
 
     setupCardAbilities() {
-        this.duelFocus({
-            title: 'Set bid to 0',
-            gameAction: AbilityDsl.actions.modifyBid((context) => {
+        this.duelFocus('Set bid to 0')
+            .gameAction(AbilityDsl.actions.modifyBid((context) => {
                 const currentBid = context.player.honorBid;
                 return {
                     amount: currentBid,
                     direction: Direction.Decrease
                 };
-            })
-        });
+            }));
 
         this.action('Give character +1/+1')
             .target('target', {

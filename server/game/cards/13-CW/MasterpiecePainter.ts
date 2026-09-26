@@ -1,30 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, Duration, Location, Decks } from '../../Constants.js';
+import { Duration, Location, Decks } from '../../Constants.js';
 
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reveal and may play top conflict card',
-            target: {
-                mode: TargetMode.Select,
+        this.action('Reveal and may play top conflict card')
+            .select('target', {
                 targets: true,
-                activePromptTitle: 'Choose any number of players',
-                choices: {
-                    [this.owner.name]: this.revealAndMayPlayAbility(this.owner),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: this.revealAndMayPlayAbility(this.owner.opponent),
-                    [this.owner.name + ' and ' + (this.owner.opponent && this.owner.opponent.name || 'NA')]: AbilityDsl.actions.multiple([
-                        this.revealAndMayPlayAbility(this.owner),
-                        this.revealAndMayPlayAbility(this.owner.opponent)
-                    ])
-                }
-            },
-            effect: 'make {1} reveal the top card of their deck. They may play their card until the end of the phase.',
-            effectArgs: context => context.select
-        });
+                activePromptTitle: 'Choose any number of players'
+            }, {
+                [this.owner.name]: this.revealAndMayPlayAbility(this.owner),
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: this.revealAndMayPlayAbility(this.owner.opponent),
+                [this.owner.name + ' and ' + (this.owner.opponent && this.owner.opponent.name || 'NA')]: AbilityDsl.actions.multiple([
+                    this.revealAndMayPlayAbility(this.owner),
+                    this.revealAndMayPlayAbility(this.owner.opponent)
+                ])
+            })
+            .effect('make {1} reveal the top card of their deck. They may play their card until the end of the phase.', context => context.select);
     }
 
     revealAndMayPlayAbility(player: Player | undefined) {

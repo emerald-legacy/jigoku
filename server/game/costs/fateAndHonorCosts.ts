@@ -53,7 +53,7 @@ export function giveHonorToOpponent(amount = 1): Cost {
 /**
  * Cost where a character must spend fate to an unclaimed ring
  */
-export function payFateToRing(amount = 1, ringCondition = (ring: Ring) => ring.isUnclaimed()): Cost {
+export function payFateToRing(amount = 1, ringCondition = (ring: Ring) => ring.isUnclaimed()): Cost<{ placeFate: Ring }> {
     return new MetaActionCost(
         GameActions.selectRing({
             ringCondition,
@@ -67,7 +67,7 @@ export function giveFateToOpponent(amount = 1): Cost {
     return new GameActionCost(GameActions.takeFate((context) => ({ target: context.player, amount })));
 }
 
-export function variableHonorCost(amountFunc: (context: TriggeredAbilityContext) => number): Cost {
+export function variableHonorCost(amountFunc: (context: TriggeredAbilityContext) => number): Cost<{ variableHonorCost: number }> {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
@@ -105,7 +105,7 @@ export function variableFateCost(properties: {
     activePromptTitle: string;
     minAmount?: Derivable<number, TriggeredAbilityContext>;
     maxAmount: Derivable<number, TriggeredAbilityContext>;
-}): Cost {
+}): Cost<{ variableFateCost: number }> {
     function deriveMinAmount(context: TriggeredAbilityContext) {
         return properties.minAmount === undefined ? 1 : derive(properties.minAmount, context);
     }

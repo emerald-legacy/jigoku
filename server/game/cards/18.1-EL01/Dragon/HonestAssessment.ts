@@ -32,7 +32,7 @@ export default class HonestAssessment extends DrawCard {
                     ]
                 };
             }))
-            .effect('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.nameCardCost as string])
+            .effect('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.nameCardCost])
             .max(AbilityDsl.limit.perRound(1));
     }
 }

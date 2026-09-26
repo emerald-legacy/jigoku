@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type { Conflict } from '../../Conflict.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DarknessRising extends DrawCard {
@@ -21,7 +20,7 @@ class DarknessRising extends DrawCard {
     }
 
     getLegalTargetsForCard(card: DrawCard, context: AbilityContext) {
-        let targets = (context.game.currentConflict as Conflict).getParticipants().filter((c: DrawCard) => !card || (c.getMilitarySkill() < card.getMilitarySkill() && c.allowGameAction('bow', context)));
+        let targets = context.game.requireConflict().getParticipants().filter((c: DrawCard) => !card || (c.getMilitarySkill() < card.getMilitarySkill() && c.allowGameAction('bow', context)));
         return targets;
     }
 }

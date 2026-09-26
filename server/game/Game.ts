@@ -369,13 +369,14 @@ class Game {
      * Returns the card (i.e. character) with matching uuid from either players
      * 'in play' area.
      */
-    findAnyCardInPlayByUuid(cardId: string): DrawCard | null {
-        return this.getPlayers().reduce((card: DrawCard | null, player: Player) => {
+    findAnyCardInPlayByUuid(cardId: string): DrawCard | undefined {
+        for(const player of this.getPlayers()) {
+            const card = player.findCardInPlayByUuid(cardId);
             if(card) {
                 return card;
             }
-            return player.findCardInPlayByUuid(cardId);
-        }, null);
+        }
+        return undefined;
     }
 
     /**
@@ -403,7 +404,7 @@ class Game {
         let foundCards: DrawCard[] = [];
 
         this.getPlayers().forEach((player) => {
-            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate as (card: BaseCard) => boolean) as DrawCard[]);
+            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate));
         });
 
         return foundCards;
@@ -446,6 +447,14 @@ class Game {
 
     get actions(): typeof GameActions {
         return GameActions;
+    }
+
+    /** For code that only runs during a conflict. */
+    requireConflict(): Conflict {
+        if(!this.currentConflict) {
+            throw new Error('No conflict in progress');
+        }
+        return this.currentConflict;
     }
 
     isDuringConflict(types: string | string[] | null = null): boolean {

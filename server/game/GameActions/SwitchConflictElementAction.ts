@@ -1,5 +1,4 @@
 import { AbilityContext } from '../AbilityContext.js';
-import type { Conflict } from '../Conflict.js';
 import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
@@ -23,6 +22,6 @@ export class SwitchConflictElementAction<C extends AbilityContext = AbilityConte
 
     eventHandler(event: ActionEvent<EventName.OnSwitchConflictElement, C>): void {
         const context = event.context;
-        (context.game.currentConflict as Conflict).switchElement(event.ring.element);
+        context.game.requireConflict().switchElement(event.ring.element);
     }
 }

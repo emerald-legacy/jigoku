@@ -1,29 +1,29 @@
+import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityContext } from '../../AbilityContext.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const conduitOfHeroesCost = function (): Cost {
+const conduitOfHeroesCost = function (): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
     return {
-        getActionName(_context: AbilityContext) {
+        getActionName(_context) {
             return 'conduitOfHeroesCost';
         },
-        getCostMessage: function (context: AbilityContext) {
+        getCostMessage: function (context) {
             if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
                 return [];
             }
             return ['bowing {0}'];
         },
-        canPay: function (context: AbilityContext) {
+        canPay: function (context) {
             return context.player.opponent && context.player.honor >= context.player.opponent.honor + 5 ||
                 context.game.actions.bow().canAffect(context.source, context);
         },
-        resolve: function (context: AbilityContext) {
+        resolve: function (context) {
             context.costs.conduitOfHeroesCost = context.source;
             context.costs.skipConduitCost = context.player.opponent && context.player.honor >= context.player.opponent.honor + 5;
         },
-        payEvent: function (context: AbilityContext) {
+        payEvent: function (context) {
             if(!context.costs.skipConduitCost) {
                 const events = [];
 

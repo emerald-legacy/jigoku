@@ -1,4 +1,4 @@
-import { CharacterStatus, Decks, Location, TargetMode } from '../Constants.js';
+import { type CardType, CharacterStatus, Decks, Location, TargetMode } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
 import { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
 import { SelectCardProperties } from '../GameActions/SelectCardAction.js';
@@ -8,7 +8,7 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { Cost } from './Cost.js';
-import { getSelectCost, type SelectCostProperties } from './costHelpers.js';
+import { getSelectCost, type SelectCostProperties, type SelectCostResult, type TypedSelectCostProperties } from './costHelpers.js';
 import { GameActionCost } from './GameActionCost.js';
 import { MetaActionCost } from './MetaActionCost.js';
 
@@ -29,15 +29,15 @@ export function bowParent(): Cost {
  * Cost that requires bowing a card that matches the passed condition
  * predicate function.
  */
-export function bow(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.bow(), properties, 'Select card to bow');
+export function bow<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'bow', K, M>> {
+    return getSelectCost('bow', GameActions.bow(), properties, 'Select card to bow');
 }
 
 /**
  * Cost that will send the target to the conflict.
  */
-export function moveToConflict(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.moveToConflict(), properties, 'Select card to move to the conflict');
+export function moveToConflict<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'moveToConflict', K, M>> {
+    return getSelectCost('moveToConflict', GameActions.moveToConflict(), properties, 'Select card to move to the conflict');
 }
 
 /**
@@ -51,24 +51,24 @@ export function sacrificeSelf(): Cost {
  * Cost that requires sacrificing a card that matches the passed condition
  * predicate function.
  */
-export function sacrifice(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.sacrifice(), properties, 'Select card to sacrifice');
+export function sacrifice<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'sacrifice', K, M>> {
+    return getSelectCost('sacrifice', GameActions.sacrifice(), properties, 'Select card to sacrifice');
 }
 
 /**
  * Cost that will return a selected card to hand which matches the passed
  * condition.
  */
-export function returnToHand(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.returnToHand(), properties, 'Select card to return to hand');
+export function returnToHand<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'returnToHand', K, M>> {
+    return getSelectCost('returnToHand', GameActions.returnToHand(), properties, 'Select card to return to hand');
 }
 
 /**
  * Cost that will return a selected card to the appropriate deck which matches the passed
  * condition.
  */
-export function returnToDeck(properties: ReturnToDeckProperties & SelectCostProperties): Cost {
-    return getSelectCost(GameActions.returnToDeck(properties), properties, 'Select card to return to your deck');
+export function returnToDeck<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: ReturnToDeckProperties & TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'returnToDeck', K, M>> {
+    return getSelectCost('returnToDeck', GameActions.returnToDeck(properties), properties, 'Select card to return to your deck');
 }
 
 /**
@@ -82,8 +82,9 @@ export function returnSelfToHand(): Cost {
  * Cost that will shuffle a selected card into the relevant deck which matches the passed
  * condition.
  */
-export function shuffleIntoDeck(properties: SelectCostProperties): Cost {
+export function shuffleIntoDeck<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'move', K, M>> {
     return getSelectCost(
+        'move',
         GameActions.moveCard({ destination: Location.DynastyDeck, shuffle: true }),
         properties,
         'Select card to shuffle into deck'
@@ -107,15 +108,18 @@ export function discardSelf(): Cost {
 /**
  * Cost that requires discarding a card to be selected by the player.
  */
-export function discardCard(properties?: SelectCostProperties): Cost {
+export function discardCard<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode = TargetMode.Exactly>(
+    properties?: TypedSelectCostProperties<K, M>
+): Cost<SelectCostResult<'discardCard', K, M>> {
     return getSelectCost(
+        'discardCard',
         GameActions.discardCard(),
-        Object.assign({ location: Location.Hand, mode: TargetMode.Exactly }, properties),
+        { location: Location.Hand, mode: TargetMode.Exactly, ...properties },
         (properties?.numCards ?? 0) > 1 ? `Select ${properties?.numCards} cards to discard` : 'Select card to discard'
     );
 }
 
-export function discardTopCardsFromDeck(properties: { amount: number; deck: Decks }): Cost {
+export function discardTopCardsFromDeck(properties: { amount: number; deck: Decks }): Cost<{ discardTopCardsFromDeck: DrawCard[] }> {
     const getDeck =
         properties.deck === Decks.DynastyDeck
             ? (context: AbilityContext) => context.player.dynastyDeck
@@ -147,8 +151,8 @@ export function removeFateFromSelf(): Cost {
 /**
  * Cost that will discard a fate from a selected card
  */
-export function removeFate(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.removeFate(), properties, 'Select character to discard a fate from');
+export function removeFate<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'removeFate', K, M>> {
+    return getSelectCost('removeFate', GameActions.removeFate(), properties, 'Select character to discard a fate from');
 }
 
 /**
@@ -161,8 +165,8 @@ export function removeFateFromParent(): Cost {
 /**
  * Cost that requires removing a card selected by the player from the game.
  */
-export function removeFromGame(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.removeFromGame(), properties, 'Select card to remove from game');
+export function removeFromGame<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'removeFromGame', K, M>> {
+    return getSelectCost('removeFromGame', GameActions.removeFromGame(), properties, 'Select card to remove from game');
 }
 
 /**
@@ -182,15 +186,15 @@ export function dishonorSelf(): Cost {
 /**
  * Cost that requires dishonoring a card to be selected by the player
  */
-export function dishonor(properties?: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.dishonor(), properties, 'Select character to dishonor');
+export function dishonor<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties?: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'dishonor', K, M>> {
+    return getSelectCost('dishonor', GameActions.dishonor(), properties, 'Select character to dishonor');
 }
 
 /**
  * Cost that requires tainting a card to be selected by the player
  */
-export function taint(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.taint(), properties, 'Select card to taint');
+export function taint<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'taint', K, M>> {
+    return getSelectCost('taint', GameActions.taint(), properties, 'Select card to taint');
 }
 
 export function discardStatusToken(properties: Omit<SelectCardProperties, 'gameAction' | 'subActionProperties'>): Cost {
@@ -225,8 +229,8 @@ export function breakSelf(): Cost {
 /**
  * Cost that requires breaking a province selected by the player
  */
-export function breakProvince(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.breakProvince(), properties, 'Select a province to break');
+export function breakProvince<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'break', K, M>> {
+    return getSelectCost('break', GameActions.breakProvince(), properties, 'Select a province to break');
 }
 
 /**
@@ -239,14 +243,14 @@ export function putSelfIntoPlay(): Cost {
 /**
  * Cost that will prompt for a card
  */
-export function selectedReveal(properties: SelectCostProperties): Cost {
-    return getSelectCost(GameActions.reveal(), properties, `Select a ${properties.cardType || 'card'} to reveal`);
+export function selectedReveal<const K extends CardType | readonly CardType[] | undefined = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'reveal', K, M>> {
+    return getSelectCost('reveal', GameActions.reveal(), properties, `Select a ${properties.cardType || 'card'} to reveal`);
 }
 
 /**
  * Cost that will reveal specific cards
  */
-export function reveal(cardFunc: (context: AbilityContext) => BaseCard[]): Cost {
+export function reveal<T extends BaseCard>(cardFunc: (context: AbilityContext) => T[]): Cost<{ reveal: T[] }> {
     return new GameActionCost(GameActions.reveal((context) => ({ target: cardFunc(context) })));
 }
 

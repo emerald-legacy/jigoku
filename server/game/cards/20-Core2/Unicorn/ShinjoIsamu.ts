@@ -1,6 +1,5 @@
 import { EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -26,7 +25,7 @@ export default class ShinjoIsamu extends DrawCard {
             .ringTarget('target', {
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
-                    (context?.game.currentConflict as Conflict)
+                    context.game.requireConflict()
                         .getConflictProvinces()
                         .some((province: ProvinceCard) => province.getElement().includes(ring.element))
             }, AbilityDsl.actions.resolveRingEffect())

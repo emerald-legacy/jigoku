@@ -9,30 +9,26 @@ class ImbuedWithShadows extends DrawCard {
     static id = 'imbued-with-shadows';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Lose honor to discard status tokens',
-            effect: 'lose {1} honor to discard status tokens from {2}',
-            effectArgs: (context) => [context.costs.variableHonorCost as number, context.targets.target as BaseCard[]],
-            cost: AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)),
-            target: {
+        this.action('Lose honor to discard status tokens')
+            .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
+            .targetCards('target', {
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost as number;
+                        return context.costs.variableHonorCost;
                     }
 
                     return this.getNumberOfLegalTargets(context);
                 },
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext) => {
-                    const targets = Object.values(context.targets).flat();
-                    return {
-                        gameActions: this.getStatusTokenPrompts(targets)
-                    };
-                })
-            },
-            cannotTargetFirst: true
-        });
+                cardType: CardType.Character
+            }, AbilityDsl.actions.multipleContext((context) => {
+                const targets = Object.values(context.targets).flat();
+                return {
+                    gameActions: this.getStatusTokenPrompts(targets)
+                };
+            }))
+            .effect('lose {1} honor to discard status tokens from {2}', (context) => [context.costs.variableHonorCost, context.targets.target])
+            .cannotTargetFirst();
     }
 
     getStatusTokenPrompts(targets: BaseCard[]) {

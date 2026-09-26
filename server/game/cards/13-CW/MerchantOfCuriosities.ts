@@ -1,3 +1,4 @@
+import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
@@ -7,12 +8,12 @@ import { Location, TargetMode, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 
-const merchantOfCuriositiesCost = function () {
+const merchantOfCuriositiesCost = function (): Cost<{ merchantOfCuriositiesCostPaid: boolean; merchantOfCuriositiesCostDiscardedCard: DrawCard }> {
     return {
         canPay: function () {
             return true;
         },
-        resolve: function (context: AbilityContext, result: Result) {
+        resolve: function (context, result: Result) {
             let honorAvailable = true;
             let cardAvailable = true;
             if(!context.player.opponent || !context.game.actions.loseHonor().canAffect(context.player.opponent, context) || !context.game.actions.gainHonor().canAffect(context.player, context)) {
@@ -40,7 +41,9 @@ const merchantOfCuriositiesCost = function () {
                                 location: Location.Hand,
                                 controller: Players.Opponent,
                                 onSelect: (_player: Player, card: BaseCard) => {
-                                    context.costs.merchantOfCuriositiesCostDiscardedCard = card;
+                                    if(card.isDrawCard()) {
+                                        context.costs.merchantOfCuriositiesCostDiscardedCard = card;
+                                    }
                                     return true;
                                 },
                                 onCancel: () => {
@@ -54,11 +57,11 @@ const merchantOfCuriositiesCost = function () {
                 });
             }
         },
-        payEvent: function (context: AbilityContext) {
+        payEvent: function (context) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
                 let events: Event[] = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard });
+                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
 
                 let honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
@@ -87,7 +90,7 @@ class MerchantOfCuriosities extends DrawCard {
             .gameAction(AbilityDsl.actions.draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
             })))
-            .effect('draw a card{2}', context => [context.costs.discardCard as BaseCard, this.buildString(context)]);
+            .effect('draw a card{2}', context => [context.costs.discardCard, this.buildString(context)]);
     }
 
     buildString(context: AbilityContext) {

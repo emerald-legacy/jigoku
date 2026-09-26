@@ -1,14 +1,15 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import { CardType, EventName, Location, Players } from '../../../Constants.js';
 import { Result } from '../../../costs/Cost.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventPayload } from '../../../Events/EventPayloads.js';
-import { MsgArg } from '../../../GameChat.js';
 import Player from '../../../Player.js';
 import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-const resourcesAvailable = (context: TriggeredAbilityContext) => {
+const resourcesAvailable = (context: AbilityContext) => {
     let fateAvailable = false;
     if(context.game.actions.loseFate().canAffect(context.player, context)) {
         fateAvailable = true;
@@ -23,22 +24,22 @@ const resourcesAvailable = (context: TriggeredAbilityContext) => {
     return { fateAvailable, eligibleCharacters, freeCharacters };
 };
 
-const disruptedSupplyLinesCost = function () {
+const disruptedSupplyLinesCost = function (): Cost<{ disruptedSupplyLinesCostFatePaid: boolean; disruptedSupplyLinesCostDishonoredCharacter: DrawCard | undefined }> {
     return {
-        getCostMessage(context: TriggeredAbilityContext) {
+        getCostMessage(context) {
             return ['dishonoring {1}{2}',
                 [context.costs.disruptedSupplyLinesCostDishonoredCharacter,
-                    context.costs.disruptedSupplyLinesCostFatePaid ? ' and paying 1 fate' : ''] as MsgArg
+                    context.costs.disruptedSupplyLinesCostFatePaid ? ' and paying 1 fate' : '']
             ];
         },
-        getActionName(_context: TriggeredAbilityContext) {
+        getActionName(_context) {
             return 'disruptedSupplyLinesCost';
         },
-        canPay: function (context: TriggeredAbilityContext) {
+        canPay: function (context) {
             const { fateAvailable, eligibleCharacters, freeCharacters } = resourcesAvailable(context);
             return freeCharacters.length > 0 || (fateAvailable && eligibleCharacters.length > 0);
         },
-        resolve: function (context: TriggeredAbilityContext, results: Result) {
+        resolve: function (context, results: Result) {
             const { fateAvailable, eligibleCharacters, freeCharacters } = resourcesAvailable(context);
             context.costs.disruptedSupplyLinesCostFatePaid = false;
             context.costs.disruptedSupplyLinesCostDishonoredCharacter = undefined;
@@ -53,11 +54,13 @@ const disruptedSupplyLinesCost = function () {
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => cards.includes(card as DrawCard),
+                cardCondition: (card) => card.isDrawCard() && cards.includes(card),
                 context: context,
                 onSelect: (player: Player, card: BaseCard) => {
-                    context.costs.disruptedSupplyLinesCostFatePaid = !freeCharacters.includes(card as DrawCard);
-                    context.costs.disruptedSupplyLinesCostDishonoredCharacter = card;
+                    if(card.isDrawCard()) {
+                        context.costs.disruptedSupplyLinesCostFatePaid = !freeCharacters.includes(card);
+                        context.costs.disruptedSupplyLinesCostDishonoredCharacter = card;
+                    }
                     return true;
                 },
                 onCancel: () => {
@@ -66,14 +69,14 @@ const disruptedSupplyLinesCost = function () {
                 }
             });
         },
-        payEvent: function (context: TriggeredAbilityContext) {
+        payEvent: function (context) {
             const events = [];
             if(context.costs.disruptedSupplyLinesCostFatePaid) {
                 const loseFateaction = context.game.actions.loseFate({ amount: 1, target: context.player });
                 events.push(loseFateaction.getEvent(context.player, context));
             }
 
-            const dishonorAction = context.game.actions.dishonor({ target: context.costs.disruptedSupplyLinesCostDishonoredCharacter as BaseCard });
+            const dishonorAction = context.game.actions.dishonor({ target: context.costs.disruptedSupplyLinesCostDishonoredCharacter });
             events.push(dishonorAction.getEvent(context.costs.disruptedSupplyLinesCostDishonoredCharacter, context));
 
             return events;

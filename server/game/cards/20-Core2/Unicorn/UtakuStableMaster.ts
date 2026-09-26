@@ -26,7 +26,7 @@ export default class UtakuStableMaster extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    card.glory <= participatingCavGlory(context.game.currentConflict as Conflict, context.player)
+                    card.glory <= participatingCavGlory(context.game.requireConflict(), context.player)
             }, AbilityDsl.actions.bow());
     }
 }

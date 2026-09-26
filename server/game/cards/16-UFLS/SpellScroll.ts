@@ -1,5 +1,4 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { Conflict } from '../../Conflict.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,7 +9,7 @@ export default class SpellScroll extends DrawCard {
         this.whileAttached({
             condition: (context) =>
                 !!(context.source.parentCharacter?.isParticipating() &&
-                (context.game.currentConflict as Conflict).elements.some((element) =>
+                context.game.requireConflict().elements.some((element) =>
                     context.source.parentCharacter?.hasTrait(element)
                 )),
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)

@@ -34,18 +34,19 @@ describe('PlayerZones', function () {
         });
     });
 
-    describe('updateSourceList', function () {
-        it('replaces the backing array for a known location', function () {
-            const newHand = [{ uuid: 'x' }];
-            this.zones.updateSourceList(Location.Hand, newHand);
-            expect(this.zones.hand).toBe(newHand);
+    describe('removeCard', function () {
+        it('removes the card from the backing array for a known location', function () {
+            const kept = { uuid: 'x' };
+            this.zones.hand.push(kept, { uuid: 'y' });
+            this.zones.removeCard(Location.Hand, 'y');
+            expect(this.zones.hand).toEqual([kept]);
         });
 
-        it('replaces the cards of an existing additional pile', function () {
+        it('removes the card from an additional pile', function () {
             this.zones.createAdditionalPile('customPile');
-            const cards = [{ uuid: 'y' }];
-            this.zones.updateSourceList('customPile', cards);
-            expect(this.zones.additionalPiles.customPile.cards).toBe(cards);
+            this.zones.additionalPiles.customPile.cards.push({ uuid: 'y' });
+            this.zones.removeCard('customPile', 'y');
+            expect(this.zones.additionalPiles.customPile.cards).toEqual([]);
         });
     });
 
@@ -59,8 +60,8 @@ describe('PlayerZones', function () {
 
     describe('province lookups', function () {
         beforeEach(function () {
-            this.dynastyCard = { uuid: 'd', isDynasty: true, isProvince: false };
-            this.provinceCard = { uuid: 'pr', isDynasty: false, isProvince: true };
+            this.dynastyCard = { uuid: 'd', isDynastyCard: () => true, isProvinceCard: () => false };
+            this.provinceCard = { uuid: 'pr', isDynastyCard: () => false, isProvinceCard: () => true };
             this.zones.provinceOne.push(this.provinceCard, this.dynastyCard);
         });
 

@@ -10,38 +10,31 @@ export default class TributeToANewDawn extends DrawCard {
     static id = 'tribute-to-a-new-dawn';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Remove multiple attachments from the game',
-            condition: (context) =>
+        this.action('Remove multiple attachments from the game')
+            .condition((context) =>
                 context.player.anyCardsInPlay((card: DrawCard) => card.type === CardType.Attachment) &&
                 (!context.player.opponent ||
-                    context.player.opponent.anyCardsInPlay((card: DrawCard) => card.type === CardType.Attachment)),
-            targets: {
-                [FIRST]: {
-                    activePromptTitle: 'Choose up to 2 attachments to keep',
-                    cardType: CardType.Attachment,
-                    mode: TargetMode.UpTo,
-                    numCards: 2,
-                    controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
-                    player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
-                    gameAction: AbilityDsl.actions.bow()
-                },
-                [SECOND]: {
-                    activePromptTitle: 'Choose up to 2 attachments to keep',
-                    cardType: CardType.Attachment,
-                    mode: TargetMode.UpTo,
-                    numCards: 2,
-                    controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
-                    player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
-                    gameAction: AbilityDsl.actions.bow()
-                }
-            },
-            gameAction: AbilityDsl.actions.removeFromGame((context: AbilityContext<DrawCard, DrawCard>) => ({
+                    context.player.opponent.anyCardsInPlay((card: DrawCard) => card.type === CardType.Attachment)))
+            .targetCards(FIRST, {
+                activePromptTitle: 'Choose up to 2 attachments to keep',
+                cardType: CardType.Attachment,
+                mode: TargetMode.UpTo,
+                numCards: 2,
+                controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
+                player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent)
+            }, AbilityDsl.actions.bow())
+            .targetCards(SECOND, {
+                activePromptTitle: 'Choose up to 2 attachments to keep',
+                cardType: CardType.Attachment,
+                mode: TargetMode.UpTo,
+                numCards: 2,
+                controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
+                player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self)
+            }, AbilityDsl.actions.bow())
+            .gameAction(AbilityDsl.actions.removeFromGame((context) => ({
                 target: this.#getAffectedAttachments(context)
-            })),
-            effect: 'remove {1} from the game',
-            effectArgs: (context) => [this.#getAffectedAttachments(context)]
-        });
+            })))
+            .effect('remove {1} from the game', (context) => [this.#getAffectedAttachments(context)]);
     }
 
     #getAffectedAttachments(context: AbilityContext<DrawCard>) {

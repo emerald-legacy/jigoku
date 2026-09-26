@@ -10,7 +10,7 @@ import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './Game.js';
 
-import { type ActionContext, AbilityBuilder, TriggerBuilder, actionProperties, createDraft, holdsTriggerEvent, triggeredProperties } from './AbilityBuilder.js';
+import { type ActionContext, AbilityBuilder, TriggerBuilder, actionProperties, aggregateProperties, createDraft, holdsTriggerEvent, holdsTriggerEvents, triggeredProperties } from './AbilityBuilder.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
 import {
@@ -94,6 +94,11 @@ const PLAYABLE_OUT_OF_PLAY_LOCATIONS: Set<Location> = new Set([
     Location.DynastyDiscardPile,
     Location.UnderneathStronghold
 ]);
+
+/** Method syntax, so a card class's registrar stays assignable to its base class's. */
+interface ActionRegistrar<S> {
+    register(properties: ActionProps<S>): void;
+}
 
 export interface CardSummary {
     attachments?: CardSummary[];
@@ -290,12 +295,16 @@ class BaseCard extends EffectSource {
     action(title: string): AbilityBuilder<ActionContext<this>>;
     action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target> | string): void | AbilityBuilder<ActionContext<this>> {
         if(typeof properties === 'string') {
-            this.requireSetup(properties);
-            const draft = createDraft(properties, (context) => context.ability instanceof CardAction);
-            this.registerAbility(() => this.action(actionProperties<this>(draft)));
-            return new AbilityBuilder(draft);
+            return this.actionBuilder(properties, { register: (built) => this.action(built) });
         }
         this.registerAbility(() => this.abilities.actions.push(this.createAction(properties as ActionProps)));
+    }
+
+    protected actionBuilder(title: string, registrar: ActionRegistrar<this>): AbilityBuilder<ActionContext<this>> {
+        this.requireSetup(title);
+        const draft = createDraft(title, (context) => context.ability instanceof CardAction);
+        this.registerAbility(() => registrar.register(actionProperties<this>(draft)));
+        return new AbilityBuilder(draft);
     }
 
     /** A builder is registered when `setupCardAbilities` returns, so it can only be started there. */
@@ -316,10 +325,17 @@ class BaseCard extends EffectSource {
 
     protected triggerBuilder<EventOptional extends boolean = false>(abilityType: AbilityType, title: string): TriggerBuilder<this, EventOptional> {
         this.requireSetup(title);
-        return new TriggerBuilder<this, EventOptional>((when) => {
-            const draft = createDraft(title, holdsTriggerEvent(when, () => this.isProvinceCard()));
-            this.registerAbility(() => this.triggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
-            return draft;
+        return new TriggerBuilder<this, EventOptional>({
+            when: (when) => {
+                const draft = createDraft(title, holdsTriggerEvent(when, () => this.isProvinceCard()));
+                this.registerAbility(() => this.triggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
+                return draft;
+            },
+            aggregateWhen: (aggregateWhen) => {
+                const draft = createDraft(title, holdsTriggerEvents(() => this.isProvinceCard()));
+                this.registerAbility(() => this.triggeredAbility(abilityType, aggregateProperties<this>(draft, aggregateWhen)));
+                return draft;
+            }
         });
     }
 
@@ -570,6 +586,14 @@ class BaseCard extends EffectSource {
     /** Narrows to `DrawCard`; `DrawCard` overrides this to return true. */
     isDrawCard(): this is DrawCard {
         return false;
+    }
+
+    isDynastyCard(): this is DrawCard {
+        return this.isDrawCard() && this.isDynasty;
+    }
+
+    isConflictCard(): this is DrawCard {
+        return this.isDrawCard() && this.isConflict;
     }
 
     /** Narrows to `ProvinceCard`, the counterpart of `isCharacter`. */

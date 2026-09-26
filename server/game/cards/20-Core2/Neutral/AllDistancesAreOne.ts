@@ -3,7 +3,6 @@ import { CardType, Location } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 function captureOriginalProvince(): Cost<{ originalProvince: ProvinceCard }> {
@@ -12,7 +11,7 @@ function captureOriginalProvince(): Cost<{ originalProvince: ProvinceCard }> {
             return true;
         },
         resolve(context: AbilityContext) {
-            context.costs.originalProvince = (context.game.currentConflict as Conflict).conflictProvince;
+            context.costs.originalProvince = context.game.requireConflict().conflictProvince;
         },
         pay() { }
     };

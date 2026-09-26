@@ -37,15 +37,15 @@ export default class AppeasingTheRestless extends DrawCard {
 
                 if(!context.player.hasAffinity('void', context)) {
                     gameActions.push(AbilityDsl.actions.conditional({
-                        condition: () => ((context.costs.bow as DrawCard | undefined)?.getFate() ?? 0) === 0,
-                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.costs.bow as DrawCard }),
-                        falseGameAction: AbilityDsl.actions.removeFate({ target: context.costs.bow as DrawCard })
+                        condition: () => (context.costs.bow?.getFate() ?? 0) === 0,
+                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.costs.bow }),
+                        falseGameAction: AbilityDsl.actions.removeFate({ target: context.costs.bow })
                     }));
                 }
 
                 return { gameActions };
             }))
-            .effect('choose up to 3 spirits to place fate on{1}{2}', context => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow as DrawCard])
+            .effect('choose up to 3 spirits to place fate on{1}{2}', context => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow])
             .cannotTargetFirst();
     }
 }

@@ -6,14 +6,14 @@ import { Location, CardType } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
 import type { MessageArgs } from '../../GameChat.js';
 
-const testOfSkillCost = function(): Cost {
+const testOfSkillCost = function(): Cost<{ testOfSkillCost: CardType }> {
     return {
         getActionName: () => 'testOfSkillCost',
         getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: function() {
             return true;
         },
-        resolve: function(context: AbilityContext) {
+        resolve: function(context) {
             const choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',

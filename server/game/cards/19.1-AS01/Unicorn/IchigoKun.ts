@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Element, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Element, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const VULNERABLE_ELEMENT = 'ichigo-kun-fire';
@@ -18,29 +18,22 @@ export default class IchigoKun extends DrawCard {
             effect: AbilityDsl.effects.setBaseMilitarySkill(0)
         });
 
-        this.action({
-            title: 'Modify military skill and glory',
-            targets: {
-                otherCharacter: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card, context) => card.isParticipating() && card !== context.source
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'otherCharacter',
-                    choices: (context) => ({
-                        [MORE_MIL_LESS_GLORY]: this.actionSequence(context as AbilityContext<this>, { military: +2, glory: -2 }),
-                        [LESS_MIL_MORE_GLORY]: this.actionSequence(context as AbilityContext<this>, { military: -2, glory: +2 })
-                    })
-                }
-            },
-            effect: 'give {0} {1} {2} and {3} {4} glory - {0} {5}',
-            effectArgs: (context) =>
+        this.action('Modify military skill and glory')
+            .target('otherCharacter', {
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+            })
+            .selectFrom('select', {
+                dependsOn: 'otherCharacter'
+            }, (context) => ({
+                [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),
+                [LESS_MIL_MORE_GLORY]: this.actionSequence(context, { military: -2, glory: +2 })
+            }))
+            .effect('give {0} {1} {2} and {3} {4} glory - {0} {5}', (context) =>
                 context.selects.select.choice === MORE_MIL_LESS_GLORY
                     ? ['+2', 'military', context.targets.otherCharacter, '-2', 'is wild today!']
-                    : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive!']
-        });
+                    : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive!']);
     }
 
     public getPrintedElementSymbols() {

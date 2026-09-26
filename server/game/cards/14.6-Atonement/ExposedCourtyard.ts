@@ -5,20 +5,20 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 import { CardType, EventName, Location, Players, Duration } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const exposedCourtyardCost = (): Cost => ({
-    getActionName(_context: AbilityContext) {
+const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => ({
+    getActionName(_context) {
         return 'exposedCourtyardCost';
     },
-    getCostMessage: function (_context: AbilityContext) {
+    getCostMessage: function (_context) {
         return ['discarding {0}'];
     },
-    canPay: function (context: AbilityContext) {
+    canPay: function (context) {
         return context.player.conflictDeck.length >= 2;
     },
-    resolve: function(context: AbilityContext) {
+    resolve: function(context) {
         context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
     },
-    pay: function(context: AbilityContext) {
+    pay: function(context) {
         const discardedCards = context.costs.exposedCourtyardCost as DrawCard[];
         discardedCards.slice(0, 2).forEach(card => {
             card.controller.moveCard(card, Location.ConflictDiscardPile);

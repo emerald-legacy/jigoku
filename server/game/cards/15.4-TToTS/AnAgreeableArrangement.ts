@@ -5,17 +5,17 @@ import type Player from '../../Player.js';
 import { CardType, Players, Duration, TargetMode, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
-const agreeableCost = (): Cost => ({
-    getActionName(_context: AbilityContext) {
+const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
+    getActionName(_context) {
         return 'agreeableArrangementCost';
     },
-    getCostMessage: function (context: AbilityContext) {
+    getCostMessage: function (context) {
         return ['giving {1} control of {0}', context.player.opponent];
     },
-    canPay: function(context: AbilityContext) {
+    canPay: function(context) {
         return !!context.player.opponent && context.player.cardsInPlay.some((card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(context.player.opponent as Player));
     },
-    resolve: function (context: AbilityContext, result: Result) {
+    resolve: function (context, result: Result) {
         context.game.promptForSelect(context.player, {
             activePromptTitle: 'Choose a card to give to your opponent',
             context: context,
@@ -35,8 +35,8 @@ const agreeableCost = (): Cost => ({
             }
         });
     },
-    payEvent: function(context: AbilityContext) {
-        const card = context.costs.agreeableArrangementCost as DrawCard;
+    payEvent: function(context) {
+        const card = context.costs.agreeableArrangementCost;
         const action = context.game.actions.cardLastingEffect((innerContext: AbilityContext) => ({
             target: card,
             effect: AbilityDsl.effects.takeControl(innerContext.player.opponent),

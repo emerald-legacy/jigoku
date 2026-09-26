@@ -78,12 +78,12 @@ export default class WorkInProgress extends DrawCard {
     }
 }
 
-function workInProgressCost(): Cost {
+function workInProgressCost(): Cost<{ workInProgress: string }> {
     return {
         getActionName: () => 'workInProgress',
         getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: () => true,
-        resolve: (context: AbilityContext) => {
+        resolve: (context) => {
             const choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',

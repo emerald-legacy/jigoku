@@ -1,7 +1,6 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { Conflict } from '../../../Conflict.js';
 
 export default class ToStormAFortress extends DrawCard {
     static id = 'to-storm-a-fortress';
@@ -21,7 +20,7 @@ export default class ToStormAFortress extends DrawCard {
                     activePromptTitle: 'Discard each card in the attacked province?',
                     choices: ['Yes', 'No'],
                     choiceHandler: (choice, displayMessage) => {
-                        const cardsToDiscard = (context.game.currentConflict as Conflict)
+                        const cardsToDiscard = context.game.requireConflict()
                             .getConflictProvinces()
                             .flatMap((province) =>
                                 province.controller.getDynastyCardsInProvince(province.location)

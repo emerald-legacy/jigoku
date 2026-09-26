@@ -22,7 +22,7 @@ export default class WeightOfDuty extends ProvinceCard {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    context.costs.sacrifice && !(context.costs.sacrifice as DrawCard).isUnique() ? !card.isUnique() : true
+                    context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true
             }, AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]))
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .cannotTargetFirst();

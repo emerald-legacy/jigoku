@@ -1,6 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -25,7 +24,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                 }
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => {
-                const target = (context.game.currentConflict as Conflict).getParticipants(
+                const target = context.game.requireConflict().getParticipants(
                     (participant) => participant.controller === context.player
                 )[0];
 

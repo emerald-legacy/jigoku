@@ -2,7 +2,6 @@ import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -10,10 +9,9 @@ export default class IsawaHaruyo extends DrawCard {
     static id = 'isawa-haruyo';
 
     public setupCardAbilities() {
-        this.conflictAction({
-            title: 'Discard a card',
-            condition: (context) => context.source.isDefending() && context.player.opponent !== undefined,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.conflictAction('Discard a card')
+            .condition((context) => context.source.isDefending() && context.player.opponent !== undefined)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -43,11 +41,9 @@ export default class IsawaHaruyo extends DrawCard {
                         ]
                     };
                 })
-            })),
-            effect: 'look at an amount of random cards in {1}\'s hand equal to the strength of an attacked province and discard one of them',
-            effectArgs: (context) => [
-                context.player.opponent as Player
-            ]
-        });
+            })))
+            .effect('look at an amount of random cards in {1}\'s hand equal to the strength of an attacked province and discard one of them', (context) => [
+                context.player.opponent
+            ]);
     }
 }

@@ -1,4 +1,3 @@
-import { AbilityContext } from '../../../AbilityContext.js';
 import BaseAction from '../../../BaseAction.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -40,14 +39,12 @@ export default class MirumotoRikitaro extends DrawCard {
             })))
             .effect('reduce the cost of their next attachment by 1');
 
-        this.conflictAction({
-            title: 'Discard an attachment',
-            target: {
+        this.conflictAction('Discard an attachment')
+            .target('target', {
                 cardCondition: (card, context) => !!(card.hasSomeTrait('item', 'weapon', 'armor') && card.parentCharacter && context.player.opponent && card.parentCharacter.isParticipatingFor(context.player.opponent)),
-                cardType: CardType.Attachment,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            },
-            then: (context: AbilityContext) => ({
+                cardType: CardType.Attachment
+            }, AbilityDsl.actions.discardFromPlay())
+            .then((context) => ({
                 message: '{3} gains +2{4} due to discarding a weapon!',
                 messageArgs: () => [context.source, 'military'],
                 thenCondition: () => context.target?.hasTrait('weapon'),
@@ -55,7 +52,6 @@ export default class MirumotoRikitaro extends DrawCard {
                     target: context.source,
                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
                 })
-            })
-        });
+            }));
     }
 }

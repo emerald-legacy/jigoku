@@ -33,27 +33,27 @@ export interface ChoicesInterface {
     [propName: string]: ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 }
 
-interface TargetSelect extends BaseTarget {
+export interface TargetSelect extends BaseTarget {
     mode: TargetMode.Select;
     choices: (ChoicesInterface | Record<string, never>) | ((context: AbilityContext) => ChoicesInterface | Record<string, never>);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
 }
 
-interface TargetRing extends BaseTarget {
+export interface TargetRing extends BaseTarget {
     mode: TargetMode.Ring;
     optional?: boolean;
     ringCondition: (ring: Ring, context?: AbilityContext) => boolean;
 }
 
-interface TargetAbility extends BaseTarget {
+export interface TargetAbility extends BaseTarget {
     mode: TargetMode.Ability;
     cardType?: CardType | CardType[];
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
-interface TargetToken extends BaseTarget {
+export interface TargetToken extends BaseTarget {
     mode: TargetMode.Token;
     optional?: boolean;
     location?: Location | Location[];
@@ -63,7 +63,7 @@ interface TargetToken extends BaseTarget {
     tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
 }
 
-interface TargetElementSymbol extends BaseTarget {
+export interface TargetElementSymbol extends BaseTarget {
     mode: TargetMode.ElementSymbol;
     location?: Location | Location[];
     cardType?: CardType | CardType[];
@@ -75,25 +75,25 @@ interface BaseTargetCard extends BaseTarget {
     optional?: boolean;
 }
 
-interface TargetCardExactlyUpTo extends BaseTargetCard {
+export interface TargetCardExactlyUpTo extends BaseTargetCard {
     mode: TargetMode.Exactly | TargetMode.UpTo;
     numCards: number;
     sameDiscardPile?: boolean;
 }
 
-interface TargetCardExactlyUpToVariable extends BaseTargetCard {
+export interface TargetCardExactlyUpToVariable extends BaseTargetCard {
     mode: TargetMode.ExactlyVariable | TargetMode.UpToVariable;
     numCardsFunc: (context: AbilityContext) => number;
 }
 
-interface TargetCardMaxStat extends BaseTargetCard {
+export interface TargetCardMaxStat extends BaseTargetCard {
     mode: TargetMode.MaxStat;
     numCards: number;
     cardStat: (card: DrawCard) => number;
     maxStat: () => number;
 }
 
-interface TargetCardSingleUnlimited extends BaseTargetCard {
+export interface TargetCardSingleUnlimited extends BaseTargetCard {
     mode?: TargetMode.Single | TargetMode.Unlimited | TargetMode.AutoSingle;
 }
 
@@ -106,15 +106,15 @@ type TargetCard =
     | TargetToken
     | TargetElementSymbol;
 
-interface SubTarget {
+export interface SubTarget {
     dependsOn?: string;
 }
 
-interface ActionCardTarget {
+export interface ActionCardTarget {
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
 }
 
-interface ActionRingTarget {
+export interface ActionRingTarget {
     ringCondition?: (ring: Ring, context?: AbilityContext) => boolean;
 }
 

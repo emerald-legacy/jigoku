@@ -9,10 +9,8 @@ export default class BayushiGichin extends DrawCard {
     static id = 'bayushi-gichin';
 
     setupCardAbilities() {
-        this.duelStrike({
-            title: 'Poison a character',
-            duelCondition: (duel, context) => duel.participants.includes(context.source),
-            gameAction: AbilityDsl.actions.sequentialContext(context => ({
+        this.duelStrike('Poison a character', (duel, context) => duel.participants.includes(context.source))
+            .gameAction(AbilityDsl.actions.sequentialContext(context => ({
                 gameActions: [
                     AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a duel participant',
@@ -58,13 +56,11 @@ export default class BayushiGichin extends DrawCard {
                         };
                     })
                 ]
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })))
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
 
-        this.conflictAction({
-            title: 'Military duel to steal honor',
-            initiateDuel: {
+        this.conflictAction('Military duel to steal honor')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel, context) => {
                     if(duel.winner?.includes(context.source as DrawCard)) {
@@ -72,8 +68,7 @@ export default class BayushiGichin extends DrawCard {
                     }
                     return AbilityDsl.actions.noAction();
                 }
-            }
-        });
+            }));
     }
 
     getPoisons(context: AbilityContext) {

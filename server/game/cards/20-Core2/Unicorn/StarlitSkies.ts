@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { Location, TargetMode } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const possibleChoices = {
@@ -19,19 +19,13 @@ export default class StarlitSkies extends DrawCard {
     static id = 'starlit-skies';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Look at top 3 cards',
-            evenDuringDynasty: true,
-            target: {
-                mode: TargetMode.Select,
-                activePromptTitle: 'Choose which deck to look at:',
-                choices: Object.fromEntries(
-                    Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
-                )
-            },
-            effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: (context) => [context.player, (context.select ?? '').toLowerCase()],
-            handler: (context: AbilityContext) => {
+        this.action('Look at top 3 cards')
+            .selectIf('target', {
+                activePromptTitle: 'Choose which deck to look at:'
+            }, Object.fromEntries(
+                Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
+            ))
+            .handler((context) => {
                 const choice = possibleChoices[context.select as keyof typeof possibleChoices];
                 const topThree = choice.cards(context);
                 if(topThree.length === 0) {
@@ -93,7 +87,8 @@ export default class StarlitSkies extends DrawCard {
                     handlers: handlers,
                     choices: choices
                 });
-            }
-        });
+            })
+            .effect('look at the top 3 cards of {1}\'s {2}', (context) => [context.player, (context.select ?? '').toLowerCase()])
+            .evenDuringDynasty();
     }
 }

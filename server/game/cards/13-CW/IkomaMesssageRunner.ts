@@ -8,33 +8,26 @@ class IkomaMessageRunner extends DrawCard {
     static id = 'ikoma-message-runner';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Flip a card faceup',
-            targets: {
-                myCard: {
-                    activePromptTitle: 'Choose a facedown card in your provinces',
-                    location: Location.Provinces,
-                    mode: TargetMode.UpTo,
-                    numCards: 1,
-                    optional: true,
-                    controller: Players.Self,
-                    cardCondition: card => card.isDynasty && card.isFacedown(),
-                    gameAction: AbilityDsl.actions.flipDynasty()
-                },
-                opponentsCard: {
-                    activePromptTitle: 'Choose a facedown card in opponents provinces',
-                    location: Location.Provinces,
-                    controller: Players.Opponent,
-                    mode: TargetMode.UpTo,
-                    numCards: 1,
-                    optional: true,
-                    cardCondition: card => card.isDynasty && card.isFacedown(),
-                    gameAction: AbilityDsl.actions.flipDynasty()
-                }
-            },
-            effect: 'reveal up to 1 facedown card in each player\'s provinces.{1}',
-            effectArgs: context => [this.buildString(context)]
-        });
+        this.action('Flip a card faceup')
+            .targetCards('myCard', {
+                activePromptTitle: 'Choose a facedown card in your provinces',
+                location: Location.Provinces,
+                mode: TargetMode.UpTo,
+                numCards: 1,
+                optional: true,
+                controller: Players.Self,
+                cardCondition: card => card.isDynasty && card.isFacedown()
+            }, AbilityDsl.actions.flipDynasty())
+            .targetCards('opponentsCard', {
+                activePromptTitle: 'Choose a facedown card in opponents provinces',
+                location: Location.Provinces,
+                controller: Players.Opponent,
+                mode: TargetMode.UpTo,
+                numCards: 1,
+                optional: true,
+                cardCondition: card => card.isDynasty && card.isFacedown()
+            }, AbilityDsl.actions.flipDynasty())
+            .effect('reveal up to 1 facedown card in each player\'s provinces.{1}', context => [this.buildString(context)]);
     }
 
     buildString(context: AbilityContext) {

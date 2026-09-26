@@ -1,16 +1,13 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Duel } from '../../../Duel.js';
 
 export default class ForeignCustoms extends DrawCard {
     static id = 'foreign-customs';
 
     setupCardAbilities() {
-        this.duelStrike({
-            title: 'Put a character into play',
-            duelCondition: (duel: Duel, context) => duel.loserController === context.player,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.duelStrike('Put a character into play', (duel, context) => duel.loserController === context.player)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
@@ -20,8 +17,7 @@ export default class ForeignCustoms extends DrawCard {
                 messageArgs: (cards) => [context.player, cards],
                 subActionProperties: (card) => ({ target: card }),
                 gameAction: AbilityDsl.actions.putIntoConflict({ status: 'dishonored' })
-            }))
-        });
+            })));
 
         this.action('Ready a non-unicorn character')
             .condition((context) =>

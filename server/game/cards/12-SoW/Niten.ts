@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const nitenCaptureParentCost = function(): Cost {
+const nitenCaptureParentCost = function(): Cost<{ nitenCaptureParentCost: DrawCard | null }> {
     return {
         canPay: function() {
             return true;
         },
-        resolve: function(context: AbilityContext) {
+        resolve: function(context) {
             context.costs.nitenCaptureParentCost = (context.source as DrawCard).parentCharacter;
         },
         pay: function() {

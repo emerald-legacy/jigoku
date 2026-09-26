@@ -27,7 +27,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { Event } from './Events/Event.js';
 import type { ActionProps, ConflictActionProps, PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps, WhenType } from './Interfaces.js';
-import type { AbilityBuilder, TriggerContext } from './AbilityBuilder.js';
+import type { ActionContext, AbilityBuilder, TriggerContext } from './AbilityBuilder.js';
 import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -40,6 +40,7 @@ interface MenuItem {
 type StatSummary = { stat?: string; modifiers?: StatModifier[] };
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
 type DuelProps<P> = Omit<P, 'when'> & { duelCondition?: DuelCondition };
+type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
 
 const EPHEMERAL_TRIGGER: Partial<Record<string, EventName>> = {
     [CardType.Event]: EventName.OnCardPlayed,
@@ -887,10 +888,21 @@ class DrawCard extends BaseCard {
         });
     }
 
-    duelChallenge(properties: DuelProps<TriggeredAbilityProps>): void {
+    duelChallenge(properties: DuelProps<TriggeredAbilityProps>): void;
+    duelChallenge(title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelChallenge>>>;
+    duelChallenge(
+        properties: DuelProps<TriggeredAbilityProps> | string,
+        duelCondition?: DuelCondition
+    ): void | AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelChallenge>>> {
+        const canTrigger = (duel: Duel, player: Player) => duel.playerCanTriggerChallenge(player);
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.DuelReaction, properties).when({
+                onDuelChallenge: duelTrigger(canTrigger, duelCondition)
+            });
+        }
         this.triggeredAbility(AbilityType.DuelReaction, {
             ...properties,
-            when: { onDuelChallenge: duelTrigger((duel, player) => duel.playerCanTriggerChallenge(player), properties.duelCondition) }
+            when: { onDuelChallenge: duelTrigger(canTrigger, properties.duelCondition) }
         });
     }
 
@@ -912,14 +924,33 @@ class DrawCard extends BaseCard {
         });
     }
 
-    duelStrike(properties: DuelProps<TriggeredAbilityProps>): void {
+    duelStrike(properties: DuelProps<TriggeredAbilityProps>): void;
+    duelStrike(title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelStrike>>>;
+    duelStrike(
+        properties: DuelProps<TriggeredAbilityProps> | string,
+        duelCondition?: DuelCondition
+    ): void | AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelStrike>>> {
+        const canTrigger = (duel: Duel, player: Player) => duel.playerCanTriggerStrike(player);
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.DuelReaction, properties).when({
+                onDuelStrike: duelTrigger(canTrigger, duelCondition)
+            });
+        }
         this.triggeredAbility(AbilityType.DuelReaction, {
             ...properties,
-            when: { onDuelStrike: duelTrigger((duel, player) => duel.playerCanTriggerStrike(player), properties.duelCondition) }
+            when: { onDuelStrike: duelTrigger(canTrigger, properties.duelCondition) }
         });
     }
 
-    conflictAction<Target extends BaseCard = BaseCard>(properties: ConflictActionProps<this, Target>): void {
+    conflictAction<Target extends BaseCard = BaseCard>(properties: ConflictActionProps<this, Target>): void;
+    conflictAction(title: string, options?: ConflictActionOptions): AbilityBuilder<ActionContext<this>>;
+    conflictAction<Target extends BaseCard = BaseCard>(
+        properties: ConflictActionProps<this, Target> | string,
+        options: ConflictActionOptions = {}
+    ): void | AbilityBuilder<ActionContext<this>> {
+        if(typeof properties === 'string') {
+            return this.actionBuilder(properties, { register: (built) => this.conflictAction({ ...built, ...options }) });
+        }
         const condition = properties.condition;
         const finalProperties = {
             ...properties,

@@ -3,8 +3,6 @@ import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 
-type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
-
 export default class WayOfThePhoenix extends DrawCard {
     static id = 'way-of-the-phoenix';
 
@@ -16,7 +14,7 @@ export default class WayOfThePhoenix extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: (context.ring?.getElements() as Element[]).map((element) => this.game.rings[element]),
+                target: context.ring.getElements().map((element) => this.game.rings[element]),
                 effect: AbilityDsl.effects.cannotDeclareRing((player: Player) => player === context.player.opponent)
             })))
             .effect('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent ?? '')

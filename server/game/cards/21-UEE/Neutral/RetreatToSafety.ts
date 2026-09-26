@@ -6,17 +6,15 @@ export default class RetreatToSafety extends DrawCard {
     static id = 'retreat-to-safety';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move characters out of the conflict',
-            target: {
+        this.action('Move characters out of the conflict')
+            .targetCards('target', {
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isDefending(),
-                gameAction: AbilityDsl.actions.sendHome()
-            },
-            then: (parentContext) => ({
+                cardCondition: (card) => card.isDefending()
+            }, AbilityDsl.actions.sendHome())
+            .then((parentContext) => ({
                 gameAction: AbilityDsl.actions.conditional({
                     condition: (context) => context.player.isCharacterTraitInPlay('commander'),
                     falseGameAction: AbilityDsl.actions.noAction(),
@@ -30,7 +28,6 @@ export default class RetreatToSafety extends DrawCard {
                         messageArgs: (card, player) => [card, player]
                     })
                 })
-            })
-        });
+            }));
     }
 }

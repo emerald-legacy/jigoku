@@ -8,27 +8,20 @@ class CalledToWar extends DrawCard {
     static id = 'called-to-war';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Place a fate on a bushi',
-            cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(),
-            targets: {
-                myCharacter: {
-                    cardType: CardType.Character,
-                    cardCondition: card => card.hasTrait('bushi'),
-                    gameAction: AbilityDsl.actions.placeFate()
-                },
-                oppCharacter: {
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid),
-                    gameAction: AbilityDsl.actions.placeFate()
-                }
-            },
-            effect: 'place a fate on {1}{2}',
-            effectArgs: context => [context.targets.myCharacter, this.buildString(context)]
-        });
+        this.action('Place a fate on a bushi')
+            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
+            .target('myCharacter', {
+                cardType: CardType.Character,
+                cardCondition: card => card.hasTrait('bushi')
+            }, AbilityDsl.actions.placeFate())
+            .target('oppCharacter', {
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid)
+            }, AbilityDsl.actions.placeFate())
+            .effect('place a fate on {1}{2}', context => [context.targets.myCharacter, this.buildString(context)]);
     }
 
     buildString(context: AbilityContext) {

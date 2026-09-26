@@ -10,22 +10,22 @@ const isCopyInPlay = function(card: BaseCard, context: AbilityContext) {
     return context.game.findAnyCardsInPlay((c: BaseCard) => c.name === card.name).length > 0;
 };
 
-const ancestralSightCost = function (): Cost {
+const ancestralSightCost = function (): Cost<{ ancestralSightCost: DrawCard }> {
     return {
-        getActionName(_context: AbilityContext) {
+        getActionName(_context) {
             return 'ancestralSightCost';
         },
-        getCostMessage: function (_context: AbilityContext) {
+        getCostMessage: function (_context) {
             return ['returning {0} to the bottom of the dynasty deck'];
         },
-        canPay: function (context: AbilityContext) {
+        canPay: function (context) {
             const discardPile = context.player.dynastyDiscardPile;
             if(!discardPile) {
                 return false;
             }
             return discardPile.some((card: BaseCard) => isCopyInPlay(card, context));
         },
-        resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
+        resolve: function (context, result: { cancelled?: boolean }) {
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a card to return to your deck',
                 context: context,
@@ -35,7 +35,9 @@ const ancestralSightCost = function (): Cost {
                 controller: Players.Self,
                 cardCondition: (card: BaseCard, ctx: AbilityContext) => isCopyInPlay(card, ctx),
                 onSelect: (_player: Player, card: BaseCard) => {
-                    context.costs.ancestralSightCost = card;
+                    if(card.isDrawCard()) {
+                        context.costs.ancestralSightCost = card;
+                    }
                     return true;
                 },
                 onCancel: () => {
@@ -44,8 +46,8 @@ const ancestralSightCost = function (): Cost {
                 }
             });
         },
-        payEvent: function (context: AbilityContext) {
-            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost as DrawCard, bottom: true, location: Location.DynastyDiscardPile });
+        payEvent: function (context) {
+            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost, bottom: true, location: Location.DynastyDiscardPile });
             return action.getEvent(context.costs.ancestralSightCost, context);
         },
         promptsPlayer: true

@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DeployedGarrison extends DrawCard {
@@ -36,7 +35,7 @@ export default class DeployedGarrison extends DrawCard {
             return false;
         }
 
-        const attackedProvinces = (context.game.currentConflict as Conflict).getConflictProvinces();
+        const attackedProvinces = context.game.requireConflict().getConflictProvinces();
         const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province: ProvinceCard) => {
             for(const attackedProvince of attackedProvinces) {
                 if(
