@@ -299,8 +299,9 @@ class InitiateConflictPrompt extends UiPrompt {
                 } else {
                     this.removeFromConflict(character);
                 }
+                // before a ring is chosen, ring and type restrictions are undecided; choosing the ring checks them
                 this.conflict.attackers.forEach((card: DrawCard) => {
-                    if(!card.canDeclareAsAttacker(this.conflict.conflictType || 'military', this.conflict.ring || this.game.rings['air'], this.conflict.conflictProvince, this.conflict.attackers)) {
+                    if(!card.canDeclareAsAttacker(this.conflict.conflictType, this.conflict.ring, this.conflict.conflictProvince, this.conflict.attackers)) {
                         this.removeFromConflict(card);
                     }
                 });

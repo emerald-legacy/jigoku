@@ -750,9 +750,13 @@ class DrawCard extends BaseCard {
             }
         }
 
+        // with no type chosen yet, the character only needs to be able to attack in one of them
+        const canParticipate = conflictType === undefined
+            ? [ConflictType.Military, ConflictType.Political].some((type) => this.canParticipateAsAttacker(type))
+            : this.canParticipateAsAttacker(conflictType);
         return (
             this.checkRestrictions('declareAsAttacker', frameworkContext) &&
-            this.canParticipateAsAttacker(conflictType) &&
+            canParticipate &&
             this.location === Location.PlayArea &&
             !this.bowed
         );

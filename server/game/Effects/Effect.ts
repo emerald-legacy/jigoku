@@ -105,6 +105,7 @@ class Effect<T extends GameObject = GameObject> {
 
     refreshContext() {
         this.context = this.game.getFrameworkContext(this.source.getEffectController() ?? null);
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- an effect's source need not be a card; framework context (§8.9)
         this.context.source = this.source as BaseCard;
         if(this.ability) {
             this.context.ability = this.ability;

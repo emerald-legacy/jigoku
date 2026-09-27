@@ -136,6 +136,7 @@ export default class BackAlleyHideaway extends DrawCard {
                     const card = event.card;
                     context.player.removeCardFromPile(card);
                     card.leavesPlay();
+                    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- a custom pile is keyed by the host card's uuid (docs/cast-removal-plan.md §8.5)
                     card.moveTo(context.source.uuid as Location);
                     context.source.attachments.push(card);
                     card.parent = context.source;
