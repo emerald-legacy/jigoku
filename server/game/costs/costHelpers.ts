@@ -5,7 +5,6 @@ import type { CardType, TargetMode } from '../Constants.js';
 import type { CardOfType } from '../types/CardOfType.js';
 import type { Cost } from './Cost.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type DrawCard from '../DrawCard.js';
 import { MetaActionCost } from './MetaActionCost.js';
 
 export type SelectCostProperties = Omit<SelectCardProperties, 'gameAction'>;
@@ -15,7 +14,7 @@ export type TypedSelectCostProperties<K, M, C extends AbilityContext = AbilityCo
     cardType?: K;
     mode?: M;
     /** Called with the context of the ability paying the cost. */
-    cardCondition?(card: DrawCard, context: C): boolean;
+    cardCondition?(card: CardOfType<K>, context: C): boolean;
 };
 
 type MultiCardMode = TargetMode.Exactly | TargetMode.ExactlyVariable | TargetMode.MaxStat | TargetMode.Unlimited | TargetMode.UpTo | TargetMode.UpToVariable;

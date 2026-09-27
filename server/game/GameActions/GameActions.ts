@@ -34,7 +34,7 @@ import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { EventName } from '../Constants.js';
+import type { CardType, EventName } from '../Constants.js';
 import { GloryCountAction, GloryCountProperties } from './GloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';
 import { HonorAction, HonorProperties } from './HonorAction.js';
@@ -498,8 +498,8 @@ export function multipleContext<Target = unknown, C extends AbilityContext = Abi
 export function menuPrompt<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, NoInfer<Target>, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
 }
-export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectCardProperties<C>, NoInfer<Target>, C>): SelectCardAction<C> {
-    return new SelectCardAction<C>(propertyFactory);
+export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext, const K extends CardType | readonly CardType[] | undefined = CardType | readonly CardType[] | undefined>(propertyFactory: PropsFactory<SelectCardProperties<C, K>, NoInfer<Target>, C>): SelectCardAction<C, K> {
+    return new SelectCardAction<C, K>(propertyFactory);
 }
 export function selectToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, NoInfer<Target>, C>): SelectTokenAction<C> {
     return new SelectTokenAction<C>(propertyFactory);

@@ -4,6 +4,7 @@ import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
+import type { StatModifierSummary } from './StatModifier.js';
 import DuplicateUniqueAction from './DuplicateUniqueAction.js';
 import DynastyCardAction from './DynastyCardAction.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
@@ -39,7 +40,7 @@ interface MenuItem {
     text: string;
 }
 
-type StatSummary = { stat?: string; modifiers?: StatModifier[] };
+type StatSummary = { stat?: string; modifiers?: StatModifierSummary[] };
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
 type DuelProps<P> = Omit<P, 'when'> & { duelCondition?: DuelCondition };
 type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
@@ -85,8 +86,7 @@ function toExclusions(exclusions: Exclusions | EffectName): Exclusions {
 }
 
 function statSummary(modifiers: StatModifier[], format: (stat: number) => string): StatSummary {
-    const copies = modifiers.map((modifier) => Object.assign({}, modifier));
-    return { stat: format(sumModifiers(copies)), modifiers: copies };
+    return { stat: format(sumModifiers(modifiers)), modifiers: modifiers.map((modifier) => modifier.toSummary()) };
 }
 
 function formatSkill(skill: number): string {
@@ -726,11 +726,8 @@ class DrawCard extends BaseCard {
         }
         if(this.anyEffect(EffectName.CanOnlyBeDeclaredAsAttackerWithElement)) {
             for(const element of this.getEffects(EffectName.CanOnlyBeDeclaredAsAttackerWithElement)) {
-                if(!ring) {
-                    // no ring chosen yet; kept as the crash it has always been, see the cast-removal report
-                    throw new TypeError('Cannot check the declared ring\'s element before a ring is chosen');
-                }
-                if(!ring.hasElement(element) && !elementsAdded.includes(element)) {
+                // not decidable before a ring is chosen; choosing one checks the attackers again
+                if(ring && !ring.hasElement(element) && !elementsAdded.includes(element)) {
                     return false;
                 }
             }

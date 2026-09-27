@@ -1,7 +1,6 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type DrawCard from '../DrawCard.js';
 import CardSelector from '../CardSelector.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
 import { CardType, EffectName, Location, Players, TargetMode, type EventName } from '../Constants.js';
@@ -10,18 +9,24 @@ import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction, WithDefaults } from './GameAction.js';
 import type { EffectArg } from '../Interfaces.js';
+import { isCardOfType, type CardOfType } from '../types/CardOfType.js';
 
-export interface SelectCardProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
+type CardTypes = CardType | readonly CardType[] | undefined;
+
+const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
+
+/** `K` is the declared `cardType`, which fixes the class of card `cardCondition` receives. */
+export interface SelectCardProperties<C extends AbilityContext = AbilityContext, K extends CardTypes = CardTypes> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
-    cardType?: CardType | CardType[];
+    cardType?: K;
     controller?: Players;
     location?: Location | Location[];
-    cardCondition?(card: DrawCard, context: C): boolean;
+    cardCondition?(card: CardOfType<K>, context: C): boolean;
     targets?: boolean;
     message?: string;
     manuallyRaiseEvent?: boolean;
-    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties<C>): MsgArg[];
+    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties<C, K>): MsgArg[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
     mode?: TargetMode;
@@ -33,8 +38,8 @@ export interface SelectCardProperties<C extends AbilityContext = AbilityContext>
     effectArgs?: (context: C) => EffectArg[];
 }
 
-export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SelectCardProperties<C>, EventName, C> {
-    defaultProperties: Partial<SelectCardProperties<C>> = {
+export class SelectCardAction<C extends AbilityContext = AbilityContext, K extends CardTypes = CardTypes> extends CardGameAction<SelectCardProperties<C, K>, EventName, C> {
+    defaultProperties: Partial<SelectCardProperties<C, K>> = {
         cardCondition: () => true,
         subActionProperties: (card) => ({ target: card }),
         targets: false,
@@ -42,7 +47,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         manuallyRaiseEvent: false
     };
 
-    constructor(properties: SelectCardProperties<C> | ((context: C) => SelectCardProperties<C>)) {
+    constructor(properties: SelectCardProperties<C, K> | ((context: C) => SelectCardProperties<C, K>)) {
         super(properties);
     }
 
@@ -54,19 +59,25 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         return ['choose a target for {0}', [target]];
     }
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties<C>, 'cardCondition' | 'subActionProperties' | 'selector'> {
+    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties<C, K>, 'cardCondition' | 'subActionProperties' | 'selector'> {
         let properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));
+        // the selector only offers cards of the declared types, so this check never rejects one
+        const isCardOfDeclaredType = isCardOfType(properties.cardType);
         let selector = properties.selector;
         if(!selector) {
             const selectorCardCondition = (card: BaseCard, context: C) =>
                 properties.gameAction.allTargetsLegal(
                     context,
                     Object.assign({}, additionalProperties, subActionProperties(card))
-                ) && cardCondition(card as DrawCard, context);
-            selector = CardSelector.for(Object.assign({}, properties, { cardCondition: selectorCardCondition }));
+                ) && isCardOfDeclaredType(card) && cardCondition(card, context);
+            const cardType: CardTypes = properties.cardType;
+            selector = CardSelector.for(Object.assign({}, properties, {
+                ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {}),
+                cardCondition: selectorCardCondition
+            }));
         }
         return Object.assign(properties, { cardCondition, subActionProperties, selector });
     }

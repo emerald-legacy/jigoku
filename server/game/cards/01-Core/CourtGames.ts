@@ -15,7 +15,7 @@ class CourtGames extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
-                    cardCondition: card => card.isParticipating(),
+                    cardCondition: card => card.isCharacter() && card.isParticipating(),
                     message: '{0} chooses to honor {1}',
                     messageArgs: card => [context.player, card],
                     gameAction: AbilityDsl.actions.honor()
@@ -25,7 +25,7 @@ class CourtGames extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     targets: true,
-                    cardCondition: card => card.isParticipating(),
+                    cardCondition: card => card.isCharacter() && card.isParticipating(),
                     message: '{0} chooses to dishonor {1}',
                     messageArgs: card => [context.player.opponent, card],
                     gameAction: AbilityDsl.actions.dishonor()

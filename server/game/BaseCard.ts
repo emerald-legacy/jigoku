@@ -37,6 +37,8 @@ import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
 import Ring from './Ring.js';
 import type { ProvinceCard } from './ProvinceCard.js';
+import type { StrongholdCard } from './StrongholdCard.js';
+import type { RoleCard } from './RoleCard.js';
 import type Effect from './Effects/Effect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { AbilityLimitIncrease } from './Effects/EffectValueMap.js';
@@ -618,6 +620,14 @@ class BaseCard extends EffectSource {
     /** Narrows to `ProvinceCard`, the counterpart of `isCharacter`. */
     isProvinceCard(): this is ProvinceCard {
         return this.isProvince;
+    }
+
+    isStrongholdCard(): this is StrongholdCard {
+        return this.type === CardType.Stronghold;
+    }
+
+    isRoleCard(): this is RoleCard {
+        return this.type === CardType.Role;
     }
 
     isInProvince(): boolean {

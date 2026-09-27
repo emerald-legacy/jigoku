@@ -198,10 +198,11 @@ export class SkillCalculator {
         );
         if(setEffects.length > 0) {
             const latestSetEffect = setEffects[setEffects.length - 1];
-            const setAmount = isEffectOf(latestSetEffect, EffectName.SetMilitarySkill) ? latestSetEffect.getValue(this.card) : undefined;
+            // a dash is NaN
+            const setAmount = isEffectOf(latestSetEffect, EffectName.SetMilitarySkill) ? latestSetEffect.getValue(this.card) : NaN;
             return [
                 StatModifier.fromEffect(
-                    setAmount as number,
+                    setAmount,
                     latestSetEffect,
                     true,
                     `Set by ${StatModifier.getEffectName(latestSetEffect)}`

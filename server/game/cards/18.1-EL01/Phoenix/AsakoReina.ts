@@ -32,7 +32,7 @@ class AsakoReina extends DrawCard {
                     condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.water)].isConsideredClaimed(context.player),
                     trueGameAction: AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Choose a 2 cost or lower character to ready',
-                        cardCondition: card => card.costLessThan(3),
+                        cardCondition: card => card.isCharacter() && card.costLessThan(3),
                         cardType: CardType.Character,
                         gameAction: AbilityDsl.actions.ready(),
                         targets: false,

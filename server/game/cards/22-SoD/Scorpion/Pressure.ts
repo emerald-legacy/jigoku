@@ -18,7 +18,7 @@ export default class Pressure extends DrawCard {
                 controller: Players.Opponent,
                 targets: false,
                 hidePromptIfSingleCard: true,
-                cardCondition: (card, context) => card.isDishonored && card.isParticipating() && (
+                cardCondition: (card, context) => card.isCharacter() && card.isDishonored && card.isParticipating() && (
                     (context).event.attackers?.includes(card) ||
                     (context).event.defenders?.includes(card) ||
                     (context).event?.card === card

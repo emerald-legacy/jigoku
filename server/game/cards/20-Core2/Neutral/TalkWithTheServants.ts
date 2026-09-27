@@ -1,4 +1,4 @@
-import { ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,6 +13,7 @@ export default class TalkWithTheServants extends DrawCard {
             })
             .cost(AbilityDsl.costs.dishonor({
                 optional: true,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
             .gameAction(AbilityDsl.actions.conditional({

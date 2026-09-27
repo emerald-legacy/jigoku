@@ -16,9 +16,9 @@ class RootOutHeresy extends DrawCard {
                     hidePromptIfSingleCard: true,
                     cardType: CardType.Province,
                     location: Location.Provinces,
-                    cardCondition: (card: DrawCard) => card.isConflictProvince(),
+                    cardCondition: (card) => card.isConflictProvince(),
                     message: '{0} reduces the strength of {1} by {2}',
-                    messageArgs: (cards: DrawCard) => [context.player, cards, this.getStrengthModifier(context)],
+                    messageArgs: (cards) => [context.player, cards, this.getStrengthModifier(context)],
                     gameAction: AbilityDsl.actions.cardLastingEffect(() => {
                         let amount = this.getStrengthModifier(context);
                         return ({

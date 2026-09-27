@@ -11,7 +11,7 @@ export default class RazeToTheGround extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player && event.conflict.conflictType === 'military'
             })
-            .cost(AbilityDsl.costs.dishonor({ cardCondition: (card) => card.isParticipating() }))
+            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .cost(AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
             .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',

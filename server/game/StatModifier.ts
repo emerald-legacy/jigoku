@@ -6,6 +6,15 @@ interface EffectLike {
     context?: { source?: { name?: string; type?: string } };
 }
 
+/** A modifier as the client gets it: a dash (NaN) has no amount, so the client's sum is NaN, not 0. */
+export interface StatModifierSummary {
+    amount?: number;
+    name: string;
+    countsAsBase: boolean;
+    type: string | undefined;
+    overrides: boolean;
+}
+
 class StatModifier {
     amount: number;
     name: string;
@@ -18,6 +27,11 @@ class StatModifier {
         this.name = name;
         this.overrides = overrides;
         this.type = type;
+    }
+
+    toSummary(): StatModifierSummary {
+        const summary: StatModifierSummary = { name: this.name, countsAsBase: this.countsAsBase, type: this.type, overrides: this.overrides };
+        return isNaN(this.amount) ? summary : { amount: this.amount, ...summary };
     }
 
     static getEffectName(effect: EffectLike | null | undefined): string {

@@ -31,7 +31,7 @@ export default class StrangeMirror extends DrawCard {
                     cardType: CardType.Event,
                     location: Location.Any,
                     controller: Players.Any,
-                    cardCondition: (card) => this.eventsUnderneath(context).includes(card),
+                    cardCondition: (card) => card.isDrawCard() && this.eventsUnderneath(context).includes(card),
                     message: '{0} plays {1} from underneath {2}',
                     messageArgs: (card: BaseCard) => [context.player, card, context.source.parentCharacter],
                     // the selected card becomes this action's target

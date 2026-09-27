@@ -5,7 +5,7 @@ import AbilityDsl from './abilitydsl.js';
 import BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
-import StatModifier from './StatModifier.js';
+import StatModifier, { type StatModifierSummary } from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 import { type CardEffect, isEffectOf } from './Effects/types.js';
 import type { NumericEffectName } from './Effects/EffectValueMap.js';
@@ -129,11 +129,11 @@ export class ProvinceCard extends BaseCard {
         return modifiers;
     }
 
-    get strengthSummary(): { stat?: string; modifiers?: StatModifier[] } {
+    get strengthSummary(): { stat?: string; modifiers?: StatModifierSummary[] } {
         if(this.facedown) {
             return {};
         }
-        const modifiers = this.getStrengthModifiers().map((modifier) => Object.assign({}, modifier));
+        const modifiers = this.getStrengthModifiers().map((modifier) => modifier.toSummary());
         return { stat: this.getStrength().toString(), modifiers };
     }
 

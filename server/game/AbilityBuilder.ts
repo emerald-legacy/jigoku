@@ -34,7 +34,7 @@ import Ring from './Ring.js';
 import { ElementSymbol } from './ElementSymbol.js';
 import { StatusToken } from './StatusToken.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import type { CardOfType } from './types/CardOfType.js';
+import { isCardOfType, type CardOfType } from './types/CardOfType.js';
 
 /** A skipped optional target holds `[]`, or nothing if its prompt was hidden (`hideIfNoLegalTargets`). */
 type ChosenCard<K, O> = true extends O ? CardOfType<K> | [] | undefined : CardOfType<K>;
@@ -195,19 +195,8 @@ interface SelectTargetProps<Context, D> {
 }
 
 function holdsCardOf<K extends CardType | readonly CardType[] | undefined>(cardType: K | undefined): (value: unknown) => value is CardOfType<K> {
-    const types: readonly CardType[] | undefined = cardType === undefined ? undefined : isCardTypeList(cardType) ? cardType : [cardType];
-    return (value: unknown): value is CardOfType<K> => {
-        if(!(value instanceof BaseCard)) {
-            return false;
-        }
-        if(types === undefined) {
-            return true;
-        }
-        if(!types.includes(value.type)) {
-            return false;
-        }
-        return value.type === CardType.Province ? value.isProvinceCard() : value.isDrawCard();
-    };
+    const isCard = isCardOfType(cardType);
+    return (value: unknown): value is CardOfType<K> => value instanceof BaseCard && isCard(value);
 }
 
 const isCardTypeList = (cardType: CardType | readonly CardType[]): cardType is readonly CardType[] => Array.isArray(cardType);
