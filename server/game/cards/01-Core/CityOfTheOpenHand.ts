@@ -14,11 +14,11 @@ export default class CityOfTheOpenHand extends StrongholdCard {
     //Needed for testing some cards
     loadOriginalAction() {
         this.abilities.actions = [];
-        this.action({
-            title: 'Steal an honor',
-            cost: AbilityDsl.costs.bowSelf(),
-            condition: (context) => !!(context.player.opponent && context.player.isLessHonorable()),
-            gameAction: AbilityDsl.actions.takeHonor()
+        this.declareAbilities(() => {
+            this.action('Steal an honor')
+                .cost(AbilityDsl.costs.bowSelf())
+                .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+                .gameAction(AbilityDsl.actions.takeHonor());
         });
     }
 }

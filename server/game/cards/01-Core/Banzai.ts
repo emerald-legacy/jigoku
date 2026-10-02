@@ -28,7 +28,7 @@ class Banzai extends DrawCard {
                             }
                         },
                         message: '{0} chooses {3}to lose an honor for no effect',
-                        messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : ''
+                        messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : '']
                     };
                 }
                 const cardAbility = ctx.ability instanceof CardAbility ? ctx.ability : undefined;
@@ -41,7 +41,7 @@ class Banzai extends DrawCard {
                         }
                     },
                     message: '{0} chooses {3}to lose an honor to resolve {1} again',
-                    messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : '',
+                    messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : ''],
                     then: cardAbility ? {
                         gameAction: AbilityDsl.actions.resolveAbility({
                             ability: cardAbility,

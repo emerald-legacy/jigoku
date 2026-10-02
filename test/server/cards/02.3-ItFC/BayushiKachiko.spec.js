@@ -83,12 +83,12 @@ describe('Bayushi Kachiko', function() {
                 });
                 this.shrewdYasuki = this.player2.findCardByName('shrewd-yasuki');
                 // Give Yasuki a hypothetical ability which cancels send homes
-                this.shrewdYasuki.wouldInterrupt({
-                    title: 'Cancel Send Home',
-                    when: {
-                        onSendHome: event => event.card === this.shrewdYasuki
-                    },
-                    handler: context => context.cancel()
+                this.shrewdYasuki.declareAbilities(() => {
+                    this.shrewdYasuki.wouldInterrupt('Cancel Send Home')
+                        .when({
+                            onSendHome: event => event.card === this.shrewdYasuki
+                        })
+                        .handler(context => context.cancel());
                 });
 
                 this.shrewdYasuki.abilities.reactions.find(ability => ability.title === 'Cancel Send Home').registerEvents();

@@ -33,6 +33,7 @@ import type { ProvinceCard } from './ProvinceCard.js';
 import Ring from './Ring.js';
 import { ElementSymbol } from './ElementSymbol.js';
 import { StatusToken } from './StatusToken.js';
+import type { ThenAbilityProperties } from './ThenAbility.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { isCardOfType, type CardOfType } from './types/CardOfType.js';
 
@@ -125,7 +126,7 @@ interface AbilityDraft {
     location?: Location | Location[];
     cannotBeMirrored?: boolean;
     cannotTargetFirst?: boolean;
-    then?: (context: AbilityContext) => object | undefined;
+    then?: (context: AbilityContext) => ThenAbilityProperties | undefined;
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
     phase?: Phases | 'any';
     evenDuringDynasty?: boolean;
@@ -620,7 +621,7 @@ export class AbilityBuilder<
     }
 
     /** May return nothing: some cards use it only for a side effect. */
-    then(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => object | undefined): this {
+    then(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => ThenAbilityProperties | undefined): this {
         this.draft.then = this.#checked(fn, this.draft.specs);
         return this;
     }

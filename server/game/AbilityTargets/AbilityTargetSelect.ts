@@ -3,7 +3,7 @@ import { Stage, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { ChoicesInterface } from '../Interfaces.js';
+import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
 import type EffectSource from '../EffectSource.js';
 import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
@@ -11,7 +11,7 @@ type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAct
 
 
 interface AbilityTargetSelectProperties {
-    choices: ChoicesInterface | ((context: AbilityContext) => ChoicesInterface);
+    choices: ChoicesInput | ((context: AbilityContext) => ChoicesInput);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
     activePromptTitle?: string;
@@ -57,10 +57,14 @@ class AbilityTargetSelect {
     }
 
     getChoices(context: AbilityContext): ChoicesInterface {
-        if(typeof this.properties.choices === 'function') {
-            return this.properties.choices(context);
+        const input = typeof this.properties.choices === 'function' ? this.properties.choices(context) : this.properties.choices;
+        const choices: ChoicesInterface = {};
+        for(const [label, choice] of Object.entries(input)) {
+            if(choice !== undefined) {
+                choices[label] = choice;
+            }
         }
-        return this.properties.choices;
+        return choices;
     }
 
     isChoiceLegal(key: string, context: AbilityContext): boolean {

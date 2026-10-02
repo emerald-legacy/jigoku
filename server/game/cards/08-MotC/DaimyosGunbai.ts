@@ -22,7 +22,7 @@ class DaimyosGunbai extends DrawCard {
                 gameAction: AbilityDsl.actions.discardCard(context => ({
                     target: context.source.location === Location.Hand ? context.source : []
                 })),
-                message: (context: AbilityContext) => context.source.location === Location.Hand ? '{0} discards {1}' : null
+                message: (context: AbilityContext) => context.source.location === Location.Hand ? '{0} discards {1}' : ''
             }))
             .location(Location.Hand);
     }

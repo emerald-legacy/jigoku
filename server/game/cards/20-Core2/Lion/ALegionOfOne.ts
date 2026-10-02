@@ -36,7 +36,7 @@ export default class ALegionOfOne extends DrawCard {
                             }
                         },
                         message: '{0} chooses {3}to remove a fate for no effect',
-                        messageArgs: (innerContext: AbilityContext) => (innerContext.select === 'Done' ? 'not ' : '')
+                        messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : '']
                     };
                 }
                 return {
@@ -50,7 +50,7 @@ export default class ALegionOfOne extends DrawCard {
                         }
                     },
                     message: '{0} chooses {3}to remove a fate to resolve {1} again',
-                    messageArgs: (innerContext: AbilityContext) => (innerContext.select === 'Done' ? 'not ' : ''),
+                    messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : ''],
                     then: {
                         thenCondition: (event: Event & { origin?: BaseCard }) =>
                             event.origin === ctx.target && !event.cancelled && event.name === EventName.OnMoveFate,

@@ -313,14 +313,12 @@ export function dishonorAndSacrifice<const K extends CardType | readonly CardTyp
     gameAction.name = 'dishonorAndSacrifice';
 
     const { cardType, ...rest } = properties;
-    const actionCost = new MetaActionCost(
-        GameActions.selectCard({
-            gameAction,
-            ...rest,
-            ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {})
-        }),
-        'Choose a card to dishonor and sacrifice'
-    );
+    const selectProperties: SelectCardProperties = {
+        gameAction,
+        ...rest,
+        ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {})
+    };
+    const actionCost = new MetaActionCost(GameActions.selectCard(selectProperties), 'Choose a card to dishonor and sacrifice');
 
     actionCost.getActionName = () => 'dishonorAndSacrifice';
     actionCost.getCostMessage = (context: CostContext<{ dishonorAndSacrifice: BaseCard }>): MessageArgs => {

@@ -38,12 +38,10 @@ export function getSelectCost<const N extends string, K extends CardType | reado
         throw new Error(`the ${action.name} cost stores its result under '${action.name}', not '${name}'`);
     }
     const { cardType, ...rest } = properties ?? {};
-    return new MetaActionCost(
-        GameActions.selectCard({
-            gameAction: action,
-            ...rest,
-            ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {})
-        }),
-        activePromptTitle
-    );
+    const selectProperties: SelectCardProperties = {
+        gameAction: action,
+        ...rest,
+        ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {})
+    };
+    return new MetaActionCost(GameActions.selectCard(selectProperties), activePromptTitle);
 }

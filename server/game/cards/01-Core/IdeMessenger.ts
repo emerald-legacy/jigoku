@@ -6,15 +6,12 @@ class IdeMessenger extends DrawCard {
     static id = 'ide-messenger';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action ({
-            title: 'Move an ally to a conflict',
-            cost: ability.costs.payFate(1),
-            target: {
+        this.action('Move an ally to a conflict')
+            .cost(ability.costs.payFate(1))
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: ability.actions.moveToConflict()
-            }
-        });
+                controller: Players.Self
+            }, ability.actions.moveToConflict());
     }
 }
 

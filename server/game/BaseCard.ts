@@ -185,12 +185,7 @@ class BaseCard extends EffectSource {
         this.traits = cardData.traits || [];
         this.printedFaction = cardData.clan ?? cardData.faction ?? '';
 
-        this.settingUp = true;
-        this.setupCardAbilities(AbilityDsl);
-        this.settingUp = false;
-        for(const register of this.pendingAbilities.splice(0)) {
-            register();
-        }
+        this.declareAbilities(() => this.setupCardAbilities(AbilityDsl));
         this.parseKeywords(cardData.text ? cardData.text.replace(/<[^>]*>/g, '').toLowerCase() : '');
     }
 
@@ -310,13 +305,28 @@ class BaseCard extends EffectSource {
 
     setupCardAbilities(_ability: typeof AbilityDsl): void {}
 
-    action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target>): void;
-    action(title: string): AbilityBuilder<ActionContext<this>>;
-    action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target> | string): void | AbilityBuilder<ActionContext<this>> {
-        if(typeof properties === 'string') {
-            return this.actionBuilder(properties, { register: (built) => this.action(built) });
+    /**
+     * Runs `declare` the way `setupCardAbilities` runs: the builders it starts are registered when it
+     * returns. For abilities added after setup, such as a test-only ability.
+     */
+    declareAbilities(declare: () => void): void {
+        if(this.settingUp) {
+            declare();
+            return;
         }
-        this.registerAbility(() => this.abilities.actions.push(this.createAction(properties)));
+        this.settingUp = true;
+        try {
+            declare();
+        } finally {
+            this.settingUp = false;
+        }
+        for(const register of this.pendingAbilities.splice(0)) {
+            register();
+        }
+    }
+
+    action(title: string): AbilityBuilder<ActionContext<this>> {
+        return this.actionBuilder(title, { register: (built) => this.abilities.actions.push(this.createAction(built)) });
     }
 
     protected actionBuilder(title: string, registrar: ActionRegistrar<this>): AbilityBuilder<ActionContext<this>> {
@@ -326,20 +336,15 @@ class BaseCard extends EffectSource {
         return new AbilityBuilder(draft);
     }
 
-    /** A builder is registered when `setupCardAbilities` returns, so it can only be started there. */
+    /** A builder is registered when `setupCardAbilities` or `declareAbilities` returns, so it can only be started there. */
     private requireSetup(title: string): void {
         if(!this.settingUp) {
-            throw new Error(`${title}: abilities built with a title can only be declared in setupCardAbilities`);
+            throw new Error(`${title}: abilities can only be declared in setupCardAbilities or declareAbilities`);
         }
     }
 
-    /** Queues a registration while `setupCardAbilities` runs, so builder and object abilities keep their order. */
-    protected registerAbility(register: () => void): void {
-        if(this.settingUp) {
-            this.pendingAbilities.push(register);
-        } else {
-            register();
-        }
+    private registerAbility(register: () => void): void {
+        this.pendingAbilities.push(register);
     }
 
     protected triggerBuilder<EventOptional extends boolean = false>(abilityType: AbilityType, title: string): TriggerBuilder<this, EventOptional> {
@@ -347,12 +352,12 @@ class BaseCard extends EffectSource {
         return new TriggerBuilder<this, EventOptional>({
             when: (when) => {
                 const draft = createDraft(title, holdsTriggerEvent(when, () => this.isProvinceCard()));
-                this.registerAbility(() => this.triggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
+                this.registerAbility(() => this.addTriggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
                 return draft;
             },
             aggregateWhen: (aggregateWhen) => {
                 const draft = createDraft(title, holdsTriggerEvents(() => this.isProvinceCard()));
-                this.registerAbility(() => this.triggeredAbility(abilityType, aggregateProperties<this>(draft, aggregateWhen)));
+                this.registerAbility(() => this.addTriggeredAbility(abilityType, aggregateProperties<this>(draft, aggregateWhen)));
                 return draft;
             }
         });
@@ -362,54 +367,42 @@ class BaseCard extends EffectSource {
         return new CardAction(this, properties);
     }
 
-    triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): void {
-        this.registerAbility(() => this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties)));
+    private addTriggeredAbility(abilityType: AbilityType, properties: TriggeredAbilityProps<this>): void {
+        this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
     createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target> | TriggeredAbilityProperties<this>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties);
     }
 
-    private declareTriggeredAbility<Target extends BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
-        if(typeof properties === 'string') {
-            return this.triggerBuilder<boolean>(abilityType, properties);
-        }
-        this.triggeredAbility(abilityType, properties);
-    }
-
-    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
     reaction(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
     reaction(title: string): TriggerBuilder<this>;
-    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
-        return this.declareTriggeredAbility(AbilityType.Reaction, properties);
+    reaction(title: string): TriggerBuilder<this, boolean> {
+        return this.triggerBuilder<boolean>(AbilityType.Reaction, title);
     }
 
-    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
     forcedReaction(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
     forcedReaction(title: string): TriggerBuilder<this>;
-    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
-        return this.declareTriggeredAbility(AbilityType.ForcedReaction, properties);
+    forcedReaction(title: string): TriggerBuilder<this, boolean> {
+        return this.triggerBuilder<boolean>(AbilityType.ForcedReaction, title);
     }
 
-    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
     wouldInterrupt(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
     wouldInterrupt(title: string): TriggerBuilder<this>;
-    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
-        return this.declareTriggeredAbility(AbilityType.WouldInterrupt, properties);
+    wouldInterrupt(title: string): TriggerBuilder<this, boolean> {
+        return this.triggerBuilder<boolean>(AbilityType.WouldInterrupt, title);
     }
 
-    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
     interrupt(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
     interrupt(title: string): TriggerBuilder<this>;
-    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
-        return this.declareTriggeredAbility(AbilityType.Interrupt, properties);
+    interrupt(title: string): TriggerBuilder<this, boolean> {
+        return this.triggerBuilder<boolean>(AbilityType.Interrupt, title);
     }
 
-    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
     forcedInterrupt(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
     forcedInterrupt(title: string): TriggerBuilder<this>;
-    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
-        return this.declareTriggeredAbility(AbilityType.ForcedInterrupt, properties);
+    forcedInterrupt(title: string): TriggerBuilder<this, boolean> {
+        return this.triggerBuilder<boolean>(AbilityType.ForcedInterrupt, title);
     }
 
     /**
