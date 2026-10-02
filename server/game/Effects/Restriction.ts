@@ -158,7 +158,6 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 const isMoveToHandAction = (gameAction: unknown) =>
     gameAction instanceof MoveCardAction && gameAction.properties?.destination === Location.Hand;
 
-// the restricted object need not be a card
 const printedCostOf = (card: BaseCard) => ('printedCost' in card && typeof card.printedCost === 'number' ? card.printedCost : 0);
 
 const leavePlayTypes = new Set(['discardFromPlay', 'sacrifice', 'returnToHand', 'returnToDeck', 'removeFromGame']);

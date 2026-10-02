@@ -202,7 +202,6 @@ export class ReduceableFateCost implements Cost {
                 return true;
             },
             onMenuCommand: (_player: unknown, arg: string) => {
-                // the only buttons are Cancel and Done
                 if(arg === CANCELLED || arg === STOP) {
                     handler(arg);
                 }

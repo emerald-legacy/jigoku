@@ -109,7 +109,6 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stage.Effect;
         this.targetAbility = properties.targetAbility ?? null;
-        // only a card can be played from somewhere
         const source: EffectSource = this.source;
         this.playType = this.player && source.isCard() ? this.player.findPlayType(source) : undefined;
     }
@@ -123,7 +122,6 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         return this.copyStateTo(this.createCopy(newProps));
     }
 
-    /** Carries the state that is not a constructor property over to a copy. */
     protected copyStateTo<C extends AbilityContext<S, T>>(copy: C): C {
         copy.target = this.target;
         copy.token = this.token;

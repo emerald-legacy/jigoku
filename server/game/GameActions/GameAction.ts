@@ -211,7 +211,6 @@ export class GameAction<
         return !!event.origin || !!event.recipient;
     }
 
-    /** The fate actions always set `fate`. */
     moveFateEventHandler(event: GameEvent<EventName.OnMoveFate>): void {
         let fate = event.fate ?? 0;
         if(event.origin) {

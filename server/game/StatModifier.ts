@@ -1,7 +1,6 @@
 import type BaseCard from './BaseCard.js';
 import { CardType } from './Constants.js';
 
-// a status token's source type is 'token'
 interface EffectLike {
     context?: { source?: { name?: string; type?: string } };
 }

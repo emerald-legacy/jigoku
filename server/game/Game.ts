@@ -448,7 +448,6 @@ class Game {
         return GameActions;
     }
 
-    /** For code that only runs during a conflict. */
     requireConflict(): Conflict {
         if(!this.currentConflict) {
             throw new Error('No conflict in progress');

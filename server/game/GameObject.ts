@@ -118,12 +118,10 @@ export class GameObject {
         );
     }
 
-    /** Narrows an effect source to `BaseCard`, which overrides this to return true. */
     public isCard(): this is BaseCard {
         return false;
     }
 
-    /** Narrows an effect source to `Ring`, which overrides this to return true. */
     public isRing(): this is Ring {
         return false;
     }

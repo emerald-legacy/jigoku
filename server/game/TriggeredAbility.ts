@@ -10,10 +10,8 @@ import { Event } from './Events/Event.js';
 import type { OwnContextCallback, WhenType } from './Interfaces.js';
 import type { EventHandler } from './GameEventBus.js';
 
-/** The context of an aggregate trigger: its event is every event it fired on. */
 export type AggregateContext<S extends BaseCard = BaseCard> = TriggeredAbilityContext<S, BaseCard, Event[]>;
 
-/** A trigger offered in an ability window: fired on one event, or on several (aggregate). */
 export type TriggerChoice = TriggeredAbilityContext<BaseCard, BaseCard, AnyEventOrAggregate>;
 type AnyEventOrAggregate = Exclude<TriggeringEvent, undefined>;
 
@@ -28,7 +26,6 @@ function isChoiceWindow(value: unknown): value is AbilityChoiceWindow {
 
 const isEvent = (value: unknown): value is Event => value instanceof Event;
 
-/** Runs the trigger condition for the event's name, with the event narrowed to that name's payload. */
 function fireWhen<N extends EventName>(when: WhenType, name: N, event: Event, context: TriggeredAbilityContext): unknown {
     const condition = when[name];
     return condition && event.is(name) && condition(event, context);

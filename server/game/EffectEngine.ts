@@ -11,7 +11,6 @@ import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';
 
-// an event's name decides its payload
 function isEventNamed<N extends EventName>(event: Event, name: N): event is GameEvent<N> {
     return event.name === name;
 }

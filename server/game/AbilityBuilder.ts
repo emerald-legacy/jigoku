@@ -78,7 +78,6 @@ function withGameActions(title: string, entry: { gameAction?: GameAction | GameA
 type Visible<Bag, D extends keyof Bag, Name extends string, V> = Pick<Bag, D> & Partial<Omit<Bag, D>> & { [P in Name]: V };
 type Earlier<Bag, D extends keyof Bag> = Pick<Bag, D> & Partial<Omit<Bag, D>>;
 
-/** A target may depend on any earlier target: a card, a ring, a token or a select. */
 type Dependency<TG, RG, TK, SL> = ((keyof TG | keyof RG | keyof TK) & string) | SL;
 type EarlierContext<Base extends AbilityContext, TG, RG, CO, TK, D> =
     BuilderContext<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>;
@@ -270,7 +269,6 @@ export class AbilityBuilder<
         ];
     }
 
-    /** The card-choice properties every card-like target shares, with its callbacks checked. */
     #cardChoice<K extends CardType | readonly CardType[] | undefined>(props: CardChoiceProps<never, K, string>): CardChoiceEntry {
         const [earlier, others] = this.#earlier(props.dependsOn);
         const entry: CardChoiceEntry = {};
@@ -297,7 +295,6 @@ export class AbilityBuilder<
         return entry;
     }
 
-    /** A card condition that only sees cards of the declared type, with its context checked. */
     #cardCondition<Card, C extends BuilderContext<Base, object, object, CO>>(
         holdsCard: (value: unknown) => value is Card,
         condition: (card: Card, context: C) => boolean,
@@ -699,7 +696,6 @@ export class AbilityBuilder<
 type TriggerBase<S extends BaseCard, W, EventOptional extends boolean> =
     EventOptional extends true ? ProvinceTriggerContext<S, W> : TriggerContext<S, W>;
 
-/** An aggregate trigger's context carries every event it fired on. */
 type AggregateBase<S extends BaseCard, EventOptional extends boolean> = EventOptional extends true
     ? AbilityContext<S> & Pick<TriggeredAbilityContext<S>, 'cancel'> & { event?: Event[] }
     : TriggeredAbilityContext<S> & { event: Event[] };

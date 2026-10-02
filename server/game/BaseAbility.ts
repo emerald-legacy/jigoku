@@ -328,7 +328,6 @@ class BaseAbility {
         return false;
     }
 
-    /** Narrows to `CardAbility`, which overrides this. */
     isCardAbilityInstance(): this is CardAbility {
         return false;
     }

@@ -7,7 +7,6 @@ export interface TokenActionProperties extends GameActionProperties {
     target?: StatusToken | StatusToken[];
 }
 
-/** An event a token action created: it names the token it affects. */
 export type TokenEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { token: StatusToken };
 
 export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {

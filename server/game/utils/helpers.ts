@@ -17,7 +17,6 @@ export function isOwnKey<T extends object>(object: T, key: PropertyKey): key is 
     return Object.hasOwn(object, key);
 }
 
-/** Whether a string is one of a string enum's values, such as a `Location` read from a pile key. */
 export function isEnumValue<E extends Record<string, string>>(enumObject: E, value: string): value is E[keyof E] {
     return Object.values(enumObject).includes(value);
 }

@@ -9,7 +9,6 @@ import type { ActionEvent } from './GameAction.js';
 /** A leaves-play event this action created: `updateLeavesPlayEvent` always sets its destination. */
 export type LeavesPlayEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, C> & { destination: Location };
 
-/** A card action that makes a card leave play: discarding, returning it to hand or deck, removing it from the game. */
 export class LeavesPlayAction<P extends CardActionProperties = CardActionProperties, C extends AbilityContext = AbilityContext> extends CardGameAction<P, EventName.OnCardLeavesPlay, C> {
     eventName = EventName.OnCardLeavesPlay;
 

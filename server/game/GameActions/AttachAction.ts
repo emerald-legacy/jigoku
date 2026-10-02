@@ -8,7 +8,6 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-/** An attach event this action created: the parent is the card it attaches to. */
 type AttachEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardAttached, C> & { parent: BaseCard };
 
 export interface AttachActionProperties extends CardActionProperties {

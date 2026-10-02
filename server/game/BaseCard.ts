@@ -217,7 +217,6 @@ class BaseCard extends EffectSource {
         return copyEffect?.value instanceof CopyCard ? copyEffect.value : undefined;
     }
 
-    /** Static gains first, then dynamic ones, recalculated. */
     private gainedFromAllAbilities<T>(abilitiesOf: (value: ProvidedAbilities) => T[], ignoreDynamicGains: boolean): T[] {
         let gained: T[] = [];
         for(const effect of this.getRawEffects()) {
@@ -305,10 +304,7 @@ class BaseCard extends EffectSource {
 
     setupCardAbilities(_ability: typeof AbilityDsl): void {}
 
-    /**
-     * Runs `declare` the way `setupCardAbilities` runs: the builders it starts are registered when it
-     * returns. For abilities added after setup, such as a test-only ability.
-     */
+    /** Like `setupCardAbilities`, for abilities added later: builders started in `declare` are registered when it returns. */
     declareAbilities(declare: () => void): void {
         if(this.settingUp) {
             declare();
@@ -597,7 +593,6 @@ class BaseCard extends EffectSource {
         return true;
     }
 
-    /** Narrows to `DrawCard`; `DrawCard` overrides this to return true. */
     isDrawCard(): this is DrawCard {
         return false;
     }

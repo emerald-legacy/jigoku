@@ -11,7 +11,6 @@ export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-/** An event a card action created: it names the card it affects. */
 export type CardEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { card: BaseCard };
 
 export class CardGameAction<P extends CardActionProperties = CardActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {

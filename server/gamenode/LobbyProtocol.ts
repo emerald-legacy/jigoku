@@ -58,8 +58,8 @@ export interface DeckDTO {
     outsideTheGameCards?: CardData[];
 }
 
-// The lobby's data is taken as leniently as the engine used to take it: a malformed optional value
-// counts as missing, and an invalid entry in a list is dropped instead of failing the game.
+// The lobby's data is read leniently: a malformed optional value counts as missing, and an invalid
+// entry in a list is dropped instead of failing the game.
 
 // An entry whose card the lobby couldn't find has no `card`; the deck skips it.
 const DeckCardEntrySchema: z.ZodType<DeckCardEntry> = z.looseObject({

@@ -309,7 +309,6 @@ class CardAbility extends ThenAbility {
         return true;
     }
 
-    /** Narrows to `CardAction`, which overrides this. */
     isCardAction(): this is CardAction {
         return false;
     }

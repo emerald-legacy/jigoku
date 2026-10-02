@@ -66,7 +66,6 @@ export default class UpholdingAuthority extends ProvinceCard {
             .effect('look at the attacking player\'s hand and choose a card to be discarded');
     }
 
-    // the card chosen from the menu this prompt belongs to
     private chosenCard(properties: MenuPromptProperties): DrawCard | undefined {
         const card = Array.isArray(properties.target) ? properties.target[0] : properties.target;
         return card instanceof DrawCard ? card : undefined;

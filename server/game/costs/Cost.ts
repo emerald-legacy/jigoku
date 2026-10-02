@@ -12,7 +12,6 @@ export type Result = {
 /** A format with its args; the paid card or cards are `{0}`. */
 export type CostMessage = [] | [string] | [string, MsgArg];
 
-/** A context whose `costs` holds what this cost records there, once it is paid. */
 export type CostContext<Results extends object, C extends AbilityContext = AbilityContext> = C & { costs: Partial<Results> };
 
 /** `Results` is what paying the cost records on `context.costs`; its callbacks read and write it typed. */

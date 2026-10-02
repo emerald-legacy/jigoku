@@ -68,7 +68,6 @@ class EffectSource extends GameObject {
         return undefined;
     }
 
-    /** The persistent effects this source put into the effect engine. */
     public getPersistentEffectRecords(): readonly { ref?: Effect[] }[] {
         return [];
     }

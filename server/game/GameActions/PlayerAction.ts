@@ -7,7 +7,6 @@ export interface PlayerActionProperties extends GameActionProperties {
     target?: Player | Player[];
 }
 
-/** An event a player action created: it names the player it affects. */
 export type PlayerEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { player: Player };
 
 export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {

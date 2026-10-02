@@ -99,7 +99,6 @@ export function discardCardSpecific(cardFunc: (context: AbilityContext) => DrawC
         getActionName: () => 'discardCard',
         canPay: (context) => action.hasLegalTarget(context),
         addEventsToArray: (events, context) => {
-            // the cards the action resolves on: its target, as a list without gaps
             const target = cardFunc(context);
             context.costs.discardCard = (Array.isArray(target) ? target : [target]).filter((card) => !!card);
             action.addEventsToArray(events, context);
