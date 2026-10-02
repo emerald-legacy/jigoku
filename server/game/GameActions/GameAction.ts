@@ -145,7 +145,7 @@ export class GameAction<
 
     createEvent(target: TargetValue, context: C, additionalProperties: Record<string, unknown> = {}): ActionEvent<N, C> {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- filled in by addPropertiesToEvent; checkEventCondition cancels a wrong kind (§8.7)
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- filled in by addPropertiesToEvent; checkEventCondition cancels a wrong kind
         const event = new Event(EventName.Unnamed, { cannotBeCancelled, context }) as ActionEvent<N, C>;
         event.checkFullyResolved = (eventAtResolution) =>
             this.isEventFullyResolved(eventAtResolution, target, context, additionalProperties);

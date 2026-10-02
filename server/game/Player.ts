@@ -1208,7 +1208,7 @@ class Player extends GameObject {
             targetPile.push(card);
         }
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- custom piles are keyed by the host card's uuid (docs/cast-removal-plan.md §8.5)
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- custom piles are keyed by the host card's uuid
         card.moveTo(targetLocation as Location);
     }
 

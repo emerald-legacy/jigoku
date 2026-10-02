@@ -95,7 +95,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
 
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
-        // a framework context's source is a plain EffectSource and its player may be missing (§8.9)
+        // a framework context's source is a plain EffectSource and its player may be missing
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
         this.source = (properties.source || new EffectSource(this.game)) as S;
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
