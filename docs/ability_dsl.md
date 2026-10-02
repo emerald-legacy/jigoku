@@ -19,140 +19,158 @@ import AbilityDsl from '../../abilitydsl';
 
 ## Card Class Structure
 
-Every card extends `DrawCard` (characters, attachments, events) or `ProvinceCard`. Abilities are registered in `setupCardAbilities()`.
+Every card extends `DrawCard` (characters, attachments, events), `ProvinceCard` or `StrongholdCard`. Abilities are declared in `setupCardAbilities()`.
 
 ```typescript
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../DrawCard';
-import { CardType, Players } from '../../Constants';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
+import { CardType, Players } from '../../Constants.js';
 
 export default class MyCard extends DrawCard {
     static id = 'my-card';
 
     setupCardAbilities() {
-        this.action({ ... });
-        this.reaction({ ... });
-        this.interrupt({ ... });
+        this.action('...')...;
+        this.reaction('...').when({ ... })...;
         this.persistentEffect({ ... });
     }
 }
 ```
 
+Actions and triggered abilities are declared with a builder: the method takes the title, and each chained call adds one part of the ability. Builders are registered when `setupCardAbilities` returns, so there is no terminal `.build()`. Persistent effects, composure/dire effects and attachment conditions still take a properties object.
+
+A titled ability can only be started inside `setupCardAbilities`. To add one later (for example a test-only ability), wrap it in `card.declareAbilities(() => { ... })`, which registers it when it returns.
+
 ---
 
 ## Ability Types
 
-### `this.action(props: ActionProps)`
+### `this.action(title)`
 
 Player-triggered ability usable during action windows.
 
 ```typescript
-this.action({
-    title: 'Bow a character',
-    phase: Phases.Conflict,            // restrict to a phase (default: 'conflict')
-    condition: (context) => context.source.isParticipating(),
-    cost: AbilityDsl.costs.bowSelf(),
-    target: {
+this.action('Bow a character')
+    .phase(Phases.Conflict)
+    .condition((context) => context.source.isParticipating())
+    .cost(AbilityDsl.costs.bowSelf())
+    .target('target', {
         cardType: CardType.Character,
-        cardCondition: (card) => card.isParticipating(),
-        gameAction: AbilityDsl.actions.bow()
-    },
-    limit: AbilityDsl.limit.perConflict(1),
-    effect: 'bow {0}',
-    effectArgs: (context) => [context.targets.target]
-});
+        cardCondition: (card) => card.isParticipating()
+    }, AbilityDsl.actions.bow())
+    .limit(AbilityDsl.limit.perConflict(1))
+    .effect('bow {0}');
 ```
 
-Key fields:
+The builder fixes its types from left to right: each call sees what earlier calls declared. Declare targets and costs before the `gameAction`, `handler`, `effect` and `then` that read them.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `title` | `string` | Button label shown to player |
-| `phase` | `Phases \| 'any'` | Phase restriction. Default `'any'`. During the Dynasty phase, only Holding/Character/Attachment cards (or `evenDuringDynasty: true`, or events allowed by `dynastyPhaseCanPlayConflictEvents`) may trigger |
-| `evenDuringDynasty` | `boolean` | Allow triggering during the Dynasty phase without the default per-type restrictions |
-| `anyPlayer` | `boolean` | Either player may trigger (default `false`) |
-| `canTriggerOutsideConflict` | `boolean` | Province actions can fire when no conflict is active |
-| `conflictProvinceCondition` | `(province, context) => bool` | Which conflict provinces allow the action (default: `province === this.card`) |
-| `condition` | `(context) => boolean` | Extra boolean gate — ability only appears if this returns `true` |
-| `cost` | `Cost \| Cost[]` | Costs to pay before resolving (see [Costs](#costs)) |
-| `target` / `targets` | see [Targets](#targets) | Card/ring/select targets |
-| `gameAction` | `GameAction \| GameAction[]` | Action(s) to resolve (see [Game Actions](#game-actions)) |
-| `limit` | `AbilityLimit` | Usage limit (see [Limits](#limits)) |
-| `max` | `AbilityLimit` | Alias for `limit` |
-| `effect` | `string` | Chat log message. `{0}` = source, `{1}` = first effectArg, etc. |
-| `effectArgs` | `EffectArg \| (context) => EffectArg` | Arguments interpolated into `effect` |
-| `handler` | `(context) => void` | Low-level handler called after costs are paid (use `gameAction` when possible) |
-| `then` | `object \| (context) => object` | Chains a second ability after this one resolves |
-| `cannotTargetFirst` | `boolean` | Skip PreTarget early-target resolution — targets are resolved only after costs (`Stage.Target`) |
-| `initiateDuel` | `InitiateDuel \| (context) => InitiateDuel` | Sugar that wires a duel as the action's effect (see [Duels](#duels)) |
+Builder methods shared by actions and triggered abilities:
 
-### `this.reaction(props: TriggeredAbilityProps)`
+| Method | Description |
+|--------|-------------|
+| `cost(cost)` | A cost to pay before resolving (see [Costs](#costs)). Call once per cost. Costs that record a result put it in `context.costs`, typed but optional (it is only set once paid) |
+| `target(name, props, ...actions)` | A card target (see [Targets](#targets)) |
+| `targetCards(name, props, ...actions)` | Several cards, by `mode` |
+| `ringTarget(name, props, ...actions)` | A ring target |
+| `select(name, props, choices)` / `selectIf` / `selectFrom` | A choice between labelled options |
+| `tokenTarget` / `abilityTarget` / `elementTarget` | Status tokens, a printed ability, an element symbol on a chosen card |
+| `gameAction(...actions)` | Action(s) to resolve (see [Game Actions](#game-actions)) |
+| `handler(fn)` | Low-level handler called after costs are paid (use `gameAction` when possible) |
+| `effect(message, args?)` | Chat log message. `{0}` = the target (or source), `{1}` onwards = the entries of `args(context)` |
+| `then(fn)` | Chains a follow-up ability after this one resolves. `fn(context)` returns its properties, or nothing |
+| `initiateDuel(fn)` | Wires a duel as the ability's effect (see [Duels](#duels)) |
+| `limit(limit)` / `max(limit)` | Usage limit (see [Limits](#limits)) |
+| `location(location)` | Where the card must be to use the ability. Default: the hand for events, the provinces for provinces and holdings, the stronghold province for strongholds, otherwise the play area |
+| `cannotTargetFirst()` | Skip PreTarget early-target resolution — targets are resolved only after costs (`Stage.Target`) |
+| `cannotBeMirrored()` | The Mirror's Gaze can't copy it |
+| `evenDuringDynasty()` | Allow triggering during the Dynasty phase without the default per-type restrictions |
+| `notPrinted()` | Not printed on the card, so effects that copy or count printed abilities skip it |
+| `anyPlayer()` | Either player may trigger it (default: only the controller) |
 
-Reaction that fires after a triggering event. The player chooses whether to use it.
+Action-only methods:
+
+| Method | Description |
+|--------|-------------|
+| `condition(fn)` | Extra gate — the ability only appears if `fn(context)` returns `true` |
+| `phase(phase)` | Phase restriction. Default `'any'`. During the Dynasty phase, only Holding/Character/Attachment cards (or `evenDuringDynasty()`, or events allowed by `dynastyPhaseCanPlayConflictEvents`) may trigger |
+| `canTriggerOutsideConflict()` | Province actions can fire when no conflict is active |
+| `conflictProvinceCondition(fn)` | Which conflict provinces allow the action (default: `province === this.card`) |
+
+`this.conflictAction(title, { conflictType?, evenFromHome? })` is an action that can only be used during a conflict, while the card is participating (in a conflict of that type), unless `evenFromHome` is set.
+
+### `this.reaction(title)`
+
+Reaction that fires after a triggering event. The player chooses whether to use it. The first call after the title is `when` (or `aggregateWhen`); the rest is the same as an action.
 
 ```typescript
-this.reaction({
-    title: 'Gain 1 honor',
-    when: {
+this.reaction('Gain 1 honor')
+    .when({
         onCharacterEntersPlay: (event, context) =>
             event.card.controller === context.player
-    },
-    gameAction: AbilityDsl.actions.gainHonor((context) => ({
+    })
+    .gameAction(AbilityDsl.actions.gainHonor((context) => ({
         target: context.player
-    })),
-    limit: AbilityDsl.limit.perRound(1)
-});
+    })))
+    .limit(AbilityDsl.limit.perRound(1));
 ```
 
-### `this.interrupt(props: TriggeredAbilityProps)`
+Triggered abilities also have `collectiveTrigger()`: trigger once for events that happen together.
+
+### `this.interrupt(title)`
 
 Interrupt fires before the triggering event resolves. Useful for cancels and redirections.
 
 ```typescript
-this.interrupt({
-    title: 'Cancel an event',
-    when: {
-        onCardPlayed: (event, context) =>
-            event.card.hasTrait('spell') && event.player !== context.player
-    },
-    gameAction: AbilityDsl.actions.cancel()
-});
+this.interrupt('Gain 1 fate')
+    .when({
+        onCardLeavesPlay: (event, context) => event.card === context.source
+    })
+    .gameAction(AbilityDsl.actions.gainFate((context) => ({ target: context.player })));
 ```
 
 ### Forced variants
 
-`this.forcedReaction(props)` and `this.forcedInterrupt(props)` fire automatically — the player cannot opt out. Used for mandatory effects (e.g., "when X happens, you must Y").
+`this.forcedReaction(title)` and `this.forcedInterrupt(title)` fire automatically — the player cannot opt out. Used for mandatory effects (e.g., "when X happens, you must Y").
 
-### `this.wouldInterrupt(props)`
+### `this.wouldInterrupt(title)`
 
-Fires "before" the triggering event is queued at all. Used for "would" effects — prevention or modification before the event happens. Rare.
+Fires "before" the triggering event is queued at all. Used for "would" effects — prevention or modification before the event happens. The context has a `cancel()` method for these.
+
+```typescript
+this.wouldInterrupt('Cancel a duel')
+    .when({
+        onDuelInitiated: (event, context) => !!event.context && event.context.player === context.player.opponent
+    })
+    .handler((context) => context.cancel())
+    .effect('cancel the duel');
+```
 
 The constant `AbilityType.WouldInterrupt` has the string value `'cancelinterrupt'` for historical reasons.
 
 ### Duel-window helpers
 
-`this.duelChallenge(props)`, `this.duelFocus(props)`, `this.duelStrike(props)` are sugar that wire the `when:` clause to the corresponding duel-step event. They accept `duelCondition: (duel, context) => boolean` instead of a raw `when:` map.
+`this.duelChallenge(title, duelCondition?)`, `this.duelFocus(title, duelCondition?)` and `this.duelStrike(title, duelCondition?)` wire the trigger to the corresponding duel step. They take an optional `duelCondition: (duel, context) => boolean` instead of a `when` map, and `context.event.duel` is the duel.
 
-### `when:` and `aggregateWhen:`
+### `when` and `aggregateWhen`
 
-Triggered abilities accept either `when:` (checks individual events) or `aggregateWhen:` (checks all events in a window at once).
+Triggered abilities take either `when` (checks individual events) or `aggregateWhen` (checks all events in a window at once).
 
-`when:` is a map from `EventName` to a predicate:
+`when` is a map from `EventName` to a predicate:
 
 ```typescript
-when: {
+.when({
     onCardLeavesPlay: (event, context) => event.card === context.source,
     onCardBowed:      (event, context) => event.card.controller === context.player
-}
+})
 ```
 
-Multiple keys in `when:` are OR'd — the ability triggers if any key matches. The `event` parameter can be typed with `EventPayload<EventName.X>` — see [Typed Targets & Events](#typed-targets--events-typescript).
+Multiple keys in `when` are OR'd — the ability triggers if any key matches. Each `event` is typed by its key, and `context.event` in the rest of the ability is typed by the keys — see [Typed Targets & Events](#typed-targets--events-typescript).
 
 `aggregateWhen` receives all events:
 
 ```typescript
-aggregateWhen: (events, context) =>
-    events.some(e => e.name === EventName.OnCardBowed && e.card.isParticipating())
+.aggregateWhen((events, context) =>
+    events.some((event) => event.name === EventName.OnCardBowed && event.context?.player === context.player))
 ```
 
 ### `this.persistentEffect(props: PersistentEffectProps)`
@@ -211,152 +229,134 @@ this.attachmentConditions({
 
 ## Targets
 
-Targets are declared under `target:` (single target) or `targets:` (named multi-target). Multi-target keys can use `dependsOn: 'prevTargetName'` to make one target depend on another.
+Each target method takes a name, the target's properties, and the game actions that resolve on it. The chosen card is stored in `context.targets[name]`; a target named `target` is also `context.target` (and a ring target named `target` is `context.ring`, a select named `target` is `context.select`). A target can depend on an earlier one with `dependsOn: 'earlierName'`.
 
-### Single card target (default `mode: TargetMode.Single`)
+### Single card target
 
 ```typescript
-target: {
-    cardType: CardType.Character,      // filter by type
+.target('target', {
+    cardType: CardType.Character,      // filter by type; also types the card
     controller: Players.Opponent,       // whose cards
     location: Location.PlayArea,       // where the card must be
-    cardCondition: (card, context) => card.isParticipating(),  // card: BaseCard — narrow if needed
-    gameAction: AbilityDsl.actions.bow()
-}
+    cardCondition: (card, context) => card.isParticipating()   // card: DrawCard here
+}, AbilityDsl.actions.bow())
 ```
 
-### Multiple cards (`TargetMode.UpTo` / `TargetMode.Exactly`)
+With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt was hidden (`hideIfNoLegalTargets: true`).
+
+### Multiple cards
 
 ```typescript
-target: {
+.targetCards('target', {
     mode: TargetMode.UpTo,
     numCards: 3,
-    cardType: CardType.Character,
-    gameAction: AbilityDsl.actions.bow()
-}
+    cardType: CardType.Character
+}, AbilityDsl.actions.bow())
 ```
+
+`context.targets[name]` is then an array of cards.
 
 | Mode | Behavior |
 |------|----------|
-| `Single` | Default — choose exactly 1 card |
-| `UpTo` | Choose 0–N cards |
-| `Exactly` | Must choose exactly N cards |
+| `UpTo` | Choose 0–N cards (`numCards`) |
+| `Exactly` | Must choose exactly N cards (`numCards`) |
 | `UpToVariable` | `numCardsFunc: (context) => n` |
 | `ExactlyVariable` | Same, but must choose exactly that many |
-| `MaxStat` | Choose up to N cards whose combined stat ≤ max |
+| `MaxStat` | Choose up to `numCards` cards whose combined `cardStat` ≤ `maxStat()` |
 | `Unlimited` | Choose any number |
 
 ### Ring target
 
 ```typescript
-target: {
-    mode: TargetMode.Ring,
-    ringCondition: (ring, context) => ring.isUnclaimed(),
-    gameAction: AbilityDsl.actions.claimRing()
-}
+.ringTarget('target', {
+    ringCondition: (ring, context) => ring.isUnclaimed()
+}, AbilityDsl.actions.claimRing())
 ```
 
 ### Select target (prompt with labeled choices)
 
 ```typescript
-target: {
-    mode: TargetMode.Select,
-    choices: {
-        'Bow': AbilityDsl.actions.bow((context) => ({ target: context.targets.someCard })),
-        'Honor': AbilityDsl.actions.honor((context) => ({ target: context.targets.someCard }))
-    }
-}
+this.action('Bow or honor a character')
+    .target('character', {
+        cardType: CardType.Character
+    })
+    .select('choice', {
+        dependsOn: 'character',
+        player: Players.Self
+    }, {
+        'Bow': AbilityDsl.actions.bow((context) => ({ target: context.targets.character })),
+        'Honor': AbilityDsl.actions.honor((context) => ({ target: context.targets.character }))
+    });
 ```
 
-The choices object maps button labels to `GameAction`s (or a `(context) => boolean` condition). A choice is shown only if its action has a legal target or its condition returns `true`.
+The choices object maps button labels to game actions. A choice is shown only if its action has a legal target. `selectIf` takes conditions `(context) => boolean` instead, for a handler that reads `context.select`; `selectFrom` takes a function returning the choices, when they depend on the context.
 
-### Named multi-targets
+### Dependent targets
 
 ```typescript
-targets: {
-    attacker: {
+this.action('Detach an attachment')
+    .target('attacker', {
         cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
-    },
-    attachment: {
+    })
+    .target('attachment', {
         dependsOn: 'attacker',
         cardType: CardType.Attachment,
-        cardCondition: (card, context) => card.parent === context.targets.attacker,
-        gameAction: AbilityDsl.actions.detach()
-    }
-}
+        cardCondition: (card, context) => card.parent === context.targets.attacker
+    }, AbilityDsl.actions.discardFromPlay());
 ```
+
+In a dependent target's callbacks, the target it depends on is set; other earlier targets may not be chosen yet, so they are optional there.
 
 ---
 
 ## Typed Targets & Events (TypeScript)
 
-The ability methods are generic over the target card type, so card code can read `context.target` with a concrete type instead of casting.
+The builder types every callback from what was declared before it, so card code reads `context` without annotations or casts.
 
 ### `context.source` is already typed
 
-Inside any ability callback (`condition`, `handler`, `effectArgs`, `when:`, `cardCondition`, a `then:` factory, etc.) `context.source` is typed to **the card's own class** — for a card that `extends DrawCard`, `context.source` is a `DrawCard`, so its members are accessible with no cast:
+Inside any ability callback (`condition`, `handler`, `effect` arguments, `when`, `cardCondition`, a `then` factory, etc.) `context.source` is typed to **the card's own class** — for a card that `extends DrawCard`, `context.source` is a `DrawCard`, so its members are accessible with no cast:
 
 ```typescript
-this.action({
-    title: 'Move to the conflict',
-    condition: (context) => context.source.isParticipating(),   // DrawCard member, no cast
-    gameAction: AbilityDsl.actions.moveToConflict()
-});
+this.action('Move to the conflict')
+    .condition((context) => context.source.isParticipating())   // DrawCard member, no cast
+    .gameAction(AbilityDsl.actions.moveToConflict());
 ```
 
-This holds because the ability props are `…Props<this, Target>` and the context is `AbilityContext<this, Target>` — `this` flows through as the source type. The same applies to `AbilityDsl.effects.gainAbility(...)`: the granted ability's `context.source` defaults to `DrawCard`. Do **not** write `(context.source as DrawCard)` in card code — it's redundant.
+The same applies to `AbilityDsl.effects.gainAbility(...)`: the granted ability's `context.source` defaults to `DrawCard`.
 
-(`context.source` is only a bare `BaseCard | Ring | EffectSource` in generic engine/cost code, not in a card's `setupCardAbilities`.)
+### Typed targets
 
-### Typing the target
-
-`this.action`, `this.reaction`, `this.interrupt`, `this.forcedReaction`, `this.forcedInterrupt`, and `this.wouldInterrupt` all take a `<Target extends BaseCard>` parameter (default `BaseCard`). Pass the type your `target:` selects and `context.target` is typed to it:
+Each target method adds its name to `context.targets`, typed by `cardType`: `CardType.Province` gives a `ProvinceCard`, `CardType.Character` (or attachment, event, holding) a `DrawCard`, a list of types the union of theirs, and no `cardType` a `BaseCard`. `cardCondition` receives the card with the same type. `targetCards` gives an array, and an optional target adds `[]` (and `undefined`) to the type.
 
 ```typescript
-this.action<DrawCard>({
-    target: {
-        cardType: CardType.Character,
-        gameAction: AbilityDsl.actions.bow()
-    },
-    effect: 'bow {0}',
-    handler: (context) => {
-        // context.target: DrawCard | undefined — no cast needed
-        if(!context.target) {
-            return;
-        }
-        context.target.bow();
-    }
-});
+this.action('Bow a character')
+    .target('target', {
+        cardType: CardType.Character
+    })
+    .handler((context) => {
+        context.target.bow();   // context.target: DrawCard
+    })
+    .effect('bow {0}');
 ```
 
-Use `<ProvinceCard>` for province-targeting abilities. The default `BaseCard` covers cards that don't read `context.target` (or read it only as a `BaseCard`).
+The types are backed by runtime checks: a callback that is called with a context which doesn't hold its declared targets throws, naming the ability.
 
-Notes:
+### Typed `when` events
 
-- `context.target` is `Target | undefined`. Always guard (`if(!context.target) return;`) — `no-non-null-assertion` is an error, so never write `context.target!`.
-- Multi-card target modes (`Exactly`/`Unlimited` with `numCards > 1`) assign an array. Those cards read `context.targets.target as DrawCard[]`, or use the typed helper `context.getCards<DrawCard>()` (defaults to the `'target'` name), instead of `context.target`.
-- `cardCondition: (card, context) => …` receives `card: BaseCard`. Narrow with `instanceof DrawCard`, the `isProvinceCard(card)` type predicate (from `ProvinceCard.ts`), or an `as DrawCard` cast when you need subtype-only members.
-- `AbilityContext<S, T>` carries the generic — `S` is the source type, `T` the target type. Most card code never names it explicitly; the `this.action<T>()` form sets `T` for you.
-
-### Typed `when:` events
-
-Inside a `when:` predicate (or `aggregateWhen`), the event is typed. Annotate the parameter with `EventPayload<EventName.X>` to read its payload fields with full typing:
+Inside a `when` predicate, `event` is typed by its key — `afterConflict: (event) => event.conflict...` needs no annotation. In the rest of the ability, `context.event` is the union of the payloads of the `when` keys. A province's triggered abilities may be resolved without their event (Countryside Trader), so their `context.event` is optional.
 
 ```typescript
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-
-this.reaction<DrawCard>({
-    when: {
-        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
+this.reaction('Gain 1 fate')
+    .when({
+        afterConflict: (event, context) =>
             event.conflict.loser === context.player && context.source.isAttacking()
-    },
-    // ...
-});
+    })
+    .gameAction(AbilityDsl.actions.gainFate((context) => ({ target: context.player })));
 ```
 
-In a handler, `context.event` is typed too — `context.event.conflict`, `context.event.card`, etc. resolve to typed unions rather than `any`. Narrow on `context.event.name` when you need a field specific to one event.
+Narrow on `context.event.name` (or `context.event.is(EventName.X)`) when you need a field specific to one event.
 
 ---
 
@@ -815,23 +815,19 @@ Valid tokens come from two sources:
 
 ## Duels
 
-Duels are initiated via `initiateDuel:` on an action/reaction, or via `actions.duel()`.
+Duels are initiated via `initiateDuel` on an action/reaction, or via `actions.duel()`. `initiateDuel` takes a function returning the duel's properties.
 
 ```typescript
-this.action({
-    title: 'Duel target character',
-    initiateDuel: {
+this.action('Duel target character')
+    .initiateDuel(() => ({
         type: DuelType.Military,
         requiresConflict: true,   // default true — source and target must be participating
         challengerCondition: (card, context) => card === context.source,
-        targetCondition: (card, context) => card.isParticipating(),
-        gameAction: (duel, context) =>
-            AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
+        targetCondition: (card) => card.isParticipating(),
+        gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
         message: 'discard {0}',
-        messageArgs: (duel, context) => duel.loser,
-        refuseGameAction: AbilityDsl.actions.gainHonor({ target: context => context.player.opponent })
-    }
-});
+        messageArgs: (duel) => [duel.loser]
+    }));
 ```
 
 | Field | Description |
@@ -1007,29 +1003,27 @@ gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
 ### Reaction from discard pile
 
 ```typescript
-this.reaction({
-    title: 'Shuffle back into deck',
-    location: Location.DynastyDiscardPile,   // fire from discard, not play
-    when: {
+this.reaction('Shuffle back into deck')
+    .when({
         onCardLeavesPlay: (event, context) => event.card === context.source
-    },
-    gameAction: AbilityDsl.actions.moveCard({
+    })
+    .location(Location.DynastyDiscardPile)   // fire from discard, not play
+    .gameAction(AbilityDsl.actions.moveCard({
         destination: Location.DynastyDeck,
         shuffle: true
-    })
-});
+    }));
 ```
 
-### Chain a follow-up prompt with `then:`
+### Chain a follow-up prompt with `then`
+
+The follow-up ability is a properties object (`gameAction`, `target`, `handler`, `message`/`messageArgs`, `thenCondition`, `then`), returned by the function passed to `then`. It resolves with its own context: read the first ability's targets from the outer `context`.
 
 ```typescript
-this.action({
-    title: 'Bow, then choose an effect',
-    target: {
-        cardType: CardType.Character,
-        gameAction: AbilityDsl.actions.bow()
-    },
-    then: {
+this.action('Bow, then choose an effect')
+    .target('target', {
+        cardType: CardType.Character
+    }, AbilityDsl.actions.bow())
+    .then(() => ({
         target: {
             mode: TargetMode.Select,
             choices: {
@@ -1037,8 +1031,7 @@ this.action({
                 'Draw 1 card': AbilityDsl.actions.draw()
             }
         }
-    }
-});
+    }));
 ```
 
 ---
@@ -1048,7 +1041,7 @@ this.action({
 **`condition` vs `cardCondition`**
 
 - `condition: (context) => bool` on the top-level ability gates the entire ability — if it returns `false`, the button doesn't appear.
-- `cardCondition: (card, context) => bool` on a `target:` filters which individual cards are legal targets.
+- `cardCondition: (card, context) => bool` on a target filters which individual cards are legal targets.
 
 **`isParticipating()` implies a conflict**
 
@@ -1058,9 +1051,9 @@ If any `cardCondition` or `condition` checks `card.isParticipating()`, you don't
 
 `initiateDuel` with `requiresConflict: true` (the default) already ensures a conflict is ongoing and that both challenger and target are participating. Don't add a duplicate `isDuringConflict()` condition or `source.isParticipating()` check — the duel helper enforces them.
 
-**`target` vs `targets`**
+**One target or several**
 
-Use `target:` for a single selection. Use `targets:` when you need multiple distinct selections (e.g., choose one character to bow and a different one to honor). Targets within `targets:` can chain via `dependsOn:`.
+Call `target` once for a single selection, and once per selection when you need several distinct ones (e.g., choose one character to bow and a different one to honor). A later target can depend on an earlier one via `dependsOn`. Use `targetCards` for one selection of several cards.
 
 **`multiple` vs `sequential`**
 
