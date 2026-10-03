@@ -1,10 +1,10 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 class KakitaAsami extends DrawCard {
     static id = 'kakita-asami';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.conflictAction('Take one honor from your opponent', { conflictType: 'political' })
             .condition((context) => {
                 if(!context.game.currentConflict) {
@@ -13,7 +13,7 @@ class KakitaAsami extends DrawCard {
                 const diff = context.game.currentConflict.attackerSkill - context.game.currentConflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
             })
-            .gameAction(ability.actions.takeHonor());
+            .gameAction(AbilityDsl.actions.takeHonor());
     }
 }
 

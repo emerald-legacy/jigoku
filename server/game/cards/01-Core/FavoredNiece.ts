@@ -5,14 +5,14 @@ import AbilityDsl from '../../abilitydsl.js';
 class FavoredNiece extends DrawCard {
     static id = 'favored-niece';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Discard then draw a card')
-            .cost(ability.costs.discardCard({
+            .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand,
                 targets: true
             }))
-            .gameAction(ability.actions.draw())
-            .limit(ability.limit.perRound(2));
+            .gameAction(AbilityDsl.actions.draw())
+            .limit(AbilityDsl.limit.perRound(2));
     }
 }
 

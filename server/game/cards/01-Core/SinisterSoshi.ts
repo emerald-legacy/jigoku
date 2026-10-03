@@ -5,12 +5,12 @@ import AbilityDsl from '../../abilitydsl.js';
 class SinisterSoshi extends DrawCard {
     static id = 'sinister-soshi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Give a character -2/-2')
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(-2) }))
+            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(-2) }))
             .effect('give {0} -2{1}/-2{2}', () => ['military', 'political']);
     }
 }

@@ -4,12 +4,12 @@ import AbilityDsl from '../../abilitydsl.js';
 class KabukiHero extends DrawCard {
     static id = 'kabuki-hero';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Gain military bonus')
-            .cost(ability.costs.payFate(1))
+            .cost(AbilityDsl.costs.payFate(1))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(ability.actions.cardLastingEffect((context) => ({
-                effect: ability.effects.modifyMilitarySkill(context.source.politicalSkill)
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+                effect: AbilityDsl.effects.modifyMilitarySkill(context.source.politicalSkill)
             })))
             .effect('give itself +{1}{2}/+0{3} until the end of the conflict', context => [context.source.politicalSkill, 'military', 'political']);
     }

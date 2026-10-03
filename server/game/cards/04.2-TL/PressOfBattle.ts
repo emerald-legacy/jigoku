@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class PressOfBattle extends DrawCard {
     static id = 'press-of-battle';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Bow a non-unique character')
             .condition(context => this.game.isDuringConflict('military') &&
                                  !!this.game.currentConflict &&
@@ -14,7 +14,7 @@ class PressOfBattle extends DrawCard {
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.isUnique()
-            }, ability.actions.bow());
+            }, AbilityDsl.actions.bow());
     }
 }
 

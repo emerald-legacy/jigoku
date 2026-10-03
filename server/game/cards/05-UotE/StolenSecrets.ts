@@ -7,9 +7,9 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Steal one of opponent\'s top 4 cards')
-            .cost(ability.costs.removeFate({
+            .cost(AbilityDsl.costs.removeFate({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
@@ -34,14 +34,14 @@ class StolenSecrets extends DrawCard {
         card.controller = context.player;
         card.moveTo(Location.RemovedFromGame);
         context.player.removedFromGame.unshift(card);
-        context.source.lastingEffect((ability: typeof AbilityDsl) => ({
+        context.source.lastingEffect(() => ({
             until: {
                 onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === card && event.originalLocation === Location.RemovedFromGame
             },
             match: card,
             effect: [
-                ability.effects.hideWhenFaceUp(),
-                ability.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this)
+                AbilityDsl.effects.hideWhenFaceUp(),
+                AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this)
             ]
         }));
         this.game.checkGameState();

@@ -5,13 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class VengefulOathkeeper extends DrawCard {
     static id = 'vengeful-oathkeeper';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Put this into play')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player &&
                                                    event.conflict.conflictType === 'military'
             })
-            .gameAction(ability.actions.putIntoPlay())
+            .gameAction(AbilityDsl.actions.putIntoPlay())
             .location(Location.Hand);
     }
 }

@@ -6,9 +6,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class PitTrap extends DrawCard {
     static id = 'pit-trap';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.doesNotReady()
+            effect: AbilityDsl.effects.doesNotReady()
         });
     }
 

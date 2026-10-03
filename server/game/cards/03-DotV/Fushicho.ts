@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class Fushicho extends DrawCard {
     static id = 'fushicho';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.interrupt('Resurrect a character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
@@ -15,7 +15,7 @@ class Fushicho extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: card => card.isFaction('phoenix')
-            }, ability.actions.putIntoPlay({ fate: 1 }));
+            }, AbilityDsl.actions.putIntoPlay({ fate: 1 }));
     }
 }
 

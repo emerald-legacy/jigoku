@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -6,12 +6,12 @@ import { EventName } from '../../Constants.js';
 class SeppunTruthseeker extends DrawCard {
     static id = 'seppun-truthseeker';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.forcedInterrupt('Each player draws 2 cards')
             .when({
                 onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context) => event.card === context.source
             })
-            .gameAction(ability.actions.draw((context) => ({
+            .gameAction(AbilityDsl.actions.draw((context) => ({
                 target: context.game.getPlayers(),
                 amount: 2
             })))

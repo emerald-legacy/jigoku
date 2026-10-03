@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -6,7 +6,7 @@ import { EventName } from '../../Constants.js';
 class MinamiKazeRegulars extends DrawCard {
     static id = 'minami-kaze-regulars';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Gain a fate and draw a card')
             .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) =>
@@ -14,7 +14,7 @@ class MinamiKazeRegulars extends DrawCard {
                     context.source.isParticipating() &&
                     context.game.currentConflict?.hasMoreParticipants(context.player, () => true)
             })
-            .gameAction(ability.actions.gainFate(), ability.actions.draw())
+            .gameAction(AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw())
             .effect('gain a fate and draw a card');
     }
 }

@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class IshikenInitiate extends DrawCard {
     static id = 'ishiken-initiate';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.modifyBothSkills(() => this.getNoOfClaimedRings())
+            effect: AbilityDsl.effects.modifyBothSkills(() => this.getNoOfClaimedRings())
         });
     }
 

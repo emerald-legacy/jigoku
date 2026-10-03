@@ -5,14 +5,14 @@ import AbilityDsl from '../../abilitydsl.js';
 class SavvyPolitician extends DrawCard {
     static id = 'savvy-politician';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onCardHonored: (event, context) => event.card === context.source
             })
             .target('target', {
                 cardType: CardType.Character
-            }, ability.actions.honor());
+            }, AbilityDsl.actions.honor());
     }
 }
 

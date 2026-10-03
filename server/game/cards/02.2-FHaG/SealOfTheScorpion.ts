@@ -4,11 +4,11 @@ import AbilityDsl from '../../abilitydsl.js';
 class SealOfTheScorpion extends DrawCard {
     static id = 'seal-of-the-scorpion';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
             effect: [
-                ability.effects.addFaction('scorpion'),
-                ability.effects.addTrait('shinobi')
+                AbilityDsl.effects.addFaction('scorpion'),
+                AbilityDsl.effects.addTrait('shinobi')
             ]
         });
     }

@@ -5,13 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class IdeMessenger extends DrawCard {
     static id = 'ide-messenger';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Move an ally to a conflict')
-            .cost(ability.costs.payFate(1))
+            .cost(AbilityDsl.costs.payFate(1))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, ability.actions.moveToConflict());
+            }, AbilityDsl.actions.moveToConflict());
     }
 }
 

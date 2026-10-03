@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, EventName, Players } from '../../Constants.js';
 
@@ -7,7 +7,7 @@ import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class HonedNodachi extends DrawCard {
     static id = 'honed-nodachi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             trait: 'bushi'
         });
@@ -18,14 +18,14 @@ class HonedNodachi extends DrawCard {
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === 'military'
             })
-            .cost(ability.costs.removeFateFromParent())
+            .cost(AbilityDsl.costs.removeFateFromParent())
             .target('target', {
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, ability.actions.discardFromPlay());
+            }, AbilityDsl.actions.discardFromPlay());
     }
 }
 

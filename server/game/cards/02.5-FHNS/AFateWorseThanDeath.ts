@@ -5,14 +5,14 @@ import AbilityDsl from '../../abilitydsl.js';
 class AFateWorseThanDeath extends DrawCard {
     static id = 'a-fate-worse-than-death';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Bow, move home, dishonor, remove a fate and blank a character')
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, ability.actions.bow(), ability.actions.dishonor(), ability.actions.removeFate(), ability.actions.sendHome(), ability.actions.cardLastingEffect({
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor(), AbilityDsl.actions.removeFate(), AbilityDsl.actions.sendHome(), AbilityDsl.actions.cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: ability.effects.blank()
+                effect: AbilityDsl.effects.blank()
             }))
             .effect('bow, dishonor, blank, move home, and remove a fate from {0}');
     }

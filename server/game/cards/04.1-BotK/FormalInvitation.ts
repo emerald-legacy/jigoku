@@ -1,14 +1,14 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class FormalInvitation extends DrawCard {
     static id = 'formal-invitation';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Move attached character into the conflict')
             .condition(() => this.game.isDuringConflict('political'))
-            .gameAction(ability.actions.moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] })));
+            .gameAction(AbilityDsl.actions.moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] })));
     }
 
     canAttach(card: DrawCard) {

@@ -7,12 +7,12 @@ import AbilityDsl from '../../abilitydsl.js';
 class Banzai extends DrawCard {
     static id = 'banzai';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Increase a character\'s military skill')
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, ability.actions.cardLastingEffect(() => ({
+            }, AbilityDsl.actions.cardLastingEffect(() => ({
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
             })))
             .effect('grant 2 military skill to {0}')

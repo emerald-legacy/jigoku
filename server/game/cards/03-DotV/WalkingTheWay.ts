@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import { Location, Players, CardType } from '../../Constants.js';
@@ -7,12 +7,12 @@ import DrawCard from '../../DrawCard.js';
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
             match: (player: Player) => player.cardsInPlay.some((card: BaseCard) => card.hasTrait('shugenja')),
-            effect: ability.effects.reduceCost({ match: (card: BaseCard, source: BaseCard) => card === source })
+            effect: AbilityDsl.effects.reduceCost({ match: (card: BaseCard, source: BaseCard) => card === source })
         });
 
         this.action('Place a card from your deck faceup on a province')

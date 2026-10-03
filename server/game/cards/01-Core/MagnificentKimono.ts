@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class MagnificentKimono extends DrawCard {
     static id = 'magnificent-kimono';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.addKeyword('pride')
+            effect: AbilityDsl.effects.addKeyword('pride')
         });
     }
 }

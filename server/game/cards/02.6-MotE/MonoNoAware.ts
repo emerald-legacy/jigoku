@@ -4,13 +4,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class MonoNoAware extends DrawCard {
     static id = 'mono-no-aware';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Remove 1 fate from each character. Draw 1 card.')
-            .gameAction(ability.actions.draw(), ability.actions.removeFate(() => ({
+            .gameAction(AbilityDsl.actions.draw(), AbilityDsl.actions.removeFate(() => ({
                 target: this.game.findAnyCardsInPlay(card => card.getFate() > 0)
             })))
             .effect('remove a fate from each character and draw a card')
-            .max(ability.limit.perRound(1));
+            .max(AbilityDsl.limit.perRound(1));
     }
 }
 

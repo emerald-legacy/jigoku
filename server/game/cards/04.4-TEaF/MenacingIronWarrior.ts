@@ -1,15 +1,15 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 class MenacingIronWarrior extends DrawCard {
     static id = 'menacing-iron-warrior';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Disable abilities of weaker military characters')
             .condition(context => this.game.isDuringConflict('military') && context.source.isParticipating())
-            .gameAction(ability.actions.cardLastingEffect((context) => ({
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.game.currentConflict ? context.game.currentConflict.getCharacters(context.player.opponent).filter((card) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) : [],
-                effect: ability.effects.cannotTriggerAbilities()
+                effect: AbilityDsl.effects.cannotTriggerAbilities()
             })))
             .effect('prevent {1}\'s participating characters from using any abilities if their military skill is equal to or lower than {2}. This affects: {3}', context => {
                 const conflict = context.game.currentConflict;

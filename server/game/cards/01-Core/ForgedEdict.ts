@@ -5,12 +5,12 @@ import { CardType } from '../../Constants.js';
 class ForgedEdict extends DrawCard {
     static id = 'forged-edict';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: event => event.card.type === CardType.Event
             })
-            .cost(ability.costs.dishonor({ cardCondition: card => card.hasTrait('courtier') }))
+            .cost(AbilityDsl.costs.dishonor({ cardCondition: card => card.hasTrait('courtier') }))
             .gameAction(AbilityDsl.actions.cancel())
             .cannotBeMirrored();
     }

@@ -1,17 +1,17 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class KakitaYoshi extends DrawCard {
     static id = 'kakita-yoshi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Draw 3 cards')
-            .cost(ability.costs.discardImperialFavor())
+            .cost(AbilityDsl.costs.discardImperialFavor())
             .condition(context => context.source.isParticipating())
-            .gameAction(ability.actions.draw({ amount: 3 }), ability.actions.playerLastingEffect((context) => ({
+            .gameAction(AbilityDsl.actions.draw({ amount: 3 }), AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: ability.effects.reduceCost({
+                effect: AbilityDsl.effects.reduceCost({
                     amount: 2,
                     match: (card: DrawCard) => card.type === CardType.Event
                 })

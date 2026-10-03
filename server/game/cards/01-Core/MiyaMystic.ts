@@ -5,12 +5,12 @@ import AbilityDsl from '../../abilitydsl.js';
 class MiyaMystic extends DrawCard {
     static id = 'miya-mystic';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Sacrifice to discard an attachment')
-            .cost(ability.costs.sacrificeSelf())
+            .cost(AbilityDsl.costs.sacrificeSelf())
             .target('target', {
                 cardType: CardType.Attachment
-            }, ability.actions.discardFromPlay())
+            }, AbilityDsl.actions.discardFromPlay())
             .phase(Phases.Conflict);
     }
 }

@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class SmokeAndMirrors extends DrawCard {
     static id = 'smoke-and-mirrors';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Move shinobi home')
             .condition(context => context.player.isAttackingPlayer())
             .targetCards('target', {
@@ -14,7 +14,7 @@ class SmokeAndMirrors extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('shinobi') && card.isAttacking()
-            }, ability.actions.sendHome());
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

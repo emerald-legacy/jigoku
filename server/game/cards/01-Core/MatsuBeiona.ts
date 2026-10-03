@@ -4,7 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class MatsuBeiona extends DrawCard {
     static id = 'matsu-beiona';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Put 2 fate on this character')
             .when({
                 onCharacterEntersPlay: (event, context) => (
@@ -15,7 +15,7 @@ class MatsuBeiona extends DrawCard {
                     )).length >= 3
                 )
             })
-            .gameAction(ability.actions.placeFate({ amount: 2 }));
+            .gameAction(AbilityDsl.actions.placeFate({ amount: 2 }));
     }
 }
 

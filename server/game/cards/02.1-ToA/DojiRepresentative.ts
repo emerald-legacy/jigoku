@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class DojiRepresentative extends DrawCard {
     static id = 'doji-representative';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Move this character home')
-            .gameAction(ability.actions.sendHome());
+            .gameAction(AbilityDsl.actions.sendHome());
     }
 }
 

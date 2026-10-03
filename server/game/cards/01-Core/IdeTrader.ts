@@ -4,7 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class IdeTrader extends DrawCard {
     static id = 'ide-trader';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Gain a fate/card')
             .when({
                 onMoveToConflict: (event, context) => context.source.isParticipating()
@@ -12,10 +12,10 @@ class IdeTrader extends DrawCard {
             .select('target', {
 
             }, {
-                'Gain 1 fate': ability.actions.gainFate(),
-                'Draw 1 card': ability.actions.draw()
+                'Gain 1 fate': AbilityDsl.actions.gainFate(),
+                'Draw 1 card': AbilityDsl.actions.draw()
             })
-            .limit(ability.limit.perConflict(1))
+            .limit(AbilityDsl.limit.perConflict(1))
             .collectiveTrigger();
     }
 }

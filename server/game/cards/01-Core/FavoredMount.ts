@@ -4,18 +4,18 @@ import AbilityDsl from '../../abilitydsl.js';
 class FavoredMount extends DrawCard {
     static id = 'favored-mount';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
-            effect: ability.effects.addTrait('cavalry')
+            effect: AbilityDsl.effects.addTrait('cavalry')
         });
 
         this.action('Move this character into the conflict')
-            .cost(ability.costs.bowSelf())
-            .gameAction(ability.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })));
+            .cost(AbilityDsl.costs.bowSelf())
+            .gameAction(AbilityDsl.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })));
     }
 }
 

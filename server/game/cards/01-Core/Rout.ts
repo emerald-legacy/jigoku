@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class Rout extends DrawCard {
     static id = 'rout';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Send a character home.')
             .target('target', {
                 cardType: CardType.Character,
@@ -14,7 +14,7 @@ class Rout extends DrawCard {
                     myCard.hasTrait('bushi') && myCard.isParticipating() &&
                     myCard.militarySkill > card.militarySkill
                 ))
-            }, ability.actions.sendHome());
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

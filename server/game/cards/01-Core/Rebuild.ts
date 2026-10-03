@@ -1,13 +1,13 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 
 class Rebuild extends DrawCard {
     static id = 'rebuild';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Put a holding into play from your discard')
-            .cost(ability.costs.shuffleIntoDeck({
+            .cost(AbilityDsl.costs.shuffleIntoDeck({
                 location: Location.Provinces,
                 cardCondition: card => !!card.controller.getProvinceCardInProvince(card.location) && !card.controller.getProvinceCardInProvince(card.location)?.isBroken
             }))
@@ -16,7 +16,7 @@ class Rebuild extends DrawCard {
                 cardType: CardType.Holding,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
-            }, ability.actions.moveCard((context) => ({
+            }, AbilityDsl.actions.moveCard((context) => ({
                 destination: context.costs.moveStateWhenChosen instanceof DrawCard ? context.costs.moveStateWhenChosen.location : Location.ProvinceOne,
                 facedown: false
             })))

@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class StrengthInNumbers extends DrawCard {
     static id = 'strength-in-numbers';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Send home defending character')
             .condition(context => context.player.isAttackingPlayer())
             .target('target', {
@@ -13,7 +13,7 @@ class StrengthInNumbers extends DrawCard {
                 cardCondition: card =>
                     card.isDefending() &&
                     card.getGlory() <= (this.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0)
-            }, ability.actions.sendHome())
+            }, AbilityDsl.actions.sendHome())
             .cannotBeMirrored();
     }
 }

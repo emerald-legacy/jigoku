@@ -5,9 +5,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class HighKick extends DrawCard {
     static id = 'high-kick';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Bow and Disable a character')
-            .cost(ability.costs.bow({
+            .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('monk') && card.isParticipating()
             }))
@@ -16,7 +16,7 @@ class HighKick extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, ability.actions.bow(), ability.actions.cardLastingEffect({ effect: ability.effects.cannotTriggerAbilities() }))
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.cannotTriggerAbilities() }))
             .effect('bow {0} and prevent them from using abilities');
     }
 }

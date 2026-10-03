@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
 class ForShame extends DrawCard {
     static id = 'for-shame';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Dishonor or bow a character')
             .condition(context => context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')))
             .target('character', {
@@ -17,8 +17,8 @@ class ForShame extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Dishonor this character': ability.actions.dishonor((context) => ({ target: context.targets.character })),
-                'Bow this character': ability.actions.bow((context) => ({ target: context.targets.character }))
+                'Dishonor this character': AbilityDsl.actions.dishonor((context) => ({ target: context.targets.character })),
+                'Bow this character': AbilityDsl.actions.bow((context) => ({ target: context.targets.character }))
             });
     }
 }

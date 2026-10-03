@@ -4,10 +4,10 @@ import AbilityDsl from '../../abilitydsl.js';
 class YogoOutcast extends DrawCard {
     static id = 'yogo-outcast';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.player.isLessHonorable(),
-            effect: ability.effects.modifyBothSkills(1)
+            effect: AbilityDsl.effects.modifyBothSkills(1)
         });
     }
 }

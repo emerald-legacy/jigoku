@@ -5,13 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class DaidojiNerishma extends DrawCard {
     static id = 'daidoji-nerishma';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Flip a card faceup')
             .target('target', {
                 controller: Players.Self,
                 location: Location.Provinces,
                 cardCondition: card => card.isDynasty && card.isFacedown()
-            }, ability.actions.flipDynasty());
+            }, AbilityDsl.actions.flipDynasty());
     }
 }
 

@@ -4,10 +4,10 @@ import AbilityDsl from '../../abilitydsl.js';
 class ImperialStorehouse extends DrawCard {
     static id = 'imperial-storehouse';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Draw a card')
-            .cost(ability.costs.sacrificeSelf())
-            .gameAction(ability.actions.draw());
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .gameAction(AbilityDsl.actions.draw());
     }
 }
 

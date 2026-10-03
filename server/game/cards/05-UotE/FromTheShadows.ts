@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
@@ -6,14 +6,14 @@ import { Location, Players, CardType } from '../../Constants.js';
 class FromTheShadows extends DrawCard {
     static id = 'from-the-shadows';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Put a shinobi character into the conflict from hand or a province, dishonored')
             .target('target', {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('shinobi')
-            }, ability.actions.putIntoConflict({ status: 'dishonored' }));
+            }, AbilityDsl.actions.putIntoConflict({ status: 'dishonored' }));
     }
 
     canPlay(context: AbilityContext, type: string): boolean {

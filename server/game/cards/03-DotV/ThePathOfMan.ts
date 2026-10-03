@@ -6,12 +6,12 @@ import { EventName } from '../../Constants.js';
 class ThePathOfMan extends DrawCard {
     static id = 'the-path-of-man';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Gain 2 fate')
             .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => event.conflict.winner === context.player && (event.conflict.skillDifference ?? 0) >= 5
             })
-            .gameAction(ability.actions.gainFate({ amount: 2 }));
+            .gameAction(AbilityDsl.actions.gainFate({ amount: 2 }));
     }
 }
 

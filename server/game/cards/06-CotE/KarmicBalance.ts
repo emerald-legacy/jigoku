@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
@@ -6,17 +6,17 @@ import { Location } from '../../Constants.js';
 class KarmicBalance extends DrawCard {
     static id = 'karmic-balance';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Shuffle and draw 4 new conflict cards')
-            .gameAction(ability.actions.moveCard((context) => ({
+            .gameAction(AbilityDsl.actions.moveCard((context) => ({
                 shuffle: true,
                 destination: Location.ConflictDeck,
                 target: [...context.player.conflictDiscardPile, ...context.player.hand]
-            })), ability.actions.moveCard((context) => ({
+            })), AbilityDsl.actions.moveCard((context) => ({
                 shuffle: true,
                 destination: Location.ConflictDeck,
                 target: context.player.opponent ? [...context.player.opponent.conflictDiscardPile, ...context.player.opponent.hand] : []
-            })), ability.actions.draw((context) => ({ target: context.game.getPlayers(), amount: 4 })), ability.actions.moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame })))
+            })), AbilityDsl.actions.draw((context) => ({ target: context.game.getPlayers(), amount: 4 })), AbilityDsl.actions.moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame })))
             .effect('shuffle hand and discard pile into conflict deck and draw 4 cards');
     }
 

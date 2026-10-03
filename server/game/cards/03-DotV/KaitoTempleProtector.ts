@@ -5,10 +5,10 @@ import AbilityDsl from '../../abilitydsl.js';
 class KaitoTempleProtector extends DrawCard {
     static id = 'kaito-temple-protector';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isDefending(),
-            effect: ability.effects.cardCannot({
+            effect: AbilityDsl.effects.cardCannot({
                 cannot: 'sendHome',
                 restricts: 'opponentsCardEffects'
             })
@@ -19,17 +19,17 @@ class KaitoTempleProtector extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, ability.actions.cardLastingEffect((context) => {
+            }, AbilityDsl.actions.cardLastingEffect((context) => {
                 const effects = [];
                 if(context.target.hasDash('military')) {
-                    effects.push(ability.effects.setBaseDash('military'));
+                    effects.push(AbilityDsl.effects.setBaseDash('military'));
                 } else {
-                    effects.push(ability.effects.setBaseMilitarySkill(context.target.militarySkill));
+                    effects.push(AbilityDsl.effects.setBaseMilitarySkill(context.target.militarySkill));
                 }
                 if(context.target.hasDash('political')) {
-                    effects.push(ability.effects.setBaseDash('political'));
+                    effects.push(AbilityDsl.effects.setBaseDash('political'));
                 } else {
-                    effects.push(ability.effects.setBasePoliticalSkill(context.target.politicalSkill));
+                    effects.push(AbilityDsl.effects.setBasePoliticalSkill(context.target.politicalSkill));
                 }
                 return {
                     target: context.source,

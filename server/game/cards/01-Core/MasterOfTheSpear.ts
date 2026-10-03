@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class MasterOfTheSpear extends DrawCard {
     static id = 'master-of-the-spear';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Send home character')
             .condition(() => this.isAttacking())
             .target('target', {
@@ -13,7 +13,7 @@ class MasterOfTheSpear extends DrawCard {
                 activePromptTitle: 'Choose a character to send home',
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, ability.actions.sendHome());
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

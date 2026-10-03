@@ -6,7 +6,7 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 class ShinjoAltansarnai extends DrawCard {
     static id = 'shinjo-altansarnai';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Discard a character')
             .when({
                 onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context) => event.conflict?.conflictType === 'military' && context.source.isAttacking()
@@ -16,7 +16,7 @@ class ShinjoAltansarnai extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent
-            }, ability.actions.discardFromPlay());
+            }, AbilityDsl.actions.discardFromPlay());
     }
 }
 

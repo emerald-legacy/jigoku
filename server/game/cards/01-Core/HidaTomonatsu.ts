@@ -5,17 +5,17 @@ import AbilityDsl from '../../abilitydsl.js';
 class HidaTomonatsu extends DrawCard {
     static id = 'hida-tomonatsu';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Return a character to deck')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             })
-            .cost(ability.costs.sacrificeSelf())
+            .cost(AbilityDsl.costs.sacrificeSelf())
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isAttacking() && !card.isUnique()
-            }, ability.actions.returnToDeck());
+            }, AbilityDsl.actions.returnToDeck());
     }
 }
 

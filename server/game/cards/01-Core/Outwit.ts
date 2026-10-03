@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class Outwit extends DrawCard {
     static id = 'outwit';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Send a character home.')
             .target('target', {
                 cardType: CardType.Character,
@@ -14,7 +14,7 @@ class Outwit extends DrawCard {
                     myCard.hasTrait('courtier') && myCard.isParticipating() &&
                     myCard.politicalSkill > card.politicalSkill
                 ))
-            }, ability.actions.sendHome());
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

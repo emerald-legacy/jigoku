@@ -5,17 +5,17 @@ import AbilityDsl from '../../abilitydsl.js';
 class ClarityOfPurpose extends DrawCard {
     static id = 'clarity-of-purpose';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Character cannot be bowed and doesn\'t bow during political conflicts')
             .condition(() => this.game.isDuringConflict())
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, ability.actions.cardLastingEffect({
+            }, AbilityDsl.actions.cardLastingEffect({
                 condition: () => this.game.isDuringConflict('political'),
-                effect: ability.effects.doesNotBow()
-            }), ability.actions.cardLastingEffect(context => ({
-                effect: ability.effects.cardCannot({
+                effect: AbilityDsl.effects.doesNotBow()
+            }), AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: AbilityDsl.effects.cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player

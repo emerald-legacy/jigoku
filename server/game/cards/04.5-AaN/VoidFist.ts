@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class VoidFist extends DrawCard {
     static id = 'void-fist';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Bow and send a character home')
             .condition(context =>
                 this.game.isDuringConflict() &&
@@ -17,7 +17,7 @@ class VoidFist extends DrawCard {
                     card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard: DrawCard) =>
                         myCard.hasTrait('monk') && (myCard.militarySkill ?? 0) >= (card.militarySkill ?? 0)
                     )
-            }, ability.actions.bow(), ability.actions.sendHome())
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())
             .effect('bow {0} and send them home');
     }
 }

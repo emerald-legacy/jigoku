@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class ShinjoOutrider extends DrawCard {
     static id = 'shinjo-outrider';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Move this character to conflict')
-            .gameAction(ability.actions.moveToConflict());
+            .gameAction(AbilityDsl.actions.moveToConflict());
     }
 }
 

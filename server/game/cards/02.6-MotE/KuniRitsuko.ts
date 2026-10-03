@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class KuniRitsuko extends DrawCard {
     static id = 'kuni-ritsuko';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Remove a fate')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
@@ -13,7 +13,7 @@ class KuniRitsuko extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking()
-            }, ability.actions.removeFate());
+            }, AbilityDsl.actions.removeFate());
     }
 }
 

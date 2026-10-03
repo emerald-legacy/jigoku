@@ -6,7 +6,7 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Prevent non-spell events from being played while contesting a ring')
             .when({
                 onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>) => event.phase === Phases.Conflict
@@ -14,11 +14,11 @@ class MasterOfGiseiToshi extends DrawCard {
             .ringTarget('target', {
                 ringCondition: () => true
             })
-            .gameAction(ability.actions.playerLastingEffect(context => ({
+            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict?.ring === context.ring,
-                effect: ability.effects.playerCannot({
+                effect: AbilityDsl.effects.playerCannot({
                     cannot: 'play',
                     restricts: 'nonSpellEvents'
                 })

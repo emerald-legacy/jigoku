@@ -5,17 +5,17 @@ import AbilityDsl from '../../abilitydsl.js';
 class TheMountainDoesNotFall extends DrawCard {
     static id = 'the-mountain-does-not-fall';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Choose a character to not bow when defending')
             .target('target', {
                 cardType: CardType.Character
-            }, ability.actions.cardLastingEffect((context) => ({
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 condition: () => context.target.isDefending(),
-                effect: ability.effects.doesNotBow()
+                effect: AbilityDsl.effects.doesNotBow()
             })))
             .effect('make {0} not bow as a defender')
-            .max(ability.limit.perRound(1));
+            .max(AbilityDsl.limit.perRound(1));
     }
 }
 

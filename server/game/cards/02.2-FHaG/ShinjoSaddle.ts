@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class ShinjoSaddle extends DrawCard {
     static id = 'shinjo-saddle';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: 'cavalry'
@@ -16,7 +16,7 @@ class ShinjoSaddle extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('cavalry')
-            }, ability.actions.attach((context) => ({ attachment: context.source })));
+            }, AbilityDsl.actions.attach((context) => ({ attachment: context.source })));
     }
 }
 

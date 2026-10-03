@@ -5,9 +5,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class TalismanOfTheSun extends DrawCard {
     static id = 'talisman-of-the-sun';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Move conflict to a different province')
-            .cost(ability.costs.bowSelf())
+            .cost(AbilityDsl.costs.bowSelf())
             .condition(context => context.player.isDefendingPlayer())
             .gameAction(AbilityDsl.actions.selectCard(context => ({
                 cardType: CardType.Province,

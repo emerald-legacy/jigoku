@@ -5,7 +5,7 @@ import { Location, Players, CardType } from '../../Constants.js';
 class IkomaEiji extends DrawCard {
     static id = 'ikoma-eiji';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === 'political'
@@ -17,7 +17,7 @@ class IkomaEiji extends DrawCard {
                 cardCondition: card => card.isCharacter() && card.hasTrait('bushi') && card.costLessThan(4),
                 message: '{0} puts {1} into play with {2}\'s ability',
                 messageArgs: card => [context.player, card, context.source],
-                gameAction: ability.actions.putIntoPlay()
+                gameAction: AbilityDsl.actions.putIntoPlay()
             })))
             .effect('put a character into play');
     }

@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
 class RadiantOrator extends DrawCard {
     static id = 'radiant-orator';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Send a character home')
             .condition(context => !!context.player.opponent && context.source.isParticipating() && (
                 // My total glory
@@ -16,7 +16,7 @@ class RadiantOrator extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, ability.actions.sendHome());
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

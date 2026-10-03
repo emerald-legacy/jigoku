@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class HurricanePunch extends DrawCard {
     static id = 'hurricane-punch';
 
-    setupCardAbilities(_ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Increase a monk\'s military skill and draw 1 card')
             .target('target', {
                 cardType: CardType.Character,

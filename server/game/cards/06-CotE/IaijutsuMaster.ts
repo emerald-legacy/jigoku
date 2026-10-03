@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
@@ -8,7 +8,7 @@ import { Direction } from '../../GameActions/ModifyBidAction.js';
 class IaijutsuMaster extends DrawCard {
     static id = 'iaijutsu-master';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             trait: 'duelist'
         });
@@ -18,7 +18,7 @@ class IaijutsuMaster extends DrawCard {
                 onHonorDialsRevealed: (_event: EventPayload<EventName.OnHonorDialsRevealed>, context: TriggeredAbilityContext<this>) =>
                     !!context.source.parentCharacter && !!this.game.currentDuel?.isInvolved(context.source.parentCharacter)
             })
-            .gameAction(ability.actions.modifyBid({ direction: Direction.Prompt }));
+            .gameAction(AbilityDsl.actions.modifyBid({ direction: Direction.Prompt }));
     }
 }
 

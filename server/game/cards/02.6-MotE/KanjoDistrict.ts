@@ -5,13 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class KanjoDistrict extends DrawCard {
     static id = 'kanjo-district';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Bow and send home a participating character')
-            .cost(ability.costs.discardImperialFavor())
+            .cost(AbilityDsl.costs.discardImperialFavor())
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, ability.actions.bow(), ability.actions.sendHome())
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())
             .effect('bow and send {0} home');
     }
 }

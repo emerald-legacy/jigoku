@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class TryAgainTomorrow extends DrawCard {
     static id = 'try-again-tomorrow';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Send a Character home')
             .condition((context) =>
                 context.player.anyCardsInPlay((card) => card.isParticipating() &&
@@ -13,7 +13,7 @@ class TryAgainTomorrow extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, ability.actions.sendHome())
+            }, AbilityDsl.actions.sendHome())
             .cannotBeMirrored();
     }
 }

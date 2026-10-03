@@ -5,15 +5,15 @@ import AbilityDsl from '../../abilitydsl.js';
 class HirumaAmbusher extends DrawCard {
     static id = 'hiruma-ambusher';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Disable a character')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && context.source.isDefending()
             })
             .target('target', {
                 cardType: CardType.Character
-            }, ability.actions.cardLastingEffect({
-                effect: ability.effects.cannotTriggerAbilities()
+            }, AbilityDsl.actions.cardLastingEffect({
+                effect: AbilityDsl.effects.cannotTriggerAbilities()
             }))
             .effect('prevent {0} from using any abilities');
     }

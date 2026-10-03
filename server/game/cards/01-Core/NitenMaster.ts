@@ -4,7 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class NitenMaster extends DrawCard {
     static id = 'niten-master';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Ready this character')
             .when({
                 onCardAttached: (event, context) => (
@@ -13,8 +13,8 @@ class NitenMaster extends DrawCard {
                     event.card.controller === context.player
                 )
             })
-            .gameAction(ability.actions.ready())
-            .limit(ability.limit.perRound(2));
+            .gameAction(AbilityDsl.actions.ready())
+            .limit(AbilityDsl.limit.perRound(2));
     }
 }
 

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
@@ -35,9 +35,9 @@ const testOfSkillCost = function(): Cost<{ testOfSkillCost: CardType }> {
 class TestOfSkill extends DrawCard {
     static id = 'test-of-skill';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0,
+            .cost(AbilityDsl.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0,
                 context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3
             )))
             .cost(testOfSkillCost())

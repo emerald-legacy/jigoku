@@ -5,20 +5,20 @@ import AbilityDsl from '../../abilitydsl.js';
 class MountaintopStatuary extends DrawCard {
     static id = 'mountaintop-statuary';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.reaction('Move this to stronghold province')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(ability.actions.moveCard({ destination: Location.StrongholdProvince }))
+            .gameAction(AbilityDsl.actions.moveCard({ destination: Location.StrongholdProvince }))
             .effect('move it to their stronghold province');
         this.action('Send a 2 or lower cost character home')
-            .cost(ability.costs.sacrificeSelf())
+            .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => context.source.isInConflictProvince())
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking() && card.costLessThan(3)
-            }, ability.actions.sendHome());
+            }, AbilityDsl.actions.sendHome());
     }
 }
 
