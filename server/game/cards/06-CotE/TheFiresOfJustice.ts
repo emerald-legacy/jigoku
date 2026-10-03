@@ -1,45 +1,38 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TheFiresOfJustice extends DrawCard {
     static id = 'the-fires-of-justice';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Remove fate or move fate to a character',
-            when: {
+        this.reaction('Remove fate or move fate to a character')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === 'military'
-            },
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    player: Players.Opponent,
-                    controller: Players.Opponent,
-                    cardCondition: card => card.isParticipating()
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    choices: {
-                        'Remove all fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character, amount: (context.targets.character as DrawCard).getFate() })),
-                        'Move fate to character': AbilityDsl.actions.menuPrompt(context => ({
-                            activePromptTitle: 'Select fate amount:',
-                            choices: Array.from(Array(context.player.opponent?.fate), (x, i) => (i + 1).toString()),
-                            choiceHandler: (choice, displayMessage) => {
-                                if(displayMessage) {
-                                    this.game.addMessage('{0} chooses to move {1} fate from {2}\'s pool to {3}', context.player, choice, context.player.opponent, context.targets.character);
-                                }
-                                return { target: context.targets.character, amount: parseInt(choice) };
-                            },
-                            gameAction: AbilityDsl.actions.placeFate({ origin: context.player.opponent })
-                        }))
-                    }
-                }
-            },
-            effect: '{1} {2}',
-            effectArgs: context => [context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on', context.targets.character]
-        });
+            })
+            .target('character', {
+                cardType: CardType.Character,
+                player: Players.Opponent,
+                controller: Players.Opponent,
+                cardCondition: card => card.isParticipating()
+            })
+            .select('select', {
+                dependsOn: 'character'
+            }, {
+                'Remove all fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character, amount: (context.targets.character).getFate() })),
+                'Move fate to character': AbilityDsl.actions.menuPrompt(context => ({
+                    activePromptTitle: 'Select fate amount:',
+                    choices: Array.from(Array(context.player.opponent?.fate), (x, i) => (i + 1).toString()),
+                    choiceHandler: (choice, displayMessage) => {
+                        if(displayMessage) {
+                            this.game.addMessage('{0} chooses to move {1} fate from {2}\'s pool to {3}', context.player, choice, context.player.opponent, context.targets.character);
+                        }
+                        return { target: context.targets.character, amount: parseInt(choice) };
+                    },
+                    gameAction: AbilityDsl.actions.placeFate({ origin: context.player.opponent })
+                }))
+            })
+            .effect('{1} {2}', context => [context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on', context.targets.character]);
     }
 }
 

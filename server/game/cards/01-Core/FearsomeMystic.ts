@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
@@ -14,17 +13,15 @@ class FearsomeMystic extends DrawCard {
             effect: AbilityDsl.effects.modifyGlory(2)
         });
 
-        this.action({
-            title: 'Remove fate from characters',
-            condition: context => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.removeFate((context: AbilityContext<DrawCard, DrawCard>) => ({
+        this.action('Remove fate from characters')
+            .condition(context => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.removeFate((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent).filter(card => card.getGlory() < context.source.getGlory()) ?? []
-            }))
-        });
+            })));
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: '+2 Glory',

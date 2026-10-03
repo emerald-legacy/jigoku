@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type ReturnRingProperties = RingActionProperties;
 
-export class ReturnRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ReturnRingProperties, EventName, C> {
+export class ReturnRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ReturnRingProperties, EventName.OnReturnRing, C> {
     name = 'returnRing';
     eventName = EventName.OnReturnRing;
     effect = 'return {0} to the unclaimed pool';

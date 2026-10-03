@@ -19,7 +19,7 @@ describe('Speak to the Heart', function() {
 
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
 
-                let provinces = this.player2.provinces;
+                const provinces = this.player2.provinces;
                 provinces['province 1'].provinceCard.facedown = false;
                 provinces['province 2'].provinceCard.facedown = false;
                 provinces['province 3'].provinceCard.facedown = false;
@@ -33,7 +33,7 @@ describe('Speak to the Heart', function() {
 
             it('should give the chosen character +1 political skill for each faceup non-stronghold province your opponent controls', function() {
                 this.player2.pass();
-                let politicalSkill = this.borderRider.getPoliticalSkill();
+                const politicalSkill = this.borderRider.getPoliticalSkill();
                 this.player1.clickCard(this.speakToTheHeart);
                 this.player1.clickCard(this.borderRider);
                 expect(this.borderRider.getPoliticalSkill()).toBe(politicalSkill + 3);
@@ -41,7 +41,7 @@ describe('Speak to the Heart', function() {
 
             it('should last until the end of the conflict', function() {
                 this.player2.pass();
-                let politicalSkill = this.borderRider.getPoliticalSkill();
+                const politicalSkill = this.borderRider.getPoliticalSkill();
                 this.player1.clickCard(this.speakToTheHeart);
                 this.player1.clickCard(this.borderRider);
                 this.player2.pass();

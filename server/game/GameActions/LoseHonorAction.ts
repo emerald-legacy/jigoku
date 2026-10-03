@@ -11,29 +11,29 @@ export interface LoseHonorProperties extends PlayerActionProperties {
     dueToStatusToken?: boolean;
 }
 
-export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName, C> {
+export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName.OnModifyHonor, C> {
     defaultProperties: LoseHonorProperties = { amount: 1, dueToUnopposed: false, dueToStatusToken: false };
 
     name = 'loseHonor';
     eventName = EventName.OnModifyHonor;
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['losing {1} honor', [properties.amount]];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['make {0} lose ' + properties.amount + ' honor', [properties.target]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.amount === 0 ? false : super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, dueToUnopposed, dueToStatusToken } = this.getProperties(context, additionalProperties);
+        const { amount, dueToUnopposed, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -(amount ?? 0);
         event.dueToUnopposed = dueToUnopposed;
@@ -42,9 +42,9 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
 
     eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
         if(event.player) {
-            event.player.modifyHonor(event.amount as number);
+            event.player.modifyHonor(event.amount);
             if(event.context?.game) {
-                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount as number });
+                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount });
             }
         }
     }

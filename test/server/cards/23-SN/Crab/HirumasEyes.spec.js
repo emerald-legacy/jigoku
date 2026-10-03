@@ -36,10 +36,10 @@ describe('Hiruma\'s Eyes', function () {
                 province: this.p3_2
             });
 
-            let brashMil = this.brash.getMilitarySkill();
-            let riderMil = this.rider.getMilitarySkill();
-            let challengerMil = this.challenger.getMilitarySkill();
-            let yoshiMil = this.yoshi.getMilitarySkill();
+            const brashMil = this.brash.getMilitarySkill();
+            const riderMil = this.rider.getMilitarySkill();
+            const challengerMil = this.challenger.getMilitarySkill();
+            const yoshiMil = this.yoshi.getMilitarySkill();
 
             this.player2.pass();
             this.player1.clickCard(this.eyes);
@@ -62,10 +62,10 @@ describe('Hiruma\'s Eyes', function () {
                 province: this.p3_2
             });
 
-            let brashMil = this.brash.getMilitarySkill();
-            let riderMil = this.rider.getMilitarySkill();
-            let challengerMil = this.challenger.getMilitarySkill();
-            let yoshiMil = this.yoshi.getMilitarySkill();
+            const brashMil = this.brash.getMilitarySkill();
+            const riderMil = this.rider.getMilitarySkill();
+            const challengerMil = this.challenger.getMilitarySkill();
+            const yoshiMil = this.yoshi.getMilitarySkill();
 
             this.player2.pass();
             this.player1.clickCard(this.eyes);

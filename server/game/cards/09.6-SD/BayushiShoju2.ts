@@ -11,13 +11,11 @@ class BayushiShoju2 extends DrawCard {
             effect: AbilityDsl.effects.playerCannot('haveImperialFavor')
         });
 
-        this.forcedReaction({
-            title: 'After the conflict phase begins',
-            when: {
+        this.forcedReaction('After the conflict phase begins')
+            .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
-            },
-            effect: 'have each player loses an honor and draw two cards',
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.loseHonor(context => ({
                     target: context.game.getPlayers()
                 })),
@@ -25,8 +23,8 @@ class BayushiShoju2 extends DrawCard {
                     target: context.game.getPlayers(),
                     amount: 2
                 }))
-            ])
-        });
+            ]))
+            .effect('have each player loses an honor and draw two cards');
     }
 }
 

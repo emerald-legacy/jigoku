@@ -49,7 +49,7 @@ describe('Teacher of Empty Thought', function() {
             this.player1.clickCard(this.teach);
 
             this.player2.pass();
-            let count = this.player1.hand.length;
+            const count = this.player1.hand.length;
             this.player1.clickCard(this.teach);
             expect(this.player1.hand.length).toBe(count + 1);
             expect(this.getChatLogs(5)).toContain('player1 uses Teacher of Empty Thought to draw 1 card');

@@ -8,32 +8,29 @@ export default class CornerThePrey extends DrawCard {
     static id = 'corner-the-prey';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Sacrifice followers to kill',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Sacrifice followers to kill')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: [CardType.Character, CardType.Attachment],
                 mode: TargetMode.Unlimited,
                 // A follower can be attached to a province, which does not participate.
                 cardCondition: (card) =>
                     card.hasTrait('follower') &&
                     (card.isParticipating() || !!card.parentCharacter?.isParticipating())
-            }),
-            target: {
+            }))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context),
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            },
-            cannotTargetFirst: true
-        });
+                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context, context.costs.sacrifice)
+            }, AbilityDsl.actions.discardFromPlay())
+            .cannotTargetFirst();
     }
 
-    private getFollowerCount(context: AbilityContext): number {
-        if(context.costs.sacrifice) {
-            return (context.costs.sacrifice as BaseCard[]).length;
+    private getFollowerCount(context: AbilityContext, sacrificed: BaseCard | BaseCard[] | undefined): number {
+        if(sacrificed) {
+            return Array.isArray(sacrificed) ? sacrificed.length : 1;
         }
-        const myFollowers = (context.game.allCards).filter(
+        const myFollowers = context.game.allCards.filter(
             (card) => card.controller === context.player && card.hasTrait('follower')
         );
         const myParticipatingFollowers = myFollowers.filter(

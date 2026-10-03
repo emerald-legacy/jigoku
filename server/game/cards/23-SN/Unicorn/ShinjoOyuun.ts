@@ -6,9 +6,8 @@ export default class ShinjoOyuun extends DrawCard {
     static id = 'shinjo-oyuun';
 
     setupCardAbilities() {
-        this.conflictAction({
-            title: 'Move a character into the conflict',
-            target: {
+        this.conflictAction('Move a character into the conflict')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => {
@@ -16,9 +15,7 @@ export default class ShinjoOyuun extends DrawCard {
                         return false;
                     }
                     return card.printedCost !== null && card.printedCost <= context.player.opponent.getNumberOfFaceupProvinces();
-                },
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                }
+            }, AbilityDsl.actions.moveToConflict());
     }
 }

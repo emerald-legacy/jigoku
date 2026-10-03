@@ -37,7 +37,7 @@ describe('kikyo', function() {
             });
 
             it('should grant the ability to a character when attached', function() {
-                let actionCount = this.kisadaP1.getReactions().length;
+                const actionCount = this.kisadaP1.getReactions().length;
                 this.player1.playAttachment(this.kikyo, this.kisadaP1);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.kisadaP1.getReactions().length).toBe(actionCount + 1);
@@ -55,7 +55,7 @@ describe('kikyo', function() {
                 });
 
                 it('should grant the ability if the character is a champion', function() {
-                    let actionCount = this.yoritomo.getReactions().length;
+                    const actionCount = this.yoritomo.getReactions().length;
                     this.player1.playAttachment(this.kikyo, this.yoritomo);
                     expect(this.yoritomo.getReactions().length).toBe(actionCount + 1);
                 });
@@ -122,7 +122,7 @@ describe('kikyo', function() {
                         attackers: [this.kisadaP1, this.oushi, this.yoritomo],
                         defenders: [this.challenger]
                     });
-                    let hand = this.player2.hand.length;
+                    const hand = this.player2.hand.length;
                     this.player2.pass();
                     this.player1.clickCard(this.bhc);
                     this.player1.clickPrompt('player1');

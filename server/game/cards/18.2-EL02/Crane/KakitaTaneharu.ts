@@ -1,5 +1,4 @@
 import DrawCard from '../../../DrawCard.js';
-import type BaseCard from '../../../BaseCard.js';
 import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Location, Players, PlayType } from '../../../Constants.js';
@@ -8,10 +7,9 @@ class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Search your conflict deck',
-            condition: context => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.deckSearch({
+        this.action('Search your conflict deck')
+            .condition(context => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 4,
                 reveal: false,
                 placeOnBottomInRandomOrder: true,
@@ -23,14 +21,13 @@ class KakitaTaneharu extends DrawCard {
                 gameAction: AbilityDsl.actions.placeCardUnderneath({
                     destination: this
                 })
-            })
-        });
+            }));
 
         this.persistentEffect({
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: (card: BaseCard) => {
+            match: (card) => {
                 return card.location === this.uuid;
             },
             effect: [

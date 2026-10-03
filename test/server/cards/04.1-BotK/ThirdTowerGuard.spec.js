@@ -14,7 +14,7 @@ describe('Third Tower Guard', function() {
             });
 
             it('should give +2 military skill if you have claimed the earth ring', function() {
-                let militarySkill = this.thirdTowerGuard.getMilitarySkill();
+                const militarySkill = this.thirdTowerGuard.getMilitarySkill();
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.thirdTowerGuard],
@@ -28,7 +28,7 @@ describe('Third Tower Guard', function() {
             });
 
             it('should give +2 military skill if you have claimed the water ring', function() {
-                let militarySkill = this.thirdTowerGuard.getMilitarySkill();
+                const militarySkill = this.thirdTowerGuard.getMilitarySkill();
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.thirdTowerGuard],

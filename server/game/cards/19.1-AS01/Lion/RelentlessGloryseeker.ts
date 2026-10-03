@@ -16,22 +16,20 @@ export default class RelentlessGloryseeker extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
-        this.reaction({
-            title: 'Put this character into play',
-            location: Location.DynastyDiscardPile,
-            when: {
+        this.reaction('Put this character into play')
+            .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source &&
                     context.game.currentPhase === Phases.Conflict &&
                     this.ressurrectionsThisRound < MAXIMUM_RESSURRECTIONS
-            },
-            gameAction: AbilityDsl.actions.putIntoPlay(),
-            effect: 'return to play - {0} is ready for more!',
-            then: () => {
+            })
+            .gameAction(AbilityDsl.actions.putIntoPlay())
+            .effect('return to play - {0} is ready for more!')
+            .then(() => {
                 this.ressurrectionsThisRound++;
                 return { gameAction: AbilityDsl.actions.noAction() };
-            }
-        });
+            })
+            .location(Location.DynastyDiscardPile);
     }
 
     public onRoundEnded() {

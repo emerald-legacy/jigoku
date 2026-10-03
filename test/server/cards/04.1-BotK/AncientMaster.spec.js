@@ -49,7 +49,7 @@ describe('Ancient Master', function () {
                 this.player1.clickPrompt('Play Ancient Master as an attachment');
                 this.player1.clickCard(this.nitenMaster);
                 this.noMoreActions();
-                let handsize = this.player1.player.hand.length;
+                const handsize = this.player1.player.hand.length;
                 this.initiateConflict({
                     attackers: [this.nitenMaster]
                 });
@@ -66,7 +66,7 @@ describe('Ancient Master', function () {
                 this.player1.clickPrompt('Play Ancient Master as an attachment');
                 this.player1.clickCard(this.nitenMaster);
                 this.noMoreActions();
-                let handsize = this.player1.player.hand.length;
+                const handsize = this.player1.player.hand.length;
                 this.initiateConflict({
                     attackers: [this.nitenMaster]
                 });

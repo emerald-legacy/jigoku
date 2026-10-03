@@ -59,7 +59,7 @@ describe('dynasty phase', function() {
             });
 
             it('should charge player for playing card and fate and pass priority', function() {
-                let startingFate = this.player1.player.fate;
+                const startingFate = this.player1.player.fate;
                 this.player1.clickCard(this.akodoToturi);
                 this.player1.clickPrompt('1');
 
@@ -77,7 +77,7 @@ describe('dynasty phase', function() {
             });
 
             it('should give the first player who passes 1 fate', function() {
-                let startingFate = this.player2.player.fate;
+                const startingFate = this.player2.player.fate;
                 this.player1.clickCard(this.akodoToturi);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('Pass');

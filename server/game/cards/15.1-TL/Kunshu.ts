@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityType, CardType, Location, Players, PlayType } from '../../Constants.js';
 
@@ -16,7 +15,7 @@ class Kunshu extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Play a card',
                 cost: AbilityDsl.costs.discardImperialFavor(),
-                condition: (context: AbilityContext<this>) => context.source.isParticipating(),
+                condition: (context) => context.source.isParticipating(),
                 printedAbility: false,
                 target: {
                     cardType: [CardType.Event, CardType.Attachment],

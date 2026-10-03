@@ -28,7 +28,7 @@ describe('Born in War', function () {
             });
 
             it('should grant as much military as there a unclaimed rings', function () {
-                let military = this.borderRider.getMilitarySkill();
+                const military = this.borderRider.getMilitarySkill();
                 this.player1.playAttachment(this.bornInWar, this.borderRider);
                 expect(this.borderRider.getMilitarySkill()).toBe(military + 5);
                 this.player1.claimRing('air');

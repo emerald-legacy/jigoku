@@ -44,8 +44,8 @@ describe('Yuta', function() {
                 defenders: [this.borderRider]
             });
 
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');

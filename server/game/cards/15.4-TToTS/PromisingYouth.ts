@@ -11,20 +11,18 @@ export default class PromisingYouth extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.modifyBothSkills(2)
         });
-        this.wouldInterrupt({
-            title: 'when attached char leaves play, turn into character',
-            when: {
+        this.wouldInterrupt('when attached char leaves play, turn into character')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: context.source,
                     duration: Duration.Custom,
                     effect: AbilityDsl.effects.changeType(CardType.Character)
                 })),
                 AbilityDsl.actions.detach((context) => ({ target: context.source }))
-            ])
-        });
+            ]));
     }
 
     leavesPlay() {

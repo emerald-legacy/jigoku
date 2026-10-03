@@ -5,15 +5,13 @@ class IkomaKiyono extends DrawCard {
     static id = 'ikoma-kiyono';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Ready for Glory Count',
-            when: {
+        this.wouldInterrupt('Ready for Glory Count')
+            .when({
                 onGloryCount: (event, context) => {
                     return context.player && context.player.opponent && context.player.isMoreHonorable();
                 }
-            },
-            gameAction: AbilityDsl.actions.ready()
-        });
+            })
+            .gameAction(AbilityDsl.actions.ready());
     }
 }
 

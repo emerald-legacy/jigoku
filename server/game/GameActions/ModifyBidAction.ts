@@ -4,7 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import type { ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export enum Direction {
     Decrease = 'decrease',
@@ -34,7 +34,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: ModifyBidProperties = this.getProperties(context);
+        const properties: ModifyBidProperties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', [properties.amount]];
         }
@@ -42,7 +42,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
+        const properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || (properties.direction === Direction.Decrease && player.honorBid === 0)) {
             return false;
         }
@@ -50,11 +50,11 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
+        const properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
         }
-        for(const player of properties.target as Player[]) {
+        for(const player of targetList(properties.target)) {
             if(player.honorBid === 0) {
                 const event = this.getEvent(player, context, additionalProperties);
                 event.direction = Direction.Increase;
@@ -81,15 +81,15 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, direction } = this.getProperties(context, additionalProperties);
+        const { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount;
+        event.amount = amount ?? 0;
         event.direction = direction;
     }
 
     eventHandler(event: ActionEvent<EventName.OnModifyBid, C>): void {
-        const player = event.player as Player;
-        const amount = event.amount as number;
+        const player = event.player;
+        const amount = event.amount;
         if(event.direction === Direction.Increase) {
             player.honorBidModifier += amount;
         } else {

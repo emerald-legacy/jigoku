@@ -40,7 +40,7 @@ describe('Skirmish Mode - Dynasty Phase', function() {
 
         describe('Passing Fate', function() {
             it('should not give passing fate', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.pass();
                 expect(this.player1.fate).toBe(fate);
                 expect(this.getChatLogs(3)).toContain('player1 passes');
@@ -80,7 +80,7 @@ describe('Normal Mode - Dynasty Phase', function() {
 
         describe('Passing Fate', function() {
             it('should give passing fate', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.pass();
                 expect(this.player1.fate).toBe(fate + 1);
                 expect(this.getChatLogs(3)).toContain('player1 is the first to pass, and gains 1 fate');

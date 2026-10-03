@@ -1,16 +1,14 @@
 import { AbilityType, CardType } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class MagariYari extends DrawCard {
     static id = 'magari-yari';
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('bushi'),
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            match: (card) => card.hasTrait('bushi'),
+            effect: AbilityDsl.effects.gainAbility<DrawCard>(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
                     onMoveToConflict: (event, context) =>
@@ -19,8 +17,8 @@ export default class MagariYari extends DrawCard {
                         event.card.isParticipating() &&
                         event.card.getMilitarySkill() < context.source.getMilitarySkill()
                 },
-                gameAction: AbilityDsl.actions.bow((context) => ({ target: (context as TriggeredAbilityContext).event.card }))
-            } as TriggeredAbilityProps<DrawCard>)
+                gameAction: AbilityDsl.actions.bow((context) => ({ target: context.event.card }))
+            })
         });
     }
 }

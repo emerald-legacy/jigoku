@@ -1,32 +1,31 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
+import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
     static id = 'trail-of-blood-and-lies';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 onMoveFate: (event, context) => {
-                    const origin = event.origin as { type?: string; controller?: unknown } | undefined;
+                    const origin = event.origin;
                     return (
                         context.game.currentPhase !== Phases.Fate &&
-                        event.fate > 0 &&
-                        !!origin &&
+                        (event.fate ?? 0) > 0 &&
+                        origin instanceof BaseCard &&
                         origin.type === CardType.Character &&
                         origin.controller === context.player.opponent
                     );
                 }
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 player: Players.Opponent,
-                controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.dishonor()
-            },
-            then: () => ({
+                controller: Players.Opponent
+            }, AbilityDsl.actions.dishonor())
+            .then(() => ({
                 gameAction: AbilityDsl.actions.conditional({
                     condition: (context) => context.player.isCharacterTraitInPlay('magistrate'),
                     falseGameAction: AbilityDsl.actions.noAction(),
@@ -38,8 +37,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                         gameAction: AbilityDsl.actions.dishonor()
                     })
                 })
-            }),
-            max: AbilityDsl.limit.perPhase(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perPhase(1));
     }
 }

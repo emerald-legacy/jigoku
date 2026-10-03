@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class SeekerOfEnlightenment extends DrawCard {
     static id = 'seeker-of-enlightenment';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.modifyBothSkills(() => this.getFateOnRings())
+            effect: AbilityDsl.effects.modifyBothSkills(() => this.getFateOnRings())
         });
     }
 

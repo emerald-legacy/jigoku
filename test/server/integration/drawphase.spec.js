@@ -92,8 +92,8 @@ describe('(2) Draw Phase', function() {
 
         describe('(2.4) \'Transfer honor\' step', function() {
             it('should transfer honor when player 1 bids higher', function() {
-                let player1honor = this.player1.player.honor;
-                let player2honor = this.player2.player.honor;
+                const player1honor = this.player1.player.honor;
+                const player2honor = this.player2.player.honor;
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('3');
                 expect(this.player1.player.honor).toBe(player1honor - 5 + 3);
@@ -101,8 +101,8 @@ describe('(2) Draw Phase', function() {
             });
 
             it('should transfer honor when player 2 bids higher', function() {
-                let player1honor = this.player1.player.honor;
-                let player2honor = this.player2.player.honor;
+                const player1honor = this.player1.player.honor;
+                const player2honor = this.player2.player.honor;
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('4');
                 expect(this.player1.player.honor).toBe(player1honor - 2 + 4);
@@ -110,8 +110,8 @@ describe('(2) Draw Phase', function() {
             });
 
             it('should not transfer any honor when bids are equal', function() {
-                let player1honor = this.player1.player.honor;
-                let player2honor = this.player2.player.honor;
+                const player1honor = this.player1.player.honor;
+                const player2honor = this.player2.player.honor;
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('5');
                 expect(this.player1.player.honor).toBe(player1honor);
@@ -121,10 +121,10 @@ describe('(2) Draw Phase', function() {
 
         describe('(2.5) \'Draw cards\' step', function() {
             it('should draw cards for both players equal to thier bids', function() {
-                let player1handSize = this.player1.hand.length;
-                let player1conflictDeckSize = this.player1.conflictDeck.length;
-                let player2handSize = this.player2.hand.length;
-                let player2conflictDeckSize = this.player2.conflictDeck.length;
+                const player1handSize = this.player1.hand.length;
+                const player1conflictDeckSize = this.player1.conflictDeck.length;
+                const player2handSize = this.player2.hand.length;
+                const player2conflictDeckSize = this.player2.conflictDeck.length;
                 this.player1.clickPrompt('3');
                 this.player2.clickPrompt('4');
                 expect(this.player1.hand.length).toBe(player1handSize + 3);

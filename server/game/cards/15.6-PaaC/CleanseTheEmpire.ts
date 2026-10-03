@@ -6,14 +6,13 @@ class CleanseTheEmpire extends DrawCard {
     static id = 'cleanse-the-empire';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Remove a fate from opponent\'s characters',
-            when: {
+        this.reaction('Remove a fate from opponent\'s characters')
+            .when({
                 afterConflict: (event, context) => context.player.opponent && context.player.isAttackingPlayer() && event.conflict.winner === context.player
-            },
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.removeFate(context => ({
-                    target: context.player.opponent?.filterCardsInPlay((card: DrawCard) => card.getType() === CardType.Character) ?? []
+                    target: context.player.opponent?.filterCardsInPlay((card) => card.getType() === CardType.Character) ?? []
                 })),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to bow',
@@ -25,8 +24,7 @@ class CleanseTheEmpire extends DrawCard {
                     message: '{0} chooses to bow {1}',
                     messageArgs: (card, player) => [player, card]
                 })
-            ])
-        });
+            ]));
     }
 }
 

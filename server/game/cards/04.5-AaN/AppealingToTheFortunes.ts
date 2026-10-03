@@ -11,17 +11,14 @@ export default class AppealingToTheFortunes extends ProvinceCard {
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 
-        this.interrupt({
-            title: 'Choose a character',
-            when: {
+        this.interrupt('Choose a character')
+            .when({
                 onBreakProvince: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                location: [Location.Provinces, Location.Hand],
-                gameAction: AbilityDsl.actions.putIntoPlay()
-            }
-        });
+                location: [Location.Provinces, Location.Hand]
+            }, AbilityDsl.actions.putIntoPlay());
     }
 }

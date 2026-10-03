@@ -7,18 +7,15 @@ export default class ShamblingServant extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Taint a character',
-            when: {
+        this.reaction('Taint a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.taint()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.taint());
     }
 }

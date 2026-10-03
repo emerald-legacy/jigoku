@@ -2,7 +2,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
-import { GameAction, GameActionProperties } from './GameAction.js';
+import { GameAction, GameActionProperties, targetList } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
 import { CardType, Location, type EventName } from '../Constants.js';
 import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
@@ -26,14 +26,14 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     getProperties(context: C, additionalProperties = {}): InjureActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
+        const properties = super.getProperties(context, additionalProperties);
         this.removeFateGameAction.setDefaultTarget(() => properties.target);
         this.discardGameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['injure {0}', [properties.target]];
     }
 
@@ -53,8 +53,8 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        for(let target of properties.target as DrawCard[]) {
+        const properties = this.getProperties(context, additionalProperties);
+        for(const target of targetList(properties.target)) {
             if(target.getFate() === 0) {
                 if(this.discardGameAction.canAffect(target, context, additionalProperties)) {
                     events.push(this.discardGameAction.getEvent(target, context, additionalProperties));

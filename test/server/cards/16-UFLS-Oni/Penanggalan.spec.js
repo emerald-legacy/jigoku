@@ -38,8 +38,8 @@ describe('Penanggalan', function () {
             this.challenger.bow();
             this.diplomat.bow();
 
-            let fate = this.diplomat.fate;
-            let pFate = this.penanggalan.fate;
+            const fate = this.diplomat.fate;
+            const pFate = this.penanggalan.fate;
 
             this.player2.pass();
             this.player1.pass();

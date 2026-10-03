@@ -30,7 +30,7 @@ describe('Loyal Challenger', function() {
                     defenders: [this.doomedShugenja],
                     type: 'political'
                 });
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.noMoreActions();
                 expect(this.player1.player.honor).toBe(honor + 1);
                 expect(this.getChatLogs(5)).toContain('player1 gains 1 honor due to Loyal Challenger winning a conflict');
@@ -43,7 +43,7 @@ describe('Loyal Challenger', function() {
                     defenders: [this.doomedShugenja],
                     type: 'military'
                 });
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.noMoreActions();
                 expect(this.player1.player.honor).toBe(honor - 1);
                 expect(this.getChatLogs(5)).toContain('player1 loses 1 honor due to Loyal Challenger losing a conflict');
@@ -59,8 +59,8 @@ describe('Loyal Challenger', function() {
                 this.player2.clickCard(this.shosuroActress);
                 this.player2.clickCard(this.discardLoyalChallenger);
                 expect(this.discardLoyalChallenger.location).toBe('play area');
-                let honorPlayer1 = this.player1.player.honor;
-                let honorPlayer2 = this.player2.player.honor;
+                const honorPlayer1 = this.player1.player.honor;
+                const honorPlayer2 = this.player2.player.honor;
                 this.noMoreActions();
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.player1.player.honor).toBe(honorPlayer1);
@@ -77,8 +77,8 @@ describe('Loyal Challenger', function() {
                 this.player2.clickCard(this.shosuroActress);
                 this.player2.clickCard(this.discardLoyalChallenger);
                 expect(this.discardLoyalChallenger.location).toBe('play area');
-                let honorPlayer1 = this.player1.player.honor;
-                let honorPlayer2 = this.player2.player.honor;
+                const honorPlayer1 = this.player1.player.honor;
+                const honorPlayer2 = this.player2.player.honor;
                 this.noMoreActions();
                 this.player1.clickPrompt('Don\'t Resolve');
                 expect(this.player1).toHavePrompt('Action Window');
@@ -100,8 +100,8 @@ describe('Loyal Challenger', function() {
                 this.player2.clickCard(this.loyalChallenger);
                 expect(this.loyalChallenger.location).toBe('play area');
                 expect(this.loyalChallenger.controller).toBe(this.player2.player);
-                let honor1 = this.player1.player.honor;
-                let honor2 = this.player2.player.honor;
+                const honor1 = this.player1.player.honor;
+                const honor2 = this.player2.player.honor;
                 this.noMoreActions();
                 expect(this.player1.player.honor).toBe(honor1);
                 expect(this.player2.player.honor).toBe(honor2 + 1);

@@ -137,8 +137,8 @@ describe('Vine Tattoo', function() {
                 ring: 'void'
             });
 
-            let mil = this.sotorii.getMilitarySkill();
-            let pol = this.sotorii.getPoliticalSkill();
+            const mil = this.sotorii.getMilitarySkill();
+            const pol = this.sotorii.getPoliticalSkill();
 
             this.player2.pass();
             this.player1.clickCard(this.atsuko);

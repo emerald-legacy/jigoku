@@ -27,5 +27,9 @@ export class ElementSymbol extends EffectSource {
         this.key = info.key;
         this.prettyName = info.prettyName;
     }
+
+    getPersistentEffectRecords(): readonly PersistentEffectRecord[] {
+        return this.persistentEffects;
+    }
 }
 

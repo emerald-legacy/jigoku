@@ -15,10 +15,10 @@ export default class TranquilOverlookDojo extends StrongholdCard {
 }
 
 function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: DuelType, title: string) {
-    self.action({
-        title,
-        cost: AbilityDsl.costs.bowSelf(),
-        initiateDuel: {
+    self.action(title)
+        .condition((context) => context.game.isDuringConflict())
+        .cost(AbilityDsl.costs.bowSelf())
+        .initiateDuel(() => ({
             type,
             opponentChoosesDuelTarget: true,
             gameAction: (duel) =>
@@ -49,7 +49,6 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
                         };
                     })
                 })
-        },
-        max: limit
-    });
+        }))
+        .max(limit);
 }

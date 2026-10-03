@@ -30,8 +30,8 @@ describe('Togashi Naname', function () {
                 ring: 'fire'
             });
 
-            let cfate = this.yoshi.fate;
-            let rFate = this.game.rings.air.fate;
+            const cfate = this.yoshi.fate;
+            const rFate = this.game.rings.air.fate;
 
             this.player2.clickCard(this.naname);
             expect(this.player2).toBeAbleToSelect(this.yoshi);
@@ -72,15 +72,15 @@ describe('Togashi Naname', function () {
                 ring: 'fire'
             });
 
-            let cfate = this.yoshi.fate;
-            let rFate = this.game.rings.air.fate;
+            const cfate = this.yoshi.fate;
+            const rFate = this.game.rings.air.fate;
 
             this.player2.clickCard(this.naname);
             this.player2.clickCard(this.yoshi);
             this.player2.clickRing('air');
             this.player1.clickPrompt('Let Opponent Resolve the Air Ring');
 
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
             expect(this.player2).toHavePrompt('Air Ring');
             this.player2.clickPrompt('Gain 2 honor');
 

@@ -98,7 +98,7 @@ describe('SoD - Unicorn', function () {
                 expect(this.player1).not.toBeAbleToSelect(this.liar);
                 expect(this.player1).not.toBeAbleToSelect(this.brash);
 
-                let mil = this.toshimoko.getMilitarySkill();
+                const mil = this.toshimoko.getMilitarySkill();
 
                 this.player1.clickCard(this.toshimoko);
                 expect(this.getChatLogs(5)).toContain('player1 plays Cornering Maneuver to give Kakita Toshimoko +2military');
@@ -241,7 +241,7 @@ describe('SoD - Unicorn', function () {
             });
 
             it('when winning should gain honor', function () {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -263,7 +263,7 @@ describe('SoD - Unicorn', function () {
             });
 
             it('when losing should ready', function () {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -377,8 +377,8 @@ describe('SoD - Unicorn', function () {
                     defenders: [this.moto]
                 });
 
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.storm);
 
@@ -420,8 +420,8 @@ describe('SoD - Unicorn', function () {
                     defenders: [this.moto]
                 });
 
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.storm);
 

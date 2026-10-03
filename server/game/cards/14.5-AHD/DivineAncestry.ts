@@ -6,12 +6,11 @@ class DivineAncestry extends DrawCard {
     static id = 'divine-ancestry';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent losing honor this phase',
-            when: {
+        this.reaction('Prevent losing honor this phase')
+            .when({
                 onPhaseStarted: event => event.phase !== 'setup'
-            },
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: context.player,
                 effect: [
@@ -22,10 +21,8 @@ class DivineAncestry extends DrawCard {
                         cannot: 'takeHonor'
                     })
                 ]
-            })),
-            effect: 'prevent {1} from losing honor this phase',
-            effectArgs: context => [context.player]
-        });
+            })))
+            .effect('prevent {1} from losing honor this phase', context => [context.player]);
     }
 }
 

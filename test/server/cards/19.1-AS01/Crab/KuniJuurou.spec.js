@@ -31,7 +31,7 @@ describe('Kuni Juurou', function () {
             });
 
             it('Loses honor normally due to effects', function () {
-                let player1StartingHonor = this.player1.honor;
+                const player1StartingHonor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',

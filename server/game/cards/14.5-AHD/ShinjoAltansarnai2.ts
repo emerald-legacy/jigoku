@@ -6,10 +6,9 @@ class ShinjoAltansarnai2 extends DrawCard {
     static id = 'shinjo-altansarnai-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            condition: (context) => this.game.isDuringConflict('military') && context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Put a character into play')
+            .condition((context) => this.game.isDuringConflict('military') && context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a character that costs 3 or less',
                     cards: context.player.dynastyDeck.slice(0, 8),
@@ -18,10 +17,12 @@ class ShinjoAltansarnai2 extends DrawCard {
                         (card.printedCost ?? 0) <= 3 &&
                         !card.isUnique() &&
                         card.allowGameAction('putIntoConflict', context),
-                    choices: ['Don\'t choose a character'],
-                    handlers: [
-                        function () {
-                            context.game.addMessage('{0} chooses not to put a character into play', context.player);
+                    options: [
+                        {
+                            text: 'Don\'t choose a character',
+                            handler() {
+                                context.game.addMessage('{0} chooses not to put a character into play', context.player);
+                            }
                         }
                     ],
                     subActionProperties: (card) => ({ target: card }),
@@ -33,9 +34,8 @@ class ShinjoAltansarnai2 extends DrawCard {
                     deck: Location.DynastyDeck,
                     target: context.player
                 }))
-            ]),
-            effect: 'search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict'
-        });
+            ]))
+            .effect('search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict');
     }
 }
 

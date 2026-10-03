@@ -1,7 +1,6 @@
 import { AbilityType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class KakitaBlade2 extends DrawCard {
     static id = 'kakita-blade-2';
@@ -11,7 +10,7 @@ export default class KakitaBlade2 extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Take an action',
                 when: {
-                    onConflictStarted: (_event, context: TriggeredAbilityContext<DrawCard>) =>
+                    onConflictStarted: (_event, context) =>
                         context.source.isParticipating() && context.source.hasTrait('bushi')
                 },
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({

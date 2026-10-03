@@ -1,14 +1,16 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import { CardType, EventName, Location } from '../Constants.js';
-import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { CardActionProperties } from './CardGameAction.js';
+import { LeavesPlayAction, type LeavesPlayEvent } from './LeavesPlayAction.js';
 
 import type { ActionEvent } from './GameAction.js';
 export interface RemoveFromGameProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFromGameProperties, EventName, C> {
+export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<RemoveFromGameProperties, C> {
     name = 'removeFromGame';
     eventName = EventName.OnCardLeavesPlay;
     cost = 'removing {0} from the game';
@@ -43,12 +45,12 @@ export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> ext
         return super.canAffect(card, context);
     }
 
-    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
+    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         additionalProperties.destination = Location.RemovedFromGame;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

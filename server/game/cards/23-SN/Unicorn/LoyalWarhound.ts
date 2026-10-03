@@ -1,9 +1,7 @@
 import { AbilityType, CardType, Duration, EffectName, Players } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
-import { AbilityContext } from '../../../AbilityContext.js';
 
 export default class LoyalWarhound extends DrawCard {
     static id = 'loyal-warhound';
@@ -14,22 +12,21 @@ export default class LoyalWarhound extends DrawCard {
             glory: '0',
             side: 'dynasty',
             text: '',
-            type: 'attachment',
+            type: CardType.Attachment,
             name: 'War Hound',
             id: 'loyal-warhound',
             traits: ['creature']
         });
 
-        this.action({
-            title: 'Attach this to a character',
-            condition: context => context.source.type === CardType.Character,
-            target: {
+        this.action('Attach this to a character')
+            .condition(context => context.source.type === CardType.Character)
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
-            },
-            gameAction: AbilityDsl.actions.sequentialContext(context => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext(context => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(AbilityDsl.actions.cardLastingEffect({
@@ -44,7 +41,7 @@ export default class LoyalWarhound extends DrawCard {
                         AbilityDsl.effects.changeType(CardType.Attachment),
                         AbilityDsl.effects.gainAbility(AbilityType.Action, {
                             title: 'Detatch',
-                            condition: (context: AbilityContext<DrawCard>) => {
+                            condition: (context) => {
                                 const flags = context.source.getEffects(EffectName.AddFlag);
                                 return !flags.includes('wasAttachedThisRound');
                             },
@@ -55,7 +52,7 @@ export default class LoyalWarhound extends DrawCard {
                         // Matched dynamically so the protection follows this card if it is reattached
                         AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                             targetController: Players.Any,
-                            match: (card: BaseCard, context?: AbilityContext<DrawCard>) =>
+                            match: (card, context) =>
                                 card === context?.source.parentCharacter && card.hasTrait('scout'),
                             effect: AbilityDsl.effects.cardCannot({
                                 cannot: 'target',
@@ -79,13 +76,12 @@ export default class LoyalWarhound extends DrawCard {
 
                 // It is no longer a character, so it stops contributing to the conflict
                 gameActions.push(AbilityDsl.actions.handler({
-                    handler: () => context.game.currentConflict?.removeFromConflict(context.source as DrawCard)
+                    handler: () => context.game.currentConflict?.removeFromConflict(context.source)
                 }));
 
                 return { gameActions };
-            }),
-            effect: 'attach itself to {0}'
-        });
+            }))
+            .effect('attach itself to {0}');
     }
 
     leavesPlay() {

@@ -6,17 +6,14 @@ export default class BlatantSwindler extends DrawCard {
     static id = 'blatant-swindler';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Move home a character',
-            cost: AbilityDsl.costs.giveHonorToOpponent(1),
-            condition: (context) => context.source.isParticipating() && context.player.opponent !== undefined,
-            target: {
+        this.action('Move home a character')
+            .cost(AbilityDsl.costs.giveHonorToOpponent(1))
+            .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .target('target', {
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.sendHome());
     }
 }

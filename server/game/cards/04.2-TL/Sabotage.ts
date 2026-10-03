@@ -6,16 +6,13 @@ class Sabotage extends DrawCard {
     static id = 'sabotage';
 
     setupCardAbilities() {
-        this.action({
-            condition: () => this.game.isDuringConflict('military'),
-            title: 'Discard a card in a province',
-            target: {
+        this.action('Discard a card in a province')
+            .condition(() => this.game.isDuringConflict('military'))
+            .target('target', {
                 location: Location.Provinces,
                 controller: Players.Opponent,
-                cardType: [CardType.Character, CardType.Holding, CardType.Event],
-                gameAction: AbilityDsl.actions.discardCard()
-            }
-        });
+                cardType: [CardType.Character, CardType.Holding, CardType.Event]
+            }, AbilityDsl.actions.discardCard());
     }
 }
 

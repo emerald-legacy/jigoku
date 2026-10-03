@@ -1,7 +1,6 @@
 import { Location, PlayType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import Player from '../../../Player.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
@@ -11,26 +10,24 @@ export default class SandRoadMerchant extends DrawCard {
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: (card: DrawCard) => card.location === this.uuid,
+            match: (card) => card.location === this.uuid,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player) => player === this.controller,
+                    (player) => player === this.controller,
                     PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]
         });
 
-        this.reaction({
-            title: 'Look at your opponent\'s conflict deck',
-            effect: 'look at the top two cards of their opponent\'s conflict deck',
-            when: {
+        this.reaction('Look at your opponent\'s conflict deck')
+            .when({
                 onConflictDeclared: (event, context) =>
                     (event.attackers ?? []).includes(context.source) && context.player.opponent !== undefined,
                 onDefendersDeclared: (event, context) =>
                     (event.defenders ?? []).includes(context.source) && context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.deckSearch(() => ({
                         amount: 2,
@@ -43,7 +40,7 @@ export default class SandRoadMerchant extends DrawCard {
                         reveal: true
                     })),
                     AbilityDsl.actions.chooseAction(() => {
-                        let topCard = context.player.opponent?.conflictDeck[0];
+                        const topCard = context.player.opponent?.conflictDeck[0];
                         return {
                             activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                             player: Players.Opponent,
@@ -56,10 +53,7 @@ export default class SandRoadMerchant extends DrawCard {
                                     action: AbilityDsl.actions.handler({
                                         handler: () => {
                                             if(topCard) {
-                                                context.player.opponent?.moveCard(
-                                                    topCard,
-                                                    Location.ConflictDeck + ' bottom'
-                                                );
+                                                context.player.opponent?.moveCard(topCard, Location.ConflictDeck, { bottom: true });
                                             }
                                         }
                                     }),
@@ -70,7 +64,7 @@ export default class SandRoadMerchant extends DrawCard {
                         };
                     })
                 ]
-            }))
-        });
+            })))
+            .effect('look at the top two cards of their opponent\'s conflict deck');
     }
 }

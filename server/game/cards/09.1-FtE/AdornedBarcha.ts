@@ -11,16 +11,13 @@ class AdornedBarcha extends DrawCard {
             unique: true
         });
 
-        this.action({
-            title: 'Move character into the conflict',
-            condition: context => !!(context.source.parentCharacter && !context.source.parentCharacter.isParticipating() && this.game.isDuringConflict('military')),
-            target: {
+        this.action('Move character into the conflict')
+            .condition(context => !!(context.source.parentCharacter && !context.source.parentCharacter.isParticipating() && this.game.isDuringConflict('military')))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            },
-            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }))
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.bow())
+            .gameAction(AbilityDsl.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })));
     }
 }
 

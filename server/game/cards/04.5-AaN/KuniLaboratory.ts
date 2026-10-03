@@ -11,14 +11,12 @@ class KuniLaboratory extends DrawCard {
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
-        this.forcedReaction({
-            title: 'After the conflict phase begins',
-            when: {
+        this.forcedReaction('After the conflict phase begins')
+            .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
-            },
-            effect: 'lose an honor',
-            gameAction: AbilityDsl.actions.loseHonor(context => ({ target: context.player }))
-        });
+            })
+            .gameAction(AbilityDsl.actions.loseHonor(context => ({ target: context.player })))
+            .effect('lose an honor');
     }
 }
 

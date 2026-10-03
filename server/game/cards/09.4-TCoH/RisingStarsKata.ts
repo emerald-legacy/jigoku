@@ -15,23 +15,18 @@ export default class RisingStarsKata extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
 
-        this.action<DrawCard>({
-            title: 'Give a participating unique character +3 military skill',
-
-            target: {
+        this.action('Give a participating unique character +3 military skill')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isUnique() && card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    duration: Duration.UntilEndOfConflict,
-                    effect: context.target && this.duelWinnersThisConflict.has(context.target)
-                        ? AbilityDsl.effects.modifyMilitarySkill(5)
-                        : AbilityDsl.effects.modifyMilitarySkill(3)
-                }))
-            },
-            effect: 'give {0} +{1} {2} skill until the end of the conflict',
-            effectArgs: (context) => [context.target && this.duelWinnersThisConflict.has(context.target) ? 5 : 3, 'military'],
-            max: AbilityDsl.limit.perConflict(1)
-        });
+                cardCondition: (card) => card.isUnique() && card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                duration: Duration.UntilEndOfConflict,
+                effect: context.target && this.duelWinnersThisConflict.has(context.target)
+                    ? AbilityDsl.effects.modifyMilitarySkill(5)
+                    : AbilityDsl.effects.modifyMilitarySkill(3)
+            })))
+            .effect('give {0} +{1} {2} skill until the end of the conflict', (context) => [context.target && this.duelWinnersThisConflict.has(context.target) ? 5 : 3, 'military'])
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
     public onConflictFinished() {

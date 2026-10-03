@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import { EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -16,7 +15,7 @@ export default class IkomaAnakazu extends DrawCard {
         this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
 
         this.persistentEffect({
-            condition: (context: AbilityContext<this>) =>
+            condition: (context) =>
                 !!(context.source.isParticipating() &&
                 context.player.opponent &&
                 (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0),

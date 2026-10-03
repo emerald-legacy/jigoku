@@ -257,7 +257,7 @@
 
             it('should reduce the cost by the printed cost of the character in play', function() {
                 this.advancePhases('conflict');
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.player1.clickCard(this.akodoZentaro);
                 this.player1.clickCard(this.matsuBerserker);
                 expect(this.player1.player.fate).toBe(fate - this.akodoZentaro.getCost() + this.matsuBerserker.getCost());
@@ -279,7 +279,7 @@
             });
 
             it('should transfer fate', function() {
-                let fate = this.matsuBerserker.fate;
+                const fate = this.matsuBerserker.fate;
                 this.advancePhases('conflict');
                 this.player1.clickCard(this.akodoZentaro);
                 this.player1.clickCard(this.matsuBerserker);
@@ -312,7 +312,7 @@
                 expect(this.matsuBerserker.isDishonored).toBe(true);
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Action Window');
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.player1.clickCard(this.akodoZentaro);
                 this.player1.clickCard(this.matsuBerserker);
                 expect(this.akodoZentaro.isDishonored).toBe(true);

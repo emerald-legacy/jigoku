@@ -6,35 +6,32 @@ class ForebearersEchoes extends DrawCard {
     static id = 'forebearer-s-echoes';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            condition: context => context.game.isDuringConflict('military'),
-            target: {
+        this.action('Put a character into play')
+            .condition(context => context.game.isDuringConflict('military'))
+            .target('target', {
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.joint([
-                    AbilityDsl.actions.putIntoConflict(context => ({
-                        target: context.target
-                    })),
-                    AbilityDsl.actions.cardLastingEffect(context => ({
-                        target: context.target,
-                        duration: Duration.UntilEndOfPhase,
-                        location: [Location.DynastyDiscardPile, Location.PlayArea],
-                        effect: AbilityDsl.effects.delayedEffect({
-                            when: {
-                                onConflictFinished: () => true
-                            },
-                            message: '{1} returns to the bottom of the dynasty deck due to the delayed effect of {0}',
-                            messageArgs: [context.source, context.target],
-                            gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
-                        })
-                    }))
-                ])
-            },
-            effect: 'put {0} into play in the conflict and apply a lasting effect to {0}'
-        });
+                cardType: CardType.Character
+            }, AbilityDsl.actions.joint([
+                AbilityDsl.actions.putIntoConflict(context => ({
+                    target: context.target
+                })),
+                AbilityDsl.actions.cardLastingEffect(context => ({
+                    target: context.target,
+                    duration: Duration.UntilEndOfPhase,
+                    location: [Location.DynastyDiscardPile, Location.PlayArea],
+                    effect: AbilityDsl.effects.delayedEffect({
+                        when: {
+                            onConflictFinished: () => true
+                        },
+                        message: '{1} returns to the bottom of the dynasty deck due to the delayed effect of {0}',
+                        messageArgs: [context.source, context.target],
+                        gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
+                    })
+                }))
+            ]))
+            .effect('put {0} into play in the conflict and apply a lasting effect to {0}');
     }
 }
 

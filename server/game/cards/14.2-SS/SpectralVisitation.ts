@@ -1,20 +1,17 @@
 import { CardType, Decks, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class SpectralVisitation extends ProvinceCard {
     static id = 'spectral-visitation';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'put a character from your discard pile into play',
-            cannotTargetFirst: true,
-            when: {
+        this.reaction('put a character from your discard pile into play')
+            .when({
                 onCardRevealed: (event, context) => context.source === event.card
-            },
-            cost: [AbilityDsl.costs.discardTopCardsFromDeck({ amount: 4, deck: Decks.DynastyDeck })],
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .cost(AbilityDsl.costs.discardTopCardsFromDeck({ amount: 4, deck: Decks.DynastyDeck }))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),
@@ -32,7 +29,7 @@ export default class SpectralVisitation extends ProvinceCard {
                                     onPhaseEnded: () => true
                                 },
                                 message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                                messageArgs: (effectContext: AbilityContext, effectTargets: unknown[]) => [effectTargets, context.source],
+                                messageArgs: (_effectContext, effectTargets) => [effectTargets, context.source],
                                 gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                             })
                         }))
@@ -41,8 +38,8 @@ export default class SpectralVisitation extends ProvinceCard {
                         '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the phase',
                     messageArgs: (card) => [context.player, card, context.source]
                 }))
-            ]),
-            effect: 'put a dynasty character into play'
-        });
+            ]))
+            .effect('put a dynasty character into play')
+            .cannotTargetFirst();
     }
 }

@@ -15,18 +15,15 @@ class ShosuroMiyako2 extends DrawCard {
             })
         });
 
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => !card.isUnique(),
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardCondition: card => !card.isUnique()
+            }, AbilityDsl.actions.dishonor());
     }
 
     canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean) {

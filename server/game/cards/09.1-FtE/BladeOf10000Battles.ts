@@ -11,21 +11,18 @@ class BladeOf10000Battles extends DrawCard {
             unique: true
         });
 
-        this.reaction({
-            when: {
+        this.reaction('Add a card from the discard pile to the hand')
+            .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                     event.conflict.winner === context.source.parentCharacter.controller &&
                                                     context.player.opponent &&
                                                     context.player.isMoreHonorable()
-            },
-            title: 'Add a card from the discard pile to the hand',
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a card from your conflict discard pile to add to your hand',
                 location: Location.ConflictDiscardPile,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.moveCard({ destination: Location.Hand }));
     }
 }
 

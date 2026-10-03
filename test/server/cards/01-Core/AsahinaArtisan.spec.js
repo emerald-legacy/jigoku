@@ -40,8 +40,8 @@ describe('Asahina Artisan', function () {
 
             it('should bow Asahina Artisan and give +3 Pol to the target until the end of the conflict', function () {
                 this.noMoreActions();
-                let politicalSkill = this.brashSamurai.getPoliticalSkill();
-                let militarySkill = this.brashSamurai.getMilitarySkill();
+                const politicalSkill = this.brashSamurai.getPoliticalSkill();
+                const militarySkill = this.brashSamurai.getMilitarySkill();
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.brashSamurai],

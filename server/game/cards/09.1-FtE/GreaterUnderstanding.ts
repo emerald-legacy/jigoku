@@ -8,14 +8,12 @@ class GreaterUnderstanding extends DrawCard {
     static id = 'greater-understanding';
 
     setupCardAbilities() {
-        this.reaction({
-            when: {
+        this.reaction('Resolve the attached ring\'s effect')
+            .when({
                 onMoveFate: (event) => event.recipient === this.parent,
                 onPlaceFateOnUnclaimedRings: () => this.parent instanceof Ring && this.parent.isUnclaimed()
-            },
-            title: 'Resolve the attached ring\'s effect',
-            gameAction: AbilityDsl.actions.resolveRingEffect(context => ({ target: context.source.parent ?? [] }))
-        });
+            })
+            .gameAction(AbilityDsl.actions.resolveRingEffect(context => ({ target: context.source.parent ?? [] })));
     }
     canAttach(ring: BaseCard | Ring) {
         return ring && ring.type === 'ring';

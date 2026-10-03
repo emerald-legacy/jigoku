@@ -6,15 +6,12 @@ export default class ShizukaToshi extends StrongholdCard {
     static id = 'shizuka-toshi';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: () => this.game.isDuringConflict('political'),
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+        this.action('Bow a character')
+            .cost(AbilityDsl.costs.bowSelf())
+            .condition(() => this.game.isDuringConflict('political'))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.politicalSkill <= 2,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.politicalSkill <= 2
+            }, AbilityDsl.actions.bow());
     }
 }

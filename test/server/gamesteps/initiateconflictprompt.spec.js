@@ -42,7 +42,7 @@ describe('InitateConflictPrompt: ', function() {
         describe('when a military fire ring has been chosen', function() {
             beforeEach(function() {
                 this.conflictSpy.element = 'fire';
-                this.conflictSpy.ring = { element: 'fire' };
+                this.conflictSpy.ring = { element: 'fire', conflictType: 'military' };
                 this.conflictSpy.conflictType = 'military';
                 this.promptProperties = this.prompt.activePrompt();
             });
@@ -89,6 +89,12 @@ describe('InitateConflictPrompt: ', function() {
         beforeEach(function() {
             this.cardSpy = jasmine.createSpyObj('card', ['checkRestrictions', 'canDeclareAsAttacker', 'isCovert', 'canBeBypassedByCovert', 'getEffects', 'canBeAttacked']);
             this.cardSpy.getEffects.and.returnValue([]);
+            this.cardSpy.isProvinceCard = function() {
+                return !!this.isProvince;
+            };
+            this.cardSpy.isCharacter = function() {
+                return this.type === 'character';
+            };
         });
 
         describe('when a different player clicks a card, ', function() {
@@ -298,7 +304,8 @@ describe('InitateConflictPrompt: ', function() {
 
             describe('if the card is controlled by the other player,', function() {
                 beforeEach(function() {
-                    this.covertSpy = jasmine.createSpyObj('card', ['checkRestrictions', 'canDeclareAsAttacker', 'isCovert', 'canBeBypassedByCovert', 'getEffects', 'canBeAttacked']);
+                    this.covertSpy = jasmine.createSpyObj('card', ['checkRestrictions', 'canDeclareAsAttacker', 'isCovert', 'canBeBypassedByCovert', 'getEffects', 'canBeAttacked', 'isCard']);
+                    this.covertSpy.isCard.and.returnValue(true);
                     this.covertSpy.isCovert.and.returnValue(true);
                     this.conflictSpy.attackers.push(this.covertSpy);
                     this.conflictSpy.attackingPlayer = this.playerSpy;

@@ -6,16 +6,13 @@ class TwilightRider extends DrawCard {
     static id = 'twilight-rider';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Ready a character',
-            when: {
+        this.reaction('Ready a character')
+            .when({
                 onMoveToConflict: (event, context) => event.card === context.source
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+            })
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.ready());
     }
 }
 

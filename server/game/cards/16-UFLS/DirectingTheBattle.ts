@@ -1,44 +1,38 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class DirectingTheBattle extends DrawCard {
     static id = 'directing-the-battle';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Direct the Battle',
-            condition: context => context.game.isDuringConflict(),
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    controller: Players.Any
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
-                    choices: {
-                        'Move this character home': AbilityDsl.actions.sendHome(context => ({
-                            target: context.targets.character
-                        })),
-                        'Give +3 Military': AbilityDsl.actions.cardLastingEffect(context => ({
-                            effect: AbilityDsl.effects.modifyMilitarySkill(3),
-                            target: context.targets.character
-                        })),
-                        'Prevent bowing during conflict': AbilityDsl.actions.cardLastingEffect(context => ({
-                            effect: AbilityDsl.effects.cardCannot({
-                                cannot: 'bow',
-                                restricts: 'opponentsCardEffects',
-                                applyingPlayer: context.player
-                            }),
-                            target: context.targets.character
-                        }))
-                    }
-                }
-            },
-            effect: '{1}{2}{3}{4}',
-            effectArgs: context => {
+        this.action('Direct the Battle')
+            .condition(context => context.game.isDuringConflict())
+            .target('character', {
+                cardType: CardType.Character,
+                controller: Players.Any
+            })
+            .select('select', {
+                dependsOn: 'character',
+                player: context => (context.targets.character).controller === context.player ? Players.Self : Players.Opponent
+            }, {
+                'Move this character home': AbilityDsl.actions.sendHome(context => ({
+                    target: context.targets.character
+                })),
+                'Give +3 Military': AbilityDsl.actions.cardLastingEffect(context => ({
+                    effect: AbilityDsl.effects.modifyMilitarySkill(3),
+                    target: context.targets.character
+                })),
+                'Prevent bowing during conflict': AbilityDsl.actions.cardLastingEffect(context => ({
+                    effect: AbilityDsl.effects.cardCannot({
+                        cannot: 'bow',
+                        restricts: 'opponentsCardEffects',
+                        applyingPlayer: context.player
+                    }),
+                    target: context.targets.character
+                }))
+            })
+            .effect('{1}{2}{3}{4}', context => {
                 if(context.selects.select.choice === 'Move this character home') {
                     return ['send ', context.targets.character, ' home', ''];
                 }
@@ -46,8 +40,7 @@ class DirectingTheBattle extends DrawCard {
                     return ['give ', context.targets.character, ' +3', 'military'];
                 }
                 return ['prevent ', context.targets.character, ' from being bowed by opponent\'s card effects', ''];
-            }
-        });
+            });
     }
 }
 

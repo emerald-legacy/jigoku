@@ -2,7 +2,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { Duration, EffectName, EventName, Location } from '../Constants.js';
-import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
+import { CardGameAction, type CardActionProperties, type CardEvent } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import { toEffectList, type LastingEffectFields } from './LastingEffectAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
@@ -14,7 +14,7 @@ export interface LastingEffectCardProperties extends CardActionProperties, Lasti
     canChangeZoneNTimes?: number;
 }
 
-export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LastingEffectCardProperties, EventName, C> {
+export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LastingEffectCardProperties, EventName.OnEffectApplied, C> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect to {0}';
@@ -25,7 +25,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
     };
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const message = properties.message || this.effect;
 
         return [message, [properties.target]];
@@ -37,7 +37,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const effects = properties.effect.map((factory) => factory(context.game, context.source, properties));
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         return (
@@ -45,7 +45,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
             effects.some(
                 (props: Effect) =>
                     props.effect.canBeApplied(card) &&
-                    !lastingEffectRestrictions.some((condition: (e: unknown) => boolean) => condition(props.effect))
+                    !lastingEffectRestrictions.some((condition) => condition(props.effect))
             )
         );
     }
@@ -55,7 +55,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
         const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context;
         const effectProperties = Object.assign({ match: event.card, location: Location.Any }, otherProperties);
-        let effects = _effect.map((factory) =>
+        const effects = _effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
 
@@ -64,14 +64,14 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
         event.matches = Array.isArray(matches) ? matches : [matches];
     }
 
-    eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: CardEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
         const eventContext = event.context;
-        let properties = this.getProperties(eventContext, additionalProperties);
+        const properties = this.getProperties(eventContext, additionalProperties);
         if(!properties.ability) {
             properties.ability = eventContext.ability;
         }
 
-        const card = event.card as BaseCard;
+        const card = event.card;
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         const { effect: _effect, ...otherProperties } = properties;
         const effectProperties = Object.assign({ match: card, location: Location.Any }, otherProperties);
@@ -81,7 +81,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
         effects = effects.filter(
             (props: Effect) =>
                 props.effect.canBeApplied(card) &&
-                !lastingEffectRestrictions.some((condition: (e: unknown) => boolean) => condition(props.effect))
+                !lastingEffectRestrictions.some((condition) => condition(props.effect))
         );
         for(const effect of effects) {
             eventContext.game.effectEngine.add(effect);

@@ -6,17 +6,14 @@ class FightOn extends DrawCard {
     static id = 'fight-on';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready character and move to conflict',
-            condition: context => context.player.isDefendingPlayer(),
-            target: {
+        this.action('Ready character and move to conflict')
+            .condition(context => context.player.isDefendingPlayer())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.bowed,
-                gameAction: [AbilityDsl.actions.ready(), AbilityDsl.actions.moveToConflict()]
-            },
-            effect: 'ready {0} and move it into the conflict'
-        });
+                cardCondition: card => card.bowed
+            }, AbilityDsl.actions.ready(), AbilityDsl.actions.moveToConflict())
+            .effect('ready {0} and move it into the conflict');
     }
 }
 

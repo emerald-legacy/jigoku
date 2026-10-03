@@ -7,17 +7,15 @@ export default class OnikageRider extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Discard cards in provinces',
-            when: {
+        this.reaction('Discard cards in provinces')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
                     context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.discardCard((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.discardCard((context) => ({
                 target: context.player.opponent?.getDynastyCardsInProvince(Location.Provinces)
-            }))
-        });
+            })));
     }
 }

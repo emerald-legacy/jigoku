@@ -6,15 +6,12 @@ class AgainstTheWaves extends DrawCard {
     static id = 'against-the-waves';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow or ready a shugenja',
-            target: {
+        this.action('Bow or ready a shugenja')
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('shugenja'),
-                controller: Players.Self,
-                gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.ready()]
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.ready());
     }
 }
 

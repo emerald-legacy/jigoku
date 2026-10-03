@@ -4,12 +4,10 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
+import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
 type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
 
-interface OwningAbility {
-    targets: { name: string }[];
-}
 
 interface AbilityTargetElementSymbolProperties {
     gameAction: GameAction[];
@@ -17,7 +15,6 @@ interface AbilityTargetElementSymbolProperties {
     cardType?: CardType | CardType[];
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface ElementTargetResults {
@@ -30,14 +27,13 @@ interface ElementTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
 class AbilityTargetElementSymbol {
     name: string;
     properties: AbilityTargetElementSymbolProperties;
     selector: CardSelectorInstance;
-    dependentTarget: AbilityTargetElementSymbol | null;
+    dependentTarget: DependentTarget | null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetElementSymbolProperties, ability: OwningAbility) {
@@ -45,25 +41,25 @@ class AbilityTargetElementSymbol {
         this.properties = properties;
         this.properties.location = this.properties.location || Location.PlayArea;
         this.selector = this.getSelector(properties);
-        for(let gameAction of this.properties.gameAction) {
+        for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.elements[name]);
         }
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
-                (dependsOnTarget as AbilityTargetElementSymbol).dependentTarget = this;
+                dependsOnTarget.dependentTarget = this;
             }
         }
     }
 
     getSelector(properties: AbilityTargetElementSymbolProperties): CardSelectorInstance {
-        let cardCondition = (card: BaseCard) => {
+        const cardCondition = (card: BaseCard) => {
             if(!card.isInPlay()) {
                 return false;
             }
-            let elements = card.getCurrentElementSymbols();
+            const elements = card.getCurrentElementSymbols();
             if(elements.length === 0) {
                 return false;
             }
@@ -81,7 +77,7 @@ class AbilityTargetElementSymbol {
             // return (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
             //         (properties.gameAction.length === 0 || properties.gameAction.some(gameAction => gameAction.hasLegalTarget(contextCopy)));
         };
-        let cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
+        const cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
     }
 
@@ -105,12 +101,12 @@ class AbilityTargetElementSymbol {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
-        let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
+        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
         if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
-        let buttons: PromptButton[] = [];
+        const buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
@@ -120,28 +116,29 @@ class AbilityTargetElementSymbol {
                 waitingPromptTitle = 'Waiting for opponent';
             }
         }
-        let promptProperties = {
+        const promptProperties = {
             waitingPromptTitle: waitingPromptTitle,
             buttons: buttons,
             context: context,
             selector: this.selector,
-            onSelect: (player: Player, card: BaseCard) => {
-                let validElements = card.getCurrentElementSymbols();
+            onSelect: (player: Player, card: BaseCard | BaseCard[]) => {
+                if(Array.isArray(card)) {
+                    return true;
+                }
+                const validElements = card.getCurrentElementSymbols();
                 context.elementCard = card;
                 if(validElements.length > 1) {
-                    const choices = validElements.map((element) => `${element.prettyName} (${element.element})`);
-                    const handlers = validElements.map((element) => {
-                        return () => {
-                            context.elements[this.name] = element;
-                            if(this.name === 'target') {
-                                context.element = element;
-                            }
-                        };
-                    });
                     context.game.promptWithHandlerMenu(player, {
                         activePromptTitle: 'Which element do you wish to select?',
-                        choices: choices,
-                        handlers: handlers,
+                        options: validElements.map((element) => ({
+                            text: `${element.prettyName} (${element.element})`,
+                            handler: () => {
+                                context.elements[this.name] = element;
+                                if(this.name === 'target') {
+                                    context.element = element;
+                                }
+                            }
+                        })),
                         context: context
                     });
                 } else {
@@ -164,6 +161,10 @@ class AbilityTargetElementSymbol {
                 return true;
             }
         };
+        if(!player) {
+            // a solo game has no opponent to choose
+            return;
+        }
         context.game.promptForSelect(player, Object.assign(promptProperties, this.properties));
     }
 
@@ -174,12 +175,12 @@ class AbilityTargetElementSymbol {
         return this.selector.canTarget(context.elementCard, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player {
+    getChoosingPlayer(context: AbilityContext): Player | undefined {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
+        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {

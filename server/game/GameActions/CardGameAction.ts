@@ -1,20 +1,17 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
-import type DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
-import { GameAction, GameActionProperties, type ActionEvent } from './GameAction.js';
+import { GameAction, GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
 import { LoseFateAction } from './LoseFateAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 import { Event } from '../Events/Event.js';
 export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-interface UnlessActionCost {
-    actionName: string;
-    cost: GameAction | ((card: BaseCard) => GameAction);
-}
+export type CardEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { card: BaseCard };
 
 export class CardGameAction<P extends CardActionProperties = CardActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {
     targetType = [
@@ -33,7 +30,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     checkEventCondition(event: ActionEvent<N, C>, additionalProperties = {}): boolean {
-        return this.canAffect((event as { card?: BaseCard }).card as BaseCard, event.context, additionalProperties);
+        return !!event.card && this.canAffect(event.card, event.context, additionalProperties);
     }
 
     canAffect(target: BaseCard | Ring, context: C, additionalProperties = {}): boolean {
@@ -42,9 +39,9 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
-        for(const card of target as BaseCard[]) {
+        for(const card of targetList(target)) {
             let allCostsPaid = true;
-            const additionalCosts = (card.getEffects(EffectName.UnlessActionCost) as UnlessActionCost[])
+            const additionalCosts = card.getEffects(EffectName.UnlessActionCost)
                 .filter((properties) => properties.actionName === this.name);
 
             if(context.player && context.ability && context.ability.targets && context.ability.targets.length > 0) {
@@ -52,25 +49,20 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
                 if(context.targets.challenger && context.targets.duelTarget) {
                     //duels act weird, we need to handle targeting differently for them to work
-                    let duelTargets = Object.values<BaseCard | Array<BaseCard>>(context.targets).flat();
+                    const duelTargets = Object.values<BaseCard | Array<BaseCard>>(context.targets).flat();
                     targetForCost = targetForCost.concat(duelTargets);
                 }
 
                 targetForCost.forEach((costTarget) => {
                     const targetingCosts = context.player.getTargetingCost(context.source, costTarget);
                     //we should only resolve the targeting costs once per card per target, even if it has multiple abilities - so track who we've already paid to target
-                    if(
-                        (!context.costs ||
-                            !context.costs.targetingCostPaid ||
-                            !(context.costs.targetingCostPaid as BaseCard[]).includes(costTarget)) &&
-                        targetingCosts > 0
-                    ) {
-                        if(!context.costs.targetingCostPaid) {
-                            context.costs.targetingCostPaid = [];
-                        }
-                        (context.costs.targetingCostPaid as BaseCard[]).push(costTarget);
-                        let properties = { amount: targetingCosts, target: context.player };
-                        let cost = new LoseFateAction(properties);
+                    const paid = context.costs.targetingCostPaid;
+                    if((!Array.isArray(paid) || !paid.includes(costTarget)) && targetingCosts > 0) {
+                        const paidTargets: unknown[] = Array.isArray(paid) ? paid : [];
+                        context.costs.targetingCostPaid = paidTargets;
+                        paidTargets.push(costTarget);
+                        const properties = { amount: targetingCosts, target: context.player };
+                        const cost = new LoseFateAction(properties);
                         if(cost.canAffect(context.player, context)) {
                             context.game.addMessage(
                                 '{0} pays {1} fate in order to target {2}',
@@ -132,76 +124,11 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
     addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
-        (event as { card?: BaseCard }).card = card;
+        event.card = card;
     }
 
-    isEventFullyResolved(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
-        return (event as { card?: BaseCard }).card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
-    }
-
-    updateLeavesPlayEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties(context, additionalProperties) as P & { destination?: Location };
-        super.updateEvent(event as Event as ActionEvent<N, C>, card, context, additionalProperties);
-        event.isSacrifice = this.name === 'sacrifice';
-        event.destination =
-            properties.destination || (card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
-        event.preResolutionEffect = () => {
-            const evCard = event.card as DrawCard;
-            event.cardStateWhenLeftPlay = evCard.createSnapshot();
-            if(evCard.isAncestral() && event.isContingent) {
-                event.destination = Location.Hand;
-                context.game.addMessage(
-                    '{0} returns to {1}\'s hand due to its Ancestral keyword',
-                    evCard,
-                    evCard.owner
-                );
-            }
-        };
-        event.createContingentEvents = () => {
-            let contingentEvents = [];
-            const evCard = event.card as DrawCard;
-            // Add an imminent triggering condition for all attachments leaving play
-
-            for(const attachment of (evCard.attachments ?? [])) {
-                // we only need to add events for attachments that are in play.
-                if(attachment.location === Location.PlayArea) {
-                    let attachmentEvent = context.game.actions
-                        .discardFromPlay()
-                        .getEvent(attachment, context.game.getFrameworkContext());
-                    attachmentEvent.order = event.order - 1;
-                    let previousCondition = attachmentEvent.condition;
-                    attachmentEvent.condition = (attachmentEvent) =>
-                        previousCondition(attachmentEvent) && attachment.parent === evCard;
-                    attachmentEvent.isContingent = true;
-                    contingentEvents.push(attachmentEvent);
-                }
-            }
-
-            // Add an imminent triggering condition for removing fate
-            if(evCard.allowGameAction('removeFate', context.game.getFrameworkContext())) {
-                let fateEvent = context.game.actions
-                    .removeFate({ amount: evCard.getFate() })
-                    .getEvent(evCard, context.game.getFrameworkContext());
-                fateEvent.order = event.order - 1;
-                fateEvent.isContingent = true;
-                contingentEvents.push(fateEvent);
-            }
-            return contingentEvents;
-        };
-    }
-
-    leavesPlayEventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const card = event.card as DrawCard;
-        this.checkForRefillProvince(card, event, additionalProperties);
-        if(!card.owner.isLegalLocationForCard(card, event.destination as Location)) {
-            card.game.addMessage(
-                '{0} is not a legal location for {1} and it is discarded',
-                event.destination,
-                card
-            );
-            event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
-        }
-        card.owner.moveCard(card, event.destination as Location, event.options || {});
+    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
+        return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
     checkForRefillProvince(card: BaseCard, event: { context: C }, additionalProperties: Record<string, unknown> = {}): void {

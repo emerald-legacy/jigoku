@@ -12,41 +12,37 @@ export default class DaidojiAmbusher extends DrawCard {
     static id = 'daidoji-ambusher';
 
     public setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Give someone -2 military',
-            condition: (context) => context.game.isDuringConflict('military') && context.source.isParticipating(),
-            target: {
+        this.action('Give someone -2 military')
+            .condition((context) => context.game.isDuringConflict('military') && context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.modifyMilitarySkill(-2)
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.cardLastingEffect({
+                    effect: AbilityDsl.effects.modifyMilitarySkill(-2)
+                }),
+                AbilityDsl.actions.conditional({
+                    condition: (context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY),
+                    trueGameAction: AbilityDsl.actions.conditional({
+                        condition: (context) => this.shouldDiscardTarget(context),
+                        trueGameAction: AbilityDsl.actions.discardFromPlay(),
+                        falseGameAction: AbilityDsl.actions.removeFate()
                     }),
-                    AbilityDsl.actions.conditional({
-                        condition: (context) => this.triggerKickerEffect(context as AbilityContext<DrawCard, DrawCard>, Timing.AFTER_PENALTY),
-                        trueGameAction: AbilityDsl.actions.conditional({
-                            condition: (context) => this.shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
-                            trueGameAction: AbilityDsl.actions.discardFromPlay(),
-                            falseGameAction: AbilityDsl.actions.removeFate()
-                        }),
-                        falseGameAction: AbilityDsl.actions.noAction()
-                    })
-                ])
-            },
-            effect: 'give {0} -2{1}{2}',
-            effectArgs: (context) => [
+                    falseGameAction: AbilityDsl.actions.noAction()
+                })
+            ]))
+            .effect('give {0} -2{1}{2}', (context) => [
                 'military',
                 this.triggerKickerEffect(context, Timing.BEFORE_PENALTY)
                     ? ` and ${this.shouldDiscardTarget(context) ? 'discard them' : 'remove a fate from them'}`
                     : ''
-            ]
-        });
+            ]);
     }
 
-    private triggerKickerEffect(context: AbilityContext<DrawCard, DrawCard>, timing: Timing): boolean {
+    private triggerKickerEffect(context: AbilityContext, timing: Timing): boolean {
         const isDishonored = context.source.isDishonored;
         const target = context.target;
-        if(!target) {
+        if(!target?.isDrawCard()) {
             return false;
         }
         const targetZero =
@@ -57,7 +53,7 @@ export default class DaidojiAmbusher extends DrawCard {
         return isDishonored && targetZero;
     }
 
-    private shouldDiscardTarget(context: AbilityContext<DrawCard, DrawCard>): boolean {
+    private shouldDiscardTarget(context: AbilityContext): boolean {
         return context.target?.getFate() === 0;
     }
 }

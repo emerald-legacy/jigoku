@@ -5,7 +5,8 @@
 ```
 BaseCard
 ├── DrawCard          — conflict and dynasty cards
-└── ProvinceCard      — province cards
+├── ProvinceCard      — province cards
+└── StrongholdCard    — stronghold cards
 ```
 
 Cards are defined in `server/game/cards/<set>/` as TypeScript classes extending the appropriate base. `setupCardAbilities()` is the entry point for registering all abilities.
@@ -16,18 +17,21 @@ Cards are defined in `server/game/cards/<set>/` as TypeScript classes extending 
 
 | Method | When it fires |
 |--------|--------------|
-| `this.action(...)` | Active player chooses to trigger |
-| `this.reaction(...)` | Triggered after an event |
-| `this.interrupt(...)` | Triggered before an event resolves |
-| `this.wouldInterrupt(...)` | Triggered when an event would happen (can cancel) |
+| `this.action(title)` | Active player chooses to trigger |
+| `this.conflictAction(title, options?)` | Action usable only during a conflict, while this card participates (`DrawCard` only) |
+| `this.reaction(title)` | Triggered after an event |
+| `this.interrupt(title)` | Triggered before an event resolves |
+| `this.wouldInterrupt(title)` | Triggered when an event would happen (can cancel) |
 | `this.persistentEffect(...)` | Always active while conditions are met |
 | `this.whileAttached(...)` | Persistent effect while this card is attached |
+
+Actions and triggered abilities are builders: the method takes the title and each chained call adds a part (`.cost(...)`, `.target(...)`, `.gameAction(...)`, ...). See [implementing-cards.md](implementing-cards.md) and [ability_dsl.md](ability_dsl.md).
 
 ---
 
 ## The Context Object
 
-Available in all callbacks (`condition`, `cardCondition`, `gameAction`, etc.):
+Available in all callbacks (`condition`, `cardCondition`, game action factories, etc.):
 
 | Path | What it is |
 |------|-----------|
@@ -39,7 +43,7 @@ Available in all callbacks (`condition`, `cardCondition`, `gameAction`, etc.):
 | `context.costs.name` | Paid costs |
 | `context.event` | The triggering event (reactions/interrupts) |
 
-In a card's callbacks `context.source` is typed to the card's own class (a card that `extends DrawCard` gets a `DrawCard`), so its members are callable directly — **no `as DrawCard` cast**. Likewise `context.target` is typed via `this.action<Target>()`. See [ability_dsl.md → Typed Targets & Events](ability_dsl.md#typed-targets--events-typescript) for the full generic surface.
+In a card's callbacks `context.source` is typed to the card's own class (a card that `extends DrawCard` gets a `DrawCard`), so its members are callable directly — **no `as DrawCard` cast**. Likewise `context.target` and `context.targets.name` are typed by the targets declared earlier in the chain. See [ability_dsl.md → Typed Targets & Events](ability_dsl.md#typed-targets--events-typescript) for the full generic surface.
 
 ### `this` vs `context.source`
 
@@ -47,11 +51,11 @@ In a card's callbacks `context.source` is typed to the card's own class (a card 
 
 ```typescript
 // WRONG
-condition: () => this.bowed,
+.condition(() => this.bowed)
 cardCondition: (card) => card.militarySkill >= this.militarySkill,
 
 // CORRECT
-condition: (context) => context.source.bowed,
+.condition((context) => context.source.bowed)
 cardCondition: (card, context) => card.militarySkill >= context.source.militarySkill,
 ```
 
@@ -59,22 +63,22 @@ cardCondition: (card, context) => card.militarySkill >= context.source.militaryS
 
 ```typescript
 // OK — getNumberOfLegalTargets is defined in this file
-cost: AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)),
+.cost(AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
 ```
 
 **Use `context.game` as a shortcut** instead of `context.source.game`:
 
 ```typescript
-condition: (context) => context.game.isDuringConflict(),   // correct
-condition: () => this.game.isDuringConflict(),              // avoid
+.condition((context) => context.game.isDuringConflict())   // correct
+.condition(() => this.game.isDuringConflict())              // avoid
 ```
 
-**Exception — `when:` reaction callbacks** pass `event`, not `context`, so `context.source` is unavailable. Use the event properties directly:
+**`when` callbacks** take the event first and the context second. Use the event properties for the event:
 
 ```typescript
-when: {
-    onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
-}
+.when({
+    onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && event.card.controller !== context.player
+})
 ```
 
 ---
@@ -83,21 +87,17 @@ when: {
 
 ### Conflict Action vs persistentEffect
 
-Province card Conflict Actions **do not need** `condition: () => this.isConflictProvince()`. The engine's `checkProvinceCondition` already enforces this — it returns false if the province is not currently under attack, and no action fires.
+Province card Conflict Actions **do not need** `.condition(() => this.isConflictProvince())`. The engine's `checkProvinceCondition` already enforces this — it returns false if the province is not currently under attack, and no action fires.
 
 ```typescript
 // WRONG — redundant condition
-this.action({
-    title: 'Gain 1 fate',
-    condition: () => this.isConflictProvince(),   // unnecessary
-    gameAction: AbilityDsl.actions.gainFate()
-});
+this.action('Gain 1 fate')
+    .condition(() => this.isConflictProvince())   // unnecessary
+    .gameAction(AbilityDsl.actions.gainFate());
 
 // CORRECT
-this.action({
-    title: 'Gain 1 fate',
-    gameAction: AbilityDsl.actions.gainFate()
-});
+this.action('Gain 1 fate')
+    .gameAction(AbilityDsl.actions.gainFate());
 ```
 
 **`persistentEffect` DOES need the condition** — it has no built-in province check. Use `context.source`:
@@ -112,48 +112,43 @@ this.persistentEffect({
 
 ### Additional conditions on Conflict Actions
 
-Only non-province conditions go in `condition:`:
+Only non-province conditions go in `condition`:
 
 ```typescript
 // RiotInTheStreets — isConflictProvince() already enforced by engine
-this.action({
-    condition: (context) =>
-        context.player.getNumberOfCardsInPlay((card) => card.hasTrait('bushi') && card.isParticipating()) >= 3,
+this.action('...')
+    .condition((context) =>
+        context.player.getNumberOfCardsInPlay((card) => card.hasTrait('bushi') && card.isParticipating()) >= 3)
     ...
-});
 ```
 
 ### `isDuringConflict()` is redundant with conflict movement actions
 
-`moveToConflict`, `putIntoConflict`, and `moveFromConflict` internally require a conflict to be active. Adding `condition: () => isDuringConflict()` on an action whose sole gate is the movement action is redundant — omit it.
+`moveToConflict`, `putIntoConflict`, and `moveFromConflict` internally require a conflict to be active. Adding `.condition(() => isDuringConflict())` on an action whose sole gate is the movement action is redundant — omit it.
 
 ```typescript
 // WRONG — condition is redundant
-this.action({
-    title: 'Move this character into the conflict',
-    condition: () => this.game.isDuringConflict(),
-    gameAction: ability.actions.moveToConflict(...)
-});
+this.action('Move this character into the conflict')
+    .condition(() => this.game.isDuringConflict())
+    .gameAction(ability.actions.moveToConflict(...));
 
 // CORRECT
-this.action({
-    title: 'Move this character into the conflict',
-    gameAction: ability.actions.moveToConflict(...)
-});
+this.action('Move this character into the conflict')
+    .gameAction(ability.actions.moveToConflict(...));
 ```
 
 Keep the condition when it serves a distinct purpose beyond the presence of a conflict (e.g. conflict type, player state, card counts):
 
 ```typescript
 // OK — checks military conflict type, which moveToConflict does not enforce
-condition: (context) => context.game.isDuringConflict('military'),
+.condition((context) => context.game.isDuringConflict('military'))
 
 // OK — also checks an additional player state
-condition: (context) =>
-    context.game.isDuringConflict() && context.player.isDefendingPlayer(),
+.condition((context) =>
+    context.game.isDuringConflict() && context.player.isDefendingPlayer())
 ```
 
-**Note for `reaction.when`:** `isDuringConflict()` inside a `when:` clause is NOT redundant — it gates when the reaction fires, which is separate from the action's execution. Leave it as-is.
+**Note for `when`:** `isDuringConflict()` inside a `when` clause is NOT redundant — it gates when the reaction fires, which is separate from the action's execution. Leave it as-is.
 
 ### `sendHome` / `moveToConflict` enforce participation internally
 
@@ -161,75 +156,73 @@ condition: (context) =>
 
 ```typescript
 // WRONG — isParticipating already enforced by sendHome.canAffect
-target: {
-    cardCondition: card => card.isParticipating(),
-    gameAction: AbilityDsl.actions.sendHome()
-}
+.target('target', {
+    cardType: CardType.Character,
+    cardCondition: (card) => card.isParticipating()
+}, AbilityDsl.actions.sendHome())
 
 // WRONG — !isParticipating already enforced by moveToConflict.canAffect
-target: {
-    cardCondition: card => !card.isParticipating(),
-    gameAction: AbilityDsl.actions.moveToConflict()
-}
+.target('target', {
+    cardType: CardType.Character,
+    cardCondition: (card) => !card.isParticipating()
+}, AbilityDsl.actions.moveToConflict())
 ```
 
-**Exception — multi-target selection:** In a two-target pattern where one target selects the card (no direct `gameAction`) and the other's gameAction references it via `context.targets.X`, the first target has no gameAction to enforce the check. Its `cardCondition: card => card.isParticipating()` is NOT redundant — it is the only filter.
+**Exception — multi-target selection:** In a two-target pattern where one target selects the card (no game action of its own) and the other's gameAction references it via `context.targets.X`, the first target has no gameAction to enforce the check. Its `cardCondition: card => card.isParticipating()` is NOT redundant — it is the only filter.
 
 Compound conditions keep the non-redundant part:
 ```typescript
 // OK — printedCost check is still needed; !isParticipating() removed
-cardCondition: (card) => card.printedCost <= 2,  // was: !isParticipating() && printedCost <= 2
-gameAction: AbilityDsl.actions.moveToConflict()
+.target('target', {
+    cardType: CardType.Character,
+    cardCondition: (card) => (card.printedCost ?? 0) <= 2  // was: !isParticipating() && printedCost <= 2
+}, AbilityDsl.actions.moveToConflict())
 ```
 
 ### `isParticipating()` in any cardCondition implies conflict
 
-If a target's `cardCondition` requires `card.isParticipating()` (for any gameAction — not just movement), no card can satisfy it when there is no conflict. A separate `condition: isDuringConflict()` is therefore redundant.
+If a target's `cardCondition` requires `card.isParticipating()` (for any gameAction — not just movement), no card can satisfy it when there is no conflict. A separate `.condition(... isDuringConflict())` is therefore redundant.
 
 ```typescript
 // WRONG — isParticipating() in cardCondition already implies conflict
-this.action({
-    condition: (context) => context.game.isDuringConflict(),
-    target: {
-        cardCondition: card => card.isParticipating(),
-        gameAction: AbilityDsl.actions.dishonor()
-    }
-});
+this.action('Dishonor a character')
+    .condition((context) => context.game.isDuringConflict())
+    .target('target', {
+        cardType: CardType.Character,
+        cardCondition: (card) => card.isParticipating()
+    }, AbilityDsl.actions.dishonor());
 
 // CORRECT
-this.action({
-    target: {
-        cardCondition: card => card.isParticipating(),
-        gameAction: AbilityDsl.actions.dishonor()
-    }
-});
+this.action('Dishonor a character')
+    .target('target', {
+        cardType: CardType.Character,
+        cardCondition: (card) => card.isParticipating()
+    }, AbilityDsl.actions.dishonor());
 ```
 
-The same applies when `condition:` uses `anyCardsInPlay(card => card.isParticipating() && ...)` — if any participating card exists, a conflict is ongoing.
+The same applies when `condition` uses `anyCardsInPlay(card => card.isParticipating() && ...)` — if any participating card exists, a conflict is ongoing.
 
 **Keep** `isDuringConflict(ConflictType)` even alongside `isParticipating()` — it adds a type restriction (`'military'` / `'political'`) that participation does not enforce.
 
 ### `isAttacking()` / `isDefending()` imply a conflict exists
 
-`card.isAttacking()` calls `currentConflict?.isAttacking(card)` — returns false when there is no current conflict. Same for `isDefending()`. Therefore, a `condition: isDuringConflict()` whose only purpose is to guard the action when there's no conflict is redundant if every target's `cardCondition` already requires `isAttacking()` or `isDefending()`:
+`card.isAttacking()` calls `currentConflict?.isAttacking(card)` — returns false when there is no current conflict. Same for `isDefending()`. Therefore, a `.condition(... isDuringConflict())` whose only purpose is to guard the action when there's no conflict is redundant if every target's `cardCondition` already requires `isAttacking()` or `isDefending()`:
 
 ```typescript
 // WRONG — isDuringConflict() is redundant: isAttacking() already returns false when no conflict
-this.action({
-    condition: () => this.game.isDuringConflict(),
-    target: {
-        cardCondition: (card) => card.isAttacking(),
-        gameAction: ability.actions.bow()
-    }
-});
+this.action('Bow an attacking character')
+    .condition((context) => context.game.isDuringConflict())
+    .target('target', {
+        cardType: CardType.Character,
+        cardCondition: (card) => card.isAttacking()
+    }, ability.actions.bow());
 
 // CORRECT
-this.action({
-    target: {
-        cardCondition: (card) => card.isAttacking(),
-        gameAction: ability.actions.bow()
-    }
-});
+this.action('Bow an attacking character')
+    .target('target', {
+        cardType: CardType.Character,
+        cardCondition: (card) => card.isAttacking()
+    }, ability.actions.bow());
 ```
 
 **Exceptions — keep `isDuringConflict()` when:**
@@ -243,98 +236,88 @@ Override which conflict provinces allow the action:
 
 ```typescript
 // BrothersGiftDojo — fires during any conflict, not just when this province is attacked
-this.action({
-    conflictProvinceCondition: () => true,
+this.action('...')
     ...
-});
+    .conflictProvinceCondition(() => true);
 
 // ShrugOffDespair — fires when this province is NOT being attacked
-this.action({
-    conflictProvinceCondition: () => true,
-    condition: (context) => context.game.isDuringConflict() && !context.source.isConflictProvince(),
+this.action('...')
+    .condition((context) => context.game.isDuringConflict() && !context.source.isConflictProvince())
     ...
-});
+    .conflictProvinceCondition(() => true);
 ```
 
 ### Keeper of Secret Names interaction
 
-`resolveAbility` with `ignoredRequirements: ['province']` bypasses `checkProvinceCondition`, allowing Keeper to trigger any province's action. This is why province action `condition:` must NOT contain `isConflictProvince()` — if it did, Keeper would be blocked by the condition even with the province check bypassed.
+`resolveAbility` with `ignoredRequirements: ['province']` bypasses `checkProvinceCondition`, allowing Keeper to trigger any province's action. This is why a province action's `condition` must NOT contain `isConflictProvince()` — if it did, Keeper would be blocked by the condition even with the province check bypassed.
 
 ---
 
 ## Action Structure
 
 ```typescript
-this.action({
-    title: 'Human-readable title',
-
+this.action('Human-readable title')
     // Optional — extra requirement beyond engine checks
-    condition: (context) => context.game.isDuringConflict(),
+    .condition((context) => context.game.isDuringConflict())
 
-    // Single target
-    target: {
+    // Cost
+    .cost(AbilityDsl.costs.payHonor(1))
+
+    // Single target; its game actions follow the properties
+    .target('target', {
         cardType: CardType.Character,
         controller: Players.Self,               // whose cards are selectable
         player: Players.Self,                   // who makes the selection
         location: Location.PlayArea,           // filter by location
-        cardCondition: (card, context) => card.isParticipating(),
-        gameAction: AbilityDsl.actions.bow()
-    },
+        cardCondition: (card, context) => card.isParticipating()
+    }, AbilityDsl.actions.bow())
 
     // Chat message — see "Effect Formatting" section
-    effect: 'bow {0}',
-
-    // Cost
-    cost: AbilityDsl.costs.payHonor(1),
+    .effect('bow {0}')
 
     // Usage limits
-    limit: AbilityDsl.limit.perConflict(1),
-    max: AbilityDsl.limit.perRound(1),
-});
+    .limit(AbilityDsl.limit.perConflict(1))
+    .max(AbilityDsl.limit.perRound(1));
 ```
+
+Types flow left to right: a call sees the targets and costs declared before it.
 
 ### Multiple Targets
 
 ```typescript
-this.action({
-    targets: {
-        first: {
-            cardType: CardType.Character,
-            cardCondition: (card) => card.isParticipating()
-        },
-        second: {
-            dependsOn: 'first',
-            cardType: CardType.Character,
-            cardCondition: (card, context) => card !== context.targets.first
-        }
-    }
-});
+this.action('Choose two characters')
+    .target('first', {
+        cardType: CardType.Character,
+        cardCondition: (card) => card.isParticipating()
+    })
+    .target('second', {
+        dependsOn: 'first',
+        cardType: CardType.Character,
+        cardCondition: (card, context) => card !== context.targets.first
+    });
 ```
 
-### Select Menu (TargetMode.Select)
+### Select Menu (`select`)
 
 Use when the card text says "Select one —":
 
 ```typescript
-target: {
-    mode: TargetMode.Select,
-    choices: {
-        'Move into conflict': AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),
-        'Move home': AbilityDsl.actions.sendHome(context => ({ target: context.source }))
-    }
-}
+.select('target', {}, {
+    'Move into conflict': AbilityDsl.actions.moveToConflict((context) => ({ target: context.source })),
+    'Move home': AbilityDsl.actions.sendHome((context) => ({ target: context.source }))
+})
 ```
 
-Do **not** use `conditional` gameAction as a substitute — that silently auto-executes without prompting the player.
+Do **not** use a `conditional` game action as a substitute — that silently auto-executes without prompting the player.
 
 #### SELECT prompt behavior
 
 `AbilityTargetSelect` resolves in two stages:
 
-- **`Stage.PreTarget`** (early target resolution, before costs): "Pay costs first" and "Cancel" are **always** appended. Even with only one legal choice, a prompt is shown (minimum two handlers). Auto-fire never occurs at this stage.
+- **`Stage.PreTarget`** (early target resolution, before costs): "Pay costs first" and "Cancel" are **always** appended. Even with only one legal choice, a prompt is shown (minimum two options). Auto-fire never occurs at this stage.
 - **`Stage.Target`** (after costs paid): no extra buttons added. If exactly **one** legal choice remains, it auto-fires without a prompt.
 
-Consequence for tests: actions with `TargetMode.Select` always show a prompt when triggered. Tests must call `this.playerN.clickPrompt('Choice text')` to handle it before asserting subsequent state.
+Consequence for tests: actions with a select always show a prompt when triggered. Tests must call `this.playerN.clickPrompt('Choice text')` to handle it before asserting subsequent state.
 
 ```javascript
 // WRONG — juro's SELECT always prompts; juro never actually moves
@@ -357,29 +340,27 @@ Chat messages use numbered placeholders `{0}`, `{1}`, etc. The game engine appli
 
 1. **Never interpolate game objects** (cards, players) into the effect string using template literals or string concatenation.
 2. **Never interpolate the words `military` or `political`** — the engine formats these specially.
-3. Pass game objects as separate entries in `effectArgs` and reference via `{N}`.
+3. Pass game objects as separate entries in the arguments of `.effect(message, args)` and reference them via `{N}`.
 
-`{0}` is the implicit primary target. `{1}`, `{2}`, ... come from `effectArgs`.
+`{0}` is the implicit primary target. `{1}`, `{2}`, ... come from the arguments.
 
 ```typescript
 // WRONG — interpolates player name
-effect: `place it on top of ${context.event.card.owner.name}'s conflict deck`,
+.effect(`place it on top of ${context.event.card.owner.name}'s conflict deck`)
 
 // WRONG — interpolates game object
-effectArgs: (context) => [`moved ${context.target.name} home`],
+.effect('{1}', (context) => [`moved ${context.target.name} home`])
 
 // CORRECT — game objects as separate args
-effect: 'place a fate from {1}\'s fate pool on {0}',
-effectArgs: (context) => [context.target.controller],
+.effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller])
 
 // CORRECT — conditional plain text (no game objects involved)
-effect: 'cancel the effects of {1} and {2}',
-effectArgs: (context) => [
+.effect('cancel the effects of {1} and {2}', (context) => [
     context.event.card,
     context.event.card.isConflict
         ? 'return it to the top of its owner\'s conflict deck'
         : 'move it to its owner\'s dynasty discard pile'
-],
+])
 ```
 
 ---
@@ -388,16 +369,14 @@ effectArgs: (context) => [
 
 ### `initiateDuel` (preferred)
 
-For cards that initiate a duel, use the `initiateDuel` property directly on the action:
+For cards that initiate a duel, call `initiateDuel` on the action with a function returning the duel's properties:
 
 ```typescript
-this.action({
-    title: 'Initiate a military duel',
-    initiateDuel: {
+this.action('Initiate a military duel')
+    .initiateDuel(() => ({
         type: DuelType.Military,
         gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser })
-    }
-});
+    }));
 ```
 
 **Available options in `initiateDuel`:**
@@ -426,35 +405,29 @@ this.action({
 
 ### `requiresConflict` and redundant conditions
 
-`requiresConflict` defaults to `true` in `DuelHelper`. When true, both the challenger and the duel target must satisfy `card.isParticipating()`. Since no card can be participating without an active conflict, this makes `isDuringConflict()` and `condition: context => context.source.isParticipating()` redundant on cards that use `initiateDuel` with default settings:
+`requiresConflict` defaults to `true` in `DuelHelper`. When true, both the challenger and the duel target must satisfy `card.isParticipating()`. Since no card can be participating without an active conflict, this makes `isDuringConflict()` and `.condition((context) => context.source.isParticipating())` redundant on cards that use `initiateDuel` with default settings:
 
 ```typescript
 // WRONG — both conditions are redundant: requiresConflict:true already enforces participation
-this.action({
-    title: 'Initiate a duel',
-    condition: (context) => context.game.isDuringConflict(),   // redundant
-    initiateDuel: { type: DuelType.Military, ... }
-});
+this.action('Initiate a duel')
+    .condition((context) => context.game.isDuringConflict())   // redundant
+    .initiateDuel(() => ({ type: DuelType.Military, ... }));
 
-this.action({
-    title: 'Initiate a duel',
-    condition: (context) => context.source.isParticipating(),  // redundant
-    initiateDuel: { type: DuelType.Military, ... }
-});
+this.action('Initiate a duel')
+    .condition((context) => context.source.isParticipating())  // redundant
+    .initiateDuel(() => ({ type: DuelType.Military, ... }));
 
 // CORRECT
-this.action({
-    title: 'Initiate a duel',
-    initiateDuel: { type: DuelType.Military, ... }
-});
+this.action('Initiate a duel')
+    .initiateDuel(() => ({ type: DuelType.Military, ... }));
 ```
 
 **Keep** `isDuringConflict(ConflictType)` — it restricts to a specific conflict type that `requiresConflict` does not enforce:
 
 ```typescript
 // OK — 'military' type restriction is not enforced by requiresConflict
-condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-initiateDuel: { type: DuelType.Military, ... }
+.condition((context) => context.game.isDuringConflict(ConflictType.Military))
+.initiateDuel(() => ({ type: DuelType.Military, ... }))
 ```
 
 **Custom `challengerCondition` bypasses the default participation check for the challenger.** If the custom condition does not check `isParticipating()`, the challenger is not required to be in the conflict. However, the target still defaults to `isParticipating()`, so a conflict is still required for any legal target combination. `isDuringConflict()` on the action remains redundant.
@@ -477,7 +450,7 @@ messageArgs: (duel) => [
 
 ### When NOT to use `initiateDuel`
 
-`initiateDuel` hardcodes `controller: Players.Self` for the challenger. If a card explicitly requires `Players.Any` or non-standard controller selection for the challenger, use raw `targets` + `AbilityDsl.actions.duel(...)` instead.
+`initiateDuel` hardcodes `controller: Players.Self` for the challenger. If a card explicitly requires `Players.Any` or non-standard controller selection for the challenger, declare the targets yourself and use `AbilityDsl.actions.duel(...)` instead.
 
 ---
 
@@ -507,8 +480,9 @@ AbilityDsl.actions.moveConflict((context) => ({ target: context.source }))
 
 // Apply multiple actions
 AbilityDsl.actions.multiple([action1, action2])
-// or as an array on a target
-gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]
+// or as several arguments
+.gameAction(AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
+.target('target', { ... }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
 
 // Conditional action (silent — no player prompt)
 AbilityDsl.actions.conditional({
@@ -546,10 +520,10 @@ AbilityDsl.actions.resolveAbility((context) => ({
 | `'province'` | `checkProvinceCondition` (province must be conflict province) |
 | `'phase'` | Phase restriction |
 | `'player'` | Player/controller permission |
-| `'condition'` | The ability's `condition:` function |
+| `'condition'` | The ability's `condition` function |
 | `'cost'` | Cost payment |
 | `'limit'` | Usage limit |
-| `'max'` | Per-title `max:` cap |
+| `'max'` | Per-title `max` cap |
 | `'triggeringRestrictions'` | Triggering restriction checks |
 
 ---
@@ -565,7 +539,7 @@ AbilityDsl.effects.modifyMilitarySkill(2)
 AbilityDsl.effects.modifyPoliticalSkill(2)
 AbilityDsl.effects.modifyBothSkills(1)
 AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
-AbilityDsl.effects.gainAbility(AbilityType.Action, { ... })
+AbilityDsl.effects.gainAbility(AbilityType.Action, { ... })   // a granted ability is still a properties object
 AbilityDsl.effects.switchBaseSkills()
 AbilityDsl.effects.cannotContribute(() => (card) => condition)
 AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
@@ -620,7 +594,8 @@ card.getMilitarySkill()
 card.getPoliticalSkill()
 card.getGlory()
 card.location                   // Location string
-card.allowGameAction('bow', context)   // checks if action is permitted
+card.allowGameAction('bow', context)   // can that game action affect it; names are GameActions exports
+card.checkRestrictions('break', context) // only the restrictions on a named action
 ```
 
 ---
@@ -656,66 +631,68 @@ onConflictDeclaredReaction(event) {
 
 ---
 
-## `Players` and `player:` vs `controller:`
+## `Players` and `player` vs `controller`
 
 These are distinct and must not be confused:
 
 | Property | Meaning |
 |----------|---------|
-| `player:` | WHO makes the selection (`Players.Self`, `Players.Opponent`) |
-| `controller:` | WHOSE cards are available to select |
+| `player` | WHO makes the selection (`Players.Self`, `Players.Opponent`) |
+| `controller` | WHOSE cards are available to select |
 
 Example: opponent selects from their own discard pile:
 ```typescript
-target: {
+.target('target', {
     player: Players.Opponent,        // opponent makes the selection
     location: Location.ConflictDiscardPile,
     controller: Players.Opponent,    // only opponent's cards are selectable
     cardCondition: (card, context) => card.controller === context.player.opponent
-}
+})
 ```
 
 ---
 
 ## Reaction / Interrupt / wouldInterrupt
 
-```typescript
-this.reaction({
-    when: {
-        onCardEntersPlay: (event, context) => event.card === context.source
-    },
-    gameAction: AbilityDsl.actions.placeFate()
-});
+The first call after the title is `when` (or `aggregateWhen`). `context.event` is then typed by its keys.
 
-this.wouldInterrupt({
-    title: 'Cancel an event',
-    when: {
+```typescript
+this.reaction('Place a fate on this character')
+    .when({
+        onCharacterEntersPlay: (event, context) => event.card === context.source
+    })
+    .gameAction(AbilityDsl.actions.placeFate());
+
+this.wouldInterrupt('Cancel an event')
+    .when({
         onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
-    },
-    cannotBeMirrored: true,
-    gameAction: AbilityDsl.actions.multiple([
+    })
+    .cannotBeMirrored()
+    .gameAction(
         AbilityDsl.actions.cancel(),
         AbilityDsl.actions.conditional({
             condition: (context) => context.event.card.isConflict,
-            trueGameAction: AbilityDsl.actions.moveCard((context) => ({
+            trueGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext) => ({
                 target: context.event.card,
                 destination: Location.ConflictDeck
             })),
-            falseGameAction: AbilityDsl.actions.moveCard((context) => ({
+            falseGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext) => ({
                 target: context.event.card,
                 destination: Location.DynastyDiscardPile
             }))
         })
-    ]),
-    effect: 'cancel the effects of {1} and {2}',
-    effectArgs: (context) => [
+    )
+    .effect('cancel the effects of {1} and {2}', (context) => [
         context.event.card,
         context.event.card.isConflict
             ? 'return it to the top of its owner\'s conflict deck'
             : 'move it to its owner\'s dynasty discard pile'
-    ]
-});
+    ]);
 ```
+
+An action passed to `gameAction` (or to a target) is typed with the ability's context, so `context.event` in its own properties is the triggering event. Actions nested inside it — the elements of `multiple([...])` or `sequential([...])`, `conditional`'s `trueGameAction`/`falseGameAction` — are not: their factory's `context` is a plain `AbilityContext`, so reading `context.event` there needs an annotation (`(context: TriggeredAbilityContext) => ...`, imported from `TriggeredAbilityContext.js`), as above.
+
+A target without a `cardType` holds a `BaseCard`, which has no `isParticipating()` or `isAttacking()`; give character targets `cardType: CardType.Character`.
 
 ---
 
@@ -727,7 +704,7 @@ this.wouldInterrupt({
 2. **province** — `checkProvinceCondition()` (skippable with `ignoredRequirements: ['province']`)
 3. **phase** — action valid for current phase
 4. **player** — correct player
-5. **condition** — custom `condition:` callback (skippable with `ignoredRequirements: ['condition']`)
+5. **condition** — custom `condition` callback (skippable with `ignoredRequirements: ['condition']`)
 6. **cost** — costs payable
 7. **target** — valid targets exist
 
@@ -809,15 +786,12 @@ export default class Example extends ProvinceCard {
     static id = 'example';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Do something',
+        this.action('Do something')
             // No condition needed — engine enforces "must be conflict province"
-            target: {
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.bow());
     }
 }
 ```
@@ -830,42 +804,42 @@ this.persistentEffect({
 });
 ```
 
-### Conflict Action (DrawCard, requires conflict)
+### Conflict Action (DrawCard)
+`conflictAction` requires a conflict and this card participating in it; `{ conflictType: 'political' }` restricts the type, `{ evenFromHome: true }` drops the participation check.
 ```typescript
-this.action({
-    title: 'Bow a participating character',
-    condition: (context) => context.game.isDuringConflict(),
-    target: {
+this.conflictAction('Bow a participating character')
+    .target('target', {
         cardType: CardType.Character,
-        cardCondition: (card) => card.isParticipating(),
-        gameAction: AbilityDsl.actions.bow()
-    }
-});
+        cardCondition: (card) => card.isParticipating()
+    }, AbilityDsl.actions.bow());
+```
+
+A Conflict Action on a card that can't participate (a stronghold) uses an explicit condition:
+```typescript
+this.action('Bow a participating character')
+    .condition((context) => context.game.isDuringConflict())
+    // ...
 ```
 
 ### Duel initiation (from DrawCard)
 ```typescript
-this.action({
-    title: 'Initiate a military duel',
-    initiateDuel: {
+this.action('Initiate a military duel')
+    .initiateDuel(() => ({
         type: DuelType.Military,
         targetCondition: (card) => card.isParticipating() && !card.bowed,
         gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
         message: 'discard {0}',
-        messageArgs: (duel) => duel.loser
-    }
-});
+        messageArgs: (duel) => [duel.loser]
+    }));
 ```
 
 ### Duel initiation (from Character, self is challenger)
 ```typescript
-this.action({
-    title: 'Initiate a duel',
-    initiateDuel: {
+this.action('Initiate a duel')
+    .initiateDuel(() => ({
         type: DuelType.Political,
         // source card is automatically the challenger
         opponentChoosesDuelTarget: true,
         gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser })
-    }
-});
+    }));
 ```

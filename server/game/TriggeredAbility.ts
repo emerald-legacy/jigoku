@@ -1,28 +1,41 @@
 import CardAbility from './CardAbility.js';
 import type { CardAbilityProperties } from './CardAbility.js';
-import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import { Stage, CardType, EffectName, AbilityType } from './Constants.js';
+import { TriggeredAbilityContext, type TriggeringEvent } from './TriggeredAbilityContext.js';
+import { Stage, CardType, EffectName, EventName, AbilityType } from './Constants.js';
+import { isEnumValue } from './utils/helpers.js';
+import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
-import type { Event } from './Events/Event.js';
-import type { WhenType } from './Interfaces.js';
+import { Event } from './Events/Event.js';
+import type { OwnContextCallback, WhenType } from './Interfaces.js';
 import type { EventHandler } from './GameEventBus.js';
 
-// Runtime storage shape: events arrive un-narrowed, so the listener takes the base `Event`.
-type EventListener = (event: Event, context: TriggeredAbilityContext) => unknown;
-type AggregateWhen = (events: Event[], context: TriggeredAbilityContext) => boolean;
+export type AggregateContext<S extends BaseCard = BaseCard> = TriggeredAbilityContext<S, BaseCard, Event[]>;
+
+export type TriggerChoice = TriggeredAbilityContext<BaseCard, BaseCard, AnyEventOrAggregate>;
+type AnyEventOrAggregate = Exclude<TriggeringEvent, undefined>;
 
 interface AbilityChoiceWindow {
-    addChoice(context: TriggeredAbilityContext): void;
+    addChoice(context: TriggerChoice): void;
+}
+
+// Trigger windows emit themselves; cost checks emit a stand-in that only counts choices.
+function isChoiceWindow(value: unknown): value is AbilityChoiceWindow {
+    return typeof value === 'object' && value !== null && 'addChoice' in value && typeof value.addChoice === 'function';
+}
+
+const isEvent = (value: unknown): value is Event => value instanceof Event;
+
+function fireWhen<N extends EventName>(when: WhenType, name: N, event: Event, context: TriggeredAbilityContext): unknown {
+    const condition = when[name];
+    return condition && event.is(name) && condition(event, context);
 }
 
 // Author-facing shape: `WhenType<S>` narrows each handler's event payload by event name and types
 // `context.source` as `S`. The runtime fields below erase that back to base `Event`/`BaseCard`.
 export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> extends CardAbilityProperties<TriggeredAbilityContext<S>> {
     when?: WhenType<S>;
-    // The target type does not affect aggregate triggers, so it is left open here; this lets the
-    // author-facing `TriggeredAbilityProps<S, Target>` assign in with a single cast (any Target).
-    aggregateWhen?: (events: Event[], context: TriggeredAbilityContext<S>) => boolean;
+    aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext<S>], boolean>;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
 }
@@ -62,28 +75,22 @@ interface RegisteredEvent {
  */
 
 class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
-    when?: Record<string, EventListener>;
-    aggregateWhen?: AggregateWhen;
+    when?: WhenType;
+    aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext], boolean>;
     anyPlayer: boolean;
     collectiveTrigger: boolean;
     events: RegisteredEvent[] | null = null;
 
     constructor(card: S, abilityType: AbilityType, properties: TriggeredAbilityProperties<S>) {
-        // The base ability chain operates at the base `AbilityContext`; the triggered handlers are
-        // typed against the narrower `TriggeredAbilityContext<S>`, so widen the context here (single
-        // downcast — at runtime the context the handlers receive is always a TriggeredAbilityContext).
-        super(card, properties as CardAbilityProperties);
-        // `S` types the author-facing `when`/`aggregateWhen` callbacks (context.source = the card subtype).
-        // The runtime fields are erased to BaseCard so `TriggeredAbility<DrawCard>` stays assignable into
-        // the `TriggeredAbility[]` collections (reactions etc.) — at runtime the context's source is the card.
-        this.when = properties.when as Record<string, EventListener> | undefined;
-        this.aggregateWhen = properties.aggregateWhen as AggregateWhen | undefined;
+        super(card, properties);
+        this.when = properties.when;
+        this.aggregateWhen = properties.aggregateWhen;
         this.anyPlayer = !!properties.anyPlayer;
         this.abilityType = abilityType;
         this.collectiveTrigger = !!properties.collectiveTrigger;
     }
 
-    meetsRequirements(context: TriggeredAbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
         const canOpponentTrigger =
             this.card.anyEffect(EffectName.CanBeTriggeredByOpponent) &&
             this.abilityType !== AbilityType.ForcedInterrupt &&
@@ -104,7 +111,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
 
     eventHandler(event: Event, window: AbilityChoiceWindow): void {
         for(const player of this.game.getPlayers()) {
-            const context = this.createContext(player, event);
+            const context = this.createEventContext(player, event);
             if(
                 this.card.reactions.includes(this) &&
                 this.isTriggeredByEvent(event, context) &&
@@ -117,7 +124,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
 
     checkAggregateWhen(events: Event[], window: AbilityChoiceWindow): void {
         for(const player of this.game.getPlayers()) {
-            const context = this.createContext(player, events);
+            const context = this.createAggregateContext(player, events);
             if(
                 this.card.reactions.includes(this) &&
                 this.aggregateWhen?.(events, context) &&
@@ -128,9 +135,22 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         }
     }
 
-    createContext(player: Player = this.card.controller, event?: Event | Event[]): TriggeredAbilityContext {
+    /** A context for resolving this ability outside a trigger window, with the event it reacts to if any. */
+    createContext(player: Player = this.card.controller, event?: Event | Event[]): TriggeredAbilityContext<BaseCard, BaseCard, TriggeringEvent> {
+        return this.newContext(player, event);
+    }
+
+    createEventContext(player: Player, event: Event): TriggeredAbilityContext {
+        return this.newContext(player, event);
+    }
+
+    createAggregateContext(player: Player, events: Event[]): AggregateContext {
+        return this.newContext(player, events);
+    }
+
+    private newContext<E extends TriggeringEvent>(player: Player, event: E): TriggeredAbilityContext<BaseCard, BaseCard, E> {
         return new TriggeredAbilityContext({
-            event: event as Event,
+            event,
             game: this.game,
             source: this.card,
             player: player,
@@ -140,8 +160,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     }
 
     isTriggeredByEvent(event: Event, context: TriggeredAbilityContext): boolean {
-        const listener = this.when?.[event.name];
-        return Boolean(listener && listener(event, context));
+        return Boolean(this.when && isEnumValue(EventName, event.name) && fireWhen(this.when, event.name, event, context));
     }
 
     registerEvents(): void {
@@ -150,7 +169,11 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         } else if(this.aggregateWhen) {
             const event: RegisteredEvent = {
                 name: 'aggregateEvent:' + this.abilityType,
-                handler: ((events: Event[], window: AbilityChoiceWindow) => this.checkAggregateWhen(events, window)) as EventHandler
+                handler: (events: unknown, window: unknown) => {
+                    if(Array.isArray(events) && events.every(isEvent) && isChoiceWindow(window)) {
+                        this.checkAggregateWhen(events, window);
+                    }
+                }
             };
             this.events = [event];
             this.game.on(event.name, event.handler);
@@ -163,7 +186,11 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         eventNames.forEach((eventName) => {
             const event: RegisteredEvent = {
                 name: eventName + ':' + this.abilityType,
-                handler: ((evt: Event, window: AbilityChoiceWindow) => this.eventHandler(evt, window)) as EventHandler
+                handler: (evt: unknown, window: unknown) => {
+                    if(isEvent(evt) && isChoiceWindow(window)) {
+                        this.eventHandler(evt, window);
+                    }
+                }
             };
             this.game.on(event.name, event.handler);
             this.events?.push(event);

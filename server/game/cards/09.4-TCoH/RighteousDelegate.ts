@@ -6,12 +6,9 @@ class RighteousDelegate extends DrawCard {
     static id = 'righteous-delegate';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Weaken bushi, empower non-bushi',
-            condition: (context) => context.source.isParticipating(),
-            effect: 'give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Weaken bushi, empower non-bushi')
+            .condition((context) => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => {
                     const conflict = this.game.currentConflict;
                     if(!conflict) {
@@ -48,8 +45,8 @@ class RighteousDelegate extends DrawCard {
                         duration: Duration.UntilEndOfConflict
                     };
                 })
-            ])
-        });
+            ]))
+            .effect('give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}', () => ['military', 'political']);
     }
 }
 

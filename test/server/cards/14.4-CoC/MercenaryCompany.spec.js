@@ -67,8 +67,8 @@ describe('Mercenary Company', function() {
                 province: this.garden
             });
 
-            let cFate = this.company.fate;
-            let pFate = this.player2.fate;
+            const cFate = this.company.fate;
+            const pFate = this.player2.fate;
 
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Place a fate on Mercenary Company to take control of it?');
@@ -102,8 +102,8 @@ describe('Mercenary Company', function() {
                 ring: 'earth'
             });
 
-            let cFate = this.company.fate;
-            let pFate = this.player1.fate;
+            const cFate = this.company.fate;
+            const pFate = this.player1.fate;
 
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Place a fate on Mercenary Company to take control of it?');

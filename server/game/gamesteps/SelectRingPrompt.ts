@@ -1,18 +1,11 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { Event } from '../Events/Event.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type Ring from '../Ring.js';
-import type BaseCard from '../BaseCard.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
-interface SelectRingPromptButton {
-    text?: string;
-    arg?: string;
-    [key: string]: unknown;
-}
+type SelectRingPromptButton = { text?: string; arg?: string };
 
 interface SelectRingPromptProperties {
     source?: EffectSource | string;
@@ -23,11 +16,10 @@ interface SelectRingPromptProperties {
     buttons?: SelectRingPromptButton[];
     optional?: boolean;
     hideIfNoLegalTargets?: boolean;
-    ringCondition?(ring: Ring, context: AbilityContext): boolean;
-    onSelect?(player: Player, ring: Ring): boolean | void;
-    onMenuCommand?(player: Player, arg: string): boolean | void;
-    onCancel?(player: Player): boolean | void;
-    [key: string]: unknown;
+    ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
+    onSelect?: (player: Player, ring: Ring) => boolean | void;
+    onMenuCommand?: (player: Player, arg: string) => boolean | void;
+    onCancel?: (player: Player) => boolean | void;
 }
 
 /**
@@ -56,7 +48,6 @@ class SelectRingPrompt extends UiPrompt {
     properties: SelectRingPromptProperties;
     context: AbilityContext;
     selectedRing: Ring | null;
-    targets: unknown[];
 
     constructor(game: Game, choosingPlayer: Player, properties: SelectRingPromptProperties) {
         super(game);
@@ -68,52 +59,21 @@ class SelectRingPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source).name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
         } else if(!properties.source) {
             properties.source = new EffectSource(game);
         }
 
         this.properties = properties;
         this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        // Apply defaults for missing properties
-        const defaults = this.defaultProperties();
-        for(const key in defaults) {
-            if(this.properties[key] === undefined) {
-                this.properties[key] = defaults[key];
-            }
-        }
+        properties.buttons ??= [];
+        properties.ringCondition ??= () => true;
+        properties.onSelect ??= () => true;
+        properties.onMenuCommand ??= () => true;
+        properties.onCancel ??= () => true;
+        properties.optional ??= false;
+        properties.hideIfNoLegalTargets ??= false;
         this.selectedRing = null;
-        this.targets = [];
-    }
-
-    defaultProperties(): Record<string, unknown> {
-        return {
-            buttons: [],
-            controls: this.getDefaultControls(),
-            ringCondition: () => true,
-            onSelect: () => true,
-            onMenuCommand: () => true,
-            onCancel: () => true,
-            optional: false,
-            hideIfNoLegalTargets: false
-        };
-    }
-
-    getDefaultControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
-        if(!this.properties.context) {
-            return [];
-        }
-        let targets: unknown[] = this.properties.context.targets ? Object.values(this.properties.context.targets as Record<string, BaseCard>).map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
-        const triggeredContext = this.properties.context as TriggeredAbilityContext;
-        const eventCard = Event.promptCardOf(triggeredContext.event);
-        if(targets.length === 0 && eventCard) {
-            this.targets = [eventCard.getShortSummaryForControls(this.choosingPlayer)];
-        }
-        return [{
-            type: 'targeting',
-            source: this.properties.context.source.getShortSummary(),
-            targets: targets
-        }];
     }
 
     activeCondition(player: Player): boolean {
@@ -137,7 +97,7 @@ class SelectRingPrompt extends UiPrompt {
     }
 
     getSelectableRings(): Ring[] {
-        let selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
+        const selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
             return (this.properties.ringCondition ?? (() => true))(ring, this.context);
         });
 
@@ -145,7 +105,7 @@ class SelectRingPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons = this.properties.buttons ?? [];
+        const buttons = [...(this.properties.buttons ?? [])];
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
         }
@@ -159,7 +119,7 @@ class SelectRingPrompt extends UiPrompt {
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.defaultActivePromptTitle(),
             buttons: buttons,
-            promptTitle: this.properties.source ? (this.properties.source as EffectSource).name : undefined
+            promptTitle: typeof this.properties.source === 'string' ? undefined : this.properties.source?.name
         };
     }
 

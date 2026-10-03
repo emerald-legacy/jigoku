@@ -3,7 +3,6 @@ import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class PlantedFields extends DrawCard {
     static id = 'planted-fields';
 
@@ -14,15 +13,14 @@ export default class PlantedFields extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnRoundEnded]);
 
-        this.interrupt({
-            title: 'Sacrifice Planted Fields',
-            when: {
-                onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context) =>
+        this.interrupt('Sacrifice Planted Fields')
+            .when({
+                onPhaseEnded: (event, context) =>
                     event.phase === Phases.Conflict &&
                     !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
-            },
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            gameAction: AbilityDsl.actions.handler({
+            })
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .gameAction(AbilityDsl.actions.handler({
                 handler: (context) => {
                     if(this.hasAnyCopyTriggered(context.player.name)) {
                         context.player.modifyHonor(2);
@@ -32,13 +30,11 @@ export default class PlantedFields extends DrawCard {
                     }
                     this.triggeredByPlayer.add(context.player.name);
                 }
-            }),
-            effect: '{1}',
-            effectArgs: (context) =>
+            }))
+            .effect('{1}', (context) =>
                 this.hasAnyCopyTriggered(context.player.name)
                     ? 'gain 2 honor'
-                    : 'gain 2 fate and draw 2 cards'
-        });
+                    : 'gain 2 fate and draw 2 cards');
     }
 
     private hasAnyCopyTriggered(playerName: string): boolean {

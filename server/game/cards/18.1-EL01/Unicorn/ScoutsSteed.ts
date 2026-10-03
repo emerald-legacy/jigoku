@@ -1,9 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ScoutsSteed extends DrawCard {
     static id = 'scout-s-steed';
@@ -11,18 +8,17 @@ export default class ScoutsSteed extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
-        this.reaction<ProvinceCard>({
-            title: 'Call your steed and go out to explore!',
-            when: {
+        this.reaction('Call your steed and go out to explore!')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard, context) => card.isFacedown() && (card as ProvinceCard).canBeAttacked() && card.controller !== context.player
-            },
-            gameAction: AbilityDsl.actions.sequentialContext(
-                ({ player, target: province, source: { parentCharacter: character } }: AbilityContext<DrawCard, ProvinceCard>) => ({
+                cardCondition: (card, context) => card.isFacedown() && (card).canBeAttacked() && card.controller !== context.player
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext(
+                ({ player, target: province, source: { parentCharacter: character } }) => ({
                     gameActions: [
                         AbilityDsl.actions.ready({ target: character ?? [] }),
                         AbilityDsl.actions.cardLastingEffect({
@@ -43,15 +39,13 @@ export default class ScoutsSteed extends DrawCard {
                         })
                     ]
                 })
-            ),
-            effect: 'ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now',
-            effectArgs: (context) => {
+            ))
+            .effect('ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now', (context) => {
                 const target = context.target;
                 return [
                     context.source.parentCharacter,
                     target && target.isFacedown() ? target.location : target ?? ''
                 ];
-            }
-        });
+            });
     }
 }

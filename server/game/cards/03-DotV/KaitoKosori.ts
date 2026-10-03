@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -11,19 +10,19 @@ class KaitoKosori extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext<this>) => {
+            condition: (context) => {
                 const symbol = this.getCurrentElementSymbol(elementKey);
                 return context.player.cardsInPlay.some((card) => card.isParticipating()) &&
                     !!this.game.currentConflict &&
                     this.game.currentConflict.hasElement(symbol) &&
                     !context.source.isParticipating() && !context.source.bowed;
             },
-            effect: AbilityDsl.effects.contributeToConflict((_card: EffectTarget, context: AbilityContext) => context.player)
+            effect: AbilityDsl.effects.contributeToConflict((_card: EffectTarget, context) => context.player)
         });
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

@@ -1,4 +1,3 @@
-import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
 import BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,23 +10,22 @@ export default class LaughingThunder extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.gainAllAbilitiesDynamic(
-                (card: BaseCard, _context: AbilityContext) => {
-                    return (card as DrawCard).attachments.filter((a: DrawCard) => a.hasTrait('kiho') && a.printedType === CardType.Event) ?? [];
+                (card, _context) => {
+                    return card.attachments.filter((a) => a.hasTrait('kiho') && a.printedType === CardType.Event) ?? [];
                 },
                 true
             )
         });
 
-        this.action({
-            title: 'Attach a kiho to this character',
-            target: {
+        this.action('Attach a kiho to this character')
+            .target('target', {
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.Hand,
                 cardCondition: (card, context) => card.hasTrait('kiho') &&
                     context.game.actions.attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(AbilityDsl.actions.cardLastingEffect({
@@ -51,9 +49,8 @@ export default class LaughingThunder extends DrawCard {
                 }));
 
                 return { gameActions };
-            }),
-            effect: 'claim the effects of {0} as its own!'
-        });
+            }))
+            .effect('claim the effects of {0} as its own!');
     }
 
 
@@ -63,7 +60,7 @@ export default class LaughingThunder extends DrawCard {
             glory: '0',
             side: 'conflict',
             text: '',
-            type: 'attachment',
+            type: CardType.Attachment,
             name: 'Kiho',
             id: card.id,
             traits: ['kiho']

@@ -16,6 +16,11 @@ module.exports = [
             'preserve-caught-error': 'off'
         }
     },
+    {
+        rules: {
+            'prefer-const': 'error'
+        }
+    },
     // JavaScript files
     {
         files: ['**/*.js'],
@@ -107,7 +112,8 @@ module.exports = [
                 varsIgnorePattern: '^_'
             }],
             '@typescript-eslint/no-non-null-assertion': 'error',
-            '@typescript-eslint/ban-ts-comment': 'error',
+            '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
+            '@typescript-eslint/ban-ts-comment': ['error', { 'ts-expect-error': true, 'ts-ignore': true, 'ts-nocheck': true }],
             '@typescript-eslint/no-require-imports': 'error',
             '@typescript-eslint/no-empty-object-type': 'error',
             '@typescript-eslint/no-unsafe-function-type': 'error',
@@ -180,6 +186,7 @@ module.exports = [
             'no-unused-vars': 'off',
             // stub-based unit tests opt out with a file-level eslint-disable
             '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'

@@ -1,33 +1,27 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { CardType, EventName, Location, Players } from '../../../Constants.js';
-import type BaseCard from '../../../BaseCard.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DOSHIN_TAX = 2;
 
 export default class VillageDoshin extends DrawCard {
     static id = 'village-doshin';
 
     public setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Protect attachment from leaving play',
-            location: Location.Hand,
-            cost: AbilityDsl.costs.discardSelf(),
-            when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
-                    (event.cardTargets ?? []).some((card: BaseCard) => {
+        this.wouldInterrupt('Protect attachment from leaving play')
+            .when({
+                onInitiateAbilityEffects: (event, context) =>
+                    (event.cardTargets ?? []).some((card) => {
                         const attachment = card.type === CardType.Attachment;
                         const onCharacterYouControl =
                             card instanceof DrawCard && card.parentCharacter?.controller === context.player;
                         const inPlay = card.location === Location.PlayArea;
                         return attachment && onCharacterYouControl && inPlay;
                     })
-            },
-
-            gameAction: AbilityDsl.actions.conditional({
-                condition: (context) => {
+            })
+            .cost(AbilityDsl.costs.discardSelf())
+            .gameAction(AbilityDsl.actions.conditional((context) => ({
+                condition: () => {
                     const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
                     const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
                         .discardAtRandom({ amount: 2 })
@@ -35,7 +29,7 @@ export default class VillageDoshin extends DrawCard {
                     return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
                 },
                 falseGameAction: AbilityDsl.actions.cancel(),
-                trueGameAction: AbilityDsl.actions.chooseAction((context) => ({
+                trueGameAction: AbilityDsl.actions.chooseAction(() => ({
                     player: Players.Opponent,
                     activePromptTitle: 'Select one',
                     options: {
@@ -51,11 +45,10 @@ export default class VillageDoshin extends DrawCard {
                             message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled.`
                         }
                     },
-                    messageArgs: [(context as TriggeredAbilityContext).event.card]
+                    messageArgs: [context.event.card]
                 }))
-            }),
-            effect: 'protect {1}',
-            effectArgs: (context) => context.event.cardTargets ?? []
-        });
+            })))
+            .effect('protect {1}', (context) => context.event.cardTargets ?? [])
+            .location(Location.Hand);
     }
 }

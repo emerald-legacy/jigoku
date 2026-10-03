@@ -6,15 +6,12 @@ export default class FukurokushisBlessing extends DrawCard {
     static id = 'fukurokushi-s-blessing';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel conflict province ability',
-            when: {
+        this.wouldInterrupt('Cancel conflict province ability')
+            .when({
                 onInitiateAbilityEffects: ({ card }) => card instanceof ProvinceCard
-            },
-            effect: 'cancel the effects of {1}\'s ability',
-            effectArgs: (context) => context.event.card ?? '',
-            gameAction: AbilityDsl.actions.cancel(),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel())
+            .effect('cancel the effects of {1}\'s ability', (context) => context.event.card ?? '')
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

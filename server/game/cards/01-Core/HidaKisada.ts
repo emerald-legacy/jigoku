@@ -2,7 +2,6 @@ import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
-import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class HidaKisada extends DrawCard {
@@ -34,7 +33,7 @@ export default class HidaKisada extends DrawCard {
             this.game.isDuringConflict() &&
             event.context.ability.abilityType === 'action' &&
             !event.context.ability.isKeywordAbility() &&
-            !(event.context.ability as CardAbility).cannotBeCancelled
+            !event.context.ability.cannotBeCancelled
         ) {
             this.firstActionEvent.set(event.context.player.uuid, event);
         }

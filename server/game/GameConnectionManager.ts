@@ -3,7 +3,7 @@ import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
 import type Socket from '../Socket.js';
 import type { GamePlayerUser } from './Player.js';
-import type { LobbyUser, UserIdentity } from '../gamenode/LobbyProtocol.js';
+import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 
 export class GameConnectionManager {
     constructor(private readonly game: Game) {}
@@ -21,13 +21,13 @@ export class GameConnectionManager {
         return true;
     }
 
-    join(socketId: string, user: LobbyUser): boolean {
+    join(socketId: string, user: GamePlayerUser): boolean {
         const game = this.game;
         if(game.started || game.getPlayers().length === 2) {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Player(socketId, user as GamePlayerUser, game.owner === user.username, game);
+        game.playersAndSpectators[user.username] = new Player(socketId, user, game.owner === user.username, game);
         game.invalidatePlayerCaches();
 
         return true;

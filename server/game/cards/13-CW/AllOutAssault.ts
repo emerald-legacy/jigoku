@@ -6,18 +6,16 @@ class AllOutAssault extends DrawCard {
     static id = 'all-out-assault';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Both players must attack with as many characters as they can every conflict',
-            when: {
+        this.reaction('Both players must attack with as many characters as they can every conflict')
+            .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
-            },
-            effect: 'force each player to attack with as many characters as they can each conflict!',
-            gameAction: AbilityDsl.actions.playerLastingEffect({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 effect: AbilityDsl.effects.mustDeclareMaximumAttackers()
-            })
-        });
+            }))
+            .effect('force each player to attack with as many characters as they can each conflict!');
     }
 }
 

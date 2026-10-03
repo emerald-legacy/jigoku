@@ -13,8 +13,6 @@ export enum PlayCharacterIntoLocation {
     Home
 }
 
-type ExecutionContext = AbilityContext<DrawCard> & { chooseFate: number };
-
 export class PlayCharacterAction extends PlayCardSourceAction {
     public title = 'Play this character';
 
@@ -54,7 +52,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         return super.meetsRequirements(context);
     }
 
-    public executeHandler(context: ExecutionContext): void {
+    public executeHandler(context: AbilityContext<DrawCard>): void {
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         if(!context.source.checkRestrictions('placeFate', context)) {
@@ -112,8 +110,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             return context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,
-                choices: ['Conflict', 'Home'],
-                handlers: [intoConflictHandler, atHomeHandler]
+                options: [{ text: 'Conflict', handler: intoConflictHandler }, { text: 'Home', handler: atHomeHandler }]
             });
         }
 

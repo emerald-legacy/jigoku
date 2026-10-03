@@ -8,19 +8,16 @@ export default class OniOfObsidianAndBlood extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Discard a character',
-            when: {
+        this.reaction('Discard a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isTainted,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.isTainted
+            }, AbilityDsl.actions.discardFromPlay());
     }
 
     public allowAttachment(attachment: BaseCard) {

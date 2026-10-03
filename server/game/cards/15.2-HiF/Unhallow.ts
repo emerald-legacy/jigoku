@@ -1,9 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType, Players } from '../../Constants.js';
-import type BaseCard from '../../BaseCard.js';
+import BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import type Player from '../../Player.js';
 
 class Unhallow extends DrawCard {
@@ -36,11 +35,11 @@ class Unhallow extends DrawCard {
     }
 
     canPlayOn(source: BaseCard | Ring) {
-        return source && source.getType() === 'province' && (source as ProvinceCard).controller === this.controller && !(source as ProvinceCard).isBroken && this.getType() === CardType.Attachment;
+        return source instanceof BaseCard && source.isProvinceCard() && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
     }
 
     canAttach(parent: BaseCard) {
-        if(parent.type === CardType.Province && (parent as ProvinceCard).isBroken) {
+        if(parent.isProvinceCard() && parent.isBroken) {
             return false;
         }
 

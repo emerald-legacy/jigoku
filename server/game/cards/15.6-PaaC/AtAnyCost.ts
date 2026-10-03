@@ -6,14 +6,11 @@ class AtAnyCost extends DrawCard {
     static id = 'at-any-cost';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Place a fate on a character',
-            cost: AbilityDsl.costs.payHonor(3),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.placeFate({ amount: 2 })
-            }
-        });
+        this.action('Place a fate on a character')
+            .cost(AbilityDsl.costs.payHonor(3))
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.placeFate({ amount: 2 }));
     }
 }
 

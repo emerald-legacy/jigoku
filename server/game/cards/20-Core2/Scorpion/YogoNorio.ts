@@ -6,19 +6,16 @@ export default class YogoNorio extends DrawCard {
     static id = 'yogo-norio';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain another political conflict',
-            effect: 'allow {1} to declare an additional political conflict this phase',
-            effectArgs: (context) => [context.player],
-            condition: (context) => context.game.currentPhase === Phases.Conflict,
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Gain another political conflict')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character
-            }),
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+            }))
+            .condition((context) => context.game.currentPhase === Phases.Conflict)
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
-            }))
-        });
+            })))
+            .effect('allow {1} to declare an additional political conflict this phase', (context) => [context.player]);
     }
 }

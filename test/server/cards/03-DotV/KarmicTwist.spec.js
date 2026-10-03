@@ -63,7 +63,7 @@ describe('Karmic Twist', function() {
             });
 
             it('should move the fate from the donor to the recipient (self)', function() {
-                let fate = this.asakoDiplomat.fate;
+                const fate = this.asakoDiplomat.fate;
                 this.player1.clickCard(this.karmicTwist);
                 this.player1.clickCard(this.asakoDiplomat);
                 this.player1.clickCard(this.adeptOfTheWaves);
@@ -72,7 +72,7 @@ describe('Karmic Twist', function() {
             });
 
             it('should move the fate from the donor to the recipient (opponent)', function() {
-                let fate = this.bayushiManipulator.fate;
+                const fate = this.bayushiManipulator.fate;
                 this.player1.clickCard(this.karmicTwist);
                 this.player1.clickCard(this.bayushiManipulator);
                 this.player1.clickCard(this.soshiIllusionist);

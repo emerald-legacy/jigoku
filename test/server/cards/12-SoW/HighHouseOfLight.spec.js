@@ -79,9 +79,9 @@ describe('High House of Light', function() {
             this.player1.clickCard(this.house);
             this.player1.clickCard(this.ancientMaster);
 
-            let monkFate = this.ancientMaster.fate;
-            let ringFate = this.game.rings.void.fate;
-            let playerFate = this.player1.fate;
+            const monkFate = this.ancientMaster.fate;
+            const ringFate = this.game.rings.void.fate;
+            const playerFate = this.player1.fate;
 
             expect(this.player1).toBeAbleToSelectRing('void');
             expect(this.player1).toBeAbleToSelectRing('water');

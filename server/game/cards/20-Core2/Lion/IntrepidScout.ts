@@ -6,14 +6,11 @@ export default class IntrepidScout extends DrawCard {
     static id = 'intrepid-scout';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character to the conflict',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Move a character to the conflict')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.moveToConflict());
     }
 }

@@ -11,7 +11,7 @@ export interface InitiateConflictProperties extends PlayerActionProperties {
     forceProvinceTarget?: ProvinceCard;
 }
 
-export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName, C> {
+export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName.OnConflictInitiated, C> {
     name = 'initiateConflict';
     eventName = EventName.OnConflictInitiated;
     effect = 'declare a new conflict';

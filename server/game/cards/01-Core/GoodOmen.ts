@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
@@ -6,15 +6,12 @@ import { CardType } from '../../Constants.js';
 class GoodOmen extends DrawCard {
     static id = 'good-omen';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Add a fate to a character',
-            target: {
+    setupCardAbilities() {
+        this.action('Add a fate to a character')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => (card.getCost() ?? 0) > 2,
-                gameAction: ability.actions.placeFate()
-            }
-        });
+                cardCondition: card => (card.getCost() ?? 0) > 2
+            }, AbilityDsl.actions.placeFate());
     }
 
     canPlay(context: AbilityContext, playType: string): boolean {

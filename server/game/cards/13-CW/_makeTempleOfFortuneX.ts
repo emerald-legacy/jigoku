@@ -15,21 +15,19 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
                 effect: AbilityDsl.effects.modifyProvinceStrength(2)
             });
 
-            this.forcedReaction({
-                title: 'Place one fate on the unclaimed ring',
-                when: {
+            this.forcedReaction('Place one fate on the unclaimed ring')
+                .when({
                     onConflictDeclared: (event, context) =>
                         event.conflict.declaredProvince === context.source &&
                         context.game.rings[this.getCurrentElementSymbol(elementKeys[1])].isUnclaimed()
-                },
-                gameAction: AbilityDsl.actions.placeFateOnRing((context) => ({
+                })
+                .gameAction(AbilityDsl.actions.placeFateOnRing((context) => ({
                     target: context.game.rings[this.getCurrentElementSymbol(elementKeys[1])]
-                }))
-            });
+                })));
         }
 
         getPrintedElementSymbols() {
-            let symbols = super.getPrintedElementSymbols();
+            const symbols = super.getPrintedElementSymbols();
             symbols.push({ element, key: elementKeys[0], prettyName: 'Strength Bonus' });
             symbols.push({ element, key: elementKeys[1], prettyName: 'Fate Ring' });
             return symbols;

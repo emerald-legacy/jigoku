@@ -74,7 +74,7 @@ describe('Ride Them Down', function() {
                 });
 
                 it('the total province strength should be 1 plus the holding bonus', function() {
-                    let holdingStr = parseInt(this.favorableGround.cardData.strength_bonus, 10);
+                    const holdingStr = parseInt(this.favorableGround.cardData.strength_bonus, 10);
                     expect(this.game.currentConflict.conflictProvince.getStrength()).toBe(1 + holdingStr);
                 });
             });

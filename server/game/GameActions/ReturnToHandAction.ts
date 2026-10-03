@@ -1,12 +1,13 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { CardActionProperties } from './CardGameAction.js';
+import { LeavesPlayAction, type LeavesPlayEvent } from './LeavesPlayAction.js';
 
 import type { ActionEvent } from './GameAction.js';
 export type ReturnToHandProperties = CardActionProperties;
 
-export class ReturnToHandAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ReturnToHandProperties, EventName, C> {
+export class ReturnToHandAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<ReturnToHandProperties, C> {
     name = 'returnToHand';
     eventName = EventName.OnCardLeavesPlay;
     effect = 'return {0} to their hand';
@@ -22,7 +23,7 @@ export class ReturnToHandAction<C extends AbilityContext = AbilityContext> exten
         event.destination = Location.Hand;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

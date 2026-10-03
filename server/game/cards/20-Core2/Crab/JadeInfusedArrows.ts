@@ -7,35 +7,32 @@ export default class JadeInfusedArrows extends DrawCard {
     static id = 'jade-infused-arrows';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give attached character a skill bonus',
-            condition: (context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false,
-            cost: AbilityDsl.costs.payFate(1),
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+        this.action('Give attached character a skill bonus')
+            .cost(AbilityDsl.costs.payFate(1))
+            .condition((context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false)
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyMilitarySkill(this.#bonusAmount(context))
-            })),
-            effect: 'give +{1}{2} to {3}{4}',
-            effectArgs: (context) => [
-                this.#bonusAmount(context),
+                effect: AbilityDsl.effects.modifyMilitarySkill(this.bonusAmount(context))
+            })))
+            .effect('give +{1}{2} to {3}{4}', (context) => [
+                this.bonusAmount(context),
                 'military',
                 context.source.parentCharacter ?? '',
-                this.#isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku!' : ''
-            ],
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+                this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku!' : ''
+            ])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
-    #isAgainstEvil(context: AbilityContext): boolean {
+    private isAgainstEvil(context: AbilityContext): boolean {
         return context.player.opponent?.cardsInPlay.some(
-            (card: DrawCard) =>
+            (card) =>
                 card.getType() === CardType.Character &&
                 card.isParticipating() &&
                 (card.isTainted || card.hasTrait('shadowlands'))
         ) ?? false;
     }
 
-    #bonusAmount(context: AbilityContext): number {
-        return this.#isAgainstEvil(context) ? 4 : 2;
+    private bonusAmount(context: AbilityContext): number {
+        return this.isAgainstEvil(context) ? 4 : 2;
     }
 }

@@ -1,55 +1,53 @@
 import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 import type { Event } from '../../Events/Event.js';
 import DrawCard from '../../DrawCard.js';
-import { EventName, Phases } from '../../Constants.js';
+import { Phases } from '../../Constants.js';
 
 class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Resolve 2 rings',
-            when : {
-                onPhaseEnded: (event: EventPayload<typeof EventName.OnPhaseEnded>) => event.phase === Phases.Conflict
-            },
-            effect: 'resolve up to 2 ring effects',
-            handler: context => (context ? this.game.promptForRingSelect(context.player, {
+        this.interrupt('Resolve 2 rings')
+            .when({
+                onPhaseEnded: (event) => event.phase === Phases.Conflict
+            })
+            .handler((context) => this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',
                 context: context,
-                ringCondition: (ring: Ring) => ring.isUnclaimed(),
-                onSelect: (player: Player, firstRing: Ring) => {
-                    if(Object.values(this.game.rings).filter((ring: Ring) => ring.isUnclaimed()).length > 1) {
-                        this.game.promptForRingSelect(player, {
-                            activePromptTitle: 'Choose a second ring to resolve, or click Done',
-                            ringCondition: (ring: Ring) => ring.isUnclaimed() && ring !== firstRing,
-                            context: context,
-                            optional: true,
-                            onMenuCommand: (player: Player) => {
-                                this.game.addMessage('{0} resolves {1}', player, firstRing);
-                                let event = this.game.actions.resolveRingEffect().getEvent(firstRing, this.game.getFrameworkContext(player));
-                                this.game.openThenEventWindow(event);
-                                return true;
-                            },
-                            onSelect: (player: Player, secondRing: Ring) => {
-                                this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
-                                let action = this.game.actions.resolveRingEffect({ target: [firstRing, secondRing]});
-                                let events: Event[] = [];
-                                action.addEventsToArray(events, this.game.getFrameworkContext(player));
-                                this.game.openThenEventWindow(events);
-                                return true;
-                            }
-                        });
-                    } else {
-                        this.game.addMessage('{0} resolves {1}', context.player, firstRing);
-                        let event = this.game.actions.resolveRingEffect().getEvent(firstRing, this.game.getFrameworkContext(player));
-                        this.game.openThenEventWindow(event);
+                ringCondition: (ring) => ring.isUnclaimed(),
+                onSelect: (player, firstRing) => {
+                    if(Object.values(this.game.rings).filter((ring) => ring.isUnclaimed()).length <= 1) {
+                        this.resolveRing(player, firstRing);
+                        return true;
                     }
+                    this.game.promptForRingSelect(player, {
+                        activePromptTitle: 'Choose a second ring to resolve, or click Done',
+                        ringCondition: (ring) => ring.isUnclaimed() && ring !== firstRing,
+                        context: context,
+                        optional: true,
+                        onMenuCommand: (player) => {
+                            this.resolveRing(player, firstRing);
+                            return true;
+                        },
+                        onSelect: (player, secondRing) => {
+                            this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
+                            const events: Event[] = [];
+                            this.game.actions.resolveRingEffect({ target: [firstRing, secondRing] })
+                                .addEventsToArray(events, this.game.getFrameworkContext(player));
+                            this.game.openThenEventWindow(events);
+                            return true;
+                        }
+                    });
                     return true;
                 }
-            }) : undefined)
-        });
+            }))
+            .effect('resolve up to 2 ring effects');
+    }
+
+    private resolveRing(player: Player, ring: Ring) {
+        this.game.addMessage('{0} resolves {1}', player, ring);
+        this.game.openThenEventWindow(this.game.actions.resolveRingEffect().getEvent(ring, this.game.getFrameworkContext(player)));
     }
 }
 

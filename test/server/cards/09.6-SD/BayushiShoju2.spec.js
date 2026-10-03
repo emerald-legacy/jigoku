@@ -21,11 +21,11 @@ describe('Bayushi Shoju 2', function() {
             });
 
             it('should trigger at the start of the conflict phase', function() {
-                let p1Hand = this.player1.hand.length;
-                let p2Hand = this.player2.hand.length;
+                const p1Hand = this.player1.hand.length;
+                const p2Hand = this.player2.hand.length;
 
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
 
                 this.noMoreActions();
                 expect(this.game.currentPhase).toBe('conflict');
@@ -39,14 +39,14 @@ describe('Bayushi Shoju 2', function() {
             });
 
             it('should let player 1 win if both are at 1 honor', function() {
-                let p1Hand = this.player1.hand.length;
-                let p2Hand = this.player2.hand.length;
+                const p1Hand = this.player1.hand.length;
+                const p2Hand = this.player2.hand.length;
 
                 this.player1.honor = 1;
                 this.player2.honor = 1;
 
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
 
                 this.noMoreActions();
                 expect(this.game.currentPhase).toBe('conflict');

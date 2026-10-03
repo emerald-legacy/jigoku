@@ -26,10 +26,10 @@ describe('Diplomatic Gift-Giver', function() {
                 defenders: [this.borderlandsDefender],
                 province: this.fields
             });
-            let cFate = this.challenger.fate;
-            let pFate = this.player2.fate;
-            let bFate = this.borderlandsDefender.fate;
-            let p1Fate = this.player1.fate;
+            const cFate = this.challenger.fate;
+            const pFate = this.player2.fate;
+            const bFate = this.borderlandsDefender.fate;
+            const p1Fate = this.player1.fate;
             this.player2.pass();
             this.player1.clickCard(this.diplomatic);
             expect(this.player1).toBeAbleToSelect(this.borderlandsDefender);

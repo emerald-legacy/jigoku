@@ -5,10 +5,10 @@ import AbilityDsl from '../../abilitydsl.js';
 class TogashiTadakatsu extends DrawCard {
     static id = 'togashi-tadakatsu';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: ability.effects.playerCannot('chooseConflictRing')
+            effect: AbilityDsl.effects.playerCannot('chooseConflictRing')
         });
     }
 }

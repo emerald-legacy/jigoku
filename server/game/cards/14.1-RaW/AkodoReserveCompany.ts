@@ -6,18 +6,15 @@ class AkodoReserveCompany extends DrawCard {
     static id = 'akodo-reserve-company';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow an attacking character',
-            condition: context => context.game.isTraitInPlay('battlefield'),
-            target: {
+        this.action('Bow an attacking character')
+            .condition(context => context.game.isTraitInPlay('battlefield'))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.controller === context.player,
-                gameAction: AbilityDsl.actions.joint([
-                    AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),
-                    AbilityDsl.actions.sendHome()
-                ])
-            }
-        });
+                cardCondition: (card, context) => card.isParticipating() && card.controller === context.player
+            }, AbilityDsl.actions.joint([
+                AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),
+                AbilityDsl.actions.sendHome()
+            ]));
     }
 }
 

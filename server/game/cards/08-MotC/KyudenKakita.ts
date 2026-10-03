@@ -1,23 +1,18 @@
 import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type DrawCard from '../../DrawCard.js';
 
 export default class KyudenKakita extends StrongholdCard {
     static id = 'kyuden-kakita';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a Character',
-            when: { onDuelFinished: () => true },
-            cost: [AbilityDsl.costs.bowSelf()],
-            target: {
+        this.reaction('Honor a Character')
+            .when({ onDuelFinished: () => true })
+            .cost(AbilityDsl.costs.bowSelf())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => (context as TriggeredAbilityContext<DrawCard>).event.duel?.isInvolved(card) ?? false,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardCondition: (card, context) => context.event.duel?.isInvolved(card) ?? false
+            }, AbilityDsl.actions.honor());
     }
 }

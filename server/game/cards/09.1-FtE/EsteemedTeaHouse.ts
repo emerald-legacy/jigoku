@@ -6,15 +6,13 @@ class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Return attachment to owners hand',
-            condition: context => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')),
-            target: {
+        this.action('Return attachment to owners hand')
+            .condition(context => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
+            .target('target', {
                 cardType: CardType.Attachment,
-                cardCondition: card => Boolean(card.parentCharacter?.isParticipating()),
-                gameAction: AbilityDsl.actions.returnToHand()
-            },
-            gameAction: AbilityDsl.actions.playerLastingEffect<DrawCard>(context => ({
+                cardCondition: card => Boolean(card.parentCharacter?.isParticipating())
+            }, AbilityDsl.actions.returnToHand())
+            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: context.target?.owner,
                 effect: AbilityDsl.effects.playerCannot({
@@ -22,10 +20,8 @@ class EsteemedTeaHouse extends DrawCard {
                     restricts: 'copiesOfX',
                     params: context.target?.name
                 })
-            })),
-            effect: 'return {0} to {1}\'s hand and prevent them from playing copies this phase',
-            effectArgs: context => [context.target?.owner ?? '']
-        });
+            })))
+            .effect('return {0} to {1}\'s hand and prevent them from playing copies this phase', context => [context.target?.owner ?? '']);
     }
 }
 

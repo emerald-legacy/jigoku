@@ -11,9 +11,8 @@ export default class ChallengeOnTheFields extends DrawCard {
     static id = 'challenge-on-the-fields';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: (context) => ({
+        this.action('Initiate a military duel')
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 statistic: (card, duelRules) =>
                     duelRules === 'printedSkill'
@@ -24,7 +23,6 @@ export default class ChallengeOnTheFields extends DrawCard {
                     context.player.opponent ? participatingCharacters(context.player.opponent) - 1 : 0
                 ),
                 gameAction: (duel) => AbilityDsl.actions.sendHome({ target: duel.loser })
-            })
-        });
+            }));
     }
 }

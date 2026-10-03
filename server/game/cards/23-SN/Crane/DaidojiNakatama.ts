@@ -20,18 +20,15 @@ export default class DaidojiNakatama extends DrawCard {
             ]
         });
 
-        this.action({
-            title: 'Ready and dishonor a character',
-            target: {
+        this.action('Ready and dishonor a character')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card, context) => card !== context.source && card.costLessThan(4) && card.bowed,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.dishonor()
-                ])
-            },
-            effect: 'ready and dishonor {0}'
-        });
+                cardCondition: (card, context) => card !== context.source && card.costLessThan(4) && card.bowed
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.ready(),
+                AbilityDsl.actions.dishonor()
+            ]))
+            .effect('ready and dishonor {0}');
     }
 }

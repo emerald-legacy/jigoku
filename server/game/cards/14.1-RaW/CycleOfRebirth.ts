@@ -7,17 +7,15 @@ class CycleOfRebirth extends DrawCard {
     static id = 'cycle-of-rebirth';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Shuffle this and target into deck',
-            max: AbilityDsl.limit.perRound(1),
-            target: {
+        this.action('Shuffle this and target into deck')
+            .target('target', {
                 location: Location.Provinces,
                 controller: Players.Any,
                 cardCondition: card => card.type !== CardType.Province && card.type !== CardType.Stronghold
-            },
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard<DrawCard>(context => ({
+                    AbilityDsl.actions.moveCard(context => ({
                         destination: Location.DynastyDeck,
                         target: context.target,
                         shuffle: true,
@@ -30,13 +28,12 @@ class CycleOfRebirth extends DrawCard {
                         bottom: true
                     }))
                 ]),
-                AbilityDsl.actions.refillFaceup<DrawCard>(context => ({
+                AbilityDsl.actions.refillFaceup(context => ({
                     target: context.target ? [context.target.controller, context.source.controller] : [context.source.controller],
                     location: context.game.getProvinceArray()
                 }))
-            ]),
-            effect: 'shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}',
-            effectArgs: context => {
+            ]))
+            .effect('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', context => {
                 const target = context.target;
                 if(!target) {
                     return ['', '', '', '', '', '', '', '', '', context.source.controller];
@@ -53,8 +50,8 @@ class CycleOfRebirth extends DrawCard {
                     target.controller !== context.source.controller ? '\'s dynasty deck' : '',
                     context.source.controller
                 ];
-            }
-        });
+            })
+            .max(AbilityDsl.limit.perRound(1));
     }
 }
 

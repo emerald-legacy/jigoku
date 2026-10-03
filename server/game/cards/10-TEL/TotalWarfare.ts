@@ -8,19 +8,16 @@ export default class TotalWarfare extends BattlefieldAttachment {
     public setupCardAbilities() {
         super.setupCardAbilities();
 
-        this.forcedReaction({
-            title: 'Loser sacrifices a character',
-            when: {
+        this.forcedReaction('Loser sacrifices a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.loser && context.source.parentProvince?.isConflictProvince()
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 player: (context) =>
                     context.player === this.game.currentConflict?.loser ? Players.Self : Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && card.controller === this.game.currentConflict?.loser,
-                gameAction: AbilityDsl.actions.sacrifice()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.controller === this.game.currentConflict?.loser
+            }, AbilityDsl.actions.sacrifice());
     }
 }

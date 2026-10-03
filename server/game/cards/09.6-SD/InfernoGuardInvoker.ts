@@ -13,16 +13,14 @@ export default class InfernoGuardInvoker extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictDeclared]);
 
-        this.action({
-            title: 'honor this character',
-            condition: (context) => context.game.isDuringConflict('military'),
-            target: {
+        this.action('honor this character')
+            .condition((context) => context.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            },
-            effect: 'honor {0}. It will be discarded if a province is broken this conflict',
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.honor((context) => ({ target: context.target })),
                 AbilityDsl.actions.cardLastingEffect((context) => ({
                     duration: Duration.UntilEndOfPhase,
@@ -36,8 +34,8 @@ export default class InfernoGuardInvoker extends DrawCard {
                         gameAction: AbilityDsl.actions.sacrifice({ target: context.target })
                     })
                 }))
-            ])
-        });
+            ]))
+            .effect('honor {0}. It will be discarded if a province is broken this conflict');
     }
 
     public onBreakProvince() {

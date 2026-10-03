@@ -6,21 +6,18 @@ class KakitaYoshi2 extends DrawCard {
     static id = 'kakita-yoshi-2';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor characters',
-            when: {
+        this.reaction('Dishonor characters')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking() &&
                     event.conflict.conflictType === 'political'
-            },
-            target: {
+            })
+            .targetCards('target', {
                 mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.player.getNumberOfFaceupProvinces(),
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardType: CardType.Character
+            }, AbilityDsl.actions.dishonor());
     }
 }
 

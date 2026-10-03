@@ -7,13 +7,13 @@ import type { ActionEvent } from './GameAction.js';
 
 export type FlipDynastyProperties = CardActionProperties;
 
-export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName, C> {
+export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName.OnCardRevealed, C> {
     name = 'reveal';
     eventName = EventName.OnCardRevealed;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const target = Array.isArray(properties.target) ? properties.target[0] : properties.target;
         return ['reveal the facedown card in {0}', [target ? target.location : '']];
     }

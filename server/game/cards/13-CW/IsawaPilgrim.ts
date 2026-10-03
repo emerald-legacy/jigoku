@@ -1,33 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'isawa-pilgrim-water';
+const elementSymbol = { key: 'isawa-pilgrim-water', element: Element.Water };
 
 class IsawaPilgrim extends DrawCard {
     static id = 'isawa-pilgrim';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give control of this character',
-            effect: 'give control of itself to {1}',
-            effectArgs: context => [context.player.opponent ?? context.player],
-            condition: context => !!(context.player.opponent && context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent)),
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+        this.action('Give control of this character')
+            .condition(context => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
+            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.takeControl(context.player.opponent),
                 duration: Duration.Custom
-            }))
-        });
+            })))
+            .effect('give control of itself to {1}', context => [context.player.opponent ?? context.player]);
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

@@ -7,14 +7,12 @@ class Censure extends DrawCard {
     static id = 'censure';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: event => event.card.type === CardType.Event
-            },
-            cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel())
+            .cannotBeMirrored();
     }
 
     canPlay(context: AbilityContext, playType: string = 'play'): boolean {

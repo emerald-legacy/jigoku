@@ -5,19 +5,16 @@ import AbilityDsl from '../../abilitydsl.js';
 class Rout extends DrawCard {
     static id = 'rout';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Send a character home.',
-            target: {
+    setupCardAbilities() {
+        this.action('Send a character home.')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => context.player.cardsInPlay.some((myCard: DrawCard) => (
+                cardCondition: (card, context) => context.player.cardsInPlay.some((myCard) => (
                     myCard.hasTrait('bushi') && myCard.isParticipating() &&
                     myCard.militarySkill > card.militarySkill
-                )),
-                gameAction: ability.actions.sendHome()
-            }
-        });
+                ))
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

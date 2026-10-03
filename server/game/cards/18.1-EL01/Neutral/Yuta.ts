@@ -5,13 +5,11 @@ class Yuta extends DrawCard {
     static id = 'yuta';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Steal a fate',
-            when: {
+        this.reaction('Steal a fate')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isAttacking()
-            },
-            gameAction: AbilityDsl.actions.takeFate()
-        });
+            })
+            .gameAction(AbilityDsl.actions.takeFate());
     }
 }
 

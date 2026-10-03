@@ -1,21 +1,17 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location, TargetMode } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 
 class OverlookedCommunity extends DrawCard {
     static id = 'overlooked-community';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard a status token',
-            cost: AbilityDsl.costs.returnRings(1),
-            target: {
-                mode: TargetMode.Token,
+        this.action('Discard a status token')
+            .cost(AbilityDsl.costs.returnRings(1))
+            .tokenTarget('target', {
                 cardType: CardType.Character,
-                location: Location.PlayArea,
-                gameAction: AbilityDsl.actions.discardStatusToken()
-            }
-        });
+                location: Location.PlayArea
+            }, AbilityDsl.actions.discardStatusToken());
     }
 }
 

@@ -5,16 +5,14 @@ export default class SevenFoldPalace extends StrongholdCard {
     static id = 'seven-fold-palace';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Gain 2 Honor',
-            cost: AbilityDsl.costs.bowSelf(),
-            when: {
+        this.reaction('Gain 2 Honor')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     context.player.isAttackingPlayer() &&
                     event.conflict.getAttackers().some((card) => card.isHonored && card.controller === context.player)
-            },
-            gameAction: AbilityDsl.actions.gainHonor(() => ({ amount: 2 }))
-        });
+            })
+            .cost(AbilityDsl.costs.bowSelf())
+            .gameAction(AbilityDsl.actions.gainHonor(() => ({ amount: 2 })));
     }
 }

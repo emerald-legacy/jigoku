@@ -1,4 +1,4 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
@@ -6,21 +6,18 @@ import { CardType } from '../../Constants.js';
 class OpiumWastrel extends DrawCard {
     static id = 'opium-wastrel';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Set a character\'s glory to 0',
-            when: {
+    setupCardAbilities() {
+        this.reaction('Set a character\'s glory to 0')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect({
-                    effect: ability.effects.setGlory(0)
-                })
-            },
-            effect: 'set {0}\'s glory to 0 until the end of the conflict'
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect({
+                effect: AbilityDsl.effects.setGlory(0)
+            }))
+            .effect('set {0}\'s glory to 0 until the end of the conflict');
     }
 
     canPlay(context: AbilityContext, playType: string): boolean {

@@ -40,7 +40,7 @@ describe('Ujiaki\'s Offer', function() {
                     attackers: [this.adept, this.shoju],
                     defenders: [this.toshimoko]
                 });
-                let adeptFate = this.adept.fate;
+                const adeptFate = this.adept.fate;
                 this.player2.clickCard(this.offer);
                 this.player2.clickCard(this.adept);
                 expect(this.adept.fate).toBe(adeptFate + 1);

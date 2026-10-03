@@ -57,8 +57,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'military'
             });
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
             this.player2.pass();
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.deceiver);
@@ -234,8 +234,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -260,8 +260,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -349,8 +349,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.soul);
@@ -376,8 +376,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.playAttachment(this.words, this.deceiver);

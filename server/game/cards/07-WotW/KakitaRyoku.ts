@@ -1,23 +1,19 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class KakitaRyoku extends DrawCard {
     static id = 'kakita-ryoku';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Honor a character if you have the Imperial Favor',
-            when: {
-                onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context) => event.phase !== 'setup' && context.player.imperialFavor !== ''
-            },
-            target: {
+    setupCardAbilities() {
+        this.reaction('Honor a character if you have the Imperial Favor')
+            .when({
+                onPhaseStarted: (event, context) => event.phase !== 'setup' && context.player.imperialFavor !== ''
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: ability.actions.honor()
-            }
-        });
+                controller: Players.Any
+            }, AbilityDsl.actions.honor());
     }
 }
 

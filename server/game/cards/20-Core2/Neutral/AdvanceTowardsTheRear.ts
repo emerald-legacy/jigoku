@@ -6,15 +6,12 @@ export default class AdvanceTowardsTheRear extends DrawCard {
     static id = 'advance-towards-the-rear';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character home',
-            condition: () => this.game.isDuringConflict('military'),
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
+        this.action('Move a character home')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .condition(() => this.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.sendHome());
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetMode } from '../../Constants.js';
+import { Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { RingEffects } from '../../RingEffects.js';
 
@@ -14,18 +14,14 @@ class TogashiMitsu2 extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Resolve a ring effect',
-            condition: context => context.source.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 5,
-            target: {
-                mode: TargetMode.Ring,
+        this.action('Resolve a ring effect')
+            .condition(context => context.source.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 5)
+            .ringTarget('target', {
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
-                ringCondition: (ring, context) => !!context && RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context),
-                gameAction: AbilityDsl.actions.resolveRingEffect(context => ({ player: context.player }))
-            },
-            effect: 'resolve the {0}\'s effect'
-        });
+                ringCondition: (ring, context) => !!context && RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context)
+            }, AbilityDsl.actions.resolveRingEffect(context => ({ player: context.player })))
+            .effect('resolve the {0}\'s effect');
     }
 }
 

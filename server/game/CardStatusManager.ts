@@ -8,7 +8,7 @@ export class CardStatusManager {
     constructor(private card: BaseCard) {}
 
     addStatusToken(tokenType: CharacterStatus | StatusToken): void {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
+        const status = tokenType instanceof StatusToken ? tokenType.grantedStatus : tokenType;
         if(!this.statusTokens.find((a) => a.grantedStatus === status)) {
             if(status === CharacterStatus.Honored && this.isDishonored) {
                 this.removeStatusToken(CharacterStatus.Dishonored);
@@ -25,7 +25,7 @@ export class CardStatusManager {
     }
 
     removeStatusToken(tokenType: CharacterStatus | StatusToken): void {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
+        const status = tokenType instanceof StatusToken ? tokenType.grantedStatus : tokenType;
         const index = this.statusTokens.findIndex((a) => a.grantedStatus === status);
         if(index > -1) {
             const realToken = this.statusTokens[index];

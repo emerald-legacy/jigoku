@@ -6,18 +6,15 @@ class KitsuMotso extends DrawCard {
     static id = 'kitsu-motso';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character in',
-            condition: (context) =>
+        this.action('Move a character in')
+            .condition((context) =>
                 !!(context.source.isParticipating() &&
                 context.player.opponent &&
-                context.player.hand.length < context.player.opponent.hand.length),
-            target: {
+                context.player.hand.length < context.player.opponent.hand.length))
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                controller: Players.Opponent
+            }, AbilityDsl.actions.moveToConflict());
     }
 }
 

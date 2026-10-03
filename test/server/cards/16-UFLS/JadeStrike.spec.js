@@ -32,6 +32,13 @@ describe('Jade Strike', function() {
             });
         });
 
+        it('should not be playable without a shugenja', function() {
+            this.player1.moveCard(this.adept, 'dynasty discard pile');
+            this.player2.pass();
+            this.player1.clickCard(this.strike);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
         it('should let you choose a character with a status token', function() {
             this.player2.pass();
             this.player1.clickCard(this.strike);
@@ -53,7 +60,7 @@ describe('Jade Strike', function() {
         });
 
         it('should also remove a fate if the chosen character is tainted', function() {
-            let fate = this.whisperer.fate;
+            const fate = this.whisperer.fate;
             this.player2.pass();
             this.player1.clickCard(this.strike);
             this.player1.clickCard(this.whisperer);

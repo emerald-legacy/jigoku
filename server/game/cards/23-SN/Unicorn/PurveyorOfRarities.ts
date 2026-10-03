@@ -1,19 +1,16 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Location } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type BaseCard from '../../../BaseCard.js';
 
 export default class PurveyorOfRarities extends DrawCard {
     static id = 'purveyor-of-rarities';
 
     setupCardAbilities() {
-        this.conflictAction({
-            title: 'Discard a card for bonuses',
-            max: AbilityDsl.limit.perConflict(1),
-            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
-            gameAction: AbilityDsl.actions.conditional((context: AbilityContext) => ({
-                condition: () => this.#cardCondition(context),
+        this.conflictAction('Discard a card for bonuses')
+            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .gameAction(AbilityDsl.actions.conditional((context) => ({
+                condition: () => this.cardCondition(context.costs.discardCard),
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         target: context.source,
@@ -27,23 +24,22 @@ export default class PurveyorOfRarities extends DrawCard {
                     target: context.source,
                     effect: AbilityDsl.effects.modifyBothSkills(3)
                 })
-            })),
-            effect: 'give +{1}{2}/+{1}{3} to {4}{5}',
-            effectArgs: context => this.#cardCondition(context) ?
+            })))
+            .effect('give +{1}{2}/+{1}{3} to {4}{5}', context => this.cardCondition(context.costs.discardCard) ?
                 [1, 'military', 'political', context.source, ' and gain 1 fate'] :
-                [3, 'military', 'political', context.source, '']
-        });
+                [3, 'military', 'political', context.source, ''])
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
-    #cardCondition(context: AbilityContext) {
-        if(!context.costs.discardCard) {
+    private cardCondition(discarded: BaseCard | BaseCard[] | undefined) {
+        if(!discarded) {
             return false;
         }
-        const card = (context.costs.discardCard as BaseCard[])[0];
-        return card.hasSomeTrait('gaijin', 'foreign') || this.#isOutOfClan(card);
+        const card = Array.isArray(discarded) ? discarded[0] : discarded;
+        return card.hasSomeTrait('gaijin', 'foreign') || this.isOutOfClan(card);
     }
 
-    #isOutOfClan(card: BaseCard): boolean {
+    private isOutOfClan(card: BaseCard): boolean {
         return !card.isFaction('neutral') && !card.isFaction('unicorn');
     }
 }

@@ -22,7 +22,7 @@ describe('Cliffs of the Sea Dragon', function () {
 
         it('should stop opponent from taking fate from rings', function () {
             this.game.rings.air.fate = 5;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.solemnScholar],
@@ -52,7 +52,7 @@ describe('Cliffs of the Sea Dragon', function () {
             this.noMoreActions();
 
             this.game.rings.air.fate = 5;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.tsukune],
@@ -77,7 +77,7 @@ describe('Cliffs of the Sea Dragon', function () {
             this.noMoreActions();
 
             this.game.rings.air.fate = 5;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.tsukune],
@@ -103,7 +103,7 @@ describe('Cliffs of the Sea Dragon', function () {
             this.player2.passConflict();
 
             this.game.rings.air.fate = 5;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.tsukune],
@@ -118,7 +118,7 @@ describe('Cliffs of the Sea Dragon', function () {
         it('if broken, should not stop opponent from taking fate from rings', function () {
             this.game.rings.air.fate = 5;
             this.cliffs.isBroken = true;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.solemnScholar],
@@ -131,7 +131,7 @@ describe('Cliffs of the Sea Dragon', function () {
 
         it('should not stop you from taking fate from rings', function () {
             this.game.rings.air.fate = 5;
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();

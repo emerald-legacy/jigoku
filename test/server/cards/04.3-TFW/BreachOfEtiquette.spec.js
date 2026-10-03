@@ -70,7 +70,7 @@ describe('Breach of Etiquette', function() {
 
             it('should not trigger when an event is played', function () {
                 this.player1.pass();
-                let honorBefore = this.player2.honor;
+                const honorBefore = this.player2.honor;
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.brashSamurai);
                 this.player2.clickPrompt('Done');
@@ -84,7 +84,7 @@ describe('Breach of Etiquette', function() {
                 expect(this.player1).toHavePrompt('Break Shameful Display');
                 this.player1.clickPrompt('No');
                 this.player1.clickPrompt('Don\'t Resolve');
-                let honorBefore = this.player1.honor;
+                const honorBefore = this.player1.honor;
                 this.player1.clickCard(this.soshiIllusionist);
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.player1.honor).toBe(honorBefore);
@@ -118,7 +118,7 @@ describe('Breach of Etiquette', function() {
             });
 
             it('should not be playable a second time in the same conflict', function() {
-                let secondBreachOfEtiquette = this.player2.filterCardsByName('breach-of-etiquette', 'hand')[0];
+                const secondBreachOfEtiquette = this.player2.filterCardsByName('breach-of-etiquette', 'hand')[0];
                 this.player2.clickCard(secondBreachOfEtiquette);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });

@@ -19,17 +19,17 @@ export class SetDialAction<C extends AbilityContext = AbilityContext> extends Pl
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['set {0}\'s dial to {1}', [properties.target, properties.value]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.value > 0 && properties.value < 6 && super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnSetHonorDial, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { value } = this.getProperties(context, additionalProperties);
+        const { value } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.value = value;
     }

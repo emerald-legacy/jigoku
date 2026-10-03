@@ -105,9 +105,9 @@ export class PlayerPromptState {
     }
 
     getCardSelectionState(card: BaseCard) {
-        let selectable = this.selectableCards.includes(card);
-        let index = this.selectedCards?.indexOf(card) ?? -1;
-        let result = {
+        const selectable = this.selectableCards.includes(card);
+        const index = this.selectedCards?.indexOf(card) ?? -1;
+        const result = {
             selected: index !== -1,
             selectable: selectable,
             unselectable: this.selectCard && !selectable

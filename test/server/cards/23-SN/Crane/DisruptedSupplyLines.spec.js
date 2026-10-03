@@ -28,8 +28,8 @@ describe('Disrupted Supply Lines', function () {
         });
 
         it('Dishonor shinobi and give fate', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
             this.player1.pass();
             this.player2.clickCard(this.fan);
             this.player2.clickCard(this.shugenja);
@@ -61,8 +61,8 @@ describe('Disrupted Supply Lines', function () {
         });
 
         it('Dishonor non-shinobi and remove from game', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player1.pass();
             this.player2.clickCard(this.fan);

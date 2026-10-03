@@ -179,8 +179,8 @@ describe('Silent Ones Monastery', function() {
                 expect(this.player2.honor).toBe(this.preDrawBidHonorSOMPlayer - 2); // 1 to 5 bid, player 2 should technically pay 4, but SOM prevents all but 2
                 expect(this.getChatLogs(10)).toContain('player2 gives player1 2 honor');
 
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.city);

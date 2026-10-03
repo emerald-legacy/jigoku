@@ -5,10 +5,9 @@ class HidaSukune extends DrawCard {
     static id = 'hida-sukune';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Draw and discard a card',
-            condition: context => context.source.isDefending(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Draw and discard a card')
+            .condition(context => context.source.isDefending())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.draw(context => ({
                     target: context.player,
                     amount: 1
@@ -17,9 +16,8 @@ class HidaSukune extends DrawCard {
                     target: context.player,
                     amount: 1
                 }))
-            ]),
-            limit: AbilityDsl.limit.perConflict(1)
-        });
+            ]))
+            .limit(AbilityDsl.limit.perConflict(1));
     }
 }
 

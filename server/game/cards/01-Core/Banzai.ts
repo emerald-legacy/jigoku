@@ -7,20 +7,16 @@ import AbilityDsl from '../../abilitydsl.js';
 class Banzai extends DrawCard {
     static id = 'banzai';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Increase a character\'s military skill',
-
-            max: AbilityDsl.limit.perConflict(1),
-            target: {
+    setupCardAbilities() {
+        this.action('Increase a character\'s military skill')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect(() => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                }))
-            },
-            effect: 'grant 2 military skill to {0}',
-            then: context => {
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect(() => ({
+                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            })))
+            .effect('grant 2 military skill to {0}')
+            .then(context => {
                 const ctx = context;
                 if(ctx.subResolution) {
                     return {
@@ -32,7 +28,7 @@ class Banzai extends DrawCard {
                             }
                         },
                         message: '{0} chooses {3}to lose an honor for no effect',
-                        messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : ''
+                        messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : '']
                     };
                 }
                 const cardAbility = ctx.ability instanceof CardAbility ? ctx.ability : undefined;
@@ -45,7 +41,7 @@ class Banzai extends DrawCard {
                         }
                     },
                     message: '{0} chooses {3}to lose an honor to resolve {1} again',
-                    messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : '',
+                    messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : ''],
                     then: cardAbility ? {
                         gameAction: AbilityDsl.actions.resolveAbility({
                             ability: cardAbility,
@@ -54,8 +50,8 @@ class Banzai extends DrawCard {
                         })
                     } : undefined
                 };
-            }
-        });
+            })
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }
 

@@ -39,9 +39,9 @@ describe('Planted Fields', function() {
         });
 
         it('should sacrifice itself to give 2 fate and draw 2 cards on first trigger', function() {
-            let honor = this.player1.honor;
-            let fate = this.player1.fate;
-            let handSize = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const fate = this.player1.fate;
+            const handSize = this.player1.hand.length;
             this.noMoreActions();
             this.player1.clickCard(this.plantedFields);
 
@@ -55,9 +55,9 @@ describe('Planted Fields', function() {
         it('should give 2 honor instead if a copy was already triggered this round', function() {
             this.plantedFields.triggeredByPlayer.add(this.player1.player.name);
 
-            let honor = this.player1.honor;
-            let fate = this.player1.fate;
-            let handSize = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const fate = this.player1.fate;
+            const handSize = this.player1.hand.length;
             this.noMoreActions();
             this.player1.clickCard(this.plantedFields);
 

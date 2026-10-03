@@ -13,14 +13,12 @@ export default class IncessantMoto extends DrawCard {
             effect: AbilityDsl.effects.canContributeWhileBowed()
         });
 
-        this.reaction({
-            title: 'Move to conflict',
-            when: {
+        this.reaction('Move to conflict')
+            .when({
                 onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player
-            },
-            gameAction: AbilityDsl.actions.moveToConflict(context => ({
+            })
+            .gameAction(AbilityDsl.actions.moveToConflict(context => ({
                 target: context.source
-            }))
-        });
+            })));
     }
 }

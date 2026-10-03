@@ -5,22 +5,18 @@ import AbilityDsl from '../../abilitydsl.js';
 class OniMask extends DrawCard {
     static id = 'oni-mask';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.action({
-            title: 'Blank participating character',
-            cost: ability.costs.removeFateFromParent(),
-
-            target: {
+        this.action('Blank participating character')
+            .cost(AbilityDsl.costs.removeFateFromParent())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.blank() })
-            },
-            effect: 'blank {0} until the end of the conflict'
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.blank() }))
+            .effect('blank {0} until the end of the conflict');
     }
 }
 

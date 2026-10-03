@@ -35,7 +35,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: HonorBidProperties = this.getProperties(context);
+        const properties: HonorBidProperties = this.getProperties(context);
         if(properties.giveHonor) {
             return ['bid honor', []];
         }
@@ -57,7 +57,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
+        const { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
         );
@@ -94,15 +94,18 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
                 })
             );
         } else {
-            const player = (event.players === Players.Self ? context.player : context.player.opponent) as Player;
+            const player = event.players === Players.Self ? context.player : context.player.opponent;
+            if(!player) {
+                return;
+            }
 
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: 'Choose a value to set your honor dial at',
                 context: context,
-                choices: ['1', '2', '3', '4', '5'],
-                handlers: [1, 2, 3, 4, 5].map(
-                    (value) => () => context.game.actions.setHonorDial({ value }).resolve(player, context)
-                )
+                options: [1, 2, 3, 4, 5].map((value) => ({
+                    text: value.toString(),
+                    handler: () => context.game.actions.setHonorDial({ value }).resolve(player, context)
+                }))
             });
         }
     }

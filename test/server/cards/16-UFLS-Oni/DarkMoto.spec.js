@@ -23,8 +23,8 @@ describe('Dark Moto', function () {
                 attackers: [this.moto],
                 defenders: [this.samurai]
             });
-            let pFate = this.player1.fate;
-            let mFate = this.moto.fate;
+            const pFate = this.player1.fate;
+            const mFate = this.moto.fate;
 
             this.player2.pass();
             this.player1.pass();

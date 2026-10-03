@@ -6,16 +6,13 @@ class DaidojiStrategist extends DrawCard {
     static id = 'daidoji-strategist';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move an honored character home',
-            condition: context => context.source.isParticipating(),
-            target: {
+        this.action('Move an honored character home')
+            .condition(context => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isHonored,
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: card => card.isHonored
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

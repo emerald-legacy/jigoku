@@ -8,23 +8,20 @@ export default class TogashiAcolyte extends DrawCard {
 
     setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
-        this.reaction({
-            title: 'Give attached character +1/+1',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
+        this.reaction('Give attached character +1/+1')
+            .when({
                 onCardPlayed: (event, context) =>
                     context.source.parentCharacter &&
                     event.player === context.player &&
                     context.source.type === CardType.Attachment &&
                     context.source.parentCharacter.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyBothSkills(1)
-            })),
-            effect: 'give +1{1} and +1{2} to {3}',
-            effectArgs: (context) => ['political', 'military', context.source.parentCharacter]
-        });
+            })))
+            .effect('give +1{1} and +1{2} to {3}', (context) => ['political', 'military', context.source.parentCharacter])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
     leavesPlay() {

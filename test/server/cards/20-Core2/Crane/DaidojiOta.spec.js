@@ -142,8 +142,8 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let fate = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.punches[0]);
                 this.player2.clickCard(this.mitsu);
@@ -181,7 +181,7 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let fate2 = this.player2.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.katanas[0]);
                 this.player2.clickCard(this.mitsu);
@@ -197,8 +197,8 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let _fate = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const _fate = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.pass();
                 this.player1.clickCard(this.retreat);

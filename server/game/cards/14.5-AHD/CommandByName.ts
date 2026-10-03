@@ -6,14 +6,11 @@ class CommandByName extends DrawCard {
     static id = 'command-by-name';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reduce province strength',
-            cost: [
-                AbilityDsl.costs.payHonor(1),
-                AbilityDsl.costs.discardCard({ location: Location.Hand })
-            ],
-            condition: (context) => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+        this.action('Reduce province strength')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .condition((context) => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -25,9 +22,8 @@ class CommandByName extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.setBaseProvinceStrength(0)
                 }))
-            })),
-            effect: 'reduce the strength of an attacked province to 0'
-        });
+            })))
+            .effect('reduce the strength of an attacked province to 0');
     }
 }
 

@@ -50,10 +50,10 @@ describe('Karmic Balance', function() {
                 });
 
                 it('should only log 1 shuffling chat message per player', function() {
-                    let player1Count = this.chat.calls.allArgs().filter(c => {
+                    const player1Count = this.chat.calls.allArgs().filter(c => {
                         return c[0] === '{0} is shuffling their conflict deck' && c[1] === this.player1.player;
                     }).length;
-                    let player2Count = this.chat.calls.allArgs().filter(c => {
+                    const player2Count = this.chat.calls.allArgs().filter(c => {
                         return c[0] === '{0} is shuffling their conflict deck' && c[1] === this.player2.player;
                     }).length;
                     expect(player1Count).toBe(1);

@@ -49,7 +49,7 @@ export class AirRingEffect extends BaseAbility {
 
     public executeHandler(context: AbilityContext): void {
         if(context.select === GAIN_2) {
-            let [, amountToTransfer] = CalculateHonorLimit(
+            const [, amountToTransfer] = CalculateHonorLimit(
                 context.player,
                 context.game.roundNumber,
                 context.game.currentPhase,

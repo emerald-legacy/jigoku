@@ -1,21 +1,22 @@
 import type { MsgArg } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
-import type { BaseAbilityProperties } from './BaseAbility.js';
+import type { BaseAbilityProperties, DeclaredGameAction } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type EventWindow from './Events/EventWindow.js';
 import type ThenEventWindow from './Events/ThenEventWindow.js';
-import type { EffectArg } from './Interfaces.js';
+import type { EffectArg, OwnContextCallback } from './Interfaces.js';
 
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
-    handler?: (context: C) => void;
-    then?: ThenAbilityProperties | ((context: C) => ThenAbilityProperties);
+    gameAction?: DeclaredGameAction<C> | DeclaredGameAction<C>[];
+    handler?: OwnContextCallback<[context: C], void>;
+    then?: ThenAbilityProperties | OwnContextCallback<[context: C], ThenAbilityProperties | undefined>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: C | Event): boolean;
-    message?: string | ((context: C) => string);
-    messageArgs?: (EffectArg | undefined)[] | ((context: C) => (EffectArg | undefined)[]);
+    message?: string | OwnContextCallback<[context: C], string>;
+    messageArgs?: (EffectArg | undefined)[] | OwnContextCallback<[context: C], (EffectArg | undefined)[]>;
 }
 
 class ThenAbility extends BaseCardAbility {
@@ -36,6 +37,9 @@ class ThenAbility extends BaseCardAbility {
         } else if(this.gameAction.every((gameAction) => gameAction.isOptional(context)) && this.properties.then) {
             const then =
                 typeof this.properties.then === 'function' ? this.properties.then(context) : this.properties.then;
+            if(!then) {
+                return false;
+            }
             const thenAbility = new ThenAbility(this.card, then);
             return thenAbility.meetsRequirements(thenAbility.createContext(context.player)) === '';
         }
@@ -48,7 +52,7 @@ class ThenAbility extends BaseCardAbility {
             message = message(context);
         }
         if(message) {
-            let messageArgs: MsgArg[] = [context.player, context.source, context.target];
+            let messageArgs: MsgArg[] = [context.player, context.source, context.messageTarget()];
             if(this.properties.messageArgs) {
                 let args = this.properties.messageArgs;
                 if(typeof args === 'function') {

@@ -1,5 +1,4 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { Conflict } from '../../Conflict.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,31 +9,27 @@ export default class SpellScroll extends DrawCard {
         this.whileAttached({
             condition: (context) =>
                 !!(context.source.parentCharacter?.isParticipating() &&
-                (context.game.currentConflict as Conflict).elements.some((element) =>
+                context.game.requireConflict().elements.some((element) =>
                     context.source.parentCharacter?.hasTrait(element)
                 )),
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
 
-        this.action<DrawCard>({
-            title: 'Put a card into your hand',
-            condition: (context) => !!context.source.parentCharacter,
-            target: {
+        this.action('Put a card into your hand')
+            .condition((context) => !!context.source.parentCharacter)
+            .target('target', {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
-                cardCondition: (card: DrawCard, context) =>
+                cardCondition: (card, context) =>
                     card.type !== CardType.Character &&
-                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraitSet()),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard<DrawCard>((context) => ({
-                        target: context.target,
-                        destination: Location.Hand
-                    })),
-                    AbilityDsl.actions.sacrifice((context) => ({ target: context.source }))
-                ])
-            },
-            effect: 'move {1} to their hand and sacrifice {2}',
-            effectArgs: (context) => [context.target ?? '', context.source]
-        });
+                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraitSet())
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.moveCard((context) => ({
+                    target: context.target,
+                    destination: Location.Hand
+                })),
+                AbilityDsl.actions.sacrifice((context) => ({ target: context.source }))
+            ]))
+            .effect('move {1} to their hand and sacrifice {2}', (context) => [context.target ?? '', context.source]);
     }
 }

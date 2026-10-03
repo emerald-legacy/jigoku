@@ -1,27 +1,21 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class CurryFavor extends DrawCard {
     static id = 'curry-favor';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Ready a character',
-            when: {
-                onReturnHome: (event: EventPayload<EventName.OnReturnHome>, context) => {
+    setupCardAbilities() {
+        this.reaction('Ready a character')
+            .when({
+                onReturnHome: (event, context) => {
                     if(this.game.getConflicts(context.player).filter(conflict => !conflict.passed).length !== 2) {
                         return false;
                     }
                     return !!event.conflict && event.conflict.attackingPlayer === context.player && event.card.controller === context.player && !!event.bowEvent && !event.bowEvent.cancelled;
                 }
-            },
-            cannotBeMirrored: true,
-            gameAction: ability.actions.ready((context: AbilityContext) => ({ target: (context as TriggeredAbilityContext).event.card }))
-        });
+            })
+            .gameAction(AbilityDsl.actions.ready((context) => ({ target: context.event.card })))
+            .cannotBeMirrored();
     }
 }
 

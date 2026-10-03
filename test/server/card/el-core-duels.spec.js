@@ -19,20 +19,19 @@ describe('Emerald Core Duels', function() {
                 });
 
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
-                this.duelEffect.duelChallenge({
-                    title: 'Honor this character',
-                    target: {
-                        cardType: 'character',
-                        controller: 'self',
-                        cardCondition: (card, context) => context.event.duel.isInvolved(card),
-                        gameAction: AbilityDsl.actions.honor()
-                    }
+                this.duelEffect.declareAbilities(() => {
+                    this.duelEffect.duelChallenge('Honor this character')
+                        .target('target', {
+                            cardType: 'character',
+                            controller: 'self',
+                            cardCondition: (card, context) => context.event.duel.isInvolved(card)
+                        }, AbilityDsl.actions.honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
-                this.duelEffect2.duelChallenge({
-                    title: 'Gain a fate',
-                    gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
+                this.duelEffect2.declareAbilities(() => {
+                    this.duelEffect2.duelChallenge('Gain a fate')
+                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -109,20 +108,19 @@ describe('Emerald Core Duels', function() {
                 });
 
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
-                this.duelEffect.duelFocus({
-                    title: 'Honor this character',
-                    target: {
-                        cardType: 'character',
-                        controller: 'self',
-                        cardCondition: (card, context) => context.event.duel.isInvolved(card),
-                        gameAction: AbilityDsl.actions.honor()
-                    }
+                this.duelEffect.declareAbilities(() => {
+                    this.duelEffect.duelFocus('Honor this character')
+                        .target('target', {
+                            cardType: 'character',
+                            controller: 'self',
+                            cardCondition: (card, context) => context.event.duel.isInvolved(card)
+                        }, AbilityDsl.actions.honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
-                this.duelEffect2.duelFocus({
-                    title: 'Gain a fate',
-                    gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
+                this.duelEffect2.declareAbilities(() => {
+                    this.duelEffect2.duelFocus('Gain a fate')
+                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -241,20 +239,19 @@ describe('Emerald Core Duels', function() {
                 });
 
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
-                this.duelEffect.duelStrike({
-                    title: 'Honor this character',
-                    target: {
-                        cardType: 'character',
-                        controller: 'self',
-                        cardCondition: (card, context) => context.event.duel.isInvolved(card),
-                        gameAction: AbilityDsl.actions.honor()
-                    }
+                this.duelEffect.declareAbilities(() => {
+                    this.duelEffect.duelStrike('Honor this character')
+                        .target('target', {
+                            cardType: 'character',
+                            controller: 'self',
+                            cardCondition: (card, context) => context.event.duel.isInvolved(card)
+                        }, AbilityDsl.actions.honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
-                this.duelEffect2.duelStrike({
-                    title: 'Gain a fate',
-                    gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
+                this.duelEffect2.declareAbilities(() => {
+                    this.duelEffect2.duelStrike('Gain a fate')
+                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -341,26 +338,25 @@ describe('Emerald Core Duels', function() {
                 });
 
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
-                this.duelEffect.duelChallenge({
-                    title: 'Honor this character',
-                    target: {
-                        cardType: 'character',
-                        controller: 'self',
-                        cardCondition: (card, context) => context.event.duel.isInvolved(card),
-                        gameAction: AbilityDsl.actions.honor()
-                    }
+                this.duelEffect.declareAbilities(() => {
+                    this.duelEffect.duelChallenge('Honor this character')
+                        .target('target', {
+                            cardType: 'character',
+                            controller: 'self',
+                            cardCondition: (card, context) => context.event.duel.isInvolved(card)
+                        }, AbilityDsl.actions.honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
-                this.duelEffect2.duelFocus({
-                    title: 'Gain a fate',
-                    gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
+                this.duelEffect2.declareAbilities(() => {
+                    this.duelEffect2.duelFocus('Gain a fate')
+                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
                 });
 
                 this.duelEffect3 = this.player1.findCardByName('let-go');
-                this.duelEffect3.duelStrike({
-                    title: 'Gain an honor',
-                    gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player}))
+                this.duelEffect3.declareAbilities(() => {
+                    this.duelEffect3.duelStrike('Gain an honor')
+                        .gameAction(AbilityDsl.actions.gainHonor(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -379,8 +375,8 @@ describe('Emerald Core Duels', function() {
             });
 
             it('should react appropriately and apply all effects', function() {
-                let fate = this.player1.fate;
-                let honor = this.player1.honor;
+                const fate = this.player1.fate;
+                const honor = this.player1.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({

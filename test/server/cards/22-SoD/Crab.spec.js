@@ -22,7 +22,7 @@ describe('SoD - Crab', function () {
             });
 
             it('should dishonor characters and draw', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.skirmisher, this.swordsmith],
@@ -200,7 +200,7 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                let mil = this.skirmisher.getMilitarySkill();
+                const mil = this.skirmisher.getMilitarySkill();
                 this.player1.clickCard(this.deadeyes);
                 expect(this.skirmisher.getMilitarySkill()).toBe(mil + 2);
 
@@ -297,7 +297,7 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.rage);
                 expect(this.player1).toBeAbleToSelect(this.skirmisher);
                 expect(this.player1).not.toBeAbleToSelect(this.swordsmith);
@@ -327,7 +327,7 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.rage);
                 expect(this.player1).toBeAbleToSelect(this.skirmisher);
                 expect(this.player1).not.toBeAbleToSelect(this.swordsmith);

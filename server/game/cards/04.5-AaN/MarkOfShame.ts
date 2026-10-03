@@ -5,18 +5,15 @@ class MarkOfShame extends DrawCard {
     static id = 'mark-of-shame';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor attached character',
-            when: {
+        this.reaction('Dishonor attached character')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter ?? [] })),
                 AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter ?? [] }))
-            ]),
-            effect: 'dishonor {1}, then dishonor it again',
-            effectArgs: context => context.source.parentCharacter
-        });
+            ]))
+            .effect('dishonor {1}, then dishonor it again', context => context.source.parentCharacter);
     }
 }
 

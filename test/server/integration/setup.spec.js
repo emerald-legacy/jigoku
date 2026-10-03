@@ -59,13 +59,13 @@ describe('setup phase', function() {
             });
 
             it('should prompt players to choose their province positions', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 expect(this.player1.currentPrompt().menuTitle).toBe('Choose province order, or press Done to place them at random');
             });
 
             it('should place provinces at random if the player clicks done', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 this.player1.clickPrompt('Done');
                 expect(this.player1.currentPrompt().menuTitle).toBe('Waiting for opponent to finish selecting provinces');
@@ -74,7 +74,7 @@ describe('setup phase', function() {
             });
 
             it('should allow the player to change their stronghold province', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(this.player1.player.provinceDeck[1]);
                 expect(this.player1).toHavePrompt('Choose province order, or press Done to place them at random');
                 this.player1.clickPrompt('Change stronghold province');
@@ -87,10 +87,10 @@ describe('setup phase', function() {
             });
 
             it('should allow players to place provinces in an order of their choice', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 expect(this.player1).toHavePrompt('Choose province order, or press Done to place them at random');
-                let provinces = this.player1.player.provinceDeck;
+                const provinces = this.player1.player.provinceDeck;
                 for(let i = 1; i < 5; i++) {
                     this.player1.clickCard(provinces[i]);
                 }
@@ -104,10 +104,10 @@ describe('setup phase', function() {
             });
 
             it('should allow players to place provinces in an order of their choice - selecting less than 4 provinces', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 expect(this.player1).toHavePrompt('Choose province order, or press Done to place them at random');
-                let provinces = this.player1.player.provinceDeck;
+                const provinces = this.player1.player.provinceDeck;
                 for(let i = 1; i < 3; i++) {
                     this.player1.clickCard(provinces[i]);
                 }

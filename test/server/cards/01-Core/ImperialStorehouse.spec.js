@@ -14,7 +14,7 @@ describe('Imperial Storehouse', function () {
             });
 
             it('should draw a card', function () {
-                let handCount = this.player1.hand.length;
+                const handCount = this.player1.hand.length;
                 this.player1.clickCard(this.imperialStorehouse);
                 expect(this.player1.hand.length).toBe(handCount + 1);
             });

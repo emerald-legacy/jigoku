@@ -18,9 +18,9 @@ describe('Levy 2', function () {
         });
 
         it('taking fate option and drawing', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
-            let hand = this.player1.hand.length;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.levy);
             this.player2.clickPrompt('Give your opponent 1 fate');
@@ -33,9 +33,9 @@ describe('Levy 2', function () {
         });
 
         it('taking honor option and drawing', function () {
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
-            let hand = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.levy);
             this.player2.clickPrompt('Give your opponent 1 honor');
@@ -51,9 +51,9 @@ describe('Levy 2', function () {
             this.player2.moveCard(this.ann, 'conflict discard pile');
             this.player2.moveCard(this.fan, 'conflict discard pile');
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
-            let hand = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.levy);
             this.player2.clickPrompt('Give your opponent 1 honor');
@@ -68,9 +68,9 @@ describe('Levy 2', function () {
         it('should not allow picking invalid options', function () {
             this.player2.fate = 0;
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
-            let hand = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.levy);
             expect(this.player2).toHavePrompt('Action Window');

@@ -31,7 +31,7 @@ describe('Promising Hohei', function () {
             });
 
             it('should cost 0 if target has 2 glory', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.promisingHohei1);
                 this.player1.clickCard(this.relentlessGloryseeker);
@@ -40,7 +40,7 @@ describe('Promising Hohei', function () {
             });
 
             it('should cost 1 if target has <2 glory', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.promisingHohei1);
                 this.player1.clickCard(this.messageRunner);

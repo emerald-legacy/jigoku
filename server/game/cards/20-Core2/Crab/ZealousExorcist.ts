@@ -14,15 +14,12 @@ export default class ZealousExorcist extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnConflictStarted, EventName.OnCharacterEntersPlay]);
 
-        this.action({
-            title: 'Remove a character from play',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Remove a character from play')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard) => this.charactersPlayedThisConflict.has(card),
-                gameAction: AbilityDsl.actions.removeFromGame()
-            }
-        });
+                cardCondition: (card) => this.charactersPlayedThisConflict.has(card)
+            }, AbilityDsl.actions.removeFromGame());
     }
 
     public onConflictStarted() {

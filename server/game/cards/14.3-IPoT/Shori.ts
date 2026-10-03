@@ -12,7 +12,7 @@ class Shori extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                 targetController: Players.Self,
                 effect: AbilityDsl.effects.additionalConflict('military')

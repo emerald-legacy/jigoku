@@ -6,17 +6,14 @@ export default class BrothersGiftDojo extends ProvinceCard {
     static id = 'brother-s-gift-dojo';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character home',
-            limit: AbilityDsl.limit.perRound(2),
-            conflictProvinceCondition: () => true,
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
+        this.action('Move a character home')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.sendHome())
+            .limit(AbilityDsl.limit.perRound(2))
+            .conflictProvinceCondition(() => true);
     }
 }

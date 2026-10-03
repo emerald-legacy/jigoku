@@ -116,7 +116,7 @@ describe('Bayushi Yojiro', function() {
                 this.player2.clickCard(this.wayOfTheCrane);
                 this.player2.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.isHonored).toBe(true);
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player1.clickCard(this.bayushiAramoro);
                 this.player1.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.location).toBe('conflict discard pile');
@@ -130,7 +130,7 @@ describe('Bayushi Yojiro', function() {
                 });
                 this.player2.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.isDishonored).toBe(true);
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player1.clickCard(this.bayushiAramoro);
                 this.player1.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.location).toBe('conflict discard pile');

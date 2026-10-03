@@ -6,17 +6,14 @@ export default class DojiGiftGiver extends DrawCard {
     static id = 'doji-gift-giver';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            cost: AbilityDsl.costs.giveFateToOpponent(1),
-            condition: (context) => context.source.isParticipating() && context.player.opponent !== undefined,
-            target: {
+        this.action('Bow a character')
+            .cost(AbilityDsl.costs.giveFateToOpponent(1))
+            .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .target('target', {
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && !card.bowed,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && !card.bowed
+            }, AbilityDsl.actions.bow());
     }
 }

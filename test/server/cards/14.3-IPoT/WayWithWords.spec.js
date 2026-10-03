@@ -21,8 +21,8 @@ describe('Way with Words', function () {
         it('should take one honor from the opponent when winning a political conflict', function () {
             this.player1.playAttachment(this.wayWithWords, this.manipulator);
             this.noMoreActions();
-            let honorPlayer1 = this.player1.player.honor;
-            let honorPlayer2 = this.player2.player.honor;
+            const honorPlayer1 = this.player1.player.honor;
+            const honorPlayer2 = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.liar, this.manipulator],
@@ -77,8 +77,8 @@ describe('Way with Words', function () {
         it('attaching to an opponents character', function () {
             this.player1.playAttachment(this.wayWithWords, this.yogoHiroue);
             this.noMoreActions();
-            let honorPlayer1 = this.player1.player.honor;
-            let honorPlayer2 = this.player2.player.honor;
+            const honorPlayer1 = this.player1.player.honor;
+            const honorPlayer2 = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.manipulator],

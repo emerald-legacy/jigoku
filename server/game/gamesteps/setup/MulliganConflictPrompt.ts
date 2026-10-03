@@ -39,7 +39,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {
-                    player.moveCard(card, 'conflict deck bottom');
+                    player.moveCard(card, Location.ConflictDeck, { bottom: true });
                 }
                 player.drawCardsToHand(this.selectedCards[player.name].length);
                 player.shuffleConflictDeck();
@@ -48,7 +48,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
                 this.game.addMessage('{0} has kept all conflict cards', player);
             }
             this.game.getProvinceArray(false).forEach((location: Location) => {
-                let cards = player.getDynastyCardsInProvince(location);
+                const cards = player.getDynastyCardsInProvince(location);
                 cards.forEach((card: DrawCard) => {
                     if(card) {
                         card.facedown = true;

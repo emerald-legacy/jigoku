@@ -17,34 +17,29 @@ export default class JakIthith extends DrawCard {
             ]
         });
 
-        this.reaction({
-            title: 'Take control of an attachment',
-            when: {
+        this.reaction('Take control of an attachment')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            targets: {
-                [ATTACHMENT]: {
-                    cardType: CardType.Attachment,
-                    controller: Players.Opponent,
-                    cardCondition: (card) =>
-                        Boolean(card.parentCharacter?.isParticipating())
-                },
-                [RECEIVER]: {
-                    dependsOn: ATTACHMENT,
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.ifAble((context) => ({
-                        ifAbleAction: AbilityDsl.actions.attach({
-                            attachment: context.targets[ATTACHMENT] as DrawCard,
-                            target: context.targets[RECEIVER],
-                            takeControl: true
-                        }),
-                        otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.targets[ATTACHMENT] })
-                    }))
-                }
-            }
-        });
+            })
+            .target(ATTACHMENT, {
+                cardType: CardType.Attachment,
+                controller: Players.Opponent,
+                cardCondition: (card) =>
+                    Boolean(card.parentCharacter?.isParticipating())
+            })
+            .target(RECEIVER, {
+                dependsOn: ATTACHMENT,
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.ifAble((context) => ({
+                ifAbleAction: AbilityDsl.actions.attach({
+                    attachment: context.targets[ATTACHMENT],
+                    target: context.targets[RECEIVER],
+                    takeControl: true
+                }),
+                otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.targets[ATTACHMENT] })
+            })));
     }
 }

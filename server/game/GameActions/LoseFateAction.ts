@@ -9,7 +9,7 @@ export interface LoseFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName, C> {
+export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C> {
     name = 'spendFate';
     eventName = EventName.OnModifyFate;
     defaultProperties: LoseFateProperties = { amount: 1 };
@@ -19,27 +19,27 @@ export class LoseFateAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: LoseFateProperties = this.getProperties(context);
+        const properties: LoseFateProperties = this.getProperties(context);
         return ['make {0} lose {1} fate', [properties.target, properties.amount]];
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties: LoseFateProperties = this.getProperties(context);
+        const properties: LoseFateProperties = this.getProperties(context);
         return ['spending {1} fate', [properties.amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties: LoseFateProperties = this.getProperties(context, additionalProperties);
+        const properties: LoseFateProperties = this.getProperties(context, additionalProperties);
         return (properties.amount ?? 0) > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties);
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -(amount ?? 0);
     }
 
     eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
-        (event.player as Player).modifyFate(event.amount as number);
+        event.player.modifyFate(event.amount);
     }
 }

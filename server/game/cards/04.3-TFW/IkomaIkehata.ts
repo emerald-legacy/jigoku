@@ -6,19 +6,16 @@ class IkomaIkehata extends DrawCard {
     static id = 'ikoma-ikehata';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a character and draw a card',
-            when: {
+        this.reaction('Honor a character and draw a card')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() && event.conflict.conflictType === 'political'
-            },
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.honor()
-            },
-            gameAction: AbilityDsl.actions.draw()
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.honor())
+            .gameAction(AbilityDsl.actions.draw());
     }
 }
 

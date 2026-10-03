@@ -27,10 +27,10 @@ describe('Togashi Tsurumi', function () {
             });
             this.player2.pass();
 
-            let fate = this.player1.fate;
-            let mil = this.tsurumi.getMilitarySkill();
-            let pol = this.tsurumi.getPoliticalSkill();
-            let hand = this.player1.hand.length;
+            const fate = this.player1.fate;
+            const mil = this.tsurumi.getMilitarySkill();
+            const pol = this.tsurumi.getPoliticalSkill();
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.tsurumi);
             expect(this.player1).toHavePrompt('Choose a card');
@@ -50,8 +50,8 @@ describe('Togashi Tsurumi', function () {
         });
 
         it('kihos cards underneath self should be playable', function () {
-            let initialMIL = this.tsurumi.getMilitarySkill();
-            let initialPOL = this.tsurumi.getPoliticalSkill();
+            const initialMIL = this.tsurumi.getMilitarySkill();
+            const initialPOL = this.tsurumi.getPoliticalSkill();
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.tsurumi],

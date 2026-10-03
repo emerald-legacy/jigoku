@@ -11,7 +11,7 @@ export interface TransferHonorProperties extends PlayerActionProperties {
     afterBid?: boolean;
 }
 
-export class TransferHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferHonorProperties, EventName, C> {
+export class TransferHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferHonorProperties, EventName.OnTransferHonor, C> {
     name = 'takeHonor';
     eventName = EventName.OnTransferHonor;
     defaultProperties: TransferHonorProperties = { amount: 1, afterBid: false };
@@ -40,7 +40,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['giving {1} honor to {2}', [0, null]];
@@ -55,7 +55,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['take {1} honor from {0}', [null, 0]];
@@ -70,7 +70,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
 
         const amount = properties.amount ?? 0;
         const gainsHonor = amount > 0;
@@ -97,27 +97,24 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnTransferHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
-        let { afterBid, amount } = this.getProperties(context, additionalProperties);
+        const { afterBid, amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount;
+        event.amount = amount ?? 0;
         event.afterBid = afterBid;
     }
 
     eventHandler(event: ActionEvent<EventName.OnTransferHonor, C>): void {
-        var amountToTransfer = this.getAmountToTransfer(
-            event.player as Player,
-            (event.player as Player).opponent as Player,
-            event.context,
-            event.amount ?? 0
-        );
-
-        if(event.player && event.player.opponent) {
-            event.player.modifyHonor(-amountToTransfer);
-            event.player.opponent.modifyHonor(amountToTransfer);
-            if(amountToTransfer && event.context?.game) {
-                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: -amountToTransfer });
-                event.context.game.addAnimation({ type: 'honor', playerName: event.player.opponent.name, amount: amountToTransfer });
-            }
+        const player = event.player;
+        const opponent = player.opponent;
+        if(!opponent) {
+            return;
+        }
+        const amountToTransfer = this.getAmountToTransfer(player, opponent, event.context, event.amount);
+        player.modifyHonor(-amountToTransfer);
+        opponent.modifyHonor(amountToTransfer);
+        if(amountToTransfer && event.context?.game) {
+            event.context.game.addAnimation({ type: 'honor', playerName: player.name, amount: -amountToTransfer });
+            event.context.game.addAnimation({ type: 'honor', playerName: opponent.name, amount: amountToTransfer });
         }
     }
 }

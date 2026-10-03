@@ -1,7 +1,6 @@
 import { Duration, DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type BaseCard from '../../../BaseCard.js';
 
 export default class IaijutsuSensei extends DrawCard {
     static id = 'iaijutsu-sensei';
@@ -12,9 +11,8 @@ export default class IaijutsuSensei extends DrawCard {
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
-        this.action({
-            title: 'Military duel to stop contribution',
-            initiateDuel: {
+        this.action('Military duel to stop contribution')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 challengerCondition: (card) => card.isParticipating(),
@@ -24,10 +22,9 @@ export default class IaijutsuSensei extends DrawCard {
                 gameAction: (duel) =>
                     AbilityDsl.actions.cardLastingEffect((_context) => ({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card: BaseCard) => (duel.loser ?? []).includes(card as DrawCard))],
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => card.isDrawCard() && (duel.loser ?? []).includes(card))],
                         duration: Duration.UntilEndOfConflict
                     }))
-            }
-        });
+            }));
     }
 }

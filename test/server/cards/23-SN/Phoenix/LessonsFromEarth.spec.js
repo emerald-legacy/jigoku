@@ -36,8 +36,8 @@ describe('Lessons From Earth', function () {
                 province: this.sd
             });
 
-            let hand = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
             expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player2 to draw a card and player1 to discard a card');
@@ -61,8 +61,8 @@ describe('Lessons From Earth', function () {
                 province: this.sd
             });
 
-            let hand = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
             expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card and player2 to discard a card');

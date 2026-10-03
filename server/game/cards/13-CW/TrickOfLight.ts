@@ -6,17 +6,14 @@ class TrickOfTheLight extends DrawCard {
     static id = 'trick-of-the-light';
 
     setupCardAbilities() {
-        this.action({
-            title: 'blanks printed text for conflict',
-            target: {
+        this.action('blanks printed text for conflict')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    effect: AbilityDsl.effects.blank(),
-                    duration: Duration.UntilEndOfConflict
-                }))
-            }
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect(() => ({
+                effect: AbilityDsl.effects.blank(),
+                duration: Duration.UntilEndOfConflict
+            })));
     }
 }
 

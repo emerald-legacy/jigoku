@@ -44,8 +44,8 @@ describe('Austere Exemplar', function() {
             });
 
             it('should permit three consecutive actions', function() {
-                let ringFate = this.game.rings.water.fate;
-                let playerFate = this.player1.fate;
+                const ringFate = this.game.rings.water.fate;
+                const playerFate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -85,8 +85,8 @@ describe('Austere Exemplar', function() {
             });
 
             it('passing extra actions should not end the conflict', function() {
-                let ringFate = this.game.rings.water.fate;
-                let playerFate = this.player1.fate;
+                const ringFate = this.game.rings.water.fate;
+                const playerFate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({

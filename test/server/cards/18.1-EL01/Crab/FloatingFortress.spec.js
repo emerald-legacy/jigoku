@@ -30,7 +30,7 @@ describe('Floating Fortress', function () {
         });
 
         it('becomes a copy of a holding', function () {
-            let initialFate = this.player2.fate;
+            const initialFate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.diplomat],

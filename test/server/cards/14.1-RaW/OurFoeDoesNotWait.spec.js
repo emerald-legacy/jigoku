@@ -81,7 +81,7 @@ describe('Our Foe Does Not Wait', function() {
             });
 
             it('should stack the card in the province', function() {
-                let cards = this.player1.provinces['province 1'].dynastyCards.length;
+                const cards = this.player1.provinces['province 1'].dynastyCards.length;
                 this.player1.clickCard(this.ourFoe);
                 this.player1.clickCard(this.p1);
                 this.player1.clickPrompt('Solemn Scholar');

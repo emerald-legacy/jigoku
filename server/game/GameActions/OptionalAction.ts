@@ -16,41 +16,41 @@ export interface OptionalActionProperties extends GameActionProperties {
 
 export class OptionalAction<C extends AbilityContext = AbilityContext> extends GameAction<OptionalActionProperties, EventName, C> {
     getProperties(context: C, additionalProperties = {}): OptionalActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
+        const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.getEffectMessage(context);
     }
 
     hasLegalTarget(context: C, additionalProperties = {}) {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.hasLegalTarget(context, additionalProperties);
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}) {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.canAffect(target, context, additionalProperties);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
 
         context.player.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: properties.promptTitleForConfirming,
             source: context.source,
-            choices: ['Yes', 'No'],
-            handlers: [
-                () => this.resolveAction(properties, events, context, additionalProperties),
-                () => this.skipAction(properties, context)]
+            options: [
+                { text: 'Yes', handler: () => this.resolveAction(properties, events, context, additionalProperties) },
+                { text: 'No', handler: () => this.skipAction(properties, context) }
+            ]
         });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}) {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
     }
 

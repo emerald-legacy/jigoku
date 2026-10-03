@@ -45,7 +45,7 @@ describe('Callow Delegate', function() {
             });
 
             it('should increase player honor if callow delegate is the target of the interupt', function() {
-                let player2HonorBefore = this.player2.honor;
+                const player2HonorBefore = this.player2.honor;
                 this.player1.clickCard(this.assassination);
                 this.player1.clickCard(this.callowDelegate);
                 expect(this.player2).toHavePrompt('Triggered Abilities');

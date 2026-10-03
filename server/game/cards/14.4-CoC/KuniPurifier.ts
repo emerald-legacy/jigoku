@@ -5,13 +5,11 @@ class KuniPurifier extends DrawCard {
     static id = 'kuni-purifier';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Make opponent lose honor',
-            when: {
+        this.reaction('Make opponent lose honor')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
-            },
-            gameAction: AbilityDsl.actions.discardAtRandom()
-        });
+            })
+            .gameAction(AbilityDsl.actions.discardAtRandom());
     }
 }
 

@@ -59,7 +59,7 @@ describe('Heresy', function() {
                 defenders: [this.yoshi, this.toshimoko],
                 type: 'political'
             });
-            let fate = this.yoshi.fate;
+            const fate = this.yoshi.fate;
             this.player2.clickCard(this.heresy);
             this.player1.clickCard(this.yoshi);
             this.player2.clickCard(this.challenger);
@@ -110,7 +110,7 @@ describe('Heresy', function() {
                 defenders: [this.yoshi, this.toshimoko],
                 type: 'political'
             });
-            let fate = this.yakamo.fate;
+            const fate = this.yakamo.fate;
             this.player2.clickCard(this.heresy);
             this.player1.clickCard(this.yoshi);
             this.player2.clickCard(this.yakamo);

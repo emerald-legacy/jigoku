@@ -6,18 +6,15 @@ export default class MasterAtArms extends DrawCard {
     static id = 'master-at-arms';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Return a weapon attachment in your conflict discard pile to your hand',
-            when: {
+        this.reaction('Return a weapon attachment in your conflict discard pile to your hand')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a weapon attachment from your conflict discard pile',
                 cardCondition: (card) => card.hasTrait('weapon'),
                 location: [Location.ConflictDiscardPile],
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.moveCard({ destination: Location.Hand }));
     }
 }

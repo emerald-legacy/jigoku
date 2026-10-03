@@ -41,8 +41,8 @@ describe('Tranquil Philosopher', function() {
 
             it('should move 1 fate', function() {
                 this.player1.clickCard(this.tranquilPhilosopher);
-                let airFate = this.game.rings.air.fate;
-                let voidFate = this.game.rings.void.fate;
+                const airFate = this.game.rings.air.fate;
+                const voidFate = this.game.rings.void.fate;
                 this.player1.clickRing('air');
                 this.player1.clickRing('void');
                 expect(this.game.rings.air.fate).toBe(airFate - 1);
@@ -52,7 +52,7 @@ describe('Tranquil Philosopher', function() {
             it('should then give you 1 honor', function() {
                 this.player1.clickCard(this.tranquilPhilosopher);
                 this.player1.clickRing('air');
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.player1.clickRing('void');
                 expect(this.player1.player.honor).toBe(honor + 1);
                 expect(this.getChatLogs(3)).toContain('player1 uses Tranquil Philosopher to move 1 fate from the Air Ring to an unclaimed ring, then gain 1 honor');
@@ -61,7 +61,7 @@ describe('Tranquil Philosopher', function() {
 
             it('if you pick a ring without fate should just give you 1 honor', function() {
                 this.player1.clickCard(this.tranquilPhilosopher);
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.player1.clickRing('fire');
                 expect(this.player1).not.toHavePrompt('Choose an unclaimed ring to move fate to');
                 expect(this.player1.player.honor).toBe(honor + 1);

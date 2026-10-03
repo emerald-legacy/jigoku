@@ -1,10 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType, EventName } from '../../../Constants.js';
+import { AbilityType, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class Naginata extends DrawCard {
     static id = 'naginata';
 
@@ -20,11 +17,11 @@ export default class Naginata extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
-                    onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context: TriggeredAbilityContext<DrawCard>) =>
+                    onMoveToConflict: (event, context) =>
                         context.source.isParticipating('military') &&
                         event.card?.type === CardType.Character &&
                         event.card?.isParticipating(),
-                    onSendHome: (event: EventPayload<EventName.OnSendHome>, context: TriggeredAbilityContext<DrawCard>) =>
+                    onSendHome: (event, context) =>
                         context.source.isParticipating('military') &&
                         event.card?.type === CardType.Character &&
                         !event.card?.isParticipating()
@@ -35,7 +32,7 @@ export default class Naginata extends DrawCard {
                         card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
                     gameAction: AbilityDsl.actions.bow()
                 }
-            } as TriggeredAbilityProps<DrawCard>)
+            })
         });
     }
 }

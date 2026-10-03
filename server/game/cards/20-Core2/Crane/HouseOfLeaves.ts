@@ -6,20 +6,17 @@ export default class HouseOfLeaves extends StrongholdCard {
     static id = 'house-of-leaves';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow this stronghold',
-            phase: Phases.Conflict,
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+        this.action('Bow this stronghold')
+            .cost(AbilityDsl.costs.bowSelf())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating(),
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.modifyGlory(2)
-                })
-            },
-            effect: 'give +2 glory to {0} for this phase'
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.modifyGlory(2)
+            }))
+            .effect('give +2 glory to {0} for this phase')
+            .phase(Phases.Conflict);
     }
 }

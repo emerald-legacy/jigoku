@@ -1,24 +1,20 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type BaseAction from '../../BaseAction.js';
 import { CardType, Players } from '../../Constants.js';
 import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../DrawCard.js';
 
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard) => card.isFaction('dragon'),
+            match: (card) => card.isFaction('dragon'),
             targetController: Players.Self,
             effect: AbilityDsl.effects.modifyRestrictedAttachmentAmount(1)
         });
 
-        this.interrupt({
-            title: 'Reduce cost of next attachment',
-            when: {
+        this.interrupt('Reduce cost of next attachment')
+            .when({
                 onAbilityResolverInitiated: (event, context) => {
                     if(event.context === undefined) {
                         return false;
@@ -33,19 +29,18 @@ export default class IronMountainCastle extends StrongholdCard {
                         ec.target &&
                         ec.target.controller === context.player &&
                         ec.target.type === CardType.Character &&
-                        (ec.ability as BaseAction).getReducedCost(ec) > 0
+                        ec.ability.getReducedCost(ec) > 0
                     );
                 }
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            effect: 'reduce the cost of their next attachment by 1',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context: TriggeredAbilityContext) => ({
+            })
+            .cost(AbilityDsl.costs.bowSelf())
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    (card: DrawCard) => card === context.event.context?.source
+                    (card) => card === context.event.context?.source
                 )
-            }))
-        });
+            })))
+            .effect('reduce the cost of their next attachment by 1');
     }
 }

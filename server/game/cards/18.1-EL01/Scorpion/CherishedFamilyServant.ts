@@ -13,7 +13,7 @@ export default class CherishedFamilyServant extends DrawCard {
         });
 
         this.persistentEffect({
-            match: (card: DrawCard, context) =>
+            match: (card, context) =>
                 !!(card.getType() === CardType.Attachment &&
                 card.hasTrait('poison') &&
                 card.parentCharacter &&

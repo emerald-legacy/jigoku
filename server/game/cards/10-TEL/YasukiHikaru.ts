@@ -6,15 +6,12 @@ class YasukiHikaru extends DrawCard {
     static id = 'yasuki-hikaru';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Send home character',
-            condition: (context) => context.source.isDefending(),
-            target: {
+        this.action('Send home character')
+            .condition((context) => context.source.isDefending())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isAttacking() && card.getMilitarySkill() > context.source.getMilitarySkill(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card, context) => card.isAttacking() && card.getMilitarySkill() > context.source.getMilitarySkill()
+            }, AbilityDsl.actions.sendHome());
     }
 }
 

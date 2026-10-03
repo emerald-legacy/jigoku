@@ -11,7 +11,7 @@ export default class TeachingsOfTheElements extends ProvinceCard {
     }
 
     getNoOfClaimedRings() {
-        let claimedRings = Object.values(this.game.rings).filter((ring) => ring.isConsideredClaimed());
+        const claimedRings = Object.values(this.game.rings).filter((ring) => ring.isConsideredClaimed());
         return claimedRings.length;
     }
 }

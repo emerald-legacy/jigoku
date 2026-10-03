@@ -6,31 +6,27 @@ class DaidojiIenori extends DrawCard {
     static id = 'daidoji-ienori';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Set a participating character to 3/3',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Set a participating character to 3/3')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => {
-                    const effect = [
-                        AbilityDsl.effects.setMilitarySkill(3),
-                        AbilityDsl.effects.setPoliticalSkill(3)
-                    ];
-                    if(context.source.isHonored) {
-                        effect.push(AbilityDsl.effects.cannotReceiveDishonorToken());
-                        effect.push(AbilityDsl.effects.cannotReceiveHonorToken());
-                        effect.push(AbilityDsl.effects.cannotReceiveTaintedToken());
-                    }
-                    return {
-                        effect: effect
-                    };
-                })
-            },
-            effect: 'set the skills of {0} to 3{1}/3{2}{3}',
-            effectArgs: context => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect(context => {
+                const effect = [
+                    AbilityDsl.effects.setMilitarySkill(3),
+                    AbilityDsl.effects.setPoliticalSkill(3)
+                ];
+                if(context.source.isHonored) {
+                    effect.push(AbilityDsl.effects.cannotReceiveDishonorToken());
+                    effect.push(AbilityDsl.effects.cannotReceiveHonorToken());
+                    effect.push(AbilityDsl.effects.cannotReceiveTaintedToken());
+                }
+                return {
+                    effect: effect
+                };
+            }))
+            .effect('set the skills of {0} to 3{1}/3{2}{3}', context => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
     }
 }
 

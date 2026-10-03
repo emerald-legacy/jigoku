@@ -13,7 +13,7 @@ function getNumberOfMonks(context: AbilityContext) {
 }
 
 class Process {
-    #chosenRings: Ring[] = [];
+    private chosenRings: Ring[] = [];
     constructor(
         private maxRings: number,
         private context: AbilityContext
@@ -21,56 +21,49 @@ class Process {
 
     public promptPlayer() {
         this.context.game.promptForRingSelect(this.context.player, {
-            activePromptTitle: this.#promptTitle(),
+            activePromptTitle: this.promptTitle(),
             context: this.context,
-            buttons: this.#buttons(),
-            ringCondition: (ring: Ring) =>
-                ring.isConsideredClaimed(this.context.player) && !this.#chosenRings.includes(ring),
-            onSelect: (_player: Player, ring: Ring) => {
-                this.#chosenRings.push(ring);
+            buttons: this.buttons(),
+            ringCondition: (ring) =>
+                ring.isConsideredClaimed(this.context.player) && !this.chosenRings.includes(ring),
+            onSelect: (_player, ring) => {
+                this.chosenRings.push(ring);
                 if(
                     Object.values(this.context.game.rings).some(
                         (ring) =>
                             ring.isConsideredClaimed(this.context.player) &&
-                            !this.#chosenRings.includes(ring) &&
-                            this.#chosenRings.length < this.maxRings
+                            !this.chosenRings.includes(ring) &&
+                            this.chosenRings.length < this.maxRings
                     )
                 ) {
                     this.promptPlayer();
                     return true;
                 }
 
-                return this.#resolveRings();
+                this.resolveRings(this.context.player);
+                return true;
             },
-            onMenuCommand: (player: Player) => {
-                this.context.game.addMessage('{0} resolves {1}', player, this.#chosenRings);
-                const action = this.context.game.actions.resolveRingEffect({ target: this.#chosenRings });
-                const events: Event[] = [];
-                action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
-                this.context.game.openThenEventWindow(events);
+            onMenuCommand: (player) => {
+                this.resolveRings(player);
                 return true;
             }
         });
     }
 
-    #buttons() {
-        return this.#chosenRings.length > 0 ? [{ text: 'Done', arg: 'done' }] : [];
+    private buttons() {
+        return this.chosenRings.length > 0 ? [{ text: 'Done', arg: 'done' }] : [];
     }
 
-    #resolveRings() {
-        this.context.game.addMessage('{0} resolves {1}', this.context.player, this.#chosenRings);
-        const action = this.context.game.actions.resolveRingEffect({
-            target: this.#chosenRings,
-            enforceOrderedResolution: true
-        });
+    private resolveRings(player: Player) {
+        this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
+        const action = this.context.game.actions.resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
         const events: Event[] = [];
-        action.addEventsToArray(events, this.context.game.getFrameworkContext(this.context.player));
+        action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
         this.context.game.openThenEventWindow(events);
-        return true;
     }
 
-    #promptTitle(): string {
-        switch(this.#chosenRings.length) {
+    private promptTitle(): string {
+        switch(this.chosenRings.length) {
             case 0:
                 return 'Choose the first ring to resolve';
             case 1:
@@ -90,11 +83,9 @@ export default class RiddlesOfTheHenshin extends DrawCard {
     static id = 'riddles-of-the-henshin';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Resolve ring effects',
-            condition: (context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0,
-            handler: (context) => new Process(getNumberOfMonks(context as AbilityContext), context as AbilityContext).promptPlayer(),
-            effect: 'resolve ring effects'
-        });
+        this.action('Resolve ring effects')
+            .condition((context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0)
+            .handler((context) => new Process(getNumberOfMonks(context), context).promptPlayer())
+            .effect('resolve ring effects');
     }
 }

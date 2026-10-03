@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -6,20 +5,17 @@ import AbilityDsl from '../../abilitydsl.js';
 class TheMountainDoesNotFall extends DrawCard {
     static id = 'the-mountain-does-not-fall';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Choose a character to not bow when defending',
-            target: {
-                cardType: CardType.Character,
-                gameAction: ability.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    duration: Duration.UntilEndOfPhase,
-                    condition: () => context.target.isDefending(),
-                    effect: ability.effects.doesNotBow()
-                }))
-            },
-            effect: 'make {0} not bow as a defender',
-            max: ability.limit.perRound(1)
-        });
+    setupCardAbilities() {
+        this.action('Choose a character to not bow when defending')
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                condition: () => context.target.isDefending(),
+                effect: AbilityDsl.effects.doesNotBow()
+            })))
+            .effect('make {0} not bow as a defender')
+            .max(AbilityDsl.limit.perRound(1));
     }
 }
 

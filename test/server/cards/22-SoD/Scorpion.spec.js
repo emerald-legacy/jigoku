@@ -98,7 +98,7 @@ describe('SoD - Scorpion', function () {
                 this.player1.clickCard(this.keeper);
                 expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Shinobu, bowing Bayushi Shinobu to take control of Keeper Initiate');
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -285,7 +285,7 @@ describe('SoD - Scorpion', function () {
             });
 
             it('should prevent honoring if participating', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
 
                 this.player1.clickCard(this.lineage);
                 this.player1.clickCard(this.diplomat);
@@ -305,7 +305,7 @@ describe('SoD - Scorpion', function () {
             });
 
             it('should draw with favor', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.player.imperialFavor = 'military';
                 this.game.checkGameState(true);
                 this.player1.clickCard(this.lineage);
@@ -412,8 +412,8 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1).toBeAbleToSelect(this.rumormonger);
                 this.player1.clickCard(this.rumormonger);
 
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 expect(this.player1).not.toBeAbleToSelect(this.challenger);
                 expect(this.player1).not.toBeAbleToSelect(this.keeper);
@@ -440,7 +440,7 @@ describe('SoD - Scorpion', function () {
             });
 
             it('lose honor', function () {
-                let hand1 = this.player1.hand.length;
+                const hand1 = this.player1.hand.length;
                 this.player1.clickCard(this.weknow);
                 expect(this.player1).toBeAbleToSelect(this.rumormonger);
                 this.player1.clickCard(this.rumormonger);
@@ -456,9 +456,9 @@ describe('SoD - Scorpion', function () {
                 expect(this.player2).toHavePromptButton('Dishonor Brash Samurai');
                 expect(this.player2).toHavePromptButton('Lose honor and let opponent draw cards');
 
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
-                let hand2 = this.player2.hand.length;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
+                const hand2 = this.player2.hand.length;
                 this.player2.clickPrompt('Lose honor and let opponent draw cards');
 
                 expect(this.player1.honor).toBe(honor1 - 2);

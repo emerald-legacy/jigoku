@@ -63,7 +63,7 @@ describe('Asahina Maeko', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.maeko);
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player2.clickCard(this.steward);
                 this.player2.clickPrompt('0');
@@ -80,7 +80,7 @@ describe('Asahina Maeko', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.maeko);
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player2.clickCard(this.fan);
                 this.player2.clickCard(this.callow);
@@ -96,7 +96,7 @@ describe('Asahina Maeko', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.maeko);
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player2.clickCard(this.crane);
                 this.player2.clickCard(this.callow);
@@ -112,7 +112,7 @@ describe('Asahina Maeko', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.maeko);
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player2.clickCard(this.rightHand);
                 this.player2.clickCard(this.brash);
@@ -131,7 +131,7 @@ describe('Asahina Maeko', function() {
                 this.player1.clickCard(this.maeko);
                 this.player2.pass();
 
-                let p1fate = this.player1.fate;
+                const p1fate = this.player1.fate;
                 this.player1.clickCard(this.katana);
                 this.player1.clickCard(this.uji);
                 expect(this.player1.fate).toBe(p1fate - 1);
@@ -148,7 +148,7 @@ describe('Asahina Maeko', function() {
                 this.player1.clickCard(this.maeko);
                 this.player2.pass();
 
-                let p1fate = this.player1.fate;
+                const p1fate = this.player1.fate;
                 this.player1.clickCard(this.whisperer);
                 this.player1.clickPrompt('0');
                 this.player1.clickPrompt('Conflict');

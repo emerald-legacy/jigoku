@@ -6,20 +6,17 @@ class MotoAriq extends DrawCard {
     static id = 'moto-ariq';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a ready character to the conflict',
-            condition: context => !!(context.source.isParticipating()
+        this.action('Move a ready character to the conflict')
+            .condition(context => !!(context.source.isParticipating()
                 && context.player.opponent
-                && context.player.opponent.isMoreHonorable()),
-            target: {
+                && context.player.opponent.isMoreHonorable()))
+            .target('target', {
                 player: Players.Opponent,
                 cardCondition: card => !card.bowed,
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to move to the conflict',
-                controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                controller: Players.Opponent
+            }, AbilityDsl.actions.moveToConflict());
     }
 }
 

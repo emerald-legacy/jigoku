@@ -6,19 +6,16 @@ class UnfulfilledDuty extends DrawCard {
     static id = 'unfulfilled-duty';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready characters',
-            target: {
+        this.action('Ready characters')
+            .targetCards('target', {
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',
-                cardStat: (card: DrawCard) => card.getCost() ?? 0,
+                cardStat: (card) => card.getCost() ?? 0,
                 maxStat: () => 6,
                 numCards: 0,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.getFate() === 0,
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.getFate() === 0
+            }, AbilityDsl.actions.ready());
     }
 }
 

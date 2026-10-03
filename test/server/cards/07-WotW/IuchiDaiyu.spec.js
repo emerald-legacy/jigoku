@@ -17,7 +17,7 @@ describe('Iuchi Daiyu', function() {
 
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
 
-                let provinces = this.player2.provinces;
+                const provinces = this.player2.provinces;
                 provinces['province 1'].provinceCard.facedown = false;
                 provinces['province 2'].provinceCard.facedown = false;
                 provinces['province 3'].provinceCard.facedown = false;
@@ -52,7 +52,7 @@ describe('Iuchi Daiyu', function() {
 
                 it('should give the chosen character +1 military skill for each faceup non-stronghold province your opponent controls', function() {
                     this.player2.pass();
-                    let militarySkill = this.borderRider.getMilitarySkill();
+                    const militarySkill = this.borderRider.getMilitarySkill();
                     this.player1.clickCard(this.iuchiDaiyu);
                     this.player1.clickCard(this.borderRider);
                     expect(this.borderRider.getMilitarySkill()).toBe(militarySkill + 3);
@@ -61,7 +61,7 @@ describe('Iuchi Daiyu', function() {
 
                 it('should last until the end of the conflict', function() {
                     this.player2.pass();
-                    let militarySkill = this.borderRider.getMilitarySkill();
+                    const militarySkill = this.borderRider.getMilitarySkill();
                     this.player1.clickCard(this.iuchiDaiyu);
                     this.player1.clickCard(this.borderRider);
                     this.player2.pass();

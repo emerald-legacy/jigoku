@@ -5,14 +5,12 @@ class AkodoToturi extends DrawCard {
     static id = 'akodo-toturi';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Resolve ring effect',
-            when: {
+        this.reaction('Resolve ring effect')
+            .when({
                 onClaimRing: (event, context) => this.game.isDuringConflict('military') && context.source.isParticipating() &&
                                                  event.player === context.player
-            },
-            gameAction: AbilityDsl.actions.resolveConflictRing()
-        });
+            })
+            .gameAction(AbilityDsl.actions.resolveConflictRing());
     }
 }
 

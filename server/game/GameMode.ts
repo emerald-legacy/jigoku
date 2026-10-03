@@ -174,7 +174,7 @@ const Obsidian: GameMode = {
     dynastyPhaseCanPlayConflictCharacters: true
 };
 
-export function parseGameMode(candidateStr: string): GameMode {
+export function parseGameMode(candidateStr: string | undefined): GameMode {
     switch(candidateStr) {
         case 'skirmish':
             return Skirmish;

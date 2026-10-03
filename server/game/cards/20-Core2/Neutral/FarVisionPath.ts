@@ -6,18 +6,15 @@ export default class FarVisionPath extends ProvinceCard {
     static id = 'far-vision-path';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Move the conflict',
-            when: {
+        this.reaction('Move the conflict')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.moveConflict()
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.moveConflict());
     }
 
     cannotBeStrongholdProvince() {

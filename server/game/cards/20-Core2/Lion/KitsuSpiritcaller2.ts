@@ -6,18 +6,16 @@ export default class KitsuSpiritcaller2 extends DrawCard {
     static id = 'kitsu-spiritcaller-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Resurrect a character',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+        this.action('Resurrect a character')
+            .cost(AbilityDsl.costs.bowSelf())
+            .target('target', {
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
-                cardCondition: (card) => card.isFaction('lion'),
-                gameAction: AbilityDsl.actions.putIntoConflict()
-            },
-            effect: 'call {0} back from the dead until the end of the conflict',
-            then: (context) => ({
+                cardCondition: (card) => card.isFaction('lion')
+            }, AbilityDsl.actions.putIntoConflict())
+            .effect('call {0} back from the dead until the end of the conflict')
+            .then((context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context?.target,
                     duration: Duration.UntilEndOfPhase,
@@ -30,7 +28,6 @@ export default class KitsuSpiritcaller2 extends DrawCard {
                         gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                     })
                 })
-            })
-        });
+            }));
     }
 }

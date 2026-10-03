@@ -38,7 +38,7 @@ describe('Erudite Prestige', function() {
                     defenders: []
                 });
 
-                let pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.getPoliticalSkill();
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);
@@ -60,7 +60,7 @@ describe('Erudite Prestige', function() {
                     defenders: []
                 });
 
-                let pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.getPoliticalSkill();
 
                 this.player2.clickCard(this.p2BHC);
                 this.player2.clickPrompt('player2');
@@ -80,7 +80,7 @@ describe('Erudite Prestige', function() {
                     defenders: []
                 });
 
-                let pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.getPoliticalSkill();
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);

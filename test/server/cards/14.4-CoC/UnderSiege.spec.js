@@ -247,6 +247,34 @@ describe('Under Siege', function() {
             expect(this.shame.location).toBe('hand');
             expect(this.fan.location).toBe('hand');
         });
+
+        it('should not return the cards set aside by an earlier use', function() {
+            this.initiateConflict({
+                attackers: [this.wanderer]
+            });
+            this.player1.clickCard(this.siege);
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.fan.location).toBe('hand');
+
+            this.player2.moveCard(this.fan, 'conflict discard pile');
+            expect(this.player2.player.hand.length).toBe(0);
+            this.player1.moveCard(this.siege, 'hand');
+            this.wanderer.bowed = false;
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'fire',
+                attackers: [this.wanderer]
+            });
+            this.player1.clickCard(this.siege);
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.fan.location).toBe('conflict discard pile');
+        });
     });
 });
 
@@ -564,5 +592,6 @@ describe('Under Siege - Bug Report', function() {
             expect(this.shame.location).toBe('conflict deck');
             expect(this.player2.hand.length).toBe(7);
         });
+
     });
 });

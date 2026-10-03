@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Location, Players, CardType, Phases } from '../../../Constants.js';
@@ -15,21 +14,18 @@ class Stinger extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Attach this to an attacking character',
-            cost: AbilityDsl.costs.payHonor(1),
-            condition: context => context.game.isDuringConflict('military'),
-            location: Location.Hand,
-            target: {
+        this.action('Attach this to an attacking character')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .condition(context => context.game.isDuringConflict('military'))
+            .target('target', {
                 player: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking(),
-                gameAction: AbilityDsl.actions.attach((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    attachment: context.source,
-                    target: context.target
-                }))
-            }
-        });
+                cardCondition: card => card.isAttacking()
+            }, AbilityDsl.actions.attach((context) => ({
+                attachment: context.source,
+                target: context.target
+            })))
+            .location(Location.Hand);
     }
 }
 

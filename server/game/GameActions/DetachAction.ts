@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export type DetachActionProperties = CardActionProperties;
 
@@ -13,7 +13,7 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
     targetType = [CardType.Attachment];
 
     getEffectMessage(context: C): MessageArgs {
-        let target = this.getProperties(context).target as DrawCard;
+        const [target] = targetList(this.getProperties(context).target);
         return ['detach {1} from {0}', [target, target.parent]];
     }
 
@@ -27,7 +27,7 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     eventHandler(event: ActionEvent<EventName.OnCardDetached, C>): void {
-        const card = event.card as DrawCard;
+        const card = event.card;
         card.parent?.removeAttachment(card);
         card.controller.cardsInPlay.push(card);
     }

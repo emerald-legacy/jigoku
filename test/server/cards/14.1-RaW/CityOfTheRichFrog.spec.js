@@ -54,7 +54,7 @@ describe('City of the Rich Frog', function() {
             expect(this.richFrog.location).toBe('province 1');
             expect(this.player1.player.getDynastyCardsInProvince('province 1').length).toBe(3);
 
-            let cards = this.player1.player.getDynastyCardsInProvince('province 1');
+            const cards = this.player1.player.getDynastyCardsInProvince('province 1');
             cards.forEach(card => {
                 expect(card.facedown).toBe(false);
             });

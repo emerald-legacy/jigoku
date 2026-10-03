@@ -6,17 +6,15 @@ export default class RetreatToSafety extends DrawCard {
     static id = 'retreat-to-safety';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move characters out of the conflict',
-            target: {
+        this.action('Move characters out of the conflict')
+            .targetCards('target', {
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isDefending(),
-                gameAction: AbilityDsl.actions.sendHome()
-            },
-            then: (parentContext) => ({
+                cardCondition: (card) => card.isDefending()
+            }, AbilityDsl.actions.sendHome())
+            .then((parentContext) => ({
                 gameAction: AbilityDsl.actions.conditional({
                     condition: (context) => context.player.isCharacterTraitInPlay('commander'),
                     falseGameAction: AbilityDsl.actions.noAction(),
@@ -24,13 +22,12 @@ export default class RetreatToSafety extends DrawCard {
                         activePromptTitle: 'Choose a character to ready',
                         player: Players.Self,
                         cardType: CardType.Character,
-                        cardCondition: (card) => Array.isArray(parentContext.target) && parentContext.target.includes(card),
+                        cardCondition: (card) => parentContext.targets.target.includes(card),
                         gameAction: AbilityDsl.actions.ready(),
                         message: '{0} is readied due to {1}\'s superior leadership',
                         messageArgs: (card, player) => [card, player]
                     })
                 })
-            })
-        });
+            }));
     }
 }

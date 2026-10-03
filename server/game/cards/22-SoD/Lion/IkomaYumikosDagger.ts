@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -7,41 +6,35 @@ export default class IkomaYumikosDagger extends DrawCard {
     static id = 'ikoma-yumiko-s-dagger';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent discarding the Imperial Favor',
-            when: {
+        this.wouldInterrupt('Prevent discarding the Imperial Favor')
+            .when({
                 onDiscardFavor: (event, context) => event.player === context.player &&
                     context.source.allowGameAction('discardFromPlay', context)
-            },
-            effect: 'discard itself instead of the Imperial Favor',
-            effectArgs: context => context.event.player ?? '',
-            gameAction: AbilityDsl.actions.cancel(context => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel(context => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.discardFromPlay()
-            }))
-        });
+            })))
+            .effect('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
 
-        this.action({
-            title: 'Injure a character',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Injure a character')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && (card.printedCost ?? 0) <= (context.source.printedCost ?? 0),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.conditional((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        condition: () => context.target.getFate() === 0,
-                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.target }),
-                        falseGameAction: AbilityDsl.actions.removeFate({ target: context.target })
-                    })),
-                    AbilityDsl.actions.conditional(context => ({
-                        condition: () => context.source.getFate() === 0,
-                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.source }),
-                        falseGameAction: AbilityDsl.actions.removeFate({ target: context.source })
-                    }))
-                ])
-            },
-            effect: 'injure itself and {0}'
-        });
+                cardCondition: (card, context) => card.isParticipating() && (card.printedCost ?? 0) <= (context.source.printedCost ?? 0)
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.conditional((context) => ({
+                    condition: () => context.target.getFate() === 0,
+                    trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.target }),
+                    falseGameAction: AbilityDsl.actions.removeFate({ target: context.target })
+                })),
+                AbilityDsl.actions.conditional(context => ({
+                    condition: () => context.source.getFate() === 0,
+                    trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.source }),
+                    falseGameAction: AbilityDsl.actions.removeFate({ target: context.source })
+                }))
+            ]))
+            .effect('injure itself and {0}');
     }
 }

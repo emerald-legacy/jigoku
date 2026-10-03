@@ -5,12 +5,12 @@ import AbilityDsl from '../../abilitydsl.js';
 class StewardOfLaw extends DrawCard {
     static id = 'steward-of-law';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
             match: card => card.getType() === CardType.Character,
-            effect: ability.effects.cannotReceiveDishonorToken()
+            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
         });
     }
 }

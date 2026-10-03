@@ -11,23 +11,17 @@ export default class ShibaShaHeiden extends DrawCard {
          */
 
         const sharedLimit = AbilityDsl.limit.perRound(1);
-        this.action({
-            title: 'Pay 1 fate to draw a card',
-            cost: AbilityDsl.costs.payFate(1),
-            gameAction: AbilityDsl.actions.draw(),
-            limit: sharedLimit
-        });
-        this.action({
-            title: 'Discard a card to gain 1 fate',
-            cost: AbilityDsl.costs.discardCard(),
-            gameAction: AbilityDsl.actions.gainFate(),
-            limit: sharedLimit
-        });
-        this.action({
-            title: 'Discard a card to draw a card',
-            cost: AbilityDsl.costs.discardCard(),
-            gameAction: AbilityDsl.actions.draw(),
-            limit: sharedLimit
-        });
+        this.action('Pay 1 fate to draw a card')
+            .cost(AbilityDsl.costs.payFate(1))
+            .gameAction(AbilityDsl.actions.draw())
+            .limit(sharedLimit);
+        this.action('Discard a card to gain 1 fate')
+            .cost(AbilityDsl.costs.discardCard())
+            .gameAction(AbilityDsl.actions.gainFate())
+            .limit(sharedLimit);
+        this.action('Discard a card to draw a card')
+            .cost(AbilityDsl.costs.discardCard())
+            .gameAction(AbilityDsl.actions.draw())
+            .limit(sharedLimit);
     }
 }

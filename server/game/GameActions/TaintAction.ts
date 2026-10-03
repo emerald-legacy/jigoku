@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type TaintProperties = CardActionProperties;
 
-export class TaintAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TaintProperties, EventName, C> {
+export class TaintAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TaintProperties, EventName.OnCardTainted, C> {
     name = 'taint';
     eventName = EventName.OnCardTainted;
     targetType = [CardType.Character, CardType.Province];
@@ -30,7 +30,7 @@ export class TaintAction<C extends AbilityContext = AbilityContext> extends Card
     }
 
     eventHandler(event: ActionEvent<EventName.OnCardTainted, C>): void {
-        const card = event.card as BaseCard;
+        const card = event.card;
         card.taint();
         card.game.raiseEvent(EventName.OnStatusTokenGained, {
             token: card.getStatusToken(CharacterStatus.Tainted),

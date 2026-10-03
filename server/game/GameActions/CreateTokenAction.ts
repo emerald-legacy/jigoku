@@ -14,7 +14,7 @@ export interface CreateTokenProperties extends CardActionProperties {
     canEnterConflict: (type: 'military' | 'political') => boolean;
 }
 
-export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CreateTokenProperties, EventName, C> {
+export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CreateTokenProperties, EventName.OnCreateTokenCharacter, C> {
     name = 'createToken';
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
@@ -22,7 +22,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
     defaultProperties: CreateTokenProperties = { atHome: false, token: SpiritOfTheRiver, canEnterConflict: () => true };
 
     canAffect(card: BaseCard, context: C): boolean {
-        let { canEnterConflict } = this.getProperties(context);
+        const { canEnterConflict } = this.getProperties(context);
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
             return false;
@@ -35,10 +35,10 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
     }
 
     eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context;
-        let { atHome, token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
-        let card = event.card as DrawCard;
-        let token = context.game.createToken(card, propToken);
+        const context = event.context;
+        const { atHome, token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
+        const card = event.card;
+        const token = context.game.createToken(card, propToken);
         card.owner.removeCardFromPile(card);
         this.checkForRefillProvince(card, event, additionalProperties);
         card.moveTo(Location.RemovedFromGame);

@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -8,21 +7,13 @@ export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';
 
     public setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Remove negative status tokens from a character, and discard it from play',
-            effect: 'expiate {0}\'s misdeeds by retiring them to the nearest monatery{1} Let them contemplate their sins.',
-            effectArgs: (context) => {
-                const target = context.target;
-                return [
-                    target && target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
-                ];
-            },
-            target: {
+        this.action('Remove negative status tokens from a character, and discard it from play')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.multiple([
                         AbilityDsl.actions.discardStatusToken({
@@ -48,7 +39,12 @@ export default class ForcedRetirement extends DrawCard {
                         })
                     ])
                 ]
-            }))
-        });
+            })))
+            .effect('expiate {0}\'s misdeeds by retiring them to the nearest monatery{1} Let them contemplate their sins.', (context) => {
+                const target = context.target;
+                return [
+                    target && target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
+                ];
+            });
     }
 }

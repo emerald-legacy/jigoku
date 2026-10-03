@@ -6,9 +6,8 @@ export default class DojiReiha extends DrawCard {
     static id = 'doji-reiha';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a duel that honors participants and move loser home',
-            initiateDuel: {
+        this.action('Initiate a duel that honors participants and move loser home')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 gameAction: (duel) =>
@@ -28,7 +27,6 @@ export default class DojiReiha extends DrawCard {
                             }
                         }))
                     ])
-            }
-        });
+            }));
     }
 }

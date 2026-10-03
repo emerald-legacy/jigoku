@@ -4,7 +4,6 @@ import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import BaseCard from '../../../BaseCard.js';
 import { EventPayload } from '../../../Events/EventPayloads.js';
-import { AbilityContext } from '../../../AbilityContext.js';
 
 export default class ShosuroIsa extends DrawCard {
     static id = 'shosuro-isa';
@@ -16,17 +15,15 @@ export default class ShosuroIsa extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnCardLeavesPlay]);
 
-        this.action({
-            title: 'Manifest a shadow',
-            target: {
+        this.action('Manifest a shadow')
+            .target('target', {
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
-                cardCondition: (card) => !card.isUnique(),
-                gameAction: AbilityDsl.actions.putIntoPlay()
-            },
-            effect: 'manifest a shadow of {0}',
-            then: (context: AbilityContext) => ({
+                cardCondition: (card) => !card.isUnique()
+            }, AbilityDsl.actions.putIntoPlay())
+            .effect('manifest a shadow of {0}')
+            .then((context) => ({
                 thenCondition: () => context.target?.location === Location.PlayArea,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
@@ -49,8 +46,7 @@ export default class ShosuroIsa extends DrawCard {
                         }
                     })
                 ])
-            })
-        });
+            }));
     }
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {

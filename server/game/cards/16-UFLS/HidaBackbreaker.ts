@@ -6,20 +6,17 @@ class HidaBackbreaker extends DrawCard {
     static id = 'hida-backbreaker';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
                                                    context.source.isParticipating() && context.game.isDuringConflict('military')
-            },
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.dishonor());
     }
 
     allowAttachment(attachment: DrawCard) {

@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Duration, Location, Players } from '../../Constants.js';
 
@@ -7,17 +6,15 @@ class KitsuSpiritcaller extends DrawCard {
     static id = 'kitsu-spiritcaller';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Resurrect a character',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+        this.action('Resurrect a character')
+            .cost(AbilityDsl.costs.bowSelf())
+            .target('target', {
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.putIntoConflict()
-            },
-            effect: 'call {0} back from the dead until the end of the conflict',
-            then: (context: AbilityContext) => ({
+                controller: Players.Self
+            }, AbilityDsl.actions.putIntoConflict())
+            .effect('call {0} back from the dead until the end of the conflict')
+            .then((context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context.target,
                     duration: Duration.UntilEndOfPhase,
@@ -30,8 +27,7 @@ class KitsuSpiritcaller extends DrawCard {
                         gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                     })
                 })
-            })
-        });
+            }));
     }
 }
 

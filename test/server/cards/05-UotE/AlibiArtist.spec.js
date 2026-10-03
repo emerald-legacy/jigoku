@@ -46,7 +46,7 @@ describe('Alibi Artist', function() {
                 });
 
                 it('should leave the card in the deck if the \'Take Nothing\' option is chosen', function() {
-                    let handSize = this.player1.player.hand.length;
+                    const handSize = this.player1.player.hand.length;
                     this.player1.clickCard('alibi-artist');
                     this.player1.clickPrompt('Take nothing');
                     expect(this.player1.conflictDeck.length).toBe(1);

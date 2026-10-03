@@ -1,4 +1,4 @@
-import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { AbilityType, CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,7 +14,7 @@ export default class DaiTsuchi extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Return attachment to owners hand',
-                condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating('military'),
+                condition: (context) => context.source.isParticipating('military'),
                 target: {
                     cardType: CardType.Attachment,
                     cardCondition: (card, context) =>
@@ -32,7 +32,7 @@ export default class DaiTsuchi extends DrawCard {
                     })
                 })),
                 effect: 'return {0} to {1}\'s hand and prevent them from playing copies this conflict',
-                effectArgs: (context: AbilityContext<DrawCard>) => [context.target?.owner ?? '']
+                effectArgs: (context) => [context.target?.owner ?? '']
             })
         });
     }

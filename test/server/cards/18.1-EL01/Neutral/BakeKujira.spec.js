@@ -47,11 +47,9 @@ describe('Bake Kujira', function () {
             this.player2.moveCard(this.whale2, 'play area');
             this.player1.placeCardInProvince(this.mine, 'province 2');
 
-            this.fumiki.action({
-                title: 'Discard a character',
-                target: {
-                    gameAction: discardFromPlay()
-                }
+            this.fumiki.declareAbilities(() => {
+                this.fumiki.action('Discard a character')
+                    .target('target', {}, discardFromPlay());
             });
 
             this.noMoreActions();

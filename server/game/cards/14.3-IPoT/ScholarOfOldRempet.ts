@@ -6,19 +6,16 @@ class ScholarOfOldRempet extends DrawCard {
     static id = 'scholar-of-old-rempet';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Make character immune to events',
-            condition: () => this.game.isDuringConflict(),
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
+        this.action('Make character immune to events')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .condition(() => this.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => !card.isUnique(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.immunity({ restricts: 'events' })
-                })
-            },
-            effect: 'make {0} immune to events'
-        });
+                cardCondition: card => !card.isUnique()
+            }, AbilityDsl.actions.cardLastingEffect({
+                effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+            }))
+            .effect('make {0} immune to events');
     }
 }
 

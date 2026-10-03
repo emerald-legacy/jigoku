@@ -1,11 +1,9 @@
 import { Location } from './Constants.js';
 import { Conflict } from './Conflict.js';
 import type BaseCard from './BaseCard.js';
-import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
 import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import type Player from './Player.js';
-import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 
 export type MenuItem = {
@@ -44,33 +42,38 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             }
             return;
         case 'addfate':
+            if(!card.isDrawCard()) {
+                return;
+            }
             game.addMessage('{0} adds a fate to {1}', player, card);
-            (card as DrawCard).modifyFate(1);
+            card.modifyFate(1);
             return;
         case 'remfate':
+            if(!card.isDrawCard()) {
+                return;
+            }
             game.addMessage('{0} removes a fate from {1}', player, card);
-            (card as DrawCard).modifyFate(-1);
+            card.modifyFate(-1);
             return;
         case 'move':
-            if(game.currentConflict) {
-                const drawCard = card as DrawCard;
-                if(drawCard.isParticipating()) {
+            if(game.currentConflict && card.isDrawCard()) {
+                if(card.isParticipating()) {
                     game.addMessage('{0} moves {1} out of the conflict', player, card);
-                    game.currentConflict.removeFromConflict(drawCard);
+                    game.currentConflict.removeFromConflict(card);
                 } else {
                     game.addMessage('{0} moves {1} into the conflict', player, card);
                     if(card.controller.isAttackingPlayer()) {
-                        game.currentConflict.addAttacker(drawCard);
+                        game.currentConflict.addAttacker(card);
                     } else if(card.controller.isDefendingPlayer()) {
-                        game.currentConflict.addDefender(drawCard);
+                        game.currentConflict.addDefender(card);
                     }
                 }
             }
             return;
         case 'control':
-            if(player.opponent) {
+            if(player.opponent && card.isDrawCard()) {
                 game.addMessage('{0} gives {1} control of {2}', player, player.opponent, card);
-                (card as DrawCard).setDefaultController(player.opponent);
+                card.setDefaultController(player.opponent);
             }
             return;
         case 'reveal':
@@ -87,21 +90,25 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             game.addMessage('{0} flips {1} facedown', player, card);
             card.facedown = true;
             return;
-        case 'break': {
-            const province = card as ProvinceCard;
-            game.addMessage('{0} {1} {2}', player, province.isBroken ? 'unbreaks' : 'breaks', card);
-            province.isBroken = province.isBroken ? false : true;
-            if(card.location === Location.StrongholdProvince && province.isBroken && player.opponent) {
+        case 'break':
+            if(!card.isProvinceCard()) {
+                return;
+            }
+            game.addMessage('{0} {1} {2}', player, card.isBroken ? 'unbreaks' : 'breaks', card);
+            card.isBroken = card.isBroken ? false : true;
+            if(card.location === Location.StrongholdProvince && card.isBroken && player.opponent) {
                 game.recordWinner(player.opponent, 'conquest');
             }
             return;
-        }
         case 'move_conflict':
+            if(!card.isProvinceCard()) {
+                return;
+            }
             game.addMessage('{0} moves the conflict to {1}', player, card);
             card.inConflict = true;
             if(game.currentConflict?.conflictProvince) {
                 game.currentConflict.conflictProvince.inConflict = false;
-                game.currentConflict.conflictProvince = card as ProvinceCard;
+                game.currentConflict.conflictProvince = card;
             }
             card.facedown = false;
             return;
@@ -160,7 +167,7 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
         case 'conflict':
             if(game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {
                 game.addMessage('{0} initiates a conflict', player);
-                const conflict = new Conflict(game, player, player.opponent as Player, ring);
+                const conflict = new Conflict(game, player, player.opponent, ring);
                 game.currentConflict = conflict;
                 game.queueStep(new ConflictFlow(game, conflict));
                 game.queueSimpleStep(() => (game.currentConflict = null));

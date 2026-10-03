@@ -59,7 +59,7 @@ describe('Mirumoto Rei 2', function () {
 
             this.player2.pass();
 
-            let fate = this.toshimoko.fate;
+            const fate = this.toshimoko.fate;
 
             this.player1.clickCard(this.rei);
             this.player1.clickCard(this.toshimoko);
@@ -84,7 +84,7 @@ describe('Mirumoto Rei 2', function () {
 
             this.player2.pass();
 
-            let fate = this.toshimoko.fate;
+            const fate = this.toshimoko.fate;
 
             this.player1.clickCard(this.rei);
             this.player1.clickCard(this.toshimoko);

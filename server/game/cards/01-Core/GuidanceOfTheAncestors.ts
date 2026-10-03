@@ -5,14 +5,12 @@ import AbilityDsl from '../../abilitydsl.js';
 class GuidanceOfTheAncestors extends DrawCard {
     static id = 'guidance-of-the-ancestors';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Play this from the discard pile',
-            location: Location.ConflictDiscardPile,
-            gameAction: ability.actions.playCard({
+    setupCardAbilities() {
+        this.action('Play this from the discard pile')
+            .gameAction(AbilityDsl.actions.playCard({
                 source: this
-            })
-        });
+            }))
+            .location(Location.ConflictDiscardPile);
     }
 }
 

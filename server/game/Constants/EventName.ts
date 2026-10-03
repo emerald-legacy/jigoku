@@ -93,5 +93,7 @@ export enum EventName {
     Unnamed = 'unnamedEvent',
     OnAddDuelParticipant = 'onAddDuelParticipant',
     OnReplaceDuelParticipant = 'onReplaceDuelParticipant',
-    OnAbilityResolverInitiated = 'onAbilityResolverInitiated'
+    OnAbilityResolverInitiated = 'onAbilityResolverInitiated',
+    /** Paying a cost that has no event of its own. */
+    PayCost = 'payCost'
 }

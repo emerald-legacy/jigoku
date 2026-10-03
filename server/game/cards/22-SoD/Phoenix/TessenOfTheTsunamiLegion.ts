@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, AbilityType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,7 +16,7 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                 AbilityDsl.effects.addTrait('water'),
                 AbilityDsl.effects.gainAbility(AbilityType.Action, {
                     title: 'Give a character +2 and move them',
-                    condition: (context: AbilityContext) => context.game.isDuringConflict(),
+                    condition: (context) => context.game.isDuringConflict(),
                     printedAbility: false,
                     target: {
                         cardType: CardType.Character,
@@ -28,15 +27,15 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
                             })),
                             AbilityDsl.actions.conditional({
-                                condition: context => (context.source as DrawCard).isParticipating(),
+                                condition: context => context.source.isDrawCard() && context.source.isParticipating(),
                                 trueGameAction: AbilityDsl.actions.moveToConflict(),
                                 falseGameAction: AbilityDsl.actions.sendHome()
                             })
                         ])
                     },
                     effect: 'give {0} +2{1}{2}',
-                    effectArgs: (context: AbilityContext<DrawCard>) => ['military',
-                        context.source.isParticipating() === (context.target as DrawCard).isParticipating() ? '' :
+                    effectArgs: (context) => ['military',
+                        context.source.isParticipating() === (!!context.target?.isDrawCard() && context.target.isParticipating()) ? '' :
                             context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home']
                 })
             ]

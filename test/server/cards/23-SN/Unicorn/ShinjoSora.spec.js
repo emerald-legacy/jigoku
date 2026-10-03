@@ -49,10 +49,10 @@ describe('Shinjo Sora', function () {
                 this.player2.clickCard(this.sora);
                 expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
 
-                let houndsValid = this.game.currentConflict.defenders.length >= 5;
+                const houndsValid = this.game.currentConflict.defenders.length >= 5;
                 expect(houndsValid).toBe(true);
 
-                let hound = this.game.currentConflict.defenders[1];
+                const hound = this.game.currentConflict.defenders[1];
                 this.player1.pass();
                 this.player2.clickCard(this.scorp);
                 this.player2.clickCard(hound);
@@ -105,7 +105,7 @@ describe('Shinjo Sora', function () {
                 expect(this.kisada.location).toBe('province 3');
                 expect(this.liar.location).toBe('removed from game');
 
-                let houndsValid = this.game.currentConflict.defenders.length >= 2;
+                const houndsValid = this.game.currentConflict.defenders.length >= 2;
                 expect(houndsValid).toBe(true);
             });
         });

@@ -6,13 +6,11 @@ class FruitfulRespite extends DrawCard {
     static id = 'fruitful-respite';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Gain fate',
-            when: {
+        this.reaction('Gain fate')
+            .when({
                 onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.cardsInPlay.some(card => card.type === CardType.Character && !card.bowed)
-            },
-            gameAction: AbilityDsl.actions.gainFate({ amount: 2 })
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainFate({ amount: 2 }));
     }
 }
 

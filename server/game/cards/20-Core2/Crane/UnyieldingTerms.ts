@@ -2,15 +2,13 @@ import { DuelType } from '../../../Constants.js';
 import { Duel } from '../../../Duel.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class UnyieldingTerms extends DrawCard {
     static id = 'unyielding-terms';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 requiresConflict: false,
                 refuseGameAction: AbilityDsl.actions.chosenDiscard((context) => ({
@@ -20,7 +18,7 @@ export default class UnyieldingTerms extends DrawCard {
                 })),
                 refusalMessage: '{0} chooses to refuse the duel and discard {1} cards from their hand',
                 refusalMessageArgs: (context) => [
-                    context.player.opponent as Player,
+                    context.player.opponent,
                     Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
                 ],
                 gameAction: (duel) =>
@@ -30,9 +28,8 @@ export default class UnyieldingTerms extends DrawCard {
                     ]),
                 message: 'bow{1} {0}',
                 messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : '']
-            },
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perRound(1));
     }
 
     wonByDuelist(duel: Duel): boolean {

@@ -50,7 +50,7 @@ describe('Kitsuki Yuikimi', function() {
             });
 
             it('should prevent Kitsuki Yuikimi from being targeted by opponent\'s triggered abilities', function() {
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.kitsukuYuikimi, this.kitsukiInvestigator],

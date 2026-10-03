@@ -39,7 +39,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context);
+        const { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
@@ -96,7 +96,8 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
-        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
+        const opponent = context.player.opponent;
+        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
@@ -105,24 +106,22 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         );
         const messageArgs = properties.messageArgs;
         if(properties.singleToken && validTokens.length > 1) {
-            const choices = validTokens.map((token: StatusToken) => token.name);
-            const handlers = validTokens.map((token: StatusToken) => {
-                return () => {
-                    if(properties.message && messageArgs) {
-                        context.game.addMessage(properties.message, ...(messageArgs(token, player)));
-                    }
-                    context.tokens[this.name] = token;
-                    properties.gameAction.addEventsToArray(
-                        events,
-                        context,
-                        Object.assign({}, additionalProperties, properties.subActionProperties(token))
-                    );
-                };
-            });
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: properties.activePromptTitle,
-                choices: choices,
-                handlers: handlers,
+                options: validTokens.map((token: StatusToken) => ({
+                    text: token.name,
+                    handler: () => {
+                        if(properties.message && messageArgs) {
+                            context.game.addMessage(properties.message, ...(messageArgs(token, player)));
+                        }
+                        context.tokens[this.name] = token;
+                        properties.gameAction.addEventsToArray(
+                            events,
+                            context,
+                            Object.assign({}, additionalProperties, properties.subActionProperties(token))
+                        );
+                    }
+                })),
                 context: context
             });
         } else {

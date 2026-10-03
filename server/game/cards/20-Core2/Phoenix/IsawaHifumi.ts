@@ -12,14 +12,14 @@ class HifumiCost extends ReduceableFateCost {
     isPlayCost = false;
     isPrintedFateCost = false;
 
-    #timesTriggered = new WeakMap<Player, number>();
+    private timesTriggered = new WeakMap<Player, number>();
 
     refreshHifumiCount(): void {
-        this.#timesTriggered = new WeakMap();
+        this.timesTriggered = new WeakMap();
     }
 
     currentCost(player: Player): number {
-        return this.#timesTriggered.get(player) ?? 0;
+        return this.timesTriggered.get(player) ?? 0;
     }
 
     canPay(context: AbilityContext): boolean {
@@ -29,7 +29,7 @@ class HifumiCost extends ReduceableFateCost {
         }
 
         let totalFateAvailable = 0;
-        for(const card of this.#cardsThatCanPayForHifumi(context)) {
+        for(const card of this.cardsThatCanPayForHifumi(context)) {
             totalFateAvailable += card.fate;
             if(totalFateAvailable >= cost) {
                 return true;
@@ -39,22 +39,25 @@ class HifumiCost extends ReduceableFateCost {
         return false;
     }
 
-    protected getReducedCost(context: AbilityContext): number {
+    public getReducedCost(context: AbilityContext): number {
         return this.currentCost(context.player);
     }
 
     protected getAlternateFatePools(context: AbilityContext): Set<DrawCard> {
-        return this.#cardsThatCanPayForHifumi(context);
+        return this.cardsThatCanPayForHifumi(context);
     }
 
     protected afterPayHook(event: Event): void {
-        const player = (event.context as AbilityContext).player;
-        this.#timesTriggered.set(player, this.currentCost(player) + 1);
+        const player = event.context?.player;
+        if(!player) {
+            return;
+        }
+        this.timesTriggered.set(player, this.currentCost(player) + 1);
     }
 
-    #cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
+    private cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
         return new Set(
-            context.player.cardsInPlay.filter((c: DrawCard) => c.type === CardType.Character && c.getFate() > 0)
+            context.player.cardsInPlay.filter((c) => c.type === CardType.Character && c.getFate() > 0)
         );
     }
 }
@@ -70,11 +73,9 @@ export default class IsawaHifumi extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
-        this.action({
-            title: 'Play an event from discard',
-            cost: this.hifumiCost,
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.action('Play an event from discard')
+            .cost(this.hifumiCost)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
                 controller: Players.Self,
@@ -89,11 +90,10 @@ export default class IsawaHifumi extends DrawCard {
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })
-            })),
-            effect: 'play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)',
-            effectArgs: (context) => [this.hifumiCost.currentCost(context.player), context.player],
-            limit: AbilityDsl.limit.unlimited()
-        });
+            })))
+            .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [this.hifumiCost.currentCost(context.player), context.player])
+            .limit(AbilityDsl.limit.unlimited())
+            .cannotTargetFirst();
     }
 
     public onRoundEnded() {

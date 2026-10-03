@@ -32,7 +32,7 @@ describe('Secluded Shrine', function() {
             });
 
             it('ths chosen ring should be considered in your claimed ring pool', function() {
-                let political = this.henshinDesciple.getPoliticalSkill();
+                const political = this.henshinDesciple.getPoliticalSkill();
                 this.noMoreActions();
                 this.player1.clickCard(this.secludedShrine);
                 this.player1.clickRing('air');

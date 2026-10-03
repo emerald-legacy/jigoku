@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
@@ -7,28 +6,25 @@ class BayushiKachiko extends DrawCard {
     static id = 'bayushi-kachiko';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Send a character home',
-            condition: context => this.game.isDuringConflict('political') && context.source.isParticipating(),
-            target: {
+        this.action('Send a character home')
+            .condition(context => this.game.isDuringConflict('political') && context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.sendHome(),
-                    AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
-                        choices: ['Yes', 'No'],
-                        choiceHandler: (choice, displayMessage) => {
-                            if(displayMessage && choice === 'Yes') {
-                                context.game.addMessage('{0} chooses to bow {1} due to {2}\'s ability', context.player, context.target, context.source);
-                            }
-                            return { target: (choice === 'Yes' ? context.target : []) };
-                        },
-                        gameAction: AbilityDsl.actions.bow()
-                    }))
-                ])
-            }
-        });
+                cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating()
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.sendHome(),
+                AbilityDsl.actions.menuPrompt((context) => ({
+                    activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
+                    choices: ['Yes', 'No'],
+                    choiceHandler: (choice, displayMessage) => {
+                        if(displayMessage && choice === 'Yes') {
+                            context.game.addMessage('{0} chooses to bow {1} due to {2}\'s ability', context.player, context.target, context.source);
+                        }
+                        return { target: (choice === 'Yes' ? context.target : []) };
+                    },
+                    gameAction: AbilityDsl.actions.bow()
+                }))
+            ]));
     }
 }
 

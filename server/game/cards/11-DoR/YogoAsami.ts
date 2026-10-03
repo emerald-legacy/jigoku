@@ -14,18 +14,15 @@ class YogoAsami extends DrawCard {
                 restricts: 'abilitiesTriggeredByOpponents'
             })
         });
-        this.action({
-            title: 'Give a character -2/-0',
-            cost: AbilityDsl.costs.bowSelf(),
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Give a character -2/-0')
+            .cost(AbilityDsl.costs.bowSelf())
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyMilitarySkill(-2) })
-            },
-            effect: 'reduce {0}\'s military skill by 2'
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyMilitarySkill(-2) }))
+            .effect('reduce {0}\'s military skill by 2');
     }
 }
 

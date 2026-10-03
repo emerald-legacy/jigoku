@@ -5,13 +5,11 @@ export default class FallowLands extends ProvinceCard {
     static id = 'fallow-lands';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Gain resources',
-            when: {
+        this.reaction('Gain resources')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            effect: 'draw 1 card, gain 1 fate, and gain 1 honor',
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.draw(context => ({
                     amount: 1,
                     target: context.player
@@ -24,7 +22,7 @@ export default class FallowLands extends ProvinceCard {
                     amount: 1,
                     target: context.player
                 }))
-            ])
-        });
+            ]))
+            .effect('draw 1 card, gain 1 fate, and gain 1 honor');
     }
 }

@@ -22,7 +22,7 @@ describe('Asako Lawmaster', function() {
         });
 
         it('if triggered, should give you an honor', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.noMoreActions();
             this.player1.passConflict();
             expect(this.player1).toBeAbleToSelect(this.lawmaster);

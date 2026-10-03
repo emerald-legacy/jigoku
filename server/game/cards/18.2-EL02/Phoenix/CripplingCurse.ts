@@ -13,24 +13,22 @@ export default class CripplingCurse extends DrawCard {
     static id = 'crippling-curse';
 
     setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Discard fate and characters',
-            when: {
+        this.forcedReaction('Discard fate and characters')
+            .when({
                 onPhaseStarted: (event, context) =>
                     event.phase === Phases.Fate &&
                     context.source.parentCharacter &&
                     !context.source.parentCharacter.bowed &&
                     context.source.parentCharacter.getFate() > 0
-            },
-            effect: 'discard all characters without fate and remove 1 fate from each character with fate',
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.discardFromPlay((context) => ({
                     target: cardsInPlay(context, (c) => c.getFate() === 0)
                 })),
                 AbilityDsl.actions.removeFate((context) => ({
                     target: cardsInPlay(context, (c) => c.getFate() !== 0)
                 }))
-            ])
-        });
+            ]))
+            .effect('discard all characters without fate and remove 1 fate from each character with fate');
     }
 }

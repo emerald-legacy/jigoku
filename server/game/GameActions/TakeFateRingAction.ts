@@ -4,13 +4,14 @@ import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface TakeFateRingProperties extends RingActionProperties {
     amount?: number;
     removeOnly?: boolean;
 }
 
-export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName, C> {
+export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: TakeFateRingProperties = { amount: 1, removeOnly: false };
@@ -19,7 +20,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return [
             '{2} {1} fate from {0}',
             [properties.target, properties.amount, properties.removeOnly ? 'remove' : 'take']
@@ -27,7 +28,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return (
             context.player.checkRestrictions('takeFateFromRings', context) &&
             ring.fate > 0 &&
@@ -37,7 +38,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         event.fate = properties.amount ?? 0;
         event.origin = ring;
         event.context = context;
@@ -48,8 +49,8 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount } = this.getProperties(context, additionalProperties);
+    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+        const { amount } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

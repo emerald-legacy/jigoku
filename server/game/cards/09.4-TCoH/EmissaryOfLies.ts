@@ -7,15 +7,14 @@ class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character home',
-            condition: context => context.source.isParticipating(),
-            target: {
+        this.action('Move a character home')
+            .condition(context => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player.opponent
-            },
-            handler: (context) => {
-                if(!context || !context.player.opponent) {
+            })
+            .handler((context) => {
+                if(!context.player.opponent) {
                     return;
                 }
                 this.game.promptWithMenu(context.player.opponent, this, {
@@ -27,25 +26,26 @@ class EmissaryOfLies extends DrawCard {
                         ]
                     }
                 });
-            }
-        });
+            });
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {
         this.game.addMessage('{0} names {1} - {2} must choose if they want to reveal their hand', player, cardName, player.opponent);
-        let opponent = player.opponent as Player;
         this.game.promptWithHandlerMenu(context.player, {
             context: context,
-            choices: ['Yes', 'No'],
-            handlers: [() => {
-                let handCardNames = opponent.hand.map((card: DrawCard) => card.name);
-                this.game.actions.lookAt().resolve(opponent.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)), context);
-                if(!handCardNames.includes(cardName)) {
-                    this.game.actions.sendHome().resolve(context.target, context);
-                    return true;
-                }
-                return true;
-            }, () => true],
+            options: [
+                {
+                    text: 'Yes',
+                    handler: () => {
+                        const handCardNames = context.player.hand.map((card) => card.name);
+                        this.game.actions.lookAt().resolve(context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), context);
+                        if(!handCardNames.includes(cardName)) {
+                            this.game.actions.sendHome().resolve(context.target, context);
+                        }
+                    }
+                },
+                { text: 'No', handler: () => true }
+            ],
             activePromptTitle: 'Do you want to reveal your hand?',
             waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not'
         });

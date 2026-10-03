@@ -4,21 +4,42 @@ import http from 'http';
 import https from 'https';
 import jwt from 'jsonwebtoken';
 import * as socketio from 'socket.io';
+import { z } from 'zod';
 
 import Game from '../game/Game.js';
 import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/Player.js';
 import { logger } from '../logger.js';
-import Socket from '../Socket.js';
+import Socket, { SocketUserSchema } from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { stringifyWithoutCycles, WsSocket } from './WsSocket.js';
-import type { GameSummary, PendingGameDTO, ShortCardData, UserIdentity } from './LobbyProtocol.js';
-import type { GameDetails } from '../game/Game.js';
-import type { MenuItem } from '../game/MenuCommands.js';
+import { DeckSchema, ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortCardData, type UserIdentity } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
 const MAX_DEBUG_DATA_LENGTH = 4 * 1024 * 1024;
+
+/** Validates a client command's arguments; undefined when they don't match. */
+type GameCommand = (args: unknown[]) => ((game: Game, player: string) => void) | undefined;
+
+/** Extra trailing arguments are ignored. */
+function command<S extends z.ZodTuple>(schema: S, run: (game: Game, player: string, args: z.output<S>) => void): GameCommand {
+    return (args) => {
+        const parsed = schema.safeParse(args.slice(0, schema.def.items.length));
+        return parsed.success ? (game, player) => run(game, player, parsed.data) : undefined;
+    };
+}
+
+const MenuItemSchema = z.looseObject({
+    command: z.string(),
+    text: z.string().optional(),
+    arg: z.string().optional(),
+    method: z.string().optional()
+});
+
+// Sent over socket.io as JSON, so an argument the client left undefined arrives as null.
+const MenuArgSchema = z.union([z.string(), z.number()]).nullable();
+const toggle = z.unknown().transform(Boolean);
 
 export class GameServer implements GameRouter {
     private games = new Map<string, Game>();
@@ -35,8 +56,11 @@ export class GameServer implements GameRouter {
         let privateKey: undefined | string;
         let certificate: undefined | string;
         try {
-            privateKey = fs.readFileSync(env.gameNodeKeyPath as string).toString();
-            certificate = fs.readFileSync(env.gameNodeCertPath as string).toString();
+            if(!env.gameNodeKeyPath || !env.gameNodeCertPath) {
+                throw new Error('No certificate configured');
+            }
+            privateKey = fs.readFileSync(env.gameNodeKeyPath).toString();
+            certificate = fs.readFileSync(env.gameNodeCertPath).toString();
         } catch{
             // No local certs — if HTTPS is enabled (e.g. via nginx proxy), still
             // advertise https to clients so they connect over the proxy.
@@ -91,34 +115,6 @@ export class GameServer implements GameRouter {
         this.io.on('connection', this.onConnection.bind(this));
     }
 
-    public debugDump() {
-        const games = [];
-        for(const game of this.games.values()) {
-            const players = [];
-            for(const player of Object.values(game.playersAndSpectators)) {
-                players.push({
-                    name: player.name,
-                    left: player.left,
-                    disconnected: player.disconnected,
-                    id: player.id,
-                    spectator: game.isSpectator(player)
-                });
-            }
-            games.push({
-                name: game.name,
-                players: players,
-                id: game.id,
-                started: game.started,
-                startedAt: game.startedAt
-            });
-        }
-
-        return {
-            games: games,
-            gameCount: this.games.size
-        };
-    }
-
     handleError(game: Game, e: Error) {
         logger.error(`Game error: ${e.message}\n${e.stack}`);
 
@@ -169,7 +165,7 @@ export class GameServer implements GameRouter {
         try {
             func();
         } catch(e) {
-            this.handleError(game, e as Error);
+            this.handleError(game, e instanceof Error ? e : new Error(String(e)));
 
             this.sendGameState(game);
         }
@@ -286,15 +282,21 @@ export class GameServer implements GameRouter {
     }
 
     handshake(socket: socketio.Socket, next: (err?: Error) => void) {
-        const token = (socket.handshake.auth as Record<string, unknown>)?.token;
+        const token = socket.handshake.auth?.token;
         if(token && token !== 'undefined') {
-            jwt.verify(token as string, env.secret, { algorithms: ['HS256'] }, function (err, user) {
+            jwt.verify(token, env.secret, { algorithms: ['HS256'] }, function (err, user) {
                 if(err) {
                     logger.info(`JWT verification failed: ${err.message}`);
                     return next(new Error('Invalid authentication token'));
                 }
 
-                (socket.request as { user?: unknown }).user = user;
+                const parsed = SocketUserSchema.safeParse(user);
+                if(!parsed.success) {
+                    logger.info('JWT payload has no username');
+                    return next(new Error('Invalid authentication token'));
+                }
+
+                socket.request.user = parsed.data;
                 next();
             });
         } else {
@@ -325,19 +327,21 @@ export class GameServer implements GameRouter {
     onStartGame(pendingGame: PendingGameDTO): void {
         const playerNames = Object.values(pendingGame.players).map((p) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
-        const game = new Game(pendingGame as GameDetails, { router: this, shortCardData: this.shortCardData, cardLibrary });
+        const game = new Game(pendingGame, { router: this, shortCardData: this.shortCardData, cardLibrary });
         this.games.set(pendingGame.id, game);
         this.registerUsersForGame(game);
 
         game.started = true;
         for(const player of Object.values(pendingGame.players)) {
-            game.selectDeck(player.name, player.deck);
+            if(player.deck) {
+                game.selectDeck(player.name, player.deck);
+            }
         }
 
         game.initialise();
     }
 
-    onSpectator(pendingGame: PendingGameDTO, user: UserIdentity) {
+    onSpectator(pendingGame: { id: string }, user: UserIdentity) {
         const game = this.games.get(pendingGame.id);
         if(!game) {
             return;
@@ -397,12 +401,23 @@ export class GameServer implements GameRouter {
         this.notifyAndCloseGame(game);
     }
 
-    onCardData(cardData: { titleCardData: unknown; shortCardData: unknown }) {
-        this.shortCardData = cardData.shortCardData as ShortCardData[];
+    onCardData(cardData: { titleCardData: unknown; shortCardData: unknown[] }) {
+        const valid: ShortCardData[] = [];
+        for(const record of cardData.shortCardData) {
+            const parsed = ShortCardDataSchema.safeParse(record);
+            if(parsed.success) {
+                valid.push(parsed.data);
+            }
+        }
+        const dropped = cardData.shortCardData.length - valid.length;
+        if(dropped > 0) {
+            logger.warn(`Dropped ${dropped} of ${cardData.shortCardData.length} card records without an id and name`);
+        }
+        this.shortCardData = valid;
     }
 
     onConnection(ioSocket: socketio.Socket) {
-        const req = ioSocket.request as { user?: { username: string } };
+        const req = ioSocket.request;
         if(!req.user) {
             logger.info('socket connected with no user, disconnecting');
             ioSocket.disconnect();
@@ -530,31 +545,37 @@ export class GameServer implements GameRouter {
         this.sendGameState(game);
     }
 
-    private static readonly GAME_COMMANDS = {
-        cardClicked: (g: Game, p: string, cardId: string) => g.cardClicked(p, cardId),
-        changeStat: (g: Game, p: string, stat: string, value: number) => g.changeStat(p, stat, value),
-        chat: (g: Game, p: string, message: string) => g.chat(p, message),
-        concede: (g: Game, p: string) => g.concede(p),
-        drop: (g: Game, p: string, cardId: string, source: string, target: string) => g.drop(p, cardId, source, target),
-        facedownCardClicked: (g: Game, p: string, location: string, controllerName: string, isProvince?: boolean) => g.facedownCardClicked(p, location, controllerName, isProvince),
-        menuButton: (g: Game, p: string, arg: string, uuid: string, method: string) => {
+    private static readonly GAME_COMMANDS: Record<string, GameCommand> = {
+        cardClicked: command(z.tuple([z.string()]), (g, p, [cardId]) => g.cardClicked(p, cardId)),
+        changeStat: command(z.tuple([z.string(), z.number()]), (g, p, [stat, value]) => g.changeStat(p, stat, value)),
+        chat: command(z.tuple([z.string()]), (g, p, [message]) => g.chat(p, message)),
+        concede: command(z.tuple([]), (g, p) => g.concede(p)),
+        drop: command(z.tuple([z.string(), z.string(), z.string()]), (g, p, [cardId, source, target]) => g.drop(p, cardId, source, target)),
+        facedownCardClicked: command(
+            z.tuple([z.string(), z.string(), z.boolean().nullish()]),
+            (g, p, [location, controllerName, isProvince]) => g.facedownCardClicked(p, location, controllerName, isProvince ?? undefined)
+        ),
+        menuButton: command(z.tuple([MenuArgSchema, z.string(), z.string().nullish()]), (g, p, [arg, uuid, method]) => {
             g.menuButton(p, arg, uuid, method);
-        },
-        menuItemClick: (g: Game, p: string, cardId: string, menuItem: unknown) => g.menuItemClick(p, cardId, menuItem as MenuItem),
-        ringClicked: (g: Game, p: string, ringindex: string) => g.ringClicked(p, ringindex),
-        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: unknown) => g.ringMenuItemClick(p, sourceRing, menuItem as MenuItem),
-        selectDeck: (g: Game, p: string, deck: unknown) => g.selectDeck(p, deck),
-        showConflictDeck: (g: Game, p: string) => g.showConflictDeck(p),
-        showDynastyDeck: (g: Game, p: string) => g.showDynastyDeck(p),
-        shuffleConflictDeck: (g: Game, p: string) => g.shuffleConflictDeck(p),
-        shuffleDynastyDeck: (g: Game, p: string) => g.shuffleDynastyDeck(p),
-        toggleManualMode: (g: Game, p: string) => g.toggleManualMode(p),
-        toggleOptionSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleOptionSetting(p, settingName, toggle),
-        togglePromptedActionWindow: (g: Game, p: string, windowName: string, toggle: boolean) => g.togglePromptedActionWindow(p, windowName, toggle),
-        toggleTimerSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleTimerSetting(p, settingName, toggle)
-    } as const satisfies Record<string, (game: Game, player: string, ...args: never[]) => void>;
+        }),
+        menuItemClick: command(z.tuple([z.string(), MenuItemSchema]), (g, p, [cardId, menuItem]) => g.menuItemClick(p, cardId, menuItem)),
+        ringClicked: command(z.tuple([z.string()]), (g, p, [ringindex]) => g.ringClicked(p, ringindex)),
+        ringMenuItemClick: command(
+            z.tuple([z.looseObject({ element: z.string() }), MenuItemSchema]),
+            (g, p, [sourceRing, menuItem]) => g.ringMenuItemClick(p, sourceRing, menuItem)
+        ),
+        selectDeck: command(z.tuple([DeckSchema]), (g, p, [deck]) => g.selectDeck(p, deck)),
+        showConflictDeck: command(z.tuple([]), (g, p) => g.showConflictDeck(p)),
+        showDynastyDeck: command(z.tuple([]), (g, p) => g.showDynastyDeck(p)),
+        shuffleConflictDeck: command(z.tuple([]), (g, p) => g.shuffleConflictDeck(p)),
+        shuffleDynastyDeck: command(z.tuple([]), (g, p) => g.shuffleDynastyDeck(p)),
+        toggleManualMode: command(z.tuple([]), (g, p) => g.toggleManualMode(p)),
+        toggleOptionSetting: command(z.tuple([z.string(), toggle]), (g, p, [settingName, value]) => g.toggleOptionSetting(p, settingName, value)),
+        togglePromptedActionWindow: command(z.tuple([z.string(), toggle]), (g, p, [windowName, value]) => g.togglePromptedActionWindow(p, windowName, value)),
+        toggleTimerSetting: command(z.tuple([z.string(), toggle]), (g, p, [settingName, value]) => g.toggleTimerSetting(p, settingName, value))
+    };
 
-    onGameMessage(socket: Socket, command: string, ...args: unknown[]) {
+    onGameMessage(socket: Socket, command: unknown, ...args: unknown[]) {
         if(!socket.user) {
             return;
         }
@@ -568,16 +589,22 @@ export class GameServer implements GameRouter {
             return this.onLeaveGame(socket);
         }
 
-        const handler = (GameServer.GAME_COMMANDS as Record<string, (game: Game, player: string, ...args: never[]) => void>)[command];
+        const handler = typeof command === 'string' && Object.hasOwn(GameServer.GAME_COMMANDS, command) ? GameServer.GAME_COMMANDS[command] : undefined;
         if(!handler) {
             logger.info(`Rejected unknown game command '${command}' from ${socket.user.username}`);
             return;
         }
 
         const username = socket.user.username;
+        const run = handler(args);
+        if(!run) {
+            logger.info(`Rejected malformed game command '${command}' from ${username}`);
+            return;
+        }
+
         this.runAndCatchErrors(game, () => {
             game.stopNonChessClocks();
-            handler(game, username, ...(args as never[]));
+            run(game, username);
 
             game.continue();
 

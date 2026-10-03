@@ -112,7 +112,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -136,7 +136,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -161,7 +161,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -184,7 +184,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.gunbai);
@@ -215,7 +215,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -281,8 +281,8 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
-            let deckSize = this.player1.conflictDeck.length;
+            const fate = this.player1.fate;
+            const deckSize = this.player1.conflictDeck.length;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);

@@ -7,18 +7,15 @@ export default class FouleyesElite extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Bow a character',
-            when: {
+        this.reaction('Bow a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
+            }, AbilityDsl.actions.bow());
     }
 }

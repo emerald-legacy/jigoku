@@ -28,6 +28,6 @@ export class RestoreProvinceAction<C extends AbilityContext = AbilityContext> ex
     }
 
     eventHandler(event: ActionEvent<EventName.OnRestoreProvince, C>): void {
-        (event.card as ProvinceCard).restoreProvince();
+        event.card.restoreProvince();
     }
 }
