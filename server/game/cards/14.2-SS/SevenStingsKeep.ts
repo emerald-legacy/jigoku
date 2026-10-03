@@ -36,13 +36,8 @@ export default class SevenStingsKeep extends StrongholdCard {
             .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
     }
 
-    getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {
-        const min = 1;
+    private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {
         const max = event.attackerMatrix?.maximumNumberOfAttackers ?? 0;
-        const array = [];
-        for(let i = min; i <= max; i++) {
-            array.push(i.toString());
-        }
-        return array;
+        return Array.from({ length: max }, (_, i) => (i + 1).toString());
     }
 }

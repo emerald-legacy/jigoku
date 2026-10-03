@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -28,16 +28,16 @@ export default class AsakoShun extends DrawCard {
             .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target ?? ''])
             .then((context) => ({
                 thenCondition: () => {
-                    const conflict = context?.game.currentConflict;
-                    const target = context?.target;
+                    const conflict = context.game.currentConflict;
+                    const target = context.target;
                     return !!conflict && !!target && conflict.calculateSkillFor([target]) === 0;
                 },
                 gameAction: AbilityDsl.actions.gainHonor({
-                    target: context?.player,
+                    target: context.player,
                     amount: 1
                 }),
                 message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
-                messageArgs: () => [context?.target, context?.player]
+                messageArgs: () => [context.target, context.player]
             }));
     }
 }

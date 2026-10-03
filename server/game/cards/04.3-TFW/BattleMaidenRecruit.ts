@@ -1,38 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
-const elementKeys = {
-    water: 'battle-maiden-recruit-water',
-    void: 'battle-maiden-recruit-void'
-};
+const elementSymbols = [
+    { key: 'battle-maiden-recruit-water', element: Element.Water },
+    { key: 'battle-maiden-recruit-void', element: Element.Void }
+];
 
 class BattleMaidenRecruit extends DrawCard {
     static id = 'battle-maiden-recruit';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.water)].isConsideredClaimed(context.player) ||
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.void)].isConsideredClaimed(context.player)
-            ),
+            condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKeys.water,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        symbols.push({
-            key: elementKeys.void,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
     }
 }
 

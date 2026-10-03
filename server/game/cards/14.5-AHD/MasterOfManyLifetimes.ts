@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players, Location } from '../../Constants.js';
@@ -25,9 +24,9 @@ class MasterOfManyLifetimes extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.returnToHand((context: TriggeredAbilityContext) => ({
+                    AbilityDsl.actions.returnToHand({
                         target: context.event.card?.attachments ?? []
-                    })),
+                    }),
                     AbilityDsl.actions.putIntoProvince({
                         target: context.event.card,
                         canBeStronghold: true,

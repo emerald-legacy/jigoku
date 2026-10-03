@@ -1,38 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
-const elementKeys = {
-    air: 'court-novice-air',
-    water: 'court-novice-water'
-};
+const elementSymbols = [
+    { key: 'court-novice-air', element: Element.Air },
+    { key: 'court-novice-water', element: Element.Water }
+];
 
 class CourtNovice extends DrawCard {
     static id = 'court-novice';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ||
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.water)].isConsideredClaimed(context.player)
-            ),
+            condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKeys.air,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        symbols.push({
-            key: elementKeys.water,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
     }
 }
 

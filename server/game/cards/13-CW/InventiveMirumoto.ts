@@ -1,15 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'inventive-mirumoto-water';
+const elementSymbol = { key: 'inventive-mirumoto-water', element: Element.Water };
 
 class InventiveMirumoto extends DrawCard {
     static id = 'inventive-mirumoto';
 
     setupCardAbilities() {
         this.action('Play attachment onto this character')
-            .condition(context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player))
+            .condition(context => hasClaimedRing(this, elementSymbol.key, context.player))
             .target('target', {
                 cardCondition: card => card.type === CardType.Attachment,
                 location: Location.ConflictDiscardPile,
@@ -27,13 +28,7 @@ class InventiveMirumoto extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

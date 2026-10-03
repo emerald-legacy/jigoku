@@ -4,26 +4,26 @@ import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const conduitOfHeroesCost = function (): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
+function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
     return {
         getActionName(_context) {
             return 'conduitOfHeroesCost';
         },
-        getCostMessage: function (context) {
+        getCostMessage(context) {
             if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
                 return [];
             }
             return ['bowing {0}'];
         },
-        canPay: function (context) {
+        canPay(context) {
             return context.player.opponent && context.player.honor >= context.player.opponent.honor + 5 ||
                 context.game.actions.bow().canAffect(context.source, context);
         },
-        resolve: function (context) {
+        resolve(context) {
             context.costs.conduitOfHeroesCost = context.source;
             context.costs.skipConduitCost = context.player.opponent && context.player.honor >= context.player.opponent.honor + 5;
         },
-        payEvent: function (context) {
+        payEvent(context) {
             if(!context.costs.skipConduitCost) {
                 const events = [];
 
@@ -37,7 +37,7 @@ const conduitOfHeroesCost = function (): Cost<{ conduitOfHeroesCost: BaseCard; s
 
         }
     };
-};
+}
 
 class ConduitOfHeroes extends DrawCard {
     static id = 'conduit-of-heroes';

@@ -1,6 +1,5 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -26,8 +25,8 @@ export default class ParanoidHososhi extends DrawCard {
 
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {
         return context.game
-            .findAnyCardsInPlay((card: BaseCard) => card.type === CardType.Character)
-            .reduce((prevHighestCost: number, card: DrawCard) => {
+            .findAnyCardsInPlay((card) => card.type === CardType.Character)
+            .reduce((prevHighestCost: number, card) => {
                 const cost = card.getCost();
                 return typeof cost === 'number' && cost > prevHighestCost ? cost : prevHighestCost;
             }, 0);

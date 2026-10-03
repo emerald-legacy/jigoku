@@ -1,6 +1,4 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import { EventName, Location, Players, PlayType } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import DrawCard from '../../DrawCard.js';
@@ -9,27 +7,21 @@ import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
-type CardPlayedEvent = EventPayload<EventName.OnCardPlayed> & {
-    onPlayCardSource?: unknown;
-    originallyOnTopOfConflictDeck?: boolean;
-    sourceOfCardPlayedFromConflictDeck?: BaseCard;
-};
-
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
     private eventRegistrar?: EventRegistrar;
 
     private cardsPlayedThisRound = 0;
-    private mostRecentEvent?: CardPlayedEvent;
+    private mostRecentEvent?: EventPayload<EventName.OnCardPlayed>;
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: AbilityDsl.effects.delayedEffect<this>({
                 when: {
-                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext<this>) => {
+                    onCardPlayed: (event, context) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -84,7 +76,7 @@ export default class MasterTactician extends DrawCard {
             match: (card, context) =>
                 !!(context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0]),
             effect: AbilityDsl.effects.canPlayFromOutOfPlay(
-                (player: Player, card: BaseCard) => player === card.owner,
+                (player: Player, card) => player === card.owner,
                 PlayType.PlayFromHand
             )
         });

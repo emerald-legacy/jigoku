@@ -1,8 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
+import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class TogashiTsurumi extends DrawCard {
     static id = 'togashi-tsurumi';
@@ -16,10 +14,10 @@ export default class TogashiTsurumi extends DrawCard {
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: (card: DrawCard) => card.location === this.uuid && card.hasTrait('kiho'),
+            match: (card) => card.location === this.uuid && card.hasTrait('kiho'),
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player) => player === this.controller,
+                    (player) => player === this.controller,
                     PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
@@ -48,7 +46,7 @@ export default class TogashiTsurumi extends DrawCard {
                         card.facedown = false;
                         card.lastingEffect(() => ({
                             until: {
-                                onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
+                                onCardMoved: event =>
                                     event.card === card && event.originalLocation === this.uuid
                             },
                             match: card,

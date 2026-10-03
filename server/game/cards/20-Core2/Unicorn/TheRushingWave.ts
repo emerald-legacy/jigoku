@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 function provinceLog(province: ProvinceCard) {
@@ -10,7 +11,7 @@ function provinceLog(province: ProvinceCard) {
 
 function adjacentProvinces(centralProvince: ProvinceCard): Array<string | ProvinceCard> {
     return centralProvince.controller
-        .getProvinces((province: ProvinceCard) =>
+        .getProvinces((province) =>
             centralProvince.controller.areLocationsAdjacent(centralProvince.location, province.location)
         )
         .map(provinceLog);
@@ -21,10 +22,7 @@ export default class TheRushingWave extends DrawCard {
 
     setupCardAbilities() {
         this.action('Set a province to zero strength')
-            .condition((context) =>
-                context.player.cardsInPlay.some(
-                    (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-                ))
+            .condition((context) => controlsShugenja(context.player))
             .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province
@@ -32,7 +30,7 @@ export default class TheRushingWave extends DrawCard {
                 trait: 'water',
                 gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                     target: target.controller.getProvinces(
-                        (province: ProvinceCard) =>
+                        (province) =>
                             target.location === province.location ||
                                 target.controller.areLocationsAdjacent(target.location, province.location)
                     ),

@@ -1,9 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import ThenAbility from '../../ThenAbility.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class KitsukiShomon extends DrawCard {
     static id = 'kitsuki-shomon';
@@ -11,7 +9,7 @@ export default class KitsukiShomon extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Dishonor this character instead')
             .when({
-                onCardDishonored: ({ card }: { card: BaseCard }, context: TriggeredAbilityContext) =>
+                onCardDishonored: ({ card }, context) =>
                     card.controller === context.player &&
                     card.type === CardType.Character &&
                     context.source.allowGameAction('dishonor', context) &&

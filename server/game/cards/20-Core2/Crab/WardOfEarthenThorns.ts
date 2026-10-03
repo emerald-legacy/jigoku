@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 
 export default class WardOfEarthenThorns extends ProvinceAttachment {
@@ -28,10 +28,6 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

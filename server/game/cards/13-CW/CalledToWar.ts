@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardType } from '../../Constants.js';
+import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class CalledToWar extends DrawCard {
     static id = 'called-to-war';
@@ -20,16 +20,10 @@ class CalledToWar extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid)
             }, AbilityDsl.actions.placeFate())
-            .effect('place a fate on {1}{2}', context => [context.targets.myCharacter, this.buildString(context)]);
-    }
-
-    buildString(context: AbilityContext) {
-        const opponent = context.player.opponent;
-        if(opponent && context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            const target = context.targets.oppCharacter;
-            return '.  ' + opponent.name + ' gives ' + context.player.name + ' 1 honor to place a fate on ' + target.name;
-        }
-        return '';
+            .effect('place a fate on {1}{2}', (context) => [
+                context.targets.myCharacter,
+                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate on ' + name)
+            ]);
     }
 }
 

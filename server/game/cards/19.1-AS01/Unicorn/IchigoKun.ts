@@ -42,7 +42,7 @@ export default class IchigoKun extends DrawCard {
         return symbols;
     }
 
-    private actionSequence(context: AbilityContext<this>, modifiers: { military: number; glory: number }) {
+    private actionSequence(context: AbilityContext, modifiers: { military: number; glory: number }) {
         return AbilityDsl.actions.sequential([
             AbilityDsl.actions.moveToConflict({ target: context.source }),
             AbilityDsl.actions.multiple([

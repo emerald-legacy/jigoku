@@ -1,8 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'fu-sui-disciple-air';
+const elementSymbol = { key: 'fu-sui-disciple-air', element: Element.Air };
 
 class FuSuiDisciple extends DrawCard {
     static id = 'fu-sui-disciple';
@@ -13,8 +14,8 @@ class FuSuiDisciple extends DrawCard {
                 activePromptTitle: 'Choose a player',
                 targets: true
             }, {
-                [this.owner.name]: context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(this.owner),
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(this.owner.opponent)
+                [this.owner.name]: () => hasClaimedRing(this, elementSymbol.key, this.owner),
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: () => this.owner.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, this.owner.opponent)
             })
             .target('character', {
                 dependsOn: 'player',
@@ -35,13 +36,7 @@ class FuSuiDisciple extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

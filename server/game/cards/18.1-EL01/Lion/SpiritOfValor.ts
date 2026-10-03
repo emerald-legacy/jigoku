@@ -1,19 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
+import { Location, Players } from '../../../Constants.js';
+import { captureParentCost } from '../../captureParentCost.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 import DrawCard from '../../../DrawCard.js';
-
-function captureParentCost(): Cost<{ captureParentCost: DrawCard | null }> {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context) {
-            context.costs.captureParentCost = context.source.parentCharacter;
-        },
-        pay() {}
-    };
-}
 
 export default class SpiritOfValor extends DrawCard {
     static id = 'spirit-of-valor';
@@ -23,12 +12,7 @@ export default class SpiritOfValor extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (_, player) =>
-                    player.cardsInPlay.some(
-                        (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-                    )
-                        ? 1
-                        : 0,
+                amount: (_, player) => controlsShugenja(player) ? 1 : 0,
                 match: (card, source) => card === source
             })
         });

@@ -1,10 +1,8 @@
-import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { EventName, Location, Players } from '../../../Constants.js';
+import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 import Ring from '../../../Ring.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
@@ -19,14 +17,14 @@ export default class BambooTattoo extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target: BaseCard) => target.isCharacter() && (target.printedCost ?? 0) <= 3,
+                targetCondition: (target) => target.isCharacter() && (target.printedCost ?? 0) <= 3,
                 match: (card, source) => card === source
             })
         });
 
         this.reaction('Ready attached character')
             .when({
-                onCardBowed: (event: EventPayload<EventName.OnCardBowed>, context) =>
+                onCardBowed: (event, context) =>
                     context.source.parentCharacter &&
                     event.card === context.source.parentCharacter &&
                     !(event.context?.source instanceof Ring) &&
@@ -43,7 +41,7 @@ export default class BambooTattoo extends DrawCard {
             .effect('ready{1} {2}', (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter]);
     }
 
-    private isSelfTrigger(context: TriggeredAbilityContext<this>) {
+    private isSelfTrigger(context: TriggeredAbilityContext) {
         const triggerCtx = context.event.context;
         return !!(
             context.source.controller &&

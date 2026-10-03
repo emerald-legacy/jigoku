@@ -1,21 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
-
-function captureParentCost(): Cost<{ captureParentCost: DrawCard | null }> {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context) {
-            context.costs.captureParentCost = context.source.parentCharacter;
-        },
-        pay() {}
-    };
-}
+import { captureParentCost } from '../../captureParentCost.js';
 
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';

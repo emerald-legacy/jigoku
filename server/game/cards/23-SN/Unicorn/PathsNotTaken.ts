@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class PathsNotTaken extends DrawCard {
     static id = 'paths-not-taken';
@@ -21,7 +21,7 @@ export default class PathsNotTaken extends DrawCard {
             .max(AbilityDsl.limit.perConflict(1));
     }
 
-    getSkillThreshold(context: AbilityContext) {
+    private getSkillThreshold(context: AbilityContext) {
         if(!context.game.currentConflict) {
             return 0;
         }

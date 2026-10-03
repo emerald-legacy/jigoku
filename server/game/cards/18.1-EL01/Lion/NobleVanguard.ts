@@ -1,8 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Players, Location } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import Soldier from '../../Soldier.js';
-import type { Event } from '../../../Events/Event.js';
+import { attachTopConflictCardAsSoldier } from '../../attachTopConflictCardAsSoldier.js';
 
 class NobleVanguard extends DrawCard {
     static id = 'noble-vanguard';
@@ -21,16 +21,7 @@ class NobleVanguard extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context)
             }, AbilityDsl.actions.handler({
-                handler: context => {
-                    const card = context.player.conflictDeck[0];
-                    const token = context.game.createToken(card, Soldier);
-                    card.owner.removeCardFromPile(card);
-                    card.moveTo(Location.RemovedFromGame);
-                    const moveEvents: Event[] = [];
-                    context.game.actions.attach({ target: context.target, attachment: token }).addEventsToArray(moveEvents, context);
-                    context.game.openThenEventWindow(moveEvents);
-                    return true;
-                }
+                handler: (context) => attachTopConflictCardAsSoldier(context, context.target)
             }))
             .effect('attach the top card of their conflict deck to {0} as a +1/+1 attachment');
     }

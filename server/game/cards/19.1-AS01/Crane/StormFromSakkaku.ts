@@ -1,11 +1,10 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class StormFromSakkaku extends DrawCard {
     static id = 'storm-from-sakkaku';
@@ -31,11 +30,11 @@ export default class StormFromSakkaku extends DrawCard {
                 destination: context.target.location
             })))
             .then(() => ({
-                gameAction: AbilityDsl.actions.discardCard((context: AbilityContext<this>) => ({
+                gameAction: AbilityDsl.actions.discardCard((context) => ({
                     target: this.otherHoldingsInSameProvince(context)
                 })),
                 message: 'The {1} {3}',
-                messageArgs: (context: TriggeredAbilityContext<this>) => [
+                messageArgs: (context) => [
                     this.otherHoldingsInSameProvince(context).length > 0
                         ? 'is angry and discards the holdings that they find in the province'
                         : 'calms down'
@@ -43,7 +42,7 @@ export default class StormFromSakkaku extends DrawCard {
             }));
     }
 
-    private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {
+    private otherHoldingsInSameProvince(context: AbilityContext): BaseCard[] {
         return (context.game.allCards).filter(
             (card) =>
                 card.location === context.source.location &&

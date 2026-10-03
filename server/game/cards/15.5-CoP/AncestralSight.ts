@@ -3,29 +3,28 @@ import BaseCard from '../../BaseCard.js';
 import { CardType, Players, AbilityType, TargetMode, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../Player.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const isCopyInPlay = function(card: BaseCard, context: AbilityContext) {
-    return context.game.findAnyCardsInPlay((c: BaseCard) => c.name === card.name).length > 0;
-};
+function isCopyInPlay(card: BaseCard, context: AbilityContext) {
+    return context.game.findAnyCardsInPlay((c) => c.name === card.name).length > 0;
+}
 
-const ancestralSightCost = function (): Cost<{ ancestralSightCost: DrawCard }> {
+function ancestralSightCost(): Cost<{ ancestralSightCost: DrawCard }> {
     return {
         getActionName(_context) {
             return 'ancestralSightCost';
         },
-        getCostMessage: function (_context) {
+        getCostMessage(_context) {
             return ['returning {0} to the bottom of the dynasty deck'];
         },
-        canPay: function (context) {
+        canPay(context) {
             const discardPile = context.player.dynastyDiscardPile;
             if(!discardPile) {
                 return false;
             }
-            return discardPile.some((card: BaseCard) => isCopyInPlay(card, context));
+            return discardPile.some((card) => isCopyInPlay(card, context));
         },
-        resolve: function (context, result: { cancelled?: boolean }) {
+        resolve(context, result) {
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a card to return to your deck',
                 context: context,
@@ -33,8 +32,8 @@ const ancestralSightCost = function (): Cost<{ ancestralSightCost: DrawCard }> {
                 location: Location.DynastyDiscardPile,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard, ctx: AbilityContext) => isCopyInPlay(card, ctx),
-                onSelect: (_player: Player, card: BaseCard) => {
+                cardCondition: (card, ctx) => isCopyInPlay(card, ctx),
+                onSelect: (_player, card) => {
                     if(card.isDrawCard()) {
                         context.costs.ancestralSightCost = card;
                     }
@@ -46,13 +45,13 @@ const ancestralSightCost = function (): Cost<{ ancestralSightCost: DrawCard }> {
                 }
             });
         },
-        payEvent: function (context) {
+        payEvent(context) {
             const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost, bottom: true, location: Location.DynastyDiscardPile });
             return action.getEvent(context.costs.ancestralSightCost, context);
         },
         promptsPlayer: true
     };
-};
+}
 
 class AncestralSight extends DrawCard {
     static id = 'ancestral-sight';
@@ -70,11 +69,11 @@ class AncestralSight extends DrawCard {
                 cannotTargetFirst: true,
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: (card, context: AbilityContext) => {
+                    cardCondition: (card, context) => {
                         const returned = context.costs.ancestralSightCost;
                         return !returned || (returned instanceof DrawCard && card.name === returned.name);
                     },
-                    gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({ origin: context.player }))
+                    gameAction: AbilityDsl.actions.placeFate((context) => ({ origin: context.player }))
                 }
             })
         });

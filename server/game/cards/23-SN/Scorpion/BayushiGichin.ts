@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, DuelType, Players, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 
 export default class BayushiGichin extends DrawCard {
@@ -76,7 +76,7 @@ export default class BayushiGichin extends DrawCard {
             }));
     }
 
-    getPoisons(context: AbilityContext) {
+    private getPoisons(context: AbilityContext) {
         const player = context.player;
         const inDiscard = player.conflictDiscardPile.filter(card => card.hasTrait('poison'));
         const inHand = player.hand.filter(card => card.hasTrait('poison'));

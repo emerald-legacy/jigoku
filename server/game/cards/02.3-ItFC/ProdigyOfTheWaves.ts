@@ -1,26 +1,21 @@
 import DrawCard from '../../DrawCard.js';
 import { Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, isRingClaimed } from '../claimedRings.js';
 
-const elementKey = 'prodigy-of-the-waves-water';
+const elementSymbol = { key: 'prodigy-of-the-waves-water', element: Element.Water };
 
 class ProdigyOfTheWaves extends DrawCard {
     static id = 'prodigy-of-the-waves';
 
     setupCardAbilities() {
         this.action('Ready this character')
-            .condition(() => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed())
+            .condition(() => isRingClaimed(this, elementSymbol.key))
             .gameAction(AbilityDsl.actions.ready());
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

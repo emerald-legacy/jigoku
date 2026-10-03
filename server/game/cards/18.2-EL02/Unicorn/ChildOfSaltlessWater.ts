@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,9 +8,9 @@ export default class ChildOfSaltlessWater extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext<this>) => !context.source.isParticipating(),
+                condition: (context) => context.source.isDrawCard() && !context.source.isParticipating(),
                 message: '{0} is discarded from play as it is at home',
-                messageArgs: (context: AbilityContext) => [context.source],
+                messageArgs: (context) => [context.source],
                 gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
                     target: context.source
                 }))

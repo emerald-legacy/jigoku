@@ -1,8 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
-const elementKey = 'kudaka-air';
+const elementSymbol = { key: 'kudaka-air', element: Element.Air };
 
 class Kudaka extends DrawCard {
     static id = 'kudaka';
@@ -10,10 +11,7 @@ class Kudaka extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain 1 fate and draw 1 card')
             .when({
-                onClaimRing: (event, context) => {
-                    const elem = this.getCurrentElementSymbol(elementKey);
-                    return ((event.conflict && event.conflict.hasElement(elem)) || event.ring.hasElement(elem)) && event.player === context.player;
-                }
+                onClaimRing: (event, context) => claimsRingOf(this, elementSymbol.key, event) && event.player === context.player
             })
             .gameAction(AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw())
             .effect('gain 1 fate and draw 1 card')
@@ -21,13 +19,7 @@ class Kudaka extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

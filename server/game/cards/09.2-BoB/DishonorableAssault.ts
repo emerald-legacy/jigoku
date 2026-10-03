@@ -11,13 +11,7 @@ export default class DishonorableAssault extends ProvinceCard {
             .cost(AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
             .targetCards('target', {
                 mode: TargetMode.ExactlyVariable,
-                numCardsFunc: (context) => {
-                    if(context && context.costs && context.costs.discardCardsUpToVariableX) {
-                        return context.costs.discardCardsUpToVariableX.length;
-                    }
-
-                    return this.getNumberOfLegalTargets(context);
-                },
+                numCardsFunc: (context) => context.costs.discardCardsUpToVariableX?.length ?? this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.dishonor())
@@ -25,18 +19,11 @@ export default class DishonorableAssault extends ProvinceCard {
             .cannotTargetFirst();
     }
 
-    getNumberOfLegalTargets(context: AbilityContext) {
-        if(this.game.isDuringConflict() && this.game.currentConflict) {
-            const cards = this.game.currentConflict.getParticipants((card) => card.isAttacking());
-            let count = 0;
-            cards.forEach((card) => {
-                if(card.allowGameAction('dishonor', context)) {
-                    count++;
-                }
-            });
-
-            return count;
+    private getNumberOfLegalTargets(context: AbilityContext) {
+        if(!this.game.isDuringConflict() || !this.game.currentConflict) {
+            return 0;
         }
-        return 0;
+        return this.game.currentConflict.getParticipants((card) => card.isAttacking())
+            .filter((card) => card.allowGameAction('dishonor', context)).length;
     }
 }

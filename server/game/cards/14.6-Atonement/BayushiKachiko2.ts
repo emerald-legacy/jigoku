@@ -1,4 +1,3 @@
-import { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
@@ -9,23 +8,21 @@ import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
-type CardPlayedEvent = EventPayload<EventName.OnCardPlayed> & { sourceOfCardPlayedFromConflictDiscard?: BaseCard; onPlayCardSource?: BaseCard };
-
 export default class BayushiKachiko2 extends DrawCard {
     static id = 'bayushi-kachiko-2';
 
     private cardsPlayedThisRound = 0;
     private eventRegistrar?: EventRegistrar;
-    private mostRecentEvent?: CardPlayedEvent;
+    private mostRecentEvent?: EventPayload<EventName.OnCardPlayed>;
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: AbilityDsl.effects.delayedEffect<this>({
                 when: {
-                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext<this>) => {
+                    onCardPlayed: (event, context) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -86,7 +83,7 @@ export default class BayushiKachiko2 extends DrawCard {
             location: Location.PlayArea,
             targetLocation: Location.ConflictDiscardPile,
             targetController: Players.Opponent,
-            match: (card: DrawCard, context) =>
+            match: (card, context) =>
                 card.type === CardType.Event &&
                 card.location === Location.ConflictDiscardPile &&
                 card.owner === context?.player.opponent,

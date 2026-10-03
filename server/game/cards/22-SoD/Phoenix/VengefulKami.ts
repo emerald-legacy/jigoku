@@ -1,36 +1,25 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Conflict } from '../../../Conflict.js';
-import { EventName, AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
+import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
 
-    private eventRegistrar?: EventRegistrar;
-    private declaredProvinces: string[] = [];
-
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([{
-            [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
-        }]);
-        this.eventRegistrar.register([EventName.OnRoundEnded]);
+        const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         this.action('Resolve Ring Effect')
             .condition(context => context.game.isDuringConflict() &&
                 context.player.isDefendingPlayer() &&
                 context.game.requireConflict()
                     .getConflictProvinces()
-                    .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)))
+                    .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))
             .ringTarget('target', {
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
                     !!context && context.game.requireConflict()
                         .getConflictProvinces()
-                        .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province) && province.getElement().includes(ring.element))
+                        .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict) && province.getElement().includes(ring.element))
             }, AbilityDsl.actions.resolveRingEffect())
             .effect('resolve the {0} effect')
             .max(AbilityDsl.limit.perConflict(1));
@@ -41,62 +30,5 @@ export default class VengefulKami extends DrawCard {
                 restricts: 'opponentsCardEffects'
             })
         });
-    }
-
-    public onRoundEnded() {
-        this.declaredProvinces = [];
-    }
-
-    public onConflictDeclaredReaction(event: EventPayload<typeof EventName.OnConflictDeclared>) {
-        if(!this.declaredProvinces) {
-            this.declaredProvinces = [];
-        }
-        const conflictString = this.getConflictString(event?.conflict);
-
-        if(conflictString) {
-            if(!this.declaredProvinces.includes(conflictString)) {
-                this.declaredProvinces.push(conflictString);
-            }
-        }
-    }
-
-    private getConflictString(conflict?: Conflict): string | undefined {
-        if(!conflict) {
-            return undefined;
-        }
-
-        const provinceString = this.getProvinceIdString(conflict.declaredProvince ?? undefined);
-        if(!provinceString) {
-            return undefined;
-        }
-        return `${provinceString}-${conflict.uuid}`;
-    }
-
-    private getProvinceIdString(province?: ProvinceCard): string | undefined {
-        if(!province) {
-            return undefined;
-        }
-
-        const { uuid, id, location } = province;
-        return `${uuid}-${id}-${location}`;
-    }
-
-    private wasProvinceAttacked(conflict: Conflict | null, province: ProvinceCard) {
-        if(!this.declaredProvinces) {
-            return false;
-        }
-        const conflictString = this.getConflictString(conflict ?? undefined);
-        const provinceString = this.getProvinceIdString(province);
-        if(!provinceString) {
-            return false;
-        }
-
-        for(let i = 0; i < this.declaredProvinces.length; i++) {
-            const a = this.declaredProvinces[i];
-            if(a.indexOf(provinceString) >= 0 && a !== conflictString) {
-                return true;
-            }
-        }
-        return false;
     }
 }

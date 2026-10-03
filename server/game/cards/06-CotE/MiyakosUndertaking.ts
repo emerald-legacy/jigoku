@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 export default class MiyakosUndertaking extends DrawCard {
     static id = 'miyako-s-undertaking';
@@ -25,7 +25,7 @@ export default class MiyakosUndertaking extends DrawCard {
             .effect('make {1} into a copy of {2}', (context) => [context.targets.myCharacter, context.targets.cardToCopy]);
     }
 
-    canPlay(context: TriggeredAbilityContext) {
+    canPlay(context: AbilityContext) {
         return context.player.honor <= 6 && super.canPlay(context);
     }
 }

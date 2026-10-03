@@ -4,7 +4,6 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../costs/Cost.js';
 import type Player from '../../../Player.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type Game from '../../../Game.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 
@@ -37,7 +36,7 @@ class ObjectionCost implements Cost {
         return amount === 0 || AbilityDsl.actions.loseFate({ target: context.player, amount }).hasLegalTarget(context);
     }
 
-    pay(context: TriggeredAbilityContext): void {
+    pay(context: AbilityContext): void {
         const fateCost = currentObjectionCost(context.player);
         if(fateCost > 0) {
             AbilityDsl.actions.loseFate({ target: context.player, amount: fateCost }).resolve(context.player, context);

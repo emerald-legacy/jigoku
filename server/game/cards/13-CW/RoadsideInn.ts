@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardType, Phases } from '../../Constants.js';
+import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class RoadsideInn extends DrawCard {
     static id = 'roadside-inn';
@@ -24,15 +24,10 @@ class RoadsideInn extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
             }, AbilityDsl.actions.placeFate(context => ({ origin: context.player.opponent })))
-            .effect('place a fate from their pool on {1}{2}', context => [context.targets.myCharacter, this.buildString(context)]);
-    }
-
-    buildString(context: AbilityContext) {
-        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            const target = context.targets.oppCharacter;
-            return '.  ' + target.controller.name + ' gives ' + context.player.name + ' 1 honor to place a fate from their pool on ' + target.name;
-        }
-        return '';
+            .effect('place a fate from their pool on {1}{2}', (context) => [
+                context.targets.myCharacter,
+                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name, (card) => card.controller)
+            ]);
     }
 }
 

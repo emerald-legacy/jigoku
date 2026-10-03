@@ -1,7 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, PlayType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class StrangeMirror extends DrawCard {
@@ -33,7 +32,7 @@ export default class StrangeMirror extends DrawCard {
                     controller: Players.Any,
                     cardCondition: (card) => card.isDrawCard() && this.eventsUnderneath(context).includes(card),
                     message: '{0} plays {1} from underneath {2}',
-                    messageArgs: (card: BaseCard) => [context.player, card, context.source.parentCharacter],
+                    messageArgs: (card) => [context.player, card, context.source.parentCharacter],
                     // the selected card becomes this action's target
                     gameAction: AbilityDsl.actions.playCard({
                         source: this,
@@ -75,7 +74,7 @@ export default class StrangeMirror extends DrawCard {
         // placeCardUnderneath moves the card to the host's uuid rather than registering
         // it as a child card, so that is where "underneath" is read from.
         return context.game.allCards.filter(
-            (card): card is DrawCard => card.location === character.uuid && card.type === CardType.Event
+            (card): card is DrawCard => card.isDrawCard() && card.location === character.uuid && card.type === CardType.Event
         );
     }
 }

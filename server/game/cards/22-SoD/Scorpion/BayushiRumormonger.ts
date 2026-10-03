@@ -1,5 +1,5 @@
 import { Location } from '../../../Constants.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -28,7 +28,7 @@ export default class BayushiRumormonger extends DrawCard {
             });
     }
 
-    getHighestNumberOfParticipants(context: AbilityContext) {
+    private getHighestNumberOfParticipants(context: AbilityContext) {
         const conflict = context.game.currentConflict;
         if(!conflict) {
             return 0;

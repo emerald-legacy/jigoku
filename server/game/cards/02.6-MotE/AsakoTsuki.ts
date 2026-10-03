@@ -1,9 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Element, EventName } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
+import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-const elementKey = 'asako-tsuki-water';
+const elementSymbol = { key: 'asako-tsuki-water', element: Element.Water };
 
 class AsakoTsuki extends DrawCard {
     static id = 'asako-tsuki';
@@ -11,7 +11,7 @@ class AsakoTsuki extends DrawCard {
     setupCardAbilities() {
         this.reaction('Honor a scholar character')
             .when({
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => (event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(elementKey))) || event.ring.hasElement(this.getCurrentElementSymbol(elementKey))
+                onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
             })
             .target('target', {
                 cardType: CardType.Character,
@@ -20,13 +20,7 @@ class AsakoTsuki extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

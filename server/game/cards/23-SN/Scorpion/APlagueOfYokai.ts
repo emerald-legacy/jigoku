@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -42,12 +42,12 @@ export default class APlagueOfYokai extends DrawCard {
             .effect('infect {0}');
     }
 
-    getCopiesInDeck(context: AbilityContext) {
+    private getCopiesInDeck(context: AbilityContext) {
         const player = context.player;
         return player.conflictDeck.filter(card => card.name === context.source.name);
     }
 
-    getSkillModifier(context: AbilityContext) {
+    private getSkillModifier(context: AbilityContext) {
         if(!context.game.currentConflict) {
             return 0;
         }

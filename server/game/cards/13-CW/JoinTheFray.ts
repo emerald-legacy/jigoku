@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -24,14 +22,10 @@ class JoinTheFray extends DrawCard {
                 [this.owner.name]: AbilityDsl.actions.putIntoConflict(context => ({ side: this.owner, target: context.targets.character })),
                 [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.putIntoConflict(context => ({ side: this.owner.opponent, target: context.targets.character }))
             })
-            .effect('have {1} join the conflict for {2}!', context => [context.targets.character, this.getEffectArg(context, context.selects.select.choice)]);
-    }
-
-    getEffectArg(context: AbilityContext, selection: string): Player | undefined {
-        if(selection === context.player.name) {
-            return context.player;
-        }
-        return context.player.opponent;
+            .effect('have {1} join the conflict for {2}!', (context) => [
+                context.targets.character,
+                context.selects.select.choice === context.player.name ? context.player : context.player.opponent
+            ]);
     }
 }
 

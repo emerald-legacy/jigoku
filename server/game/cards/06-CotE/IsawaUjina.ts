@@ -1,9 +1,9 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Element, EventName } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-const elementKey = 'isawa-ujina-void';
+const elementSymbol = { key: 'isawa-ujina-void', element: Element.Void };
 
 class IsawaUjina extends DrawCard {
     static id = 'isawa-ujina';
@@ -11,10 +11,7 @@ class IsawaUjina extends DrawCard {
     setupCardAbilities() {
         this.forcedReaction('Remove a character from the game')
             .when({
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
-                    const element = this.getCurrentElementSymbol(elementKey) || Element.Void;
-                    return (event.conflict && event.conflict.ring && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
-                }
+                onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
             })
             .target('target', {
                 cardType: CardType.Character,
@@ -24,13 +21,7 @@ class IsawaUjina extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

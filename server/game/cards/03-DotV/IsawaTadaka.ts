@@ -1,8 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'isawa-tadaka-earth';
+const elementSymbol = { key: 'isawa-tadaka-earth', element: Element.Earth };
 
 class IsawaTadaka extends DrawCard {
     static id = 'isawa-tadaka';
@@ -10,7 +11,7 @@ class IsawaTadaka extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => !context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent),
+            condition: context => context.player.opponent === undefined || !hasClaimedRing(this, elementSymbol.key, context.player.opponent),
             effect: AbilityDsl.effects.playerCannot({
                 cannot: 'play',
                 restricts: 'copiesOfDiscardEvents'
@@ -19,13 +20,7 @@ class IsawaTadaka extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Earth
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

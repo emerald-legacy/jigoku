@@ -1,10 +1,7 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Duration, EventName, Location, Players } from '../../../Constants.js';
+import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class MapmakerApprentice extends DrawCard {
     static id = 'mapmaker-apprentice';
 
@@ -17,7 +14,7 @@ export default class MapmakerApprentice extends DrawCard {
             }, AbilityDsl.actions.playerLastingEffect((context) => ({
                 effect: AbilityDsl.effects.delayedEffect({
                     when: {
-                        onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, eventContext: AbilityContext) => {
+                        onCardPlayed: (event, eventContext) => {
                             if(!eventContext.game.currentConflict) {
                                 return false;
                             }
@@ -40,7 +37,7 @@ export default class MapmakerApprentice extends DrawCard {
                         cardType: CardType.Province,
                         location: Location.Provinces,
                         cardCondition: (card) => card.isConflictProvince(),
-                        subActionProperties: (card: ProvinceCard) => {
+                        subActionProperties: (card) => {
                             context.target = card;
                             return { target: card };
                         },

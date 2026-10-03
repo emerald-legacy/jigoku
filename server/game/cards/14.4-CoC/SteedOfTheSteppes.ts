@@ -1,19 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { Cost } from '../../costs/Cost.js';
-
-const steedOfTheSteppesCaptureParentCost = function(): Cost<{ steedOfTheSteppesCaptureParentCost: DrawCard | null }> {
-    return {
-        canPay: function() {
-            return true;
-        },
-        resolve: function(context) {
-            context.costs.steedOfTheSteppesCaptureParentCost = context.source.parentCharacter;
-        },
-        pay: function() {
-        }
-    };
-};
+import { captureParentCost } from '../captureParentCost.js';
 
 class SteedOfTheSteppes extends DrawCard {
     static id = 'steed-of-the-steppes';
@@ -24,12 +11,12 @@ class SteedOfTheSteppes extends DrawCard {
         });
 
         this.action('Ready attached character')
-            .cost(steedOfTheSteppesCaptureParentCost())
+            .cost(captureParentCost())
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
-            //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.steedOfTheSteppesCaptureParentCost is for the actual stand
+            //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.captureParentCost is for the actual stand
             //I don't like it, but it isnn't work otherwise
-            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost].filter((card) => !!card) })));
+            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
     }
 }
 

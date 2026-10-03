@@ -2,10 +2,9 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
-import { CardType, AbilityType, Duration, EventName } from '../../../Constants.js';
+import { CardType, AbilityType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameModes } from '../../../../GameModes.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 class CraftyTsukumogami extends DrawCard {
     static id = 'crafty-tsukumogami';
@@ -14,7 +13,7 @@ class CraftyTsukumogami extends DrawCard {
         this.action('Attach to a ring')
             .ringTarget('target', {
                 activePromptTitle: 'Choose a ring to attach to',
-                ringCondition: (ring, context) => !!context && this.checkRingCondition(ring, context)
+                ringCondition: (ring, context) => this.checkRingCondition(ring, context)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardLastingEffect(context => ({
                     canChangeZoneOnce: true,
@@ -26,10 +25,10 @@ class CraftyTsukumogami extends DrawCard {
                             title: 'Discard a card',
                             limit: AbilityDsl.limit.unlimitedPerConflict(),
                             when: {
-                                onConflictDeclared: (event: EventPayload<typeof EventName.OnConflictDeclared>, context: AbilityContext<this>) => !!context.source.parent && context.source.parent === event.ring
+                                onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
                             },
                             printedAbility: false,
-                            gameAction: AbilityDsl.actions.chosenDiscard((context: AbilityContext) => ({
+                            gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
                                 target: context.game.currentConflict?.attackingPlayer,
                                 amount: 1
                             }))
@@ -55,11 +54,11 @@ class CraftyTsukumogami extends DrawCard {
             .effect('attach itself to the {0}');
     }
 
-    checkRingCondition(ring: Ring, context: AbilityContext) {
+    private checkRingCondition(ring: Ring, context: AbilityContext) {
         const frameworkLimitsAttachmentsWithRepeatedNames = context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             const attachment = context.source;
-            if(ring.attachments.filter((a: DrawCard) => !a.allowDuplicatesOfAttachment).some((a: BaseCard) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {
+            if(ring.attachments.filter((a) => !a.allowDuplicatesOfAttachment).some((a) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {
                 return false;
             }
         }

@@ -1,5 +1,4 @@
 import { Players, PlayType } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
@@ -10,7 +9,7 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
         super.setupCardAbilities();
 
         this.persistentEffect({
-            condition: (context: AbilityContext<this>): boolean =>
+            condition: (context) =>
                 !!context.source.parent &&
                 context.game.isDuringConflict() &&
                 !!context.source.parentProvince?.isConflictProvince() &&
@@ -24,7 +23,7 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
         });
 
         this.persistentEffect({
-            condition: (context: AbilityContext<this>): boolean =>
+            condition: (context) =>
                 !!context.source.parent &&
                 context.game.isDuringConflict() &&
                 !!context.source.parentProvince?.isConflictProvince() &&

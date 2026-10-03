@@ -32,7 +32,7 @@ class IsawaTsuke2 extends DrawCard {
             .cannotTargetFirst();
     }
 
-    getNumberOfLegalTargets(context: AbilityContext) {
+    private getNumberOfLegalTargets(context: AbilityContext) {
         const cards = context.game.requireConflict().getParticipants((card) => card.allowGameAction('removeFate'));
         const selectedCards: DrawCard[] = [];
         cards.forEach((card) => {

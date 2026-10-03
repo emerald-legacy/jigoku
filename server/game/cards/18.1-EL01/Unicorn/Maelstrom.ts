@@ -1,40 +1,35 @@
-import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Duration, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type BaseCard from '../../../BaseCard.js';
 import type DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
+function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
     return {
         getActionName(_context) {
             return 'maelstromCost';
         },
-        getCostMessage: function (context) {
+        getCostMessage(context) {
             if(context.costs.maelstromCostPaid) {
                 return ['discarding {0}'];
             }
             return [];
         },
-        canPay: function () {
+        canPay() {
             return true;
         },
-        resolve: function (context, result) {
-            let cardAvailable = true;
-            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
-                cardAvailable = false;
-            }
-
+        resolve(context, result) {
             context.costs.maelstromCostPaid = false;
-            if(cardAvailable) {
-                context.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Discard a card?',
-                    source: context.source,
-                    choices: ['Yes', 'No'],
-                    handlers: [
-                        () => {
+            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
+                return;
+            }
+            context.game.promptWithHandlerMenu(context.player, {
+                activePromptTitle: 'Discard a card?',
+                source: context.source,
+                options: [
+                    {
+                        text: 'Yes',
+                        handler: () => {
                             context.costs.maelstromCostPaid = true;
                             context.game.promptForSelect(context.player, {
                                 activePromptTitle: 'Choose a card to discard',
@@ -43,7 +38,7 @@ const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromC
                                 numCards: 1,
                                 location: Location.Hand,
                                 controller: Players.Self,
-                                onSelect: (player: Player, card: BaseCard) => {
+                                onSelect: (_player, card) => {
                                     if(card.isDrawCard()) {
                                         context.costs.maelstromCost = card;
                                     }
@@ -54,21 +49,18 @@ const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromC
                                     return true;
                                 }
                             });
-                        },
-                        () => (context.costs.maelstromCostPaid = false)
-                    ]
-                });
-            }
+                        }
+                    },
+                    { text: 'No', handler: () => (context.costs.maelstromCostPaid = false) }
+                ]
+            });
         },
-        payEvent: function (context) {
+        payEvent(context) {
             if(context.costs.maelstromCostPaid) {
-                const events = [];
-
                 const discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
-                events.push(discardAction.getEvent(context.costs.maelstromCost, context));
+                const event = discardAction.getEvent(context.costs.maelstromCost, context);
                 context.game.addMessage('{0} chooses to discard a card', context.player);
-
-                return events;
+                return [event];
             }
 
             //this is a do-nothing event to allow you to opt out and not scuttle the event
@@ -77,7 +69,7 @@ const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromC
         },
         promptsPlayer: true
     };
-};
+}
 
 const elementKey = 'maelstrom-water';
 
@@ -105,7 +97,7 @@ export default class Maelstrom extends ProvinceCard {
                             duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
-                                    afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
+                                    afterConflict: (event) =>
                                         event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === triggeringPlayer

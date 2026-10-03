@@ -8,7 +8,6 @@ import DynastyCardAction from '../../DynastyCardAction.js';
 import type BaseCard from '../../BaseCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { AbilityLimit } from '../../AbilityLimit.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 
 const backAlleyPersistentEffect = {
@@ -124,7 +123,7 @@ export default class BackAlleyHideaway extends DrawCard {
         });
         this.interrupt('Place character in Hideaway')
             .when({
-                onCardLeavesPlay: (event, context: TriggeredAbilityContext) =>
+                onCardLeavesPlay: (event, context) =>
                     event.card.isFaction('scorpion') &&
                     event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
@@ -143,6 +142,6 @@ export default class BackAlleyHideaway extends DrawCard {
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });
             })
-            .effect('move {1} into hiding', (context) => context?.event.card ?? '');
+            .effect('move {1} into hiding', (context) => context.event.card);
     }
 }

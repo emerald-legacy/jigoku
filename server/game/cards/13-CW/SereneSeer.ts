@@ -1,15 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, Players, CardType, Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'serene-seer-void';
+const elementSymbol = { key: 'serene-seer-void', element: Element.Void };
 
 class SereneSeer extends DrawCard {
     static id = 'serene-seer';
 
     setupCardAbilities() {
         this.action('Look at a province')
-            .condition(context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent))
+            .condition(context => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
             .gameAction(AbilityDsl.actions.selectCard({
                 activePromptTitle: 'Choose a province to look at',
                 cardType: CardType.Province,
@@ -24,13 +25,7 @@ class SereneSeer extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

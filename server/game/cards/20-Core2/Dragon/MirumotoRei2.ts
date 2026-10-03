@@ -2,13 +2,11 @@ import { Duration, DuelType, ConflictType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameAction } from '../../../GameActions/GameAction.js';
-import type { Duel } from '../../../Duel.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
-    getWeaponCount(context: AbilityContext) {
+    private getWeaponCount(context: AbilityContext) {
         return context.source.attachments.filter((card) => card.hasTrait('weapon')).length;
     }
 
@@ -31,27 +29,12 @@ export default class MirumotoRei2 extends DrawCard {
                 type: DuelType.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
-                gameAction: (duel: Duel) =>
-                    duel.loser ? AbilityDsl.actions.multipleContext(() => {
-                        const gameActions: GameAction[] = [];
-                        duel.loser?.forEach((loser: DrawCard) => {
-                            if(loser.getFate() > 0) {
-                                gameActions.push(
-                                    AbilityDsl.actions.removeFate({
-                                        target: loser,
-                                        amount: 1
-                                    })
-                                );
-                            } else {
-                                gameActions.push(
-                                    AbilityDsl.actions.discardFromPlay({
-                                        target: loser
-                                    })
-                                );
-                            }
-                        });
-                        return { gameActions };
-                    }) : AbilityDsl.actions.noAction()
+                gameAction: (duel) =>
+                    duel.loser ? AbilityDsl.actions.multipleContext(() => ({
+                        gameActions: (duel.loser ?? []).map((loser) => loser.getFate() > 0
+                            ? AbilityDsl.actions.removeFate({ target: loser, amount: 1 })
+                            : AbilityDsl.actions.discardFromPlay({ target: loser }))
+                    })) : AbilityDsl.actions.noAction()
             }));
     }
 }

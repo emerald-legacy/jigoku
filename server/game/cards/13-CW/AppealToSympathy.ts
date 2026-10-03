@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location } from '../../Constants.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class AppealToSympathy extends DrawCard {
     static id = 'appeal-to-sympathy';
@@ -13,17 +12,10 @@ class AppealToSympathy extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.conditional({
-                    condition: (context) => !!(context).event.card?.isConflict,
-                    trueGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                        target: context.event.card,
-                        destination: Location.ConflictDeck
-                    })),
-                    falseGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                        target: context.event.card,
-                        destination: Location.DynastyDiscardPile
-                    }))
-                })
+                AbilityDsl.actions.moveCard((context) => ({
+                    target: context.event.card,
+                    destination: context.event.card?.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
+                }))
             ]))
             .effect('cancel the effects of {1} and {2}', (context) => {
                 const card = context.event.card;

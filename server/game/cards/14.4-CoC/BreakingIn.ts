@@ -1,27 +1,23 @@
-import { CardType, EventName, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type Player from '../../Player.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';
 
     setupCardAbilities() {
         this.reaction('Search for a character card')
             .when({
-                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext) => event.card === context.source
+                onCardRevealed: (event, context) => event.card === context.source
             })
             .handler((context) => {
                 return this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Select a card:',
                     context: context,
                     cards: context.player.dynastyDeck.slice(0, 8).filter((card) => card.type === CardType.Character),
-                    choices: ['Select nothing'],
-                    handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
-                    cardHandler: (cardFromDeck: DrawCard) => {
+                    options: [
+                        { text: 'Select nothing', handler: () => this.game.addMessage('{0} selects nothing from their deck', context.player) }
+                    ],
+                    cardHandler: (cardFromDeck) => {
                         if(cardFromDeck.hasTrait('cavalry')) {
                             return this.game.promptForSelect(context.player, {
                                 activePromptTitle: 'Choose a province',
@@ -29,7 +25,7 @@ export default class BreakingIn extends ProvinceCard {
                                 cardType: [CardType.Province],
                                 location: Location.Provinces,
                                 controller: Players.Self,
-                                onSelect: (player: Player, card: BaseCard) => {
+                                onSelect: (player, card) => {
                                     this.game.addMessage(
                                         '{0} places {1} in {2}',
                                         context.player,

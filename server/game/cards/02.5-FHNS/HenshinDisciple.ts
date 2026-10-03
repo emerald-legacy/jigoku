@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
+import type Player from '../../Player.js';
 
 const elementKeys = {
     air: 'hallowed-ground-air',
@@ -13,23 +14,23 @@ class HenshinDisciple extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context =>
-                this.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ||
-                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.air)) && this.game.currentConflict?.ring?.isContested()),
+            condition: (context) => this.hasClaimedOrIsContesting(elementKeys.air, context.player),
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
         this.persistentEffect({
-            condition: context =>
-                this.game.rings[this.getCurrentElementSymbol(elementKeys.earth)].isConsideredClaimed(context.player) ||
-                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.earth)) && this.game.currentConflict?.ring?.isContested()),
+            condition: (context) => this.hasClaimedOrIsContesting(elementKeys.earth, context.player),
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
         this.persistentEffect({
-            condition: context =>
-                this.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player) ||
-                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.fire)) && this.game.currentConflict?.ring?.isContested()),
+            condition: (context) => this.hasClaimedOrIsContesting(elementKeys.fire, context.player),
             effect: AbilityDsl.effects.addKeyword('pride')
         });
+    }
+
+    private hasClaimedOrIsContesting(key: string, player: Player) {
+        const element = this.getCurrentElementSymbol(key);
+        return this.game.rings[element].isConsideredClaimed(player) ||
+            !!(this.game.isDuringConflict(element) && this.game.currentConflict?.ring?.isContested());
     }
 
     getPrintedElementSymbols() {

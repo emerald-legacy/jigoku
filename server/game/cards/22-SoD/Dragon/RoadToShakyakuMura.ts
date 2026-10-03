@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,7 +8,7 @@ function captureLocationCost(): Cost<{ captureLocationCost: Location }> {
         canPay() {
             return true;
         },
-        resolve(context: AbilityContext) {
+        resolve(context) {
             context.costs.captureLocationCost = context.source.location;
         },
         pay() { }

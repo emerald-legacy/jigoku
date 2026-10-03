@@ -30,6 +30,15 @@ describe('Biting Steel', function () {
                 expect(this.player2).toHavePrompt('Action Window');
             });
 
+            it('shouldn\'t attach without a shugenja', function () {
+                this.player2.moveCard('miya-mystic', 'dynasty discard pile');
+                this.player1.pass();
+                this.player2.playAttachment(this.katana, this.raitsugu);
+                this.player1.pass();
+                this.player2.clickCard(this.bitingSteel);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+
             it('contributes to duel', function () {
                 this.player1.pass();
                 this.player2.playAttachment(this.katana, this.raitsugu);

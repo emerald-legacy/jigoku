@@ -1,8 +1,8 @@
 import { CardType } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 function penaltyAmount(context: AbilityContext): number {
     return context.player.hasAffinity('earth', context) ? -2 : -1;
@@ -30,11 +30,7 @@ export default class EarthsStagnation extends DrawCard {
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
-    public canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+    public canPlay(context: AbilityContext, playType: string) {
+        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

@@ -1,7 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { Cost, Result } from '../../costs/Cost.js';
-import type Player from '../../Player.js';
+import type { Cost } from '../../costs/Cost.js';
 import { CardType, Players, Duration, TargetMode, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -9,14 +7,14 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
     getActionName(_context) {
         return 'agreeableArrangementCost';
     },
-    getCostMessage: function (context) {
+    getCostMessage(context) {
         return ['giving {1} control of {0}', context.player.opponent];
     },
-    canPay: function(context) {
+    canPay(context) {
         const opponent = context.player.opponent;
-        return !!opponent && context.player.cardsInPlay.some((card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent));
+        return !!opponent && context.player.cardsInPlay.some((card) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent));
     },
-    resolve: function (context, result: Result) {
+    resolve(context, result) {
         const opponent = context.player.opponent;
         context.game.promptForSelect(context.player, {
             activePromptTitle: 'Choose a card to give to your opponent',
@@ -26,8 +24,8 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
             location: Location.PlayArea,
             cardType: CardType.Character,
             controller: Players.Self,
-            cardCondition: (card: DrawCard) => !!opponent && (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent),
-            onSelect: (_player: Player, card: DrawCard) => {
+            cardCondition: (card) => !!opponent && (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent),
+            onSelect: (_player, card) => {
                 context.costs.agreeableArrangementCost = card;
                 return true;
             },
@@ -37,16 +35,14 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
             }
         });
     },
-    payEvent: function(context) {
+    payEvent(context) {
         const card = context.costs.agreeableArrangementCost;
-        const action = context.game.actions.cardLastingEffect((innerContext: AbilityContext) => ({
+        const action = context.game.actions.cardLastingEffect((innerContext) => ({
             target: card,
             effect: AbilityDsl.effects.takeControl(innerContext.player.opponent),
             duration: Duration.Custom
         }));
-        const events = [];
-        events.push(action.getEvent(card, context));
-        return events;
+        return [action.getEvent(card, context)];
     }
 });
 

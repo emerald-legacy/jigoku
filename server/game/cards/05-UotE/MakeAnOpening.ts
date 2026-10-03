@@ -31,7 +31,7 @@ class MakeAnOpening extends DrawCard {
             .effect('give {0} -{1}{2}/-{1}{3}', context => [this.getHonorDialDifference(context), 'military', 'political']);
     }
 
-    getHonorDialDifference(context: AbilityContext) {
+    private getHonorDialDifference(context: AbilityContext) {
         const opp = context.player.opponent;
         if(!opp) {
             return 0;

@@ -12,16 +12,16 @@ class MatsuKoso extends DrawCard {
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getTargets(context),
                 duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.modifyMilitarySkill((card: DrawCard) => -card.printedPoliticalSkill)
+                effect: AbilityDsl.effects.modifyMilitarySkill((card) => -card.printedPoliticalSkill)
             })))
             .effect('lower the military skill of {1} by their respective printed political skill', (context) => [this.getTargets(context)]);
     }
 
     // A dash or 0 printed political skill would change nothing, and applying the effect
     // anyway triggers reactions to a skill change (Kiss of the Sea).
-    getTargets(context: AbilityContext) {
+    private getTargets(context: AbilityContext) {
         return (context.game.currentConflict?.getParticipants() ?? []).filter(
-            (card: DrawCard) => card.printedPoliticalSkill > 0
+            (card) => card.printedPoliticalSkill > 0
         );
     }
 }

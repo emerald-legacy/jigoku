@@ -17,7 +17,7 @@ class ParalyzingDelicacy extends DrawCard {
             .effect('give {1} -{2}{3}', context => [context.target, this.getFaceDownProvinceCards(context), 'military']);
     }
 
-    getFaceDownProvinceCards(context: AbilityContext) {
+    private getFaceDownProvinceCards(context: AbilityContext) {
         const controller = context.target?.controller;
         if(!controller) {
             return 0;

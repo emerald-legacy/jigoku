@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -32,21 +32,18 @@ export default class TheHundredHandStrike extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
             })))
             .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.targets.punchee])
-            .then((context) => {
-                const ctx = context;
-                return {
-                    thenCondition: () => (ctx.targets.puncher).hasTrait('tattooed') &&
-                        ctx.game.currentConflict !== null &&
-                        ctx.game.currentConflict.calculateSkillFor([ctx.targets.punchee]) === 0,
-                    gameAction: AbilityDsl.actions.conditional({
-                        condition: () => (ctx.targets.punchee).getFate() === 0,
-                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: ctx.targets.punchee }),
-                        falseGameAction: AbilityDsl.actions.removeFate({ target: ctx.targets.punchee })
-                    }),
-                    message: '{3} is injured because it is not contributing skill to the current conflict',
-                    messageArgs: () => [ctx.targets.punchee]
-                };
-            })
+            .then((context) => ({
+                thenCondition: () => context.targets.puncher.hasTrait('tattooed') &&
+                    context.game.currentConflict !== null &&
+                    context.game.currentConflict.calculateSkillFor([context.targets.punchee]) === 0,
+                gameAction: AbilityDsl.actions.conditional({
+                    condition: () => context.targets.punchee.getFate() === 0,
+                    trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.targets.punchee }),
+                    falseGameAction: AbilityDsl.actions.removeFate({ target: context.targets.punchee })
+                }),
+                message: '{3} is injured because it is not contributing skill to the current conflict',
+                messageArgs: () => [context.targets.punchee]
+            }))
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

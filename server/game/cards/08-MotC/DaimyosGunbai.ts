@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, DuelType } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 
 class DaimyosGunbai extends DrawCard {
     static id = 'daimyo-s-gunbai';
@@ -9,20 +8,20 @@ class DaimyosGunbai extends DrawCard {
     setupCardAbilities() {
         this.action('Initiate a military duel and attach this to the winner')
             .cost(AbilityDsl.costs.reveal(context => [context.source]))
-            .initiateDuel(() => ({
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: duel => AbilityDsl.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({
+                gameAction: duel => AbilityDsl.actions.attach({
                     target: duel.winner,
                     attachment: context.source
-                }))
+                })
             }))
             .then(() => ({
                 thenCondition: () => true,
                 gameAction: AbilityDsl.actions.discardCard(context => ({
                     target: context.source.location === Location.Hand ? context.source : []
                 })),
-                message: (context: AbilityContext) => context.source.location === Location.Hand ? '{0} discards {1}' : ''
+                message: (context) => context.source.location === Location.Hand ? '{0} discards {1}' : ''
             }))
             .location(Location.Hand);
     }

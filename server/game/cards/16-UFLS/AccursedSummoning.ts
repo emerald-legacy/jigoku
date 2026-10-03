@@ -1,26 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import { createCard } from '../../Deck.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
+import { createSummonedCopy, summonEffectArgs } from '../summonCreature.js';
 
 const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature: DrawCard | undefined; accursedSummoningCost: number | null }> {
     return {
         getActionName(_context) {
             return 'accursedSummoningCost';
         },
-        getCostMessage: function (_context) {
+        getCostMessage(_context) {
             return ['losing {0} honor'];
         },
-        canPay: function (context) {
+        canPay(context) {
             return context.game.actions.loseHonor().canAffect(context.player, context);
         },
-        resolve: function (context, result: { cancelled?: boolean }) {
+        resolve(context, result) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter((card: DrawCard) => context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card) => context.game.actions.putIntoConflict().canAffect(card, context));
 
             const creaturesByCost: DrawCard[][] = [[], [], [], [], []];
-            creatures.forEach((creature: DrawCard) => {
+            creatures.forEach((creature) => {
                 creaturesByCost[creature.printedCost ?? 0].push(creature);
             });
             context.costs.accursedSummoningCostCreature = undefined;
@@ -28,27 +28,24 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
             const promptForCost = () => context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a fate cost',
                 source: context.source,
-                choices: ['1', '2', '3', '4', 'All', 'Cancel'],
-                handlers: [
-                    () => {
-                        promptForCards(creaturesByCost[1]);
+                options: [
+                    ...[1, 2, 3, 4].map((cost) => ({
+                        text: cost.toString(),
+                        handler: () => promptForCards(creaturesByCost[cost])
+                    })),
+                    {
+                        text: 'All',
+                        handler: () => {
+                            promptForCards(creatures);
+                        }
                     },
-                    () => {
-                        promptForCards(creaturesByCost[2]);
-                    },
-                    () => {
-                        promptForCards(creaturesByCost[3]);
-                    },
-                    () => {
-                        promptForCards(creaturesByCost[4]);
-                    },
-                    () => {
-                        promptForCards(creatures);
-                    },
-                    () => {
-                        context.costs.accursedSummoningCostCreature = undefined;
-                        result.cancelled = true;
-                        return true;
+                    {
+                        text: 'Cancel',
+                        handler: () => {
+                            context.costs.accursedSummoningCostCreature = undefined;
+                            result.cancelled = true;
+                            return true;
+                        }
                     }
                 ]
             });
@@ -57,32 +54,34 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
                 activePromptTitle: 'Select a creature to summon',
                 source: context.source,
                 cards: creatures,
-                choices: ['Back', 'Cancel'],
-                cardHandler: (card: DrawCard) => {
+                options: [
+                    {
+                        text: 'Back',
+                        handler: () => {
+                            promptForCost();
+                            return true;
+                        }
+                    },
+                    {
+                        text: 'Cancel',
+                        handler: () => {
+                            context.costs.accursedSummoningCostCreature = undefined;
+                            result.cancelled = true;
+                            return true;
+                        }
+                    }
+                ],
+                cardHandler: (card) => {
                     context.costs.accursedSummoningCostCreature = card;
                     context.costs.accursedSummoningCost = card.printedCost;
-                },
-                handlers: [
-                    () => {
-                        promptForCost();
-                        return true;
-                    },
-                    () => {
-                        context.costs.accursedSummoningCostCreature = undefined;
-                        result.cancelled = true;
-                        return true;
-                    }
-                ]
+                }
             });
 
             promptForCost();
         },
-        payEvent: function (context) {
+        payEvent(context) {
             if(context.costs.accursedSummoningCostCreature) {
-                const oni = context.costs.accursedSummoningCostCreature;
-                const copy = createCard(context.player, oni.cardData, DrawCard);
-                context.game.allCards.push(copy);
-                context.costs.accursedSummoningCostCreature = copy;
+                context.costs.accursedSummoningCostCreature = createSummonedCopy(context, context.costs.accursedSummoningCostCreature);
 
                 const events: Event[] = [];
                 const honorAmount = context.costs.accursedSummoningCost ?? 0;
@@ -105,16 +104,7 @@ class AccursedSummoning extends DrawCard {
             .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
-                const creature = context.costs.accursedSummoningCostCreature;
-                var testStr = creature?.name ?? '';
-                var vowelRegex = '^[aieouAIEOU].*';
-                var matched = testStr.match(vowelRegex);
-                return [
-                    creature,
-                    matched ? 'n' : ''
-                ];
-            });
+            .effect('summon a{2} {1} from the depths of the Shadowlands!', (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
     }
 
     isTemptationsMaho() {

@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { GameAction } from '../../GameActions/GameAction.js';
 import { TargetMode, CardType } from '../../Constants.js';
 
 class ImbuedWithShadows extends DrawCard {
@@ -13,13 +12,7 @@ class ImbuedWithShadows extends DrawCard {
             .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
             .targetCards('target', {
                 mode: TargetMode.ExactlyVariable,
-                numCardsFunc: (context) => {
-                    if(context && context.costs && context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost;
-                    }
-
-                    return this.getNumberOfLegalTargets(context);
-                },
+                numCardsFunc: (context) => context.costs.variableHonorCost || this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character
             }, AbilityDsl.actions.multipleContext((context) => {
                 const targets = Object.values(context.targets).flat();
@@ -31,27 +24,20 @@ class ImbuedWithShadows extends DrawCard {
             .cannotTargetFirst();
     }
 
-    getStatusTokenPrompts(targets: BaseCard[]) {
-        const actions: GameAction[] = [];
-        targets.forEach((target: BaseCard) => {
-            actions.push(
-                AbilityDsl.actions.selectToken(() => ({
-                    card: target,
-                    activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
-                    message: '{0} discards {1} from {2}',
-                    messageArgs: (token, player) => [player, token, target],
-                    gameAction: AbilityDsl.actions.discardStatusToken()
-                }))
-            );
-        });
-
-        return actions;
+    private getStatusTokenPrompts(targets: BaseCard[]) {
+        return targets.map((target) => AbilityDsl.actions.selectToken(() => ({
+            card: target,
+            activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
+            message: '{0} discards {1} from {2}',
+            messageArgs: (token, player) => [player, token, target],
+            gameAction: AbilityDsl.actions.discardStatusToken()
+        })));
     }
 
-    getNumberOfLegalTargets(context: AbilityContext) {
-        const cards = context.game.findAnyCardsInPlay((card: BaseCard) => card.isHonored || card.isDishonored);
+    private getNumberOfLegalTargets(context: AbilityContext) {
+        const cards = context.game.findAnyCardsInPlay((card) => card.isHonored || card.isDishonored);
         const selectedCards: BaseCard[] = [];
-        cards.forEach((card: BaseCard) => {
+        cards.forEach((card) => {
             if(card.canBeTargeted(context, selectedCards)) {
                 selectedCards.push(card);
             }

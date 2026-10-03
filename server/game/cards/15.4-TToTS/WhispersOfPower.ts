@@ -24,7 +24,7 @@ class WhispersOfPower extends DrawCard {
             .effect('grant {0} +{1} {2} until the end of the conflict', (context) => [this.getPoliticalPowerChange(context), 'political']);
     }
 
-    getPoliticalPowerChange(context: AbilityContext) {
+    private getPoliticalPowerChange(context: AbilityContext) {
         return (context.player.opponent?.filterCardsInPlay((card) => card.type === CardType.Character && card.getFate() === 0).length ?? 0) * 3;
     }
 

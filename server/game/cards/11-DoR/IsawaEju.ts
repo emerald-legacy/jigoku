@@ -1,15 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType, Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'isawa-eju-air';
+const elementSymbol = { key: 'isawa-eju-air', element: Element.Air };
 
 class IsawaEju extends DrawCard {
     static id = 'isawa-eju';
 
     setupCardAbilities() {
         this.action('Discard all cards in a province and refill it faceup')
-            .condition(context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player))
+            .condition(context => hasClaimedRing(this, elementSymbol.key, context.player))
             .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province
@@ -32,13 +33,7 @@ class IsawaEju extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

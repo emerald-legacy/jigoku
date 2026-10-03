@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { controlsShugenja } from '../controlsShugenja.js';
 
 class CloakOfNight extends DrawCard {
     static id = 'cloak-of-night';
@@ -27,7 +28,7 @@ class CloakOfNight extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some(card => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
+        if(!controlsShugenja(context.player)) {
             return false;
         }
 

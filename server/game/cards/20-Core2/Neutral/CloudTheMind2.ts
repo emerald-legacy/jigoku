@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class CloudTheMind2 extends DrawCard {
     static id = 'cloud-the-mind-2';
@@ -17,11 +17,7 @@ export default class CloudTheMind2 extends DrawCard {
         });
     }
 
-    public canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+    public canPlay(context: AbilityContext, playType: string) {
+        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

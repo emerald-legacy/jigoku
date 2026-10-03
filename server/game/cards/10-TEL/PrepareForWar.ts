@@ -1,7 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type { GameAction } from '../../GameActions/GameAction.js';
-import type { StatusToken } from '../../StatusToken.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 
@@ -18,7 +16,7 @@ class PrepareForWar extends DrawCard {
                     const promptActions = this.getStatusTokenPrompts(context);
                     return {
                         gameActions: [
-                            AbilityDsl.actions.selectCard<DrawCard>((context) => ({
+                            AbilityDsl.actions.selectCards((context) => ({
                                 mode: TargetMode.Unlimited,
                                 cardType: CardType.Attachment,
                                 controller: Players.Any,
@@ -27,7 +25,7 @@ class PrepareForWar extends DrawCard {
                                 optional: true,
                                 gameAction: AbilityDsl.actions.discardFromPlay(),
                                 message: '{0} chooses to discard {1} from {2}',
-                                messageArgs: (cards: DrawCard[]) => [
+                                messageArgs: (cards) => [
                                     context.player,
                                     cards.length === 0 ? 'no attachments' : cards,
                                     context.target ?? ''
@@ -71,34 +69,28 @@ class PrepareForWar extends DrawCard {
             });
     }
 
-    getStatusTokenPrompts(context: AbilityContext) {
-        const tokens = context.target?.statusTokens ?? [];
-        const prompts: GameAction[] = [];
-        tokens.forEach((token: StatusToken) => {
-            prompts.push(
-                AbilityDsl.actions.menuPrompt((context) => ({
-                    activePromptTitle: `Do you wish to discard ${token.name}?`,
-                    choices: ['Yes', 'No'],
-                    optional: true,
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage && choice === 'Yes') {
-                            this.game.addMessage(
-                                '{0} chooses to discard {1} from {2}',
-                                context.player,
-                                token,
-                                context.target
-                            );
-                        }
+    private getStatusTokenPrompts(context: AbilityContext) {
+        return (context.target?.statusTokens ?? []).map((token) =>
+            AbilityDsl.actions.menuPrompt((context) => ({
+                activePromptTitle: `Do you wish to discard ${token.name}?`,
+                choices: ['Yes', 'No'],
+                optional: true,
+                choiceHandler: (choice, displayMessage) => {
+                    if(displayMessage && choice === 'Yes') {
+                        this.game.addMessage(
+                            '{0} chooses to discard {1} from {2}',
+                            context.player,
+                            token,
+                            context.target
+                        );
+                    }
 
-                        return { target: choice === 'Yes' ? token : [] };
-                    },
-                    player: Players.Self,
-                    gameAction: AbilityDsl.actions.discardStatusToken()
-                }))
-            );
-        });
-
-        return prompts;
+                    return { target: choice === 'Yes' ? token : [] };
+                },
+                player: Players.Self,
+                gameAction: AbilityDsl.actions.discardStatusToken()
+            }))
+        );
     }
 }
 

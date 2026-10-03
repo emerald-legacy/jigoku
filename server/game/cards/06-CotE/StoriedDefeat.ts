@@ -5,7 +5,6 @@ import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { Event } from '../../Events/Event.js';
 
 export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';
@@ -27,7 +26,7 @@ export default class StoriedDefeat extends DrawCard {
                 AbilityDsl.actions.menuPrompt((context) => ({
                     activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                     choices: ['Yes'].concat(
-                        context.events.some((event: Event) => event.name === EventName.OnCardBowed) ? ['No'] : []
+                        context.events.some((event) => event.name === EventName.OnCardBowed) ? ['No'] : []
                     ),
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage) {

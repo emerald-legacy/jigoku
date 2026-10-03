@@ -1,10 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelType, EventName } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class LoyalChallenger extends DrawCard {
     static id = 'loyal-challenger';
 
@@ -13,21 +10,20 @@ class LoyalChallenger extends DrawCard {
             effect: [
                 AbilityDsl.effects.delayedEffect({
                     when: {
-                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => event.conflict.winner === context.source.controller &&
-                            context.source.isParticipating()
+                        afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
+                            context.source.isDrawCard() && context.source.isParticipating()
                     },
                     message: '{0} gains 1 honor due to {1} winning a conflict',
-                    messageArgs: (context: AbilityContext) => [context.player, context.source],
+                    messageArgs: (context) => [context.player, context.source],
                     gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player }))
-                })
-                ,
+                }),
                 AbilityDsl.effects.delayedEffect({
                     when: {
-                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => event.conflict.loser === context.source.controller &&
-                            context.source.isParticipating()
+                        afterConflict: (event, context) => event.conflict.loser === context.source.controller &&
+                            context.source.isDrawCard() && context.source.isParticipating()
                     },
                     message: '{0} loses 1 honor due to {1} losing a conflict',
-                    messageArgs: (context: AbilityContext) => [context.player, context.source],
+                    messageArgs: (context) => [context.player, context.source],
                     gameAction: AbilityDsl.actions.loseHonor(context => ({ target: context.player }))
                 })
             ]

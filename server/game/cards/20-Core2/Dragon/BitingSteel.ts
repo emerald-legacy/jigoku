@@ -1,8 +1,9 @@
 import { CardType, DuelType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 function getAttachmentSkill(card: DrawCard) {
     let amount = 0;
@@ -55,16 +56,12 @@ export default class BitingSteel extends DrawCard {
     public canAttach(card: BaseCard) {
         return (
             card.getType() === CardType.Character &&
-            card.attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
+            card.attachments.some((c) => c.hasTrait('weapon')) &&
             super.canAttach(card)
         );
     }
 
-    public canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+    public canPlay(context: AbilityContext, playType: string) {
+        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

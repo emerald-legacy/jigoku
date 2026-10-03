@@ -2,14 +2,13 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import DrawCard from '../../../DrawCard.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard, context) =>
+            match: (card, context) =>
                 !!context && card.controller === context.player &&
                 card.type === CardType.Character &&
                 card.isDishonored &&
@@ -40,17 +39,15 @@ export default class MiokosSong extends StrongholdCard {
                     if(!(province instanceof ProvinceCard)) {
                         return;
                     }
-                    const topCards: Array<DrawCard> = opponent.dynastyDeck.slice(0, 2);
+                    const topCards = opponent.dynastyDeck.slice(0, 2);
                     this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Which card do you want to put in the province?',
                         context: context,
                         cards: topCards,
-                        choices: [],
-                        handlers: [],
-                        cardHandler: (selectedCard: DrawCard) => {
+                        cardHandler: (selectedCard) => {
                             const cardsFromProvince = province.cardsInSelf();
                             for(const fromProvince of cardsFromProvince) {
-                                opponent.moveCard(fromProvince, 'dynasty discard pile');
+                                opponent.moveCard(fromProvince, Location.DynastyDiscardPile);
                             }
                             opponent.moveCard(selectedCard, province.location);
                             selectedCard.facedown = false;

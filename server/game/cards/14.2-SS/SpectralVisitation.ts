@@ -1,7 +1,5 @@
 import { CardType, Decks, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { GameObject } from '../../GameObject.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class SpectralVisitation extends ProvinceCard {
@@ -31,7 +29,7 @@ export default class SpectralVisitation extends ProvinceCard {
                                     onPhaseEnded: () => true
                                 },
                                 message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                                messageArgs: (effectContext: AbilityContext, effectTargets: GameObject[]) => [effectTargets, context.source],
+                                messageArgs: (_effectContext, effectTargets) => [effectTargets, context.source],
                                 gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                             })
                         }))

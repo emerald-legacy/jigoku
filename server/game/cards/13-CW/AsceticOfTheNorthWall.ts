@@ -1,15 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'ascetic-of-the-north-wall-earth';
+const elementSymbol = { key: 'ascetic-of-the-north-wall-earth', element: Element.Earth };
 
 class AsceticOfTheNorthWall extends DrawCard {
     static id = 'ascetic-of-the-north-wall';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player) && context.game.currentPhase !== Phases.Fate,
+            condition: context => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phases.Fate,
             effect: [
                 AbilityDsl.effects.cardCannot('removeFate'),
                 AbilityDsl.effects.cardCannot('discardFromPlay')
@@ -18,13 +19,7 @@ class AsceticOfTheNorthWall extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Earth
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

@@ -24,7 +24,7 @@ class RegalBearing extends DrawCard {
             .max(AbilityDsl.limit.perConflict(1));
     }
 
-    getHonorDialDifference(context: AbilityContext) {
+    private getHonorDialDifference(context: AbilityContext) {
         if(!context.player.opponent) {
             return 0;
         }

@@ -1,7 +1,7 @@
 import { CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class DisputedLineage extends DrawCard {
     static id = 'disputed-lineage';
@@ -24,18 +24,18 @@ export default class DisputedLineage extends DrawCard {
                     })
                 }))
             ]))
-            .effect('remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict', (context) => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined))
+            .effect('remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict', (context) => context.player.opponent ? [context.player.opponent] : [])
             .then(context => ({
-                thenCondition: () => context?.player.imperialFavor !== '',
+                thenCondition: () => context.player.imperialFavor !== '',
                 message: '{0} draws a card',
                 gameAction: AbilityDsl.actions.draw({
-                    target: context?.player,
+                    target: context.player,
                     amount: 1
                 })
             }));
     }
 
-    canPlay(context: TriggeredAbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
                 (card) => card.getType() === CardType.Character && card.hasTrait('courtier')

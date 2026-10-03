@@ -1,20 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Cost } from '../../../costs/Cost.js';
-
-const ayubunePilotCaptureParentCost = function(): Cost<{ ayubunePilotCaptureParentCost: DrawCard | null }> {
-    return {
-        canPay: function() {
-            return true;
-        },
-        resolve: function(context) {
-            context.costs.ayubunePilotCaptureParentCost = context.source.parentCharacter;
-        },
-        pay: function() {
-        }
-    };
-};
-
+import { captureParentCost } from '../../captureParentCost.js';
 
 class AyubunePilot extends DrawCard {
     static id = 'ayubune-pilot';
@@ -25,14 +11,12 @@ class AyubunePilot extends DrawCard {
         });
 
         this.action('Move attached character into the conflict')
-            .cost(ayubunePilotCaptureParentCost())
+            .cost(captureParentCost())
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed))
-            .gameAction(AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.ayubunePilotCaptureParentCost].filter((card) => !!card) })));
+            .gameAction(AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
     }
 }
 
 
 export default AyubunePilot;
-
-

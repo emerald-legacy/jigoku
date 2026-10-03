@@ -1,5 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CounselFromYumeDo extends DrawCard {
@@ -7,10 +8,7 @@ export default class CounselFromYumeDo extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Shuffle cards back into your deck')
-            .condition((context) =>
-                (context.player.cardsInPlay).some(
-                    (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-                ))
+            .condition((context) => controlsShugenja(context.player))
             .targetCards('target', {
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose up to 3 conflict cards',

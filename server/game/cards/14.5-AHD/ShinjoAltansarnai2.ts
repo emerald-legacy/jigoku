@@ -17,10 +17,12 @@ class ShinjoAltansarnai2 extends DrawCard {
                         (card.printedCost ?? 0) <= 3 &&
                         !card.isUnique() &&
                         card.allowGameAction('putIntoConflict', context),
-                    choices: ['Don\'t choose a character'],
-                    handlers: [
-                        function () {
-                            context.game.addMessage('{0} chooses not to put a character into play', context.player);
+                    options: [
+                        {
+                            text: 'Don\'t choose a character',
+                            handler() {
+                                context.game.addMessage('{0} chooses not to put a character into play', context.player);
+                            }
                         }
                     ],
                     subActionProperties: (card) => ({ target: card }),

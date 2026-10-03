@@ -1,7 +1,6 @@
 import { Location, PlayType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import Player from '../../../Player.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
@@ -11,10 +10,10 @@ export default class SandRoadMerchant extends DrawCard {
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: (card: DrawCard) => card.location === this.uuid,
+            match: (card) => card.location === this.uuid,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player) => player === this.controller,
+                    (player) => player === this.controller,
                     PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

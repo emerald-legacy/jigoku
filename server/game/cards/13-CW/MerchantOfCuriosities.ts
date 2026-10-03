@@ -1,63 +1,56 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import type BaseCard from '../../BaseCard.js';
-import type { Result } from '../../costs/Cost.js';
 import { Location, TargetMode, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
+import { honorTransferMessage } from '../honorTransferMessage.js';
 
-const merchantOfCuriositiesCost = function (): Cost<{ merchantOfCuriositiesCostPaid: boolean; merchantOfCuriositiesCostDiscardedCard: DrawCard }> {
+function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: boolean; merchantOfCuriositiesCostDiscardedCard: DrawCard }> {
     return {
-        canPay: function () {
+        canPay() {
             return true;
         },
-        resolve: function (context, result: Result) {
+        resolve(context, result) {
             const opponent = context.player.opponent;
-            let honorAvailable = true;
-            let cardAvailable = true;
-            if(!opponent || !context.game.actions.loseHonor().canAffect(opponent, context) || !context.game.actions.gainHonor().canAffect(context.player, context)) {
-                honorAvailable = false;
-            }
-
-            if(!opponent || !context.game.actions.chosenDiscard().canAffect(opponent, context)) {
-                cardAvailable = false;
-            }
+            const honorAvailable = !!opponent && context.game.actions.loseHonor().canAffect(opponent, context) && context.game.actions.gainHonor().canAffect(context.player, context);
+            const cardAvailable = !!opponent && context.game.actions.chosenDiscard().canAffect(opponent, context);
 
             context.costs.merchantOfCuriositiesCostPaid = false;
             if(opponent && honorAvailable && cardAvailable) {
                 context.game.promptWithHandlerMenu(opponent, {
                     activePromptTitle: 'Give an honor and discard a card?',
                     source: context.source,
-                    choices: ['Yes', 'No'],
-                    handlers: [
-                        () => {
-                            context.costs.merchantOfCuriositiesCostPaid = true;
-                            context.game.promptForSelect(opponent, {
-                                activePromptTitle: 'Choose a card to discard',
-                                context: context,
-                                mode: TargetMode.Single,
-                                numCards: 1,
-                                location: Location.Hand,
-                                controller: Players.Opponent,
-                                onSelect: (_player: Player, card: BaseCard) => {
-                                    if(card.isDrawCard()) {
-                                        context.costs.merchantOfCuriositiesCostDiscardedCard = card;
+                    options: [
+                        {
+                            text: 'Yes',
+                            handler: () => {
+                                context.costs.merchantOfCuriositiesCostPaid = true;
+                                context.game.promptForSelect(opponent, {
+                                    activePromptTitle: 'Choose a card to discard',
+                                    context: context,
+                                    mode: TargetMode.Single,
+                                    numCards: 1,
+                                    location: Location.Hand,
+                                    controller: Players.Opponent,
+                                    onSelect: (_player, card) => {
+                                        if(card.isDrawCard()) {
+                                            context.costs.merchantOfCuriositiesCostDiscardedCard = card;
+                                        }
+                                        return true;
+                                    },
+                                    onCancel: () => {
+                                        result.cancelled = true;
+                                        return true;
                                     }
-                                    return true;
-                                },
-                                onCancel: () => {
-                                    result.cancelled = true;
-                                    return true;
-                                }
-                            });
+                                });
+                            }
                         },
-                        () => context.costs.merchantOfCuriositiesCostPaid = false
+                        { text: 'No', handler: () => context.costs.merchantOfCuriositiesCostPaid = false }
                     ]
                 });
             }
         },
-        payEvent: function (context) {
+        payEvent(context) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
                 const events: Event[] = [];
 
@@ -77,7 +70,7 @@ const merchantOfCuriositiesCost = function (): Cost<{ merchantOfCuriositiesCostP
         },
         promptsPlayer: true
     };
-};
+}
 
 
 class MerchantOfCuriosities extends DrawCard {
@@ -90,18 +83,12 @@ class MerchantOfCuriosities extends DrawCard {
             .gameAction(AbilityDsl.actions.draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
             })))
-            .effect('draw a card{2}', context => [context.costs.discardCard, this.buildString(context.player, context.costs.merchantOfCuriositiesCostDiscardedCard)]);
-    }
-
-    // the card is chosen only once the opponent agreed to pay
-    buildString(player: Player, discardedCard: DrawCard | undefined) {
-        if(player.opponent && discardedCard) {
-            return '.  ' + player.opponent.name + ' gives ' + player.name + ' 1 honor to discard ' +
-                discardedCard.name + ' and draw a card';
-        }
-        return '';
+            // the card is chosen only once the opponent agreed to pay
+            .effect('draw a card{2}', context => [
+                context.costs.discardCard,
+                honorTransferMessage(context, context.costs.merchantOfCuriositiesCostDiscardedCard, (name) => 'discard ' + name + ' and draw a card')
+            ]);
     }
 }
 
 export default MerchantOfCuriosities;
-
