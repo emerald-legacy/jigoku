@@ -67,6 +67,7 @@ describe('Compass', function() {
                 });
                 this.player1.clickCard(this.compass);
                 expect(this.getChatLogs(1)).toContain('player1 uses Compass to look at the top 3 cards of one of their decks');
+                expect(this.player1).toHavePrompt('Choose a deck');
                 expect(this.player1).toHavePromptButton('Dynasty Deck');
                 expect(this.player1).toHavePromptButton('Conflict Deck');
             });

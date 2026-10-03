@@ -159,7 +159,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.fan2);
             this.player2.clickPrompt('Done');
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 honor, lose 2 fate and disard 2 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 honor, lose 2 fate and discard 2 cards');
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana and Ornate Fan');
         });
 
@@ -179,7 +179,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.fan2);
             this.player2.clickPrompt('Done');
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 fate and disard 2 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 fate and discard 2 cards');
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana and Ornate Fan');
         });
 

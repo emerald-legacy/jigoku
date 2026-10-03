@@ -15,10 +15,10 @@ class SlovenlyScavenger extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:'
             }, {
-                [this.getChoiceName('MyDynasty')]: (context) => context.player.dynastyDiscardPile.length > 0,
-                [this.getChoiceName('MyConflict')]: (context) => context.player.conflictDiscardPile.length > 0,
-                [this.getChoiceName('OppDynasty')]: (context) => !!(context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0),
-                [this.getChoiceName('OppConflict')]: (context) => !!(context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0)
+                [this.getChoiceName('MyDynasty')]: () => this.owner.dynastyDiscardPile.length > 0,
+                [this.getChoiceName('MyConflict')]: () => this.owner.conflictDiscardPile.length > 0,
+                [this.getChoiceName('OppDynasty')]: () => !!this.owner.opponent && this.owner.opponent.dynastyDiscardPile.length > 0,
+                [this.getChoiceName('OppConflict')]: () => !!this.owner.opponent && this.owner.opponent.conflictDiscardPile.length > 0
             })
             .handler(context => {
                 if(context.select === this.getChoiceName('MyDynasty')) {

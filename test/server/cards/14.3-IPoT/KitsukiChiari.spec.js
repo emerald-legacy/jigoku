@@ -97,7 +97,8 @@ describe('Kitsuki Chiari', function () {
                 attackers: [this.isawaTadaka],
                 province: this.p1
             });
-            this.player1.moveCard(this.ornateFan, 'conflict disard pile');
+            this.player1.moveCard(this.ornateFan, 'conflict discard pile');
+            expect(this.ornateFan.location).toBe('conflict discard pile');
             const hand = this.player1.hand.length;
 
             this.player2.clickCard(this.chiari);

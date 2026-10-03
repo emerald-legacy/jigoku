@@ -8,7 +8,7 @@ export default class RiftToToshigoku extends ProvinceCard {
     static id = 'rift-to-toshigoku';
 
     private eventRegistrar?: EventRegistrar;
-    private shouldCancelRingEffectsHere?: boolean;
+    private cancelRingEffectsInConflict?: string;
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
@@ -30,16 +30,16 @@ export default class RiftToToshigoku extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.discardFromPlay())
-            .then((_context) => {
-                this.shouldCancelRingEffectsHere = true;
+            .then((context) => {
+                this.cancelRingEffectsInConflict = context.game.currentConflict?.uuid;
             });
     }
 
     public cancelRingEffect(event: Event) {
         if(
             this.game.currentConflict &&
+            this.game.currentConflict.uuid === this.cancelRingEffectsInConflict &&
             this.isConflictProvince() &&
-            this.shouldCancelRingEffectsHere &&
             !event.cancelled
         ) {
             event.cancel();

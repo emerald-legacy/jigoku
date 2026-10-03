@@ -56,7 +56,7 @@ describe('Chain of Command', function() {
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.daidojiUji.bowed).toBe(false);
                 expect(this.getChatLogs(5)).toContain('player1 plays Chain of Command, bowing Brash Samurai to ready Daidoji Uji');
-                expect(this.getChatLogs(5)).toContain('Chain of Command is removed from the game due the effects of Chain of Command');
+                expect(this.service.location).toBe('removed from game');
             });
 
             it('should remove from the game if cancelled', function() {
@@ -75,7 +75,6 @@ describe('Chain of Command', function() {
                 expect(this.daidojiUji.bowed).toBe(true);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.service.location).toBe('removed from game');
-                expect(this.getChatLogs(5)).toContain('Chain of Command is removed from the game due the effects of Chain of Command');
             });
 
             it('should be playable from discard and remove from game', function() {

@@ -1,8 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Duration, EventName } from '../../Constants.js';
+import { Location, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type Player from '../../Player.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
@@ -40,6 +39,8 @@ class UnderSiege extends DrawCard {
                                             targetPlayer.moveCard(card, Location.Hand);
                                         });
                                     }
+                                    this.setAsideCards = [];
+                                    this.targetPlayer = null;
                                 }
                             })
                         ])
@@ -67,7 +68,7 @@ class UnderSiege extends DrawCard {
                                         player.moveCard(card, Location.RemovedFromGame);
                                         card.lastingEffect(() => ({
                                             until: {
-                                                onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === card && event.originalLocation === Location.RemovedFromGame
+                                                onCardMoved: event => event.card === card && event.originalLocation === Location.RemovedFromGame
                                             },
                                             match: card,
                                             effect: AbilityDsl.effects.hideWhenFaceUp()
@@ -82,7 +83,10 @@ class UnderSiege extends DrawCard {
                         }))
                     ]),
                     falseGameAction: AbilityDsl.actions.handler({
-                        handler: () => {}
+                        handler: () => {
+                            this.setAsideCards = [];
+                            this.targetPlayer = null;
+                        }
                     })
                 }))
             ]))

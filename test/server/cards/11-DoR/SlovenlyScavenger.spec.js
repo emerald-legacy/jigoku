@@ -219,5 +219,51 @@ describe('Slovenly Scavenger', function() {
                 expect(this.getChatLogs(2)).toContain('player2 is shuffling their conflict deck');
             });
         });
+
+        describe('Slovenly Scavenger\'s ability under another player\'s control', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['seize-the-mind'],
+                        conflictDiscard: ['let-go']
+                    },
+                    player2: {
+                        inPlay: ['slovenly-scavenger'],
+                        dynastyDiscard: ['hida-kisada'],
+                        conflictDiscard: ['assassination']
+                    }
+                });
+                this.adept = this.player1.findCardByName('adept-of-the-waves');
+                this.adept.fate = 3;
+                this.seizeTheMind = this.player1.findCardByName('seize-the-mind');
+                this.scavenger = this.player2.findCardByName('slovenly-scavenger');
+                this.kisada = this.player2.findCardByName('hida-kisada');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.adept],
+                    defenders: [this.scavenger]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.seizeTheMind);
+                this.player1.clickCard(this.scavenger);
+                this.player1.clickCard(this.adept);
+                this.player1.clickPrompt('3');
+                this.noMoreActions();
+            });
+
+            it('should offer the piles by their owner\'s name', function() {
+                expect(this.scavenger.controller).toBe(this.player1.player);
+                this.player1.clickCard(this.scavenger);
+                expect(this.player1).toHavePromptButton('player2\'s Dynasty');
+                expect(this.player1).not.toHavePromptButton('player1\'s Dynasty');
+                this.player1.clickPrompt('player2\'s Dynasty');
+                expect(this.kisada.location).toBe('dynasty deck');
+            });
+        });
     });
 });

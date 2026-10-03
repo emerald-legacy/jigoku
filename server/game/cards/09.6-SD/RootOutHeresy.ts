@@ -7,7 +7,7 @@ class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
 
     setupCardAbilities() {
-        this.action('Discard a card at random from your oppoent\'s hand')
+        this.action('Discard a card at random from your opponent\'s hand')
             .condition(() => this.game.isDuringConflict('political'))
             .gameAction(AbilityDsl.actions.discardAtRandom(context => ({ target: context.player.opponent })))
             .then((context) => ({
@@ -29,22 +29,14 @@ class RootOutHeresy extends DrawCard {
             }));
     }
 
-    getStrengthModifier(context: AbilityContext) {
-        //Find the event
-        if(context.events) {
-            const event = context.events.find((event) => event.is(EventName.OnCardsDiscardedFromHand));
-            if(event) {
-                if(event.discardedCards && event.discardedCards.length > 0) {
-                    //Grab the first one (this card should only discard one card)
-                    const card = event.discardedCards[0];
-                    const cost = card.isDrawCard() ? card.printedCost ?? 0 : 0;
-
-                    return -1 * cost;
-                }
-            }
+    private getStrengthModifier(context: AbilityContext) {
+        const event = context.events.find((event) => event.is(EventName.OnCardsDiscardedFromHand));
+        // this card only discards one card
+        const card = event?.discardedCards?.[0];
+        if(!card) {
+            return 0;
         }
-
-        return 0;
+        return -1 * (card.isDrawCard() ? card.printedCost ?? 0 : 0);
     }
 }
 

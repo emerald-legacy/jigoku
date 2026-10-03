@@ -217,7 +217,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_4);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -228,7 +228,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_1);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -239,7 +239,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_3);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -250,9 +250,9 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
 
-            this.player1.clickCard(this.p2_Stronghold);
+            this.player1.clickCard(this.p2_4);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
 
             this.player1.clickPrompt('Blackmail Artist');
@@ -261,7 +261,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_1);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -281,7 +281,7 @@ describe('Governors Spy', function() {
             expect(this.alibi.location).toBe('province 4');
             expect(this.liar.location).toBe('province 1');
             expect(this.manipulator.location).toBe('province 3');
-            expect(this.shoju.location).toBe('stronghold province');
+            expect(this.shoju.location).toBe('province 4');
             expect(this.blackmail.location).toBe('province 1');
             expect(this.asami.location).toBe('province 2');
         });

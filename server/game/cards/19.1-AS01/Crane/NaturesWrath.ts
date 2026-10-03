@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType, ConflictType, EventName, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
@@ -11,10 +10,10 @@ function selfDishonorSelect(message: string) {
     return AbilityDsl.actions.selectCard((context: AbilityContext) => ({
         cardType: CardType.Character,
         controller: Players.Self,
-        cardCondition: (card: DrawCard) => card.isParticipating(),
+        cardCondition: (card) => card.isParticipating(),
         gameAction: AbilityDsl.actions.dishonor(),
         message: message,
-        messageArgs: (card: BaseCard) => [context.player, card, context.source]
+        messageArgs: (card) => [context.player, card, context.source]
     }));
 }
 
@@ -25,7 +24,7 @@ export default class NaturesWrath extends DrawCard {
         this.action('Dishonor or move home a character')
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) &&
-                context.player.anyCardsInPlay((card: DrawCard) => card.isParticipating())
+                context.player.anyCardsInPlay((card) => card.isParticipating())
             )
             .target(TARGET_CHARACTER, {
                 cardType: CardType.Character,
@@ -53,10 +52,7 @@ export default class NaturesWrath extends DrawCard {
                             }
                         },
                         then: {
-                            thenCondition: (event: Event & { origin?: BaseCard }) =>
-                                event.origin === context.target &&
-                                !event.cancelled &&
-                                event.name === EventName.OnCardDishonored,
+                            thenCondition: (event: Event) => !event.cancelled && event.name === EventName.OnCardDishonored,
                             gameAction: AbilityDsl.actions.resolveAbility({
                                 ability: context.ability,
                                 subResolution: true,

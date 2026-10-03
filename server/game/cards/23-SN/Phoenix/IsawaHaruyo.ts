@@ -3,7 +3,6 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class IsawaHaruyo extends DrawCard {
     static id = 'isawa-haruyo';
@@ -16,16 +15,14 @@ export default class IsawaHaruyo extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
-                subActionProperties: (card: ProvinceCard) => {
+                cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
+                subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };
                 },
                 gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
                     const cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
-                    const cards = cardNumber
-                        ? shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber)
-                        : [context.source];
+                    const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber);
                     return {
                         gameActions: [
                             AbilityDsl.actions.lookAt(() => ({

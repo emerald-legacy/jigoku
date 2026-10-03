@@ -2,6 +2,8 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import type { HandlerMenuOption } from '../../gamesteps/HandlerMenuPrompt.js';
+import type Player from '../../Player.js';
 
 export default class NegotiationTable extends DrawCard {
     static id = 'negotiation-table';
@@ -10,95 +12,64 @@ export default class NegotiationTable extends DrawCard {
         this.action('Make opponent pick from several options')
             .condition((context) => context.player.opponent !== undefined)
             .handler((context) => {
-                const choices: string[] = [];
-                const handlers: (() => void)[] = [];
-
-                const drawChoice = 'Draw 1 card';
-                const drawHandler = () => {
-                    choices.splice(choices.indexOf(drawChoice), 1);
-                    handlers.splice(handlers.indexOf(drawHandler), 1);
-                    this.getDrawChoice(context);
-                    this.getHandlerMenu(context, choices, handlers);
+                const opponent = context.player.opponent;
+                if(!opponent) {
+                    return;
+                }
+                const options: HandlerMenuOption[] = [];
+                const prompt = () => this.game.promptWithHandlerMenu(opponent, {
+                    activePromptTitle: 'Choose an action',
+                    source: this,
+                    options
+                });
+                // each option except Done can be picked once
+                const once = (text: string, resolve: () => void): HandlerMenuOption => {
+                    const option: HandlerMenuOption = {
+                        text,
+                        handler: () => {
+                            options.splice(options.indexOf(option), 1);
+                            resolve();
+                            prompt();
+                        }
+                    };
+                    return option;
                 };
-                const readyChoice = 'Choose and ready a character';
-                const readyHandler = () => {
-                    choices.splice(choices.indexOf(readyChoice), 1);
-                    handlers.splice(handlers.indexOf(readyHandler), 1);
-                    this.getReadyChoice(context);
-                    this.getHandlerMenu(context, choices, handlers);
-                };
-                const fateChoice = 'Gain 1 fate';
-                const fateHandler = () => {
-                    choices.splice(choices.indexOf(fateChoice), 1);
-                    handlers.splice(handlers.indexOf(fateHandler), 1);
-                    this.getFateChoice(context);
-                    this.getHandlerMenu(context, choices, handlers);
-                };
-                const doneChoice = 'Done';
-                const doneHandler = () => {
-                    this.getDoneChoice(context);
-                };
-
-                choices.push(drawChoice);
-                choices.push(readyChoice);
-                choices.push(fateChoice);
-                choices.push(doneChoice);
-
-                handlers.push(drawHandler);
-                handlers.push(readyHandler);
-                handlers.push(fateHandler);
-                handlers.push(doneHandler);
-
-                this.getHandlerMenu(context, choices, handlers);
+                options.push(
+                    once('Draw 1 card', () => this.eachPlayerDraws(context, opponent)),
+                    once('Choose and ready a character', () => this.eachPlayerReadies(context, opponent)),
+                    once('Gain 1 fate', () => this.eachPlayerGainsFate(context, opponent)),
+                    { text: 'Done', handler: () => this.game.addMessage('{0} chooses not to do an action', opponent) }
+                );
+                prompt();
             });
     }
 
-    getHandlerMenu(context: AbilityContext, choices: string[], handlers: (() => void)[]) {
-        if(!context.player.opponent) {
-            return;
-        }
-        this.game.promptWithHandlerMenu(context.player.opponent, {
-            activePromptTite: 'Choose an action',
-            source: this,
-            choices: choices,
-            handlers: handlers
-        });
-    }
+    private eachPlayerDraws(context: AbilityContext, opponent: Player) {
+        this.game.addMessage('{0} chooses to have each player draw a card', opponent);
 
-    getDrawChoice(context: AbilityContext) {
-        if(!context.player.opponent) {
-            return;
-        }
-        this.game.addMessage('{0} chooses to have each player draw a card', context.player.opponent);
-
-        const opponent = context.player.opponent;
         AbilityDsl.actions
-            .draw((ctx: AbilityContext) => ({
+            .draw((ctx) => ({
                 target: ctx.player.opponent,
                 amount: 1
             }))
             .resolve(opponent, context);
         AbilityDsl.actions
-            .draw((ctx: AbilityContext) => ({
+            .draw((ctx) => ({
                 target: ctx.player,
                 amount: 1
             }))
             .resolve(context.player, context);
     }
 
-    getReadyChoice(context: AbilityContext) {
-        if(!context.player.opponent) {
-            return;
-        }
-        const opponent = context.player.opponent;
+    private eachPlayerReadies(context: AbilityContext, opponent: Player) {
         this.game.addMessage('{0} chooses to have each player ready a character', opponent);
         const bowedCharacters =
-            context.player.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length +
-            opponent.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length;
+            context.player.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length +
+            opponent.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length;
 
         if(bowedCharacters > 0) {
             AbilityDsl.actions
-                .selectCard((ctx: AbilityContext) => ({
+                .selectCard((ctx) => ({
                     player: Players.Opponent,
                     cardType: CardType.Character,
                     targets: true,
@@ -112,7 +83,7 @@ export default class NegotiationTable extends DrawCard {
         //This is ugly, but it's needed to not deadlock the game
         if(bowedCharacters > 1) {
             AbilityDsl.actions
-                .selectCard((ctx: AbilityContext) => ({
+                .selectCard((ctx) => ({
                     player: Players.Self,
                     cardType: CardType.Character,
                     targets: true,
@@ -124,29 +95,20 @@ export default class NegotiationTable extends DrawCard {
         }
     }
 
-    getFateChoice(context: AbilityContext) {
-        if(!context.player.opponent) {
-            return;
-        }
-        const opponent = context.player.opponent;
+    private eachPlayerGainsFate(context: AbilityContext, opponent: Player) {
         this.game.addMessage('{0} chooses to have each player gain a fate', opponent);
 
         AbilityDsl.actions
-            .gainFate((ctx: AbilityContext) => ({
+            .gainFate((ctx) => ({
                 target: ctx.player.opponent,
                 amount: 1
             }))
             .resolve(opponent, context);
         AbilityDsl.actions
-            .gainFate((ctx: AbilityContext) => ({
+            .gainFate((ctx) => ({
                 target: ctx.player,
                 amount: 1
             }))
             .resolve(context.player, context);
-    }
-
-    getDoneChoice(context: AbilityContext) {
-        this.game.addMessage('{0} chooses not to do an action', context.player.opponent);
-        return true;
     }
 }

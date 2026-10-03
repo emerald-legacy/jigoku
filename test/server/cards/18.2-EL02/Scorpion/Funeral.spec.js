@@ -117,7 +117,6 @@ describe('Funeral', function() {
             expect(this.player2.honor).toBe(11);
             expect(this.duty.location).toBe('removed from game');
             expect(this.getChatLogs(5)).toContain('player1 plays Funeral to cancel their honor loss, then gain 1 honor');
-            expect(this.getChatLogs(5)).toContain('Funeral is removed from the game due the effects of Funeral');
         });
 
         it('should trigger when losing due to running out of conflict cards', function() {

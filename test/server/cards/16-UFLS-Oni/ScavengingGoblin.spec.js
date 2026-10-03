@@ -74,6 +74,7 @@ describe('Scavenging Goblin', function () {
 
             expect(this.getChatLogs(5)).toContain('player1 uses Scavenging Goblin to remove the top 3 cards of player2\'s conflict deck from the game as well as any matching attachments');
             expect(this.getChatLogs(5)).toContain('Charge!, Assassination and Voice of Honor are removed from the game from the top of player2\'s conflict deck');
+            expect(this.getChatLogs(10).filter((log) => log.endsWith('removed from the game from the top of player2\'s conflict deck')).length).toBe(1);
         });
 
         it('should remove attachments from play that your opponent controls that match a name (1 attachment)', function () {
@@ -100,6 +101,7 @@ describe('Scavenging Goblin', function () {
             expect(this.getChatLogs(5)).toContain('player1 uses Scavenging Goblin to remove the top 3 cards of player2\'s conflict deck from the game as well as any matching attachments');
             expect(this.getChatLogs(5)).toContain('Fine Katana, Charge! and Assassination are removed from the game from the top of player2\'s conflict deck');
             expect(this.getChatLogs(5)).toContain('Fine Katana and Fine Katana are removed from the game due to sharing a name with a card that was removed from the deck');
+            expect(this.getChatLogs(10).filter((log) => log.endsWith('due to sharing a name with a card that was removed from the deck')).length).toBe(1);
         });
 
         it('should remove attachments from play that your opponent controls that match a name (1 attachment, no match)', function () {

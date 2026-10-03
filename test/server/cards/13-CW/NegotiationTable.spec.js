@@ -34,6 +34,7 @@ describe('Negotiation Table', function() {
         it('should prompt opponent to make a choice', function() {
             this.player1.clickCard(this.table1);
             expect(this.player2).toHavePrompt('Negotiation Table');
+            expect(this.player2).toHavePrompt('Choose an action');
             expect(this.player2).toHavePromptButton('Draw 1 card');
             expect(this.player2).toHavePromptButton('Choose and ready a character');
             expect(this.player2).toHavePromptButton('Gain 1 fate');

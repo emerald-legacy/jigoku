@@ -24,9 +24,9 @@ class Process {
             activePromptTitle: this.promptTitle(),
             context: this.context,
             buttons: this.buttons(),
-            ringCondition: (ring: Ring) =>
+            ringCondition: (ring) =>
                 ring.isConsideredClaimed(this.context.player) && !this.chosenRings.includes(ring),
-            onSelect: (_player: Player, ring: Ring) => {
+            onSelect: (_player, ring) => {
                 this.chosenRings.push(ring);
                 if(
                     Object.values(this.context.game.rings).some(
@@ -40,14 +40,11 @@ class Process {
                     return true;
                 }
 
-                return this.resolveRings();
+                this.resolveRings(this.context.player);
+                return true;
             },
-            onMenuCommand: (player: Player) => {
-                this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
-                const action = this.context.game.actions.resolveRingEffect({ target: this.chosenRings });
-                const events: Event[] = [];
-                action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
-                this.context.game.openThenEventWindow(events);
+            onMenuCommand: (player) => {
+                this.resolveRings(player);
                 return true;
             }
         });
@@ -57,16 +54,12 @@ class Process {
         return this.chosenRings.length > 0 ? [{ text: 'Done', arg: 'done' }] : [];
     }
 
-    private resolveRings() {
-        this.context.game.addMessage('{0} resolves {1}', this.context.player, this.chosenRings);
-        const action = this.context.game.actions.resolveRingEffect({
-            target: this.chosenRings,
-            enforceOrderedResolution: true
-        });
+    private resolveRings(player: Player) {
+        this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
+        const action = this.context.game.actions.resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
         const events: Event[] = [];
-        action.addEventsToArray(events, this.context.game.getFrameworkContext(this.context.player));
+        action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
         this.context.game.openThenEventWindow(events);
-        return true;
     }
 
     private promptTitle(): string {

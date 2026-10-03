@@ -7,24 +7,18 @@ const COVERT_ELEMENT = 'adept-of-the-waves-water';
 export default class AdeptOfTheWaves extends DrawCard {
     static id = 'adept-of-the-waves';
 
-    elementWhenTriggered!: string;
-
     setupCardAbilities() {
         this.action('Grant Covert to a character')
             .target('target', {
                 cardType: CardType.Character
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.handler({
-                    handler: () => {
-                        this.elementWhenTriggered = this.getCurrentElementSymbol(COVERT_ELEMENT);
-                    }
-                }),
-                AbilityDsl.actions.cardLastingEffect(() => ({
+            }, AbilityDsl.actions.cardLastingEffect(() => {
+                const element = this.getCurrentElementSymbol(COVERT_ELEMENT);
+                return {
                     duration: Duration.UntilEndOfPhase,
-                    condition: () => this.game.isDuringConflict(this.elementWhenTriggered),
+                    condition: () => this.game.isDuringConflict(element),
                     effect: AbilityDsl.effects.addKeyword('covert')
-                }))
-            ]))
+                };
+            }))
             .effect('grant Covert during {1} conflicts to {0}', () => [this.getCurrentElementSymbol(COVERT_ELEMENT)]);
     }
 

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
+import { arrangeTopOfDeck } from '../arrangeTopOfDeck.js';
 
 class Truthseeker extends DrawCard {
     static id = 'truthseeker';
@@ -14,28 +15,23 @@ class Truthseeker extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Choose which deck to look at:'
             }, {
-                [this.getChoiceName('OppDynasty')]: (context) =>
-                    !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
-                [this.getChoiceName('OppConflict')]: (context) =>
-                    !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
-                [this.getChoiceName('MyDynasty')]: (context) =>
-                    !!context.player && context.player.dynastyDeck.length > 0,
-                [this.getChoiceName('MyConflict')]: (context) =>
-                    !!context.player && context.player.conflictDeck.length > 0
+                [this.getChoiceName('OppDynasty')]: () => !!this.owner.opponent && this.owner.opponent.dynastyDeck.length > 0,
+                [this.getChoiceName('OppConflict')]: () => !!this.owner.opponent && this.owner.opponent.conflictDeck.length > 0,
+                [this.getChoiceName('MyDynasty')]: () => this.owner.dynastyDeck.length > 0,
+                [this.getChoiceName('MyConflict')]: () => this.owner.conflictDeck.length > 0
             })
-            .handler((context) => {
-                const cardsToSort = this.mapChoiceToCards(context);
-                this.truthSeekerPrompt(
-                    context,
-                    cardsToSort,
-                    [],
-                    'Select the card you would like to place on top of the deck.'
-                );
-            })
+            .handler((context) => arrangeTopOfDeck(
+                context,
+                this.mapChoiceToDeck(context).slice(0, 3),
+                'Select the card you would like to place on top of the deck.',
+                (ordered) => {
+                    this.mapChoiceToDeck(context).splice(0, 3, ...ordered);
+                }
+            ))
             .effect('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
     }
 
-    getChoiceName(key: string) {
+    private getChoiceName(key: string) {
         if(key === 'MyDynasty') {
             return `${this.owner.name}'s Dynasty`;
         }
@@ -54,7 +50,7 @@ class Truthseeker extends DrawCard {
         return 'N/A';
     }
 
-    mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {
+    private mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {
         const opponent = this.owner.opponent;
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
@@ -70,11 +66,7 @@ class Truthseeker extends DrawCard {
         }
     }
 
-    mapChoiceToCards(context: AbilityContext): DrawCard[] {
-        return this.mapChoiceToDeck(context).slice(0, 3);
-    }
-
-    mapChoiceToDeck(context: AbilityContext): DrawCard[] {
+    private mapChoiceToDeck(context: AbilityContext): DrawCard[] {
         const opponent = this.owner.opponent;
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
@@ -88,32 +80,6 @@ class Truthseeker extends DrawCard {
             default:
                 return [];
         }
-    }
-
-    truthSeekerPrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {
-        const orderPrompt = ['first', 'second'];
-        const deckToReorder = this.mapChoiceToDeck(context);
-        this.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: promptTitle,
-            context: context,
-            cards: promptCards,
-            cardHandler: (card: DrawCard) => {
-                orderedCards.push(card);
-                promptCards = promptCards.filter((c: DrawCard) => c !== card);
-                if(promptCards.length > 1) {
-                    this.truthSeekerPrompt(
-                        context,
-                        promptCards,
-                        orderedCards,
-                        'Which card do you want to be the ' + orderPrompt[orderedCards.length] + ' card?'
-                    );
-                    return;
-                } else if(promptCards.length === 1) {
-                    orderedCards.push(promptCards[0]);
-                }
-                deckToReorder.splice(0, 3, ...orderedCards);
-            }
-        });
     }
 }
 

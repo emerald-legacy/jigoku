@@ -55,6 +55,18 @@ describe('Hiruma Kogoe', function () {
                 expect(this.fan.location).toBe('hand');
             });
 
+            it('should put the cards back in the chosen order', function () {
+                this.player2.player.honor = 11;
+                this.player1.moveCard(this.reprieve, 'conflict deck');
+                this.player1.moveCard(this.fan, 'conflict deck');
+                this.player1.moveCard(this.katana, 'conflict deck');
+                this.nextPhase();
+                this.player1.clickCard(this.kogoe);
+                this.player1.clickPrompt('Ornate Fan');
+                this.player1.clickPrompt('Reprieve');
+                expect(this.player1.conflictDeck.slice(0, 3)).toEqual([this.fan, this.reprieve, this.katana]);
+            });
+
             describe('if there are exactly 2 cards in deck', function () {
                 beforeEach(function () {
                     for(var i = this.player1.conflictDeck.length - 1; i >= 0; i--) {

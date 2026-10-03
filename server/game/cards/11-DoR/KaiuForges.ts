@@ -1,7 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players } from '../../Constants.js';
-import type Player from '../../Player.js';
-import type BaseCard from '../../BaseCard.js';
 
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
@@ -21,27 +19,31 @@ class KaiuForges extends DrawCard {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                     context: context,
-                    cardCondition: (card: BaseCard) => card.getType() === CardType.Holding,
+                    cardCondition: (card) => card.getType() === CardType.Holding,
                     cards: context.player.dynastyDeck.slice(0, 10),
-                    choices: ['Take nothing'],
-                    handlers: [() => {
-                        this.game.addMessage('{0} takes nothing', context.player);
-                        context.player.shuffleDynastyDeck();
-                        return true;
-                    }],
-                    cardHandler: (cardFromDeck: DrawCard) => {
+                    options: [
+                        {
+                            text: 'Take nothing',
+                            handler: () => {
+                                this.game.addMessage('{0} takes nothing', context.player);
+                                context.player.shuffleDynastyDeck();
+                                return true;
+                            }
+                        }
+                    ],
+                    cardHandler: (cardFromDeck) => {
                         const provinceLocation = province.location;
                         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-                        if(cards.some((a: BaseCard) => a.getType() === CardType.Holding && a.hasTrait('kaiu-wall'))) {
+                        if(cards.some((a) => a.getType() === CardType.Holding && a.hasTrait('kaiu-wall'))) {
                             this.game.promptForSelect(context.player, {
-                                activePrompt: 'Choose a Kaiu Wall to swap with',
+                                activePromptTitle: 'Choose a Kaiu Wall to swap with',
                                 cardType: CardType.Holding,
                                 location: Location.Provinces,
                                 controller: Players.Self,
                                 context: context,
                                 targets: false,
-                                cardCondition: (card: DrawCard) => cards.includes(card) && card.hasTrait('kaiu-wall'),
-                                onSelect: (player: Player, card: DrawCard) => {
+                                cardCondition: (card) => cards.includes(card) && card.hasTrait('kaiu-wall'),
+                                onSelect: (player, card) => {
                                     this.game.addMessage('{0} chooses to replace {1} with {2}', player, card, cardFromDeck);
                                     context.player.moveCard(cardFromDeck, provinceLocation);
                                     context.player.moveCard(card, Location.DynastyDeck);

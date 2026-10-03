@@ -14,8 +14,8 @@ class InHarmony extends DrawCard {
         });
     }
 
-    canPlay(context: AbilityContext) {
-        return context.player.getClaimedRings().length >= 1;
+    canPlay(context: AbilityContext, playType: string) {
+        return context.player.getClaimedRings().length >= 1 && super.canPlay(context, playType);
     }
 }
 
