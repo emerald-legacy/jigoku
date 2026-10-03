@@ -314,7 +314,7 @@ Do **not** use a `conditional` game action as a substitute — that silently aut
 
 `AbilityTargetSelect` resolves in two stages:
 
-- **`Stage.PreTarget`** (early target resolution, before costs): "Pay costs first" and "Cancel" are **always** appended. Even with only one legal choice, a prompt is shown (minimum two handlers). Auto-fire never occurs at this stage.
+- **`Stage.PreTarget`** (early target resolution, before costs): "Pay costs first" and "Cancel" are **always** appended. Even with only one legal choice, a prompt is shown (minimum two options). Auto-fire never occurs at this stage.
 - **`Stage.Target`** (after costs paid): no extra buttons added. If exactly **one** legal choice remains, it auto-fires without a prompt.
 
 Consequence for tests: actions with a select always show a prompt when triggered. Tests must call `this.playerN.clickPrompt('Choice text')` to handle it before asserting subsequent state.
@@ -594,7 +594,8 @@ card.getMilitarySkill()
 card.getPoliticalSkill()
 card.getGlory()
 card.location                   // Location string
-card.allowGameAction('bow', context)   // checks if action is permitted
+card.allowGameAction('bow', context)   // can that game action affect it; names are GameActions exports
+card.checkRestrictions('break', context) // only the restrictions on a named action
 ```
 
 ---

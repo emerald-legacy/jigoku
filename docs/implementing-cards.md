@@ -496,6 +496,32 @@ this.reaction('Steal a fate')
 
 Effects that can't be expressed as game actions go in a `handler`, which takes the context. Prefer game actions where possible: the engine can only check a game action for legality.
 
+### Prompts inside a handler
+
+A handler that asks the player something uses `promptWithHandlerMenu` (buttons) and `promptForSelect` (cards). Keep it to one flow:
+
+- Work out which options are possible first, and skip the menu when only one is.
+- Check legality with the game actions themselves (`AbilityDsl.actions.honor().canAffect(card, context)`), the same way the targets were checked.
+- Resolve everything that happens together in one `applyGameAction` call, so it opens one event window.
+
+```typescript
+// Action: During a conflict at this province, choose 2 participating characters – honor one of those characters and dishonor the other.
+private chooseStatus(context: AbilityContext, pair: readonly BaseCard[]) {
+    const statuses = STATUSES.filter((status) => pair.some((card) => canApply(status, card, context)));
+    if(statuses.length === 1) {
+        this.chooseCharacter(statuses[0], context, pair, false);
+        return;
+    }
+    context.game.promptWithHandlerMenu(context.player, {
+        activePromptTitle: 'Choose a character to:',
+        context,
+        options: statuses.map((status) => ({ text: status, handler: () => this.chooseCharacter(status, context, pair, true) }))
+    });
+}
+```
+
+`options` pairs each button with its handler. Use `choices` with a single `choiceHandler` only when the labels are computed at run time. `promptForSelect` types its callbacks from `cardType`: with `cardType: CardType.Character`, `cardCondition` and `onSelect` get a `DrawCard`. A prompt for several cards needs a `mode`, and its `onSelect` gets an array. See `ShamefulDisplay.ts` for the whole card.
+
 ### Effect messages
 
 Once costs have been paid and targets chosen (but before the ability resolves), the game automatically displays a message in the chat box which tells both players the ability, costs and targets of the effect.  Game actions will automatically generate their own effect message, although this will only work for a single game action.  If the effects of the ability involve two or more game actions, or the effect is a lasting effect or uses a handler, then an `effect` is required.  The effect message will be passed the target (card(s) or ring) of the effect (or the source if there are no targets) as its first parameter (and so can be referenced using `'{0}'` in the message).  If other references are required, use curly bracket references in the message (`'{1}'`, `'{2}'`, etc.) and pass a function taking the `context` object as the second argument:
