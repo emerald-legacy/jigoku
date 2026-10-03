@@ -15,13 +15,13 @@ export default class CaptureTheFalseEye extends DrawCard {
                     (context.game.currentConflict
                         ?.getCharacters(context.player)
                         .some(
-                            (myCard: DrawCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
+                            (myCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
                         ) ?? false)
             }, AbilityDsl.actions.bow(), AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.increaseCost({
                     amount: 1,
-                    match: (card: DrawCard) => card.type === CardType.Event
+                    match: (card) => card.type === CardType.Event
                 })
             })))
             .effect('bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?', (context) => [context.player]);

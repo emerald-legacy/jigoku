@@ -22,11 +22,13 @@ export default class ASwallowsReturn extends DrawCard {
                         card.location === Location.ConflictDeck &&
             //Handle situations where card is played from deck, such as with pillow book
             card.uuid !== context.source.uuid,
-                    choices: ['Play nothing'],
-                    handlers: [
-                        () => {
-                            this.game.addMessage('{0} takes nothing', context.player);
-                            return true;
+                    options: [
+                        {
+                            text: 'Play nothing',
+                            handler: () => {
+                                this.game.addMessage('{0} takes nothing', context.player);
+                                return true;
+                            }
                         }
                     ],
                     gameAction: AbilityDsl.actions.playCard({

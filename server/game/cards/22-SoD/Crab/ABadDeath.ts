@@ -12,7 +12,7 @@ export default class ABadDeath extends DrawCard {
             })
             .cost(AbilityDsl.costs.dishonorAndSacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard) => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }))
             .targetCards('target', {
                 mode: TargetMode.UpToVariable,

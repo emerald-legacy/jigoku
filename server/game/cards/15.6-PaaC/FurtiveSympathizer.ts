@@ -8,7 +8,7 @@ class FurtiveSympathizer extends DrawCard {
         this.action('Switch each character\'s base skills')
             .condition(context => context.source.isParticipating() && context.source.isOrdinary())
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.game.currentConflict?.getParticipants().filter((a: DrawCard) => !a.hasDash()) ?? [],
+                target: context.game.currentConflict?.getParticipants().filter((a) => !a.hasDash()) ?? [],
                 effect: AbilityDsl.effects.switchBaseSkills()
             })))
             .effect('switch all participating character\'s base military and political skill');

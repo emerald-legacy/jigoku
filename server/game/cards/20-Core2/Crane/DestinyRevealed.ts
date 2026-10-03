@@ -25,7 +25,7 @@ export default class DestinyRevealed extends DrawCard {
 
         this.wouldInterrupt('Cancel a ring effect')
             .when({
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
+                onMoveFate: (event, context) =>
                     event.context?.source instanceof Ring &&
                     !!event.origin && 'controller' in event.origin &&
                     event.origin.controller === context.player &&

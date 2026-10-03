@@ -1,8 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, ConflictType, EventName, Players } from '../../Constants.js';
+import { CardType, ConflictType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class APerfectCut extends DrawCard {
     static id = 'a-perfect-cut';
 
@@ -18,7 +17,7 @@ class APerfectCut extends DrawCard {
                     AbilityDsl.effects.modifyMilitarySkill(2),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
+                            afterConflict: (event) =>
                                 context.target.isParticipating() &&
                                     context.target.controller === event.conflict.winner
                         },

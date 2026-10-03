@@ -24,7 +24,7 @@ class Dispatch extends DrawCard {
                     falseGameAction: AbilityDsl.actions.moveToConflict()
                 }),
                 message: '{0} chooses to {3} {1} {2}',
-                messageArgs: (card: DrawCard, player) => [
+                messageArgs: (card, player) => [
                     player,
                     card,
                     card.inConflict ? 'home' : 'into the conflict',

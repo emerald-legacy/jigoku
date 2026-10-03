@@ -22,7 +22,7 @@ export default class TimeForWar2 extends DrawCard {
                     cardType: CardType.Attachment,
                     location: [Location.ConflictDiscardPile, Location.Hand],
                     controller: Players.Self,
-                    cardCondition: (card: DrawCard) => card.costLessThan(4) && attachAction.canAffect(context.target, context, { attachment: card })
+                    cardCondition: (card) => card.isDrawCard() && card.costLessThan(4) && attachAction.canAffect(context.target, context, { attachment: card })
                 }),
                 message: '{0} chooses to attach {1} to {2}',
                 messageArgs: (card, player) => [player, card, context.target],

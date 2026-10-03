@@ -1,8 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 function discardedCost(discarded: DrawCard[] | undefined): number {
     return discarded?.[0]?.getCost() ?? 0;
 }
@@ -13,7 +11,7 @@ class WarDogMaster extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain a +X/+0 bonus')
             .when({
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => (event.attackers ?? []).includes(context.source)
+                onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source)
             })
             .cost(AbilityDsl.costs.discardCardSpecific(context => context.player.dynastyDeck[0]))
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({

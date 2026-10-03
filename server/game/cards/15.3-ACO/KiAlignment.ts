@@ -1,16 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import { EventName, Location, TargetMode } from '../../Constants.js';
+import { Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class KiAlignment extends DrawCard {
     static id = 'ki-alignment';
 
     setupCardAbilities() {
         this.reaction('Search for kihos')
             .when({
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.conflict.attackingPlayer === context.player && (event.attackers?.some((card) => card.hasTrait('monk')) ?? false),
-                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context) => event.conflict.defendingPlayer === context.player && (event.defenders?.some((card) => card.hasTrait('monk')) ?? false)
+                onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers?.some((card) => card.hasTrait('monk')) ?? false),
+                onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && (event.defenders?.some((card) => card.hasTrait('monk')) ?? false)
             })
             .gameAction(AbilityDsl.actions.deckSearch({
                 targetMode: TargetMode.UpTo,

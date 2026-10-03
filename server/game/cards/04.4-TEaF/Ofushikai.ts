@@ -1,5 +1,4 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType, AbilityType } from '../../Constants.js';
 
@@ -14,15 +13,15 @@ class Ofushukai extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Send a character home',
-                condition: (context: AbilityContext<this>) => context.source.isParticipating(),
+                condition: (context) => context.source.isParticipating(),
                 effect: 'send {0} home and prevent it from attacking this phase',
                 printedAbility: false,
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: (card: DrawCard) => card.isParticipating(),
+                    cardCondition: (card) => card.isParticipating(),
                     gameAction: [
                         AbilityDsl.actions.sendHome(),
                         AbilityDsl.actions.cardLastingEffect({

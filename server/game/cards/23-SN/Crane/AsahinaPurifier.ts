@@ -1,8 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { EventName } from '../../../Constants.js';
 
 export default class AsahinaPurifier extends DrawCard {
     static id = 'asahina-purifier';
@@ -10,7 +8,7 @@ export default class AsahinaPurifier extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Gain honor instead of losing honor')
             .when({
-                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>) => event.dueToStatusToken && (event.amount ?? 0) < 0
+                onModifyHonor: (event) => event.dueToStatusToken && (event.amount ?? 0) < 0
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cancel(),

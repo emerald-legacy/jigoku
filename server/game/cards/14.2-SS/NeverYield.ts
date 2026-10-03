@@ -12,7 +12,7 @@ class NeverYield extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 duration: Duration.UntilEndOfConflict,
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.type === CardType.Character),
+                target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
                     AbilityDsl.effects.cardCannot({
                         cannot: 'sendHome',

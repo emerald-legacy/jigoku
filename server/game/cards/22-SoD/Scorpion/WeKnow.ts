@@ -2,7 +2,6 @@ import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 
 import AbilityDsl from '../../../abilitydsl.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
-import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WeKnow extends DrawCard {
@@ -12,7 +11,7 @@ export default class WeKnow extends DrawCard {
         this.action('Choose an honored status token')
             .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card: BaseCard) => card.hasTrait('courtier')
+                cardCondition: (card) => card.hasTrait('courtier')
             }))
             .tokenTarget('token', {
                 cardType: CardType.Character,

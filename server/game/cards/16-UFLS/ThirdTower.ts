@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class ThirdTower extends DrawCard {
     static id = 'third-tower';
 
     setupCardAbilities() {
         this.reaction('Take an honor from your opponent')
             .when({
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => {
+                onConflictDeclared: (event, context) => {
                     if(event.conflict.attackingPlayer === context.player) {
                         return false;
                     }

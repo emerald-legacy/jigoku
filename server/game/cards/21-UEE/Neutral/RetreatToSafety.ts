@@ -22,7 +22,7 @@ export default class RetreatToSafety extends DrawCard {
                         activePromptTitle: 'Choose a character to ready',
                         player: Players.Self,
                         cardType: CardType.Character,
-                        cardCondition: (card) => Array.isArray(parentContext.target) && parentContext.target.includes(card),
+                        cardCondition: (card) => parentContext.targets.target.includes(card),
                         gameAction: AbilityDsl.actions.ready(),
                         message: '{0} is readied due to {1}\'s superior leadership',
                         messageArgs: (card, player) => [card, player]

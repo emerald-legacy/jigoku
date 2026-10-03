@@ -2,7 +2,6 @@ import { CardType, Players, Location } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToSowTheEarth extends DrawCard {
@@ -31,7 +30,7 @@ export default class ToSowTheEarth extends DrawCard {
 
         this.action('Place a province facedown')
             .cost(AbilityDsl.costs.bow({
-                cardCondition: (card: BaseCard) => card.hasTrait('peasant')
+                cardCondition: (card) => card.hasTrait('peasant')
             }))
             .target('target', {
                 cardType: CardType.Province,

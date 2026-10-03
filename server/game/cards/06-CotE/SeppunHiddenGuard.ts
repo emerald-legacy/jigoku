@@ -1,16 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import { CardType, EventName, Location } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class SeppunHiddenGuard extends DrawCard {
     static id = 'seppun-hidden-guard';
 
     setupCardAbilities() {
         this.wouldInterrupt('Cancel ability')
             .when({
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context: TriggeredAbilityContext) =>
+                onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Character &&
                     (event.cardTargets ?? []).some(
                         (card) =>

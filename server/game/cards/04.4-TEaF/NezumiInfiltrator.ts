@@ -1,7 +1,6 @@
 import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class NezumiInfiltrator extends DrawCard {
     static id = 'nezumi-infiltrator';
@@ -28,7 +27,7 @@ export default class NezumiInfiltrator extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                subActionProperties: (card: ProvinceCard) => {
+                subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };
                 },

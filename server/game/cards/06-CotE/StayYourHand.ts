@@ -1,15 +1,12 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class StayYourHand extends DrawCard {
     static id = 'stay-your-hand';
 
     setupCardAbilities() {
         this.wouldInterrupt('Cancel a duel')
             .when({
-                onDuelInitiated: (event: EventPayload<EventName.OnDuelInitiated>, context: AbilityContext) =>
+                onDuelInitiated: (event, context) =>
                     !!event.context &&
                     event.context.player === context.player.opponent &&
                     (Object.values(event.context.targets).some((card) => !Array.isArray(card) && card.controller === context.player) ||

@@ -35,7 +35,7 @@ export default class NightingaleTattoo extends DrawCard {
                         activePromptTitle: 'Choose a card to shuffle into your opponent\'s deck',
                         context: context,
                         cards: targets,
-                        cardHandler: (selectedCard: DrawCard) => {
+                        cardHandler: (selectedCard) => {
                             const removedCard = targets.filter((a) => a !== selectedCard);
                             context.game.addMessage(
                                 '{0} chooses {1} to be shuffled into {2}\'s deck. {3} is removed from the game',

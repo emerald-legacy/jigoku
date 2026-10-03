@@ -1,7 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players, Phases, EventName, Duration } from '../../../Constants.js';
-import { EventPayload } from '../../../Events/EventPayloads.js';
+import { CardType, Location, Players, Phases, Duration } from '../../../Constants.js';
 
 export default class ShaperOfStone extends DrawCard {
     static id = 'shaper-of-stone';
@@ -11,14 +10,14 @@ export default class ShaperOfStone extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             condition: () => true,
-            match: (card: DrawCard, context) => !!context && card.type === CardType.Province && card.controller === context.player,
+            match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Opponent,
             condition: () => true,
-            match: (card: DrawCard, context) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
+            match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
             effect: AbilityDsl.effects.modifyProvinceStrength(-1)
         });
 
@@ -34,7 +33,7 @@ export default class ShaperOfStone extends DrawCard {
             }, AbilityDsl.actions.playerLastingEffect((context) => ({
                 effect: AbilityDsl.effects.delayedEffect({
                     when: {
-                        onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>) => event.phase === Phases.Conflict
+                        onPhaseEnded: (event) => event.phase === Phases.Conflict
                     },
                     message: '{0}{1}{2}',
                     messageArgs: () => context.target.isBroken ? ['', '', ''] : [context.player, ' gains 1 honor due to the delayed effect of ', context.source],

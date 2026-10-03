@@ -15,7 +15,7 @@ export default class ForceOfTheRiver extends DrawCard {
                 target: context.game
                     .getProvinceArray()
                     .flatMap((location: Location) =>
-                        context.player.getDynastyCardsInProvince(location).filter((card: DrawCard) => card.isFacedown())
+                        context.player.getDynastyCardsInProvince(location).filter((card) => card.isFacedown())
                     ),
                 token: SpiritOfTheRiver,
                 canEnterConflict: (type) => type === 'military'

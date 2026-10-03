@@ -2,7 +2,6 @@ import { CardType, Decks, Duration, Location, PlayType } from '../../../Constant
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AshalanLantern extends DrawCard {
@@ -18,7 +17,7 @@ export default class AshalanLantern extends DrawCard {
                     targetController: context.player,
                     effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                         3,
-                        (card: BaseCard) => card.name === context.costs.nameCardCost
+                        (card) => card.name === context.costs.nameCardCost
                     )
                 })),
                 AbilityDsl.actions.deckSearch((context) => ({

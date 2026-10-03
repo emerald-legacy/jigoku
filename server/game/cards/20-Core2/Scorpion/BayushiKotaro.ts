@@ -12,7 +12,7 @@ export default class BayushiKotaro extends DrawCard {
                 AbilityDsl.actions.reveal((context) => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
-                AbilityDsl.actions.selectCard((context) => ({
+                AbilityDsl.actions.selectCards((context) => ({
                     activePromptTitle: 'Choose a character to put into the conflict',
                     numCards: 1,
                     targets: true,

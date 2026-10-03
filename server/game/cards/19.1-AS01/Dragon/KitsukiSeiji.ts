@@ -1,12 +1,11 @@
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Element, EventName } from '../../../Constants.js';
+import { Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type Player from '../../../Player.js';
 import Ring from '../../../Ring.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'kitsuki-seiji-water';
 
 export default class KitsukiSeiji extends DrawCard {
@@ -24,8 +23,8 @@ export default class KitsukiSeiji extends DrawCard {
 
         this.wouldInterrupt('Put fate on this character')
             .when({
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>) => this.fateRecipientIsSeijisRing(event.recipient),
-                onPlaceFateOnUnclaimedRings: (event: EventPayload<EventName.OnPlaceFateOnUnclaimedRings>) =>
+                onMoveFate: (event) => this.fateRecipientIsSeijisRing(event.recipient),
+                onPlaceFateOnUnclaimedRings: (event) =>
                     (event.recipients ?? []).some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             })
             .gameAction(AbilityDsl.actions.cancel((context) => {

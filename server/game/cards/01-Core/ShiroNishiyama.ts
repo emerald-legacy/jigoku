@@ -1,5 +1,4 @@
 import { StrongholdCard } from '../../StrongholdCard.js';
-import type DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShiroNishiyama extends StrongholdCard {
@@ -10,7 +9,7 @@ export default class ShiroNishiyama extends StrongholdCard {
             .cost(AbilityDsl.costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.isDefending()),
+                target: context.player.cardsInPlay.filter((card) => card.isDefending()),
                 effect: AbilityDsl.effects.modifyBothSkills(1)
             })))
             .effect('add +1{1}/+1{2} to all defenders they control', () => ['military', 'political']);

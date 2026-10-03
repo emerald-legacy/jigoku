@@ -12,7 +12,7 @@ export default class ShinjoSora extends DrawCard {
                 target: context.game
                     .getProvinceArray()
                     .flatMap((location: Location) =>
-                        context.player.getDynastyCardsInProvince(location).filter((card: DrawCard) => card.isFacedown())
+                        context.player.getDynastyCardsInProvince(location).filter((card) => card.isFacedown())
                     ),
                 token: UnleashedHound,
                 canEnterConflict: () => true,

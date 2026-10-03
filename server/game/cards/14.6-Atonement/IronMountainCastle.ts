@@ -2,14 +2,13 @@ import { CardType, Players } from '../../Constants.js';
 import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../DrawCard.js';
 
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard) => card.isFaction('dragon'),
+            match: (card) => card.isFaction('dragon'),
             targetController: Players.Self,
             effect: AbilityDsl.effects.modifyRestrictedAttachmentAmount(1)
         });
@@ -39,7 +38,7 @@ export default class IronMountainCastle extends StrongholdCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    (card: DrawCard) => card === context.event.context?.source
+                    (card) => card === context.event.context?.source
                 )
             })))
             .effect('reduce the cost of their next attachment by 1');

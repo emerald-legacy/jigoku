@@ -1,9 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, EventName } from '../../Constants.js';
+import { AbilityType } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class SettingTheStandard extends DrawCard {
     static id = 'setting-the-standard';
 
@@ -12,7 +10,7 @@ class SettingTheStandard extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Draw 2 cards and discard one',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
+                    afterConflict: (event, context) =>
                         event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
                 gameAction: AbilityDsl.actions.sequential([

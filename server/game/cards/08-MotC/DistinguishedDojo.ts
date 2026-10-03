@@ -2,8 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { EventName, TargetMode, TokenType } from '../../Constants.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
+import { TargetMode, TokenType } from '../../Constants.js';
 
 class DistinguishedDojo extends DrawCard {
     static id = 'distinguished-dojo';
@@ -11,7 +10,7 @@ class DistinguishedDojo extends DrawCard {
     setupCardAbilities() {
         this.reaction('Place an honor token')
             .when({
-                afterDuel: (event: EventPayload<typeof EventName.AfterDuel>, context: AbilityContext) => {
+                afterDuel: (event, context) => {
                     if(!event.winningPlayer) {
                         return false;
                     }
@@ -32,7 +31,7 @@ class DistinguishedDojo extends DrawCard {
                     }
                 },
                 message: '{0} chooses {3}to sacrifice {1}',
-                messageArgs: (context: AbilityContext) => [context.select === 'No' ? 'not ' : ''],
+                messageArgs: (context) => [context.select === 'No' ? 'not ' : ''],
                 then: (subThenContext: AbilityContext) => ({
                     gameAction: AbilityDsl.actions.gainHonor({ amount: subThenContext.source.getTokenCount(TokenType.Honor) }),
                     message: '{0} uses {1} to gain {3} honor',

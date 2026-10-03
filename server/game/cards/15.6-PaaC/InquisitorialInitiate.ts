@@ -1,6 +1,5 @@
 import { Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InquisitorialInitiate extends DrawCard {
@@ -18,13 +17,13 @@ export default class InquisitorialInitiate extends DrawCard {
                 activePromptTitle: 'Choose cards to reveal',
                 player: Players.Opponent,
                 numCardsFunc: (context) =>
-                    context.player.opponent?.cardsInPlay.filter((card: BaseCard) => card.getFate() === 0).length ?? 0,
+                    context.player.opponent?.cardsInPlay.filter((card) => card.getFate() === 0).length ?? 0,
                 mode: TargetMode.ExactlyVariable,
                 location: Location.Hand
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.target
+                    target: context.targets.target
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     cards: context.targets.target.filter((card) => card.isDrawCard()),

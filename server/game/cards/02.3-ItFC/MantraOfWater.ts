@@ -14,7 +14,7 @@ export default class MantraOfWater extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk'))
+                    card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, AbilityDsl.actions.ready())
             .gameAction(AbilityDsl.actions.draw())
             .effect('ready {0} and draw a card');

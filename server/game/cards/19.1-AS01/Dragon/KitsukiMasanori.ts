@@ -31,7 +31,7 @@ export default class KitsukiMasanori extends DrawCard {
                         'Search discard pile': {
                             action: AbilityDsl.actions.cardMenu((context) => ({
                                 activePromptTitle: selectAttachmentPrompt,
-                                cards: context.player.conflictDiscardPile.filter((card: BaseCard) =>
+                                cards: context.player.conflictDiscardPile.filter((card) =>
                                     isSearchableCard(card, context)
                                 ),
                                 subActionProperties: (card) => ({

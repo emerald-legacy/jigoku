@@ -9,7 +9,7 @@ export default class MarvelousBeings extends DrawCard {
         this.action('Move character to conflict and gain skill bonus')
             .cost(AbilityDsl.costs.moveToConflict({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard) =>
+                cardCondition: (card) =>
                     card.type === CardType.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
             }))
             .condition((context) => context.game.isDuringConflict(ConflictType.Political))

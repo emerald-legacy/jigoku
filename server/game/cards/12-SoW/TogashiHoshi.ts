@@ -11,7 +11,7 @@ class TogashiHoshi extends DrawCard {
             .gameAction(AbilityDsl.actions.selectCard({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player,
-                subActionProperties: (card: DrawCard) => ({
+                subActionProperties: (card) => ({
                     target: card,
                     effect: [AbilityDsl.effects.changeType(CardType.Character)].concat(
                         card.printedType === CardType.Attachment ? [

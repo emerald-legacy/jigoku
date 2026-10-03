@@ -12,7 +12,7 @@ export default class KotobukisBlessing extends DrawCard {
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.placeFate({ amount: 1 }),
-                AbilityDsl.actions.selectCard((context) => ({
+                AbilityDsl.actions.selectCards((context) => ({
                     mode: TargetMode.UpTo,
                     numCards: 1,
                     cardType: CardType.Attachment,
@@ -22,7 +22,7 @@ export default class KotobukisBlessing extends DrawCard {
                     optional: true,
                     gameAction: AbilityDsl.actions.discardFromPlay(),
                     message: '{0} chooses to discard {1} from {2}',
-                    messageArgs: (cards: DrawCard[]) => [
+                    messageArgs: (cards) => [
                         context.player,
                         cards.length === 0 ? 'no attachments' : cards,
                         context.target

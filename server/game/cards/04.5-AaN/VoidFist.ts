@@ -14,7 +14,7 @@ class VoidFist extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard: DrawCard) =>
+                    card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard) =>
                         myCard.hasTrait('monk') && (myCard.militarySkill ?? 0) >= (card.militarySkill ?? 0)
                     )
             }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())

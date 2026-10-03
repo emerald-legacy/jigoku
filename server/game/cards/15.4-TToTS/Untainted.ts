@@ -1,10 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, EventName, Location } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class Untainted extends DrawCard {
     static id = 'untainted';
@@ -12,7 +11,7 @@ class Untainted extends DrawCard {
     setupCardAbilities() {
         this.reaction('discard status token')
             .when({
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => event.conflict.winner === context.player &&
+                afterConflict: (event, context) => event.conflict.winner === context.player &&
                     !!context.source.parentProvince?.isConflictProvince()
             })
             .tokenTarget('target', {

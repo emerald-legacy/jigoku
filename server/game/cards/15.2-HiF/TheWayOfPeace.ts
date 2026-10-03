@@ -18,7 +18,7 @@ export default class TheWayOfPeace extends ProvinceCard {
                 player: Players.Self
             })
             .gameAction(AbilityDsl.actions.honor((context) => ({
-                target: context.target
+                target: context.targets.target
             })));
     }
 }

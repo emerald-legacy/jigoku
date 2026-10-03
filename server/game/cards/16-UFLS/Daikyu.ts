@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityType, CardType } from '../../Constants.js';
@@ -8,7 +7,7 @@ class Daikyu extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: (context: AbilityContext<this>) => !!context.source.parentCharacter && !!context.source.controller.firstPlayer,
+            condition: (context) => !!context.source.parentCharacter && !!context.source.controller.firstPlayer,
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
 
@@ -25,7 +24,7 @@ class Daikyu extends DrawCard {
                 },
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: (card: DrawCard, context: AbilityContext<DrawCard>) =>
+                    cardCondition: (card, context) =>
                         card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
                     gameAction: AbilityDsl.actions.bow()
                 }

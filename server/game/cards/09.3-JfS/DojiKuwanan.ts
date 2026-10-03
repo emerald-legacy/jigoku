@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
 
@@ -9,14 +8,14 @@ class DojiKuwanan extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) =>
+                condition: (context) =>
                     context.player && context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
                 message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context: AbilityContext) => [
+                messageArgs: (context) => [
                     context.source,
                     context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
                 ],
-                gameAction: AbilityDsl.actions.discardFromPlay((context: AbilityContext) => ({
+                gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
                 }))
             })

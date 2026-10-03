@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, EventName } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
 
     setupCardAbilities() {
         this.forcedReaction('Give control of this character')
             .when({
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
+                afterConflict: (event, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
                     && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context)
                     && AbilityDsl.actions.placeFate().canAffect(context.source, context)
             })
@@ -23,19 +22,24 @@ class MercenaryCompany extends DrawCard {
                     context.game.promptWithHandlerMenu(opponent, {
                         activePromptTitle: 'Place a fate on Mercenary Company to take control of it?',
                         source: context.source,
-                        choices: ['Yes', 'No'],
-                        handlers: [
-                            () => {
-                                opponent.modifyFate(-1);
-                                source.modifyFate(1);
-                                context.source.lastingEffect(() => ({
-                                    duration: Duration.Custom,
-                                    effect: AbilityDsl.effects.takeControl(opponent)
-                                }));
-                                this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                        options: [
+                            {
+                                text: 'Yes',
+                                handler: () => {
+                                    opponent.modifyFate(-1);
+                                    source.modifyFate(1);
+                                    context.source.lastingEffect(() => ({
+                                        duration: Duration.Custom,
+                                        effect: AbilityDsl.effects.takeControl(opponent)
+                                    }));
+                                    this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                                }
                             },
-                            () => {
-                                this.game.addMessage('{0} chooses not to hire {1}', opponent, context.source);
+                            {
+                                text: 'No',
+                                handler: () => {
+                                    this.game.addMessage('{0} chooses not to hire {1}', opponent, context.source);
+                                }
                             }
                         ]
                     });

@@ -20,8 +20,7 @@ export default class MazeOfIllusion extends DrawCard {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a value to set your honor dial at',
                     context: context,
-                    choices: ['1', '2', '3', '4', '5'],
-                    handlers: [1, 2, 3, 4, 5].map((value) => () => this.opponentGuess(value, context))
+                    options: [1, 2, 3, 4, 5].map((value) => ({ text: value.toString(), handler: () => this.opponentGuess(value, context) }))
                 });
             })
             .effect('bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd', (context) => context.player.opponent);
@@ -36,10 +35,7 @@ export default class MazeOfIllusion extends DrawCard {
         this.game.promptWithHandlerMenu(opponent, {
             activePromptTitle: 'Guess whether your opponent set their dial to even or odd',
             context: context,
-            choices: choices,
-            handlers: choices.map((choice) => {
-                return () => this.resolveAbility(choice, value, context);
-            })
+            options: choices.map((choice) => ({ text: choice, handler: () => this.resolveAbility(choice, value, context) }))
         });
     }
 

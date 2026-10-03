@@ -1,8 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, EventName } from '../../Constants.js';
+import { AbilityType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class SelfUnderstanding extends DrawCard {
     static id = 'self-understanding';
 
@@ -19,7 +18,7 @@ export default class SelfUnderstanding extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Resolve all claimed ring effects',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context) =>
+                    afterConflict: (event, context) =>
                         event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
                 gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({

@@ -14,7 +14,7 @@ export default class WhiteLotusMethod extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a status token')
-            .condition((context) => context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('courtier')))
+            .condition((context) => context.player.cardsInPlay.some((card) => card.hasTrait('courtier')))
             .tokenTarget(TOKEN, {
                 activePromptTitle: 'Choose the status token to move',
                 cardType: CardType.Character,

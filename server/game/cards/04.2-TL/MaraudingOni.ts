@@ -1,9 +1,6 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class MaraudingOni extends DrawCard {
     static id = 'marauding-oni';
 
@@ -17,8 +14,8 @@ class MaraudingOni extends DrawCard {
 
         this.forcedReaction('Lose honor when declared as attacker or defender')
             .when({
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: AbilityContext<this>) => (event.attackers ?? []).includes(context.source),
-                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context: AbilityContext<this>) => (event.defenders ?? []).includes(context.source)
+                onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source),
+                onDefendersDeclared: (event, context) => (event.defenders ?? []).includes(context.source)
             })
             .gameAction(AbilityDsl.actions.loseHonor((context) => ({ target: context.player })))
             .effect('lose an honor')

@@ -9,7 +9,7 @@ export default class WingsOfThePhoenix extends DrawCard {
         this.action('Move a character')
             .condition((context) =>
                 context.game.isDuringConflict() &&
-                context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('shugenja')))
+                context.player.cardsInPlay.some((card) => card.hasTrait('shugenja')))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self

@@ -1,6 +1,5 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type Ring from '../../../Ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -13,7 +12,7 @@ export default class OnsenQuarters extends ProvinceCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             condition: () => true,
-            match: (card: BaseCard, context) =>
+            match: (card, context) =>
                 !!context && card.type === CardType.Province && card !== context?.source && card.controller === context?.player,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
@@ -22,7 +21,7 @@ export default class OnsenQuarters extends ProvinceCard {
             .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
-                    event.conflict.getConflictProvinces().some((a: ProvinceCard) => a === context.source)
+                    event.conflict.getConflictProvinces().some((a) => a === context.source)
             })
             .gameAction(AbilityDsl.actions.resolveRingEffect((context) => ({
                 target: this.ringForRole(context),

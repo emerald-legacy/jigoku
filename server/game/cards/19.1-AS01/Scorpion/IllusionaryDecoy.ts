@@ -1,6 +1,5 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
 
@@ -11,7 +10,7 @@ export default class IllusionaryDecoy extends DrawCard {
         this.reaction('Put into play')
             .when({
                 onConflictStarted: (event, context) =>
-                    context.player.anyCardsInPlay((card: BaseCard) => card.hasTrait('shugenja'))
+                    context.player.anyCardsInPlay((card) => card.hasTrait('shugenja'))
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.putIntoConflict((context) => ({ target: context.source })),

@@ -13,7 +13,7 @@ class KakitaYoshi extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceCost({
                     amount: 2,
-                    match: (card: DrawCard) => card.type === CardType.Event
+                    match: (card) => card.type === CardType.Event
                 })
             })))
             .effect('draw 3 cards, and reduce the cost of events this conflict');

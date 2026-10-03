@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
@@ -20,8 +18,8 @@ class AkodoZentaro extends DrawCard {
                     cardType: CardType.Province,
                     location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
-                    subActionProperties: (card: ProvinceCard) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
+                    cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
+                    subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.moveCard({
                             target: context.target,

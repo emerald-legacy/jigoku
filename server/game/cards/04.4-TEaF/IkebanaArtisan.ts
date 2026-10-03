@@ -1,15 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class IkebanaArtisan extends DrawCard {
     static id = 'ikebana-artisan';
 
     setupCardAbilities() {
         this.wouldInterrupt('Lose fate instead of honor')
             .when({
-                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context) => event.dueToUnopposed && event.player === context.player
+                onModifyHonor: (event, context) => event.dueToUnopposed && event.player === context.player
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cancel(),

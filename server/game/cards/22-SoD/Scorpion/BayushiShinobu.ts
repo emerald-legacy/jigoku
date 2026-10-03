@@ -1,9 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration, EventName, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class BayushiShinobu extends DrawCard {
     static id = 'bayushi-shinobu';
 
@@ -11,7 +9,7 @@ export default class BayushiShinobu extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: AbilityContext) => event.card === context.source
+                    onCharacterEntersPlay: (event, context) => event.card === context.source
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
@@ -37,7 +35,7 @@ export default class BayushiShinobu extends DrawCard {
                     target: context.player,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>) => event.card === context.target
+                            onCardLeavesPlay: (event) => event.card === context.target
                         },
                         onlyRemoveOnSuccess: true,
                         gameAction: AbilityDsl.actions.loseHonor(({

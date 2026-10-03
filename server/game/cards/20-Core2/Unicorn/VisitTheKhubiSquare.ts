@@ -1,6 +1,5 @@
 import { CardType, Decks, Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
@@ -23,14 +22,14 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                             message: '{0} puts {1} into play{2}{3}',
                             shuffle: false,
                             messageArgs: (context, cards) => {
-                                const discards = topFive.filter((a: DrawCard) => !cards.includes(a));
+                                const discards = topFive.filter((a) => !cards.includes(a));
                                 const card = cards.length > 0 ? cards : 'nothing';
                                 return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
                             },
                             gameAction: AbilityDsl.actions.putIntoPlay()
                         })),
                         AbilityDsl.actions.moveCard((context2) => ({
-                            target: topFive.filter((a: DrawCard) => {
+                            target: topFive.filter((a) => {
                                 const deckSearch = context2.events
                                     .filter((event) => !event.cancelled)
                                     .find((event) => event.is(EventName.OnDeckSearch));

@@ -7,7 +7,7 @@ class TacticiansCamp extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard) => card.getType() === CardType.Character && card.isHonored,
+            match: (card) => card.getType() === CardType.Character && card.isHonored,
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
     }

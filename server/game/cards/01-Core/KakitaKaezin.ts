@@ -22,7 +22,7 @@ export default class KakitaKaezin extends DrawCard {
                         target:
                                 duel.winner?.includes(context.source) ?? false
                                     ? context.game.currentConflict?.getParticipants(
-                                        (card: DrawCard) => !duel.isInvolved(card)
+                                        (card) => !duel.isInvolved(card)
                                     )
                                     : duel.loser
                     })

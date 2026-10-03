@@ -12,7 +12,7 @@ class FeedingAnArmy extends DrawCard {
             })
             .cost(AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
             .gameAction(AbilityDsl.actions.placeFate((context) => ({
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.costLessThan(4))
+                target: context.player.cardsInPlay.filter((card) => card.costLessThan(4))
             })));
     }
 }

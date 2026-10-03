@@ -1,7 +1,6 @@
 import { AbilityType, EventName, CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import BaseCard from '../../../BaseCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { Event } from '../../../Events/Event.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -24,7 +23,7 @@ export default class CastleOfAir extends DrawCard {
         this.action('Add Province Strength')
             .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card: BaseCard) => card.hasTrait('shugenja')
+                cardCondition: (card) => card.hasTrait('shugenja')
             }))
             .condition((context) => context.game.isDuringConflict())
             .gameAction(AbilityDsl.actions.multiple([

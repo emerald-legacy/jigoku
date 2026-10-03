@@ -1,19 +1,17 @@
-import { CardType, Duration, EventName, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type BaseCard from '../../../BaseCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class SupportingCast extends DrawCard {
     static id = 'supporting-cast';
 
     setupCardAbilities() {
         this.reaction('Give +3 military to a character')
             .when({
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) => {
+                onInitiateAbilityEffects: (event, context) => {
                     return (
                         context.game.isDuringConflict('military') &&
-                        (event.cardTargets ?? []).some((card: BaseCard) => card.controller === context.player)
+                        (event.cardTargets ?? []).some((card) => card.controller === context.player)
                     );
                 }
             })
@@ -23,14 +21,16 @@ export default class SupportingCast extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    !context.event.cardTargets.some((eventCard: BaseCard) => eventCard === card)
+                    !context.event.cardTargets.some((eventCard) => eventCard === card)
             }, AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character to bow',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) =>
-                    (context.event.cardTargets ?? []).some((eventCard: BaseCard) => eventCard === card),
-                subActionProperties: (card: DrawCard) => {
-                    context.target = card;
+                    (context.event.cardTargets ?? []).some((eventCard) => eventCard === card),
+                subActionProperties: (card) => {
+                    if(card.isDrawCard()) {
+                        context.target = card;
+                    }
                     return { target: card };
                 },
                 gameAction: AbilityDsl.actions.bow()

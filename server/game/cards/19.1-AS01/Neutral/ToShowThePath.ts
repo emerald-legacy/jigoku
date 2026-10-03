@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,9 +20,9 @@ export default class ToShowThePath extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.playerFateCostToTargetCard({
                     amount: 1,
-                    match: (card: BaseCard) =>
+                    match: (card) =>
                         card === context.target ||
-                            context.target.attachments.some((attachment: BaseCard) => attachment === card)
+                            context.target.attachments.some((attachment) => attachment === card)
                 })
             })))
             .effect('make {1} pay 1 additional fate as a cost whenever they target {0} or its attachments with a card ability until the end of the phase', (context) => [context.source.controller.opponent]);

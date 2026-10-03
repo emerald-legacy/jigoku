@@ -1,10 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, CardType, EventName } from '../../Constants.js';
+import { AbilityType, CardType } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class Chikara extends DrawCard {
     static id = 'chikara';
 
@@ -16,26 +13,26 @@ class Chikara extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Return all fate from, then sacrifice a character',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => {
+                    afterConflict: (event, context) => {
                         return event.conflict.winner === context.source.controller && context.source.isParticipating();
                     }
                 },
                 printedAbility: false,
                 effect: 'force {1} to sacrifice {0}, returning all its fate to {1}\'s fate pool',
-                effectArgs: (context: AbilityContext) => [context.target?.controller],
+                effectArgs: (context) => [context.target?.controller],
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.removeFate((context: AbilityContext) => ({
+                        AbilityDsl.actions.removeFate((context) => ({
                             amount: context.target?.getFate(),
                             recipient: context.target?.owner
                         })),
-                        AbilityDsl.actions.sacrifice((context: AbilityContext) => ({
+                        AbilityDsl.actions.sacrifice((context) => ({
                             target: context.target
                         }))
                     ])

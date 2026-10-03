@@ -1,8 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class UtakuBattleSteed extends DrawCard {
     static id = 'utaku-battle-steed';
 
@@ -17,7 +15,7 @@ class UtakuBattleSteed extends DrawCard {
 
         this.reaction('Honor attached character')
             .when({
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
+                afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === 'military'
             })

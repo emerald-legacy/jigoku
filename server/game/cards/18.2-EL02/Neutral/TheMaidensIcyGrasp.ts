@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type BaseCard from '../../../BaseCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -18,14 +17,14 @@ export default class TheMaidensIcyGrasp extends DrawCard {
         this.action('Remove a character from play')
             .condition((context) =>
                 context.player.cardsInPlay.some(
-                    (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
+                    (card) => card.isParticipating() && card.hasTrait('shugenja')
                 ))
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) => this.charactersPlayedThisConflict.has(card)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: [AbilityDsl.effects.cannotContribute(() => (card: BaseCard) => card === context.target)],
+                    effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)],
                     duration: Duration.UntilEndOfConflict
                 })),
                 AbilityDsl.actions.onAffinity({

@@ -24,7 +24,7 @@ export default class StokeInsurrection extends DrawCard {
                 AbilityDsl.actions.reveal((context) => ({
                     target: context.player.opponent ? context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : []
                 })),
-                AbilityDsl.actions.selectCard((context) => ({
+                AbilityDsl.actions.selectCards((context) => ({
                     activePromptTitle: 'Choose up to two characters',
                     numCards: 2,
                     targets: true,
@@ -47,6 +47,6 @@ export default class StokeInsurrection extends DrawCard {
     private getFaceDownProvinceCards(player: Player) {
         return player
             .getDynastyCardsInProvince(Location.Provinces)
-            .filter((card: DrawCard) => card.isFacedown() && card.controller === player).length;
+            .filter((card) => card.isFacedown() && card.controller === player).length;
     }
 }

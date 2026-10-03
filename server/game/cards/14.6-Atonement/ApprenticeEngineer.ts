@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -21,10 +19,10 @@ class ApprenticeEngineer extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
                 message: '{0} places {1} in {2}, discarding {3}',
-                messageArgs: (card: ProvinceCard) => [context.player, context.target, card.facedown ? card.location : card, context.player.getDynastyCardsInProvince(card.location)],
-                subActionProperties: (card: ProvinceCard) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
+                messageArgs: (card) => [context.player, context.target, card.facedown ? card.location : card, context.player.getDynastyCardsInProvince(card.location)],
+                subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.moveCard({
                         target: context.target,

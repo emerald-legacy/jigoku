@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { isEnumValue } from '../../utils/helpers.js';
@@ -15,7 +14,7 @@ class SpecializedDefenses extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => card.isConflictProvince() && card.isProvinceCard() && card.element.some((element: string) => {
+                cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.element.some((element: string) => {
                     if(element === 'all') {
                         return true;
                     }

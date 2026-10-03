@@ -1,6 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
 import { Location, CardType } from '../../Constants.js';
 
 class SeppunIshikawa extends DrawCard {
@@ -8,12 +7,12 @@ class SeppunIshikawa extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills((card: DrawCard) => this.getImperialCardsInPlay(card))
+            effect: AbilityDsl.effects.modifyBothSkills((card) => this.getImperialCardsInPlay(card))
         });
     }
 
     getImperialCardsInPlay(source: DrawCard) {
-        return this.game.allCards.reduce((sum: number, card: BaseCard) => {
+        return this.game.allCards.reduce((sum: number, card) => {
             if(card !== source && card.controller === source.controller && card.hasTrait('imperial') && card.isFaceup() &&
                 (card.location === Location.PlayArea || (card.isProvinceCard() && !card.isBroken) ||
                 (card.isInProvince() && card.type === CardType.Holding))) {

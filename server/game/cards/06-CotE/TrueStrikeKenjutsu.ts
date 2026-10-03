@@ -13,7 +13,7 @@ export default class TrueStrikeKenjutsu extends DrawCard {
                 initiateDuel: {
                     type: DuelType.Military,
                     gameAction: (duel: Duel) => AbilityDsl.actions.bow({ target: duel.loser }),
-                    statistic: (card: DrawCard) => card.getBaseMilitarySkill()
+                    statistic: (card) => card.getBaseMilitarySkill()
                 },
                 printedAbility: false
             })

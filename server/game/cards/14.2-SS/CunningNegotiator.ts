@@ -44,7 +44,7 @@ export default class CunningNegotiator extends DrawCard {
                             hidePromptIfSingleCard: true,
                             cardType: CardType.Province,
                             location: Location.Provinces,
-                            subActionProperties: (card: ProvinceCard) => {
+                            subActionProperties: (card) => {
                                 context.target = card;
                                 return { target: card };
                             },

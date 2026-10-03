@@ -1,7 +1,6 @@
 import { CardType, Element, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 
 const ELEMENT = 'courteous-greeting-earth';
 
@@ -21,7 +20,7 @@ export default class StewardOfCrypticLore extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                subActionProperties: (card: ProvinceCard) => {
+                subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };
                 },

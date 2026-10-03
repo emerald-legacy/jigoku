@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class MotoBeastmaster extends DrawCard {
     static id = 'moto-beastmaster';
 
     setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.attackers?.includes(context.source) ?? false
+                onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false
             })
             .target('target', {
                 cardType: CardType.Character,

@@ -11,7 +11,7 @@ export default class DisloyalOathkeeper extends DrawCard {
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: (card: DrawCard) => card.location === this.uuid,
+            match: (card) => card.location === this.uuid,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player) => player === this.controller,

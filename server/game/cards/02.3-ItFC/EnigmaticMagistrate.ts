@@ -1,4 +1,3 @@
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +8,7 @@ class EnigmaticMagistrate extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
             effect: AbilityDsl.effects.cannotContribute(() => {
-                return (card: BaseCard) => card.isDrawCard() && (card.getCost() === 0 || ((card.getCost() ?? 0) !== 0 && (card.getCost() ?? 0) % 2 === 0));
+                return (card) => card.isDrawCard() && (card.getCost() === 0 || ((card.getCost() ?? 0) !== 0 && (card.getCost() ?? 0) % 2 === 0));
             })
         });
     }

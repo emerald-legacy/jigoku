@@ -22,12 +22,12 @@ class Reconnaissance extends DrawCard {
                 condition: context => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
                 trueGameAction: AbilityDsl.actions.sequential([
                     this.getLookAtAction(),
-                    AbilityDsl.actions.selectCard(context => {
-                        let target: BaseCard | BaseCard[] | undefined = context.target;
+                    AbilityDsl.actions.selectCards(context => {
+                        let target: BaseCard | BaseCard[] | undefined = context.targets.target;
                         if(!Array.isArray(target)) {
                             target = target ? [target] : [];
                         }
-                        const locations = target.map((a: BaseCard) => a.location);
+                        const locations = target.map((a) => a.location);
                         return ({
                             activePromptTitle: 'Choose cards to discard',
                             mode: TargetMode.Unlimited,
@@ -50,7 +50,7 @@ class Reconnaissance extends DrawCard {
     getLookAtAction() {
         return AbilityDsl.actions.lookAt(context => ({
             message: context => {
-                let target: BaseCard | BaseCard[] | undefined = context.target;
+                let target: BaseCard | BaseCard[] | undefined = context.targets.target;
                 if(!Array.isArray(target)) {
                     target = target ? [target] : [];
                 }
@@ -64,7 +64,7 @@ class Reconnaissance extends DrawCard {
 
             },
             messageArgs: () => {
-                let target: BaseCard | BaseCard[] | undefined = context.target;
+                let target: BaseCard | BaseCard[] | undefined = context.targets.target;
                 if(!Array.isArray(target)) {
                     target = target ? [target] : [];
                 }

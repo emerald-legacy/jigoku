@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import { Location, Players } from '../../Constants.js';
@@ -11,13 +10,13 @@ class InvokeTheDivine extends DrawCard {
         const getSelectCardAction = (fate: number, spellsCast: number) => AbilityDsl.actions.selectCard({
             location: Location.Hand,
             controller: Players.Self,
-            cardCondition: (card: DrawCard) => card.hasTrait('spell') && (card.getCost() ?? 0) <= fate,
+            cardCondition: (card) => card.isDrawCard() && card.hasTrait('spell') && (card.getCost() ?? 0) <= fate,
             optional: spellsCast > 0,
             gameAction: AbilityDsl.actions.playCard(invokeContext => ({
                 resetOnCancel: true,
                 payCosts: false,
                 source: this,
-                postHandler: (context: AbilityContext) => {
+                postHandler: (context) => {
                     if(spellsCast < 2) {
                         getSelectCardAction(fate - ((context.source.isDrawCard() ? context.source.getCost() : null) ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
                     }

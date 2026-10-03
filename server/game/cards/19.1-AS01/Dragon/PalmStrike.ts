@@ -55,6 +55,6 @@ export default class PalmStrike extends DrawCard {
     }
 
     private cardHasNoWeapons(card: BaseCard) {
-        return !card.attachments.some((attachment: BaseCard) => attachment.hasTrait('weapon'));
+        return !card.attachments.some((attachment) => attachment.hasTrait('weapon'));
     }
 }

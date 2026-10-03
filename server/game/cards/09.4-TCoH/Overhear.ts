@@ -35,7 +35,7 @@ export default class Overhear extends DrawCard {
                 if(
                     context.game.currentConflict
                         .getCharacters(context.player)
-                        .filter((card: DrawCard) => card.hasTrait('courtier')).length < 1
+                        .filter((card) => card.hasTrait('courtier')).length < 1
                 ) {
                     return {};
                 }

@@ -23,9 +23,9 @@ export default class ForeignCustoms extends DrawCard {
             .condition((context) =>
                 context.player.stronghold?.isFaction('unicorn') ||
                 context.player.cardsInPlay.some(
-                    (card: DrawCard) =>
+                    (card) =>
                         card.isFaction('unicorn') ||
-                        card.attachments?.some((a: DrawCard) => a.isFaction('unicorn'))
+                        card.attachments?.some((a) => a.isFaction('unicorn'))
                 ))
             .target('target', {
                 cardType: CardType.Character,

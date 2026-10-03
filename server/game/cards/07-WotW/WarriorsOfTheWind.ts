@@ -11,7 +11,7 @@ class WarriorsOfTheWind extends DrawCard {
                 AbilityDsl.actions.sendHome((context) => ({
                     target: context.player.filterCardsInPlay((card) => card.hasTrait('cavalry') && card.isParticipating())
                 })),
-                AbilityDsl.actions.selectCard({
+                AbilityDsl.actions.selectCards({
                     activePromptTitle: 'Choose characters',
                     mode: TargetMode.Unlimited,
                     optional: true,

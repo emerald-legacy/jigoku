@@ -28,7 +28,7 @@ export default class RenownedSinger extends DrawCard {
                         activePromptTitle: 'Choose a card to add to your opponent\'s hand',
                         context: context,
                         cards: targets,
-                        cardHandler: (handCard: DrawCard) => {
+                        cardHandler: (handCard) => {
                             const bottomCard = targets.filter((a) => a !== handCard);
                             context.game.addMessage(
                                 '{0} chooses {1} to be put into {2}\'s hand. {3} is put on the bottom of {2}\'s conflict deck',

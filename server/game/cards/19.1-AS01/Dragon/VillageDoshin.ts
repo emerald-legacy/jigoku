@@ -1,9 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, EventName, Location, Players } from '../../../Constants.js';
-import type BaseCard from '../../../BaseCard.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DOSHIN_TAX = 2;
 
 export default class VillageDoshin extends DrawCard {
@@ -12,8 +10,8 @@ export default class VillageDoshin extends DrawCard {
     public setupCardAbilities() {
         this.wouldInterrupt('Protect attachment from leaving play')
             .when({
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
-                    (event.cardTargets ?? []).some((card: BaseCard) => {
+                onInitiateAbilityEffects: (event, context) =>
+                    (event.cardTargets ?? []).some((card) => {
                         const attachment = card.type === CardType.Attachment;
                         const onCharacterYouControl =
                             card instanceof DrawCard && card.parentCharacter?.controller === context.player;

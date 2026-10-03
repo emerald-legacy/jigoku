@@ -1,9 +1,7 @@
-import { ConflictType, Duration, EventName } from '../../Constants.js';
+import { ConflictType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
 
@@ -18,7 +16,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.delayedEffect({
                     when: {
-                        onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: AbilityContext) =>
+                        onCardPlayed: (event, context) =>
                             event.player === context.player.opponent &&
                             event.card.name === playerLastingEffectContext.costs.nameCardCost
                     },

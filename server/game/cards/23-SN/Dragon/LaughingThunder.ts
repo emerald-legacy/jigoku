@@ -1,4 +1,3 @@
-import { AbilityContext } from '../../../AbilityContext.js';
 import BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,8 +10,8 @@ export default class LaughingThunder extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.gainAllAbilitiesDynamic(
-                (card: BaseCard, _context: AbilityContext) => {
-                    return card.attachments.filter((a: DrawCard) => a.hasTrait('kiho') && a.printedType === CardType.Event) ?? [];
+                (card, _context) => {
+                    return card.attachments.filter((a) => a.hasTrait('kiho') && a.printedType === CardType.Event) ?? [];
                 },
                 true
             )

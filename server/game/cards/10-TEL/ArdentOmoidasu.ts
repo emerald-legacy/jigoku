@@ -1,8 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, EventName } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 import Ring from '../../Ring.js';
 class ArdentOmoidasu extends DrawCard {
     static id = 'ardent-omoidasu';
@@ -10,7 +9,7 @@ class ArdentOmoidasu extends DrawCard {
     setupCardAbilities() {
         this.reaction('Steal 2 honor')
             .when({
-                onCardDishonored: (event: EventPayload<EventName.OnCardDishonored>, context) => {
+                onCardDishonored: (event, context) => {
                     if(!event.context) {
                         return false;
                     }

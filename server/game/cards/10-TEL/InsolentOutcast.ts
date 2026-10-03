@@ -1,5 +1,4 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -9,7 +8,7 @@ class InsolentOutcast extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills((card: EffectTarget, context: AbilityContext) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
+            effect: AbilityDsl.effects.modifyBothSkills((card: EffectTarget, context) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
         });
     }
 

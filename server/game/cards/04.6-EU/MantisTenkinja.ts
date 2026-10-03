@@ -16,7 +16,7 @@ class MantisTenkinja extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(1))
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: DrawCard) => card === context.event.card)
+                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card) => card === context.event.card)
             })))
             .effect('reduce the cost of their next event by 1');
     }

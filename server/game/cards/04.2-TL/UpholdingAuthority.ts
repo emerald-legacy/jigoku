@@ -32,7 +32,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                 }
                 return {
                     target: context.game.currentConflict?.attackingPlayer.hand
-                        .filter((card: DrawCard) => card.name === chosenCard?.name)
+                        .filter((card) => card.name === chosenCard?.name)
                         .slice(0, parseInt(choice))
                 };
             }
@@ -48,19 +48,18 @@ export default class UpholdingAuthority extends ProvinceCard {
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
+                    target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                     message: '{0} reveals their hand: {1}',
                     messageArgs: (cards) => [context.game.currentConflict?.attackingPlayer, cards]
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',
-                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)) ?? [],
+                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) ?? [],
                     targets: true,
                     gameAction: gameAction,
-                    choices: context.choosingPlayerOverride ? [] : ['Don\'t discard anything'],
-                    handlers: context.choosingPlayerOverride
+                    options: context.choosingPlayerOverride
                         ? []
-                        : [() => context.game.addMessage('{0} chooses not to discard anything', context.player)]
+                        : [{ text: 'Don\'t discard anything', handler: () => context.game.addMessage('{0} chooses not to discard anything', context.player) }]
                 }))
             ]))
             .effect('look at the attacking player\'s hand and choose a card to be discarded');

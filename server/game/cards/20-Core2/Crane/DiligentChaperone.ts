@@ -4,7 +4,6 @@ import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 function targetsFromEvent(context: TriggeredAbilityContext): WeakSet<BaseCard> {
     const event = context.event;
     switch(event.name) {
@@ -34,13 +33,13 @@ export default class DiligentChaperone extends DrawCard {
 
         this.reaction('Rehonor the character')
             .when({
-                onStatusTokenMoved: (event: EventPayload<EventName.OnStatusTokenMoved>, context) =>
+                onStatusTokenMoved: (event, context) =>
                     !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
                     !!event.donor && isFriendlyCharacter(context, event.donor) &&
                     !context.source.bowed,
                 onCardDishonored: (event, context) =>
                     event.card.isOrdinary() && isFriendlyCharacter(context, event.card) && !context.source.bowed,
-                onStatusTokenDiscarded: (event: EventPayload<EventName.OnStatusTokenDiscarded>, context) =>
+                onStatusTokenDiscarded: (event, context) =>
                     !context.source.bowed &&
                     !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
                     (event.cards ?? []).some(isFriendlyCharacter.bind(null, context))
@@ -49,7 +48,7 @@ export default class DiligentChaperone extends DrawCard {
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => targetsFromEvent(context).has(card),
-                subActionProperties: (card: DrawCard) => {
+                subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };
                 },

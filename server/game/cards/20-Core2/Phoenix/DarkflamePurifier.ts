@@ -1,15 +1,14 @@
-import { CardType, EventName, Phases, Players } from '../../../Constants.js';
+import { CardType, Phases, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DarkflamePurifier extends DrawCard {
     static id = 'darkflame-purifier';
 
     setupCardAbilities() {
         this.reaction('Dishonor a character')
             .when({
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
+                onMoveFate: (event, context) =>
                     context.game.currentPhase !== Phases.Fate &&
                     event.origin?.type === CardType.Character &&
                     'controller' in event.origin &&

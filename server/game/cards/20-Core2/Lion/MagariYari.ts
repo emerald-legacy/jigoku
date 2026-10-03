@@ -7,7 +7,7 @@ export default class MagariYari extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('bushi'),
+            match: (card) => card.hasTrait('bushi'),
             effect: AbilityDsl.effects.gainAbility<DrawCard>(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {

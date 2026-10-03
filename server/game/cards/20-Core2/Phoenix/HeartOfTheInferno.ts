@@ -10,7 +10,7 @@ export default class HeartOfTheInferno extends DrawCard {
         this.action('Bow a card')
             .condition((context) =>
                 context.player.cardsInPlay.some(
-                    (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
+                    (card) => card.isParticipating() && card.hasTrait('shugenja')
                 ))
             .target('target', {
                 controller: Players.Opponent,

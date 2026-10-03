@@ -12,9 +12,9 @@ export default class Coward extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 hidePromptIfSingleCard: true,
-                cardCondition: (card: DrawCard) => {
+                cardCondition: (card) => {
                     const duel = context.event.duel;
-                    if(!duel) {
+                    if(!duel || !card.isDrawCard()) {
                         return false;
                     }
                     const isInvolved = duel.isInvolved(card);

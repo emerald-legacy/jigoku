@@ -13,7 +13,7 @@ export default class ForGreaterGlory extends DrawCard {
             .gameAction(AbilityDsl.actions.placeFate((context) => ({
                 target: context.event.conflict
                     ?.getCharacters(context.player)
-                    .filter((card: DrawCard) => card.hasTrait('bushi')) ?? []
+                    .filter((card) => card.hasTrait('bushi')) ?? []
             })))
             .max(AbilityDsl.limit.perConflict(1));
     }

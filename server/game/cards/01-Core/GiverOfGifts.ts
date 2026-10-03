@@ -12,9 +12,9 @@ class GiverOfGifts extends DrawCard {
                 controller: Players.Self
             }, AbilityDsl.actions.selectCard((context) => ({
                 controller: Players.Self,
-                cardCondition: (card: DrawCard) => card !== (context.target).parentCharacter,
+                cardCondition: (card) => card !== (context.target).parentCharacter,
                 message: '{0} moves {1} to {2}',
-                messageArgs: (card: DrawCard) => [context.player, context.target, card],
+                messageArgs: (card) => [context.player, context.target, card],
                 gameAction: AbilityDsl.actions.attach({ attachment: context.target })
             })))
             .effect('move {0} to another character');

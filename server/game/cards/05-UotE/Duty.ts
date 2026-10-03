@@ -1,18 +1,16 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { EventName, Stage } from '../../Constants.js';
+import { Stage } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class Duty extends DrawCard {
     static id = 'duty';
 
     setupCardAbilities() {
         this.wouldInterrupt('Cancel honor loss')
             .when({
-                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context: AbilityContext) =>
+                onModifyHonor: (event, context) =>
                     event.player === context.player && -(event.amount ?? 0) >= context.player.honor && event.context?.stage === Stage.Effect,
-                onTransferHonor: (event: EventPayload<EventName.OnTransferHonor>, context: AbilityContext) =>
+                onTransferHonor: (event, context) =>
                     event.player === context.player && (event.amount ?? 0) >= context.player.honor && event.context?.stage === Stage.Effect
             })
             .gameAction(AbilityDsl.actions.sequential([

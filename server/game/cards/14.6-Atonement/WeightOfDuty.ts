@@ -2,7 +2,6 @@ import { AbilityContext } from '../../AbilityContext.js';
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 
 const ELEMENT_KEY = 'weight-of-duty-void';
@@ -14,7 +13,7 @@ export default class WeightOfDuty extends ProvinceCard {
         this.action('Bow & dishonor a character')
             .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard, context: AbilityContext) =>
+                cardCondition: (card, context) =>
                     card.isParticipating() && this.hasValidTarget(card, context)
             }))
             .condition((context) => context.player.opponent !== undefined)
@@ -45,7 +44,7 @@ export default class WeightOfDuty extends ProvinceCard {
         }
 
         return !!context.player.opponent?.cardsInPlay.some(
-            (a: BaseCard) =>
+            (a) =>
                 !a.isUnique() && (a.allowGameAction('bow', context) || a.allowGameAction('dishonor', context))
         );
     }

@@ -16,11 +16,13 @@ export default class ExcellenceAttained extends ProvinceCard {
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
                     cardCondition: (card) => card.type === CardType.Attachment && (card.printedCost ?? 0) <= 1,
-                    choices: ['Take nothing'],
-                    handlers: [
-                        () => {
-                            this.game.addMessage('{0} takes nothing', context.player);
-                            return true;
+                    options: [
+                        {
+                            text: 'Take nothing',
+                            handler: () => {
+                                this.game.addMessage('{0} takes nothing', context.player);
+                                return true;
+                            }
                         }
                     ],
                     // the chosen attachment reaches the message through the select's properties

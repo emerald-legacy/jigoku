@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, Decks } from '../../Constants.js';
@@ -25,7 +24,7 @@ class SoshisMemory extends DrawCard {
             player: player,
             activePromptTitle: 'Choose a card to put into your hand',
             reveal: false,
-            amount: (context: AbilityContext) => context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
+            amount: (context) => context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
             deck: Decks.ConflictDeck,
             gameAction: AbilityDsl.actions.moveCard({
                 destination: Location.Hand

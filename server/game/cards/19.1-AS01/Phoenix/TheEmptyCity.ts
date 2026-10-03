@@ -20,7 +20,7 @@ export default class TheEmptyCity extends ProvinceCard {
         this.action('Claim a ring')
             .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card: BaseCard) => card.hasTrait('spirit')
+                cardCondition: (card) => card.hasTrait('spirit')
             }))
             .ringTarget('target', {
                 activePromptTitle: 'Choose an unclaimed ring',

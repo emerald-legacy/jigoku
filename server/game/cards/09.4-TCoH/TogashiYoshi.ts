@@ -1,15 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class TogashiYoshi extends DrawCard {
     static id = 'togashi-yoshi';
 
     setupCardAbilities() {
         this.reaction('Gain 1 fate from an unclaimed ring')
             .when({
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => event.conflict.winner === context.source.controller &&
+                afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
             .gameAction(AbilityDsl.actions.selectRing(context => ({

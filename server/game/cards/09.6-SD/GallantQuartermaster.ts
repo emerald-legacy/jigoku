@@ -1,15 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class GallantQuartermaster extends DrawCard {
     static id = 'gallant-quartermaster';
 
     setupCardAbilities() {
         this.interrupt('Gain two fate')
             .when({
-                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context) => event.isSacrifice && event.card === context.source
+                onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source
             })
             .gameAction(AbilityDsl.actions.gainFate({ amount: 2 }));
     }

@@ -10,7 +10,7 @@ class YoungHarrier extends DrawCard {
             .cost(AbilityDsl.costs.dishonorSelf())
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.isFaction('crane')),
+                target: context.player.cardsInPlay.filter((card) => card.isFaction('crane')),
                 effect: AbilityDsl.effects.cardCannot('dishonor')
             })))
             .effect('prevent Crane characters from being dishonored this phase');

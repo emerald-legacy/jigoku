@@ -1,8 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import { EventName } from '../../Constants.js';
 import { Direction } from '../../GameActions/ModifyBidAction.js';
 
 class IaijutsuMaster extends DrawCard {
@@ -15,7 +12,7 @@ class IaijutsuMaster extends DrawCard {
 
         this.reaction('Change your bid by 1 during a duel')
             .when({
-                onHonorDialsRevealed: (_event: EventPayload<EventName.OnHonorDialsRevealed>, context: TriggeredAbilityContext<this>) =>
+                onHonorDialsRevealed: (_event, context) =>
                     !!context.source.parentCharacter && !!this.game.currentDuel?.isInvolved(context.source.parentCharacter)
             })
             .gameAction(AbilityDsl.actions.modifyBid({ direction: Direction.Prompt }));

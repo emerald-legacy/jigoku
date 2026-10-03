@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players } from '../../Constants.js';
@@ -28,7 +27,7 @@ class CaptivatingStory extends DrawCard {
                         return { amount: choice === 'Yes' ? 1 : 0 };
                     },
                     gameAction: AbilityDsl.actions.joint([
-                        AbilityDsl.actions.removeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+                        AbilityDsl.actions.removeFate((context) => ({
                             target: context.target
                         })),
                         AbilityDsl.actions.resolveAbility({

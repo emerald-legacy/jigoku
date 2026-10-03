@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ShinjoAtagi extends DrawCard {
     static id = 'shinjo-atagi';
@@ -19,16 +18,16 @@ export default class ShinjoAtagi extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 message: '{3} sets the {1} skill of {0} to {2}{1}',
-                messageArgs: (card: ProvinceCard) => [
+                messageArgs: (card) => [
                     context.target,
                     context.game.currentConflict?.conflictType,
-                    card.getStrength(),
+                    card.isProvinceCard() ? card.getStrength() : 0,
                     context.source
                 ],
                 cardCondition: (card) => card.isConflictProvince(),
-                subActionProperties: (card: ProvinceCard) => {
+                subActionProperties: (card) => {
                     context.targets.province = card;
-                    const provinceStrength = card.getStrength();
+                    const provinceStrength = card.isProvinceCard() ? card.getStrength() : 0;
                     const effect =
                             context.game.currentConflict?.conflictType === 'military'
                                 ? AbilityDsl.effects.setMilitarySkill(provinceStrength)

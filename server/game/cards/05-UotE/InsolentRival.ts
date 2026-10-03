@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, DuelType } from '../../Constants.js';
@@ -8,7 +7,7 @@ class InsolentRival extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
+            condition: (context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             effect: AbilityDsl.effects.modifyBothSkills(2)
         });
 

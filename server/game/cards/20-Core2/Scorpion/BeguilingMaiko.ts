@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType, FavorType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -23,7 +22,7 @@ export default class BeguilingMaiko extends DrawCard {
                 if(favor === FavorType.Military || favor === FavorType.Both) {
                     gameActions.push(
                         AbilityDsl.actions.lookAt((context) => ({
-                            target: context.player.opponent?.hand.slice().sort((a: BaseCard, b: BaseCard) => a.name.localeCompare(b.name)),
+                            target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             chatMessage: true
                         }))
                     );

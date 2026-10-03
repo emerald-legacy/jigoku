@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, EventName } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class ShinjoYasamura extends DrawCard {
     static id = 'shinjo-yasamura';
 
     setupCardAbilities() {
         this.reaction('Prevent a character from defending this phase')
             .when({
-                onCovertResolved: (event: EventPayload<EventName.OnCovertResolved>, context) =>
+                onCovertResolved: (event, context) =>
                     (event.card === context.source ||
                         (Array.isArray(event.card) && event.card.includes(context.source))) &&
                     !!event.context?.target?.isDrawCard() && event.context.target.covert

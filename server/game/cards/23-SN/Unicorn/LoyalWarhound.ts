@@ -1,9 +1,7 @@
 import { AbilityType, CardType, Duration, EffectName, Players } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
-import { AbilityContext } from '../../../AbilityContext.js';
 
 export default class LoyalWarhound extends DrawCard {
     static id = 'loyal-warhound';
@@ -43,7 +41,7 @@ export default class LoyalWarhound extends DrawCard {
                         AbilityDsl.effects.changeType(CardType.Attachment),
                         AbilityDsl.effects.gainAbility(AbilityType.Action, {
                             title: 'Detatch',
-                            condition: (context: AbilityContext<DrawCard>) => {
+                            condition: (context) => {
                                 const flags = context.source.getEffects(EffectName.AddFlag);
                                 return !flags.includes('wasAttachedThisRound');
                             },
@@ -54,7 +52,7 @@ export default class LoyalWarhound extends DrawCard {
                         // Matched dynamically so the protection follows this card if it is reattached
                         AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                             targetController: Players.Any,
-                            match: (card: BaseCard, context?: AbilityContext<DrawCard>) =>
+                            match: (card, context) =>
                                 card === context?.source.parentCharacter && card.hasTrait('scout'),
                             effect: AbilityDsl.effects.cardCannot({
                                 cannot: 'target',

@@ -1,5 +1,4 @@
 import DrawCard from '../../../DrawCard.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -55,7 +54,7 @@ class StoneBreaker extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
+                cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({

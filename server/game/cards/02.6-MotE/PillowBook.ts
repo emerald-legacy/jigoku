@@ -1,7 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Decks, Duration, EventName } from '../../Constants.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
+import { Location, Decks, Duration } from '../../Constants.js';
 
 class PillowBook extends DrawCard {
     static id = 'pillow-book';
@@ -15,9 +14,9 @@ class PillowBook extends DrawCard {
                     targetController: context.player,
                     duration: Duration.Custom,
                     until: {
-                        onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === topCard && event.originalLocation === Location.ConflictDeck,
+                        onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                         onConflictFinished: () => true,
-                        onDeckShuffled: (event: EventPayload<EventName.OnDeckShuffled>) => event.player === context.player && event.deck === Decks.ConflictDeck
+                        onDeckShuffled: (event) => event.player === context.player && event.deck === Decks.ConflictDeck
                     },
                     effect: [
                         AbilityDsl.effects.showTopConflictCard(),

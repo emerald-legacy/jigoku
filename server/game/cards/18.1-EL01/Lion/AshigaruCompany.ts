@@ -1,15 +1,14 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, EventName, Location } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 class AshigaruCompany extends DrawCard {
     static id = 'ashigaru-company';
 
     setupCardAbilities() {
         this.reaction('Search your conflict deck')
             .when({
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
+                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 5,

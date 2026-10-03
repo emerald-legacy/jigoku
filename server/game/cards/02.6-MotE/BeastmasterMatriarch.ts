@@ -7,7 +7,7 @@ class BeastmasterMatriarch extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyMilitarySkill((card: DrawCard) => this.getTwiceOpponentsClaimedRings(card.controller))
+            effect: AbilityDsl.effects.modifyMilitarySkill((card) => this.getTwiceOpponentsClaimedRings(card.controller))
         });
     }
 

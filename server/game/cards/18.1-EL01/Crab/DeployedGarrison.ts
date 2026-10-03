@@ -36,7 +36,7 @@ export default class DeployedGarrison extends DrawCard {
         }
 
         const attackedProvinces = context.game.requireConflict().getConflictProvinces();
-        const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province: ProvinceCard) => {
+        const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province) => {
             for(const attackedProvince of attackedProvinces) {
                 if(
                     attackedProvince === province ||

@@ -14,7 +14,7 @@ class MagistratesIntervention extends DrawCard {
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.dishonor(),
                 AbilityDsl.actions.conditional({
-                    condition: (context: AbilityContext) => !!(
+                    condition: (context) => !!(
                         context.player.opponent && context.target?.controller === context.player.opponent &&
                             context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1),
                     trueGameAction: AbilityDsl.actions.dishonor(),

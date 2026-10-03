@@ -33,8 +33,8 @@ class OfferTestimony extends DrawCard {
             }), AbilityDsl.actions.bow(context => {
                 const revealedCards = context.events.flatMap((event) =>
                     event.is(EventName.OnCardRevealed) && event.card.isDrawCard() ? [event.card] : []);
-                const lowestCost = Math.min(...revealedCards.map((card: DrawCard) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));
-                const lowestCostPlayers = revealedCards.filter((card: DrawCard) => card.getCost() === lowestCost).map((card: DrawCard) => card.controller);
+                const lowestCost = Math.min(...revealedCards.map((card) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));
+                const lowestCostPlayers = revealedCards.filter((card) => card.getCost() === lowestCost).map((card) => card.controller);
                 return { target: [context.targets.myCharacter, context.targets.oppCharacter].filter((card) => lowestCostPlayers.includes(card.controller)) };
             }))
             .effect('make each player choose a ready participating character they control: {1}', context => [Object.values(context.targets)]);

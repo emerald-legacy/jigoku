@@ -1,8 +1,7 @@
 import { GameModes } from '../../../GameModes.js';
-import { CardType, EventName, TargetMode, Decks, Location, Players } from '../../Constants.js';
+import { CardType, TargetMode, Decks, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
@@ -25,7 +24,7 @@ export default class KaiuShihobu extends DrawCard {
                             event.player.moveCard(card, Location.UnderneathStronghold);
                             card.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
+                                    onCardMoved: event =>
                                         event.card === card && event.originalLocation === Location.UnderneathStronghold
                                 },
                                 match: card,

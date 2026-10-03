@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType, Players, TargetMode, Decks } from '../../Constants.js';
 
@@ -19,17 +18,17 @@ class TheWesternWind extends DrawCard {
             }, AbilityDsl.actions.deckSearch({
                 cardCondition: (card) => card.type === CardType.Character,
                 targetMode: TargetMode.UpToVariable,
-                numCards: (context: AbilityContext) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
+                numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
                 amount: 8,
                 deck: Decks.DynastyDeck,
-                selectedCardsHandler: (context: AbilityContext, event, cards: DrawCard[]) => {
+                selectedCardsHandler: (context, event, cards: DrawCard[]) => {
                     const target = context.target;
                     if(!target) {
                         return;
                     }
                     if(cards.length > 0) {
                         this.game.addMessage('{0} selects {1} and puts {2} into {3}', event.player, cards, cards.length > 1 ? 'them' : 'it', target.facedown ? target.location : target);
-                        cards.forEach((card: DrawCard) => {
+                        cards.forEach((card) => {
                             event.player.moveCard(card, target.location);
                             card.facedown = false;
                         });

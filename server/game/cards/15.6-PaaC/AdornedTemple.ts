@@ -2,15 +2,13 @@ import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class AdornedTemple extends DrawCard {
     static id = 'adorned-temple';
 
     setupCardAbilities() {
         this.reaction('Draw cards')
             .when({
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) => {
+                onMoveFate: (event, context) => {
                     return (
                         (event.fate ?? 0) > 0 &&
                         event.recipient instanceof BaseCard &&

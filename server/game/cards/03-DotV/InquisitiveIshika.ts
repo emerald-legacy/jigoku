@@ -9,7 +9,7 @@ class InquisitiveIshika extends DrawCard {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(),
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({ match: (card: DrawCard) => this.game.currentConflict?.elements.some((element: string) => card.hasTrait(element)) ?? false })
+            effect: AbilityDsl.effects.reduceCost({ match: (card) => this.game.currentConflict?.elements.some((element: string) => card.hasTrait(element)) ?? false })
         });
     }
 }

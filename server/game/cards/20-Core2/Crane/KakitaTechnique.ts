@@ -1,10 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Duration, EventName, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class KakitaTechnique extends DrawCard {
     static id = 'kakita-technique';
 
@@ -27,7 +26,7 @@ export default class KakitaTechnique extends DrawCard {
                 AbilityDsl.actions.cardLastingEffect((context) => ({
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: AbilityContext) =>
+                            onCardPlayed: (event, context) =>
                                 event.player === context.player && event.card.type === CardType.Event
                         },
                         message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',

@@ -12,7 +12,7 @@ export default class ArmorOfTheFallen extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Remove characters from your discard pile to bow a character',
-                condition: (context: AbilityContext<this>) => context.source.isParticipating(),
+                condition: (context) => context.source.isParticipating(),
                 cost: AbilityDsl.costs.removeFromGame({
                     cardType: CardType.Character,
                     location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
@@ -20,7 +20,7 @@ export default class ArmorOfTheFallen extends DrawCard {
                 }),
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: (card: DrawCard, context: AbilityContext) =>
+                    cardCondition: (card, context) =>
                         card.isParticipating() && (card.printedCost ?? 0) <= this.maxCostReachable(context),
                     gameAction: AbilityDsl.actions.bow()
                 },
@@ -42,6 +42,6 @@ export default class ArmorOfTheFallen extends DrawCard {
     }
 
     private sumCharactersInPile(pile: DrawCard[]): number {
-        return pile.reduce((sum: number, card: DrawCard) => (card.type === CardType.Character ? sum + 1 : sum), 0);
+        return pile.reduce((sum: number, card) => (card.type === CardType.Character ? sum + 1 : sum), 0);
     }
 }

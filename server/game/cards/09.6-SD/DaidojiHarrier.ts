@@ -21,7 +21,7 @@ class DaidojiHarrier extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt(context => ({
-                    target: context.target
+                    target: context.targets.target
                 })),
                 AbilityDsl.actions.cardMenu(context => ({
                     cards: context.targets.target.filter((card) => card.isDrawCard()),

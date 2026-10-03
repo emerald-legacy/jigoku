@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { EventName, Location } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class SeekerInitiate extends DrawCard {
     static id = 'seeker-initiate';
 
     setupCardAbilities() {
         this.reaction('Look at top 5 cards')
             .when({
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>, context) => !!context.player.role && ((event.conflict && event.conflict.elements.some(element => context.player.role?.hasTrait(element))) || context.player.role?.hasTrait(event.ring.element)) &&
+                onClaimRing: (event, context) => !!context.player.role && ((event.conflict && event.conflict.elements.some(element => context.player.role?.hasTrait(element))) || context.player.role?.hasTrait(event.ring.element)) &&
                                                  event.player === context.player && context.player.conflictDeck.length > 0
             })
             .gameAction(AbilityDsl.actions.deckSearch({

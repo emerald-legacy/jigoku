@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -18,7 +17,7 @@ class TheRecedingTide extends DrawCard {
                 controller: Players.Self,
                 location: Location.Provinces,
                 cardCondition: card => card.location !== Location.StrongholdProvince,
-                subActionProperties: (card: ProvinceCard) => ({ destination: card.location }),
+                subActionProperties: (card) => ({ destination: card.location }),
                 gameAction: AbilityDsl.actions.putIntoProvince({
                     target: context.target
                 })

@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { shuffle } from '../../../utils/shuffle.js';
@@ -26,7 +25,7 @@ export default class HidaMarauder extends DrawCard {
                             chatMessage: true,
                             player: context.player.opponent
                         }),
-                        AbilityDsl.actions.cardMenu((context: AbilityContext<DrawCard, DrawCard>) => ({
+                        AbilityDsl.actions.cardMenu((context) => ({
                             cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             targets: true,
                             message: '{0} chooses {1} to be discarded',

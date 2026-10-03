@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Duration, EventName } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class NitenPupil extends DrawCard {
     static id = 'niten-pupil';
 
     setupCardAbilities() {
         this.reaction('Double base skills')
             .when({
-                onHonorDialsRevealed: (event: EventPayload<EventName.OnHonorDialsRevealed>, context) => event.duel && event.duel.isInvolved(context.source)
+                onHonorDialsRevealed: (event, context) => event.duel && event.duel.isInvolved(context.source)
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect({
                 effect: [

@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
@@ -38,7 +37,7 @@ export default class EarnestSculptor extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    (card: BaseCard) =>
+                    (card) =>
                         card === context.event.card || card === context.event.context.source
                 )
             })))

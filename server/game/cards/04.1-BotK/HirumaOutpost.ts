@@ -1,22 +1,20 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType, EventName } from '../../Constants.js';
+import { AbilityType, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => {
+            condition: (context) => {
                 const province = context.player.getProvinceCardInProvince(context.source.location);
                 return !!province && !province.isBroken;
             },
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Make opponent lose an honor',
                 when: {
-                    onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: AbilityContext) => {
+                    onConflictDeclared: (event, context) => {
                         if(event.conflict.attackingPlayer === context.player) {
                             return false;
                         }

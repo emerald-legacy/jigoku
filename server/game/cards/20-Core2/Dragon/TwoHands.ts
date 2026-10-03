@@ -19,7 +19,7 @@ export default class TwoHands extends DrawCard {
             .condition((context) =>
                 context.game.currentConflict instanceof Conflict &&
                 context.player.cardsInPlay.some(
-                    (card: DrawCard) =>
+                    (card) =>
                         card.isParticipating() && card.attachments.some((attachment) => attachment.hasTrait('weapon'))
                 ) &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent) >
@@ -55,13 +55,13 @@ function calcTwoHandsEffect(context: AbilityContext, chosen: DrawCard | DrawCard
         return {
             targets,
             type: 'military',
-            value: Math.min(...targets.map((card: DrawCard) => card.getMilitarySkill()))
+            value: Math.min(...targets.map((card) => card.getMilitarySkill()))
         };
     }
 
     return {
         targets,
         type: 'political',
-        value: Math.min(...targets.map((card: DrawCard) => card.getPoliticalSkill()))
+        value: Math.min(...targets.map((card) => card.getPoliticalSkill()))
     };
 }

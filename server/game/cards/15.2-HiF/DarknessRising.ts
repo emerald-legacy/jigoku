@@ -8,7 +8,7 @@ class DarknessRising extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow weaker military characters')
-            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: (card: DrawCard, context: AbilityContext) => card.isParticipating() && this.getLegalTargetsForCard(card, context).length > 0 }))
+            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: (card, context) => card.isParticipating() && this.getLegalTargetsForCard(card, context).length > 0 }))
             .condition(context => context.game.isDuringConflict())
             .gameAction(AbilityDsl.actions.bow((context) => ({
                 target: this.getLegalTargetsForCard(context.costs.dishonor, context)
@@ -21,7 +21,7 @@ class DarknessRising extends DrawCard {
     }
 
     getLegalTargetsForCard(card: DrawCard | undefined, context: AbilityContext) {
-        const targets = context.game.requireConflict().getParticipants().filter((c: DrawCard) => !card || (c.getMilitarySkill() < card.getMilitarySkill() && c.allowGameAction('bow', context)));
+        const targets = context.game.requireConflict().getParticipants().filter((c) => !card || (c.getMilitarySkill() < card.getMilitarySkill() && c.allowGameAction('bow', context)));
         return targets;
     }
 }

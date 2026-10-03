@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, EventName, Phases, Players } from '../../Constants.js';
+import { Duration, Phases, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';
 
     setupCardAbilities() {
         this.reaction('Prevent non-spell events from being played while contesting a ring')
             .when({
-                onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phases.Conflict
             })
             .ringTarget('target', {
                 ringCondition: () => true

@@ -1,9 +1,8 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { Location, EventName } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 class Process {
     private topCards: Set<DrawCard>;
@@ -31,9 +30,8 @@ class Process {
             activePromptTitle: `Select a card to take for you (${x} of ${y})`,
             context: this.context,
             cards: this.topCardsArray,
-            cardHandler: (card: DrawCard) => this.stealChosen(card),
-            choices: ['Done'],
-            handlers: [() => this.stealCardsAndContinue()]
+            cardHandler: (card) => this.stealChosen(card),
+            options: [{ text: 'Done', handler: () => this.stealCardsAndContinue() }]
         });
     }
 
@@ -60,7 +58,7 @@ class Process {
                 card.controller = this.context.player;
                 this.context.source.lastingEffect(() => ({
                     until: {
-                        onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
+                        onCardMoved: event =>
                             event.card === card && event.originalLocation === Location.RemovedFromGame
                     },
                     match: card,
@@ -79,9 +77,8 @@ class Process {
             activePromptTitle: `Select a card to put in the ${this.positionWord()} position of their deck`,
             context: this.context,
             cards: this.topCardsArray,
-            cardHandler: (card: DrawCard) => this.markNextOnTop(card),
-            choices: [],
-            handlers: []
+            cardHandler: (card) => this.markNextOnTop(card),
+            options: []
         });
     }
 

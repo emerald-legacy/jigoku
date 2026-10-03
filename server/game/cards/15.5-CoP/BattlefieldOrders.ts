@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players, Location, AbilityType } from '../../Constants.js';
-import type Player from '../../Player.js';
 
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';
@@ -10,7 +9,7 @@ class BattlefieldOrders extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            match: (player: Player) => !!player.opponent && player.honor >= player.opponent.honor + 5,
+            match: (player) => !!player.opponent && player.honor >= player.opponent.honor + 5,
             effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
         });
 

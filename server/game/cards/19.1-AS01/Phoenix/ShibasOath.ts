@@ -1,8 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType, EventName, Location } from '../../../Constants.js';
+import { AbilityType, CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class ShibasOath extends DrawCard {
     static id = 'shiba-s-oath';
 
@@ -14,7 +13,7 @@ export default class ShibasOath extends DrawCard {
 
         this.reaction('Honor attached character')
             .when({
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
+                onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .gameAction(AbilityDsl.actions.honor((context) => ({

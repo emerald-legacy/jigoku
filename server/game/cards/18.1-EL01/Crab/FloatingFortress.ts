@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class FloatingFortress extends DrawCard {
     static id = 'floating-fortress';
@@ -31,7 +30,7 @@ export default class FloatingFortress extends DrawCard {
                                 message: '{0} moves {1} to {2}',
                                 messageArgs: (province, player) => [player, context.source, province],
                                 cardCondition: (card) => card.isConflictProvince(),
-                                subActionProperties: (card: ProvinceCard) => ({
+                                subActionProperties: (card) => ({
                                     target: context.source,
                                     destination: card.location
                                 }),

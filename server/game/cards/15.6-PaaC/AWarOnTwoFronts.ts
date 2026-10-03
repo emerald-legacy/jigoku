@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType, Duration, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,7 +13,7 @@ class AWarOnTwoFronts extends DrawCard {
             .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !(card).isConflictProvince() && (card).canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a: ProvinceCard) => a.controller === card.controller)
+                cardCondition: (card, context) => !(card).isConflictProvince() && (card).canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal(),
                 AbilityDsl.actions.conflictLastingEffect(context => ({

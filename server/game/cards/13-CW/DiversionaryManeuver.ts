@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +11,7 @@ class DiversionaryManeuver extends DrawCard {
             .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !(card).isConflictProvince() && (card).canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a: ProvinceCard) => a.controller === card.controller)
+                cardCondition: (card, context) => !(card).isConflictProvince() && (card).canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
@@ -24,7 +23,7 @@ class DiversionaryManeuver extends DrawCard {
                     })),
                     AbilityDsl.actions.moveConflict(context => ({
                         target: context.target })),
-                    AbilityDsl.actions.selectCard({
+                    AbilityDsl.actions.selectCards({
                         cardType: CardType.Character,
                         location: Location.PlayArea,
                         controller: Players.Self,
@@ -33,11 +32,11 @@ class DiversionaryManeuver extends DrawCard {
                         mode: TargetMode.Unlimited,
                         cardCondition: card => !card.bowed,
                         message: '{0} moves {1} to the conflict',
-                        messageArgs: (card: DrawCard[], player) => [player, card.length > 0 ? card : 'no one'],
+                        messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
                         gameAction: AbilityDsl.actions.moveToConflict()
                     })
                 ]),
-                AbilityDsl.actions.selectCard({
+                AbilityDsl.actions.selectCards({
                     cardType: CardType.Character,
                     location: Location.PlayArea,
                     controller: Players.Opponent,
@@ -46,7 +45,7 @@ class DiversionaryManeuver extends DrawCard {
                     mode: TargetMode.Unlimited,
                     cardCondition: card => !card.bowed,
                     message: '{0} moves {1} to the conflict',
-                    messageArgs: (card: DrawCard[], player) => [player, card.length > 0 ? card : 'no one'],
+                    messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
                     gameAction: AbilityDsl.actions.moveToConflict()
                 })
             ]))

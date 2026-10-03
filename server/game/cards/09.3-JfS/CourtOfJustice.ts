@@ -2,15 +2,13 @@ import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 export default class CourtOfJustice extends DrawCard {
     static id = 'court-of-justice';
 
     public setupCardAbilities() {
         this.reaction('Look at 3 random cards of the opponent\'s hand')
             .when({
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) =>
+                afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     event.conflict.conflictType === 'political' &&
                     context.player.opponent !== undefined

@@ -22,7 +22,7 @@ export default class CraneIndustry extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceCost({
                     amount: 1,
-                    match: (card: BaseCard) => !this.hasEventBeenPlayedByThisPlayer(card)
+                    match: (card) => !this.hasEventBeenPlayedByThisPlayer(card)
                 })
             })))
             .effect('reduce the cost of the first copy of each event they play this conflict by 1')

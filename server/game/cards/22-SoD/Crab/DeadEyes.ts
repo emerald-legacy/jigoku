@@ -1,8 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType, EventName } from '../../../Constants.js';
+import { ConflictType } from '../../../Constants.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
 
@@ -27,7 +26,7 @@ export default class DeadEyes extends DrawCard {
                     }),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<EventName.AfterConflict>) => {
+                            afterConflict: (event) => {
                                 if(!context.source.parentCharacter) {
                                     return false;
                                 }

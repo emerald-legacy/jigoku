@@ -1,7 +1,6 @@
 import { EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -27,7 +26,7 @@ export default class ShinjoIsamu extends DrawCard {
                 ringCondition: (ring, context) =>
                     context.game.requireConflict()
                         .getConflictProvinces()
-                        .some((province: ProvinceCard) => province.getElement().includes(ring.element))
+                        .some((province) => province.getElement().includes(ring.element))
             }, AbilityDsl.actions.resolveRingEffect())
             .effect('resolve the {0} effect');
     }

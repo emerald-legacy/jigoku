@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,7 +11,7 @@ class DisguisedProtector extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.changePlayerSkillModifier(context.player.showBid)
             })), AbilityDsl.actions.playerLastingEffect((context) => ({
-                condition: (context: AbilityContext) => !!context.player.opponent,
+                condition: (context) => !!context.player.opponent,
                 targetController: context.player.opponent,
                 effect: AbilityDsl.effects.changePlayerSkillModifier(context.player.opponent ? context.player.opponent.showBid : 0)
             })))

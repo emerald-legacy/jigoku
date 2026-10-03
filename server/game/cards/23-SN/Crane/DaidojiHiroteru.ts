@@ -10,14 +10,14 @@ export default class DaidojiHiroteru extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: (card: DrawCard) => card.isDynasty && card.isFacedown(),
+            match: (card) => card.isDynasty && card.isFacedown(),
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
 
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: (card: DrawCard) => card.isDynasty && card.type === CardType.Character,
+            match: (card) => card.isDynasty && card.type === CardType.Character,
             effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand)
         });
 

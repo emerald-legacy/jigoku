@@ -18,8 +18,8 @@ class WatchtowerOfSunsShadow extends DrawCard {
                 return cardsInProvinces.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
             },
             targetController: Players.Opponent,
-            match: (card: DrawCard) => card.isAttacking(),
-            effect: AbilityDsl.effects.modifyBothSkills((card: DrawCard) => -card.getFate())
+            match: (card) => card.isAttacking(),
+            effect: AbilityDsl.effects.modifyBothSkills((card) => -card.getFate())
         });
 
         this.forcedInterrupt('Lose 2 fate')

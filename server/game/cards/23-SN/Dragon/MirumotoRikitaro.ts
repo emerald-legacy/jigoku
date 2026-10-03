@@ -33,7 +33,7 @@ export default class MirumotoRikitaro extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    (card: DrawCard) => card === context.event.context?.source
+                    (card) => card === context.event.context?.source
                 )
             })))
             .effect('reduce the cost of their next attachment by 1');

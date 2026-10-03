@@ -1,6 +1,5 @@
 import { CardType, Duration, Location, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ObstinateWitchHunter extends DrawCard {
@@ -12,7 +11,7 @@ export default class ObstinateWitchHunter extends DrawCard {
                 onPhaseStarted: (event, context) =>
                     event.phase === Phases.Fate &&
                     context.game.allCards.some(
-                        (card: BaseCard) =>
+                        (card) =>
                             card instanceof DrawCard &&
                             card.type === CardType.Character &&
                             card.location === Location.PlayArea &&
