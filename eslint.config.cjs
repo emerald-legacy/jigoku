@@ -16,6 +16,11 @@ module.exports = [
             'preserve-caught-error': 'off'
         }
     },
+    {
+        rules: {
+            'prefer-const': 'error'
+        }
+    },
     // JavaScript files
     {
         files: ['**/*.js'],
