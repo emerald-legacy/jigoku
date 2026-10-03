@@ -11,7 +11,7 @@ import type { StatusToken } from '../StatusToken.js';
 import type { Duel } from '../Duel.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-type GameActionTarget = Player | Ring | BaseCard | StatusToken | Duel;
+export type GameActionTarget = Player | Ring | BaseCard | StatusToken | Duel;
 type TargetValue = unknown;
 
 export interface GameActionProperties {

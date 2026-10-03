@@ -39,7 +39,6 @@ export interface EffectProperties<T extends GameObject = GameObject> {
     targetController?: string | Player;
     targetLocation?: Location | Location[];
     target?: GameObject | GameObject[];
-    [key: string]: unknown;
 }
 
 /**

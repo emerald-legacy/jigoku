@@ -1,7 +1,8 @@
 import { GameObject } from '../../server/game/GameObject.js';
 import { AbilityContext } from '../../server/game/AbilityContext.js';
 import type Game from '../../server/game/Game.js';
-import { getGameAction, setGameActionCatalog } from '../../server/game/GameActions/GameActionRegistry.js';
+import { setGameActionCatalog } from '../../server/game/GameActions/GameActionRegistry.js';
+import * as GameActions from '../../server/game/GameActions/GameActions.js';
 import { createTestGame } from '../helpers/fixtures.js';
 
 describe('GameObject', function() {
@@ -25,35 +26,27 @@ describe('GameObject', function() {
                 gameAction = jasmine.createSpyObj('gameAction', ['canAffect']);
                 gameAction.canAffect.and.returnValue(true);
                 factory = jasmine.createSpy('factory').and.returnValue(gameAction);
-                setGameActionCatalog({ specAllowAction: factory });
+                setGameActionCatalog({ honor: factory });
+            });
+
+            afterEach(function() {
+                setGameActionCatalog({ honor: GameActions.honor });
             });
 
             it('should ask the produced game action whether it can affect this object', function() {
-                gameObject.allowGameAction('specAllowAction');
+                gameObject.allowGameAction('honor');
                 expect(gameAction.canAffect).toHaveBeenCalledWith(gameObject, frameworkContext);
             });
 
             it('should return the game action canAffect result', function() {
                 gameAction.canAffect.and.returnValue(false);
-                expect(gameObject.allowGameAction('specAllowAction')).toBe(false);
+                expect(gameObject.allowGameAction('honor')).toBe(false);
             });
 
             it('should use a supplied context over the framework context', function() {
                 const otherContext = new AbilityContext({ game });
-                gameObject.allowGameAction('specAllowAction', otherContext);
+                gameObject.allowGameAction('honor', otherContext);
                 expect(gameAction.canAffect).toHaveBeenCalledWith(gameObject, otherContext);
-            });
-        });
-
-        describe('when the action type is not registered', function() {
-            beforeEach(function() {
-                spyOn(gameObject, 'checkRestrictions').and.returnValue(true);
-            });
-
-            it('should fall back to checkRestrictions', function() {
-                expect(getGameAction('specUnregisteredAction')).toBeUndefined();
-                gameObject.allowGameAction('specUnregisteredAction');
-                expect(gameObject.checkRestrictions).toHaveBeenCalledWith('specUnregisteredAction', frameworkContext);
             });
         });
     });

@@ -50,6 +50,10 @@ export interface EventPayloadMap {
         playType?: PlayType;
         onPlayCardSource?: BaseCard;
         resolver?: AbilityResolver;
+        /** Stamped by the card whose limited-use ability let it be played (Master Tactician). */
+        sourceOfCardPlayedFromConflictDeck?: BaseCard;
+        /** Likewise, Bayushi Kachiko (Atonement). */
+        sourceOfCardPlayedFromConflictDiscard?: BaseCard;
     };
     [EventName.OnAbilityResolverInitiated]: BaseEventPayload & {
         card?: BaseCard;
@@ -345,7 +349,7 @@ export type EventParams<N extends EventName> = EventPayload<N> & {
 };
 
 export type EventPayload<K extends string> =
-    K extends keyof EventPayloadMap ? EventPayloadMap[K] : BaseEventPayload & Record<string, unknown>;
+    K extends keyof EventPayloadMap ? EventPayloadMap[K] & { name?: K } : BaseEventPayload & Record<string, unknown>;
 
 // An event of a specific name, carrying its precise payload fields alongside the
 // framework Event surface. Produced by the typed event factory. The payload comes first so that

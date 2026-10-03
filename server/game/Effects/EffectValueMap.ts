@@ -43,22 +43,23 @@ export interface ParticipantCostEffect {
 export type DashSkillType = 'military' | 'political';
 
 // Method syntax on purpose: cards narrow the context and event types.
-interface DelayedEffectCallbacks<N extends EventName> {
-    condition(context: AbilityContext): unknown;
-    trigger(event: GameEvent<N>, context: AbilityContext): unknown;
-    messageArgs(context: AbilityContext, targets: GameObject[]): MsgArg[];
+interface DelayedEffectCallbacks<N extends EventName, S extends BaseCard> {
+    condition(context: AbilityContext<S>): unknown;
+    trigger(event: GameEvent<N>, context: AbilityContext<S>): unknown;
+    messageArgs(context: AbilityContext<S>, targets: GameObject[]): MsgArg[];
 }
 
-export type DelayedEffectWhen = { [N in EventName]?: DelayedEffectCallbacks<N>['trigger'] };
+/** `S` is the card whose effect it is, like a trigger's `WhenType<S>`. */
+export type DelayedEffectWhen<S extends BaseCard = BaseCard> = { [N in EventName]?: DelayedEffectCallbacks<N, S>['trigger'] };
 
-export type DelayedEffectValue = {
-    condition?: DelayedEffectCallbacks<EventName>['condition'];
-    when?: DelayedEffectWhen;
+export type DelayedEffectValue<S extends BaseCard = BaseCard> = {
+    condition?: DelayedEffectCallbacks<EventName, S>['condition'];
+    when?: DelayedEffectWhen<S>;
     multipleTrigger?: boolean;
     onlyRemoveOnSuccess?: boolean;
     gameAction: GameAction;
     message?: string;
-    messageArgs?: MsgArg[] | DelayedEffectCallbacks<EventName>['messageArgs'];
+    messageArgs?: MsgArg[] | DelayedEffectCallbacks<EventName, S>['messageArgs'];
 };
 
 // Method syntax on purpose: cards narrow the card type.

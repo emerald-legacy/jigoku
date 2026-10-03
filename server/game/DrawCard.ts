@@ -253,10 +253,10 @@ class DrawCard extends BaseCard {
      * effect is applied (for cases where the effect only applies to specific
      * characters).
      */
-    whileAttached(properties: Pick<PersistentEffectProps<this, DrawCard>, 'condition' | 'match' | 'effect'>) {
+    whileAttached(properties: Pick<PersistentEffectProps<this, BaseCard>, 'condition' | 'match' | 'effect'>) {
         this.persistentEffect({
             condition: properties.condition || (() => true),
-            match: (card, context) => card === this.parent && (!properties.match || (card instanceof DrawCard && properties.match(card, context))),
+            match: (card, context) => card === this.parent && (!properties.match || properties.match(card, context)),
             targetController: Players.Any,
             effect: properties.effect
         });

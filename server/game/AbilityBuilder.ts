@@ -47,8 +47,17 @@ type ChosenTokens<O> = true extends O ? StatusToken[] | undefined : StatusToken[
 type BuilderContext<Base extends AbilityContext, TG, RG, CO, TK = object> =
     Base & { targets: TG; rings: RG; costs: Partial<CO>; tokens: TK } & NamedTarget<TG> & NamedRing<RG> & NamedToken<TK>;
 
-/** The engine mirrors a target named `target` onto `context.target`, and likewise for rings and tokens. */
-type NamedTarget<TG> = TG extends { target: infer T } ? { target: T } : unknown;
+/**
+ * The engine mirrors one card chosen for a target named `target` onto `context.target`, and likewise
+ * for rings and tokens. A list of cards is not mirrored, so where the value may be a list (a skipped
+ * optional target, or a multi-card target's own actions) `context.target` may be unset.
+ */
+type NamedTarget<TG> = TG extends { target: infer T }
+    ? IsCardList<T> extends true ? unknown : { target: SingleCard<T> }
+    : unknown;
+/** Brackets stop the union from being split: true only if every possible value is a list. */
+type IsCardList<T> = [T] extends [readonly unknown[]] ? true : false;
+type SingleCard<T> = Exclude<T, readonly unknown[]> | (T extends readonly unknown[] ? undefined : never);
 type NamedRing<RG> = RG extends { target: infer R } ? { ring: R } : unknown;
 type NamedToken<TK> = TK extends { target: infer T } ? { token: T } : unknown;
 
@@ -246,7 +255,8 @@ export class AbilityBuilder<
                     return value(spec);
             }
         };
-        const mirrored = (spec: TargetSpec) => spec.name !== 'target' || mirror(spec) === value(spec);
+        // several cards, or a skipped optional target, are not mirrored onto `context.target`
+        const mirrored = (spec: TargetSpec) => spec.name !== 'target' || (spec.bag === 'targets' && Array.isArray(value(spec))) || mirror(spec) === value(spec);
         return this.draft.holdsBase(context) &&
             required.every((spec) => spec.holds(value(spec)) && mirrored(spec)) &&
             optional.every((spec) => value(spec) === undefined || spec.holds(value(spec)));

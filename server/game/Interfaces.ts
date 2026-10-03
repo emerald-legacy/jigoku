@@ -6,7 +6,6 @@ import type { DeclaredGameAction } from './BaseAbility.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
 import type { AbilityLimit } from './AbilityLimit.js';
-import type { GameObject } from './GameObject.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
 import type { Faction } from './BaseCard.js';
@@ -15,7 +14,7 @@ import type { ProvinceCard } from './ProvinceCard.js';
 import type EffectSource from './EffectSource.js';
 import type CardAbility from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
-import type { EffectFactory } from './Effects/EffectBuilder.js';
+import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import type { Players, TargetMode, CardType, Location, EventName, Phases } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
@@ -245,13 +244,18 @@ export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource 
 
 export type TriggeredAbilityProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-export interface PersistentEffectProps<Source extends EffectSource = BaseCard, MatchTarget extends GameObject = GameObject> {
+export type TargetLocation = Location | (string & {});
+
+/** A card effect matches the cards in its target location: only draw cards are in play. */
+export type MatchTarget<T, L extends TargetLocation> = T extends BaseCard ? (L extends Location.PlayArea ? DrawCard : BaseCard) : T;
+
+export interface PersistentEffectProps<Source extends EffectSource = BaseCard, T extends EffectTarget = EffectTarget, L extends TargetLocation = Location.PlayArea> {
     location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
-    match?: (card: MatchTarget, context?: AbilityContext<Source>) => boolean;
+    match?: (target: MatchTarget<T, L>, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
-    targetLocation?: Location | (string & {});
-    effect: EffectFactory | EffectFactory[];
+    targetLocation?: L;
+    effect: EffectFactory<T> | EffectFactory<T>[];
     createCopies?: boolean;
     /** A keyword's effect (e.g. dire), which survives losing all non-keyword abilities. */
     isKeywordEffect?: boolean;

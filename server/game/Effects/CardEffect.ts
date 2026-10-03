@@ -36,7 +36,7 @@ export default class CardEffect extends Effect<BaseCard> {
         }
         const sourceController = this.source.getEffectController();
         return (
-            target.allowGameAction('applyEffect', this.context) &&
+            target.checkRestrictions('applyEffect', this.context) &&
             (this.targetController !== Players.Self || target.controller === sourceController) &&
             (this.targetController !== Players.Opponent || target.controller !== sourceController)
         );

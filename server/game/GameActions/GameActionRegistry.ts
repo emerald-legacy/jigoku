@@ -1,4 +1,5 @@
 import type { GameAction } from './GameAction.js';
+import type * as GameActions from './GameActions.js';
 
 /**
  * Factory type for catalog lookups. The args are `never[]` rather than `any[]`: the catalog is
@@ -8,6 +9,9 @@ import type { GameAction } from './GameAction.js';
  * factory's real signature should import it from GameActions directly rather than via the catalog.
  */
 export type GameActionFactory = (...args: never[]) => GameAction;
+
+/** The names `allowGameAction` accepts: `GameActions` exports only factories. Keys only, so no factory type is resolved. */
+export type GameActionName = keyof typeof GameActions;
 
 const catalog = new Map<string, GameActionFactory>();
 

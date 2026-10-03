@@ -27,7 +27,8 @@ import type { Conflict } from '../Conflict.js';
 export type { DetachedValue, DynamicValue };
 
 export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel | Conflict;
-export type EffectFactory = (game: Game, source: EffectSource, props: Props) => Effect;
+/** `appliesTo` is never set; it records what the effect targets, so `match` can be typed by it. */
+export type EffectFactory<T = EffectTarget> = ((game: Game, source: EffectSource, props: Props) => Effect) & { readonly appliesTo?: T };
 
 type Props = {
     targetLocation?: Location | Location[];
@@ -54,16 +55,16 @@ type Container<T extends GameObject> = new (game: Game, source: EffectSource, pr
 
 /** Effect factories for one kind of target; each checks its value against `EffectValueMap`. */
 function effectsFor<T extends GameObject>(Container: Container<T>) {
-    const staticEffect = <N extends EffectName>(type: N, value: StaticValue<N, T>): EffectFactory =>
+    const staticEffect = <N extends EffectName>(type: N, value: StaticValue<N, T>): EffectFactory<T> =>
         (game, source, props) => new Container(game, source, props, new StaticEffect<N, T>(type, value));
-    const dynamicEffect = <N extends EffectName>(type: N, value: DynamicValue<EffectValueMap[N], T>): EffectFactory =>
+    const dynamicEffect = <N extends EffectName>(type: N, value: DynamicValue<EffectValueMap[N], T>): EffectFactory<T> =>
         (game, source, props) => new Container(game, source, props, new DynamicEffect<N, T>(type, value));
     return {
         static: staticEffect,
         dynamic: dynamicEffect,
-        detached: <N extends EffectName, S>(type: N, value: DetachedValue<T, S>): EffectFactory =>
+        detached: <N extends EffectName, S>(type: N, value: DetachedValue<T, S>): EffectFactory<T> =>
             (game, source, props) => new Container(game, source, props, new DetachedEffect<N, T, S>(type, value)),
-        flexible: <N extends FlexibleEffectName>(type: N, value: FlexibleValue<EffectValueMap[N], T>): EffectFactory =>
+        flexible: <N extends FlexibleEffectName>(type: N, value: FlexibleValue<EffectValueMap[N], T>): EffectFactory<T> =>
             isCalculation(value) ? dynamicEffect(type, value) : staticEffect(type, value)
     };
 }

@@ -48,7 +48,6 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, C>, ring: BaseCard | Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { attachment } = this.getProperties(context, additionalProperties);
-        event.name = this.eventName;
         event.parent = ring;
         if(attachment) {
             event.card = attachment;

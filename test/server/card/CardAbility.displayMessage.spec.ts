@@ -119,7 +119,7 @@ describe('CardAbility displayMessage', function () {
             eventToCancel = new DrawCard(testPlayer(game, 'player2'), { id: 'event-to-cancel', name: 'Event To Cancel', type: CardType.Event });
             const ability = new TriggeredAbility(source, AbilityType.WouldInterrupt, {
                 when: { onCardAbilityInitiated: () => true },
-                cost: AbilityDsl.costs.dishonor({ cardCondition: (card: DrawCard) => card.hasTrait('courtier') }),
+                cost: AbilityDsl.costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
                 effect: 'cancel {1}',
                 effectArgs: (context) => context.event.card
             });

@@ -277,7 +277,7 @@ class CardAbility extends ThenAbility {
                 [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
             }
         } else {
-            effectArgs.push(context.target || context.ring || context.source);
+            effectArgs.push(context.messageTarget() || context.ring || context.source);
             extraArgs = this.properties.effectArgs;
         }
 

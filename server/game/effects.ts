@@ -49,9 +49,9 @@ import type {
 
 type Flexible<T, Target extends EffectTarget = DrawCard> = T | ((target: Target, context: AbilityContext) => T);
 
-function modifyDuelistSkill(value: number, duel: Duel | undefined): EffectFactory;
-function modifyDuelistSkill(value: Flexible<number>): EffectFactory;
-function modifyDuelistSkill(value: Flexible<number>, duel?: Duel): EffectFactory {
+function modifyDuelistSkill(value: number, duel: Duel | undefined): EffectFactory<BaseCard>;
+function modifyDuelistSkill(value: Flexible<number>): EffectFactory<BaseCard>;
+function modifyDuelistSkill(value: Flexible<number>, duel?: Duel): EffectFactory<BaseCard> {
     return duel !== undefined && typeof value === 'number'
         ? EffectBuilder.card.static(EffectName.ModifyDuelistSkill, { value, duel })
         : EffectBuilder.card.flexible(EffectName.ModifyDuelistSkill, value);
@@ -122,7 +122,7 @@ const Effects = {
     copyProvince,
     customDetachedCard: <S>(properties: DetachedValue<BaseCard, S>) => EffectBuilder.card.detached(EffectName.CustomEffect, properties),
     customRefillProvince: (refillFunc: EffectValueMap[EffectName.CustomProvinceRefillEffect]) => EffectBuilder.card.static(EffectName.CustomProvinceRefillEffect, refillFunc),
-    delayedEffect: (properties: DelayedEffectValue) => EffectBuilder.card.static(EffectName.DelayedEffect, properties),
+    delayedEffect: <S extends BaseCard = BaseCard>(properties: DelayedEffectValue<S>) => EffectBuilder.card.static(EffectName.DelayedEffect, properties),
     doesNotBow: () => EffectBuilder.card.static(EffectName.DoesNotBow, true),
     doesNotReady: () => EffectBuilder.card.static(EffectName.DoesNotReady, true),
     entersPlayWithStatus: (status: EffectValueMap[EffectName.EntersPlayWithStatus]) => EffectBuilder.card.static(EffectName.EntersPlayWithStatus, status),
@@ -298,7 +298,7 @@ const Effects = {
                     : Object.assign({ type: (properties.cannot ?? properties.type) }, properties)
             )
         ),
-    playerDelayedEffect: (properties: DelayedEffectValue) => EffectBuilder.player.static(EffectName.DelayedEffect, properties),
+    playerDelayedEffect: <S extends BaseCard = BaseCard>(properties: DelayedEffectValue<S>) => EffectBuilder.player.static(EffectName.DelayedEffect, properties),
     playerFateCostToTargetCard: (properties: Flexible<EffectValueMap[EffectName.PlayerFateCostToTargetCard], Player>) =>
         EffectBuilder.player.flexible(
             EffectName.PlayerFateCostToTargetCard,

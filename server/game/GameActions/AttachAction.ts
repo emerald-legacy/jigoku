@@ -112,7 +112,6 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
 
     addPropertiesToEvent(event: AttachEvent<C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
         const { attachment } = this.getProperties(context, additionalProperties);
-        event.name = this.eventName;
         event.parent = card;
         if(attachment) {
             event.card = attachment;

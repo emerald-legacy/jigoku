@@ -36,9 +36,8 @@ export interface AbilityContextProperties {
  * an ability with no card target legitimately leaves it undefined.
  *
  * Two preconditions, neither machine-checked: the target must not be `optional`
- * (it would go unset), and must not be a multi-card mode (`target` then holds a
- * `BaseCard[]` — see the note on `AbilityContext.target`). Today no card combines
- * either with a `context.target` read from a property factory.
+ * and must not be a multi-card mode; either leaves `target` unset. Today no card
+ * combines either with a `context.target` read from a property factory.
  *
  * Annotate a property factory with this ONLY from inside such an ability:
  *   target: { cardType: ..., gameAction: AbilityDsl.actions.x(
@@ -65,12 +64,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     events: Event[] = [];
     stage: Stage;
     targetAbility: CardAbility | null = null;
-    /**
-     * Set by `AbilityTargetCard` when the target name is `'target'`. In
-     * multi-card selector modes (`Exactly`/`Unlimited` with numCards > 1) it
-     * is assigned a `BaseCard[]`; the few cards that use multi-card targets
-     * read from `context.targets.target` instead and cast.
-     */
+    /** Set by `AbilityTargetCard` when one card is chosen for a target named `'target'`; several cards stay in `targets.target`. */
     target: T | undefined;
     select: string = '';
     ring: Ring | undefined;
@@ -93,6 +87,12 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     payFateCostToOpponent?: boolean;
     onPlayCardSource?: BaseCard;
 
+
+    /** What the ability targets, for messages and prompt arrows: the cards chosen for a target named `target`, else `target`. */
+    messageTarget(): T | BaseCard[] | undefined {
+        const chosen = this.targets.target;
+        return Array.isArray(chosen) ? chosen : this.target;
+    }
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
         // a framework context's source is a plain EffectSource and its player may be missing

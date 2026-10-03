@@ -29,6 +29,7 @@ import {
     ActionProps,
     AttachmentConditionProps,
     PersistentEffectProps,
+    TargetLocation,
     TriggeredAbilityProps
 } from './Interfaces.js';
 import type { GameObject } from './GameObject.js';
@@ -42,7 +43,7 @@ import type { RoleCard } from './RoleCard.js';
 import type Effect from './Effects/Effect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { AbilityLimitIncrease } from './Effects/EffectValueMap.js';
-import type { EffectFactory } from './Effects/EffectBuilder.js';
+import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
 import GainAllAbilitiesDynamic from './Effects/GainAllAbilitiesDynamic.js';
 import { CopyCard } from './Effects/Library/copyCard.js';
@@ -405,7 +406,7 @@ class BaseCard extends EffectSource {
      * Applies an effect that continues as long as the card providing the effect
      * is both in play and not blank.
      */
-    persistentEffect<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
+    persistentEffect<T extends EffectTarget, L extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, T, L>): void {
         const allowedLocations = [
             Location.Any,
             Location.ConflictDiscardPile,
@@ -463,14 +464,14 @@ class BaseCard extends EffectSource {
         }
     }
 
-    composure(properties: Omit<PersistentEffectProps<this>, 'condition'>): void {
+    composure<T extends EffectTarget, L extends TargetLocation = Location.PlayArea>(properties: Omit<PersistentEffectProps<this, T, L>, 'condition'>): void {
         this.persistentEffect({
             condition: (context: AbilityContext<this>) => context.player.hasComposure(),
             ...properties
         });
     }
 
-    dire<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
+    dire<T extends EffectTarget, L extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, T, L>): void {
         const condition = properties.condition;
         this.persistentEffect({
             isKeywordEffect: true,
@@ -480,7 +481,7 @@ class BaseCard extends EffectSource {
     }
 
     legendary(fate: number): void {
-        this.persistentEffect({
+        this.persistentEffect<Player | BaseCard, Location.Any>({
             location: Location.Any,
             targetLocation: Location.Any,
             effect: [

@@ -6,7 +6,7 @@ import { type CardEffect, isEffectOf } from './Effects/types.js';
 import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import { getGameAction } from './GameActions/GameActionRegistry.js';
+import { type GameActionName, getGameAction } from './GameActions/GameActionRegistry.js';
 import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
 import type { StateViewer } from './types/StateViewer.js';
@@ -103,13 +103,14 @@ export class GameObject {
         return this.getEffects(type).length > 0;
     }
 
-    public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
+    /** Whether the named game action, built with no properties, can affect this. Restrictions alone are `checkRestrictions`. */
+    public allowGameAction(actionType: GameActionName, context = this.game.getFrameworkContext()) {
         const gameActionFactory = getGameAction(actionType);
-        if(gameActionFactory) {
-            const gameAction: GameAction = gameActionFactory();
-            return gameAction.canAffect(this, context);
+        if(!gameActionFactory) {
+            throw new Error(`${actionType} is not a registered game action`);
         }
-        return this.checkRestrictions(actionType, context);
+        const gameAction: GameAction = gameActionFactory();
+        return gameAction.canAffect(this, context);
     }
 
     public checkRestrictions(actionType: string, context?: AbilityContext) {

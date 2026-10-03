@@ -52,7 +52,7 @@ class ThenAbility extends BaseCardAbility {
             message = message(context);
         }
         if(message) {
-            let messageArgs: MsgArg[] = [context.player, context.source, context.target];
+            let messageArgs: MsgArg[] = [context.player, context.source, context.messageTarget()];
             if(this.properties.messageArgs) {
                 let args = this.properties.messageArgs;
                 if(typeof args === 'function') {
