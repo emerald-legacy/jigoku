@@ -568,9 +568,10 @@ The tables below cover the most-used factories; the authoritative list lives in 
 | `actions.joint([...actions])` | Execute actions requiring same target |
 | `actions.conditional({ condition, trueGameAction, falseGameAction })` | Branch on condition |
 | `actions.ifAble({ gameAction, fallbackGameAction? })` | Do `gameAction` if legal, else `fallbackGameAction` |
-| `actions.chooseAction({ choices, activePromptTitle? })` | Prompt player to choose between actions |
+| `actions.chooseAction({ options, activePromptTitle? })` | Prompt player to choose between actions; `options` maps each label to `{ action, message? }` |
 | `actions.menuPrompt({ ... })` | Show a free-form menu prompt |
-| `actions.selectCard({ cardCondition?, gameAction, ... })` | Prompt to select a card, then apply `gameAction` |
+| `actions.selectCard({ cardCondition?, gameAction, ... })` | Prompt to select one card, then apply `gameAction`; `messageArgs` and `subActionProperties` get that card |
+| `actions.selectCards({ mode, cardCondition?, gameAction, ... })` | Several cards, by `mode`; `messageArgs` gets the chosen cards, `subActionProperties` one candidate or all of them |
 | `actions.cancel()` | Cancel the triggering event (for interrupts) |
 | `actions.handler({ handler })` | Run arbitrary code as an action |
 | `actions.noAction()` | No-op |
