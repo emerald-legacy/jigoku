@@ -1,6 +1,7 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { CardType } from '../Constants.js';
 import BaseAbility from '../BaseAbility.js';
+import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import DrawCard from '../DrawCard.js';
 
 export class FireRingEffect extends BaseAbility {
@@ -31,53 +32,56 @@ export class FireRingEffect extends BaseAbility {
             return;
         }
 
-        const choices: string[] = [];
-        const handlers: Array<() => void> = [];
+        const options: HandlerMenuOption[] = [];
 
         if(target.allowGameAction('honor', context)) {
-            choices.push(`Honor ${target.name}`);
-            handlers.push(() => {
-                context.game.addMessage(
-                    '{0} resolves the {1} ring, honoring {2}',
-                    context.player,
-                    'fire',
-                    target
-                );
-                this.onResolution(true);
-                context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'honor' });
-                context.game.applyGameAction(context, { honor: target });
+            options.push({
+                text: `Honor ${target.name}`,
+                handler: () => {
+                    context.game.addMessage(
+                        '{0} resolves the {1} ring, honoring {2}',
+                        context.player,
+                        'fire',
+                        target
+                    );
+                    this.onResolution(true);
+                    context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'honor' });
+                    context.game.applyGameAction(context, { honor: target });
+                }
             });
         }
 
         if(target.allowGameAction('dishonor', context)) {
-            choices.push(`Dishonor ${target.name}`);
-            handlers.push(() => {
-                context.game.addMessage(
-                    '{0} resolves the {1} ring, dishonoring {2}',
-                    context.player,
-                    'fire',
-                    target
-                );
-                this.onResolution(true);
-                context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'dishonor' });
-                context.game.applyGameAction(context, { dishonor: target });
+            options.push({
+                text: `Dishonor ${target.name}`,
+                handler: () => {
+                    context.game.addMessage(
+                        '{0} resolves the {1} ring, dishonoring {2}',
+                        context.player,
+                        'fire',
+                        target
+                    );
+                    this.onResolution(true);
+                    context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'dishonor' });
+                    context.game.applyGameAction(context, { dishonor: target });
+                }
             });
         }
 
-        choices.push('Back');
-        handlers.push(() => context.player.resolveRingEffects(['fire'], this.optional));
+        options.push({ text: 'Back', handler: () => context.player.resolveRingEffects(['fire'], this.optional) });
 
         if(this.optional) {
-            choices.push('Don\'t resolve the fire ring');
-            handlers.push(() => {
-                context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
-                this.onResolution(false);
+            options.push({
+                text: 'Don\'t resolve the fire ring',
+                handler: () => {
+                    context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
+                    this.onResolution(false);
+                }
             });
         }
 
         context.game.promptWithHandlerMenu(context.player, {
-            choices: choices,
-            handlers: handlers,
+            options,
             source: 'Fire Ring'
         });
     }

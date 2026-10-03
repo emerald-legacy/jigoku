@@ -72,7 +72,7 @@ describe('Ring effect animations', function() {
             context.target.allowGameAction = (action) => action === 'honor';
             this.effect.executeHandler(context);
             const call = context.game.promptWithHandlerMenu.calls.mostRecent();
-            call.args[1].handlers[0]();
+            call.args[1].options[0].handler();
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'fire', targetUuid: 'card-uuid-1', effect: 'honor' });
         });
 
@@ -81,7 +81,7 @@ describe('Ring effect animations', function() {
             context.target.allowGameAction = (action) => action === 'dishonor';
             this.effect.executeHandler(context);
             const call = context.game.promptWithHandlerMenu.calls.mostRecent();
-            call.args[1].handlers[0]();
+            call.args[1].options[0].handler();
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'fire', targetUuid: 'card-uuid-1', effect: 'dishonor' });
         });
 

@@ -6,14 +6,14 @@ import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction, WithDefaults } from './GameAction.js';
+import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
 export interface CardMenuProperties extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
-    choices?: string[];
-    handlers?: ((...args: unknown[]) => unknown)[];
+    options?: HandlerMenuOption[];
     targets?: boolean;
     message?: string;
     messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => MsgArg[];
@@ -30,13 +30,12 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         cards: []
     };
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<CardMenuProperties, 'subActionProperties' | 'cardCondition' | 'choices'> {
+    getProperties(context: C, additionalProperties = {}): WithDefaults<CardMenuProperties, 'subActionProperties' | 'cardCondition'> {
         const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         return Object.assign(properties, {
             subActionProperties: properties.subActionProperties ?? ((card: DrawCard) => ({ target: card })),
-            cardCondition: properties.cardCondition ?? (() => true),
-            choices: properties.choices ?? []
+            cardCondition: properties.cardCondition ?? (() => true)
         });
     }
 
@@ -53,7 +52,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(properties.handlers) {
+        if(properties.options) {
             return true;
         }
         if(properties.gameActionHasLegalTarget) {
@@ -76,7 +75,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
             ) && properties.cardCondition(card, context);
         if(
             !this.hasLegalTarget(context, additionalProperties) ||
-            (properties.cards.length === 0 && properties.choices.length === 0) ||
+            (properties.cards.length === 0 && (properties.options ?? []).length === 0) ||
             (properties.player === Players.Opponent && !context.player.opponent)
         ) {
             return;
@@ -100,7 +99,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
                 }
             }
         };
-        context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition });
+        context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition: (card: DrawCard) => cardCondition(card, context) });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {

@@ -7,6 +7,7 @@ import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import Ring from '../Ring.js';
 import type { Cost, Result } from './Cost.js';
+import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
 export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: AbilityContext) => true): Cost<{ returnRing: Ring[] }> {
     return {
@@ -141,8 +142,7 @@ export function chooseFate(type: PlayType): Cost {
                             activePromptTitle: 'Choose additional fate',
                             waitingPromptTitle: 'Waiting for opponent to take an action or pass',
                             source: context.source,
-                            choices: opts.map((o) => o.choice),
-                            handlers: opts.map((o) => o.handler)
+                            options: opts.map((o) => ({ text: o.choice, handler: o.handler }))
                         });
                     }
                 };
@@ -160,8 +160,7 @@ export function chooseFate(type: PlayType): Cost {
                 activePromptTitle: 'Choose additional fate',
                 waitingPromptTitle: 'Waiting for opponent to take an action or pass',
                 source: context.source,
-                choices: opts.map((o) => o.choice),
-                handlers: opts.map((o) => o.handler)
+                options: opts.map((o) => ({ text: o.choice, handler: o.handler }))
             });
         },
         pay(context) {
@@ -191,12 +190,12 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
                 ordered: false,
                 location: Location.Hand,
                 controller: Players.Self,
-                onSelect: (player: Player, cards: DrawCard[]) => {
+                onSelect: (player: Player, cards) => {
                     if(cards.length === 0) {
                         context.costs.discardCardsUpToVariableX = [];
                         result.cancelled = true;
                     } else {
-                        context.costs.discardCardsUpToVariableX = cards;
+                        context.costs.discardCardsUpToVariableX = cards.filter((card) => card.isDrawCard());
                     }
                     return true;
                 },
@@ -232,12 +231,12 @@ export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, 
                 ordered: false,
                 location: Location.Hand,
                 controller: Players.Self,
-                onSelect: (player: Player, cards: DrawCard[]) => {
+                onSelect: (player: Player, cards) => {
                     if(cards.length === 0) {
                         context.costs.discardCardsExactlyVariableX = [];
                         result.cancelled = true;
                     } else {
-                        context.costs.discardCardsExactlyVariableX = cards;
+                        context.costs.discardCardsExactlyVariableX = cards.filter((card) => card.isDrawCard());
                     }
                     return true;
                 },
@@ -286,26 +285,29 @@ export function optional(cost: Cost): Cost {
             }
             const actionName = getActionName(context);
 
-            const choices = ['Yes', 'No'];
-            const handlers = [
-                () => {
-                    context.costs[actionName] = true;
+            const options: HandlerMenuOption[] = [
+                {
+                    text: 'Yes',
+                    handler: () => {
+                        context.costs[actionName] = true;
+                    }
                 },
-                () => { }
+                { text: 'No', handler: () => { } }
             ];
 
             if(result.canCancel) {
-                choices.push('Cancel');
-                handlers.push(() => {
-                    result.cancelled = true;
+                options.push({
+                    text: 'Cancel',
+                    handler: () => {
+                        result.cancelled = true;
+                    }
                 });
             }
 
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Pay optional cost?',
                 source: context.source,
-                choices: choices,
-                handlers: handlers
+                options
             });
         },
 
@@ -362,30 +364,29 @@ export function optionalFateCost(amount: number, forcePayment: (context: Ability
                 return;
             }
 
-            let choices: string[] = [];
-            let handlers: Array<() => void> = [];
+            const options: HandlerMenuOption[] = [];
             context.costs.optionalFateCost = 0;
 
             if(fateAvailable) {
-                choices = ['Yes', 'No'];
-                handlers = [
-                    () => (context.costs.optionalFateCost = amount),
-                    () => (context.costs.optionalFateCost = 0)
-                ];
+                options.push(
+                    { text: 'Yes', handler: () => (context.costs.optionalFateCost = amount) },
+                    { text: 'No', handler: () => (context.costs.optionalFateCost = 0) }
+                );
             }
             if(fateAvailable && result.canCancel) {
-                choices.push('Cancel');
-                handlers.push(() => {
-                    result.cancelled = true;
+                options.push({
+                    text: 'Cancel',
+                    handler: () => {
+                        result.cancelled = true;
+                    }
                 });
             }
 
-            if(choices.length > 0) {
+            if(options.length > 0) {
                 context.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Spend ' + amount + ' fate?',
                     source: context.source,
-                    choices: choices,
-                    handlers: handlers
+                    options
                 });
             }
         },
@@ -415,8 +416,7 @@ export function optionalOpponentLoseHonor(
                 context.game.promptWithHandlerMenu(context.player.opponent, {
                     activePromptTitle: prompt,
                     source: context.source,
-                    choices: ['Yes', 'No'],
-                    handlers: [() => (context.costs[NAME] = true), () => (context.costs[NAME] = false)]
+                    options: [{ text: 'Yes', handler: () => (context.costs[NAME] = true) }, { text: 'No', handler: () => (context.costs[NAME] = false) }]
                 });
             }
         },
@@ -464,10 +464,9 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: Ab
                 context.game.promptWithHandlerMenu(context.player.opponent, {
                     activePromptTitle: 'Give an honor to your opponent?',
                     source: context.source,
-                    choices: ['Yes', 'No'],
-                    handlers: [
-                        () => (context.costs.optionalHonorTransferFromOpponentCostPaid = true),
-                        () => (context.costs.optionalHonorTransferFromOpponentCostPaid = false)
+                    options: [
+                        { text: 'Yes', handler: () => (context.costs.optionalHonorTransferFromOpponentCostPaid = true) },
+                        { text: 'No', handler: () => (context.costs.optionalHonorTransferFromOpponentCostPaid = false) }
                     ]
                 });
             }

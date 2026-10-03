@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 import * as GameActions from './GameActions/GameActions.js';
 import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import { Location, CardType, Players } from './Constants.js';
+import { Location, CardType, Players, TargetMode } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
@@ -144,9 +144,8 @@ class ChatCommands {
                     card.controller === player &&
                     !card.inConflict,
                 cardType: CardType.Character,
-                numCards: 0,
-                multiSelect: true,
-                onSelect: (p: Player, cards: BaseCard[]) => {
+                mode: TargetMode.Unlimited,
+                onSelect: (p: Player, cards) => {
                     if(!this.game.currentConflict) {
                         return true;
                     }

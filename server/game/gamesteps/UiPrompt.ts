@@ -3,10 +3,12 @@ import type Player from '../Player.js';
 import { BaseStep } from './BaseStep.js';
 import type { MenuArg } from './Step.js';
 
-type PromptButton = { text?: string | number; arg?: string | number; command?: string; uuid?: string; [key: string]: unknown };
-type PromptControl = { type: string; source: unknown; targets: unknown; uuid?: string; [key: string]: unknown };
+type PromptButton = { text?: string | number; arg?: string | number; command?: string; uuid?: string };
+type PromptControl =
+    | { type: string; source: unknown; targets: unknown; uuid?: string }
+    | { type: 'card-name'; command: string; method: string; name: string; uuid?: string };
 
-type ActivePrompt = {
+export type ActivePrompt = {
     buttons?: Array<PromptButton>;
     menuTitle?: string;
     promptTitle?: string;
@@ -15,7 +17,6 @@ type ActivePrompt = {
     selectCard?: boolean;
     selectOrder?: boolean;
     selectRing?: boolean;
-    [key: string]: unknown;
 };
 
 export class UiPrompt extends BaseStep {

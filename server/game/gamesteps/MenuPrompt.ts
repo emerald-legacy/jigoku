@@ -1,16 +1,16 @@
-import { UiPrompt } from './UiPrompt.js';
+import { type ActivePrompt, UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 
 type MenuContext = object;
 
-type MenuPromptButton = { text?: string; arg?: string; method?: string; [key: string]: unknown };
+type MenuPromptButton = { text?: string; arg?: string; method?: string; timer?: boolean; timerCancel?: boolean };
 
 interface MenuPromptProperties {
     source?: { name: string } | string;
     waitingPromptTitle?: string;
     promptTitle?: string;
-    activePrompt: { buttons?: MenuPromptButton[]; [key: string]: unknown };
+    activePrompt: Omit<ActivePrompt, 'buttons'> & { buttons?: MenuPromptButton[] };
     context?: unknown;
 }
 

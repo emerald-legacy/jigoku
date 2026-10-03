@@ -6,11 +6,13 @@ import type Player from '../Player.js';
 
 type ControllerProp = Players | ((context: AbilityContext) => Players);
 
+const isCardTypeList = (cardType: CardType | readonly CardType[] | undefined): cardType is readonly CardType[] => Array.isArray(cardType);
+
 export type NumCardsFunc = (context: AbilityContext) => number;
 
 export interface BaseCardSelectorProperties {
-    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
-    cardType?: CardType | CardType[];
+    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardType?: CardType | readonly CardType[];
     optional?: boolean;
     location?: Location | Location[];
     controller?: ControllerProp;
@@ -31,7 +33,8 @@ class BaseCardSelector {
 
     constructor(properties: BaseCardSelectorProperties) {
         this.cardCondition = properties.cardCondition ?? (() => true);
-        this.cardType = Array.isArray(properties.cardType) ? properties.cardType : [properties.cardType];
+        const { cardType } = properties;
+        this.cardType = isCardTypeList(cardType) ? [...cardType] : [cardType];
         this.optional = properties.optional ?? false;
         this.location = this.buildLocation(properties.location);
         this.controller = properties.controller || Players.Any;

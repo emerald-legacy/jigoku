@@ -24,7 +24,7 @@ class AttachmentPrompt extends UiPrompt {
             activePromptTitle: 'Select target for attachment',
             controller: Players.Self,
             gameAction: attach({ attachment: this.attachmentCard }),
-            onSelect: (player: Player, card: DrawCard) => {
+            onSelect: (player: Player, card) => {
                 attach({ attachment: this.attachmentCard }).resolve(card, new AbilityContext({ game: this.game, player: this.player, source: card }));
                 return true;
             }

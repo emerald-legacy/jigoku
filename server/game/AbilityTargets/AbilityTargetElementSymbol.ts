@@ -15,7 +15,6 @@ interface AbilityTargetElementSymbolProperties {
     cardType?: CardType | CardType[];
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface ElementTargetResults {
@@ -28,7 +27,6 @@ interface ElementTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
 class AbilityTargetElementSymbol {
@@ -123,23 +121,24 @@ class AbilityTargetElementSymbol {
             buttons: buttons,
             context: context,
             selector: this.selector,
-            onSelect: (player: Player, card: BaseCard) => {
+            onSelect: (player: Player, card: BaseCard | BaseCard[]) => {
+                if(Array.isArray(card)) {
+                    return true;
+                }
                 const validElements = card.getCurrentElementSymbols();
                 context.elementCard = card;
                 if(validElements.length > 1) {
-                    const choices = validElements.map((element) => `${element.prettyName} (${element.element})`);
-                    const handlers = validElements.map((element) => {
-                        return () => {
-                            context.elements[this.name] = element;
-                            if(this.name === 'target') {
-                                context.element = element;
-                            }
-                        };
-                    });
                     context.game.promptWithHandlerMenu(player, {
                         activePromptTitle: 'Which element do you wish to select?',
-                        choices: choices,
-                        handlers: handlers,
+                        options: validElements.map((element) => ({
+                            text: `${element.prettyName} (${element.element})`,
+                            handler: () => {
+                                context.elements[this.name] = element;
+                                if(this.name === 'target') {
+                                    context.element = element;
+                                }
+                            }
+                        })),
                         context: context
                     });
                 } else {

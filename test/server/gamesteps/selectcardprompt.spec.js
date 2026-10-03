@@ -90,7 +90,7 @@ describe('the SelectCardPrompt', function() {
                 beforeEach(function() {
                     this.properties.cardCondition.and.returnValue(true);
                     this.card.getType.and.returnValue('character');
-                    this.prompt.properties.cardType = ['event'];
+                    this.properties.cardType = ['event'];
                     this.prompt = new SelectCardPrompt(this.game, this.player, this.properties);
                 });
 

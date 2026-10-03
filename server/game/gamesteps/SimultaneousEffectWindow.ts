@@ -60,8 +60,7 @@ class SimultaneousEffectWindow extends BaseStep {
             source: 'Order Simultaneous effects',
             activePromptTitle: 'Choose an effect to be resolved',
             waitingPromptTitle: 'Waiting for opponent',
-            choices: choices.map(choice => choice.title),
-            handlers: choices.map(choice => (() => this.resolveEffect(choice)))
+            options: choices.map(choice => ({ text: choice.title, handler: () => this.resolveEffect(choice) }))
         });
     }
 

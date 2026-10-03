@@ -3,10 +3,9 @@ import { AbilityType } from './Constants.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { Cost } from './costs/Cost.js';
+import type { BaseAbilityProperties } from './BaseAbility.js';
 
-interface TargetProperties {
-    [key: string]: unknown;
-}
+type TargetProperties = NonNullable<BaseAbilityProperties['target']>;
 
 class BaseAction extends BaseCardAbility {
     abilityType = AbilityType.Action;

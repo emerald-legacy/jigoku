@@ -106,24 +106,22 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         );
         const messageArgs = properties.messageArgs;
         if(properties.singleToken && validTokens.length > 1) {
-            const choices = validTokens.map((token: StatusToken) => token.name);
-            const handlers = validTokens.map((token: StatusToken) => {
-                return () => {
-                    if(properties.message && messageArgs) {
-                        context.game.addMessage(properties.message, ...(messageArgs(token, player)));
-                    }
-                    context.tokens[this.name] = token;
-                    properties.gameAction.addEventsToArray(
-                        events,
-                        context,
-                        Object.assign({}, additionalProperties, properties.subActionProperties(token))
-                    );
-                };
-            });
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: properties.activePromptTitle,
-                choices: choices,
-                handlers: handlers,
+                options: validTokens.map((token: StatusToken) => ({
+                    text: token.name,
+                    handler: () => {
+                        if(properties.message && messageArgs) {
+                            context.game.addMessage(properties.message, ...(messageArgs(token, player)));
+                        }
+                        context.tokens[this.name] = token;
+                        properties.gameAction.addEventsToArray(
+                            events,
+                            context,
+                            Object.assign({}, additionalProperties, properties.subActionProperties(token))
+                        );
+                    }
+                })),
                 context: context
             });
         } else {

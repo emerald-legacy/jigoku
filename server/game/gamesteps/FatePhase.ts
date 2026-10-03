@@ -1,5 +1,5 @@
 import { GameModes } from '../../GameModes.js';
-import { Phases, CardType, Players, EffectName, EventName, Location } from '../Constants.js';
+import { Phases, CardType, Players, EffectName, EventName, Location, TargetMode } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
@@ -140,16 +140,15 @@ export class FatePhase extends Phase {
         if(cardsOnUnbrokenProvinces.length > 0) {
             this.game.promptForSelect(player, {
                 source: 'Discard Dynasty Cards',
-                numCards: 0,
-                multiSelect: true,
+                mode: TargetMode.Unlimited,
                 optional: true,
                 activePromptTitle: 'Select dynasty cards to discard',
                 waitingPromptTitle: 'Waiting for opponent to discard dynasty cards',
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: DrawCard) => cardsOnUnbrokenProvinces.includes(card),
-                onSelect: (player: Player, cards: DrawCard[]) => {
-                    cardsToDiscard = cardsToDiscard.concat(cards);
+                cardCondition: (card) => card.isDrawCard() && cardsOnUnbrokenProvinces.includes(card),
+                onSelect: (player: Player, cards) => {
+                    cardsToDiscard = cardsToDiscard.concat(cards.filter((card) => card.isDrawCard()));
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
                         this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });

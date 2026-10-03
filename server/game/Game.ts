@@ -27,8 +27,9 @@ import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffe
 import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
 import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
 import type MenuPrompt from './gamesteps/MenuPrompt.js';
-import type HandlerMenuPrompt from './gamesteps/HandlerMenuPrompt.js';
-import type SelectCardPrompt from './gamesteps/SelectCardPrompt.js';
+import type { HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
+import type { CardsChoice, OptionalCardChoice, SelectCardPromptProperties, SelectorChoice, SingleCardChoice } from './gamesteps/SelectCardPrompt.js';
+import type { CardTypes } from './types/CardOfType.js';
 import type SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
 import type ActionWindow from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
@@ -620,11 +621,15 @@ class Game {
         this.prompts.promptWithMenu(player, contextObj, properties);
     }
 
-    promptWithHandlerMenu(player: Player, properties: ConstructorParameters<typeof HandlerMenuPrompt>[2]): void {
+    promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {
         this.prompts.promptWithHandlerMenu(player, properties);
     }
 
-    promptForSelect(player: Player, properties: ConstructorParameters<typeof SelectCardPrompt>[2]): void {
+    promptForSelect<const K extends CardTypes = undefined>(player: Player, properties: SingleCardChoice<K>): void;
+    promptForSelect<const K extends CardTypes = undefined>(player: Player, properties: OptionalCardChoice<K>): void;
+    promptForSelect<const K extends CardTypes = undefined>(player: Player, properties: CardsChoice<K>): void;
+    promptForSelect(player: Player, properties: SelectorChoice): void;
+    promptForSelect<K extends CardTypes>(player: Player, properties: SelectCardPromptProperties<K>): void {
         this.prompts.promptForSelect(player, properties);
     }
 

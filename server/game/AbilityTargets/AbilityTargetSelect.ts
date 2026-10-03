@@ -5,6 +5,7 @@ import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
 import type EffectSource from '../EffectSource.js';
+import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
 type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
@@ -18,7 +19,6 @@ interface AbilityTargetSelectProperties {
     source?: EffectSource | string;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface SelectTargetResults {
@@ -115,26 +115,26 @@ class AbilityTargetSelect {
             return;
         }
         const promptTitle = this.properties.activePromptTitle || 'Select one';
-        const choices: string[] = Object.keys(this.getChoices(context)).filter((key) => this.isChoiceLegal(key, context));
-        const handlers: (() => void)[] = choices.map((choice) => {
-            return () => {
-                context.selects[this.name] = new SelectChoice(choice);
-                if(this.name === 'target') {
-                    context.select = choice;
+        const options: HandlerMenuOption[] = Object.keys(this.getChoices(context))
+            .filter((key) => this.isChoiceLegal(key, context))
+            .map((choice) => ({
+                text: choice,
+                handler: () => {
+                    context.selects[this.name] = new SelectChoice(choice);
+                    if(this.name === 'target') {
+                        context.select = choice;
+                    }
                 }
-            };
-        });
+            }));
         if(player !== context.player.opponent && context.stage === Stage.PreTarget) {
             if(!targetResults.noCostsFirstButton) {
-                choices.push('Pay costs first');
-                handlers.push(() => (targetResults.payCostsFirst = true));
+                options.push({ text: 'Pay costs first', handler: () => (targetResults.payCostsFirst = true) });
             }
-            choices.push('Cancel');
-            handlers.push(() => (targetResults.cancelled = true));
+            options.push({ text: 'Cancel', handler: () => (targetResults.cancelled = true) });
         }
-        if(handlers.length === 1) {
-            handlers[0]();
-        } else if(handlers.length > 1) {
+        if(options.length === 1) {
+            options[0].handler();
+        } else if(options.length > 1) {
             if(!player) {
                 // a solo game has no opponent to choose
                 return;
@@ -152,8 +152,7 @@ class AbilityTargetSelect {
                 activePromptTitle: promptTitle,
                 context: context,
                 source: this.properties.source || context.source,
-                choices: choices,
-                handlers: handlers
+                options
             });
         }
     }

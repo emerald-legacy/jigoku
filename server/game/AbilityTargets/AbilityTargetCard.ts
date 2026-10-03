@@ -15,7 +15,6 @@ interface AbilityTargetCardProperties {
     mode?: TargetMode;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface CardTargetResults {
@@ -28,7 +27,6 @@ interface CardTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
 class AbilityTargetCard {
@@ -137,10 +135,10 @@ class AbilityTargetCard {
             selector: this.selector,
             buttons: buttons,
             mustSelect: mustSelect,
-            onSelect: (_player: Player, card: BaseCard) => {
+            onSelect: (_player: Player, card: BaseCard | BaseCard[]) => {
                 context.targets[this.name] = card;
                 if(this.name === 'target') {
-                    context.target = card;
+                    context.target = Array.isArray(card) ? undefined : card;
                 }
                 return true;
             },

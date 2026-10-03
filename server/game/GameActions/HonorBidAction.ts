@@ -102,10 +102,10 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: 'Choose a value to set your honor dial at',
                 context: context,
-                choices: ['1', '2', '3', '4', '5'],
-                handlers: [1, 2, 3, 4, 5].map(
-                    (value) => () => context.game.actions.setHonorDial({ value }).resolve(player, context)
-                )
+                options: [1, 2, 3, 4, 5].map((value) => ({
+                    text: value.toString(),
+                    handler: () => context.game.actions.setHonorDial({ value }).resolve(player, context)
+                }))
             });
         }
     }

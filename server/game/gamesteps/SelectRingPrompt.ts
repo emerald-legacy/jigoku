@@ -1,17 +1,11 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { Event } from '../Events/Event.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type Ring from '../Ring.js';
-import type BaseCard from '../BaseCard.js';
 
-interface SelectRingPromptButton {
-    text?: string;
-    arg?: string;
-    [key: string]: unknown;
-}
+type SelectRingPromptButton = { text?: string; arg?: string };
 
 interface SelectRingPromptProperties {
     source?: EffectSource | string;
@@ -22,11 +16,10 @@ interface SelectRingPromptProperties {
     buttons?: SelectRingPromptButton[];
     optional?: boolean;
     hideIfNoLegalTargets?: boolean;
-    ringCondition?(ring: Ring, context: AbilityContext): boolean;
-    onSelect?(player: Player, ring: Ring): boolean | void;
-    onMenuCommand?(player: Player, arg: string): boolean | void;
-    onCancel?(player: Player): boolean | void;
-    [key: string]: unknown;
+    ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
+    onSelect?: (player: Player, ring: Ring) => boolean | void;
+    onMenuCommand?: (player: Player, arg: string) => boolean | void;
+    onCancel?: (player: Player) => boolean | void;
 }
 
 /**
@@ -55,7 +48,6 @@ class SelectRingPrompt extends UiPrompt {
     properties: SelectRingPromptProperties;
     context: AbilityContext;
     selectedRing: Ring | null;
-    targets: unknown[];
 
     constructor(game: Game, choosingPlayer: Player, properties: SelectRingPromptProperties) {
         super(game);
@@ -74,45 +66,14 @@ class SelectRingPrompt extends UiPrompt {
 
         this.properties = properties;
         this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        // Apply defaults for missing properties
-        const defaults = this.defaultProperties();
-        for(const key in defaults) {
-            if(this.properties[key] === undefined) {
-                this.properties[key] = defaults[key];
-            }
-        }
+        properties.buttons ??= [];
+        properties.ringCondition ??= () => true;
+        properties.onSelect ??= () => true;
+        properties.onMenuCommand ??= () => true;
+        properties.onCancel ??= () => true;
+        properties.optional ??= false;
+        properties.hideIfNoLegalTargets ??= false;
         this.selectedRing = null;
-        this.targets = [];
-    }
-
-    defaultProperties(): Record<string, unknown> {
-        return {
-            buttons: [],
-            controls: this.getDefaultControls(),
-            ringCondition: () => true,
-            onSelect: () => true,
-            onMenuCommand: () => true,
-            onCancel: () => true,
-            optional: false,
-            hideIfNoLegalTargets: false
-        };
-    }
-
-    getDefaultControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
-        if(!this.properties.context) {
-            return [];
-        }
-        const context = this.properties.context;
-        const targets: unknown[] = context.targets ? Object.values(context.targets).flat().map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
-        const eventCard = Event.promptCardOf('event' in context ? context.event : undefined);
-        if(targets.length === 0 && eventCard) {
-            this.targets = [eventCard.getShortSummaryForControls(this.choosingPlayer)];
-        }
-        return [{
-            type: 'targeting',
-            source: this.properties.context.source.getShortSummary(),
-            targets: targets
-        }];
     }
 
     activeCondition(player: Player): boolean {
@@ -144,7 +105,7 @@ class SelectRingPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        const buttons = this.properties.buttons ?? [];
+        const buttons = [...(this.properties.buttons ?? [])];
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
         }

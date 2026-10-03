@@ -19,7 +19,6 @@ interface AbilityTargetTokenProperties {
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface TokenTargetResults {
@@ -32,7 +31,6 @@ interface TokenTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
 class AbilityTargetToken {
@@ -141,20 +139,18 @@ class AbilityTargetToken {
                 const selectedCard = Array.isArray(card) ? card[0] : card;
                 const validTokens: StatusToken[] = selectedCard.statusTokens.filter((token: StatusToken) => (!this.properties.tokenCondition || this.properties.tokenCondition(token, context)) && (this.properties.gameAction.length === 0 || this.properties.gameAction.some((action) => action.canAffect(token, context))));
                 if(this.properties.singleToken && validTokens.length > 1) {
-                    const choices = validTokens.map((token: StatusToken) => token.name);
-                    const handlers = validTokens.map((token: StatusToken) => {
-                        return () => {
-                            const selected: StatusToken[] = [token];
-                            context.tokens[this.name] = selected;
-                            if(this.name === 'target') {
-                                context.token = selected;
-                            }
-                        };
-                    });
                     context.game.promptWithHandlerMenu(player, {
                         activePromptTitle: 'Which token do you wish to select?',
-                        choices: choices,
-                        handlers: handlers,
+                        options: validTokens.map((token: StatusToken) => ({
+                            text: token.name,
+                            handler: () => {
+                                const selected: StatusToken[] = [token];
+                                context.tokens[this.name] = selected;
+                                if(this.name === 'target') {
+                                    context.token = selected;
+                                }
+                            }
+                        })),
                         context: context
                     });
                 } else {

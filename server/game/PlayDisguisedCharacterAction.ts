@@ -141,8 +141,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,
-                choices: ['Conflict', 'Home'],
-                handlers: [() => (intoConflict = true), () => true]
+                options: [{ text: 'Conflict', handler: () => (intoConflict = true) }, { text: 'Home', handler: () => true }]
             });
         }
         context.game.queueSimpleStep(() => {

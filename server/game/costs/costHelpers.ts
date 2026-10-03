@@ -1,21 +1,14 @@
-import * as GameActions from '../GameActions/GameActions.js';
 import { CardGameAction } from '../GameActions/CardGameAction.js';
-import { SelectCardProperties } from '../GameActions/SelectCardAction.js';
+import { eraseSelectCardsProperties, SelectCardAction, type SelectCardsProperties } from '../GameActions/SelectCardAction.js';
 import type { CardType, TargetMode } from '../Constants.js';
-import type { CardOfType } from '../types/CardOfType.js';
+import type { CardOfType, CardTypes } from '../types/CardOfType.js';
 import type { Cost } from './Cost.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { MetaActionCost } from './MetaActionCost.js';
 
-export type SelectCostProperties = Omit<SelectCardProperties, 'gameAction'>;
-
-/** A select cost's properties, with its card type and mode kept for the type of its result. */
-export type TypedSelectCostProperties<K, M, C extends AbilityContext = AbilityContext> = Omit<SelectCostProperties, 'cardType' | 'mode' | 'cardCondition'> & {
-    cardType?: K;
-    mode?: M;
-    /** Called with the context of the ability paying the cost. */
-    cardCondition?(card: CardOfType<K>, context: C): boolean;
-};
+/** A select cost's properties, with its card type and mode kept for the type of its result. Its `cardCondition` gets the context of the ability paying the cost. */
+export type TypedSelectCostProperties<K extends CardTypes, M extends TargetMode | undefined, C extends AbilityContext = AbilityContext> =
+    Omit<SelectCardsProperties<C, K>, 'gameAction' | 'mode'> & { mode?: M };
 
 type MultiCardMode = TargetMode.Exactly | TargetMode.ExactlyVariable | TargetMode.MaxStat | TargetMode.Unlimited | TargetMode.UpTo | TargetMode.UpToVariable;
 
@@ -28,7 +21,7 @@ export type SelectCostResult<N extends string, K, M> =
 
 export const isCardTypeList = (cardType: CardType | readonly CardType[]): cardType is readonly CardType[] => Array.isArray(cardType);
 
-export function getSelectCost<const N extends string, K extends CardType | readonly CardType[] | undefined, M extends TargetMode | undefined, C extends AbilityContext>(
+export function getSelectCost<const N extends string, K extends CardTypes, M extends TargetMode | undefined, C extends AbilityContext>(
     name: N,
     action: CardGameAction,
     properties: TypedSelectCostProperties<K, M, C> | undefined,
@@ -37,11 +30,5 @@ export function getSelectCost<const N extends string, K extends CardType | reado
     if(action.name !== name) {
         throw new Error(`the ${action.name} cost stores its result under '${action.name}', not '${name}'`);
     }
-    const { cardType, ...rest } = properties ?? {};
-    const selectProperties: SelectCardProperties = {
-        gameAction: action,
-        ...rest,
-        ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {})
-    };
-    return new MetaActionCost(GameActions.selectCard(selectProperties), activePromptTitle);
+    return new MetaActionCost(new SelectCardAction(eraseSelectCardsProperties({ gameAction: action, ...properties })), activePromptTitle);
 }

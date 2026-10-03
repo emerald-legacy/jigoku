@@ -1,7 +1,7 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import CardSelector from '../CardSelector.js';
+import CardSelector, { type SingleCardMode } from '../CardSelector.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
 import { CardType, EffectName, Location, Players, TargetMode, type EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
@@ -9,37 +9,108 @@ import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction, WithDefaults } from './GameAction.js';
 import type { EffectArg } from '../Interfaces.js';
-import { isCardOfType, type CardOfType } from '../types/CardOfType.js';
-
-type CardTypes = CardType | readonly CardType[] | undefined;
+import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
 const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
 
-/** `K` is the declared `cardType`, which fixes the class of card `cardCondition` receives. */
-export interface SelectCardProperties<C extends AbilityContext = AbilityContext, K extends CardTypes = CardTypes> extends CardActionProperties {
+/** `K` is the declared `cardType`, which fixes the class of card the callbacks receive. */
+interface SelectCardBase<C extends AbilityContext, K extends CardTypes> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
     cardType?: K;
     controller?: Players;
     location?: Location | Location[];
-    cardCondition?(card: CardOfType<K>, context: C): boolean;
+    cardCondition?: (card: CardOfType<K>, context: C) => boolean;
     targets?: boolean;
     message?: string;
     manuallyRaiseEvent?: boolean;
-    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties<C, K>): MsgArg[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
-    mode?: TargetMode;
-    numCards?: number;
     hidePromptIfSingleCard?: boolean;
-    subActionProperties?(card: BaseCard | BaseCard[]): Record<string, unknown>;
     cancelHandler?: () => void;
     effect?: string;
     effectArgs?: (context: C) => EffectArg[];
 }
 
-export class SelectCardAction<C extends AbilityContext = AbilityContext, K extends CardTypes = CardTypes> extends CardGameAction<SelectCardProperties<C, K>, EventName, C> {
-    defaultProperties: Partial<SelectCardProperties<C, K>> = {
+/** One card. An optional select that is skipped resolves with no target and no message. */
+export interface SelectCardProperties<C extends AbilityContext = AbilityContext, K extends CardTypes = CardTypes> extends SelectCardBase<C, K> {
+    mode?: SingleCardMode;
+    numCards?: 1;
+    messageArgs?: (card: CardOfType<K>, player: Player, properties: SelectCardActionProperties<C>) => MsgArg[];
+    subActionProperties?: (card: CardOfType<K>) => Record<string, unknown>;
+}
+
+/** `subActionProperties` gets one candidate at a time while it checks, and what was chosen once it resolves. Any mode is sound. */
+export interface SelectCardsProperties<C extends AbilityContext = AbilityContext, K extends CardTypes = CardTypes> extends SelectCardBase<C, K> {
+    mode?: TargetMode;
+    numCards?: number;
+    messageArgs?: (cards: CardOfType<K>[], player: Player, properties: SelectCardActionProperties<C>) => MsgArg[];
+    subActionProperties?: (cards: CardOfType<K> | CardOfType<K>[]) => Record<string, unknown>;
+}
+
+/**
+ * What the action works with: the card type is checked once, in `cardCondition`.
+ * Callbacks taking the context use method syntax, so an action for a narrower context stays assignable.
+ */
+export interface SelectCardActionProperties<C extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<C, CardTypes>, 'cardType' | 'cardCondition' | 'effectArgs'> {
+    cardType?: CardType | CardType[];
+    cardCondition?(card: BaseCard, context: C): boolean;
+    effectArgs?(context: C): EffectArg[];
+    mode?: TargetMode;
+    numCards?: number;
+    /** Gets the resolved properties; nothing means no message. */
+    messageArgs?: (cards: BaseCard | BaseCard[], player: Player, properties: SelectCardActionProperties<C>) => MsgArg[] | undefined;
+    subActionProperties?: (cards: BaseCard | BaseCard[]) => Record<string, unknown>;
+}
+
+/** The selector only offers cards of the declared types, so the checks never reject one. */
+function eraseBase<C extends AbilityContext, K extends CardTypes>(properties: SelectCardBase<C, K> & { mode?: TargetMode; numCards?: number }) {
+    const isCard = isCardOfType(properties.cardType);
+    const holds = (card: BaseCard): CardOfType<K> => {
+        if(!isCard(card)) {
+            throw new Error(`${card.name} is not a card this select can hold`);
+        }
+        return card;
+    };
+    const { cardType, cardCondition, ...rest } = properties;
+    const erased: SelectCardActionProperties<C> = rest;
+    if(cardType !== undefined) {
+        erased.cardType = isCardTypeList(cardType) ? [...cardType] : cardType;
+    }
+    if(cardCondition) {
+        erased.cardCondition = (card, context) => isCard(card) && cardCondition(card, context);
+    }
+    return { erased, holds };
+}
+
+export function eraseSelectCardProperties<C extends AbilityContext, K extends CardTypes>(properties: SelectCardProperties<C, K>): SelectCardActionProperties<C> {
+    const { messageArgs, subActionProperties, ...base } = properties;
+    const { erased, holds } = eraseBase(base);
+    // a skipped optional select passes []
+    if(messageArgs) {
+        erased.messageArgs = (card, player, resolved) => Array.isArray(card) ? undefined : messageArgs(holds(card), player, resolved);
+    }
+    if(subActionProperties) {
+        erased.subActionProperties = (card) => Array.isArray(card) ? { target: [] } : subActionProperties(holds(card));
+    }
+    return erased;
+}
+
+export function eraseSelectCardsProperties<C extends AbilityContext, K extends CardTypes>(properties: SelectCardsProperties<C, K>): SelectCardActionProperties<C> {
+    const { messageArgs, subActionProperties, ...base } = properties;
+    const { erased, holds } = eraseBase(base);
+    const chosen = (cards: BaseCard | BaseCard[]) => Array.isArray(cards) ? cards.map(holds) : holds(cards);
+    if(messageArgs) {
+        erased.messageArgs = (cards, player, resolved) => messageArgs((Array.isArray(cards) ? cards : [cards]).map(holds), player, resolved);
+    }
+    if(subActionProperties) {
+        erased.subActionProperties = (cards) => subActionProperties(chosen(cards));
+    }
+    return erased;
+}
+
+export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SelectCardActionProperties<C>, EventName, C> {
+    defaultProperties: Partial<SelectCardActionProperties<C>> = {
         cardCondition: () => true,
         subActionProperties: (card) => ({ target: card }),
         targets: false,
@@ -47,7 +118,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
         manuallyRaiseEvent: false
     };
 
-    constructor(properties: SelectCardProperties<C, K> | ((context: C) => SelectCardProperties<C, K>)) {
+    constructor(properties: SelectCardActionProperties<C> | ((context: C) => SelectCardActionProperties<C>)) {
         super(properties);
     }
 
@@ -59,25 +130,20 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
         return ['choose a target for {0}', [target]];
     }
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties<C, K>, 'cardCondition' | 'subActionProperties' | 'selector'> {
+    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardActionProperties<C>, 'cardCondition' | 'subActionProperties' | 'selector'> {
         const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));
-        // the selector only offers cards of the declared types, so this check never rejects one
-        const isCardOfDeclaredType = isCardOfType(properties.cardType);
         let selector = properties.selector;
         if(!selector) {
-            const selectorCardCondition = (card: BaseCard, context: C) =>
+            // the selector is built for this context and only used with it
+            const selectorCardCondition = (card: BaseCard) =>
                 properties.gameAction.allTargetsLegal(
                     context,
                     Object.assign({}, additionalProperties, subActionProperties(card))
-                ) && isCardOfDeclaredType(card) && cardCondition(card, context);
-            const cardType: CardTypes = properties.cardType;
-            selector = CardSelector.for(Object.assign({}, properties, {
-                ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {}),
-                cardCondition: selectorCardCondition
-            }));
+                ) && cardCondition(card, context);
+            selector = CardSelector.for(Object.assign({}, properties, { cardCondition: selectorCardCondition }));
         }
         return Object.assign(properties, { cardCondition, subActionProperties, selector });
     }
@@ -121,7 +187,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
         if(!properties.selector.hasEnoughTargets(context, player)) {
             return;
         }
-        const messageArgs = properties.messageArgs;
+        const { messageArgs } = properties;
         const defaultProperties = {
             context: context,
             selector: properties.selector,
@@ -129,8 +195,9 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
             onCancel: properties.cancelHandler,
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
-                if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...messageArgs(cards, player, properties));
+                const args = messageArgs?.(cards, player, properties);
+                if(properties.message && args) {
+                    context.game.addMessage(properties.message, ...args);
                 }
                 properties.gameAction.addEventsToArray(
                     events,

@@ -60,8 +60,9 @@ class ActionWindow extends UiPrompt {
         this.game.promptWithHandlerMenu(player, {
             activePromptTitle: (card.location === Location.PlayArea ? 'Choose an ability:' : 'Play ' + card.name + ':'),
             source: card,
-            choices: legalActions.map((action) => action.title).concat('Cancel'),
-            handlers: legalActions.map((action) => (() => this.resolveAbility(action.createContext(player)))).concat(() => true)
+            options: legalActions
+                .map((action) => ({ text: action.title, handler: () => this.resolveAbility(action.createContext(player)) }))
+                .concat({ text: 'Cancel', handler: () => true })
         });
         return true;
     }
@@ -135,7 +136,7 @@ class ActionWindow extends UiPrompt {
         if(choice === 'manual') {
             this.game.promptForSelect(this.currentPlayer, {
                 source: 'Manual Action',
-                activePrompt: 'Which ability are you using?',
+                activePromptTitle: 'Which ability are you using?',
                 location: Location.Any,
                 controller: Players.Self,
                 cardCondition: (card: BaseCard) => card.isFaceup(),

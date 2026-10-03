@@ -42,10 +42,10 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
         context.player.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: properties.promptTitleForConfirming,
             source: context.source,
-            choices: ['Yes', 'No'],
-            handlers: [
-                () => this.resolveAction(properties, events, context, additionalProperties),
-                () => this.skipAction(properties, context)]
+            options: [
+                { text: 'Yes', handler: () => this.resolveAction(properties, events, context, additionalProperties) },
+                { text: 'No', handler: () => this.skipAction(properties, context) }
+            ]
         });
     }
 

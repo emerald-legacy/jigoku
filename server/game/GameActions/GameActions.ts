@@ -34,7 +34,7 @@ import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { CardType, EventName } from '../Constants.js';
+import type { EventName } from '../Constants.js';
 import { GloryCountAction, GloryCountProperties } from './GloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';
 import { HonorAction, HonorProperties } from './HonorAction.js';
@@ -82,7 +82,9 @@ import { ReturnToDeckAction, ReturnToDeckProperties } from './ReturnToDeckAction
 import { ReturnToHandAction, ReturnToHandProperties } from './ReturnToHandAction.js';
 import { RevealAction, RevealProperties } from './RevealAction.js';
 import { RingActionProperties } from './RingAction.js';
-import { SelectCardAction, SelectCardProperties } from './SelectCardAction.js';
+import { eraseSelectCardProperties, eraseSelectCardsProperties, SelectCardAction, type SelectCardProperties, type SelectCardsProperties } from './SelectCardAction.js';
+import type { MultiCardMode } from '../CardSelector.js';
+import type { CardTypes } from '../types/CardOfType.js';
 import { SelectRingAction, SelectRingProperties } from './SelectRingActions.js';
 import { SelectTokenAction, SelectTokenProperties } from './SelectTokenAction.js';
 import { SendHomeAction, SendHomeProperties } from './SendHomeAction.js';
@@ -498,8 +500,16 @@ export function multipleContext<Target = unknown, C extends AbilityContext = Abi
 export function menuPrompt<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, NoInfer<Target>, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
 }
-export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext, const K extends CardType | readonly CardType[] | undefined = CardType | readonly CardType[] | undefined>(propertyFactory: PropsFactory<SelectCardProperties<C, K>, NoInfer<Target>, C>): SelectCardAction<C, K> {
-    return new SelectCardAction<C, K>(propertyFactory);
+export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardProperties<C, K>, NoInfer<Target>, C>): SelectCardAction<C> {
+    return new SelectCardAction<C>(typeof propertyFactory === 'function'
+        ? (context) => eraseSelectCardProperties(propertyFactory(context))
+        : eraseSelectCardProperties(propertyFactory));
+}
+/** Several cards; `mode` says how many. */
+export function selectCards<Target = unknown, C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardsProperties<C, K> & { mode: MultiCardMode }, NoInfer<Target>, C>): SelectCardAction<C> {
+    return new SelectCardAction<C>(typeof propertyFactory === 'function'
+        ? (context) => eraseSelectCardsProperties(propertyFactory(context))
+        : eraseSelectCardsProperties(propertyFactory));
 }
 export function selectToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, NoInfer<Target>, C>): SelectTokenAction<C> {
     return new SelectTokenAction<C>(propertyFactory);

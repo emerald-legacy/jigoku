@@ -104,7 +104,7 @@ export interface PlayCardProperties extends CardActionProperties {
     playCardTarget?: (context: AbilityContext, properties: PlayCardProperties) => void;
     location?: Location;
     destination?: Location;
-    destinationOptions?: { bottom?: boolean; [key: string]: unknown };
+    destinationOptions?: { bottom?: boolean };
     payCosts?: boolean;
     ignoreFateCost?: boolean;
     source?: BaseCard;
@@ -212,20 +212,14 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         }
         context.game.promptWithHandlerMenu(context.player, {
             source: card,
-            choices: abilities.map(({ ability }) => ability.title).concat(properties.resetOnCancel ? 'Cancel' : []),
-            handlers: abilities
-                .map(
-                    ({ createContext }) => () =>
-                        events.push(
-                            this.getPlayCardEvent(
-                                card,
-                                context,
-                                createContext(context.player),
-                                additionalProperties
-                            )
-                        )
-                )
-                .concat(() => this.cancelAction(context, properties))
+            options: abilities
+                .map(({ ability, createContext }) => ({
+                    text: ability.title,
+                    handler: () => {
+                        events.push(this.getPlayCardEvent(card, context, createContext(context.player), additionalProperties));
+                    }
+                }))
+                .concat(properties.resetOnCancel ? [{ text: 'Cancel', handler: () => this.cancelAction(context, properties) }] : [])
         });
     }
 

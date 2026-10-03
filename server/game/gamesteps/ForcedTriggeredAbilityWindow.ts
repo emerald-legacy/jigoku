@@ -9,6 +9,7 @@ import type BaseCard from '../BaseCard.js';
 import type { TriggerChoice } from '../TriggeredAbility.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
 import type Ring from '../Ring.js';
+import type { HandlerMenuOption } from './HandlerMenuPrompt.js';
 import type EffectSource from '../EffectSource.js';
 
 function promptCardFor(context: TriggerChoice): BaseCard | undefined {
@@ -115,8 +116,9 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
                 let targets = map.get(event.context.source) || [];
                 const eventCard = Event.promptCardOf(event);
                 const innerCard = Event.promptCardOf('event' in event.context ? event.context.event : undefined);
-                if(event.context.target) {
-                    targets = targets.concat(event.context.target);
+                const target = event.context.messageTarget();
+                if(target) {
+                    targets = targets.concat(target);
                 } else if(eventCard && eventCard !== event.context.source) {
                     targets = targets.concat(eventCard);
                 } else if(innerCard) {
@@ -142,15 +144,16 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             return;
         }
         // This card has multiple abilities which can be used in this window - prompt the player to pick one
-        const handlers = menuChoices.map(title => (() => this.promptBetweenEventCards(choices.filter(context => context.ability.title === title))));
+        const options: HandlerMenuOption[] = menuChoices.map(title => ({
+            text: title,
+            handler: () => this.promptBetweenEventCards(choices.filter(context => context.ability.title === title))
+        }));
         if(addBackButton) {
-            menuChoices.push('Back');
-            handlers.push(() => this.promptBetweenSources(this.choices));
+            options.push({ text: 'Back', handler: () => this.promptBetweenSources(this.choices) });
         }
         this.game.promptWithHandlerMenu(this.requireCurrentPlayer(), Object.assign({}, this.getPromptProperties(), {
             activePromptTitle: 'Which ability would you like to use?',
-            choices: menuChoices,
-            handlers: handlers
+            options
         }));
     }
 
@@ -202,16 +205,16 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             return;
         }
         // Several events affect this card and the chosen ability can respond to more than one of them - prompt player to pick one
-        const menuChoices = choices.map(context => TriggeredAbilityWindowTitle.getAction(context.event));
-        const handlers = choices.map(context => (() => this.resolveAbility(context)));
+        const options: HandlerMenuOption[] = choices.map(context => ({
+            text: TriggeredAbilityWindowTitle.getAction(context.event),
+            handler: () => this.resolveAbility(context)
+        }));
         if(addBackButton) {
-            menuChoices.push('Back');
-            handlers.push(() => this.promptBetweenSources(this.choices));
+            options.push({ text: 'Back', handler: () => this.promptBetweenSources(this.choices) });
         }
         this.game.promptWithHandlerMenu(this.requireCurrentPlayer(), Object.assign({}, this.getPromptProperties(), {
             activePromptTitle: 'Choose an event to respond to',
-            choices: menuChoices,
-            handlers: handlers
+            options
         }));
     }
 

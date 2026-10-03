@@ -247,13 +247,15 @@ export class ProvinceCard extends BaseCard {
             this.game.promptWithHandlerMenu(choosingPlayer, {
                 activePromptTitle: `Do you wish to discard ${dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard.name}?`,
                 source: `Break ${this.name}`,
-                choices: ['Yes', 'No'],
-                handlers: [
-                    () => {
-                        this.game.addMessage('{0} chooses to discard {1}', choosingPlayer, cardLabel());
-                        this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: dynastyCard });
+                options: [
+                    {
+                        text: 'Yes',
+                        handler: () => {
+                            this.game.addMessage('{0} chooses to discard {1}', choosingPlayer, cardLabel());
+                            this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: dynastyCard });
+                        }
                     },
-                    () => this.game.addMessage('{0} chooses not to discard {1}', choosingPlayer, cardLabel())
+                    { text: 'No', handler: () => this.game.addMessage('{0} chooses not to discard {1}', choosingPlayer, cardLabel()) }
                 ]
             });
         }

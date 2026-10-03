@@ -12,6 +12,9 @@ type CardOfOne<K> =
                 : K extends CardType ? DrawCard
                     : BaseCard;
 
+/** What a `cardType` property may hold. */
+export type CardTypes = CardType | readonly CardType[] | undefined;
+
 /** The card class a choice declared with `cardType: K` can hold; any card without one. */
 export type CardOfType<K> = [K] extends [never] ? BaseCard : K extends readonly (infer E)[] ? CardOfOne<E> : CardOfOne<K>;
 

@@ -63,8 +63,10 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         context.player.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: properties.promptTitleForConfirmingAffinity,
             source: context.source,
-            choices: ['Yes', 'No'],
-            handlers: [() => this.#resolveAffinity(properties, events, context, additionalProperties), () => {}]
+            options: [
+                { text: 'Yes', handler: () => this.#resolveAffinity(properties, events, context, additionalProperties) },
+                { text: 'No', handler: () => {} }
+            ]
         });
     }
 

@@ -1,13 +1,14 @@
 import { type CardType, CharacterStatus, Decks, Location, TargetMode } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
+import { eraseSelectCardsProperties, SelectCardAction } from '../GameActions/SelectCardAction.js';
 import { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
-import { SelectCardProperties } from '../GameActions/SelectCardAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { Cost, CostContext } from './Cost.js';
-import { getSelectCost, isCardTypeList, type SelectCostResult, type TypedSelectCostProperties } from './costHelpers.js';
+import { getSelectCost, type SelectCostResult, type TypedSelectCostProperties } from './costHelpers.js';
+import type { CardTypes } from '../types/CardOfType.js';
 import { GameActionCost } from './GameActionCost.js';
 import { MetaActionCost } from './MetaActionCost.js';
 
@@ -206,17 +207,13 @@ export function taint<const K extends CardType | readonly CardType[] | undefined
     return getSelectCost('taint', GameActions.taint(), properties, 'Select card to taint');
 }
 
-export function discardStatusToken(properties: Omit<SelectCardProperties, 'gameAction' | 'subActionProperties'>): Cost {
+export function discardStatusToken<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: Omit<TypedSelectCostProperties<K, M>, 'subActionProperties'>): Cost {
     return new MetaActionCost(
-        GameActions.selectCard(
-            Object.assign(
-                {
-                    gameAction: GameActions.discardStatusToken(),
-                    subActionProperties: (card: DrawCard) => ({ target: card.getStatusToken(CharacterStatus.Honored) })
-                },
-                properties
-            )
-        ),
+        new SelectCardAction(eraseSelectCardsProperties({
+            gameAction: GameActions.discardStatusToken(),
+            subActionProperties: (cards) => ({ target: (Array.isArray(cards) ? cards : [cards]).map((card) => card.getStatusToken(CharacterStatus.Honored)) }),
+            ...properties
+        })),
         'Select character to discard honored status token from'
     );
 }
@@ -311,13 +308,7 @@ export function dishonorAndSacrifice<const K extends CardType | readonly CardTyp
     ]);
     gameAction.name = 'dishonorAndSacrifice';
 
-    const { cardType, ...rest } = properties;
-    const selectProperties: SelectCardProperties = {
-        gameAction,
-        ...rest,
-        ...(cardType !== undefined ? { cardType: isCardTypeList(cardType) ? [...cardType] : cardType } : {})
-    };
-    const actionCost = new MetaActionCost(GameActions.selectCard(selectProperties), 'Choose a card to dishonor and sacrifice');
+    const actionCost = new MetaActionCost(new SelectCardAction(eraseSelectCardsProperties({ gameAction, ...properties })), 'Choose a card to dishonor and sacrifice');
 
     actionCost.getActionName = () => 'dishonorAndSacrifice';
     actionCost.getCostMessage = (context: CostContext<{ dishonorAndSacrifice: BaseCard }>): MessageArgs => {

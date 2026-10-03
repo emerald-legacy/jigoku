@@ -347,13 +347,15 @@ class InitiateConflictPrompt extends UiPrompt {
             this.game.promptWithHandlerMenu(this.choosingPlayer, {
                 activePromptTitle: 'Are you sure you want to pass your conflict opportunity?',
                 source: 'Pass Conflict',
-                choices: ['Yes', 'No'],
-                handlers: [
-                    () => {
-                        this.complete();
-                        this.conflict.passConflict();
+                options: [
+                    {
+                        text: 'Yes',
+                        handler: () => {
+                            this.complete();
+                            this.conflict.passConflict();
+                        }
                     },
-                    () => true
+                    { text: 'No', handler: () => true }
                 ]
             });
             return true;

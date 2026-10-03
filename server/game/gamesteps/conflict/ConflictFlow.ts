@@ -2,6 +2,7 @@ import { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard } from '../../costs/boardCosts.js';
+import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
 import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
@@ -144,10 +145,9 @@ class ConflictFlow extends BaseStepWithPipeline {
                         this.game.promptWithHandlerMenu(this.conflict.attackingPlayer, {
                             source: 'Declare Conflict',
                             activePromptTitle: 'Do you wish to declare a conflict?',
-                            choices: ['Declare a conflict', 'Pass conflict opportunity'],
-                            handlers: [
-                                () => this.defenderChoosesRing(attackerMatrix),
-                                () => this.conflict.passConflict()
+                            options: [
+                                { text: 'Declare a conflict', handler: () => this.defenderChoosesRing(attackerMatrix) },
+                                { text: 'Pass conflict opportunity', handler: () => this.conflict.passConflict() }
                             ]
                         });
                     } else {
@@ -252,7 +252,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     numCards: totalCardCost,
                     manuallyRaiseEvent: true,
                     message: '{0} discards {1}',
-                    messageArgs: (cards: DrawCard[], player: Player) => [player, cards]
+                    messageArgs: (cards: BaseCard | BaseCard[], player: Player) => [player, cards]
                 };
                 discardCard(props).addEventsToArray?.(
                     costEvents,

@@ -1,6 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { Event } from '../Events/Event.js';
-import CardSelector from '../CardSelector.js';
+import CardSelector, { type CardSelectorProperties, defaultMode, isMultiCardMode, type MultiCardMode, type SingleCardMode } from '../CardSelector.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
@@ -8,17 +8,17 @@ import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
+import type { CardType } from '../Constants.js';
+import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
-interface SelectCardPromptProperties {
+interface PromptOptions {
     source?: EffectSource | string;
     context?: AbilityContext;
-    selector?: BaseCardSelector;
     buttons?: PromptButton[];
     controls?: Array<{ type: string; source: unknown; targets: unknown[] }>;
     selectCard?: boolean;
@@ -28,13 +28,114 @@ interface SelectCardPromptProperties {
     waitingPromptTitle?: string;
     mustSelect?: BaseCard[];
     gameAction?: GameAction | GameAction[];
-    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
-    onSelect?(player: Player, cards: BaseCard | BaseCard[]): boolean | void;
-    onMenuCommand?(player: Player, arg: string): boolean | void;
-    onCancel?(player: Player): boolean | void;
-    onCardToggle?(player: Player, card: BaseCard): void;
-    [key: string]: unknown;
+    onMenuCommand?: (player: Player, arg: string) => boolean | void;
+    onCancel?: (player: Player) => boolean | void;
 }
+
+type SelectorOptions = Omit<CardSelectorProperties, 'cardType' | 'cardCondition' | 'mode' | 'numCards' | 'multiSelect' | 'maxStat' | 'optional'>;
+
+interface CardChoice<K extends CardTypes> extends PromptOptions, SelectorOptions {
+    selector?: undefined;
+    cardType?: K;
+    cardCondition?: (card: CardOfType<K>, context: AbilityContext) => boolean;
+    onCardToggle?: (player: Player, card: CardOfType<K>) => void;
+}
+
+/** One card, passed on its own. */
+export interface SingleCardChoice<K extends CardTypes> extends CardChoice<K> {
+    mode?: SingleCardMode;
+    numCards?: 1;
+    multiSelect?: false;
+    maxStat?: undefined;
+    optional?: false;
+    onSelect?: (player: Player, card: CardOfType<K>) => boolean | void;
+}
+
+/** Skipping it passes `[]`. */
+export interface OptionalCardChoice<K extends CardTypes> extends Omit<SingleCardChoice<K>, 'optional' | 'onSelect'> {
+    optional: true;
+    onSelect?: (player: Player, card: CardOfType<K> | []) => boolean | void;
+}
+
+export interface CardsChoice<K extends CardTypes> extends CardChoice<K> {
+    mode: MultiCardMode;
+    numCards?: number;
+    multiSelect?: boolean;
+    maxStat?: () => number;
+    optional?: boolean;
+    onSelect?: (player: Player, cards: CardOfType<K>[]) => boolean | void;
+}
+
+/** A selector built by the caller decides what is passed. */
+export interface SelectorChoice extends PromptOptions {
+    selector: BaseCardSelector;
+    onSelect?: (player: Player, cards: BaseCard | BaseCard[]) => boolean | void;
+    onCardToggle?: (player: Player, card: BaseCard) => void;
+}
+
+export type SelectCardPromptProperties<K extends CardTypes = CardTypes> =
+    SingleCardChoice<K> | OptionalCardChoice<K> | CardsChoice<K> | SelectorChoice;
+
+interface ErasedProperties extends PromptOptions, CardSelectorProperties {
+    selector?: BaseCardSelector;
+    onSelect?: (player: Player, cards: BaseCard | BaseCard[]) => boolean | void;
+    onCardToggle?: (player: Player, card: BaseCard) => void;
+}
+
+function isCardsChoice<K extends CardTypes>(properties: SingleCardChoice<K> | OptionalCardChoice<K> | CardsChoice<K>): properties is CardsChoice<K> {
+    return isMultiCardMode(properties.mode ?? defaultMode(properties));
+}
+
+/** The selector only offers cards of the declared types, so the checks never reject one. */
+function erase<K extends CardTypes>(properties: SelectCardPromptProperties<K>): ErasedProperties {
+    if(properties.selector) {
+        return properties;
+    }
+    const isCard = isCardOfType(properties.cardType);
+    const holds = (card: BaseCard) => {
+        if(!isCard(card)) {
+            throw new Error(`${card.name} is not a card this prompt can select`);
+        }
+        return card;
+    };
+    const { cardType, cardCondition, onCardToggle, onSelect: _onSelect, ...rest } = properties;
+    const erased: ErasedProperties = rest;
+    if(cardType !== undefined) {
+        erased.cardType = isCardTypeList(cardType) ? [...cardType] : cardType;
+    }
+    if(cardCondition) {
+        erased.cardCondition = (card, context) => isCard(card) && cardCondition(card, context);
+    }
+    if(onCardToggle) {
+        erased.onCardToggle = (player, card) => onCardToggle(player, holds(card));
+    }
+    if(isCardsChoice(properties)) {
+        const { onSelect } = properties;
+        if(onSelect) {
+            erased.onSelect = (player, cards) => onSelect(player, (Array.isArray(cards) ? cards : [cards]).map(holds));
+        }
+    } else if(properties.optional) {
+        const { onSelect } = properties;
+        if(onSelect) {
+            erased.onSelect = (player, card) => onSelect(player, Array.isArray(card) && card.length === 0 ? [] : holds(single(card)));
+        }
+    } else {
+        const { onSelect } = properties;
+        if(onSelect) {
+            erased.onSelect = (player, card) => onSelect(player, holds(single(card)));
+        }
+    }
+    return erased;
+}
+
+function single(selected: BaseCard | BaseCard[]): BaseCard {
+    if(Array.isArray(selected)) {
+        throw new Error('a single-card prompt selected several cards');
+    }
+    return selected;
+}
+
+const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
 
 /**
  * General purpose prompt that asks the user to select 1 or more cards.
@@ -78,9 +179,9 @@ interface SelectCardPromptProperties {
  *                      the order of the selection during the prompt.
  * mustSelect         - an array of cards which must be selected
  */
-class SelectCardPrompt extends UiPrompt {
+class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
     choosingPlayer: Player;
-    properties: SelectCardPromptProperties;
+    properties: ErasedProperties;
     context: AbilityContext;
     hideIfNoLegalTargets: boolean;
     selector: BaseCardSelector;
@@ -89,8 +190,9 @@ class SelectCardPrompt extends UiPrompt {
     cannotUnselectMustSelect: boolean;
     targets: BaseCard[];
 
-    constructor(game: Game, choosingPlayer: Player, properties: SelectCardPromptProperties) {
+    constructor(game: Game, choosingPlayer: Player, typedProperties: SelectCardPromptProperties<K>) {
         super(game);
+        const properties = erase(typedProperties);
 
         this.choosingPlayer = choosingPlayer;
         if(typeof properties.source === 'string') {
@@ -107,13 +209,14 @@ class SelectCardPrompt extends UiPrompt {
 
         this.properties = properties;
         this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        // Apply defaults for missing properties
-        const defaults = this.defaultProperties();
-        for(const key in defaults) {
-            if(this.properties[key] === undefined) {
-                this.properties[key] = defaults[key];
-            }
-        }
+        properties.buttons ??= [];
+        properties.controls ??= this.getDefaultControls();
+        properties.selectCard ??= true;
+        properties.cardCondition ??= () => true;
+        properties.onSelect ??= () => true;
+        properties.onMenuCommand ??= () => true;
+        properties.onCancel ??= () => true;
+        properties.hideIfNoLegalTargets ??= false;
         if(properties.gameAction) {
             const gameActions = Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction];
             this.properties.gameAction = gameActions;
@@ -138,19 +241,6 @@ class SelectCardPrompt extends UiPrompt {
         }
         this.choosingPlayer.clearSelectedCards();
         this.choosingPlayer.setSelectedCards(this.selectedCards);
-    }
-
-    defaultProperties(): Record<string, unknown> {
-        return {
-            buttons: [],
-            controls: this.getDefaultControls(),
-            selectCard: true,
-            cardCondition: () => true,
-            onSelect: () => true,
-            onMenuCommand: () => true,
-            onCancel: () => true,
-            hideIfNoLegalTargets: false
-        };
     }
 
     getDefaultControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {

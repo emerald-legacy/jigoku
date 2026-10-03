@@ -1110,17 +1110,17 @@ class Player extends GameObject {
             return;
         }
 
-        const handlers = ['military', 'political'].map((type) => {
-            return () => {
-                this.imperialFavor = type;
-                this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, type);
-            };
-        });
+        const claim = (type: string) => () => {
+            this.imperialFavor = type;
+            this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, type);
+        };
         this.game.promptWithHandlerMenu(this, {
             activePromptTitle: 'Which side of the Imperial Favor would you like to claim?',
             source: 'Imperial Favor',
-            choices: ['Military', 'Political'],
-            handlers: handlers
+            options: [
+                { text: 'Military', handler: claim('military') },
+                { text: 'Political', handler: claim('political') }
+            ]
         });
     }
 

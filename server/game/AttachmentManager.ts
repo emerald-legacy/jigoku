@@ -1,4 +1,4 @@
-import { EffectName } from './Constants.js';
+import { CardType, EffectName } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -76,8 +76,9 @@ export class AttachmentManager {
             game.promptForSelect(host.controller, {
                 activePromptTitle: 'Choose an attachment to discard',
                 waitingPromptTitle: 'Waiting for opponent to choose an attachment to discard',
-                cardCondition: (card: DrawCard) => card.parent?.uuid === host.uuid && card.isRestricted(),
-                onSelect: (player: Player, card: DrawCard) => {
+                cardType: CardType.Attachment,
+                cardCondition: (card) => card.parent?.uuid === host.uuid && card.isRestricted(),
+                onSelect: (player: Player, card) => {
                     game.addMessage(
                         '{0} discards {1} from {2} due to too many Restricted attachments',
                         player,

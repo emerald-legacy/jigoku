@@ -12,7 +12,6 @@ interface AbilityTargetRingProperties {
     optional?: boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface RingTargetResults {
@@ -25,7 +24,6 @@ interface RingTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
 class AbilityTargetRing {

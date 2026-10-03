@@ -214,7 +214,7 @@ export class ReduceableFateCost implements Cost {
         context: FateCostContext,
         result: Result,
         properties: Props,
-        handler?: (choice: string) => void
+        handler?: (choice: string | number) => void
     ) {
         const choices: Array<number | string> = Array.from(
             { length: properties.numberOfChoices ?? 0 },
@@ -238,7 +238,7 @@ export class ReduceableFateCost implements Cost {
         context.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: `Choose amount of fate to spend from ${pool.name}`,
             choices: choices,
-            choiceHandler: (choice: string) => {
+            choiceHandler: (choice) => {
                 context.player.clearSelectableCards();
 
                 if(choice === 'Cancel') {
@@ -246,8 +246,8 @@ export class ReduceableFateCost implements Cost {
                     return;
                 }
 
-                context.costs.alternateFate?.set(properties.pool, parseInt(choice, 10));
-                properties.reducedCost -= parseInt(choice, 10);
+                context.costs.alternateFate?.set(properties.pool, Number(choice));
+                properties.reducedCost -= Number(choice);
 
                 if(handler) {
                     handler(choice);

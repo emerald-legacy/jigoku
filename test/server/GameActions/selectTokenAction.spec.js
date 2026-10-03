@@ -145,7 +145,7 @@ describe('SelectTokenAction', function() {
                 card: this.card, singleToken: true, gameAction: this.gameAction, subActionProperties
             });
             action.addEventsToArray(events, this.context);
-            lastPromptArgs(this.game.promptWithHandlerMenu).handlers[0]();
+            lastPromptArgs(this.game.promptWithHandlerMenu).options[0].handler();
             expect(this.gameAction.addEventsToArray).toHaveBeenCalledWith(events, this.context, jasmine.objectContaining({ name: 'token-a' }));
             expect(this.context.tokens.selectToken).toBe(this.tokenA);
         });
@@ -157,7 +157,7 @@ describe('SelectTokenAction', function() {
                 message: 'picked', messageArgs
             });
             action.addEventsToArray([], this.context);
-            lastPromptArgs(this.game.promptWithHandlerMenu).handlers[0]();
+            lastPromptArgs(this.game.promptWithHandlerMenu).options[0].handler();
             expect(messageArgs).toHaveBeenCalledWith(this.tokenA, this.player);
             expect(this.game.addMessage).toHaveBeenCalledWith('picked', 'arg');
         });

@@ -18,7 +18,6 @@ interface AbilityTargetAbilityProperties {
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-    [key: string]: unknown;
 }
 
 interface AbilityTargetResults {
@@ -31,7 +30,6 @@ interface AbilityTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
-    [key: string]: unknown;
 }
 
 class AbilityTargetAbility {
@@ -114,7 +112,10 @@ class AbilityTargetAbility {
             buttons: buttons,
             context: context,
             selector: this.selector,
-            onSelect: (player: Player, card: BaseCard) => {
+            onSelect: (player: Player, card: BaseCard | BaseCard[]) => {
+                if(Array.isArray(card)) {
+                    return true;
+                }
                 const abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
                 if(abilities.length === 1) {
                     context.targetAbility = abilities[0];
@@ -123,7 +124,7 @@ class AbilityTargetAbility {
                         activePromptTitle: 'Choose an ability',
                         context: context,
                         choices: abilities.map((ability) => ability.title).concat('Back'),
-                        choiceHandler: (choice: string) => {
+                        choiceHandler: (choice) => {
                             if(choice === 'Back') {
                                 context.game.queueSimpleStep(() => this.resolve(context, targetResults));
                             } else {

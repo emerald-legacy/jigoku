@@ -110,8 +110,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             return context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,
-                choices: ['Conflict', 'Home'],
-                handlers: [intoConflictHandler, atHomeHandler]
+                options: [{ text: 'Conflict', handler: intoConflictHandler }, { text: 'Home', handler: atHomeHandler }]
             });
         }
 

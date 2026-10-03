@@ -173,12 +173,11 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
             activePromptTitle: title,
             context: context,
             cards: cards,
-            cardCondition: (card: DrawCard, context: C) =>
+            cardCondition: (card) =>
                 (properties.cardCondition ?? (() => true))(card, context) &&
                 (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
                 (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties)),
-            choices: canCancel ? (selectedCards.size > 0 ? ['Done'] : ['Take nothing']) : [],
-            handlers: [() => this.#handleDone(properties, context, event, selectedCards, cards)],
+            options: canCancel ? [{ text: selectedCards.size > 0 ? 'Done' : 'Take nothing', handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
             cardHandler: (card: DrawCard) => {
                 const newSelectedCards = new Set(selectedCards);
                 newSelectedCards.add(card);

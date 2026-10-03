@@ -5,7 +5,6 @@ import type { ProvinceCard } from './ProvinceCard.js';
 
 export interface AdditionalPile {
     cards: BaseCard[];
-    [key: string]: unknown;
 }
 
 /** The piles that only hold conflict and dynasty cards. */

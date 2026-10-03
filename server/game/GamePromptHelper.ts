@@ -1,10 +1,12 @@
 import type Player from './Player.js';
 import type Game from './Game.js';
 import MenuPrompt from './gamesteps/MenuPrompt.js';
-import HandlerMenuPrompt from './gamesteps/HandlerMenuPrompt.js';
+import HandlerMenuPrompt, { type HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
 import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import SelectCardPrompt from './gamesteps/SelectCardPrompt.js';
+import SelectCardPrompt, { type SelectCardPromptProperties } from './gamesteps/SelectCardPrompt.js';
 import SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
+import type { CardTypes } from './types/CardOfType.js';
+import type BaseCard from './BaseCard.js';
 
 export class GamePromptHelper {
     constructor(private game: Game) {}
@@ -13,11 +15,11 @@ export class GamePromptHelper {
         this.game.queueStep(new MenuPrompt(this.game, player, contextObj, properties));
     }
 
-    promptWithHandlerMenu(player: Player, properties: ConstructorParameters<typeof HandlerMenuPrompt>[2]): void {
+    promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {
         this.game.queueStep(new HandlerMenuPrompt(this.game, player, properties));
     }
 
-    promptForSelect(player: Player, properties: ConstructorParameters<typeof SelectCardPrompt>[2]): void {
+    promptForSelect<K extends CardTypes>(player: Player, properties: SelectCardPromptProperties<K>): void {
         this.game.queueStep(new SelectCardPrompt(this.game, player, properties));
     }
 

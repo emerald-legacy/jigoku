@@ -127,22 +127,24 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             context.game.promptWithHandlerMenu(opponent, {
                 activePromptTitle: 'Do you wish to refuse the duel?',
                 context: context,
-                choices: ['Yes', 'No'],
-                handlers: [
-                    () => {
-                        if(refusalMessage) {
-                            const refusalArgs = refusalMessageArgs ? toArray(refusalMessageArgs(context)) : [];
-                            context.game.addMessage(refusalMessage, ...refusalArgs);
-                        } else {
-                            context.game.addMessage(
-                                '{0} chooses to refuse the duel and {1}',
-                                context.player.opponent,
-                                refuseGameAction.getEffectMessage(context)
-                            );
+                options: [
+                    {
+                        text: 'Yes',
+                        handler: () => {
+                            if(refusalMessage) {
+                                const refusalArgs = refusalMessageArgs ? toArray(refusalMessageArgs(context)) : [];
+                                context.game.addMessage(refusalMessage, ...refusalArgs);
+                            } else {
+                                context.game.addMessage(
+                                    '{0} chooses to refuse the duel and {1}',
+                                    context.player.opponent,
+                                    refuseGameAction.getEffectMessage(context)
+                                );
+                            }
+                            refuseGameAction.addEventsToArray(events, context, additionalProperties);
                         }
-                        refuseGameAction.addEventsToArray(events, context, additionalProperties);
                     },
-                    addDuelEventsHandler
+                    { text: 'No', handler: addDuelEventsHandler }
                 ]
             });
         } else {
