@@ -26,14 +26,14 @@ export default class PolicyDebate extends DrawCard {
                 gameAction: (duel) =>
                     AbilityDsl.actions.sequential([
                         AbilityDsl.actions.lookAt({
-                            target: this.#losersHand(duel),
+                            target: this.losersHand(duel),
                             message: '{0} reveals their hand: {1}',
                             messageArgs: (cards) => [duel.loserController, cards]
                         }),
                         AbilityDsl.actions.cardMenu({
                             activePromptTitle: 'Choose card to discard',
                             player: duel.loserController === context.player ? Players.Opponent : Players.Self,
-                            cards: this.#losersHand(duel),
+                            cards: this.losersHand(duel),
                             targets: true,
                             message: '{0} chooses {1} to be discarded',
                             messageArgs: (card) => [duel.loserController?.opponent ?? '', card],
@@ -43,7 +43,7 @@ export default class PolicyDebate extends DrawCard {
             })));
     }
 
-    #losersHand(duel: Duel): DrawCard[] {
+    private losersHand(duel: Duel): DrawCard[] {
         return duel.loserController?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) ?? [];
     }
 }

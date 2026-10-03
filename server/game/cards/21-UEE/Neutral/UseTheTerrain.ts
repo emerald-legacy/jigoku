@@ -11,13 +11,13 @@ export default class UseTheTerrain extends DrawCard {
             .condition((context) => context.game.isDuringConflict('military'))
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),
-                effect: AbilityDsl.effects.modifyMilitarySkill(this.#hasKicker(context) ? 2 : 1),
+                effect: AbilityDsl.effects.modifyMilitarySkill(this.hasKicker(context) ? 2 : 1),
                 duration: Duration.UntilEndOfConflict
             })))
-            .effect('give all characters they control +{1}{2}', (context) => [this.#hasKicker(context) ? 2 : 1, 'military']);
+            .effect('give all characters they control +{1}{2}', (context) => [this.hasKicker(context) ? 2 : 1, 'military']);
     }
 
-    #hasKicker(context: AbilityContext<this>) {
+    private hasKicker(context: AbilityContext<this>) {
         return context.player.isCharacterTraitInPlay('scout');
     }
 }

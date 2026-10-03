@@ -23,7 +23,7 @@ export default class LastJudgementPlains extends ProvinceCard {
             }, AbilityDsl.actions.menuPrompt(({ targets }) => ({
                 activePromptTitle: 'How much fate do you want to move?',
                 optional: false,
-                choices: this.#createChoiceArray((targets[DONOR]).getFate()),
+                choices: this.createChoiceArray((targets[DONOR]).getFate()),
                 choiceHandler: (choice) => ({
                     amount: parseInt(choice, 10),
                     origin: targets[DONOR],
@@ -34,7 +34,7 @@ export default class LastJudgementPlains extends ProvinceCard {
             .effect('move fate from {1} to {2}', ({ targets }) => [targets[DONOR], targets[RECIPIENT]]);
     }
 
-    #createChoiceArray(fate: number): string[] {
+    private createChoiceArray(fate: number): string[] {
         const choices: string[] = [];
         for(let i = 1; i <= fate; i++) {
             choices.push(i.toString());

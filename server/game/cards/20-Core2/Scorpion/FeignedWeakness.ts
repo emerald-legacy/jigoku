@@ -13,7 +13,7 @@ export default class FeignedWeakness extends DrawCard {
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event &&
                     context.game.isDuringConflict() &&
-                    !!this.game.currentConflict && this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
+                    !!this.game.currentConflict && this.hasEqualOrLessSkill(this.game.currentConflict, context.player)
             })
             .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand,
@@ -22,7 +22,7 @@ export default class FeignedWeakness extends DrawCard {
             .gameAction(AbilityDsl.actions.cancel());
     }
 
-    #hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {
+    private hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {
         return conflict.defendingPlayer === player
             ? conflict.defenderSkill <= conflict.attackerSkill
             : conflict.attackerSkill <= conflict.defenderSkill;

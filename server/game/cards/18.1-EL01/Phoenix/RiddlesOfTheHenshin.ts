@@ -13,7 +13,7 @@ function getNumberOfMonks(context: AbilityContext) {
 }
 
 class Process {
-    #chosenRings: Ring[] = [];
+    private chosenRings: Ring[] = [];
     constructor(
         private maxRings: number,
         private context: AbilityContext
@@ -21,30 +21,30 @@ class Process {
 
     public promptPlayer() {
         this.context.game.promptForRingSelect(this.context.player, {
-            activePromptTitle: this.#promptTitle(),
+            activePromptTitle: this.promptTitle(),
             context: this.context,
-            buttons: this.#buttons(),
+            buttons: this.buttons(),
             ringCondition: (ring: Ring) =>
-                ring.isConsideredClaimed(this.context.player) && !this.#chosenRings.includes(ring),
+                ring.isConsideredClaimed(this.context.player) && !this.chosenRings.includes(ring),
             onSelect: (_player: Player, ring: Ring) => {
-                this.#chosenRings.push(ring);
+                this.chosenRings.push(ring);
                 if(
                     Object.values(this.context.game.rings).some(
                         (ring) =>
                             ring.isConsideredClaimed(this.context.player) &&
-                            !this.#chosenRings.includes(ring) &&
-                            this.#chosenRings.length < this.maxRings
+                            !this.chosenRings.includes(ring) &&
+                            this.chosenRings.length < this.maxRings
                     )
                 ) {
                     this.promptPlayer();
                     return true;
                 }
 
-                return this.#resolveRings();
+                return this.resolveRings();
             },
             onMenuCommand: (player: Player) => {
-                this.context.game.addMessage('{0} resolves {1}', player, this.#chosenRings);
-                const action = this.context.game.actions.resolveRingEffect({ target: this.#chosenRings });
+                this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
+                const action = this.context.game.actions.resolveRingEffect({ target: this.chosenRings });
                 const events: Event[] = [];
                 action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
                 this.context.game.openThenEventWindow(events);
@@ -53,14 +53,14 @@ class Process {
         });
     }
 
-    #buttons() {
-        return this.#chosenRings.length > 0 ? [{ text: 'Done', arg: 'done' }] : [];
+    private buttons() {
+        return this.chosenRings.length > 0 ? [{ text: 'Done', arg: 'done' }] : [];
     }
 
-    #resolveRings() {
-        this.context.game.addMessage('{0} resolves {1}', this.context.player, this.#chosenRings);
+    private resolveRings() {
+        this.context.game.addMessage('{0} resolves {1}', this.context.player, this.chosenRings);
         const action = this.context.game.actions.resolveRingEffect({
-            target: this.#chosenRings,
+            target: this.chosenRings,
             enforceOrderedResolution: true
         });
         const events: Event[] = [];
@@ -69,8 +69,8 @@ class Process {
         return true;
     }
 
-    #promptTitle(): string {
-        switch(this.#chosenRings.length) {
+    private promptTitle(): string {
+        switch(this.chosenRings.length) {
             case 0:
                 return 'Choose the first ring to resolve';
             case 1:

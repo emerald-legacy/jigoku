@@ -10,7 +10,7 @@ export default class TheEastWind extends StrongholdCard {
         this.reaction('Place fate on character')
             .when({
                 onCardPlayed: (event, context) =>
-                    event.player === context.player && (event.card.hasTrait('gaijin') || this.#isOutOfClan(event.card))
+                    event.player === context.player && (event.card.hasTrait('gaijin') || this.isOutOfClan(event.card))
             })
             .cost(AbilityDsl.costs.bowSelf())
             .gameAction(AbilityDsl.actions.deckSearch((context) => {
@@ -31,7 +31,7 @@ export default class TheEastWind extends StrongholdCard {
             }));
     }
 
-    #isOutOfClan(card: BaseCard): boolean {
+    private isOutOfClan(card: BaseCard): boolean {
         return !card.isFaction('neutral') && !card.isFaction('unicorn');
     }
 }

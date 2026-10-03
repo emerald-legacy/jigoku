@@ -42,11 +42,11 @@ export default class KakitaTechnique extends DrawCard {
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
                     duration: Duration.UntilPassPriority,
-                    effect: AbilityDsl.effects.additionalAction(this.#getExtraActionCount(context))
+                    effect: AbilityDsl.effects.additionalAction(this.getExtraActionCount(context))
                 }))
             ]))
             .effect('give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}', (context) => {
-                const actions = this.#getExtraActionCount(context);
+                const actions = this.getExtraActionCount(context);
                 if(actions > 0) {
                     return [
                         'military',
@@ -62,7 +62,7 @@ export default class KakitaTechnique extends DrawCard {
             .max(AbilityDsl.limit.perConflict(1));
     }
 
-    #getExtraActionCount(context: AbilityContext) {
+    private getExtraActionCount(context: AbilityContext) {
         const conflict = context.game.currentConflict;
         if(!conflict) {
             return 0;

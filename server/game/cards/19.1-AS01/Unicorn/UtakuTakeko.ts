@@ -39,18 +39,18 @@ export default class UtakuTakeko extends DrawCard {
                 message: '{0} recalls a {1} relative who is {2} {3}',
                 messageArgs: (context, cards) => [
                     context.source,
-                    this.#msgDistance(cards[0]),
-                    this.#msgArticle(cards[0]),
+                    this.msgDistance(cards[0]),
+                    this.msgArticle(cards[0]),
                     cards[0]
                 ]
             })));
     }
 
-    #msgDistance(card: DrawCard): string {
+    private msgDistance(card: DrawCard): string {
         return card.hasTrait('gaijin') ? 'very distant' : 'distant';
     }
 
-    #msgArticle(card: DrawCard): string {
+    private msgArticle(card: DrawCard): string {
         if(card.hasTrait('army')) {
             return 'in the';
         }

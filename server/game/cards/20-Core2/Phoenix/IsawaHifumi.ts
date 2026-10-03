@@ -12,14 +12,14 @@ class HifumiCost extends ReduceableFateCost {
     isPlayCost = false;
     isPrintedFateCost = false;
 
-    #timesTriggered = new WeakMap<Player, number>();
+    private timesTriggered = new WeakMap<Player, number>();
 
     refreshHifumiCount(): void {
-        this.#timesTriggered = new WeakMap();
+        this.timesTriggered = new WeakMap();
     }
 
     currentCost(player: Player): number {
-        return this.#timesTriggered.get(player) ?? 0;
+        return this.timesTriggered.get(player) ?? 0;
     }
 
     canPay(context: AbilityContext): boolean {
@@ -29,7 +29,7 @@ class HifumiCost extends ReduceableFateCost {
         }
 
         let totalFateAvailable = 0;
-        for(const card of this.#cardsThatCanPayForHifumi(context)) {
+        for(const card of this.cardsThatCanPayForHifumi(context)) {
             totalFateAvailable += card.fate;
             if(totalFateAvailable >= cost) {
                 return true;
@@ -44,7 +44,7 @@ class HifumiCost extends ReduceableFateCost {
     }
 
     protected getAlternateFatePools(context: AbilityContext): Set<DrawCard> {
-        return this.#cardsThatCanPayForHifumi(context);
+        return this.cardsThatCanPayForHifumi(context);
     }
 
     protected afterPayHook(event: Event): void {
@@ -52,10 +52,10 @@ class HifumiCost extends ReduceableFateCost {
         if(!player) {
             return;
         }
-        this.#timesTriggered.set(player, this.currentCost(player) + 1);
+        this.timesTriggered.set(player, this.currentCost(player) + 1);
     }
 
-    #cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
+    private cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
         return new Set(
             context.player.cardsInPlay.filter((c: DrawCard) => c.type === CardType.Character && c.getFate() > 0)
         );

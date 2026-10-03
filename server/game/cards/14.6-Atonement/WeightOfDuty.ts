@@ -15,7 +15,7 @@ export default class WeightOfDuty extends ProvinceCard {
             .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card: DrawCard, context: AbilityContext) =>
-                    card.isParticipating() && this.#hasValidTarget(card, context)
+                    card.isParticipating() && this.hasValidTarget(card, context)
             }))
             .condition((context) => context.player.opponent !== undefined)
             .target('target', {
@@ -38,7 +38,7 @@ export default class WeightOfDuty extends ProvinceCard {
         return symbols;
     }
 
-    #hasValidTarget(card: DrawCard, context: AbilityContext) {
+    private hasValidTarget(card: DrawCard, context: AbilityContext) {
         if(card.isUnique()) {
             //uniques will always have a valid target based on the targeting check
             return true;

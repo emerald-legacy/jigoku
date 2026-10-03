@@ -11,19 +11,19 @@ export default class KakitaDojo extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} {1}cannot trigger its abilities until the end of the conflict',
-                messageArgs: (duel) => [duel.loser, this.#wonByDuelist(duel) ? 'is bowed and ' : ''],
+                messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? 'is bowed and ' : ''],
                 gameAction: (duel) =>
                     AbilityDsl.actions.multiple([
                         AbilityDsl.actions.cardLastingEffect({
                             target: duel.loser,
                             effect: AbilityDsl.effects.cannotTriggerAbilities()
                         }),
-                        AbilityDsl.actions.bow({ target: this.#wonByDuelist(duel) ? duel.loser : undefined })
+                        AbilityDsl.actions.bow({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ])
             }));
     }
 
-    #wonByDuelist(duel: Duel): boolean {
+    private wonByDuelist(duel: Duel): boolean {
         return duel.winner?.some((char) => char.hasTrait('duelist')) ?? false;
     }
 }

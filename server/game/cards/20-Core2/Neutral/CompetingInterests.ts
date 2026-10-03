@@ -8,7 +8,7 @@ export default class CompetingInterests extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .condition((context) => this.#hasEnoughUniques(context))
+            .condition((context) => this.hasEnoughUniques(context))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -16,7 +16,7 @@ export default class CompetingInterests extends DrawCard {
             }, AbilityDsl.actions.bow());
     }
 
-    #hasEnoughUniques(ctx: AbilityContext) {
+    private hasEnoughUniques(ctx: AbilityContext) {
         let totalUniques = 0;
         for(const card of ctx.game.currentConflict?.getParticipants() ?? []) {
             if(card.controller !== ctx.player) {

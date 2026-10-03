@@ -12,17 +12,17 @@ export default class DarkSecret extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.loseHonor((context) => ({
                 amount: 1,
-                target: this.#targetPlayer(context.source.parentCharacter)
+                target: this.targetPlayer(context.source.parentCharacter)
             })))
-            .effect('make {1} lose 1 honor - {2}', (context) => [this.#targetPlayer(context.source.parentCharacter), this.#quote(context.source.parentCharacter)])
+            .effect('make {1} lose 1 honor - {2}', (context) => [this.targetPlayer(context.source.parentCharacter), this.quote(context.source.parentCharacter)])
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
-    #targetPlayer(character: DrawCard | null) {
+    private targetPlayer(character: DrawCard | null) {
         return character?.controller ?? [];
     }
 
-    #quote(character: DrawCard | null | undefined): string {
+    private quote(character: DrawCard | null | undefined): string {
         if(!character) {
             return '';
         }

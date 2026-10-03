@@ -25,12 +25,12 @@ export default class OnsenQuarters extends ProvinceCard {
                     event.conflict.getConflictProvinces().some((a: ProvinceCard) => a === context.source)
             })
             .gameAction(AbilityDsl.actions.resolveRingEffect((context) => ({
-                target: this.#ringForRole(context),
+                target: this.ringForRole(context),
                 player: context.player
             })));
     }
 
-    #ringForRole(context: AbilityContext): Ring | undefined {
+    private ringForRole(context: AbilityContext): Ring | undefined {
         const role = context.player.role;
         if(!role) {
             return undefined;

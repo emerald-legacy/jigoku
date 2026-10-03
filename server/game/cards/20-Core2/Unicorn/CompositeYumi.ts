@@ -8,9 +8,9 @@ export default class CompositeYumi extends DrawCard {
     setupCardAbilities() {
         this.reaction('Give attached character +1/+0')
             .when({
-                onMoveToConflict: (_, context) => this.#matchCondition(context),
-                onCharacterEntersPlay: (_, context) => this.#matchCondition(context),
-                onCreateTokenCharacter: (_, context) => this.#matchCondition(context)
+                onMoveToConflict: (_, context) => this.matchCondition(context),
+                onCharacterEntersPlay: (_, context) => this.matchCondition(context),
+                onCreateTokenCharacter: (_, context) => this.matchCondition(context)
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
@@ -20,7 +20,7 @@ export default class CompositeYumi extends DrawCard {
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
-    #matchCondition(context: TriggeredAbilityContext<this>) {
+    private matchCondition(context: TriggeredAbilityContext<this>) {
         return context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.game.isDuringConflict('military');
     }
 }

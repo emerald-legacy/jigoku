@@ -9,7 +9,7 @@ export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
     private eventRegistrar?: EventRegistrar;
 
-    #duelWinnersThisConflict = new Set<BaseCard>();
+    private duelWinnersThisConflict = new Set<BaseCard>();
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
@@ -19,7 +19,7 @@ export default class MagnificentTriumph extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => this.#duelWinnersThisConflict.has(card)
+                cardCondition: (card) => this.duelWinnersThisConflict.has(card)
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: [
                     AbilityDsl.effects.modifyBothSkills(2),
@@ -34,12 +34,12 @@ export default class MagnificentTriumph extends DrawCard {
     }
 
     public onConflictFinished() {
-        this.#duelWinnersThisConflict.clear();
+        this.duelWinnersThisConflict.clear();
     }
 
     public afterDuel(event: EventPayload<EventName.AfterDuel>) {
         for(const winner of event.duel.winner ?? []) {
-            this.#duelWinnersThisConflict.add(winner);
+            this.duelWinnersThisConflict.add(winner);
         }
     }
 }

@@ -18,14 +18,14 @@ export default class JusticarsApproach extends DrawCard {
                     type: DuelType.Military,
                     gameAction: (duel: Duel) =>
                         AbilityDsl.actions.multiple(
-                            duel.loser?.map((loserChar) => this.#effectsOnLoser(loserChar)) ?? []
+                            duel.loser?.map((loserChar) => this.effectsOnLoser(loserChar)) ?? []
                         )
                 }
             })
         });
     }
 
-    #effectsOnLoser(target: DrawCard): GameAction {
+    private effectsOnLoser(target: DrawCard): GameAction {
         const effects: GameAction[] = [AbilityDsl.actions.dishonor({ target })];
         if(target.isDishonored) {
             effects.push(AbilityDsl.actions.bow({ target }));

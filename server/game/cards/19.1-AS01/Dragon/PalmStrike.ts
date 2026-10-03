@@ -18,7 +18,7 @@ export default class PalmStrike extends DrawCard {
                 cardCondition: (monkCharacter) =>
                     monkCharacter.isParticipating() &&
                         monkCharacter.hasTrait('monk') &&
-                        this.#cardHasNoWeapons(monkCharacter)
+                        this.cardHasNoWeapons(monkCharacter)
             })
             .target(TARGET_TO_BOW, {
                 dependsOn: TARGET_MONK,
@@ -26,7 +26,7 @@ export default class PalmStrike extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (opponentCharacter) =>
-                    opponentCharacter.isParticipating() && this.#cardHasNoWeapons(opponentCharacter)
+                    opponentCharacter.isParticipating() && this.cardHasNoWeapons(opponentCharacter)
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.bow(),
                 AbilityDsl.actions.conditional({
@@ -54,7 +54,7 @@ export default class PalmStrike extends DrawCard {
             });
     }
 
-    #cardHasNoWeapons(card: BaseCard) {
+    private cardHasNoWeapons(card: BaseCard) {
         return !card.attachments.some((attachment: BaseCard) => attachment.hasTrait('weapon'));
     }
 }
