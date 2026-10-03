@@ -88,7 +88,7 @@ describe('Master Whisperer', function() {
         it('should prompt the chosen player to discard 3 cards then draw 3 cards (self)', function() {
             this.player1.moveCard(this.blade, 'hand');
 
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             expect(this.katana.location).toBe('conflict deck');
             expect(this.fan.location).toBe('conflict deck');
@@ -120,7 +120,7 @@ describe('Master Whisperer', function() {
 
         it('should prompt the chosen player to discard 3 cards then draw 3 cards (opponent)', function() {
             this.player2.moveCard(this.letGo, 'hand');
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             expect(this.katana2.location).toBe('conflict deck');
             expect(this.fan2.location).toBe('conflict deck');

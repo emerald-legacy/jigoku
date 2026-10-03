@@ -39,7 +39,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context);
+        const { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }

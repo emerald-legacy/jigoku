@@ -35,14 +35,14 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const [target] = targetList(properties.target);
-        let destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
+        const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
         if(properties.shuffle) {
             return ['shuffle {0} into {1}\'s {2}', [properties.target, destinationController, properties.destination]];
         }
@@ -65,14 +65,14 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties = {}): void {
-        let context = event.context;
-        let card = event.card;
+        const context = event.context;
+        const card = event.card;
         if(card.isDrawCard()) {
             event.cardStateWhenMoved = card.createSnapshot();
         }
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.switch && properties.switchTarget) {
-            let otherCard = properties.switchTarget;
+            const otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);
         } else {
             this.checkForRefillProvince(card, event, additionalProperties);
@@ -83,7 +83,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
             properties.destination &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
-            let cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => card.isDynasty);
+            const cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => card.isDynasty);
             for(const card of cardsToDiscard) {
                 player.moveCard(card, Location.DynastyDiscardPile);
             }
@@ -91,7 +91,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         if(properties.destination) {
             player.moveCard(card, properties.destination, { bottom: !!properties.bottom });
         }
-        let target = properties.target;
+        const target = properties.target;
         const targetArr = Array.isArray(target) ? target : target ? [target] : [];
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {
             if(properties.destination === Location.ConflictDeck) {

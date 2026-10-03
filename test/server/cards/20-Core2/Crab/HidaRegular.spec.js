@@ -48,7 +48,7 @@ describe('Hida Regular', function () {
             expect(this.player1).not.toBeAbleToSelect(this.diplomat);
             expect(this.player1).toBeAbleToSelect(this.manipulator);
 
-            let fate = this.brash.fate;
+            const fate = this.brash.fate;
             this.player1.clickCard(this.brash);
             expect(this.brash.fate).toBe(fate - 1);
             expect(this.getChatLogs(5)).toContain('player1 uses Hida Regular to remove 1 fate from Brash Samurai');

@@ -103,7 +103,7 @@ class SelectRingPrompt extends UiPrompt {
             return [];
         }
         const context = this.properties.context;
-        let targets: unknown[] = context.targets ? Object.values(context.targets).flat().map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
+        const targets: unknown[] = context.targets ? Object.values(context.targets).flat().map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
         const eventCard = Event.promptCardOf('event' in context ? context.event : undefined);
         if(targets.length === 0 && eventCard) {
             this.targets = [eventCard.getShortSummaryForControls(this.choosingPlayer)];
@@ -136,7 +136,7 @@ class SelectRingPrompt extends UiPrompt {
     }
 
     getSelectableRings(): Ring[] {
-        let selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
+        const selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
             return (this.properties.ringCondition ?? (() => true))(ring, this.context);
         });
 
@@ -144,7 +144,7 @@ class SelectRingPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons = this.properties.buttons ?? [];
+        const buttons = this.properties.buttons ?? [];
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
         }

@@ -25,7 +25,7 @@ describe('Shiotome Heroine', function() {
             it('should trigger when your opponent gains 1 or more fate through a card effect (via Shiotome Heroine\'s controller card effect)', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player1.clickCard(this.windsweptYurt);
                 this.player1.clickPrompt('Each player gains 2 honor');
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -37,7 +37,7 @@ describe('Shiotome Heroine', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.pass();
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.tranquilPhilosopher);
                 this.player2.clickRing('air');
                 this.player2.clickRing('earth');
@@ -47,7 +47,7 @@ describe('Shiotome Heroine', function() {
             });
 
             it('should not trigger when your opponent gains 1 or more fate through a framework effect', function() {
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
@@ -59,7 +59,7 @@ describe('Shiotome Heroine', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.pass();
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.adeptOfShadows);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).toHavePrompt('Action Window');

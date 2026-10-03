@@ -117,7 +117,7 @@ class SelectCardPrompt extends UiPrompt {
         if(properties.gameAction) {
             const gameActions = Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction];
             this.properties.gameAction = gameActions;
-            let cardCondition = this.properties.cardCondition ?? (() => true);
+            const cardCondition = this.properties.cardCondition ?? (() => true);
             this.properties.cardCondition = (card: BaseCard, context: AbilityContext) =>
                 cardCondition(card, context) && gameActions.some((gameAction: GameAction) => gameAction.canAffect(card, context));
         }
@@ -268,7 +268,7 @@ class SelectCardPrompt extends UiPrompt {
     }
 
     fireOnSelect(): boolean {
-        let cardParam = this.selector.formatSelectParam(this.selectedCards);
+        const cardParam = this.selector.formatSelectParam(this.selectedCards);
         if((this.properties.onSelect ?? (() => true))(this.choosingPlayer, cardParam)) {
             this.complete();
             return true;

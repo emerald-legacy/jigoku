@@ -24,12 +24,12 @@ export class DiscardCardAction<C extends AbilityContext = AbilityContext> extend
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let { target } = this.getProperties(context, additionalProperties);
-        let cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context));
+        const { target } = this.getProperties(context, additionalProperties);
+        const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context));
         if(cards.length === 0) {
             return;
         }
-        let event = this.createEvent(null, context, additionalProperties);
+        const event = this.createEvent(null, context, additionalProperties);
         this.updateEvent(event, cards, context, additionalProperties);
         events.push(event);
     }

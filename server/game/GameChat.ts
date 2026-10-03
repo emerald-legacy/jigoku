@@ -56,11 +56,11 @@ export class GameChat {
             return '';
         }
 
-        let fragments = format.split(/(\{\d+\})/);
+        const fragments = format.split(/(\{\d+\})/);
         return fragments.reduce<Array<MessageFragment>>((output, fragment) => {
-            let argMatch = fragment.match(/\{(\d+)\}/);
+            const argMatch = fragment.match(/\{(\d+)\}/);
             if(argMatch && args) {
-                let arg: MsgArg = args[Number(argMatch[1])];
+                const arg: MsgArg = args[Number(argMatch[1])];
                 if(arg || arg === 0) {
                     if(typeof arg === 'object' && 'message' in arg) {
                         return output.concat(arg.message);
@@ -75,8 +75,8 @@ export class GameChat {
                     return output.concat(arg);
                 }
             } else if(!argMatch && fragment) {
-                let splitFragment = fragment.split(' ');
-                let lastWord = splitFragment.pop();
+                const splitFragment = fragment.split(' ');
+                const lastWord = splitFragment.pop();
                 return splitFragment
                     .reduce<Array<MessageFragment>>((output, word) => {
                         return output.concat(word || [], ' ');

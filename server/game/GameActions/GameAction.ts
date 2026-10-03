@@ -83,7 +83,7 @@ export class GameAction<
     }
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        let { target } = this.getProperties(context, additionalProperties);
+        const { target } = this.getProperties(context, additionalProperties);
         return [this.effect, [target]];
     }
 

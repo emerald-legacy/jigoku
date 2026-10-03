@@ -30,7 +30,7 @@ class EducatedHeimin extends DrawCard {
                     activePromptTitle: 'Choose a card to refill the province with',
                     cards: cards,
                     cardHandler: (cardFromDeck: DrawCard) => {
-                        let provinceLocation = province.location;
+                        const provinceLocation = province.location;
                         player.moveCard(cardFromDeck, provinceLocation);
                         cardFromDeck.facedown = true;
                         cards.splice(cards.indexOf(cardFromDeck), 1);

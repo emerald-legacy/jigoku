@@ -2,7 +2,7 @@ import SelectCardPrompt from '../../../build/server/game/gamesteps/SelectCardPro
 
 describe('the SelectCardPrompt', function() {
     function createCardSpy(properties = {}) {
-        let card = jasmine.createSpyObj('card', ['allowGameAction', 'getType']);
+        const card = jasmine.createSpyObj('card', ['allowGameAction', 'getType']);
         card.getType.and.returnValue('character');
         card.allowGameAction.and.returnValue(true);
         Object.assign(card, properties);

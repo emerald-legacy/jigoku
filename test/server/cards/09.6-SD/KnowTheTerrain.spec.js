@@ -122,8 +122,8 @@ describe('Know the Terrain', function() {
             });
 
             it('should switch the provinces', function() {
-                let rallyLocation = this.rally.location;
-                let gardenLocation = this.garden.location;
+                const rallyLocation = this.rally.location;
+                const gardenLocation = this.garden.location;
 
                 this.initiateConflict({
                     type: 'military',
@@ -251,7 +251,7 @@ describe('Know the Terrain', function() {
             });
 
             it('should trigger before fate is taken from rings', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -283,7 +283,7 @@ describe('Know the Terrain', function() {
             });
 
             it('should fizzle the conflict if your only attacker dies', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({
@@ -326,7 +326,7 @@ describe('Know the Terrain', function() {
             });
 
             it('if the conflict fizzles should not allow reactions to declaration (mantra test)', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({
@@ -369,7 +369,7 @@ describe('Know the Terrain', function() {
             });
 
             it('if the conflict fizzles should not allow reactions to declaration (crashing wave)', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({

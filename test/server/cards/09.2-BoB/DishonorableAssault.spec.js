@@ -303,8 +303,8 @@ describe('Dishonorable Assault', function() {
                 expect(this.whisperer.isDishonored).toBe(true);
                 expect(this.youth.isDishonored).toBe(true);
 
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.omoidasu);

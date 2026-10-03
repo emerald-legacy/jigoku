@@ -25,7 +25,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
     canPay(context: AbilityContext): boolean {
         const properties = this.action.getProperties(context);
-        let additionalProps = {
+        const additionalProps = {
             controller: Players.Self,
             location: ('location' in properties ? properties.location : undefined) || Location.Any
         };

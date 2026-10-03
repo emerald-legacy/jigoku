@@ -79,7 +79,7 @@ describe('Paragon of Grace', function() {
                 this.player1.clickCard(this.paragonOfGrace);
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 this.player1.clickCard(this.paragonOfGrace);
                 expect(this.player2).not.toHavePrompt('Choose a card to discard');
                 expect(this.player2.player.hand.length).toBe(player2hand - 1);

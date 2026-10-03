@@ -17,7 +17,7 @@ export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> 
     };
 
     eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context, additionalProperties);
+        const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }

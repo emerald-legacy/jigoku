@@ -29,7 +29,7 @@ export default class AgashaSumiko2 extends DrawCard {
     }
 
     private getChatMessage(context: TriggeredAbilityContext) {
-        let messages: string[] = [];
+        const messages: string[] = [];
         if(context.player.opponent) {
             if(context.player.opponent.honor > context.player.honor) {
                 messages.push('lose 2 honor');

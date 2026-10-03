@@ -26,14 +26,14 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     getProperties(context: C, additionalProperties = {}): InjureActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
+        const properties = super.getProperties(context, additionalProperties);
         this.removeFateGameAction.setDefaultTarget(() => properties.target);
         this.discardGameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['injure {0}', [properties.target]];
     }
 
@@ -53,8 +53,8 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        for(let target of targetList(properties.target)) {
+        const properties = this.getProperties(context, additionalProperties);
+        for(const target of targetList(properties.target)) {
             if(target.getFate() === 0) {
                 if(this.discardGameAction.canAffect(target, context, additionalProperties)) {
                     events.push(this.discardGameAction.getEvent(target, context, additionalProperties));

@@ -36,7 +36,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
     };
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         if(properties.takeControl) {
             return [
                 'take control of and attach {2}\'s {1} to {0}',
@@ -52,7 +52,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.viaDisguised) {
             return true;
         }
@@ -106,12 +106,12 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
-        let { attachment } = this.getProperties(context, additionalProperties);
+        const { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
     addPropertiesToEvent(event: AttachEvent<C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
-        let { attachment } = this.getProperties(context, additionalProperties);
+        const { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
         event.parent = card;
         if(attachment) {

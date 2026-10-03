@@ -48,8 +48,8 @@ describe('Ascetic Visionary', function () {
             });
 
             it('should ready the monk and put a fate onto the chosen unclaimed ring', function () {
-                let playerFate = this.player1.player.fate;
-                let airFate = this.game.rings.air.fate;
+                const playerFate = this.player1.player.fate;
+                const airFate = this.game.rings.air.fate;
                 this.initiateConflict({
                     ring: 'fire',
                     attackers: [this.asceticVisionary],

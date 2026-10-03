@@ -58,8 +58,8 @@ export default class ShamefulDisplay extends ProvinceCard {
     }
 
     promptToChooseHonorOrDishonor(cards: DrawCard[], context: AbilityContext) {
-        let choices = ['Honor', 'Dishonor'];
-        let handlers = choices.map((choice) => {
+        const choices = ['Honor', 'Dishonor'];
+        const handlers = choices.map((choice) => {
             return () => this.chooseCharacter(choice, cards, context);
         });
         this.game.promptWithHandlerMenu(context.player, {
@@ -83,7 +83,7 @@ export default class ShamefulDisplay extends ProvinceCard {
             cardCondition: condition,
             buttons: [{ text: 'Back', arg: 'back' }],
             onSelect: (_player: Player, card: DrawCard) => {
-                let otherCard = cards.find((c) => c !== card);
+                const otherCard = cards.find((c) => c !== card);
                 if(choice === 'Honor') {
                     this.resolveShamefulDisplay(context, card, otherCard);
                 } else {

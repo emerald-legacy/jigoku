@@ -26,8 +26,8 @@ describe('Bayushi Yunako', function () {
 
             it('switches the base mil and pol values', function () {
                 this.noMoreActions();
-                let baseMil = this.yogoHiroue.getBaseMilitarySkill();
-                let basePol = this.yogoHiroue.getBasePoliticalSkill();
+                const baseMil = this.yogoHiroue.getBaseMilitarySkill();
+                const basePol = this.yogoHiroue.getBasePoliticalSkill();
                 this.initiateConflict({
                     attackers: [this.bayushiYunako],
                     defenders: [this.yogoHiroue]

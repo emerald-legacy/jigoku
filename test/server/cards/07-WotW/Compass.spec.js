@@ -99,7 +99,7 @@ describe('Compass', function() {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt(this.imperialStorehouse.name);
                 expect(this.player1).not.toHavePrompt('Choose a card to place on the bottom of your deck');
-                let deckLength = this.player1.dynastyDeck.length;
+                const deckLength = this.player1.dynastyDeck.length;
                 expect(this.player1.dynastyDeck[deckLength - 1]).toBe(this.imperialStorehouse);
                 expect(this.player1.dynastyDeck[deckLength - 2]).toBe(this.motoYouth);
                 expect(this.player1.dynastyDeck[deckLength - 3]).toBe(this.favorableGround);

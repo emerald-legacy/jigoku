@@ -46,9 +46,9 @@ class PrepareForWar extends DrawCard {
                 if(!target) {
                     return ['', ''];
                 }
-                let isCommander = target.hasTrait('commander');
-                let hasAttachments = target.attachments.length > 0;
-                let hasToken = target.isDishonored || target.isHonored;
+                const isCommander = target.hasTrait('commander');
+                const hasAttachments = target.attachments.length > 0;
+                const hasToken = target.isDishonored || target.isHonored;
                 let discardMessage = '';
                 if(hasAttachments) {
                     discardMessage += 'choose to discard any number of attachments';
@@ -73,7 +73,7 @@ class PrepareForWar extends DrawCard {
 
     getStatusTokenPrompts(context: AbilityContext) {
         const tokens = context.target?.statusTokens ?? [];
-        let prompts: GameAction[] = [];
+        const prompts: GameAction[] = [];
         tokens.forEach((token: StatusToken) => {
             prompts.push(
                 AbilityDsl.actions.menuPrompt((context) => ({

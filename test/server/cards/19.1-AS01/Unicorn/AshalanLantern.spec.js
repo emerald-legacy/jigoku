@@ -41,7 +41,7 @@ describe('Ashalan Lantern', function () {
 
             this.player2.pass();
 
-            let p1InitialFate = this.player1.fate;
+            const p1InitialFate = this.player1.fate;
             this.player1.clickCard(this.lantern);
 
             expect(this.player1).toHavePrompt('Name a card');
@@ -82,7 +82,7 @@ describe('Ashalan Lantern', function () {
 
             this.player2.pass();
             this.player1.fate = 3;
-            let p1InitialFate = this.player1.fate;
+            const p1InitialFate = this.player1.fate;
             this.player1.clickCard(this.lantern);
 
             expect(this.player1).toHavePrompt('Name a card');

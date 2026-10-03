@@ -20,17 +20,17 @@ export class GainFateAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['gain {0} fate', [properties.amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return (properties.amount ?? 0) > 0 && super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties);
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount ?? 0;
     }

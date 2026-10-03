@@ -15,7 +15,7 @@ export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): v
 
 export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName.Unnamed, C> {
     getEffectMessage(context: C): MessageArgs {
-        let { replacementGameAction, effect } = this.getProperties(context);
+        const { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {
             return [effect, []];
         }
@@ -26,7 +26,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
     }
 
     getProperties(context: C, additionalProperties = {}): CancelActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
+        const properties = super.getProperties(context, additionalProperties);
         if(properties.replacementGameAction) {
             properties.replacementGameAction.setDefaultTarget(() => properties.target);
         }
@@ -37,7 +37,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         if(!context.event || context.event.cancelled) {
             return false;
         }
-        let { replacementGameAction } = this.getProperties(context);
+        const { replacementGameAction } = this.getProperties(context);
         let cannotBeCancelled = context.event.cannotBeCancelled;
         if(
             context.event.card &&
@@ -63,7 +63,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let event = this.createEvent(null, context, additionalProperties);
+        const event = this.createEvent(null, context, additionalProperties);
         super.addPropertiesToEvent(event, null, context, additionalProperties);
         event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         events.push(event);
@@ -75,9 +75,9 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         if(!cancelled) {
             return;
         }
-        let { replacementGameAction } = this.getProperties(context, additionalProperties);
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
-            let events: Event[] = [];
+            const events: Event[] = [];
             const eventWindow = cancelled.window;
             replacementGameAction.addEventsToArray(
                 events,
@@ -88,7 +88,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
                 if(!cancelled.isSacrifice && events.length === 1) {
                     cancelled.replacementEvent = events[0];
                 }
-                for(let newEvent of events) {
+                for(const newEvent of events) {
                     eventWindow?.addEvent(newEvent);
                 }
             });
@@ -97,7 +97,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
-        let { replacementGameAction } = this.getProperties(context, additionalProperties);
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(!replacementGameAction) {
             return !!context.event && !context.event.cannotBeCancelled;
         }
@@ -109,7 +109,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
-        let { replacementGameAction } = this.getProperties(context);
+        const { replacementGameAction } = this.getProperties(context);
         return (
             replacementGameAction !== undefined &&
             replacementGameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)

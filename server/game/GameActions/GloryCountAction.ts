@@ -21,10 +21,10 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
     }
 
     eventHandler(event: ActionEvent<EventName.OnGloryCount, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let game = event.context.game;
-        let properties = this.getProperties(event.context, additionalProperties);
+        const game = event.context.game;
+        const properties = this.getProperties(event.context, additionalProperties);
 
-        let gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
+        const gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
             return player.getGloryCount();
         });
         let winner: Player | null = game.getFirstPlayer() ?? null;
@@ -41,7 +41,7 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
             }
         }
 
-        let gameAction =
+        const gameAction =
             typeof properties.gameAction === 'function'
                 ? properties.gameAction(winner, event.context)
                 : properties.gameAction;

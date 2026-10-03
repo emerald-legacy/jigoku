@@ -40,7 +40,7 @@ class AbilityTargetSelect {
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
                 dependsOnTarget.dependentTarget = this;
             }
@@ -52,7 +52,7 @@ class AbilityTargetSelect {
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
-        let keys = Object.keys(this.getChoices(context));
+        const keys = Object.keys(this.getChoices(context));
         return keys.some((key) => this.isChoiceLegal(key, context));
     }
 
@@ -68,7 +68,7 @@ class AbilityTargetSelect {
     }
 
     isChoiceLegal(key: string, context: AbilityContext): boolean {
-        let contextCopy = context.copy({});
+        const contextCopy = context.copy({});
         contextCopy.selects[this.name] = new SelectChoice(key);
         if(this.name === 'target') {
             contextCopy.select = key;
@@ -79,7 +79,7 @@ class AbilityTargetSelect {
         if(this.dependentTarget && !this.dependentTarget.hasLegalTarget(contextCopy)) {
             return false;
         }
-        let choice: ChoiceValue = this.getChoices(context)[key];
+        const choice: ChoiceValue = this.getChoices(context)[key];
         if(typeof choice === 'function') {
             return !!choice(contextCopy);
         }
@@ -90,7 +90,7 @@ class AbilityTargetSelect {
         if(!context.selects[this.name]) {
             return [];
         }
-        let choice: ChoiceValue = this.getChoices(context)[context.selects[this.name].choice];
+        const choice: ChoiceValue = this.getChoices(context)[context.selects[this.name].choice];
         if(typeof choice !== 'function') {
             return Array.isArray(choice) ? choice : [choice];
         }
@@ -109,14 +109,14 @@ class AbilityTargetSelect {
             return;
         }
 
-        let player = (this.properties.targets && context.choosingPlayerOverride) || this.getChoosingPlayer(context);
+        const player = (this.properties.targets && context.choosingPlayerOverride) || this.getChoosingPlayer(context);
         if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
-        let promptTitle = this.properties.activePromptTitle || 'Select one';
-        let choices: string[] = Object.keys(this.getChoices(context)).filter((key) => this.isChoiceLegal(key, context));
-        let handlers: (() => void)[] = choices.map((choice) => {
+        const promptTitle = this.properties.activePromptTitle || 'Select one';
+        const choices: string[] = Object.keys(this.getChoices(context)).filter((key) => this.isChoiceLegal(key, context));
+        const handlers: (() => void)[] = choices.map((choice) => {
             return () => {
                 context.selects[this.name] = new SelectChoice(choice);
                 if(this.name === 'target') {
@@ -181,7 +181,7 @@ class AbilityTargetSelect {
         if(this.properties.targets) {
             return true;
         }
-        let actions = Object.values(this.getChoices(context)).flatMap((value: ChoiceValue) => typeof value === 'function' ? [] : value);
+        const actions = Object.values(this.getChoices(context)).flatMap((value: ChoiceValue) => typeof value === 'function' ? [] : value);
         return actions.some((action) => action.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

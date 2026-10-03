@@ -63,7 +63,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player1.dynastyDeck.length;
+                const size = this.player1.dynastyDeck.length;
                 this.player1.clickPrompt('player1\'s Dynasty');
                 expect(this.storehouseP1.location).toBe('dynasty deck');
                 expect(this.kisadaP1.location).toBe('dynasty deck');
@@ -83,7 +83,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player1.conflictDeck.length;
+                const size = this.player1.conflictDeck.length;
                 this.player1.clickPrompt('player1\'s Conflict');
                 expect(this.storehouseP1.location).toBe('dynasty discard pile');
                 expect(this.letGoP1.location).toBe('conflict deck');
@@ -106,7 +106,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player2.dynastyDeck.length;
+                const size = this.player2.dynastyDeck.length;
                 this.player1.clickPrompt('player2\'s Dynasty');
                 expect(this.storehouseP2.location).toBe('dynasty deck');
                 expect(this.kisadaP2.location).toBe('dynasty deck');
@@ -128,7 +128,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player2.conflictDeck.length;
+                const size = this.player2.conflictDeck.length;
 
                 this.player1.clickPrompt('player2\'s Conflict');
                 expect(this.storehouseP2.location).toBe('dynasty discard pile');
@@ -152,7 +152,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.player2).toHavePrompt('Triggered abilities');
                 expect(this.player2).toBeAbleToSelect(this.scavengerP2);
                 this.player2.clickCard(this.scavengerP2);
-                let size = this.player2.conflictDeck.length;
+                const size = this.player2.conflictDeck.length;
 
                 this.player2.clickPrompt('player2\'s Conflict');
                 expect(this.letGoP2.location).toBe('conflict deck');
@@ -196,7 +196,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player2.conflictDeck.length;
+                const size = this.player2.conflictDeck.length;
 
                 this.player1.clickPrompt('player1\'s Conflict');
 

@@ -40,12 +40,12 @@ class BaseCardSelector {
     }
 
     buildLocation(property?: Location | Location[]): Location[] {
-        let location: Location[] = property
+        const location: Location[] = property
             ? Array.isArray(property)
                 ? property
                 : [property]
             : [Location.PlayArea];
-        let index = location.indexOf(Location.Provinces);
+        const index = location.indexOf(Location.Provinces);
         if(index > -1) {
             location.splice(
                 index,
@@ -88,8 +88,8 @@ class BaseCardSelector {
         attachments = attachments.concat(allProvinceAttachments);
 
         if(context.game.rings) {
-            let rings = Object.values(context.game.rings);
-            let allRingAttachments = rings.map((ring) => ring.attachments).flat();
+            const rings = Object.values(context.game.rings);
+            const allRingAttachments = rings.map((ring) => ring.attachments).flat();
             attachments = attachments.concat(allRingAttachments);
         }
         if(context.player.opponent) {
@@ -98,7 +98,7 @@ class BaseCardSelector {
         let possibleCards: BaseCard[] = [];
         if(controllerProp !== Players.Opponent) {
             possibleCards = this.location.reduce((array: BaseCard[], location: Location) => {
-                let cards = context.player.getSourceList(location).slice();
+                const cards = context.player.getSourceList(location).slice();
                 if(location === Location.PlayArea) {
                     return array.concat(
                         cards,
@@ -108,10 +108,10 @@ class BaseCardSelector {
                 return array.concat(cards);
             }, possibleCards);
         }
-        let opponent = context.player.opponent;
+        const opponent = context.player.opponent;
         if(controllerProp !== Players.Self && opponent) {
             possibleCards = this.location.reduce((array: BaseCard[], location: Location) => {
-                let cards = opponent.getSourceList(location).slice();
+                const cards = opponent.getSourceList(location).slice();
                 if(location === Location.PlayArea) {
                     return array.concat(
                         cards,

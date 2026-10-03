@@ -43,13 +43,13 @@ class AbilityTargetElementSymbol {
         this.properties = properties;
         this.properties.location = this.properties.location || Location.PlayArea;
         this.selector = this.getSelector(properties);
-        for(let gameAction of this.properties.gameAction) {
+        for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.elements[name]);
         }
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
                 dependsOnTarget.dependentTarget = this;
             }
@@ -57,11 +57,11 @@ class AbilityTargetElementSymbol {
     }
 
     getSelector(properties: AbilityTargetElementSymbolProperties): CardSelectorInstance {
-        let cardCondition = (card: BaseCard) => {
+        const cardCondition = (card: BaseCard) => {
             if(!card.isInPlay()) {
                 return false;
             }
-            let elements = card.getCurrentElementSymbols();
+            const elements = card.getCurrentElementSymbols();
             if(elements.length === 0) {
                 return false;
             }
@@ -79,7 +79,7 @@ class AbilityTargetElementSymbol {
             // return (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
             //         (properties.gameAction.length === 0 || properties.gameAction.some(gameAction => gameAction.hasLegalTarget(contextCopy)));
         };
-        let cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
+        const cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
     }
 
@@ -103,12 +103,12 @@ class AbilityTargetElementSymbol {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
-        let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
+        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
         if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
-        let buttons: PromptButton[] = [];
+        const buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
@@ -118,13 +118,13 @@ class AbilityTargetElementSymbol {
                 waitingPromptTitle = 'Waiting for opponent';
             }
         }
-        let promptProperties = {
+        const promptProperties = {
             waitingPromptTitle: waitingPromptTitle,
             buttons: buttons,
             context: context,
             selector: this.selector,
             onSelect: (player: Player, card: BaseCard) => {
-                let validElements = card.getCurrentElementSymbols();
+                const validElements = card.getCurrentElementSymbols();
                 context.elementCard = card;
                 if(validElements.length > 1) {
                     const choices = validElements.map((element) => `${element.prettyName} (${element.element})`);

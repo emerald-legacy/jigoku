@@ -27,7 +27,7 @@ export class ClaimFavorAction<C extends AbilityContext = AbilityContext> extends
     }
 
     eventHandler(event: ActionEvent<EventName.OnClaimFavor, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let { side } = this.getProperties(event.context, additionalProperties);
+        const { side } = this.getProperties(event.context, additionalProperties);
         if(event.player) {
             event.player.claimImperialFavor(side);
         }

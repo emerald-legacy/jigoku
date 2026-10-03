@@ -19,7 +19,7 @@ describe('Daring Challenger', function() {
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
                 expect(this.player1.player.honor).toBeLessThan(this.player2.player.honor);
-                let baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
+                const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
                 expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill + 1);
             });
@@ -28,7 +28,7 @@ describe('Daring Challenger', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player1.player.honor).toBe(this.player2.player.honor);
-                let baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
+                const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
                 expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill);
             });
@@ -37,7 +37,7 @@ describe('Daring Challenger', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
                 expect(this.player1.player.honor).toBeGreaterThan(this.player2.player.honor);
-                let baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
+                const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
                 expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill);
             });

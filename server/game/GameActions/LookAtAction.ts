@@ -28,12 +28,12 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let { target } = this.getProperties(context, additionalProperties);
-        let cards = targetList(target).filter((card) => this.canAffect(card, context));
+        const { target } = this.getProperties(context, additionalProperties);
+        const cards = targetList(target).filter((card) => this.canAffect(card, context));
         if(cards.length === 0) {
             return;
         }
-        let event = this.createEvent(null, context, additionalProperties);
+        const event = this.createEvent(null, context, additionalProperties);
         this.updateEvent(event, cards, context, additionalProperties);
         events.push(event);
     }
@@ -48,10 +48,10 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties = {}): void {
-        let context = event.context;
-        let properties = this.getProperties(context, additionalProperties);
-        let cards = event.cards;
-        let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
+        const context = event.context;
+        const properties = this.getProperties(context, additionalProperties);
+        const cards = event.cards;
+        const messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
         context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs));
     }
 

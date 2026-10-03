@@ -21,7 +21,7 @@ class FearsomeMystic extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: '+2 Glory',

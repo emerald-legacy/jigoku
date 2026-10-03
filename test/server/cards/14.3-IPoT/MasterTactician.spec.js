@@ -653,7 +653,7 @@ describe('Master Tactician - Edge Cases', function () {
             expect(this.player1.player.isTopConflictCardShown(this.player1.player)).toBe(true);
             expect(this.player1.player.isTopConflictCardShown(this.player2.player)).toBe(false);
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player1.clickCard(this.tactical);
             this.player1.clickCard(this.tactician);

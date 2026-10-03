@@ -118,7 +118,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('character abilities should cancel as normal', function() {
-                let pol = this.tadaka.getPoliticalSkill();
+                const pol = this.tadaka.getPoliticalSkill();
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.shoju);
@@ -131,7 +131,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('character abilities should cancel as normal (Shoju interaction)', function() {
-                let pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.getPoliticalSkill();
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.shoju);
@@ -144,7 +144,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('attachment abilities should cancel as normal', function() {
-                let fate = this.tadaka.fate;
+                const fate = this.tadaka.fate;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.tetsubo);
@@ -157,7 +157,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('attachment abilities should cancel as normal (Tetsubo interaction)', function() {
-                let fate = this.whisperer.fate;
+                const fate = this.whisperer.fate;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.tetsubo);

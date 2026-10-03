@@ -38,7 +38,7 @@ describe('ChatCommands', function() {
     describe('executeCommand()', function() {
         describe('with a non-existent command', function() {
             it('should return false', function() {
-                let result = this.chatCommands.executeCommand(this.playerSpy, '/foo', ['/foo', 'bar']);
+                const result = this.chatCommands.executeCommand(this.playerSpy, '/foo', ['/foo', 'bar']);
 
                 expect(result).toBe(false);
             });
@@ -46,7 +46,7 @@ describe('ChatCommands', function() {
 
         describe('with a valid command', function() {
             it('should return true', function() {
-                let result = this.chatCommands.executeCommand(this.playerSpy, '/dishonor', ['/dishonor']);
+                const result = this.chatCommands.executeCommand(this.playerSpy, '/dishonor', ['/dishonor']);
 
                 expect(result).toBe(true);
             });

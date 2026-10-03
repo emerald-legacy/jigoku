@@ -59,19 +59,19 @@ const merchantOfCuriositiesCost = function (): Cost<{ merchantOfCuriositiesCostP
         },
         payEvent: function (context) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
-                let events: Event[] = [];
+                const events: Event[] = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
+                const discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
 
-                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
+                const honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
                 context.game.addMessage('{0} chooses to discard a card and give {1} 1 honor', context.player.opponent, context.player);
 
                 return events;
             }
 
-            let action = context.game.actions.handler(); //this is a do-nothing event to allow you to opt out and not scuttle the event
+            const action = context.game.actions.handler(); //this is a do-nothing event to allow you to opt out and not scuttle the event
             return action.getEvent(context.player, context);
 
         },

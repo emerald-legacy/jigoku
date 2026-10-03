@@ -49,7 +49,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
                 if(context.targets.challenger && context.targets.duelTarget) {
                     //duels act weird, we need to handle targeting differently for them to work
-                    let duelTargets = Object.values<BaseCard | Array<BaseCard>>(context.targets).flat();
+                    const duelTargets = Object.values<BaseCard | Array<BaseCard>>(context.targets).flat();
                     targetForCost = targetForCost.concat(duelTargets);
                 }
 
@@ -61,8 +61,8 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
                         const paidTargets: unknown[] = Array.isArray(paid) ? paid : [];
                         context.costs.targetingCostPaid = paidTargets;
                         paidTargets.push(costTarget);
-                        let properties = { amount: targetingCosts, target: context.player };
-                        let cost = new LoseFateAction(properties);
+                        const properties = { amount: targetingCosts, target: context.player };
+                        const cost = new LoseFateAction(properties);
                         if(cost.canAffect(context.player, context)) {
                             context.game.addMessage(
                                 '{0} pays {1} fate in order to target {2}',

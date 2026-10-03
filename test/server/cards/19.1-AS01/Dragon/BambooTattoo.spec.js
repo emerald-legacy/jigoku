@@ -27,7 +27,7 @@ describe('Bamboo Tattoo', function () {
         });
 
         it('should only be playable on monks and cost 1 when played on someone expensive', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player1.pass();
             this.player2.clickCard(this.bamboo);
 
@@ -40,7 +40,7 @@ describe('Bamboo Tattoo', function () {
         });
 
         it('should only be playable on monks and cost 0 when played on someone cheap', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player1.pass();
             this.player2.clickCard(this.bamboo);
 

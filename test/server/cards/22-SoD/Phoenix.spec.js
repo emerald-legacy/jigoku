@@ -40,7 +40,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickPrompt('0');
                 this.player2.pass();
 
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
@@ -80,7 +80,7 @@ describe('SoD - Phoenix', function () {
                 this.player2.pass();
 
                 this.player1.fate = 10;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
@@ -121,7 +121,7 @@ describe('SoD - Phoenix', function () {
                 this.player2.pass();
 
                 this.player1.fate = 1;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
@@ -153,7 +153,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickPrompt('0');
                 this.player2.pass();
 
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
@@ -381,7 +381,7 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.challenger]
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.pass();
                 this.player1.clickCard(this.shun);
@@ -401,7 +401,7 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.challenger]
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.pass();
                 this.player1.clickCard(this.shun);
@@ -464,7 +464,7 @@ describe('SoD - Phoenix', function () {
                     province: this.p1
                 });
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 expect(this.player2).toBeAbleToSelect(this.song);
                 this.player2.clickCard(this.song);
@@ -500,7 +500,7 @@ describe('SoD - Phoenix', function () {
                     ring: 'fire'
                 });
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 expect(this.player2).toBeAbleToSelect(this.song);
                 this.player2.clickCard(this.song);

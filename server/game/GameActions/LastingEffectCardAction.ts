@@ -25,7 +25,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
     };
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const message = properties.message || this.effect;
 
         return [message, [properties.target]];
@@ -37,7 +37,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const effects = properties.effect.map((factory) => factory(context.game, context.source, properties));
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         return (
@@ -55,7 +55,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
         const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context;
         const effectProperties = Object.assign({ match: event.card, location: Location.Any }, otherProperties);
-        let effects = _effect.map((factory) =>
+        const effects = _effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
 
@@ -66,7 +66,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
 
     eventHandler(event: CardEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
         const eventContext = event.context;
-        let properties = this.getProperties(eventContext, additionalProperties);
+        const properties = this.getProperties(eventContext, additionalProperties);
         if(!properties.ability) {
             properties.ability = eventContext.ability;
         }

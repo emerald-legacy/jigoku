@@ -160,12 +160,12 @@ export abstract class EffectBase<N extends EffectName = EffectName, T extends Ga
 
     checkConflictingEffects(type: EffectName, target: GameObject): boolean {
         if(binaryCardEffects.includes(type)) {
-            let matchingEffects = target.getRawEffects().filter((effect: CardEffect) => effect.type === type);
+            const matchingEffects = target.getRawEffects().filter((effect: CardEffect) => effect.type === type);
             return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
         const conflicting = conflictingEffects[type];
         if(conflicting) {
-            let matchingEffects = conflicting(target, this.getValue());
+            const matchingEffects = conflicting(target, this.getValue());
             return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
         if(type === EffectName.ModifyBothSkills) {

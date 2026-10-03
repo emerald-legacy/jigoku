@@ -22,7 +22,7 @@ describe('Paranoid Hososhi', function () {
                 });
 
                 it('is triggerable', function () {
-                    let player1FateBefore = this.player1.fate;
+                    const player1FateBefore = this.player1.fate;
                     this.player1.clickCard(this.paranoidHososhi);
                     expect(this.player1).toHavePrompt('Paranoid Hōsōshi');
                     expect(this.player1).toBeAbleToSelect(this.tsukune);

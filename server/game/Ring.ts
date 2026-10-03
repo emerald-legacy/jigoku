@@ -157,7 +157,7 @@ class Ring extends EffectSource {
             selectionState = activePlayer.getRingSelectionState(this);
         }
 
-        let state = {
+        const state = {
             claimed: this.claimed,
             claimedBy: this.claimedBy,
             conflictType: this.conflictType,

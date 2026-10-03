@@ -39,7 +39,7 @@ class AbilityTargetRing {
         this.name = name;
         this.properties = properties;
         this.ringCondition = (ring: Ring, context: AbilityContext) => {
-            let contextCopy = context.copy({});
+            const contextCopy = context.copy({});
             contextCopy.rings[this.name] = ring;
             if(this.name === 'target') {
                 contextCopy.ring = ring;
@@ -50,13 +50,13 @@ class AbilityTargetRing {
             return (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy))) &&
                    properties.ringCondition(ring, contextCopy) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy));
         };
-        for(let gameAction of this.properties.gameAction) {
+        for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.rings[name]);
         }
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
                 dependsOnTarget.dependentTarget = this;
             }
@@ -83,12 +83,12 @@ class AbilityTargetRing {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
-        let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
+        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
         if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
-        let buttons: PromptButton[] = [];
+        const buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
             if(!targetResults.noCostsFirstButton) {
@@ -101,7 +101,7 @@ class AbilityTargetRing {
                 waitingPromptTitle = 'Waiting for opponent';
             }
         }
-        let promptProperties = {
+        const promptProperties = {
             waitingPromptTitle: waitingPromptTitle,
             context: context,
             buttons: buttons,
@@ -132,7 +132,7 @@ class AbilityTargetRing {
     }
 
     checkTarget(context: AbilityContext): boolean {
-        let selected = context.rings[this.name];
+        const selected = context.rings[this.name];
         if(!selected || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
             return false;
         }

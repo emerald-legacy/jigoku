@@ -16,7 +16,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     }
 
     getPromptForSelectProperties() {
-        let buttons: Array<{ text: string; arg: string }> = [];
+        const buttons: Array<{ text: string; arg: string }> = [];
         if(this.playEvent && this.currentPlayer === this.playEvent.player && this.playEvent.resolver?.canCancel) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }

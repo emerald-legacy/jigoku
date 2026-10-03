@@ -40,7 +40,7 @@ describe('Student of Esoterica', function() {
             });
 
             it('should allow the player to not choose a character', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard('against-the-waves');
                 expect(this.player1).toHavePrompt('Against the Waves');
                 this.player1.clickCard(this.student1);
@@ -89,8 +89,8 @@ describe('Student of Esoterica', function() {
             });
 
             it('should pay with character fate when selected', function() {
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
                 this.player1.clickCard('against-the-waves');
                 expect(this.player1).toHavePrompt('Against the Waves');
                 this.player1.clickCard(this.student1);
@@ -103,9 +103,9 @@ describe('Student of Esoterica', function() {
             });
 
             it('should pay with own fate when selected', function() {
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
-                let bodyFate2 = this.student2.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
+                const bodyFate2 = this.student2.fate;
                 this.player1.clickCard('against-the-waves');
                 expect(this.player1).toHavePrompt('Against the Waves');
                 this.player1.clickCard(this.student1);
@@ -121,9 +121,9 @@ describe('Student of Esoterica', function() {
             });
 
             it('should allow triggering Embrace the Void', function() {
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
-                let bodyFate2 = this.student2.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
+                const bodyFate2 = this.student2.fate;
 
                 this.player1.clickCard('against-the-waves');
                 expect(this.player1).toHavePrompt('Against the Waves');
@@ -155,9 +155,9 @@ describe('Student of Esoterica', function() {
             it('should correctly offer options when the player doesn\'t have enough fate in their pool', function() {
                 this.player1.fate = 3;
 
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
-                let bodyFate2 = this.student2.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
+                const bodyFate2 = this.student2.fate;
 
                 this.player1.clickCard('consumed-by-five-fires');
                 expect(this.player1).toHavePrompt('Choose a card to help pay the fate cost of Consumed By Five Fires');
@@ -194,9 +194,9 @@ describe('Student of Esoterica', function() {
             });
 
             it('should work with attachments', function() {
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
-                let bodyFate2 = this.student2.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
+                const bodyFate2 = this.student2.fate;
 
                 this.daimyosFavor = this.player1.playAttachment('daimyo-s-favor', this.student1);
                 this.player2.pass();
@@ -221,10 +221,10 @@ describe('Student of Esoterica', function() {
             it('should not offer a discount on a non-spell', function() {
                 this.player1.fate = 3;
 
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
-                let bodyFate2 = this.student2.fate;
-                let challengerFate = this.challenger.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
+                const bodyFate2 = this.student2.fate;
+                const challengerFate = this.challenger.fate;
 
                 this.player1.clickCard(this.monoNoAware);
                 expect(this.player1).not.toHavePrompt('Choose amount of fate to spend from Student of Esoterica');
@@ -264,9 +264,9 @@ describe('Student of Esoterica', function() {
             it('should correctly offer options', function() {
                 this.player1.fate = 3;
 
-                let playerFate = this.player1.fate;
-                let bodyFate = this.student1.fate;
-                let bodyFate2 = this.student2.fate;
+                const playerFate = this.player1.fate;
+                const bodyFate = this.student1.fate;
+                const bodyFate2 = this.student2.fate;
 
                 this.player1.clickCard('consumed-by-five-fires');
                 this.player1.clickCard(this.student2);

@@ -34,7 +34,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: ModifyBidProperties = this.getProperties(context);
+        const properties: ModifyBidProperties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', [properties.amount]];
         }
@@ -42,7 +42,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
+        const properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || (properties.direction === Direction.Decrease && player.honorBid === 0)) {
             return false;
         }
@@ -50,7 +50,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
+        const properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
         }
@@ -81,7 +81,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, direction } = this.getProperties(context, additionalProperties);
+        const { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount ?? 0;
         event.direction = direction;

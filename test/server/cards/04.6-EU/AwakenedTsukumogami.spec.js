@@ -113,8 +113,8 @@ describe('Awakened Tsukumogami', function() {
             });
 
             it('should not allow the player to choose whether to take fate from the ring or their fate pool', function() {
-                let waterFate = this.game.rings.water.fate;
-                let playerFate = this.player2.fate;
+                const waterFate = this.game.rings.water.fate;
+                const playerFate = this.player2.fate;
 
                 this.player2.clickCard('against-the-waves');
                 expect(this.player2).toHavePrompt('Against the Waves');

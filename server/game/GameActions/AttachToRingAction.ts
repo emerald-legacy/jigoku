@@ -18,12 +18,12 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
     targetType = ['ring'];
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['attach {1} to {0}', [properties.target, properties.attachment]];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(!context || !context.player || !ring) {
             return false;
         } else if(
@@ -42,12 +42,12 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
     }
 
     isEventFullyResolved(event: AnyEvent, card: BaseCard | Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { attachment } = this.getProperties(context, additionalProperties);
+        const { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, C>, ring: BaseCard | Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { attachment } = this.getProperties(context, additionalProperties);
+        const { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
         event.parent = ring;
         if(attachment) {

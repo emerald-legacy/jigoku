@@ -10,7 +10,7 @@ class WatchtowerOfValor extends DrawCard {
             .when({
                 afterConflict: (event, context) => {
                     if(context.player.isDefendingPlayer() && event.conflict.winner === context.player) {
-                        let cards = event.conflict.getConflictProvinces().map(a => context.player.getDynastyCardsInProvince(a.location));
+                        const cards = event.conflict.getConflictProvinces().map(a => context.player.getDynastyCardsInProvince(a.location));
                         return cards.some(c => c.some(card => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall')));
                     }
                     return false;

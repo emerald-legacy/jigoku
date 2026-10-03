@@ -23,7 +23,7 @@ class NobleVanguard extends DrawCard {
             }, AbilityDsl.actions.handler({
                 handler: context => {
                     const card = context.player.conflictDeck[0];
-                    let token = context.game.createToken(card, Soldier);
+                    const token = context.game.createToken(card, Soldier);
                     card.owner.removeCardFromPile(card);
                     card.moveTo(Location.RemovedFromGame);
                     const moveEvents: Event[] = [];

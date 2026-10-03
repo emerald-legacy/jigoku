@@ -158,7 +158,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
             if(!properties.payCosts) {
                 ignoredRequirements.push('cost');
             }
-            let newContext = createContext(context.player);
+            const newContext = createContext(context.player);
             newContext.gameActionsResolutionChain = context.gameActionsResolutionChain.concat(this);
             newContext.ignoreFateCost = properties.ignoreFateCost;
             this.setPlayType(newContext, properties.playType ?? PlayType.Other, card.location);
@@ -198,12 +198,12 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const [card] = targetList(properties.target);
         if(!card || !card.isDrawCard()) {
             return;
         }
-        let abilities = this.getLegalAbilities(card, context, properties);
+        const abilities = this.getLegalAbilities(card, context, properties);
         if(abilities.length === 1) {
             events.push(
                 this.getPlayCardEvent(card, context, abilities[0].createContext(context.player), additionalProperties)
@@ -239,8 +239,8 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         actionContext: AbilityContext,
         additionalProperties: Record<string, unknown> = {}
     ): Event {
-        let properties = this.getProperties(context, additionalProperties);
-        let event = this.createEvent(card, context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
+        const event = this.createEvent(card, context, additionalProperties);
         this.updateEvent(event, card, context, additionalProperties);
         this.setPlayType(actionContext, properties.playType ?? PlayType.Other, card.location);
         event.replaceHandler(() =>

@@ -46,7 +46,7 @@ class MenuPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
+        const promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
         return Object.assign({ promptTitle: promptTitle }, this.properties.activePrompt);
     }
 

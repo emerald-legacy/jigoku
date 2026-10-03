@@ -22,7 +22,7 @@ export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extend
     }
 
     eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let { deck } = this.getProperties(event.context, additionalProperties);
+        const { deck } = this.getProperties(event.context, additionalProperties);
         const player = event.player;
         if(deck === Location.ConflictDeck) {
             player.shuffleConflictDeck();

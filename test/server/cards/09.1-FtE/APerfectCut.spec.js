@@ -64,7 +64,7 @@ describe('A Perfect Cut', function() {
                     attackers: [this.kitsukiShomon],
                     defenders: []
                 });
-                let militarySkill = this.kitsukiShomon.getMilitarySkill();
+                const militarySkill = this.kitsukiShomon.getMilitarySkill();
                 this.player2.pass();
                 this.player1.clickCard(this.aPerfectCut);
                 expect(this.player1).toHavePrompt('A Perfect Cut');

@@ -16,7 +16,7 @@ export default class IsawaTadaka2 extends DrawCard {
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const removed = context.costs.removeFromGame;
-                let cards =
+                const cards =
                     context.player.opponent && removed
                         ? shuffle(context.player.opponent.hand).slice(0, Array.isArray(removed) ? removed.length : 1)
                         : [context.source];

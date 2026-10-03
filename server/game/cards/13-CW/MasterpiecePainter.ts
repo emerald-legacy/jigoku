@@ -27,7 +27,7 @@ class MasterpiecePainter extends DrawCard {
             if(!player) {
                 return {};
             }
-            let topCard = player.conflictDeck[0];
+            const topCard = player.conflictDeck[0];
 
             return {
                 targetController: player,

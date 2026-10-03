@@ -69,7 +69,7 @@ describe('Cinder Salamander', function () {
                     }
                 });
 
-                let salamanders = this.player1.filterCardsByName('cinder-salamander');
+                const salamanders = this.player1.filterCardsByName('cinder-salamander');
                 this.salamander1 = salamanders[0];
                 this.salamander2 = salamanders[1];
                 this.salamander3 = salamanders[2];

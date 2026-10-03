@@ -23,7 +23,7 @@ describe('Stinger', function () {
         });
 
         it('should let you attach to an attacking character', function () {
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
             this.yoshi.honor();
             this.noMoreActions();
             this.initiateConflict({

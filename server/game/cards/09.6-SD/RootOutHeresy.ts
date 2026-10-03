@@ -20,7 +20,7 @@ class RootOutHeresy extends DrawCard {
                     message: '{0} reduces the strength of {1} by {2}',
                     messageArgs: (cards) => [context.player, cards, this.getStrengthModifier(context)],
                     gameAction: AbilityDsl.actions.cardLastingEffect(() => {
-                        let amount = this.getStrengthModifier(context);
+                        const amount = this.getStrengthModifier(context);
                         return ({
                             effect: AbilityDsl.effects.modifyProvinceStrength(amount)
                         });
@@ -32,12 +32,12 @@ class RootOutHeresy extends DrawCard {
     getStrengthModifier(context: AbilityContext) {
         //Find the event
         if(context.events) {
-            let event = context.events.find((event) => event.is(EventName.OnCardsDiscardedFromHand));
+            const event = context.events.find((event) => event.is(EventName.OnCardsDiscardedFromHand));
             if(event) {
                 if(event.discardedCards && event.discardedCards.length > 0) {
                     //Grab the first one (this card should only discard one card)
-                    let card = event.discardedCards[0];
-                    let cost = card.isDrawCard() ? card.printedCost ?? 0 : 0;
+                    const card = event.discardedCards[0];
+                    const cost = card.isDrawCard() ? card.printedCost ?? 0 : 0;
 
                     return -1 * cost;
                 }

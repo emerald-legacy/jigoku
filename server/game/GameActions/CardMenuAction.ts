@@ -41,7 +41,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.cards.some((c) =>
             properties.gameAction.canAffect(
                 card,
@@ -52,7 +52,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.handlers) {
             return true;
         }
@@ -68,8 +68,8 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        let cardCondition = (card: DrawCard, context: C) =>
+        const properties = this.getProperties(context, additionalProperties);
+        const cardCondition = (card: DrawCard, context: C) =>
             properties.gameAction.hasLegalTarget(
                 context,
                 Object.assign({}, additionalProperties, properties.subActionProperties(card))
@@ -86,7 +86,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
-        let defaultProperties = {
+        const defaultProperties = {
             context: context,
             cardHandler: (card: DrawCard): void => {
                 properties.gameAction.addEventsToArray(
@@ -95,7 +95,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
                     Object.assign({}, additionalProperties, properties.subActionProperties(card))
                 );
                 if(properties.message && properties.messageArgs) {
-                    let cards = properties.cards.filter((card) => cardCondition(card, context));
+                    const cards = properties.cards.filter((card) => cardCondition(card, context));
                     context.game.addMessage(properties.message, ...(properties.messageArgs(card, player, cards)));
                 }
             }
@@ -104,7 +104,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return (
             properties.targets ||
             properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)

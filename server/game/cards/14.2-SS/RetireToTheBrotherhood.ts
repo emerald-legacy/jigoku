@@ -48,12 +48,12 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                     //just for the display message
                     handler: (context) => {
                         //Identify who actually entered play
-                        let enteredPlay = context.events
+                        const enteredPlay = context.events
                             .filter((a) => a.name === 'onCharacterEntersPlay' && !a.cancelled)
                             .map((a) => a.card)
                             .filter((a): a is DrawCard => !!a);
-                        let myEnter = enteredPlay.filter((a) => a.controller === context.player);
-                        let oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
+                        const myEnter = enteredPlay.filter((a) => a.controller === context.player);
+                        const oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
                         if(myEnter.length > 0) {
                             this.game.addMessage('{0} puts {1} into play', context.player, myEnter);
                         }
@@ -77,19 +77,19 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
 
     getBrotherhoodCards(context: AbilityContext, player: Player | undefined) {
         if(!player) {
-            let def = [];
+            const def = [];
             def.push([]);
             def.push([]);
             return def;
         }
-        let allCards = context.events.flatMap((event) =>
+        const allCards = context.events.flatMap((event) =>
             event.is(EventName.OnCardLeavesPlay) && !event.cancelled && event.cardStateWhenLeftPlay ? [event.cardStateWhenLeftPlay] : []);
-        let cards = allCards.filter((a: BaseCard) => a.controller === player);
+        const cards = allCards.filter((a: BaseCard) => a.controller === player);
 
         //Figure out how many cards to reveal and which characters to put into play
-        let deck = player.dynastyDeck.slice();
-        let revealedCards = [];
-        let characters = [];
+        const deck = player.dynastyDeck.slice();
+        const revealedCards = [];
+        const characters = [];
         for(let i = 0; i < deck.length && characters.length < cards.length; i++) {
             revealedCards.push(deck[i]);
             if(deck[i].type === CardType.Character) {
@@ -97,7 +97,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             }
         }
 
-        let results = [];
+        const results = [];
         results.push(revealedCards);
         results.push(characters);
         return results;

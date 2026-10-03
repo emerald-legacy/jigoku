@@ -39,11 +39,11 @@ export class LeavesPlayAction<P extends CardActionProperties = CardActionPropert
             for(const attachment of (evCard.attachments ?? [])) {
                 // we only need to add events for attachments that are in play.
                 if(attachment.location === Location.PlayArea) {
-                    let attachmentEvent = context.game.actions
+                    const attachmentEvent = context.game.actions
                         .discardFromPlay()
                         .getEvent(attachment, context.game.getFrameworkContext());
                     attachmentEvent.order = event.order - 1;
-                    let previousCondition = attachmentEvent.condition;
+                    const previousCondition = attachmentEvent.condition;
                     attachmentEvent.condition = (attachmentEvent) =>
                         previousCondition(attachmentEvent) && attachment.parent === evCard;
                     attachmentEvent.isContingent = true;
@@ -53,7 +53,7 @@ export class LeavesPlayAction<P extends CardActionProperties = CardActionPropert
 
             // Add an imminent triggering condition for removing fate
             if(evCard.allowGameAction('removeFate', context.game.getFrameworkContext())) {
-                let fateEvent = context.game.actions
+                const fateEvent = context.game.actions
                     .removeFate({ amount: evCard.getFate() })
                     .getEvent(evCard, context.game.getFrameworkContext());
                 fateEvent.order = event.order - 1;

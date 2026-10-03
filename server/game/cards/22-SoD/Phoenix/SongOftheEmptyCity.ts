@@ -92,7 +92,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
     }
 
     private getHonorGain(context: AbilityContext) {
-        let currentProvince = context.player.getProvinceCardInProvince(context.source.location);
+        const currentProvince = context.player.getProvinceCardInProvince(context.source.location);
 
         if(!this.declaredProvinces) {
             return 1;

@@ -49,7 +49,7 @@ describe('To Connect the People', function () {
             });
 
             it('discards a few cards from the opponents dynasty deck', function () {
-                let initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
+                const initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
 
                 this.player1.clickCard(this.toConnectThePeople);
                 expect(this.player2.player.dynastyDiscardPile.length).toBe(initialDiscardPile + 3);

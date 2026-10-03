@@ -90,12 +90,12 @@ describe('Solitary Hero', function() {
                     defenders: [this.toshimoko, this.whisperer, this.kaezin]
                 });
 
-                let f1 = this.hero.fate;
-                let f2 = this.challenger.fate;
-                let f3 = this.toshimoko.fate;
-                let f4 = this.whisperer.fate;
-                let f5 = this.kaezin.fate;
-                let f6 = this.brash.fate;
+                const f1 = this.hero.fate;
+                const f2 = this.challenger.fate;
+                const f3 = this.toshimoko.fate;
+                const f4 = this.whisperer.fate;
+                const f5 = this.kaezin.fate;
+                const f6 = this.brash.fate;
 
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');

@@ -96,8 +96,8 @@ describe('Ikoma Ujio', function () {
             expect(this.player2).toHavePromptButton('Give opponent 1 honor');
             expect(this.player2).toHavePromptButton('Bow duel loser');
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.clickPrompt('Give opponent 1 honor');
             expect(this.mitsu.bowed).toBe(false);
@@ -126,8 +126,8 @@ describe('Ikoma Ujio', function () {
             expect(this.player2).toHavePromptButton('Give opponent 1 honor');
             expect(this.player2).not.toHavePromptButton('Bow duel loser');
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.clickPrompt('Give opponent 1 honor');
             expect(this.player1.honor).toBe(honor1 + 1);
@@ -179,8 +179,8 @@ describe('Ikoma Ujio', function () {
             expect(this.player1).toHavePromptButton('Give opponent 1 honor');
             expect(this.player1).toHavePromptButton('Bow duel loser');
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player1.clickPrompt('Give opponent 1 honor');
             expect(this.ujio.bowed).toBe(false);

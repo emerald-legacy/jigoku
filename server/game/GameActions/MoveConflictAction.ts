@@ -32,8 +32,8 @@ export class MoveConflictAction<C extends AbilityContext = AbilityContext> exten
     }
 
     eventHandler(event: ActionEvent<EventName.OnConflictMoved, C>, _additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context;
-        let newProvince = event.card;
+        const context = event.context;
+        const newProvince = event.card;
         const conflict = context.game.currentConflict;
         if(!conflict || !conflict.conflictProvince) {
             return;

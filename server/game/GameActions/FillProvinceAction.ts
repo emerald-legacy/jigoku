@@ -20,20 +20,20 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }
 
     eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const player = event.player;
-        let currentCards = player.getDynastyCardsInProvince(properties.location).length;
+        const currentCards = player.getDynastyCardsInProvince(properties.location).length;
         player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);
 
         if(properties.faceup) {
             context.game.queueSimpleStep(() => {
-                let cards = player.getDynastyCardsInProvince(properties.location);
+                const cards = player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card) => {
                     if(card) {
                         card.facedown = false;

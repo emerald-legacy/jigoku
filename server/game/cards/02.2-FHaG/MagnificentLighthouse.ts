@@ -27,14 +27,14 @@ class MagnificentLighthouse extends DrawCard {
                 if(topThree.length === 0) {
                     return;
                 }
-                let messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
-                let destinations = [
+                const messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
+                const destinations = [
                     { location: topThree[0].isDynasty ? Location.DynastyDeck : Location.ConflictDeck, bottom: true },
                     { location: topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile, bottom: false }
                 ];
                 let choices: string[] = [];
-                let handlers: (() => void)[] = [];
-                let cardHandler = (card: BaseCard) => {
+                const handlers: (() => void)[] = [];
+                const cardHandler = (card: BaseCard) => {
                     const msg = messages.pop();
                     const dest = destinations.pop();
                     if(msg && dest) {
@@ -42,7 +42,7 @@ class MagnificentLighthouse extends DrawCard {
                         opponent.moveCard(card, dest.location, { bottom: dest.bottom });
                     }
                     if(messages.length > 0) {
-                        let index = topThree.indexOf(card);
+                        const index = topThree.indexOf(card);
                         topThree.splice(index, 1);
                         this.game.promptWithHandlerMenu(context.player, {
                             activePromptTitle: 'Select a card to put on the bottom of the deck',

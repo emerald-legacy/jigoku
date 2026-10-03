@@ -30,7 +30,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let { target } = this.getProperties(context);
+        const { target } = this.getProperties(context);
         return ['choose a ring for {0}', [target]];
     }
 

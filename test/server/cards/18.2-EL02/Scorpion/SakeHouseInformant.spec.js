@@ -19,9 +19,9 @@ describe('Sake House Informant', function() {
         });
 
         it('should give the right boost to the right people', function() {
-            let sadako = { mil: this.sadako.getMilitarySkill(), pol: this.sadako.getPoliticalSkill() };
-            let aramoro = { mil: this.aramoro.getMilitarySkill(), pol: this.aramoro.getPoliticalSkill() };
-            let prowler = { mil: this.prowler.getMilitarySkill(), pol: this.prowler.getPoliticalSkill() };
+            const sadako = { mil: this.sadako.getMilitarySkill(), pol: this.sadako.getPoliticalSkill() };
+            const aramoro = { mil: this.aramoro.getMilitarySkill(), pol: this.aramoro.getPoliticalSkill() };
+            const prowler = { mil: this.prowler.getMilitarySkill(), pol: this.prowler.getPoliticalSkill() };
             this.player1.player.imperialFavor = 'political';
             this.player2.player.imperialFavor = '';
             this.game.checkGameState(true);

@@ -28,7 +28,7 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: MatchingDiscardProperties = this.getProperties(context);
+        const properties: MatchingDiscardProperties = this.getProperties(context);
         return ['make {0} discard all cards that match a condition', [properties.target]];
     }
 
@@ -37,7 +37,7 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let properties: MatchingDiscardProperties = this.getProperties(
+        const properties: MatchingDiscardProperties = this.getProperties(
             context,
             additionalProperties
         );
@@ -49,8 +49,8 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
     }
 
     eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
-        let context = event.context;
-        let player = event.player;
+        const context = event.context;
+        const player = event.player;
         let amount = Math.min(event.amount ?? -1, player.hand.length);
         if(amount < 0) {
             amount = player.hand.length;
@@ -59,7 +59,7 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
         if(amount === 0) {
             return;
         }
-        let cards = event.cards ?? [];
+        const cards = event.cards ?? [];
         const match = event.match ?? (() => true);
         let cardsToDiscard = cards.filter((a: BaseCard) => match(context, a));
         if(amount < cardsToDiscard.length) {

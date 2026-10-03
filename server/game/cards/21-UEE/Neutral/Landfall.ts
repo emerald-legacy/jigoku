@@ -36,7 +36,7 @@ export default class Landfall extends ProvinceCard {
             return;
         }
 
-        let cardHandler = (currentCard: DrawCard) => {
+        const cardHandler = (currentCard: DrawCard) => {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
@@ -88,7 +88,7 @@ export default class Landfall extends ProvinceCard {
     }
 
     hasRemainingTarget() {
-        let baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
+        const baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
             baseLocations.push(Location.ProvinceFour);
         }

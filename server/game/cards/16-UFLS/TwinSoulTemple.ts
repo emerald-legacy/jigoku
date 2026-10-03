@@ -21,7 +21,7 @@ export default class TwinSoulTemple extends StrongholdCard {
                     duration: Duration.UntilEndOfPhase
                 }),
                 choiceHandler: (choice, displayMessage) => {
-                    let newElement = choice.toLowerCase();
+                    const newElement = choice.toLowerCase();
                     if(!isEnumValue(Element, newElement)) {
                         return {};
                     }

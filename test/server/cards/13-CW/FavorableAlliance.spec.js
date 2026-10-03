@@ -49,7 +49,7 @@ describe('Favorable Alliance', function () {
 
         it('should draw cards equal to the fate spent', function () {
             this.player1.fate = 4;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             expect(this.player1).toHavePrompt('Action Window');
             this.player1.clickCard(this.alliance);
             expect(this.player1).toHavePrompt('Choose a value for X');
@@ -124,7 +124,7 @@ describe('Favorable Alliance', function () {
 
             this.player2.pass();
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.alliance);
             expect(this.player1).toHavePrompt('Choose a value for X');
             expect(this.player1).toHavePromptButton('1');
@@ -171,7 +171,7 @@ describe('Favorable Alliance', function () {
 
             this.player2.pass();
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.alliance);
             expect(this.player1).toHavePrompt('Choose a value for X');
             expect(this.player1).toHavePromptButton('1');
@@ -202,7 +202,7 @@ describe('Favorable Alliance', function () {
                 type: 'military'
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.alliance);
             expect(this.player1).toHavePrompt('Choose a value for X');
             expect(this.player1).toHavePromptButton('1');
@@ -237,7 +237,7 @@ describe('Favorable Alliance', function () {
 
         it('should only let you pick cards up to the amount in your discard', function () {
             this.player1.fate = 14;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             expect(this.player1).toHavePrompt('Action Window');
             this.player1.clickCard(this.alliance);
             expect(this.player1).toHavePrompt('Choose a value for X');
@@ -278,7 +278,7 @@ describe('Favorable Alliance', function () {
 
             this.player2.pass();
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.alliance);
             expect(this.player1).toHavePrompt('Choose a value for X');
             expect(this.player1).toHavePromptButton('1');

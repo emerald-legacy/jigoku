@@ -140,7 +140,7 @@ class Effect<T extends GameObject = GameObject> {
         if(this.duration !== Duration.Persistent) {
             return true;
         }
-        let effectOnSource = this.source.getPersistentEffectRecords().some((effect) => effect.ref && effect.ref.includes(this));
+        const effectOnSource = this.source.getPersistentEffectRecords().some((effect) => effect.ref && effect.ref.includes(this));
         return !this.source.facedown && effectOnSource;
     }
 
@@ -152,14 +152,14 @@ class Effect<T extends GameObject = GameObject> {
         } else if(typeof this.match === 'function') {
             const matchFn = this.match;
             // Get any targets which are no longer valid
-            let invalidTargets = this.targets.filter(target => !matchFn(target, this.context) || !this.isValidTarget(target));
+            const invalidTargets = this.targets.filter(target => !matchFn(target, this.context) || !this.isValidTarget(target));
             // Remove invalid targets
             this.removeTargets(invalidTargets);
             stateChanged = stateChanged || invalidTargets.length > 0;
             // Recalculate the effect for valid targets
             this.targets.forEach(target => stateChanged = this.effect.recalculate(target) || stateChanged);
             // Check for new targets
-            let newTargets = this.getTargets(matchFn).filter(target => !this.targets.includes(target) && this.isValidTarget(target));
+            const newTargets = this.getTargets(matchFn).filter(target => !this.targets.includes(target) && this.isValidTarget(target));
             // Apply the effect to new targets
             newTargets.forEach(target => this.addTarget(target));
             return stateChanged || newTargets.length > 0;

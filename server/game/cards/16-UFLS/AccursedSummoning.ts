@@ -84,9 +84,9 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
                 context.game.allCards.push(copy);
                 context.costs.accursedSummoningCostCreature = copy;
 
-                let events: Event[] = [];
+                const events: Event[] = [];
                 const honorAmount = context.costs.accursedSummoningCost ?? 0;
-                let honorAction = context.game.actions.loseHonor({ target: context.player, amount: honorAmount });
+                const honorAction = context.game.actions.loseHonor({ target: context.player, amount: honorAmount });
                 events.push(honorAction.getEvent(context.player, context));
                 return events;
             }

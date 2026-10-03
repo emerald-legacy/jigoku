@@ -57,7 +57,7 @@ export class ResolveElementAction<C extends AbilityContext = AbilityContext> ext
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown>): void {
-        let { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
+        const { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.player = player || context.player;
         event.physicalRing = physicalRing;

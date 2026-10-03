@@ -46,7 +46,7 @@ describe('Shadowed Village', function() {
         });
 
         it('should draw a card if the character is normal', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.karmicTwist);
             this.player1.clickCard(this.manipulator);
             this.player1.clickCard(this.miyaMystic);
@@ -56,7 +56,7 @@ describe('Shadowed Village', function() {
         });
 
         it('should draw two cards if the character is dishonored', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.manipulator.dishonor();
             this.player1.clickCard(this.karmicTwist);
             this.player1.clickCard(this.manipulator);
@@ -67,7 +67,7 @@ describe('Shadowed Village', function() {
         });
 
         it('should draw one card if the character is honored', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.manipulator.honor();
             this.player1.clickCard(this.karmicTwist);
             this.player1.clickCard(this.manipulator);
@@ -85,7 +85,7 @@ describe('Shadowed Village', function() {
         });
 
         it('disguised - should not pick up the former dishonored status', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.manipulator.dishonor();
             this.game.checkGameState(true);
             this.player1.clickCard(this.kageyu);
@@ -109,7 +109,7 @@ describe('Shadowed Village', function() {
         });
 
         it('leaving play - should not pick up dishonored status', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.manipulator.dishonor();
             this.noMoreActions();
             this.initiateConflict({
@@ -160,7 +160,7 @@ describe('Shadowed Village', function() {
         });
 
         it('should not react in the fate phase', function() {
-            let fate = this.manipulator.fate;
+            const fate = this.manipulator.fate;
             this.player1.togglePromptedActionWindow('fate', true);
             this.player2.togglePromptedActionWindow('fate', true);
             this.advancePhases('fate');
@@ -195,7 +195,7 @@ describe('Shadowed Village', function() {
         });
 
         it('should draw 2 if you pick a dishonored character to react to', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.manipulator.dishonor();
             this.manipulator.fate = 4;
             this.miyaMystic.fate = 4;
@@ -212,7 +212,7 @@ describe('Shadowed Village', function() {
         });
 
         it('should draw 1 if you pick a non-dishonored character to react to', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.manipulator.dishonor();
             this.manipulator.fate = 4;
             this.miyaMystic.fate = 4;

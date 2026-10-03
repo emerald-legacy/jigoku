@@ -36,7 +36,7 @@ export default class NightingaleTattoo extends DrawCard {
                         context: context,
                         cards: targets,
                         cardHandler: (selectedCard: DrawCard) => {
-                            let removedCard = targets.filter((a) => a !== selectedCard);
+                            const removedCard = targets.filter((a) => a !== selectedCard);
                             context.game.addMessage(
                                 '{0} chooses {1} to be shuffled into {2}\'s deck. {3} is removed from the game',
                                 context.player.opponent,
@@ -45,7 +45,7 @@ export default class NightingaleTattoo extends DrawCard {
                                 removedCard
                             );
 
-                            let gameAction = AbilityDsl.actions.multiple([
+                            const gameAction = AbilityDsl.actions.multiple([
                                 AbilityDsl.actions.returnToDeck({
                                     target: selectedCard,
                                     location: Location.ConflictDiscardPile,

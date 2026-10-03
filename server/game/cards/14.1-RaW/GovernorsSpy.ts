@@ -60,7 +60,7 @@ class GovernorsSpy extends DrawCard {
     }
 
     governorSelectPrompt(context: AbilityContext, targetPlayer: Player) {
-        let cardHandler = (currentCard: BaseCard) => {
+        const cardHandler = (currentCard: BaseCard) => {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
@@ -72,8 +72,8 @@ class GovernorsSpy extends DrawCard {
                 onSelect: (player: Player, card: BaseCard) => {
                     this.game.addMessage('{0} places a card', player);
                     this.unplacedDynastyCards = this.unplacedDynastyCards.filter((a: BaseCard) => a !== currentCard);
-                    let wrapper = this.dynastyCards.find((a: CardWrapper) => a.dynastyCard === currentCard);
-                    let location = card.location;
+                    const wrapper = this.dynastyCards.find((a: CardWrapper) => a.dynastyCard === currentCard);
+                    const location = card.location;
                     if(wrapper) {
                         wrapper.targetLocation = location;
                     }
@@ -110,7 +110,7 @@ class GovernorsSpy extends DrawCard {
                 targetPlayer.moveCard(card.dynastyCard, card.targetLocation);
             }
         });
-        let emptyLocations = this.getEmptyProvinces(this.dynastyCards);
+        const emptyLocations = this.getEmptyProvinces(this.dynastyCards);
         emptyLocations.forEach((location) => {
             context.refillProvince(targetPlayer, location);
         });
@@ -118,10 +118,10 @@ class GovernorsSpy extends DrawCard {
     }
 
     isProvinceValidTarget(targetPlayer: Player, cards: CardWrapper[], province: BaseCard) {
-        let emptyLocations = this.getEmptyProvinces(cards);
+        const emptyLocations = this.getEmptyProvinces(cards);
 
-        let location = province.location;
-        let cardsLeft = cards.filter((a: CardWrapper) => !a.targetLocation).length;
+        const location = province.location;
+        const cardsLeft = cards.filter((a: CardWrapper) => !a.targetLocation).length;
 
         if(cardsLeft > emptyLocations.length) {
             return true;
@@ -131,8 +131,8 @@ class GovernorsSpy extends DrawCard {
     }
 
     getEmptyProvinces(cards: CardWrapper[]): Location[] {
-        let emptyLocations: Location[] = [];
-        let baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
+        const emptyLocations: Location[] = [];
+        const baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
             baseLocations.push(Location.ProvinceFour);
         }

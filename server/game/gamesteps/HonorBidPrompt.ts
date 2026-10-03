@@ -36,7 +36,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     continue(): boolean {
-        let completed = super.continue();
+        const completed = super.continue();
 
         if(completed) {
             const isHonorBid = typeof this.costHandler !== 'function';
@@ -68,17 +68,17 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     transferHonorAfterBid(context = this.game.getFrameworkContext()) {
-        let firstPlayer = this.game.getFirstPlayer();
+        const firstPlayer = this.game.getFirstPlayer();
         if(!firstPlayer || !firstPlayer.opponent) {
             return;
         }
-        let difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
+        const difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
         if(difference === 0) {
             return;
         }
         let amount = Math.abs(difference);
-        let givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
-        let receivingPlayer = givingPlayer.opponent;
+        const givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
+        const receivingPlayer = givingPlayer.opponent;
         if(!receivingPlayer) {
             return;
         }
@@ -99,7 +99,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
             buttons = ['1', '2', '3'];
         }
 
-        let prohibitedBids = this.prohibitedBids[player.uuid] || [];
+        const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         buttons = buttons.filter(num => !prohibitedBids.includes(num));
         return {
             promptTitle: 'Honor Bid',

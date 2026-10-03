@@ -40,7 +40,7 @@ class FrontlineEngineer extends DrawCard {
                             if(!context.target) {
                                 return;
                             }
-                            let cards = context.player.getDynastyCardsInProvince(context.target.location);
+                            const cards = context.player.getDynastyCardsInProvince(context.target.location);
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
                             context.player.moveCard(cardFromDeck, context.target.location);
                             cardFromDeck.facedown = false;

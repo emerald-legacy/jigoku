@@ -26,14 +26,14 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
     };
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
-        let ability = properties.ability;
-        let player = properties.player || context.player;
+        const properties = this.getProperties(context, additionalProperties);
+        const ability = properties.ability;
+        const player = properties.player || context.player;
         if(
             !super.canAffect(card, context) ||
             !ability ||
@@ -41,14 +41,14 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         ) {
             return false;
         }
-        let newContext = this.triggeredAbilityContext(properties, context);
-        let ignoredRequirements = (properties.ignoredRequirements ?? []).concat('player', 'location', 'limit');
+        const newContext = this.triggeredAbilityContext(properties, context);
+        const ignoredRequirements = (properties.ignoredRequirements ?? []).concat('player', 'location', 'limit');
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context, additionalProperties);
-        let newContext = this.triggeredAbilityContext(properties, event.context);
+        const properties = this.getProperties(event.context, additionalProperties);
+        const newContext = this.triggeredAbilityContext(properties, event.context);
         newContext.subResolution = !!properties.subResolution;
         if(properties.subResolution) {
             newContext.originatingContext = event.context.triggeringContext;
@@ -57,7 +57,7 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C) {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return (
             properties.ability &&
             properties.ability.hasTargetsChosenByInitiatingPlayer &&

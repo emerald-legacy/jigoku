@@ -29,7 +29,7 @@ export default class RenownedSinger extends DrawCard {
                         context: context,
                         cards: targets,
                         cardHandler: (handCard: DrawCard) => {
-                            let bottomCard = targets.filter((a) => a !== handCard);
+                            const bottomCard = targets.filter((a) => a !== handCard);
                             context.game.addMessage(
                                 '{0} chooses {1} to be put into {2}\'s hand. {3} is put on the bottom of {2}\'s conflict deck',
                                 context.player.opponent,
@@ -38,7 +38,7 @@ export default class RenownedSinger extends DrawCard {
                                 bottomCard
                             );
 
-                            let gameAction = AbilityDsl.actions.multiple([
+                            const gameAction = AbilityDsl.actions.multiple([
                                 AbilityDsl.actions.moveCard({
                                     target: handCard,
                                     destination: Location.Hand

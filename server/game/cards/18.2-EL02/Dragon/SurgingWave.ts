@@ -13,8 +13,8 @@ class SurgingWave extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             }, AbilityDsl.actions.sequentialContext((context) => {
-                let kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
-                let gameActions = [];
+                const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
+                const gameActions = [];
                 gameActions.push(
                     AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         duration: Duration.UntilEndOfPhase,

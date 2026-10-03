@@ -23,7 +23,7 @@ class HirumaOutpost extends DrawCard {
                         if(!event.conflict.declaredProvince) {
                             return false;
                         }
-                        let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
+                        const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
                         return !cards.some(card => card.isFaceup() && card.type === CardType.Holding);
                     }
                 },

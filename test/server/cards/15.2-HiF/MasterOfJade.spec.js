@@ -21,7 +21,7 @@ describe('Master of Jade', function() {
             });
 
             it('should allow the ability to be used on any character', function() {
-                let fate = this.shinjoOutrider.fate;
+                const fate = this.shinjoOutrider.fate;
                 this.player2.clickCard(this.master);
                 expect(this.player2).toBeAbleToSelect(this.shinjoOutrider);
                 this.player2.clickCard(this.shinjoOutrider);
@@ -31,7 +31,7 @@ describe('Master of Jade', function() {
             });
 
             it('should cost 2 honor', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 this.player2.clickCard(this.master);
                 expect(this.player2).toBeAbleToSelect(this.shinjoOutrider);
                 this.player2.clickCard(this.shinjoOutrider);
@@ -39,7 +39,7 @@ describe('Master of Jade', function() {
             });
 
             it('should allow the ability to be used to place fate on Doomed Shugenja', function() {
-                let fate = this.doomedShugenja.fate;
+                const fate = this.doomedShugenja.fate;
                 this.player2.clickCard(this.master);
                 expect(this.player2).toBeAbleToSelect(this.doomedShugenja);
                 this.player2.clickCard(this.doomedShugenja);

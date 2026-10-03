@@ -38,7 +38,7 @@ describe('Asahina Diviner', function() {
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).not.toBeAbleToSelect(this.challenger);
 
-            let glory = this.vice.glory;
+            const glory = this.vice.glory;
             this.player1.clickCard(this.vice);
             expect(this.vice.glory).toBe(glory + 3);
 
@@ -53,7 +53,7 @@ describe('Asahina Diviner', function() {
                 type: 'political'
             });
 
-            let glory = this.vice.glory;
+            const glory = this.vice.glory;
 
             this.player2.pass();
             this.player1.clickCard(this.diviner);
@@ -81,7 +81,7 @@ describe('Asahina Diviner', function() {
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).not.toBeAbleToSelect(this.challenger);
 
-            let glory = this.vice.glory;
+            const glory = this.vice.glory;
             this.player1.clickCard(this.vice);
             expect(this.vice.glory).toBe(glory + 3);
         });

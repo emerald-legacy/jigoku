@@ -109,7 +109,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     getPromptControls() {
-        let map = new Map<BaseCard | Ring | EffectSource, BaseCard[]>();
+        const map = new Map<BaseCard | Ring | EffectSource, BaseCard[]>();
         for(const event of this.events) {
             if(event.context && event.context.source) {
                 let targets = map.get(event.context.source) || [];
@@ -135,14 +135,14 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     promptBetweenAbilities(choices: TriggerChoice[], addBackButton = true) {
-        let menuChoices = [...new Set(choices.map(context => context.ability.title))];
+        const menuChoices = [...new Set(choices.map(context => context.ability.title))];
         if(menuChoices.length === 1) {
             // this card has only one ability which can be triggered
             this.promptBetweenEventCards(choices, addBackButton);
             return;
         }
         // This card has multiple abilities which can be used in this window - prompt the player to pick one
-        let handlers = menuChoices.map(title => (() => this.promptBetweenEventCards(choices.filter(context => context.ability.title === title))));
+        const handlers = menuChoices.map(title => (() => this.promptBetweenEventCards(choices.filter(context => context.ability.title === title))));
         if(addBackButton) {
             menuChoices.push('Back');
             handlers.push(() => this.promptBetweenSources(this.choices));
@@ -202,8 +202,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             return;
         }
         // Several events affect this card and the chosen ability can respond to more than one of them - prompt player to pick one
-        let menuChoices = choices.map(context => TriggeredAbilityWindowTitle.getAction(context.event));
-        let handlers = choices.map(context => (() => this.resolveAbility(context)));
+        const menuChoices = choices.map(context => TriggeredAbilityWindowTitle.getAction(context.event));
+        const handlers = choices.map(context => (() => this.resolveAbility(context)));
         if(addBackButton) {
             menuChoices.push('Back');
             handlers.push(() => this.promptBetweenSources(this.choices));
@@ -216,7 +216,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     resolveAbility(context: TriggerChoice) {
-        let resolver = this.game.resolveAbility(context);
+        const resolver = this.game.resolveAbility(context);
         this.game.queueSimpleStep(() => {
             if(resolver.passPriority) {
                 this.postResolutionUpdate(context);

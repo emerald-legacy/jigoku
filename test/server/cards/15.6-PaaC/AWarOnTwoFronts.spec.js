@@ -146,7 +146,7 @@ describe('A War on Two Fronts', function() {
                 this.player1.clickCard(this.war);
                 this.player1.clickCard(this.throne);
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.clickPrompt('Done');
                 this.player2.clickCard(this.garden);
@@ -219,7 +219,7 @@ describe('A War on Two Fronts', function() {
 
                 this.player2.clickPrompt('Done');
 
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player2.clickCard(this.garden);
                 expect(this.player2.fate).toBe(fate + 1);
             });
@@ -352,7 +352,7 @@ describe('A War on Two Fronts', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
 
-                let fate = this.negotiator.fate;
+                const fate = this.negotiator.fate;
                 expect(this.player1).toHavePrompt('Do you want to trigger a province ability?');
                 this.player1.clickPrompt('Yes');
                 expect(this.player1).toHavePrompt('Choose an attacked province');

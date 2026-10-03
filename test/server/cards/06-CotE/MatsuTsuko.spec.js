@@ -113,8 +113,8 @@ describe('Matsu Tsuko', function() {
                 });
 
                 it('should reduce the cost of the next card by 2 (event)', function() {
-                    let playerFate = this.player1.player.fate;
-                    let expectedFateCost = Math.max(0, this.strengthInNumbers.getCost() - 2);
+                    const playerFate = this.player1.player.fate;
+                    const expectedFateCost = Math.max(0, this.strengthInNumbers.getCost() - 2);
                     expect(expectedFateCost).toBe(0);
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.strengthInNumbers);
@@ -124,8 +124,8 @@ describe('Matsu Tsuko', function() {
                 });
 
                 it('should reduce the cost of the next card by 2 (attachment)', function() {
-                    let playerFate = this.player1.player.fate;
-                    let expectedFateCost = Math.max(0, this.sashimono.getCost() - 2);
+                    const playerFate = this.player1.player.fate;
+                    const expectedFateCost = Math.max(0, this.sashimono.getCost() - 2);
                     expect(expectedFateCost).toBe(0);
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.sashimono);
@@ -135,8 +135,8 @@ describe('Matsu Tsuko', function() {
                 });
 
                 it('should reduce the cost of the next card by 2 (character)', function() {
-                    let playerFate = this.player1.player.fate;
-                    let expectedFateCost = Math.max(0, this.masterOfTheSpear.getCost() - 2);
+                    const playerFate = this.player1.player.fate;
+                    const expectedFateCost = Math.max(0, this.masterOfTheSpear.getCost() - 2);
                     expect(expectedFateCost).toBe(1);
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.masterOfTheSpear);
@@ -147,14 +147,14 @@ describe('Matsu Tsuko', function() {
                 });
 
                 it('should only reduce the cost of the next card played', function() {
-                    let playerFate = this.player1.player.fate;
+                    const playerFate = this.player1.player.fate;
                     this.player1.clickCard(this.strengthInNumbers);
-                    let expectedFateCost1 = Math.max(0, this.strengthInNumbers.getCost() - 2);
+                    const expectedFateCost1 = Math.max(0, this.strengthInNumbers.getCost() - 2);
                     expect(expectedFateCost1).toBe(0);
                     this.player1.clickCard(this.mirumotoRaitsugu);
                     this.player2.pass();
                     this.player1.clickCard(this.sashimono);
-                    let expectedFateCost2 = this.sashimono.getCost();
+                    const expectedFateCost2 = this.sashimono.getCost();
                     expect(expectedFateCost2).toBe(2);
                     this.player1.clickCard(this.akodoToturi);
                     expect(this.player1.player.fate).toBe(playerFate - expectedFateCost1 - expectedFateCost2);
@@ -165,8 +165,8 @@ describe('Matsu Tsuko', function() {
                     this.player1.pass();
                     this.player1.clickPrompt('Don\'t Resolve');
                     expect(this.player1).toHavePrompt('Action Window');
-                    let playerFate = this.player1.player.fate;
-                    let expectedFateCost = this.sashimono.getCost();
+                    const playerFate = this.player1.player.fate;
+                    const expectedFateCost = this.sashimono.getCost();
                     expect(expectedFateCost).toBe(2);
                     this.player1.clickCard(this.sashimono);
                     this.player1.clickCard(this.matsuTsuko);

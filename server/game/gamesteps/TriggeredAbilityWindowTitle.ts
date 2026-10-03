@@ -68,7 +68,7 @@ export const TriggeredAbilityWindowTitle = {
         const abilityWord = AbilityTypeToWord.get(abilityType) ?? abilityType;
         const titles: string[] = events
             .map((event) => {
-                let func = EventToTitleFunc[event.name];
+                const func = EventToTitleFunc[event.name];
                 if(func) {
                     return func(event);
                 }
@@ -93,7 +93,7 @@ export const TriggeredAbilityWindowTitle = {
         if(Array.isArray(event)) {
             return undefined;
         }
-        let func = EventToTitleFunc[event.name];
+        const func = EventToTitleFunc[event.name];
         if(func) {
             return func(event);
         }

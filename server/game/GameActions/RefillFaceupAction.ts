@@ -33,7 +33,7 @@ export class RefillFaceupAction<C extends AbilityContext = AbilityContext> exten
             context.game.queueSimpleStep(() => {
                 if(player.replaceDynastyCard(loc)) {
                     context.game.queueSimpleStep(() => {
-                        let cards = player.getDynastyCardsInProvince(loc);
+                        const cards = player.getDynastyCardsInProvince(loc);
                         cards.forEach((card) => {
                             if(card) {
                                 card.facedown = false;

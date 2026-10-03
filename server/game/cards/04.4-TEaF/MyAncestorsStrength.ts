@@ -20,8 +20,8 @@ class MyAncestorsStrength extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
             }, AbilityDsl.actions.cardLastingEffect(context => {
-                let effects = [];
-                let ancestor = context.targets.ancestor;
+                const effects = [];
+                const ancestor = context.targets.ancestor;
                 if(ancestor.hasDash('military')) {
                     effects.push(AbilityDsl.effects.setBaseDash('military'));
                 } else {

@@ -22,7 +22,7 @@ class FuSuiDisciple extends DrawCard {
                 activePromptTitle: 'Choose a character to be honored or dishonored',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
-                    let player = context.selects.player.choice === context.player.name ? context.player : context.player.opponent;
+                    const player = context.selects.player.choice === context.player.name ? context.player : context.player.opponent;
                     return !card.isHonored && !card.isDishonored && card.controller === player;
                 }
             })
@@ -35,7 +35,7 @@ class FuSuiDisciple extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',

@@ -23,7 +23,7 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return [this.name === 'sacrifice' ? 'sacrifice {0}' : 'discard {0}', [properties.target]];
     }
 

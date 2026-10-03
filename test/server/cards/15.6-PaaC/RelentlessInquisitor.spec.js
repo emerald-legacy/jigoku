@@ -64,7 +64,7 @@ describe('Relentless Inquisitor', function() {
                     defenders: [this.inquisitor]
                 });
 
-                let fate = this.outrider.fate;
+                const fate = this.outrider.fate;
                 this.player2.clickCard(this.inquisitor);
                 this.player2.clickCard(this.outrider);
                 this.player1.clickPrompt('Remove a fate from this character');
@@ -80,7 +80,7 @@ describe('Relentless Inquisitor', function() {
                     defenders: [this.inquisitor]
                 });
 
-                let fate = this.outrider.fate;
+                const fate = this.outrider.fate;
                 this.player2.clickCard(this.inquisitor);
                 this.player2.clickCard(this.outrider);
                 this.player1.clickPrompt('Bow this character');

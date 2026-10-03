@@ -29,7 +29,7 @@ class RoadsideInn extends DrawCard {
 
     buildString(context: AbilityContext) {
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            let target = context.targets.oppCharacter;
+            const target = context.targets.oppCharacter;
             return '.  ' + target.controller.name + ' gives ' + context.player.name + ' 1 honor to place a fate from their pool on ' + target.name;
         }
         return '';

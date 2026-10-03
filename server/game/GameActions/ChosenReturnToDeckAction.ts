@@ -26,12 +26,12 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     eventName = EventName.OnCardMoved;
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['make {0} return {1} cards to their deck', [properties.target, properties.amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(player.hand.length === 0 || properties.amount === 0) {
             return false;
         }
@@ -39,19 +39,19 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        for(let player of targetList(properties.target)) {
-            let amount = Math.min(player.hand.length, properties.amount ?? 0);
+        const properties = this.getProperties(context, additionalProperties);
+        for(const player of targetList(properties.target)) {
+            const amount = Math.min(player.hand.length, properties.amount ?? 0);
             if(amount > 0) {
                 if(amount === player.hand.length) {
-                    let event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context);
                     event.cards = player.hand.slice(0, amount);
                     events.push(event);
                     return;
                 }
 
                 if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
-                    let event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context);
                     event.cards = shuffle(player.hand).slice(0, amount);
                     events.push(event);
                     return;
@@ -65,7 +65,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
                     location: Location.Hand,
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     onSelect: (selectingPlayer: Player, cards: BaseCard | BaseCard[]) => {
-                        let event = this.getEvent(selectingPlayer, context);
+                        const event = this.getEvent(selectingPlayer, context);
                         event.cards = Array.isArray(cards) ? cards : [cards];
                         events.push(event);
                         return true;
@@ -76,7 +76,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     }
 
     addPropertiesToEvent(event: PlayerEvent<EventName.OnCardMoved, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
+        const { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };
         event.amount = amount;
@@ -97,7 +97,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         );
         event.discardedCards = cards;
         const players: Player[] = [];
-        for(let card of cards) {
+        for(const card of cards) {
             card.owner.moveCard(card, Location.ConflictDeck, event.options);
             if(!players.includes(card.owner)) {
                 players.push(card.owner);

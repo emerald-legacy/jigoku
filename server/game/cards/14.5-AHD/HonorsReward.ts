@@ -21,7 +21,7 @@ export default class HonorsReward extends ProvinceCard {
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Ability - Province Element',

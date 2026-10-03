@@ -18,7 +18,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     eventName = EventName.OnModifyHonor;
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         var [_, amountToTransfer] = CalculateHonorLimit(
             context.player,
             context.game.roundNumber,
@@ -29,7 +29,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         var wouldGainAnyHonor = properties.amount !== 0;
 
         if(!wouldGainAnyHonor) {
@@ -55,7 +55,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
+        const { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount ?? 0;
         event.dueToStatusToken = dueToStatusToken;

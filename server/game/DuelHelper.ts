@@ -44,7 +44,7 @@ const checkChallengerCondition = (card: DrawCard, context: AbilityContext, sourc
 };
 
 const initiateDuelFromCharacter = (_game: Game, card: DrawCard, properties: InitiateDuelHelperProps, source: DuelSource): void => {
-    let prevCondition = properties.condition;
+    const prevCondition = properties.condition;
     properties.condition = (context: AbilityContext) => {
         const abilityCondition = (!prevCondition || prevCondition(context));
         const challengerCondition = checkChallengerCondition(card, context, source);

@@ -151,7 +151,7 @@ describe('Endless Plains Skirmisher', function() {
         });
 
         it('should count as unopposed (allow display of power, take the honor hit)', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();

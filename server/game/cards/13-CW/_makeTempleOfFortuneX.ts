@@ -27,7 +27,7 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
         }
 
         getPrintedElementSymbols() {
-            let symbols = super.getPrintedElementSymbols();
+            const symbols = super.getPrintedElementSymbols();
             symbols.push({ element, key: elementKeys[0], prettyName: 'Strength Bonus' });
             symbols.push({ element, key: elementKeys[1], prettyName: 'Fate Ring' });
             return symbols;

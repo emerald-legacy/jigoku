@@ -14,8 +14,8 @@ export default class LoyalAttendant extends DrawCard {
                 cardCondition: (card, context) => card.isParticipating() && card.attachments.filter(a => a.controller === context.player).length > 0
             })
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
-                let cardNumber = context.target.attachments.length;
-                let cards = cardNumber
+                const cardNumber = context.target.attachments.length;
+                const cards = cardNumber
                     ? shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber)
                     : [context.source];
                 return {

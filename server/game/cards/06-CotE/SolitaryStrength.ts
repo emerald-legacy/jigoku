@@ -14,7 +14,7 @@ class SolitaryStrength extends DrawCard {
                 condition: (context: AbilityContext<this>) => {
                     if(context.source.parentCharacter && context.source.parentCharacter.isParticipating()) {
                         let participantsForController = (this.game.currentConflict && this.game.currentConflict.getNumberOfParticipantsFor(context.player)) ?? 0;
-                        let parentOwnedByController = context.source.parentCharacter.controller === context.player;
+                        const parentOwnedByController = context.source.parentCharacter.controller === context.player;
                         if(parentOwnedByController) {
                             participantsForController = Math.max(0, participantsForController - 1);
                         }

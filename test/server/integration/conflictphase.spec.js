@@ -168,7 +168,7 @@ describe('conflict phase', function() {
 
             it('should skip initiating a conflict when the first players units are bowed, even if their attachments are not', function() {
                 this.spy = spyOn(this.game, 'addMessage');
-                let tattooedWanderer = this.player1.playCharacterFromHand('tattooed-wanderer');
+                const tattooedWanderer = this.player1.playCharacterFromHand('tattooed-wanderer');
                 this.player2.clickPrompt('Pass');
                 this.player1.playAttachment('fine-katana', tattooedWanderer);
                 tattooedWanderer.bowed = true;
@@ -385,7 +385,7 @@ describe('conflict phase', function() {
                 this.player1.clickCard(this.seppunGuardsman);
                 this.player1.clickCard(this.miyaMystic);
                 expect(this.player2).toHavePrompt('Triggered Abilities');
-                let controls = this.player2.currentPrompt().controls;
+                const controls = this.player2.currentPrompt().controls;
                 expect(controls[0].source.id).toBe('unassuming-yojimbo');
                 expect(controls[0].targets[0].id).toBe('seppun-guardsman');
                 expect(controls[1].source.id).toBe('kaiu-shuichi');
@@ -449,7 +449,7 @@ describe('conflict phase', function() {
             });
 
             it('should give the declaring player any fate on the ring', function() {
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.initiateConflict({
                     ring: 'fire',
                     type: 'military',

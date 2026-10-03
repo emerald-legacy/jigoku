@@ -43,7 +43,7 @@ class ExpertInterpreter extends DrawCard {
     buildString(context: AbilityContext) {
         const opponent = context.player.opponent;
         if(opponent && context.rings.oppRing && !Array.isArray(context.rings.oppRing)) {
-            let ring = context.rings.oppRing;
+            const ring = context.rings.oppRing;
             return '.  ' + opponent.name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;
         }
         return '';

@@ -36,7 +36,7 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
     }
 
     addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
-        let { postBidAction, message, messageArgs } = this.getProperties(
+        const { postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
         );

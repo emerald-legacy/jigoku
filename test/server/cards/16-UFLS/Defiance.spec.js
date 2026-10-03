@@ -68,8 +68,8 @@ describe('Defiance', function() {
             expect(this.player2).toBeAbleToSelect(this.daidojiUji);
             expect(this.player2).toBeAbleToSelect(this.dojiWhisperer);
 
-            let mil = this.daidojiUji.getMilitarySkill();
-            let pol = this.daidojiUji.getPoliticalSkill();
+            const mil = this.daidojiUji.getMilitarySkill();
+            const pol = this.daidojiUji.getPoliticalSkill();
             this.player2.clickCard(this.daidojiUji);
             expect(this.daidojiUji.getMilitarySkill()).toBe(mil + 3);
             expect(this.daidojiUji.getPoliticalSkill()).toBe(pol + 3);
@@ -90,8 +90,8 @@ describe('Defiance', function() {
             expect(this.player1).toBeAbleToSelect(this.daidojiUji);
             expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
 
-            let mil = this.daidojiUji.getMilitarySkill();
-            let pol = this.daidojiUji.getPoliticalSkill();
+            const mil = this.daidojiUji.getMilitarySkill();
+            const pol = this.daidojiUji.getPoliticalSkill();
             this.player1.clickCard(this.daidojiUji);
             expect(this.daidojiUji.getMilitarySkill()).toBe(mil + 5);
             expect(this.daidojiUji.getPoliticalSkill()).toBe(pol + 5);

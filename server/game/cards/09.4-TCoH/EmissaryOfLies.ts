@@ -35,7 +35,7 @@ class EmissaryOfLies extends DrawCard {
             context: context,
             choices: ['Yes', 'No'],
             handlers: [() => {
-                let handCardNames = context.player.hand.map((card: DrawCard) => card.name);
+                const handCardNames = context.player.hand.map((card: DrawCard) => card.name);
                 this.game.actions.lookAt().resolve(context.player.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)), context);
                 if(!handCardNames.includes(cardName)) {
                     this.game.actions.sendHome().resolve(context.target, context);

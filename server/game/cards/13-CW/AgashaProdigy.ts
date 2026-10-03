@@ -52,7 +52,7 @@ class AgashaProdigys extends DrawCard {
 
     buildString(context: AbilityContext) {
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter) && context.player.opponent) {
-            let target = context.targets.oppCharacter;
+            const target = context.targets.oppCharacter;
             return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard the top card of their deck and attempt to attach it to ' + target.name;
         }
         return '';

@@ -22,8 +22,8 @@ export default class IsawaHaruyo extends DrawCard {
                     return { target: card };
                 },
                 gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
-                    let cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
-                    let cards = cardNumber
+                    const cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
+                    const cards = cardNumber
                         ? shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber)
                         : [context.source];
                     return {

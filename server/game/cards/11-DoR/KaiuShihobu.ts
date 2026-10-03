@@ -57,10 +57,10 @@ export default class KaiuShihobu extends DrawCard {
                 cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
             .handler((context) => {
-                let holding = context.targets.first;
-                let province = context.targets.second;
+                const holding = context.targets.first;
+                const province = context.targets.second;
 
-                let cards = context.player.getDynastyCardsInProvince(province.location);
+                const cards = context.player.getDynastyCardsInProvince(province.location);
                 if(context.player.stronghold) {
                     context.player.stronghold.removeChildCard(holding, province.location);
                 }

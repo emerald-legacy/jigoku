@@ -25,12 +25,12 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['place {0} underneath {1}', [properties.target, properties.destination]];
     }
 
@@ -40,16 +40,16 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
     }
 
     eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context;
-        let card = event.card;
+        const context = event.context;
+        const card = event.card;
         if(card.isDrawCard()) {
             event.cardStateWhenMoved = card.createSnapshot();
         }
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(!properties.destination) {
             return;
         }
-        let destination = properties.destination.uuid;
+        const destination = properties.destination.uuid;
 
         context.player.moveCard(card, destination);
         card.controller = context.source.controller;

@@ -13,7 +13,7 @@ export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extend
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const target = Array.isArray(properties.target) ? properties.target[0] : properties.target;
         return ['reveal the facedown card in {0}', [target ? target.location : '']];
     }

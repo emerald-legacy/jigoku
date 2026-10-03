@@ -16,7 +16,7 @@ class MediumOfTheLivingSoul extends DrawCard {
                     title: 'Resolve the Ring Effect',
                     when: {
                         onResolveRingElement: (event, context) => {
-                            let val = event.player === context.player && context.source.isParticipating();
+                            const val = event.player === context.player && context.source.isParticipating();
                             return val;
                         }
                     },

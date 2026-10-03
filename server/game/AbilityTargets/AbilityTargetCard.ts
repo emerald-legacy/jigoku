@@ -41,14 +41,14 @@ class AbilityTargetCard {
     constructor(name: string, properties: AbilityTargetCardProperties, ability: OwningAbility) {
         this.name = name;
         this.properties = properties;
-        for(let gameAction of this.properties.gameAction) {
+        for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.targets[name]);
         }
         this.selector = this.getSelector(properties);
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
                 dependsOnTarget.dependentTarget = this;
             }
@@ -56,8 +56,8 @@ class AbilityTargetCard {
     }
 
     getSelector(properties: AbilityTargetCardProperties): CardSelectorInstance {
-        let cardCondition = (card: BaseCard, context: AbilityContext) => {
-            let contextCopy = this.getContextCopy(card, context);
+        const cardCondition = (card: BaseCard, context: AbilityContext) => {
+            const contextCopy = this.getContextCopy(card, context);
             if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                 return false;
             }
@@ -69,7 +69,7 @@ class AbilityTargetCard {
     }
 
     getContextCopy(card: BaseCard, context: AbilityContext): AbilityContext {
-        let contextCopy = context.copy({});
+        const contextCopy = context.copy({});
         contextCopy.targets[this.name] = card;
         if(this.name === 'target') {
             contextCopy.target = card;
@@ -98,13 +98,13 @@ class AbilityTargetCard {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
-        let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
+        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
         if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
         if(this.properties.mode === TargetMode.AutoSingle) {
-            let legalTargets = this.selector.getAllLegalTargets(context, player);
+            const legalTargets = this.selector.getAllLegalTargets(context, player);
             if(legalTargets.length === 1) {
                 context.targets[this.name] = legalTargets[0];
                 if(this.name === 'target') {
@@ -113,9 +113,9 @@ class AbilityTargetCard {
                 return;
             }
         }
-        let { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
+        const { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
 
-        let buttons: PromptButton[] = [];
+        const buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
             if(!targetResults.noCostsFirstButton) {
@@ -128,10 +128,10 @@ class AbilityTargetCard {
                 waitingPromptTitle = 'Waiting for opponent';
             }
         }
-        let mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
+        const mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
             card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch('target', context))
         );
-        let promptProperties = {
+        const promptProperties = {
             waitingPromptTitle: waitingPromptTitle,
             context: context,
             selector: this.selector,
@@ -169,8 +169,8 @@ class AbilityTargetCard {
         } else if(context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
             return false;
         }
-        let slot = context.targets[this.name];
-        let cards: BaseCard[] = Array.isArray(slot) ? slot : [slot];
+        const slot = context.targets[this.name];
+        const cards: BaseCard[] = Array.isArray(slot) ? slot : [slot];
         return (cards.every((card) => this.selector.canTarget(card, context, context.choosingPlayerOverride || this.getChoosingPlayer(context))) &&
                 this.selector.hasEnoughSelected(cards, context) && !this.selector.hasExceededLimit(cards, context));
     }
@@ -192,7 +192,7 @@ class AbilityTargetCard {
 
     checkGameActionsForTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
         return this.getAllLegalTargets(context).some((card) => {
-            let contextCopy = this.getContextCopy(card, context);
+            const contextCopy = this.getContextCopy(card, context);
             if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(contextCopy))) {
                 return true;
             } else if(this.dependentTarget) {

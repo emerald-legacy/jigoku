@@ -152,7 +152,7 @@ describe('Miyako\'s Undertaking', function() {
                 this.player1.clickCard('miyako-s-undertaking');
                 this.player1.clickCard(this.akodoGunso);
                 this.player1.clickCard(this.bayushiLiar);
-                let handSize = this.player1.player.hand.length;
+                const handSize = this.player1.player.hand.length;
                 this.player2.clickCard('assassination');
                 this.player2.clickCard(this.bayushiLiar);
                 expect(this.player1.player.hand.length).toBe(handSize);

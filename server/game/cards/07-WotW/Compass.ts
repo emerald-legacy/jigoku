@@ -16,8 +16,8 @@ class Compass extends DrawCard {
             })
             .handler((context) => {
                 let cards: DrawCard[] = [];
-                let choices: string[] = [];
-                let handlers: (() => void)[] = [];
+                const choices: string[] = [];
+                const handlers: (() => void)[] = [];
                 if(context.player.dynastyDeck.length > 0) {
                     choices.push('Dynasty Deck');
                     handlers.push(() => {

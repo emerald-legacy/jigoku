@@ -85,7 +85,7 @@ class AsakoReina extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKeys.air,
             prettyName: '+1 honor',

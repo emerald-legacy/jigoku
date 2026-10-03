@@ -17,7 +17,7 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
     };
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: AddTokenProperties = this.getProperties(context);
+        const properties: AddTokenProperties = this.getProperties(context);
         return ['add a {1} token to {0}', [properties.target, properties.tokenType]];
     }
 

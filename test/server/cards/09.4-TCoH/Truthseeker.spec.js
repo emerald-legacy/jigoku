@@ -56,7 +56,7 @@ describe('Truthseeker', function() {
                 this.player1.clickPrompt('Ornate Fan');
                 expect(this.player2).toHavePrompt('Play cards from provinces');
 
-                let topCards = this.player1.conflictDeck.slice(0, 3);
+                const topCards = this.player1.conflictDeck.slice(0, 3);
 
                 expect(topCards[0]).toBe(this.fineKatana);
                 expect(topCards[1]).toBe(this.ornateFan);

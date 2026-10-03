@@ -375,8 +375,8 @@ describe('Emerald Core Duels', function() {
             });
 
             it('should react appropriately and apply all effects', function() {
-                let fate = this.player1.fate;
-                let honor = this.player1.honor;
+                const fate = this.player1.fate;
+                const honor = this.player1.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({

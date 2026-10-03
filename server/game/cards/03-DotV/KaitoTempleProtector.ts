@@ -20,7 +20,7 @@ class KaitoTempleProtector extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             }, ability.actions.cardLastingEffect((context) => {
-                let effects = [];
+                const effects = [];
                 if(context.target.hasDash('military')) {
                     effects.push(ability.effects.setBaseDash('military'));
                 } else {

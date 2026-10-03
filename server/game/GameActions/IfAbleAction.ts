@@ -14,21 +14,21 @@ export class IfAbleAction<C extends AbilityContext = AbilityContext> extends Gam
     declare defaultProperties: IfAbleActionProperties;
 
     getProperties(context: C, additionalProperties = {}): IfAbleActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
+        const properties = super.getProperties(context, additionalProperties);
         properties.ifAbleAction.setDefaultTarget(() => properties.target);
         properties.otherwiseAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context);
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context);
         return ifAbleAction.hasLegalTarget(context)
             ? ifAbleAction.getEffectMessage(context)
             : otherwiseAction.getEffectMessage(context);
     }
 
     hasLegalTarget(context: C, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         return (
             ifAbleAction.hasLegalTarget(context, additionalProperties) ||
             otherwiseAction.hasLegalTarget(context, additionalProperties)
@@ -36,7 +36,7 @@ export class IfAbleAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         return (
             ifAbleAction.canAffect(target, context, additionalProperties) ||
             otherwiseAction.canAffect(target, context, additionalProperties)
@@ -44,13 +44,13 @@ export class IfAbleAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
-        let gameAction = ifAbleAction.hasLegalTarget(context) ? ifAbleAction : otherwiseAction;
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+        const gameAction = ifAbleAction.hasLegalTarget(context) ? ifAbleAction : otherwiseAction;
         gameAction.addEventsToArray(events, context, additionalProperties);
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         return (
             ifAbleAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties) ||
             otherwiseAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)

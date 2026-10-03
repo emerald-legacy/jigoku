@@ -46,7 +46,7 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.effect.length > 0;
     }
 
@@ -57,7 +57,7 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties(event.context, additionalProperties);
+        const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }

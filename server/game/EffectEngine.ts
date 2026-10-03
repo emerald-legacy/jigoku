@@ -58,7 +58,7 @@ export class EffectEngine {
     }
 
     checkDelayedEffects(events: Event[]) {
-        let effectsToTrigger: { effect: Effect; properties: DelayedEffectValue }[] = [];
+        const effectsToTrigger: { effect: Effect; properties: DelayedEffectValue }[] = [];
         const effectsToRemove: Effect[] = [];
         for(const effect of this.effects.filter((effect) => effect.isEffectActive())) {
             const delayedEffect = effect.effect;

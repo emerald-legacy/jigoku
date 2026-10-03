@@ -29,7 +29,7 @@ export class RevealAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardRevealed, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { onDeclaration } = this.getProperties(context, additionalProperties);
+        const { onDeclaration } = this.getProperties(context, additionalProperties);
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }

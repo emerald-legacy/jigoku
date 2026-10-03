@@ -22,9 +22,9 @@ export default class KitsukiShomon extends DrawCard {
                 if(!window) {
                     return;
                 }
-                let newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
+                const newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
                 context.event.replacementEvent = newEvent;
-                let thenAbility = new ThenAbility(context.source, {
+                const thenAbility = new ThenAbility(context.source, {
                     gameAction: AbilityDsl.actions.ready()
                 });
                 context.events = [newEvent];

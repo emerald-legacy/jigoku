@@ -420,7 +420,7 @@ class Game {
         if(this.gameMode === GameModes.Skirmish) {
             return [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         }
-        let array: Location[] = [
+        const array: Location[] = [
             Location.ProvinceOne,
             Location.ProvinceTwo,
             Location.ProvinceThree,

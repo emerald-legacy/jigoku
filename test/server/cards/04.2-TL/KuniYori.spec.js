@@ -88,14 +88,14 @@ describe('Kuni Yori', function() {
                     });
 
                     it('should cost 1 honor', function() {
-                        let honor = this.player1.player.honor;
+                        const honor = this.player1.player.honor;
                         this.player1.clickCard(this.kuniYori);
                         this.player1.clickPrompt('player2');
                         expect(this.player1.player.honor).toBe(honor - 1);
                     });
 
                     it('should discard 1 card at random from the chosen player\'s hand', function() {
-                        let handSize = this.player2.player.hand.length;
+                        const handSize = this.player2.player.hand.length;
                         this.player1.clickCard(this.kuniYori);
                         this.player1.clickPrompt('player2');
                         expect(this.player2.player.hand.length).toBe(handSize - 1);

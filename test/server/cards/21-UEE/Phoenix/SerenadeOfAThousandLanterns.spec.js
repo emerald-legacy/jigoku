@@ -26,7 +26,7 @@ describe('Serenade of a Thousand Lanterns', function () {
                 defenders: [this.challenger]
             });
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.serenade);

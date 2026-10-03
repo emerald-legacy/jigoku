@@ -50,7 +50,7 @@ class AbilityTargetAbility {
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
                 dependsOnTarget.dependentTarget = this;
             }
@@ -58,10 +58,10 @@ class AbilityTargetAbility {
     }
 
     getSelector(properties: AbilityTargetAbilityProperties): CardSelectorInstance {
-        let cardCondition = (card: BaseCard, context: AbilityContext) => {
-            let abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+        const cardCondition = (card: BaseCard, context: AbilityContext) => {
+            const abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
             return abilities.some((ability) => {
-                let contextCopy = context.copy({});
+                const contextCopy = context.copy({});
                 contextCopy.targetAbility = ability;
                 if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                     return false;
@@ -94,12 +94,12 @@ class AbilityTargetAbility {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
-        let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
+        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
         if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
-        let buttons: PromptButton[] = [];
+        const buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
@@ -109,13 +109,13 @@ class AbilityTargetAbility {
                 waitingPromptTitle = 'Waiting for opponent';
             }
         }
-        let promptProperties = {
+        const promptProperties = {
             waitingPromptTitle: waitingPromptTitle,
             buttons: buttons,
             context: context,
             selector: this.selector,
             onSelect: (player: Player, card: BaseCard) => {
-                let abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+                const abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
                 if(abilities.length === 1) {
                     context.targetAbility = abilities[0];
                 } else if(abilities.length > 1) {

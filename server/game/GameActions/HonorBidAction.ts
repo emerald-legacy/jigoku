@@ -35,7 +35,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: HonorBidProperties = this.getProperties(context);
+        const properties: HonorBidProperties = this.getProperties(context);
         if(properties.giveHonor) {
             return ['bid honor', []];
         }
@@ -57,7 +57,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
+        const { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
         );

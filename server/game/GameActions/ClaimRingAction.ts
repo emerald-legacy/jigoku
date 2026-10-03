@@ -29,14 +29,14 @@ export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     eventHandler(event: ActionEvent<EventName.OnClaimRing, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context;
-        let { takeFate, type } = this.getProperties(context, additionalProperties);
-        let ring = event.ring;
+        const context = event.context;
+        const { takeFate, type } = this.getProperties(context, additionalProperties);
+        const ring = event.ring;
         ring.contested = false;
         ring.conflictType = type;
         if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
             context.game.addMessage('{0} takes {1} fate from {2}', context.player, ring.fate, ring);
-            let fate = ring.fate;
+            const fate = ring.fate;
             context.player.modifyFate(ring.fate);
             ring.removeFate();
             context.game.raiseEvent(EventName.OnMoveFate, {

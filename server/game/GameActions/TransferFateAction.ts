@@ -19,17 +19,17 @@ export class TransferFateAction<C extends AbilityContext = AbilityContext> exten
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['take {1} fate from {0}', [properties.target, properties.amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const amount = properties.amount ?? 0;
         return (
             !!player.opponent &&
@@ -40,7 +40,7 @@ export class TransferFateAction<C extends AbilityContext = AbilityContext> exten
     }
 
     addPropertiesToEvent(event: PlayerEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties);
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount ?? 0;
         event.origin = player;

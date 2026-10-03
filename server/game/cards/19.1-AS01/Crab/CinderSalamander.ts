@@ -52,7 +52,7 @@ export default class CinderSalamander extends DrawCard {
     }
 
     public getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT_KEY,
             prettyName: 'Claimed Ring',

@@ -28,13 +28,13 @@ class KnowTheTerrain extends DrawCard {
                     controller: Players.Self,
                     cardCondition: (card: ProvinceCard) => card.location !== Location.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== conflict.conflictProvince,
                     onSelect: (_player: Player, card: ProvinceCard) => {
-                        let attackedprovince = conflict.conflictProvince;
+                        const attackedprovince = conflict.conflictProvince;
                         if(!attackedprovince) {
                             return true;
                         }
-                        let chosenProvince = card;
-                        let attackedLocation = attackedprovince.location;
-                        let chosenLocation = chosenProvince.location;
+                        const chosenProvince = card;
+                        const attackedLocation = attackedprovince.location;
+                        const chosenLocation = chosenProvince.location;
                         context.player.moveCard(attackedprovince, chosenLocation);
                         context.player.moveCard(chosenProvince, attackedLocation);
 

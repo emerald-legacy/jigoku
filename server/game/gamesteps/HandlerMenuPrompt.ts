@@ -79,7 +79,7 @@ class HandlerMenuPrompt extends UiPrompt {
     activePrompt() {
         let buttons: HandlerMenuButton[] = [];
         if(this.properties.cards) {
-            let cardQuantities: Record<string, number> = {};
+            const cardQuantities: Record<string, number> = {};
             this.properties.cards.forEach((card: BaseCard) => {
                 if(cardQuantities[card.id]) {
                     cardQuantities[card.id] += 1;
@@ -89,7 +89,7 @@ class HandlerMenuPrompt extends UiPrompt {
             });
             // Get unique cards by id
             const seenIds = new Set<string>();
-            let cards = this.properties.cards.filter((card: BaseCard) => {
+            const cards = this.properties.cards.filter((card: BaseCard) => {
                 if(seenIds.has(card.id)) {
                     return false;
                 }
@@ -158,7 +158,7 @@ class HandlerMenuPrompt extends UiPrompt {
                 this.complete();
                 return true;
             }
-            let card = this.properties.cards && this.properties.cards.find((card: BaseCard) => card.id === arg);
+            const card = this.properties.cards && this.properties.cards.find((card: BaseCard) => card.id === arg);
             if(card && this.properties.cardHandler) {
                 if(!this.cardCondition(card, this.context)) {
                     return false;

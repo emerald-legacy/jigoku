@@ -43,15 +43,15 @@ class ActionWindow extends UiPrompt {
             return false;
         }
 
-        let actions = card.getActions();
+        const actions = card.getActions();
 
-        let legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === '');
+        const legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === '');
 
         if(legalActions.length === 0) {
             return false;
         } else if(legalActions.length === 1) {
-            let action = legalActions[0];
-            let targetPrompts = action.targets.some((target) => target.properties.player !== Players.Opponent);
+            const action = legalActions[0];
+            const targetPrompts = action.targets.some((target) => target.properties.player !== Players.Opponent);
             if(!this.currentPlayer.optionSettings.confirmOneClick || action.cost.some((cost) => cost.promptsPlayer) || targetPrompts) {
                 this.resolveAbility(action.createContext(player));
                 return true;
@@ -78,7 +78,7 @@ class ActionWindow extends UiPrompt {
     postResolutionUpdate(_resolver: AbilityResolver) {
         this.currentPlayerConsecutiveActions += 1;
         this.prevPlayerPassed = false;
-        let allowableConsecutiveActions = this.getCurrentPlayerConsecutiveActions();
+        const allowableConsecutiveActions = this.getCurrentPlayerConsecutiveActions();
 
         if(this.currentPlayerConsecutiveActions > allowableConsecutiveActions) {
             this.markBonusActionsTaken();
@@ -103,7 +103,7 @@ class ActionWindow extends UiPrompt {
             this.pass();
         }
 
-        let completed = super.continue();
+        const completed = super.continue();
 
         if(!completed) {
             this.game.currentActionWindow = this;
@@ -114,7 +114,7 @@ class ActionWindow extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons: Array<{ text: string; arg: string }> = [
+        const buttons: Array<{ text: string; arg: string }> = [
             { text: 'Pass', arg: 'pass' }
         ];
         if(this.game.manualMode) {
@@ -188,7 +188,7 @@ class ActionWindow extends UiPrompt {
         }
 
         this.currentPlayerConsecutiveActions += 1;
-        let allowableConsecutiveActions = this.getCurrentPlayerConsecutiveActions();
+        const allowableConsecutiveActions = this.getCurrentPlayerConsecutiveActions();
 
         if(this.currentPlayerConsecutiveActions > allowableConsecutiveActions) {
             this.markBonusActionsTaken();
@@ -258,8 +258,8 @@ class ActionWindow extends UiPrompt {
         if(!player1 || !player2) {
             return false;
         }
-        let p1ActionsPostWindow = player1.sumEffects(EffectName.AdditionalActionAfterWindowCompleted);
-        let p2ActionsPostWindow = player2.sumEffects(EffectName.AdditionalActionAfterWindowCompleted);
+        const p1ActionsPostWindow = player1.sumEffects(EffectName.AdditionalActionAfterWindowCompleted);
+        const p2ActionsPostWindow = player2.sumEffects(EffectName.AdditionalActionAfterWindowCompleted);
 
         this.bonusActions = {
             [player1.uuid]: {
@@ -287,7 +287,7 @@ class ActionWindow extends UiPrompt {
     }
 
     nextPlayer() {
-        let otherPlayer = this.game.getOtherPlayer(this.currentPlayer);
+        const otherPlayer = this.game.getOtherPlayer(this.currentPlayer);
 
         this.currentPlayer.actionPhasePriority = false;
 

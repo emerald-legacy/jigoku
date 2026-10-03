@@ -111,8 +111,8 @@ export class Conflict extends GameObject {
     }
 
     getSummary() {
-        let effects = this.getEffects(EffectName.ForceConflictUnopposed);
-        let forcedUnopposed = effects.length !== 0;
+        const effects = this.getEffects(EffectName.ForceConflictUnopposed);
+        const forcedUnopposed = effects.length !== 0;
         return {
             attackingPlayerId: this.attackingPlayer.id,
             defendingPlayerId: this.defendingPlayer.id,
@@ -202,17 +202,17 @@ export class Conflict extends GameObject {
     }
 
     switchElement(element: Element) {
-        let newRing = this.game.rings[element];
+        const newRing = this.game.rings[element];
         if(!newRing) {
             throw new Error('switchElement called for non-existant element');
         }
         if(this.attackingPlayer.allowGameAction('takeFateFromRings') && newRing.fate > 0) {
             this.game.addMessage('{0} takes {1} fate from {2}', this.attackingPlayer, newRing.fate, newRing);
-            let fate = newRing.fate;
+            const fate = newRing.fate;
             this.attackingPlayer.modifyFate(newRing.fate);
             newRing.fate = 0;
             if(fate > 0) {
-                let context = this.game.getFrameworkContext(this.attackingPlayer);
+                const context = this.game.getFrameworkContext(this.attackingPlayer);
                 this.game.raiseEvent(EventName.OnMoveFate, {
                     fate: fate,
                     origin: newRing,
@@ -348,7 +348,7 @@ export class Conflict extends GameObject {
             return 0;
         }
 
-        let characters = this.getCharacters(_player);
+        const characters = this.getCharacters(_player);
         if(predicate) {
             return characters.filter(predicate).length;
         }
@@ -460,12 +460,12 @@ export class Conflict extends GameObject {
         let skillFunction =
             this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
             ((card: DrawCard) => card.getContributionToConflict(this.conflictType));
-        let cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
+        const cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {
-            let canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
+            const canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
             let cannotContribute = card.bowed && !canContributeWhileBowed;
-            let playerSkillFunction = card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
+            const playerSkillFunction = card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
             if(playerSkillFunction) {
                 skillFunction = playerSkillFunction;
             }

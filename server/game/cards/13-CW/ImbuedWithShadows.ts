@@ -32,7 +32,7 @@ class ImbuedWithShadows extends DrawCard {
     }
 
     getStatusTokenPrompts(targets: BaseCard[]) {
-        let actions: GameAction[] = [];
+        const actions: GameAction[] = [];
         targets.forEach((target: BaseCard) => {
             actions.push(
                 AbilityDsl.actions.selectToken(() => ({
@@ -49,8 +49,8 @@ class ImbuedWithShadows extends DrawCard {
     }
 
     getNumberOfLegalTargets(context: AbilityContext) {
-        let cards = context.game.findAnyCardsInPlay((card: BaseCard) => card.isHonored || card.isDishonored);
-        let selectedCards: BaseCard[] = [];
+        const cards = context.game.findAnyCardsInPlay((card: BaseCard) => card.isHonored || card.isDishonored);
+        const selectedCards: BaseCard[] = [];
         cards.forEach((card: BaseCard) => {
             if(card.canBeTargeted(context, selectedCards)) {
                 selectedCards.push(card);

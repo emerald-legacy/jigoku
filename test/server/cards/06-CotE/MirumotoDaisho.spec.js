@@ -28,8 +28,8 @@ describe('Mirumoto Daisho', function () {
             });
 
             it('should give +2 mil, +2 pol', function () {
-                let militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
-                let politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
+                const militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
+                const politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
                 this.player1.clickCard(this.mirumotoDaisho);
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(militarySkill + 2);

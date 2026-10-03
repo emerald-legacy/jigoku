@@ -59,7 +59,7 @@ class StudyTheNaturalWorld extends DrawCard {
         };
 
         let string = '';
-        let elements = this.getElementsOfAttackedProvinces(context);
+        const elements = this.getElementsOfAttackedProvinces(context);
         for(let i = 0; i < elements.length; i++) {
             if(i !== 0) {
                 if(i === elements.length - 1) {

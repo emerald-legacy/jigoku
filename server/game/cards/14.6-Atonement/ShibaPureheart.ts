@@ -9,8 +9,8 @@ class ShibaPureheart extends DrawCard {
         this.reaction('Honor a character')
             .when({
                 onConflictDeclared: (event, context) => {
-                    let controller = context.player;
-                    let attacker = event.conflict.attackingPlayer;
+                    const controller = context.player;
+                    const attacker = event.conflict.attackingPlayer;
                     if(attacker === controller.opponent) {
                         return this.game.getConflicts(attacker).filter(conflict => !conflict.passed).length === 2;
                     }

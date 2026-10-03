@@ -22,12 +22,12 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties: PlaceFateRingProperties = this.getProperties(context);
+        const properties: PlaceFateRingProperties = this.getProperties(context);
         return ['placing {1} fate on the {0}', [properties.amount, properties.target]];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties: PlaceFateRingProperties = this.getProperties(context);
+        const properties: PlaceFateRingProperties = this.getProperties(context);
         if(properties.origin) {
             return ['move {1} fate from {2} to {0}', [properties.target, properties.amount, properties.origin]];
         }
@@ -35,7 +35,7 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
-        let properties: PlaceFateRingProperties = this.getProperties(context, additionalProperties);
+        const properties: PlaceFateRingProperties = this.getProperties(context, additionalProperties);
         if(
             properties.origin &&
             (!properties.origin.checkRestrictions('spendFate', context) || properties.origin.fate === 0)
@@ -46,7 +46,7 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, origin } = this.getProperties(context, additionalProperties);
+        const { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.origin = origin;
         event.context = context;
@@ -58,7 +58,7 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     }
 
     isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount, origin } = this.getProperties(context, additionalProperties);
+        const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

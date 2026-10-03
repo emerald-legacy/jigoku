@@ -24,7 +24,7 @@ describe('Sneak Attack', function () {
             });
 
             it('should give the attacking player the first action opportunity and set aside opponent cards', function () {
-                let player1StartingHonor = this.player1.honor;
+                const player1StartingHonor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.manipulator]
@@ -78,7 +78,7 @@ describe('Sneak Attack', function () {
             });
 
             it('should give the attacking player the first action opportunity', function () {
-                let player1StartingHonor = this.player1.honor;
+                const player1StartingHonor = this.player1.honor;
                 this.noMoreActions();
 
                 this.player1.clickCard(this.keep);

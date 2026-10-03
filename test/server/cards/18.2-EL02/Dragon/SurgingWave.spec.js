@@ -122,7 +122,7 @@ describe('Surging Wave', function() {
             this.player2.pass();
             this.player1.clickCard(this.swell);
             this.player1.clickCard(this.initiate);
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             expect(this.player1).toHavePrompt('Spend 1 fate to prevent ' + this.initiate.name + ' from bowing at the end of the conflict?');
             expect(this.player1).toHavePromptButton('Yes');
             expect(this.player1).toHavePromptButton('No');
@@ -152,7 +152,7 @@ describe('Surging Wave', function() {
             this.player2.pass();
             this.player1.clickCard(this.swell);
             this.player1.clickCard(this.initiate);
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             expect(this.player1).toHavePrompt('Spend 1 fate to prevent ' + this.initiate.name + ' from bowing at the end of the conflict?');
             this.player1.clickPrompt('No');
             expect(this.getChatLogs(5)).toContain('player1 chooses not to spend a fate to prevent Togashi Initiate from bowing during conflict resolution');

@@ -19,7 +19,7 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
     defaultProperties: MoveToConflictProperties = { side: undefined };
 
     canAffect(card: DrawCard, context: C): boolean {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -44,7 +44,7 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveToConflict, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }

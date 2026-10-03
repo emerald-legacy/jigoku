@@ -24,8 +24,8 @@ describe('Nightshade Infiltrator', function() {
         });
 
         it('should dishonor to choose a participating character and give them -3/-3', function() {
-            let mil = this.kuwanan.getMilitarySkill();
-            let pol = this.kuwanan.getPoliticalSkill();
+            const mil = this.kuwanan.getMilitarySkill();
+            const pol = this.kuwanan.getPoliticalSkill();
 
             this.noMoreActions();
             this.initiateConflict({

@@ -239,7 +239,7 @@ describe('Chain of Command', function() {
                     attackers: [this.tetsuko],
                     defenders: [this.dojiChallenger]
                 });
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player2.clickCard(this.service);
                 this.player2.clickCard(this.hotaru);
                 this.player2.clickCard(this.dojiChallenger);

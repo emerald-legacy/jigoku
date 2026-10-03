@@ -17,7 +17,7 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
     };
 
     canAffect(card: BaseCard, context: C): boolean {
-        let { token } = this.getProperties(context);
+        const { token } = this.getProperties(context);
         if(
             (token === CharacterStatus.Honored && card.isHonored) ||
             (token === CharacterStatus.Dishonored && card.isDishonored)
@@ -35,7 +35,7 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['give {0} a {1} status token', [properties.target, properties.token]];
     }
 

@@ -46,7 +46,7 @@ export default class CardEffect extends Effect<BaseCard> {
         if(this.targetLocation === Location.Any) {
             return this.game.allCards.filter((card: BaseCard) => matchFn(card, this.context));
         } else if(this.targetLocation === Location.Provinces) {
-            let cards = this.game.allCards.filter((card: BaseCard) => card.isInProvince());
+            const cards = this.game.allCards.filter((card: BaseCard) => card.isInProvince());
             return cards.filter((card: BaseCard) => matchFn(card, this.context));
         } else if(this.targetLocation === Location.PlayArea) {
             return this.game.findAnyCardsInPlay((card: BaseCard) => matchFn(card, this.context));

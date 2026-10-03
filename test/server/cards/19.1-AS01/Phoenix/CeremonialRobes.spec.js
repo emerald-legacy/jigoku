@@ -33,8 +33,8 @@ describe('Ceremonial Robes', function () {
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
 
-            let p1InitialHonor = this.player1.honor;
-            let p2InitialHonor = this.player2.honor;
+            const p1InitialHonor = this.player1.honor;
+            const p2InitialHonor = this.player2.honor;
 
             this.player1.clickCard(this.robes);
             expect(this.player1).toHavePrompt('Choose a province');
@@ -81,8 +81,8 @@ describe('Ceremonial Robes', function () {
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
 
-            let p1InitialHonor = this.player1.honor;
-            let p2InitialHonor = this.player2.honor;
+            const p1InitialHonor = this.player1.honor;
+            const p2InitialHonor = this.player2.honor;
 
             this.player1.clickCard(this.robes);
             expect(this.player1).toHavePrompt('Choose a province');

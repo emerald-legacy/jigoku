@@ -81,7 +81,7 @@ describe('Captivating Story', function() {
         it('should give you pol equal to the amount of faceup provinces you have', function() {
             this.noMoreActions();
             this.p1.facedown = false;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.getPoliticalSkill();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -117,7 +117,7 @@ describe('Captivating Story', function() {
             this.p2.facedown = false;
             this.p3.facedown = false;
             this.yoshi.fate = 1;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.getPoliticalSkill();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -137,7 +137,7 @@ describe('Captivating Story', function() {
             this.p2.facedown = false;
             this.p3.facedown = false;
             this.yoshi.fate = 1;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.getPoliticalSkill();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -163,7 +163,7 @@ describe('Captivating Story', function() {
             this.p2.facedown = false;
             this.p3.facedown = false;
             this.yoshi.fate = 1;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.getPoliticalSkill();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -189,7 +189,7 @@ describe('Captivating Story', function() {
             this.p2.isBroken = true;
             this.p3.facedown = false;
             this.p3.isBroken = true;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.getPoliticalSkill();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -211,7 +211,7 @@ describe('Captivating Story', function() {
             this.p3.isBroken = true;
             this.p4.facedown = false;
             this.pStronghold.facedown = false;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.getPoliticalSkill();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],

@@ -10,8 +10,8 @@ class FieldOfTheFallen extends DrawCard {
             .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
             .condition(context => context.game.isDuringConflict('military'))
             .gameAction(AbilityDsl.actions.sequentialContext(context => {
-                let moreHonorable = context.player.isMoreHonorable();
-                let gameActions = [];
+                const moreHonorable = context.player.isMoreHonorable();
+                const gameActions = [];
                 gameActions.push(AbilityDsl.actions.draw(context => ({
                     target: context.player,
                     amount: 1

@@ -154,14 +154,14 @@ export class GameObject {
         }
 
         targets = targets.concat(this);
-        let targetingCost = context.player.getTargetingCost(context.source, targets);
+        const targetingCost = context.player.getTargetingCost(context.source, targets);
 
         if(context.stage === Stage.PreTarget || context.stage === Stage.Cost) {
             //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting
             //we only want to consider the ability cost, not the card cost
             const fateCost = context.ability.getReducedCost(context);
-            let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
-            let availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
+            const alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
+            const availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 
             return (
                 availableFate >= targetingCost &&

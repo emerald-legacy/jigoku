@@ -52,7 +52,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context);
+        const { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
@@ -60,7 +60,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
     }
 
     getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties<C, K>, 'cardCondition' | 'subActionProperties' | 'selector'> {
-        let properties = super.getProperties(context, additionalProperties);
+        const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));
@@ -155,7 +155,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext, K exten
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return !!properties.targets && properties.player !== Players.Opponent;
     }
 }

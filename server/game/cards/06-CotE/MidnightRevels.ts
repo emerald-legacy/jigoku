@@ -16,7 +16,7 @@ export default class MidnightRevels extends ProvinceCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
-                    let charactersInPlay = context.game.findAnyCardsInPlay((c: DrawCard) => c.type === CardType.Character);
+                    const charactersInPlay = context.game.findAnyCardsInPlay((c: DrawCard) => c.type === CardType.Character);
                     return card.getCost() === Math.max(...charactersInPlay.map((c: DrawCard) => c.getCost() ?? 0));
                 }
             }, AbilityDsl.actions.bow());

@@ -45,8 +45,8 @@ describe('Lightning Ascends', function () {
                 defenders: [this.solemnScholar]
             });
             this.player2.pass();
-            let currentMilitarySkill = this.itinerantPhilosopher.getMilitarySkill();
-            let currentPoliticalSkill = this.itinerantPhilosopher.getPoliticalSkill();
+            const currentMilitarySkill = this.itinerantPhilosopher.getMilitarySkill();
+            const currentPoliticalSkill = this.itinerantPhilosopher.getPoliticalSkill();
 
             this.player1.clickCard(this.lightningAscends);
             this.player1.clickCard(this.itinerantPhilosopher);

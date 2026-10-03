@@ -51,9 +51,9 @@ describe('Conduit of Heroes', function() {
             });
 
             this.player2.pass();
-            let mil = this.sadako.getMilitarySkill();
-            let pol = this.sadako.getPoliticalSkill();
-            let glory = this.sadako.getGlory();
+            const mil = this.sadako.getMilitarySkill();
+            const pol = this.sadako.getPoliticalSkill();
+            const glory = this.sadako.getGlory();
             this.player1.clickCard(this.conduit);
             this.player1.clickCard(this.sadako);
             expect(this.sadako.getMilitarySkill()).toBe(mil + 3);
@@ -75,9 +75,9 @@ describe('Conduit of Heroes', function() {
             });
 
             this.player2.pass();
-            let mil = this.sadako.getMilitarySkill();
-            let pol = this.sadako.getPoliticalSkill();
-            let glory = this.sadako.getGlory();
+            const mil = this.sadako.getMilitarySkill();
+            const pol = this.sadako.getPoliticalSkill();
+            const glory = this.sadako.getGlory();
             this.player1.clickCard(this.conduit);
             this.player1.clickCard(this.sadako);
             expect(this.sadako.getMilitarySkill()).toBe(mil + 3);

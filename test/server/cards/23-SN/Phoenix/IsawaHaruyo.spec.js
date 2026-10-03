@@ -25,13 +25,13 @@ describe('Isawa Haruyo', function () {
             });
             this.player2.clickCard(this.haruyo2);
             expect(this.player2).toHavePrompt('Select a card:');
-            let matchingButtons = this.player2.currentPrompt().buttons.filter(button =>
+            const matchingButtons = this.player2.currentPrompt().buttons.filter(button =>
                 ['Ornate Fan', 'Fine Katana', 'Banzai!', 'Let Go'].includes(button.text)
             );
             expect(matchingButtons.length).toBe(3);
             expect(this.player2.currentPrompt().buttons.length).toBe(3);
-            let conflictDiscardPileSize = this.player1.player.conflictDiscardPile.length;
-            let hand = this.player1.player.hand.length;
+            const conflictDiscardPileSize = this.player1.player.conflictDiscardPile.length;
+            const hand = this.player1.player.hand.length;
             this.player2.clickPrompt(matchingButtons[0].text);
             expect(this.player1.player.conflictDiscardPile.length).toBe(conflictDiscardPileSize + 1);
             expect(this.player1.player.hand.length).toBe(hand - 1);

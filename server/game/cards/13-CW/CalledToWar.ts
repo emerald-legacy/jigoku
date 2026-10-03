@@ -26,7 +26,7 @@ class CalledToWar extends DrawCard {
     buildString(context: AbilityContext) {
         const opponent = context.player.opponent;
         if(opponent && context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            let target = context.targets.oppCharacter;
+            const target = context.targets.oppCharacter;
             return '.  ' + opponent.name + ' gives ' + context.player.name + ' 1 honor to place a fate on ' + target.name;
         }
         return '';

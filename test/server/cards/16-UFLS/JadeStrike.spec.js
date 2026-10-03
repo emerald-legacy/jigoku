@@ -53,7 +53,7 @@ describe('Jade Strike', function() {
         });
 
         it('should also remove a fate if the chosen character is tainted', function() {
-            let fate = this.whisperer.fate;
+            const fate = this.whisperer.fate;
             this.player2.pass();
             this.player1.clickCard(this.strike);
             this.player1.clickCard(this.whisperer);

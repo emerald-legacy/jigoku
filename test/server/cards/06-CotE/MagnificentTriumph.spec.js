@@ -42,8 +42,8 @@ describe('Magnificent Triumph', function() {
             });
 
             it('should give the target +2/+2', function() {
-                let militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
-                let politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
+                const militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
+                const politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
                 this.player2.pass();
                 this.player1.clickCard(this.magnificentTriumph);
                 this.player1.clickCard(this.mirumotoRaitsugu);
@@ -62,8 +62,8 @@ describe('Magnificent Triumph', function() {
             });
 
             it('should only last to the end of the conflict', function() {
-                let militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
-                let politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
+                const militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
+                const politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
                 this.player2.pass();
                 this.player1.clickCard(this.magnificentTriumph);
                 this.player1.clickCard(this.mirumotoRaitsugu);

@@ -104,7 +104,7 @@ describe('Cunning Negotiator', function() {
 
         it('should trigger the province ability for the winner', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -127,7 +127,7 @@ describe('Cunning Negotiator', function() {
 
         it('should do nothing if you decline triggering the province ability', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -149,7 +149,7 @@ describe('Cunning Negotiator', function() {
 
         it('should prevent using the province if you use the duel first', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -171,7 +171,7 @@ describe('Cunning Negotiator', function() {
 
         it('should not prevent using the province via the duel if you use the province first', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -191,8 +191,8 @@ describe('Cunning Negotiator', function() {
 
         it('should not prevent using the province if your opponent wins the duel', function() {
             this.noMoreActions();
-            let p1Fate = this.player1.fate;
-            let fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -307,7 +307,7 @@ describe('Cunning Negotiator', function() {
 
         it('shinjo ambusher should prevent the duel from triggering the province', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],

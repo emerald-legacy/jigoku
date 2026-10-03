@@ -133,10 +133,10 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
             return false;
         }
         const properties = context.ability.properties;
-        let targetActions: GameAction[] = properties.target?.gameAction
+        const targetActions: GameAction[] = properties.target?.gameAction
             ? (Array.isArray(properties.target.gameAction) ? properties.target.gameAction : [properties.target.gameAction])
             : [];
-        let nestedActions = context.ability.gameAction
+        const nestedActions = context.ability.gameAction
             ? context.ability.gameAction.map((topAction: GameAction) =>
                 topAction.properties && 'gameAction' in topAction.properties ? topAction.properties.gameAction : undefined
             )

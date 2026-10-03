@@ -66,8 +66,8 @@ describe('Attentive Guardsman', function () {
                 defenders: []
             });
 
-            let mil = this.guard2.getMilitarySkill();
-            let pol = this.guard2.getPoliticalSkill();
+            const mil = this.guard2.getMilitarySkill();
+            const pol = this.guard2.getPoliticalSkill();
 
             this.player2.clickCard(this.ground2);
             this.player2.clickCard(this.guard2);
@@ -75,8 +75,8 @@ describe('Attentive Guardsman', function () {
             expect(this.guard2.getMilitarySkill()).toBe(mil + 1);
             expect(this.guard2.getPoliticalSkill()).toBe(pol + 1);
 
-            let mil1 = this.guard1.getMilitarySkill();
-            let pol1 = this.guard1.getPoliticalSkill();
+            const mil1 = this.guard1.getMilitarySkill();
+            const pol1 = this.guard1.getPoliticalSkill();
 
             this.player1.clickCard(this.ground);
             expect(this.player1).toBeAbleToSelect(this.challenger);

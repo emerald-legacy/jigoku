@@ -48,14 +48,14 @@ class TestOfSkill extends DrawCard {
                 let cardsToDiscard: BaseCard[] = (context.costs.reveal ?? []).filter((card: BaseCard) => !isMatching(card));
                 matchingCards = matchingCards.filter((c: BaseCard) => c.uuid !== context.source.uuid);
 
-                let discardHandler = () => {
+                const discardHandler = () => {
                     cardsToDiscard = cardsToDiscard.concat(matchingCards);
                     this.game.addMessage('{0} discards {1}', context.player, cardsToDiscard);
                     cardsToDiscard.forEach((card: BaseCard) => {
                         context.player.moveCard(card, Location.ConflictDiscardPile);
                     });
                 };
-                let takeCardHandler = (card: BaseCard) => {
+                const takeCardHandler = (card: BaseCard) => {
                     this.game.addMessage('{0} adds {1} to their hand', context.player, card);
                     context.player.moveCard(card, Location.Hand);
                     return matchingCards.filter((c: BaseCard) => c.uuid !== card.uuid);

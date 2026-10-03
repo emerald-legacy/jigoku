@@ -60,7 +60,7 @@ describe('Expert Bartering', function () {
         });
 
         it('should take the fate if you want to spend it', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.expert);
             expect(this.player1).toHavePrompt('Spend 1 fate?');
             expect(this.player1).toHavePromptButton('Yes');
@@ -69,7 +69,7 @@ describe('Expert Bartering', function () {
         });
 
         it('should not take the fate if you don\'t spend it', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.expert);
             expect(this.player1).toHavePrompt('Spend 1 fate?');
             expect(this.player1).toHavePromptButton('No');
@@ -293,7 +293,7 @@ describe('Expert Bartering - attachment interactions', function () {
         });
 
         it('should work if you don\'t control any other attachments', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.expert);
             expect(this.player1).not.toHavePrompt('Spend 1 fate?');
             expect(this.player1).not.toHavePromptButton('Yes');

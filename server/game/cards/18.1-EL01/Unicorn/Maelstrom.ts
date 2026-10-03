@@ -62,9 +62,9 @@ const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromC
         },
         payEvent: function (context) {
             if(context.costs.maelstromCostPaid) {
-                let events = [];
+                const events = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
+                const discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
                 events.push(discardAction.getEvent(context.costs.maelstromCost, context));
                 context.game.addMessage('{0} chooses to discard a card', context.player);
 
@@ -72,7 +72,7 @@ const maelstromCost = function (): Cost<{ maelstromCostPaid: boolean; maelstromC
             }
 
             //this is a do-nothing event to allow you to opt out and not scuttle the event
-            let noop = context.game.actions.handler({ handler: () => {} });
+            const noop = context.game.actions.handler({ handler: () => {} });
             return noop.getEvent(context.player, context);
         },
         promptsPlayer: true
@@ -125,7 +125,7 @@ export default class Maelstrom extends ProvinceCard {
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Ability - Province Element',

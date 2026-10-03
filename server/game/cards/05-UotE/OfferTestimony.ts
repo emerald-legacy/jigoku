@@ -31,10 +31,10 @@ class OfferTestimony extends DrawCard {
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
             }), AbilityDsl.actions.bow(context => {
-                let revealedCards = context.events.flatMap((event) =>
+                const revealedCards = context.events.flatMap((event) =>
                     event.is(EventName.OnCardRevealed) && event.card.isDrawCard() ? [event.card] : []);
-                let lowestCost = Math.min(...revealedCards.map((card: DrawCard) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));
-                let lowestCostPlayers = revealedCards.filter((card: DrawCard) => card.getCost() === lowestCost).map((card: DrawCard) => card.controller);
+                const lowestCost = Math.min(...revealedCards.map((card: DrawCard) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));
+                const lowestCostPlayers = revealedCards.filter((card: DrawCard) => card.getCost() === lowestCost).map((card: DrawCard) => card.controller);
                 return { target: [context.targets.myCharacter, context.targets.oppCharacter].filter((card) => lowestCostPlayers.includes(card.controller)) };
             }))
             .effect('make each player choose a ready participating character they control: {1}', context => [Object.values(context.targets)]);

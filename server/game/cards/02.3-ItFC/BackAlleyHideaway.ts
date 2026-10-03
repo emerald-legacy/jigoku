@@ -88,7 +88,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             this.backAlleyCard.removeAttachment(context.source);
         }
         context.source.parent = null;
-        let putIntoPlayEvent = putIntoPlay({ fate: context.chooseFate }).getEvent(context.source, context);
+        const putIntoPlayEvent = putIntoPlay({ fate: context.chooseFate }).getEvent(context.source, context);
         const card = context.source;
         const events: Event[] = [putIntoPlayEvent];
         if(card.isDrawCard()) {
@@ -99,9 +99,9 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
                 playType: PlayType.PlayFromProvince
             }));
         }
-        let window = context.game.openEventWindow(events);
+        const window = context.game.openEventWindow(events);
         context.events = [putIntoPlayEvent];
-        let thenAbility = new ThenAbility(this.backAlleyCard, {
+        const thenAbility = new ThenAbility(this.backAlleyCard, {
             gameAction: sacrifice({ target: this.backAlleyCard })
         });
         window.addThenAbility(thenAbility, context);

@@ -63,8 +63,8 @@ describe('Driven by Courage', function() {
                     attackers: [this.wanderer],
                     defenders: [this.maiden]
                 });
-                let maidenMiltarySkill = this.maiden.getMilitarySkill();
-                let maidenPoliticalSkill = this.maiden.getPoliticalSkill();
+                const maidenMiltarySkill = this.maiden.getMilitarySkill();
+                const maidenPoliticalSkill = this.maiden.getPoliticalSkill();
                 this.player2.clickCard(this.courage);
                 this.player2.clickCard(this.maiden);
                 expect(this.maiden.getMilitarySkill()).toBe(maidenMiltarySkill + 2);

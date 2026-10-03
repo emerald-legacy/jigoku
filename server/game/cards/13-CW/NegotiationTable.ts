@@ -10,32 +10,32 @@ export default class NegotiationTable extends DrawCard {
         this.action('Make opponent pick from several options')
             .condition((context) => context.player.opponent !== undefined)
             .handler((context) => {
-                let choices: string[] = [];
-                let handlers: (() => void)[] = [];
+                const choices: string[] = [];
+                const handlers: (() => void)[] = [];
 
-                let drawChoice = 'Draw 1 card';
-                let drawHandler = () => {
+                const drawChoice = 'Draw 1 card';
+                const drawHandler = () => {
                     choices.splice(choices.indexOf(drawChoice), 1);
                     handlers.splice(handlers.indexOf(drawHandler), 1);
                     this.getDrawChoice(context);
                     this.getHandlerMenu(context, choices, handlers);
                 };
-                let readyChoice = 'Choose and ready a character';
-                let readyHandler = () => {
+                const readyChoice = 'Choose and ready a character';
+                const readyHandler = () => {
                     choices.splice(choices.indexOf(readyChoice), 1);
                     handlers.splice(handlers.indexOf(readyHandler), 1);
                     this.getReadyChoice(context);
                     this.getHandlerMenu(context, choices, handlers);
                 };
-                let fateChoice = 'Gain 1 fate';
-                let fateHandler = () => {
+                const fateChoice = 'Gain 1 fate';
+                const fateHandler = () => {
                     choices.splice(choices.indexOf(fateChoice), 1);
                     handlers.splice(handlers.indexOf(fateHandler), 1);
                     this.getFateChoice(context);
                     this.getHandlerMenu(context, choices, handlers);
                 };
-                let doneChoice = 'Done';
-                let doneHandler = () => {
+                const doneChoice = 'Done';
+                const doneHandler = () => {
                     this.getDoneChoice(context);
                 };
 
@@ -92,7 +92,7 @@ export default class NegotiationTable extends DrawCard {
         }
         const opponent = context.player.opponent;
         this.game.addMessage('{0} chooses to have each player ready a character', opponent);
-        let bowedCharacters =
+        const bowedCharacters =
             context.player.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length +
             opponent.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length;
 

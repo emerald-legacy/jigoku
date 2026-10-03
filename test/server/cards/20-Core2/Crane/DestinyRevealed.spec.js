@@ -58,7 +58,7 @@ describe('Destiny Revealed', function () {
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
 
-                let fate = this.challenger.fate;
+                const fate = this.challenger.fate;
                 this.player1.clickCard(this.destiny);
                 expect(this.challenger.fate).toBe(fate + 1);
                 expect(this.player1).toHavePrompt('Policy Debate');

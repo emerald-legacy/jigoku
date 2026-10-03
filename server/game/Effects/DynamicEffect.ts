@@ -35,8 +35,8 @@ export default class DynamicEffect<N extends EffectName = EffectName, T extends 
         if(!target) {
             return false;
         }
-        let oldValue = this.getValue(target);
-        let newValue = this.setValue(target, this.calculate(target, this.context));
+        const oldValue = this.getValue(target);
+        const newValue = this.setValue(target, this.calculate(target, this.context));
         if(typeof oldValue === 'function' && typeof newValue === 'function') {
             return oldValue.toString() !== newValue.toString();
         }

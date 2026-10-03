@@ -23,7 +23,7 @@ export default class HenshinSeeker extends DrawCard {
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({ key: RING_CLAIM, prettyName: 'Ring', element: Element.Fire });
         return symbols;
     }

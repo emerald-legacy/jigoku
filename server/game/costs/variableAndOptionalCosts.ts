@@ -474,10 +474,10 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: Ab
         },
         payEvent(context) {
             if(context.costs.optionalHonorTransferFromOpponentCostPaid) {
-                let events = [];
+                const events = [];
 
                 context.game.addMessage('{0} chooses to give {1} 1 honor', context.player.opponent, context.player);
-                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
+                const honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
 
                 return events;
@@ -505,7 +505,7 @@ export function nameCard(): Cost<{ nameCardCost: string }> {
             return true;
         },
         resolve(context) {
-            let dummyObject = {
+            const dummyObject = {
                 selectCardName: (player: Player, cardName: string, context: AbilityContext) => {
                     context.costs.nameCardCost = cardName;
                     return true;

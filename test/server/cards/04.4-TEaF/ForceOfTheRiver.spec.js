@@ -57,7 +57,7 @@ describe('Force of the River', function() {
                 expect(this.liar.location).toBe('removed from game');
                 expect(this.liar.facedown).toBe(true);
 
-                let attackersValid = this.game.currentConflict.attackers.length >= 4;
+                const attackersValid = this.game.currentConflict.attackers.length >= 4;
 
                 expect(attackersValid).toBe(true);
             });

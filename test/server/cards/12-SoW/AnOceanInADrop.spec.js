@@ -127,7 +127,7 @@ describe('An Ocean In A Drop', function() {
         });
 
         it('should put the players hand on the bottom of their deck and draw an equal number of cards (self)', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -158,7 +158,7 @@ describe('An Ocean In A Drop', function() {
         });
 
         it('should put the players hand on the bottom of their deck and draw an equal number of cards (opponent)', function() {
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -189,7 +189,7 @@ describe('An Ocean In A Drop', function() {
         });
 
         it('should allow using Hantei to pick the player', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.moveCard(this.hantei, 'play area');
             expect(this.hantei.location).toBe('play area');
@@ -227,7 +227,7 @@ describe('An Ocean In A Drop', function() {
         });
 
         it('should not die if you deck yourself', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player1.reduceDeckToNumber('conflict deck', 0);
 

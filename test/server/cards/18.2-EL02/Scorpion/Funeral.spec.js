@@ -126,7 +126,7 @@ describe('Funeral', function() {
             this.player1.player.conflictDeck.forEach(card => {
                 this.player1.player.moveCard(card, 'conflict discard pile');
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.imperialStorehouse);
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.duty);

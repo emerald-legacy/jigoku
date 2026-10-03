@@ -26,7 +26,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return [
             properties.shuffle
                 ? 'shuffling {0} into their deck'
@@ -36,7 +36,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', [properties.target]];
         }

@@ -19,7 +19,7 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let { target } = this.getProperties(context);
+        const { target } = this.getProperties(context);
         return ['make a choice for {0}', [target]];
     }
 
@@ -30,33 +30,33 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.choices.some((choice) => {
-            let childProperties = properties.choiceHandler(choice, false, properties);
+            const childProperties = properties.choiceHandler(choice, false, properties);
             return properties.gameAction.canAffect(target, context, childProperties);
         });
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.choices.some((choice) => {
-            let childProperties = properties.choiceHandler(choice, false, properties);
+            const childProperties = properties.choiceHandler(choice, false, properties);
             return properties.gameAction.hasLegalTarget(context, childProperties);
         });
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         const choices = properties.choices;
         if(choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {
             return;
         }
-        let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
+        const player = properties.player === Players.Opponent ? context.player.opponent : context.player;
         if(!player) {
             return;
         }
-        let choiceHandler = (choice: string) => {
-            let childProperties = properties.choiceHandler(choice, true, properties);
+        const choiceHandler = (choice: string) => {
+            const childProperties = properties.choiceHandler(choice, true, properties);
             properties.gameAction.addEventsToArray(events, context, childProperties);
         };
         if(choices.length === 1) {
@@ -67,7 +67,7 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C) {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context);
     }
 }

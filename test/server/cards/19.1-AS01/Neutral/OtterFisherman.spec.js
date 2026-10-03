@@ -126,7 +126,7 @@ describe('Otter Fisherman', function() {
         });
 
         it('should give player1 1 honor if chosen', function() {
-            let initialHonor = this.player1.honor;
+            const initialHonor = this.player1.honor;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.otterFisherman],
@@ -147,7 +147,7 @@ describe('Otter Fisherman', function() {
         });
 
         it('should give player1 1 fate if chosen', function() {
-            let initialFate = this.player1.fate;
+            const initialFate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.otterFisherman],
@@ -168,7 +168,7 @@ describe('Otter Fisherman', function() {
         });
 
         it('should give player1 1 card if chosen', function() {
-            let initialHandSize = this.player1.hand.length;
+            const initialHandSize = this.player1.hand.length;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.otterFisherman],

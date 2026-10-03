@@ -38,7 +38,7 @@ describe('Daidoji Uji', function() {
             it('should let you play characters as if they were in your hand', function() {
                 this.nextPhase();
                 this.nextPhase();
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 expect(this.game.currentPhase).toBe('conflict');
                 this.player1.clickCard(this.dojiWhisperer);
                 this.player1.clickPrompt('0');
@@ -55,7 +55,7 @@ describe('Daidoji Uji', function() {
             it('should not discount characters played directly from hand', function() {
                 this.nextPhase();
                 this.nextPhase();
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.player1.clickCard(this.politicalRival);
                 this.player1.clickPrompt('0');
                 expect(this.politicalRival.location).toBe('play area');

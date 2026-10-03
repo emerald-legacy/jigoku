@@ -430,7 +430,7 @@ describe('Governors Spy', function() {
             this.player1.clickCard(this.lies);
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.pass();
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.desolation);
             expect(this.player1.fate).toBe(fate);
         });
@@ -505,7 +505,7 @@ describe('Governors Spy', function() {
             this.player1.clickCard(this.lies);
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.pass();
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.desolation);
             expect(this.player1.fate).toBe(fate);
         });

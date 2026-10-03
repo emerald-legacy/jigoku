@@ -40,7 +40,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['giving {1} honor to {2}', [0, null]];
@@ -55,7 +55,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['take {1} honor from {0}', [null, 0]];
@@ -70,7 +70,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
 
         const amount = properties.amount ?? 0;
         const gainsHonor = amount > 0;
@@ -97,7 +97,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnTransferHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
-        let { afterBid, amount } = this.getProperties(context, additionalProperties);
+        const { afterBid, amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount ?? 0;
         event.afterBid = afterBid;

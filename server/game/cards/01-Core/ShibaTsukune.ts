@@ -26,14 +26,14 @@ class ShibaTsukune extends DrawCard {
                             optional: true,
                             onMenuCommand: (player: Player) => {
                                 this.game.addMessage('{0} resolves {1}', player, firstRing);
-                                let event = this.game.actions.resolveRingEffect().getEvent(firstRing, this.game.getFrameworkContext(player));
+                                const event = this.game.actions.resolveRingEffect().getEvent(firstRing, this.game.getFrameworkContext(player));
                                 this.game.openThenEventWindow(event);
                                 return true;
                             },
                             onSelect: (player: Player, secondRing: Ring) => {
                                 this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
-                                let action = this.game.actions.resolveRingEffect({ target: [firstRing, secondRing]});
-                                let events: Event[] = [];
+                                const action = this.game.actions.resolveRingEffect({ target: [firstRing, secondRing]});
+                                const events: Event[] = [];
                                 action.addEventsToArray(events, this.game.getFrameworkContext(player));
                                 this.game.openThenEventWindow(events);
                                 return true;
@@ -41,7 +41,7 @@ class ShibaTsukune extends DrawCard {
                         });
                     } else {
                         this.game.addMessage('{0} resolves {1}', context.player, firstRing);
-                        let event = this.game.actions.resolveRingEffect().getEvent(firstRing, this.game.getFrameworkContext(player));
+                        const event = this.game.actions.resolveRingEffect().getEvent(firstRing, this.game.getFrameworkContext(player));
                         this.game.openThenEventWindow(event);
                     }
                     return true;
