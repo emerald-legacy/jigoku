@@ -11,7 +11,7 @@ export function createKeeperRole(id: string, element: Element) {
             this.reaction('Gain 1 fate')
                 .when({
                     afterConflict: (event, context) =>
-                        (event.conflict).elements.some((el) => this.hasTrait(el)) &&
+                        event.conflict.elements.some((el) => this.hasTrait(el)) &&
                         event.conflict.winner === context.player &&
                         event.conflict.defendingPlayer === context.player
                 })

@@ -285,7 +285,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         const choosingPlayer = (properties.choosingPlayer || event.player);
         if(selectedCards.size > 0 && properties.message) {
             const args = properties.messageArgs ? properties.messageArgs(context, Array.from(selectedCards)) : [];
-            return context.game.addMessage(properties.message, ...(args));
+            return context.game.addMessage(properties.message, ...args);
         }
 
         if(selectedCards.size === 0) {

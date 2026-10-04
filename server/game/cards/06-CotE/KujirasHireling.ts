@@ -8,9 +8,7 @@ class KujirasHireling extends DrawCard {
     setupCardAbilities() {
         this.action('+1/+1 or -1/-1')
             .cost(AbilityDsl.costs.payFate())
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 '+1/+1': AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyBothSkills(1),
                     duration: Duration.UntilEndOfPhase

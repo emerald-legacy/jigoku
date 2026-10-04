@@ -15,7 +15,7 @@ class LostPapers extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     const charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardType.Character);
-                    return (card).getFate() === Math.max(...charactersInPlay.map((c) => c.getFate()));
+                    return card.getFate() === Math.max(...charactersInPlay.map((c) => c.getFate()));
                 }
             }, AbilityDsl.actions.bow());
     }

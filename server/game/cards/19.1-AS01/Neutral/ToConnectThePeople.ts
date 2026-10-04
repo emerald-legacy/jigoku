@@ -12,7 +12,7 @@ export default class ToConnectThePeople extends DrawCard {
         this.action('Play a character from your opponent\'s discard pile')
             .condition((context) =>
                 !context.game.isDuringConflict() &&
-                (context.player.cardsInPlay).some(
+                context.player.cardsInPlay.some(
                     (card) => card.getType() === CardType.Character && card.hasTrait('merchant')
                 ))
             .gameAction(AbilityDsl.actions.sequential([
@@ -53,7 +53,7 @@ export default class ToConnectThePeople extends DrawCard {
     }
 
     private maxMerchantGlory(context: AbilityContext) {
-        return (context.player.cardsInPlay).reduce(
+        return context.player.cardsInPlay.reduce(
             (maxGlory, card) =>
                 card.getType() === CardType.Character && card.hasTrait('merchant') && card.glory > maxGlory
                     ? card.glory

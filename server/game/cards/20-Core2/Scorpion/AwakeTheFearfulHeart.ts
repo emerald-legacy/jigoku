@@ -14,7 +14,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.sendHome((context) => ({
                     target:
-                        (context.game.currentConflict)?.getParticipants(
+                        context.game.currentConflict?.getParticipants(
                             (character) => character.fate === 0
                         ) ?? []
                 })),

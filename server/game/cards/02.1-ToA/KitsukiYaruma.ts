@@ -14,7 +14,7 @@ class KitsukiYaruma extends DrawCard {
             .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card) => !(card).isBroken
+                cardCondition: (card) => !card.isBroken
             }, AbilityDsl.actions.turnFacedown());
     }
 

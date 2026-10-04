@@ -48,7 +48,7 @@ export default class DayOfBrotherHorse extends DrawCard {
                     AbilityDsl.actions.chosenDiscard({ target: context.player })
                 ]
             })))
-            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff((context.ring?.element ?? 'air'))])
+            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring?.element ?? 'air')])
             .max(AbilityDsl.limit.perRound(1));
     }
 }

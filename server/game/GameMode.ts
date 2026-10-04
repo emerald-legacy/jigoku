@@ -156,7 +156,7 @@ const Emerald: GameMode = {
     dynastyPhaseCanPlayConflictEvents: (action) =>
         action.abilityType !== AbilityType.Action ||
         action.phase === Phases.Dynasty ||
-        (action.card).isDynasty,
+        action.card.isDynasty,
     dynastyPhaseCanPlayConflictCharacters: false,
     dynastyPhasePassingFate: false,
     dynastyPhaseActionsFromCardsInPlay: false

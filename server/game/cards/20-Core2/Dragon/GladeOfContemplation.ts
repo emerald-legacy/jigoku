@@ -17,9 +17,7 @@ export default class GladeOfContemplation extends ProvinceCard {
                     context.player.opponent &&
                     context.player.hand.length < context.player.opponent.hand.length
             })
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 'Draw cards': AbilityDsl.actions.draw((context) => ({
                     amount: cardDifference(context)
                 })),

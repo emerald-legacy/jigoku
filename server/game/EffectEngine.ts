@@ -98,7 +98,7 @@ export class EffectEngine {
                         if(typeof messageArgs === 'function') {
                             messageArgs = messageArgs(context, targets);
                         }
-                        this.game.addMessage(properties.message, ...(messageArgs));
+                        this.game.addMessage(properties.message, ...messageArgs);
                     }
                     const actionEvents: Event[] = [];
                     properties.gameAction.addEventsToArray(actionEvents, context);

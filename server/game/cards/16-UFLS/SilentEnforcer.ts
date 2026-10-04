@@ -17,7 +17,7 @@ class SilentEnforcer extends DrawCard {
             })
             .select('select', {
                 dependsOn: 'character',
-                player: context => (context.targets.character).controller === context.player ? Players.Self : Players.Opponent
+                player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
                 'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character })),
                 'Bow this character': AbilityDsl.actions.bow(context => ({ target: context.targets.character }))

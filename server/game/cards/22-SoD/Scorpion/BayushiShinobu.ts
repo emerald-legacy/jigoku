@@ -38,10 +38,10 @@ export default class BayushiShinobu extends DrawCard {
                             onCardLeavesPlay: (event) => event.card === context.target
                         },
                         onlyRemoveOnSuccess: true,
-                        gameAction: AbilityDsl.actions.loseHonor(({
+                        gameAction: AbilityDsl.actions.loseHonor({
                             amount: 2,
                             target: context.player
-                        })),
+                        }),
                         message: '{0} loses 2 honor due to the delayed effect of {1}',
                         messageArgs: [context.player, context.source]
                     }),

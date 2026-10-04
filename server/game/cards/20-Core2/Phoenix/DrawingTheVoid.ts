@@ -10,7 +10,7 @@ export default class DrawingTheVoid extends DrawCard {
         this.action('Gaze into the void')
             .condition((context) => context.player.isTraitInPlay('shugenja'))
             .gameAction(AbilityDsl.actions.sequentialContext((context) => {
-                const revealedCards = (shuffle(context.player.opponent?.hand ?? []))
+                const revealedCards = shuffle(context.player.opponent?.hand ?? [])
                     .slice(0, 2)
                     .sort((a, b) => a.name.localeCompare(b.name));
                 return {

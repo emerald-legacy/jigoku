@@ -10,9 +10,7 @@ export default class MeddlingMediator extends DrawCard {
             .condition((context) =>
                 context.player.opponent !== undefined &&
                 this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 'Take 1 fate': AbilityDsl.actions.takeFate(),
                 'Take 1 honor': AbilityDsl.actions.takeHonor()
             })

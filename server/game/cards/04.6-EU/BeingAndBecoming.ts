@@ -16,7 +16,7 @@ class BeingAndBecoming extends DrawCard {
                 ringCondition: (ring) => ring.isUnclaimed() && ring.fate > 0
             }, AbilityDsl.actions.placeFate((context) => ({
                 origin: context.ring,
-                amount: (context.ring).fate,
+                amount: context.ring.fate,
                 target: context.source.parentCharacter ?? []
             })))
             .effect('move {1} fate from {2} to {3}', context => [context.ring ? context.ring.fate : 0, context.ring, context.source.parentCharacter]);

@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 
 function shinobiCount(context: AbilityContext): number {
     return (
-        (context.game.currentConflict)?.getParticipants(
+        context.game.currentConflict?.getParticipants(
             (card) => card.controller === context.player && card.hasTrait('shinobi')
         )?.length ?? 0
     );

@@ -19,7 +19,7 @@ class ProceduralInterference extends DrawCard {
             }, {
                 'Discard each card in the province': AbilityDsl.actions.moveCard(context => ({
                     destination: Location.DynastyDiscardPile,
-                    target: (context.targets.province).controller.getDynastyCardsInProvince((context.targets.province).location)
+                    target: context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)
                 })),
                 'Let opponent gain 2 honor': AbilityDsl.actions.gainHonor({
                     amount: 2
@@ -29,7 +29,7 @@ class ProceduralInterference extends DrawCard {
                 if(context.selects.select.choice === 'let opponent gain 2 honor') {
                     return ['gain 2 honor', ''];
                 }
-                return ['discard ', (context.targets.province).controller.getDynastyCardsInProvince((context.targets.province).location)];
+                return ['discard ', context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)];
             });
     }
 }

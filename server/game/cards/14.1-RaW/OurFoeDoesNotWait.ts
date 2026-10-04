@@ -15,7 +15,7 @@ class OurFoeDoesNotWait extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card) => card.location !== Location.StrongholdProvince && !(card).isBroken
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
             .gameAction(AbilityDsl.actions.deckSearch((context) => ({
                 amount: 8,

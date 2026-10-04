@@ -11,7 +11,7 @@ export default class UntamedSteppe extends ProvinceCard {
                 cardType: CardType.Province,
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !(card).isBroken && card !== context.source
+                cardCondition: (card, context) => !card.isBroken && card !== context.source
             }, AbilityDsl.actions.turnFacedown());
     }
 }

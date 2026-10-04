@@ -22,8 +22,7 @@ export default class ALegionOfOne extends DrawCard {
                 effect: AbilityDsl.effects.modifyMilitarySkill(3)
             }))
             .effect('give {0} +3/+0')
-            .then((context) => {
-                const ctx = context;
+            .then((ctx) => {
                 if(ctx.subResolution) {
                     return {
                         target: {

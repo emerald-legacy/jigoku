@@ -15,7 +15,7 @@ class TravelingPhilospher extends DrawCard {
                 controller: Players.Self,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card) => !(card).isBroken
+                cardCondition: (card) => !card.isBroken
             }, AbilityDsl.actions.turnFacedown());
     }
 }

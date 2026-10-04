@@ -52,7 +52,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         const properties = this.getProperties(context, additionalProperties);
         const cards = event.cards;
         const messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
-        context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs));
+        context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
     }
 
     getMessage(message: string | ((context: C) => string) | undefined, context: C): string {

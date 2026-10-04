@@ -19,9 +19,9 @@ export default class Pressure extends DrawCard {
                 targets: false,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card, context) => card.isCharacter() && card.isDishonored && card.isParticipating() && (
-                    (context).event.attackers?.includes(card) ||
-                    (context).event.defenders?.includes(card) ||
-                    (context).event?.card === card
+                    context.event.attackers?.includes(card) ||
+                    context.event.defenders?.includes(card) ||
+                    context.event?.card === card
                 ),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.sendHome(),

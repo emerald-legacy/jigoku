@@ -22,13 +22,13 @@ class BattlefieldOrders extends DrawCard {
                 cardCondition: card => card.isParticipating(),
                 controller: Players.Any
             }, AbilityDsl.actions.resolveAbility((context) => ({
-                target: (context.targetAbility).card,
+                target: context.targetAbility.card,
                 ability: context.targetAbility,
-                player: (context.targetAbility).card.controller,
+                player: context.targetAbility.card.controller,
                 ignoredRequirements: ['player'],
                 choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
             })))
-            .effect('trigger {1}\'s \'{2}\' ability', (context) => [(context.targetAbility).card, (context.targetAbility).title]);
+            .effect('trigger {1}\'s \'{2}\' ability', (context) => [context.targetAbility.card, context.targetAbility.title]);
     }
 }
 

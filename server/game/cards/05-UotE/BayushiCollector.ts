@@ -11,7 +11,7 @@ class BayushiCollector extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isDishonored)
             }, AbilityDsl.actions.discardFromPlay(), AbilityDsl.actions.discardStatusToken((context) => ({
-                target: (context.target).parentCharacter?.getStatusToken(CharacterStatus.Dishonored)
+                target: context.target.parentCharacter?.getStatusToken(CharacterStatus.Dishonored)
             })));
     }
 }

@@ -6,9 +6,7 @@ class WrittenInTheStars extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place or take fate from rings')
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 'Place one fate on each unclaimed ring with no fate': AbilityDsl.actions.placeFateOnRing(() => ({
                     target: Object.values(this.game.rings).filter(ring => ring.isUnclaimed() && ring.fate === 0)
                 })),

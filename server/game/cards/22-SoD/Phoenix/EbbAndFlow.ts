@@ -20,8 +20,7 @@ export default class EbbAndFlow extends DrawCard {
                 effect: AbilityDsl.effects.switchBaseSkills()
             }))
             .effect('switch {1}\'s military and political skill', context => [context.targets.opponents])
-            .then(context => {
-                const ctx = context;
+            .then((ctx) => {
                 return {
                     thenCondition: () => ctx.player.fate > 0 && ctx.game.actions.loseFate().canAffect(ctx.player, ctx),
                     gameAction: AbilityDsl.actions.onAffinity({

@@ -12,7 +12,7 @@ class TranquilPhilosopher extends DrawCard {
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.selectRing((context) => ({
                     activePromptTitle: 'Choose an unclaimed ring to move fate to',
-                    ringCondition: (ring) => (context.ring).fate > 0 && ring.isUnclaimed() && ring !== (context.ring),
+                    ringCondition: (ring) => context.ring.fate > 0 && ring.isUnclaimed() && ring !== context.ring,
                     message: '{0} moves a fate from the {1} to the {2}',
                     messageArgs: (ring) => [context.player, context.ring, ring],
                     gameAction: AbilityDsl.actions.placeFateOnRing({ origin: context.ring })

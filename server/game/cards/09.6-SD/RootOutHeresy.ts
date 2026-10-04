@@ -11,7 +11,7 @@ class RootOutHeresy extends DrawCard {
             .condition(() => this.game.isDuringConflict('political'))
             .gameAction(AbilityDsl.actions.discardAtRandom(context => ({ target: context.player.opponent })))
             .then((context) => ({
-                gameAction: AbilityDsl.actions.selectCard(({
+                gameAction: AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
                     cardType: CardType.Province,
@@ -25,7 +25,7 @@ class RootOutHeresy extends DrawCard {
                             effect: AbilityDsl.effects.modifyProvinceStrength(amount)
                         });
                     })
-                }))
+                })
             }));
     }
 

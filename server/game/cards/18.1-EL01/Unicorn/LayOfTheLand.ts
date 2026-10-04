@@ -12,7 +12,7 @@ export default class LayOfTheLand extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: (card) => !(card).isBroken && card.location !== Location.StrongholdProvince
+                cardCondition: (card) => !card.isBroken && card.location !== Location.StrongholdProvince
             }, AbilityDsl.actions.reveal(), AbilityDsl.actions.turnFacedown())
             .effect('{1} {2}', (context) => {
                 const target = context.target;

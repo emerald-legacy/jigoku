@@ -39,7 +39,7 @@ export default class ASwallowsReturn extends DrawCard {
                     messageArgs: (card, player) => [player, card.name, context.costs.reveal?.filter((c) => c !== card)]
                 })),
                 AbilityDsl.actions.discardCard((context) => ({
-                    target: ((context.costs.reveal ?? [])).filter((card) => card.location === Location.ConflictDeck)
+                    target: (context.costs.reveal ?? []).filter((card) => card.location === Location.ConflictDeck)
                 }))
             ]))
             .effect('choose one of those to play')

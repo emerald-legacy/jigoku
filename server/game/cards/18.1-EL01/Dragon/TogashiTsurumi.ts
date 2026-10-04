@@ -59,7 +59,7 @@ export default class TogashiTsurumi extends DrawCard {
     }
 
     private getSkillBonus() {
-        return (this.game.allCards).reduce(
+        return this.game.allCards.reduce(
             (total, card) => (card.controller === this.controller && card.location === this.uuid ? total + 1 : total),
             0
         );

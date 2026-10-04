@@ -16,8 +16,7 @@ export default class TheVoidOfWar extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow())
             .effect('bow {0}.')
-            .then((context) => {
-                const ctx = context;
+            .then((ctx) => {
                 return {
                     target: {
                         player: ctx.player.opponent ? Players.Opponent : Players.Self,

@@ -12,7 +12,7 @@ class CourtOfDeception extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isDishonored && !card.isParticipating()
-            }, AbilityDsl.actions.discardStatusToken((context) => ({ target: (context.target).getStatusToken(CharacterStatus.Dishonored) })));
+            }, AbilityDsl.actions.discardStatusToken((context) => ({ target: context.target.getStatusToken(CharacterStatus.Dishonored) })));
     }
 }
 

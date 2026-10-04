@@ -46,7 +46,7 @@ class UnderSiege extends DrawCard {
                         ])
                     })
                 })),
-                AbilityDsl.actions.conditional(({
+                AbilityDsl.actions.conditional({
                     condition: context => {
                         const conflict = context.game.currentConflict;
                         return conflict !== null && conflict.defendingPlayer !== null && conflict.defendingPlayer.hand.length > 0;
@@ -88,7 +88,7 @@ class UnderSiege extends DrawCard {
                             this.targetPlayer = null;
                         }
                     })
-                }))
+                })
             ]))
             .effect('place {1} under siege!', context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
             .max(AbilityDsl.limit.perConflict(1));

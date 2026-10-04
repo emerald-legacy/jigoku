@@ -220,10 +220,9 @@ class InitiateConflictPrompt extends UiPrompt {
                 province: card
             });
         } else if(card.isCharacter() && card.location === Location.PlayArea) {
-            const drawCard = card;
             if(card.controller === this.choosingPlayer) {
-                if(this.conflict.attackers.includes(drawCard)) {
-                    const forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(drawCard);
+                if(this.conflict.attackers.includes(card)) {
+                    const forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(card);
                     const extraAttackers = this.attackerMatrix.requiredNumberOfAttackers > 0 ? this.conflict.attackers.length > this.attackerMatrix.requiredNumberOfAttackers : false;
                     let enoughForcedRemaining = true;
 
@@ -241,7 +240,7 @@ class InitiateConflictPrompt extends UiPrompt {
                     type: this.conflict.conflictType,
                     ring: this.conflict.ring,
                     province: this.conflict.conflictProvince,
-                    attacker: drawCard
+                    attacker: card
                 });
             }
 
@@ -292,12 +291,11 @@ class InitiateConflictPrompt extends UiPrompt {
                 card.inConflict = true;
             }
         } else if(card.isCharacter()) {
-            const character = card;
             if(card.controller === this.choosingPlayer) {
-                if(!this.conflict.attackers.includes(character)) {
-                    this.conflict.addAttacker(character);
+                if(!this.conflict.attackers.includes(card)) {
+                    this.conflict.addAttacker(card);
                 } else {
-                    this.removeFromConflict(character);
+                    this.removeFromConflict(card);
                 }
                 // before a ring is chosen, ring and type restrictions are undecided; choosing the ring checks them
                 this.conflict.attackers.forEach((card: DrawCard) => {
@@ -306,12 +304,12 @@ class InitiateConflictPrompt extends UiPrompt {
                     }
                 });
             } else {
-                if(!this.selectedDefenders.includes(character)) {
-                    this.selectedDefenders.push(character);
-                    character.covert = true;
+                if(!this.selectedDefenders.includes(card)) {
+                    this.selectedDefenders.push(card);
+                    card.covert = true;
                 } else {
-                    this.selectedDefenders = this.selectedDefenders.filter((c: DrawCard) => c !== character);
-                    character.covert = false;
+                    this.selectedDefenders = this.selectedDefenders.filter((c: DrawCard) => c !== card);
+                    card.covert = false;
                 }
             }
         }

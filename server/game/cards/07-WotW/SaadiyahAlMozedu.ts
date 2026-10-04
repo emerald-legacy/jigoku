@@ -13,7 +13,7 @@ class SaadiyahAlMozedu extends DrawCard {
             .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card) => !(card).isBroken && !(card).isConflictProvince()
+                cardCondition: (card) => !card.isBroken && !card.isConflictProvince()
             }, AbilityDsl.actions.turnFacedown());
     }
 }

@@ -10,7 +10,7 @@ export default class HidaHonoka extends DrawCard {
             .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: (card) => (card).isBroken
+                cardCondition: (card) => card.isBroken
             }, AbilityDsl.actions.restoreProvince())
             .then(() => ({
                 gameAction: AbilityDsl.actions.playerLastingEffect({

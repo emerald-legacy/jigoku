@@ -16,8 +16,7 @@ class Banzai extends DrawCard {
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
             })))
             .effect('grant 2 military skill to {0}')
-            .then(context => {
-                const ctx = context;
+            .then((ctx) => {
                 if(ctx.subResolution) {
                     return {
                         target: {

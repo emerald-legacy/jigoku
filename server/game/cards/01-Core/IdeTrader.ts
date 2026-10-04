@@ -9,9 +9,7 @@ class IdeTrader extends DrawCard {
             .when({
                 onMoveToConflict: (event, context) => context.source.isParticipating()
             })
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 'Gain 1 fate': AbilityDsl.actions.gainFate(),
                 'Draw 1 card': AbilityDsl.actions.draw()
             })

@@ -6,9 +6,7 @@ export default class KuroiMori extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Switch the conflict type or ring')
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 'Switch the contested ring': AbilityDsl.actions.selectRing({
                     activePromptTitle: 'Choose a ring to switch with the contested ring',
                     message: '{0} switches the contested ring with {1}',

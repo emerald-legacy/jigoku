@@ -112,7 +112,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
                     text: token.name,
                     handler: () => {
                         if(properties.message && messageArgs) {
-                            context.game.addMessage(properties.message, ...(messageArgs(token, player)));
+                            context.game.addMessage(properties.message, ...messageArgs(token, player));
                         }
                         context.tokens[this.name] = token;
                         properties.gameAction.addEventsToArray(
@@ -127,7 +127,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         } else {
             context.tokens[this.name] = validTokens;
             if(properties.message && messageArgs) {
-                context.game.addMessage(properties.message, ...(messageArgs(validTokens, player)));
+                context.game.addMessage(properties.message, ...messageArgs(validTokens, player));
             }
             properties.gameAction.addEventsToArray(
                 events,

@@ -12,7 +12,7 @@ export default class Overhear extends DrawCard {
         this.action('Place random card on top of deck')
             .condition((context) => context.game.isDuringConflict('political') && context.player.opponent !== undefined)
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
-                const card: DrawCard[] = context.player.opponent ? (shuffle(context.player.opponent.hand)).slice(0, 1) : [];
+                const card: DrawCard[] = context.player.opponent ? shuffle(context.player.opponent.hand).slice(0, 1) : [];
                 return {
                     gameActions: [
                         AbilityDsl.actions.lookAt(() => ({

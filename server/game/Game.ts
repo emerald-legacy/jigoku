@@ -853,10 +853,7 @@ class Game {
      * cards, and performs it on all legal targets.
      */
     applyGameAction(context: AbilityContext | null, actions: GameActionRequest): Event[] {
-        if(!context) {
-            context = this.getFrameworkContext();
-        }
-        const resolvedContext = context;
+        const resolvedContext = context ?? this.getFrameworkContext();
         const events: Event[] = [];
         for(const action of Object.keys(actions)) {
             if(isOwnKey(APPLY_CARD_ACTIONS, action)) {

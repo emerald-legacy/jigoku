@@ -43,7 +43,7 @@ export default class StormFromSakkaku extends DrawCard {
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext): BaseCard[] {
-        return (context.game.allCards).filter(
+        return context.game.allCards.filter(
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&

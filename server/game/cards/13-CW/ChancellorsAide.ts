@@ -14,16 +14,16 @@ class ChancellorsAide extends DrawCard {
             .select('myPlayer', {
                 targets: true
             }, {
-                [this.owner.name]: AbilityDsl.actions.chosenDiscard(({ target: this.owner })),
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.chosenDiscard(({ target: this.owner.opponent }))
+                [this.owner.name]: AbilityDsl.actions.chosenDiscard({ target: this.owner }),
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.chosenDiscard({ target: this.owner.opponent })
             })
             .select('oppPlayer', {
                 targets: true,
                 player: Players.Opponent,
                 condition: context => !!context.costs.optionalHonorTransferFromOpponentCostPaid
             }, {
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.chosenDiscard(({ target: this.owner.opponent })),
-                [this.owner.name]: AbilityDsl.actions.chosenDiscard(({ target: this.owner }))
+                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.chosenDiscard({ target: this.owner.opponent }),
+                [this.owner.name]: AbilityDsl.actions.chosenDiscard({ target: this.owner })
             })
             .cannotTargetFirst();
     }

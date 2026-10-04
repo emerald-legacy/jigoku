@@ -18,7 +18,7 @@ export default class MapmakerApprentice extends DrawCard {
                             if(!eventContext.game.currentConflict) {
                                 return false;
                             }
-                            if(!(context.target).isConflictProvince()) {
+                            if(!context.target.isConflictProvince()) {
                                 return false;
                             }
                             if(event.player !== context.player || event.card.type !== CardType.Event) {

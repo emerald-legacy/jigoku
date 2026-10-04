@@ -80,7 +80,7 @@ class ThenAbility extends BaseCardAbility {
         context.events = [];
         const actions = this.getGameActions(context);
         let then = this.properties.then;
-        if(then && typeof then === 'function') {
+        if(typeof then === 'function') {
             then = then(context);
         }
         for(const action of actions) {
@@ -93,9 +93,9 @@ class ThenAbility extends BaseCardAbility {
             if(eventsToResolve.length > 0) {
                 const window = this.openEventWindow(eventsToResolve);
                 if(then) {
-                    window.addThenAbility(new ThenAbility(this.card, then), context, (then).thenCondition);
+                    window.addThenAbility(new ThenAbility(this.card, then), context, then.thenCondition);
                 }
-            } else if(then && (then).thenCondition && (then).thenCondition?.(context)) {
+            } else if(then?.thenCondition?.(context)) {
                 const thenAbility = new ThenAbility(this.card, then);
                 const thenContext = thenAbility.createContext(context.player);
                 // a `then` continues the same triggering, so keep the link for chosenCardTargets

@@ -95,7 +95,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
                 );
                 if(properties.message && properties.messageArgs) {
                     const cards = properties.cards.filter((card) => cardCondition(card, context));
-                    context.game.addMessage(properties.message, ...(properties.messageArgs(card, player, cards)));
+                    context.game.addMessage(properties.message, ...properties.messageArgs(card, player, cards));
                 }
             }
         };

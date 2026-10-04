@@ -17,7 +17,7 @@ class BayushiAramoro extends DrawCard {
                 effect: [
                     AbilityDsl.effects.modifyMilitarySkill(-2),
                     AbilityDsl.effects.delayedEffect({
-                        condition: () => (context.target).getMilitarySkill() < 1,
+                        condition: () => context.target.getMilitarySkill() < 1,
                         message: '{0} is discarded due to {1}\'s lasting effect',
                         messageArgs: [context.target, context.source],
                         gameAction: AbilityDsl.actions.discardFromPlay()

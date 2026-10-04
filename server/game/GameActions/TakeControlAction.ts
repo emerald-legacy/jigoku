@@ -40,7 +40,7 @@ export class TakeControlAction<C extends AbilityContext = AbilityContext> extend
     }
 
     eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const properties = this.getProperties((event.context), additionalProperties);
-        (event.context).source.applyDurationEffect(properties.duration ?? Duration.Custom, () => Object.assign({ match: event.card }, properties));
+        const properties = this.getProperties(event.context, additionalProperties);
+        event.context.source.applyDurationEffect(properties.duration ?? Duration.Custom, () => Object.assign({ match: event.card }, properties));
     }
 }

@@ -24,7 +24,7 @@ export default class CloudStepValley extends ProvinceCard {
                         ? Players.Self
                         : Players.Opponent,
                 cardCondition: (card, context) =>
-                    card.controller === (context.targets[STARTED_IN_CONFLICT]).controller &&
+                    card.controller === context.targets[STARTED_IN_CONFLICT].controller &&
                         AbilityDsl.actions.moveToConflict().canAffect(card, context)
             })
             .gameAction(AbilityDsl.actions.joint([

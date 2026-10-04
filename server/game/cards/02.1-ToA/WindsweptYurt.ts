@@ -7,9 +7,7 @@ class WindsweptYurt extends DrawCard {
     setupCardAbilities() {
         this.action('Gain 2 fate or 2 honor')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .select('target', {
-
-            }, {
+            .select('target', {}, {
                 'Each player gains 2 fate': AbilityDsl.actions.gainFate((context) => ({
                     amount: 2,
                     target: context.game.getPlayers()

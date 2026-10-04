@@ -14,8 +14,7 @@ class HandToHand extends DrawCard {
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
             }, AbilityDsl.actions.discardFromPlay())
             .effect('discard {0} from play')
-            .then(context => {
-                const ctx = context;
+            .then((ctx) => {
                 return {
                     target: {
                         player: ctx.player.opponent ? Players.Opponent : Players.Self,

@@ -36,7 +36,7 @@ export default class ToSowTheEarth extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Any,
-                cardCondition: (card) => (card).isBroken === false
+                cardCondition: (card) => card.isBroken === false
             }, AbilityDsl.actions.turnFacedown())
             .max(AbilityDsl.limit.perRound(1));
     }

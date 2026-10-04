@@ -28,7 +28,7 @@ export default class DiscipleOfDeception extends DrawCard {
                 cardCondition: (card, context) =>
                     card !== context.tokens.first[0].card &&
                         !card.hasStatusToken(context.tokens.first[0].grantedStatus),
-                tokenCondition: (token, context) => token.grantedStatus !== (context?.tokens.first)?.[0]?.grantedStatus
+                tokenCondition: (token, context) => token.grantedStatus !== context?.tokens.first?.[0]?.grantedStatus
             }, AbilityDsl.actions.handler({
                 handler: (context) => {
                     const targetToken = context.tokens.second[0];

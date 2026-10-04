@@ -23,7 +23,7 @@ export default class LastJudgementPlains extends ProvinceCard {
             }, AbilityDsl.actions.menuPrompt(({ targets }) => ({
                 activePromptTitle: 'How much fate do you want to move?',
                 optional: false,
-                choices: this.createChoiceArray((targets[DONOR]).getFate()),
+                choices: this.createChoiceArray(targets[DONOR].getFate()),
                 choiceHandler: (choice) => ({
                     amount: parseInt(choice, 10),
                     origin: targets[DONOR],

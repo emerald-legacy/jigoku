@@ -16,7 +16,7 @@ export default class EarthsStagnation extends DrawCard {
             .when({
                 onCardPlayed: (event, context) =>
                     context.source.parentCharacter &&
-                    (event.card).type === CardType.Event &&
+                    event.card.type === CardType.Event &&
                     context.source.parentCharacter.isParticipating()
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({

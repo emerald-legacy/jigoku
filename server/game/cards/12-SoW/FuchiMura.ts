@@ -10,7 +10,7 @@ export default class FuchiMura extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .gameAction(AbilityDsl.actions.placeFateOnRing((context) => ({
-                target: (Object.values(context.game.rings)).filter((ring) => ring.isUnclaimed())
+                target: Object.values(context.game.rings).filter((ring) => ring.isUnclaimed())
             })));
     }
 }

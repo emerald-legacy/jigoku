@@ -9,7 +9,7 @@ export default class IkomaYumiko extends DrawCard {
             effect: [
                 AbilityDsl.effects.modifyBothSkills(
                     (card, context) =>
-                        (context.player.opponent)?.cardsInPlay.reduce(
+                        context.player.opponent?.cardsInPlay.reduce(
                             (total: number, char) => (char.isDishonored ? total + 1 : total),
                             0
                         ) ?? 0

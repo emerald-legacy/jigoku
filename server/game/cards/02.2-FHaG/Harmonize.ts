@@ -14,7 +14,7 @@ class Harmonize extends DrawCard {
             .target('oppCharacter', {
                 dependsOn: 'myCharacter',
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isAttacking() && card.costLessThan(((context.targets.myCharacter).getCost() ?? 0) + 1)
+                cardCondition: (card, context) => card.isAttacking() && card.costLessThan((context.targets.myCharacter.getCost() ?? 0) + 1)
             }, AbilityDsl.actions.sendHome())
             .effect('send home {1} and {2}', context => [context.targets.myCharacter, context.targets.oppCharacter])
             .cannotBeMirrored();
