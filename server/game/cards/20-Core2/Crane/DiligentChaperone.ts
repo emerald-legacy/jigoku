@@ -3,9 +3,11 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { GameEvent } from '../../../Events/EventPayloads.js';
 
-function targetsFromEvent(context: TriggeredAbilityContext): WeakSet<BaseCard> {
-    const event = context.event;
+type ChaperoneEvent = GameEvent<EventName.OnStatusTokenMoved | EventName.OnCardDishonored | EventName.OnStatusTokenDiscarded>;
+
+function targetsFromEvent(event: ChaperoneEvent): WeakSet<BaseCard> {
     switch(event.name) {
         case EventName.OnStatusTokenMoved:
             return new WeakSet(event.donor ? [event.donor] : []);
@@ -47,7 +49,7 @@ export default class DiligentChaperone extends DrawCard {
             .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
-                cardCondition: (card) => targetsFromEvent(context).has(card),
+                cardCondition: (card) => targetsFromEvent(context.event).has(card),
                 subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };

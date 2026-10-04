@@ -1,6 +1,7 @@
 import { Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { isRingClaimed } from '../claimedRings.js';
 
 export function makeTempleOfFortuneX(id: string, element: Element) {
     const elementKeys = [`${id}-${element}-0`, `${id}-${element}-1`];
@@ -10,8 +11,7 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
 
         setupCardAbilities() {
             this.persistentEffect({
-                condition: (context) =>
-                    context.game.rings[this.getCurrentElementSymbol(elementKeys[0])].isConsideredClaimed(),
+                condition: () => isRingClaimed(this, elementKeys[0]),
                 effect: AbilityDsl.effects.modifyProvinceStrength(2)
             });
 

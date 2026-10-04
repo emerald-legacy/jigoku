@@ -1,8 +1,8 @@
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Element } from '../../../Constants.js';
+import { Element, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
+import type { GameEvent } from '../../../Events/EventPayloads.js';
 import type Player from '../../../Player.js';
 import Ring from '../../../Ring.js';
 
@@ -28,11 +28,12 @@ export default class KitsukiSeiji extends DrawCard {
                     (event.recipients ?? []).some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             })
             .gameAction(AbilityDsl.actions.cancel((context) => {
-                switch(context.event.name) {
-                    case 'onPlaceFateOnUnclaimedRings':
-                        return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(context) };
-                    case 'onMoveFate':
-                        return { replacementGameAction: this.replacementForMoveFate(context) };
+                const event = context.event;
+                switch(event.name) {
+                    case EventName.OnPlaceFateOnUnclaimedRings:
+                        return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(event, context.source) };
+                    case EventName.OnMoveFate:
+                        return { replacementGameAction: this.replacementForMoveFate(event, context.source) };
                     default:
                         return { replacementGameAction: AbilityDsl.actions.noAction() };
                 }
@@ -56,22 +57,21 @@ export default class KitsukiSeiji extends DrawCard {
         );
     }
 
-    private replacementForMoveFate(context: TriggeredAbilityContext) {
-        const event = context.event;
+    private replacementForMoveFate(event: GameEvent<EventName.OnMoveFate>, source: BaseCard) {
         return AbilityDsl.actions.placeFate({
             origin: event.origin,
-            target: context.source,
+            target: source,
             amount: event.fate
         });
     }
 
-    private replacementForPlaceFateOnUnclaimedRings(context: TriggeredAbilityContext) {
+    private replacementForPlaceFateOnUnclaimedRings(event: GameEvent<EventName.OnPlaceFateOnUnclaimedRings>, source: BaseCard) {
         return AbilityDsl.actions.joint(
-            (context.event.recipients ?? []).map((recipient) => {
+            (event.recipients ?? []).map((recipient) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({
-                        target: context.source,
+                        target: source,
                         amount: recipient.amount
                     });
                 }

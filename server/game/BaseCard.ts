@@ -186,7 +186,7 @@ class BaseCard extends EffectSource {
         this.traits = cardData.traits || [];
         this.printedFaction = cardData.clan ?? cardData.faction ?? '';
 
-        this.declareAbilities(() => this.setupCardAbilities(AbilityDsl));
+        this.declareAbilities(() => this.setupCardAbilities());
         this.parseKeywords(cardData.text ? cardData.text.replace(/<[^>]*>/g, '').toLowerCase() : '');
     }
 
@@ -303,7 +303,7 @@ class BaseCard extends EffectSource {
         return this.persistentEffects;
     }
 
-    setupCardAbilities(_ability: typeof AbilityDsl): void {}
+    setupCardAbilities(): void {}
 
     /** Like `setupCardAbilities`, for abilities added later: builders started in `declare` are registered when it returns. */
     declareAbilities(declare: () => void): void {

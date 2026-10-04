@@ -1,6 +1,7 @@
 import { Element, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { claimsRingOf } from '../../claimedRings.js';
 
 const ELEMENT_KEY = 'otter-fisherman-water';
 
@@ -14,10 +15,7 @@ export default class OtterFisherman extends DrawCard {
 
         this.reaction('Gain resource after claiming water')
             .when({
-                onClaimRing: (event, context) =>
-                    event.player === context.player &&
-                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))) ||
-                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
+                onClaimRing: (event, context) => event.player === context.player && claimsRingOf(this, ELEMENT_KEY, event)
             })
             .select('target', {
                 player: Players.Opponent,
