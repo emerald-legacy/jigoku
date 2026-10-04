@@ -12,9 +12,9 @@ class TenguSensei extends DrawCard {
                     return (event.card === context.source || (Array.isArray(event.card) && event.card.includes(context.source)));
                 }
             })
-            .effect('prevent {1} from attacking this phase', (context) => context.event.context?.target)
+            .effect('prevent {1} from attacking this phase', (context) => context.event.context.target)
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.event.context?.target ?? [],
+                target: context.event.context.target ?? [],
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
             })));

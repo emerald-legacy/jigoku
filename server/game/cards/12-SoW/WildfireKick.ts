@@ -8,7 +8,6 @@ class WildfireKick extends DrawCard {
     setupCardAbilities() {
         this.action('Give opponent\'s characters -2/-2')
             .condition(context =>
-                this.game.isDuringConflict() &&
                 !!this.game.currentConflict &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3)
             .target('target', {
@@ -21,8 +20,7 @@ class WildfireKick extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(-2)
             })))
             .effect('give {1}\'s participating characters -2{2}/-2{3} if their military skill is equal to or lower than {4}. This affects: {5}', context => {
-                const target = context.target;
-                const targetMs = target?.getMilitarySkill() ?? 0;
+                const targetMs = context.target.getMilitarySkill();
                 return [context.player.opponent, 'military', 'political', targetMs, this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.getMilitarySkill() <= targetMs && card !== context.source) ?? []];
             });
     }

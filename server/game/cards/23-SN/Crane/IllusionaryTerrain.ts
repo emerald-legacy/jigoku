@@ -30,13 +30,12 @@ export default class IllusionaryTerrain extends DrawCard {
                     if(context.player.hasAffinity('air', context)) {
                         return Players.Any;
                     }
-                    const conflict = context.event.conflict;
-                    return conflict?.defendingPlayer === context.player ? Players.Self : Players.Opponent;
+                    return context.event.conflict.defendingPlayer === context.player ? Players.Self : Players.Opponent;
                 },
                 cardCondition: (card, context) => card.isFaceup() &&
-                    card !== context.event.conflict?.conflictProvince
+                    card !== context.event.conflict.conflictProvince
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.event.conflict?.conflictProvince ?? [],
+                target: context.event.conflict.conflictProvince ?? [],
                 targetLocation: Location.Any,
                 effect: context.target ? AbilityDsl.effects.copyProvince(context.target) : []
             })))

@@ -22,7 +22,7 @@ export default class AkodoCho extends DrawCard {
             .select(SELECT, {
                 dependsOn: CHARACTER,
                 player: (context) =>
-                    (context.targets[CHARACTER]).controller === context.player ? Players.Self : Players.Opponent
+                    context.targets[CHARACTER].controller === context.player ? Players.Self : Players.Opponent
             }, {
                 'Discard an attachment from this character': AbilityDsl.actions.selectCard((context) => ({
                     cardType: CardType.Attachment,

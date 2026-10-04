@@ -16,9 +16,6 @@ export default class EndlessRanks extends BaseOni {
                 controller: Players.Self,
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile
-            }, AbilityDsl.actions.moveCard((context) => ({
-                target: context.target,
-                destination: Location.DynastyDeck
-            })));
+            }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDeck }));
     }
 }

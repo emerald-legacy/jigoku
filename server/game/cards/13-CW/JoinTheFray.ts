@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class JoinTheFray extends DrawCard {
@@ -7,7 +7,7 @@ class JoinTheFray extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put a character into play from a province')
-            .condition(context => context.game.isDuringConflict('military'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .target('character', {
                 cardType: CardType.Character,
                 location: Location.Provinces,

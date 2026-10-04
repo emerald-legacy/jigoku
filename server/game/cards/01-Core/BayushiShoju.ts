@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BayushiShoju extends DrawCard {
@@ -7,7 +7,7 @@ class BayushiShoju extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character -0/-1')
-            .condition(context => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'political')
+            .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,

@@ -36,7 +36,7 @@ class ExpertBartering extends DrawCard {
                     otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.source })
                 }))
             ]))
-            .effect('switch {1} with {2}', context => [context.source, context.target ?? ''])
+            .effect('switch {1} with {2}', context => [context.source, context.target])
             .cannotTargetFirst();
     }
 }

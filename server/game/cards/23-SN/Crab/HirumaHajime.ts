@@ -21,11 +21,11 @@ export default class HirumaHajime extends DrawCard {
                 cardCondition: (card, context) =>
                     card.location !== Location.StrongholdProvince &&
                         !card.isBroken &&
-                        ( //same controller check
+                        (
                             (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parentProvince?.controller) ||
                             (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
                         ) &&
-                        ( //different location check
+                        (
                             (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
                             (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                         )
@@ -45,7 +45,7 @@ export default class HirumaHajime extends DrawCard {
                 context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
             ])
             .then((context) => ({
-                thenCondition: () => !!context.targets.province.isConflictProvince() && context.targets.cardInProvince.type !== CardType.Attachment && context.targets.cardInProvince.isFaceup(),
+                thenCondition: () => context.targets.province.isConflictProvince() && context.targets.cardInProvince.type !== CardType.Attachment && context.targets.cardInProvince.isFaceup(),
                 gameAction: AbilityDsl.actions.optional(() => ({
                     promptTitleForConfirming: 'Do you want to turn ' + context.targets.cardInProvince.name + ' facedown?',
                     gameAction: AbilityDsl.actions.turnFacedown({

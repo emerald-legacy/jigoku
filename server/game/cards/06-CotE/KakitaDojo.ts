@@ -1,5 +1,5 @@
 import { DuelType } from '../../Constants.js';
-import { Duel } from '../../Duel.js';
+import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 

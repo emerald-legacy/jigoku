@@ -6,7 +6,7 @@ class ShosuroTakao extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move this character into or out of the conflict')
-            .condition(() => this.game.isDuringConflict() && (this.game.currentConflict?.getNumberOfParticipants((card) => card.isDishonored) ?? 0) > 0)
+            .condition(() => (this.game.currentConflict?.getNumberOfParticipants((card) => card.isDishonored) ?? 0) > 0)
             .gameAction(AbilityDsl.actions.sendHome(), AbilityDsl.actions.moveToConflict());
     }
 }

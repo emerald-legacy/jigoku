@@ -6,7 +6,7 @@ class IkomaOrator extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
+            condition: (context) => context.player.isMoreHonorable(),
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
     }

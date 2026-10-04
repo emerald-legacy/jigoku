@@ -12,9 +12,8 @@ export default class MirumotoRaitsugu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.duel((context) => ({
+            }, AbilityDsl.actions.duel({
                 type: DuelType.Military,
-                challenger: context.source,
                 gameAction: (duel) =>
                     AbilityDsl.actions.conditional({
                         target: duel.loser?.[0],
@@ -22,6 +21,6 @@ export default class MirumotoRaitsugu extends DrawCard {
                         trueGameAction: AbilityDsl.actions.removeFate(),
                         falseGameAction: AbilityDsl.actions.discardFromPlay()
                     })
-            })));
+            }));
     }
 }

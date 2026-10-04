@@ -10,7 +10,7 @@ export default class CunningNegotiator extends DrawCard {
 
     setupCardAbilities() {
         this.action('Political duel to resolve the attacked province\'s action ability')
-            .condition((context) => context.game.currentConflict !== null)
+            .condition((context) => context.game.isDuringConflict())
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,

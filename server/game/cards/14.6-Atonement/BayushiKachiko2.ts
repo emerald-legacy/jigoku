@@ -1,10 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
-import { CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
+import { CardType, EventName, Location, Players, PlayType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
@@ -12,12 +10,10 @@ export default class BayushiKachiko2 extends DrawCard {
     static id = 'bayushi-kachiko-2';
 
     private cardsPlayedThisRound = 0;
-    private eventRegistrar?: EventRegistrar;
     private mostRecentEvent?: EventPayload<EventName.OnCardPlayed>;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect<this>({
@@ -35,7 +31,7 @@ export default class BayushiKachiko2 extends DrawCard {
                             !event.card.fromOutOfPlaySource &&
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDiscard &&
-                            context.game.isDuringConflict('political') &&
+                            context.game.isDuringConflict(ConflictType.Political) &&
                             context.source.isParticipating()
                         );
                     }
@@ -52,9 +48,7 @@ export default class BayushiKachiko2 extends DrawCard {
                         ) {
                             return;
                         }
-                        if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
-                            this.cardsPlayedThisRound = 0;
-                        }
+
                         mostRecentEvent.sourceOfCardPlayedFromConflictDiscard = this;
                         this.cardsPlayedThisRound++;
                         this.game.addMessage(
@@ -77,7 +71,7 @@ export default class BayushiKachiko2 extends DrawCard {
 
         this.persistentEffect({
             condition: (context) =>
-                context.game.isDuringConflict('political') &&
+                context.game.isDuringConflict(ConflictType.Political) &&
                 context.source.isParticipating() &&
                 this.cardsPlayedThisRound < MAXIMUM_CARDS_ALLOWED,
             location: Location.PlayArea,
@@ -89,7 +83,7 @@ export default class BayushiKachiko2 extends DrawCard {
                 card.owner === context?.player.opponent,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player, card: BaseCard) => player !== card.owner,
+                    (player, card) => player !== card.owner,
                     PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

@@ -17,7 +17,6 @@ export default class BayushiKotaro extends DrawCard {
                     numCards: 1,
                     targets: true,
                     mode: TargetMode.Exactly,
-                    optional: false,
                     cardType: CardType.Character,
                     location: [Location.Provinces],
                     controller: Players.Self,
@@ -27,7 +26,6 @@ export default class BayushiKotaro extends DrawCard {
                         card.allowGameAction('putIntoConflict', context),
                     message: '{0} puts {1} into play into the conflict, aiding {2} with their mission.',
                     messageArgs: (card) => [context.player, card, context.source],
-                    subActionProperties: (card) => ({ target: card, x: 11 }),
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.putIntoConflict(),
                         AbilityDsl.actions.cardLastingEffect(() => ({

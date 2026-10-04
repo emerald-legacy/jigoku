@@ -9,7 +9,7 @@ export default class FoothillsKeep extends ProvinceCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            condition: () => true,
+
             match: (card, context) =>
                 card.type === CardType.Province && card !== context?.source && card.controller === context?.player,
             effect: AbilityDsl.effects.fateCostToRingToDeclareConflictAgainst()

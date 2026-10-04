@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import CardSelector from '../../CardSelector.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 
 class TimeForWar extends DrawCard {
     static id = 'time-for-war';
@@ -10,7 +10,7 @@ class TimeForWar extends DrawCard {
         const attachAction = AbilityDsl.actions.attach();
         this.reaction('Put a weapon into play')
             .when({
-                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === 'political'
+                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === ConflictType.Political
             })
             .target('target', {
                 cardType: CardType.Character,

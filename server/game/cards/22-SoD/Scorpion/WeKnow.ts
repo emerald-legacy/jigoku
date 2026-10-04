@@ -55,13 +55,13 @@ export default class WeKnow extends DrawCard {
 
             })
             .then(context => ({
-                thenCondition: () => !!context && !!context.player.opponent && context.player.honor > (context.player.opponent.honor ?? 0),
+                thenCondition: () => !!context.player.opponent && context.player.honor > context.player.opponent.honor,
                 gameAction: AbilityDsl.actions.loseHonor({
-                    target: context?.player,
+                    target: context.player,
                     amount: 2
                 }),
                 message: '{3} loses 2 honor',
-                messageArgs: () => [context?.player]
+                messageArgs: () => [context.player]
             }))
             .cannotTargetFirst();
     }

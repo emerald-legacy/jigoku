@@ -9,7 +9,7 @@ class MoveAsOne extends DrawCard {
         this.reaction('Search for kihos')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers ?? []).some(card => card.hasTrait('monk')),
-                onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && (event.defenders ?? []).some(card => card.hasTrait('monk'))
+                onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && event.defenders.some(card => card.hasTrait('monk'))
             })
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 8,

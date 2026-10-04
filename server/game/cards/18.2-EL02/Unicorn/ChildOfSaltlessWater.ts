@@ -28,8 +28,8 @@ export default class ChildOfSaltlessWater extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
-                effect: AbilityDsl.effects.setMilitarySkill(context.target?.printedStrength ?? 0)
+                effect: AbilityDsl.effects.setMilitarySkill(context.target.printedStrength)
             })))
-            .effect('set it\'s {1} to {2}', (context) => ['military', context.target?.printedStrength ?? 0]);
+            .effect('set it\'s {1} to {2}', (context) => ['military', context.target.printedStrength]);
     }
 }

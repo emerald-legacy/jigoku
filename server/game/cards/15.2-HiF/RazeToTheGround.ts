@@ -1,4 +1,4 @@
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class RazeToTheGround extends DrawCard {
         this.reaction('Break the attacked province')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.player && event.conflict.conflictType === 'military'
+                    event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military
             })
             .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .cost(AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))

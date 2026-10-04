@@ -8,10 +8,10 @@ class AkodoGunso extends DrawCard {
         this.reaction('Refill province faceup')
             .when({
                 onCharacterEntersPlay: (event, context) =>
-                    event.card === context.source && event.originalLocation !== undefined &&
+                    event.card === context.source &&
                     context.game.getProvinceArray().includes(event.originalLocation)
             })
-            .gameAction(AbilityDsl.actions.refillFaceup((context) => ({ location: context.event.originalLocation ?? [] })));
+            .gameAction(AbilityDsl.actions.refillFaceup((context) => ({ location: context.event.originalLocation })));
     }
 }
 

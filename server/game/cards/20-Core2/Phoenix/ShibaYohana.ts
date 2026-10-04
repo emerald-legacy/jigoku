@@ -15,13 +15,13 @@ export default class ShibaYohana extends DrawCard {
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.taint()
             })))
-            .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card ?? '')
+            .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
             .then((context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context?.source,
+                    target: context.source,
                     duration: Duration.Custom,
                     until: {
-                        onCardLeavesPlay: (event) => event.card === context?.source
+                        onCardLeavesPlay: (event) => event.card === context.source
                     },
                     effect: AbilityDsl.effects.addTrait('spirit')
                 })

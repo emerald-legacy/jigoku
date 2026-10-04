@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HanteiSotorii extends DrawCard {
@@ -7,7 +7,7 @@ class HanteiSotorii extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a participating character +3 glory')
-            .condition(context => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'military')
+            .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()

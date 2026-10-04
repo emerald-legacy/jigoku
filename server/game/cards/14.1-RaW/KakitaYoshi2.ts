@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, CardType } from '../../Constants.js';
+import { TargetMode, CardType, ConflictType } from '../../Constants.js';
 
 class KakitaYoshi2 extends DrawCard {
     static id = 'kakita-yoshi-2';
@@ -11,7 +11,7 @@ class KakitaYoshi2 extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking() &&
-                    event.conflict.conflictType === 'political'
+                    event.conflict.conflictType === ConflictType.Political
             })
             .targetCards('target', {
                 mode: TargetMode.UpToVariable,

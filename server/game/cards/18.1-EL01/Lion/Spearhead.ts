@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class Spearhead extends DrawCard {
@@ -13,7 +13,7 @@ class Spearhead extends DrawCard {
                 cardCondition: (card, context) => !!card.parentCharacter &&
                     card.parentCharacter.controller === context.player && card.parentCharacter.isParticipating()
             }))
-            .condition(context => context.game.isDuringConflict('military'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 player: Players.Opponent,
                 cardType: CardType.Character,

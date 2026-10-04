@@ -30,7 +30,7 @@ export default class BrokenBlades extends DrawCard {
             ]))
             .effect('ensure {0} is gone!{1}{2}{3}', (context) => {
                 const target = context.target;
-                return !target || target.fate < 1
+                return target.fate < 1
                     ? []
                     : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
             })

@@ -16,7 +16,7 @@ class StudentOfAnatomies extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.blank()
             }))
-            .effect('treat {1} as if its printed text box were blank until the end of the phase', (context) => context.target ?? '');
+            .effect('treat {1} as if its printed text box were blank until the end of the phase', (context) => context.target);
     }
 }
 

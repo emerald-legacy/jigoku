@@ -1,7 +1,6 @@
 import { CardType, DuelType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
 
 export default class HonestChallenger extends DrawCard {
     static id = 'honest-challenger';
@@ -15,8 +14,8 @@ export default class HonestChallenger extends DrawCard {
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 message: '{0} chooses a character to move to the conflict',
-                messageArgs: (duel: Duel) => duel.winnerController,
-                gameAction: (duel: Duel) =>
+                messageArgs: (duel) => duel.winnerController,
+                gameAction: (duel) =>
                     duel.winner
                         ? AbilityDsl.actions.selectCard({
                             activePromptTitle: 'Choose a character to move to the conflict',

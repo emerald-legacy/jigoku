@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { ConflictType } from '../../../Constants.js';
 
 export default class ArrowsFromTheWoods extends DrawCard {
     static id = 'arrows-from-the-woods';
@@ -8,7 +9,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
     public setupCardAbilities() {
         this.action('Reduce opponent\'s characters mil')
             .condition((context) =>
-                context.game.isDuringConflict('military') &&
+                context.game.isDuringConflict(ConflictType.Military) &&
                 context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('bushi')))
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],

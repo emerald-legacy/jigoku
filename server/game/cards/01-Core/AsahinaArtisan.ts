@@ -12,9 +12,9 @@ class AsahinaArtisan extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source && card.isFaction('crane')
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
+            }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyPoliticalSkill(3)
-            })))
+            }))
             .effect('give {0} +3{1} skill', () => 'political');
     }
 }

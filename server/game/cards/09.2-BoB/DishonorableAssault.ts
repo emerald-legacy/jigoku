@@ -20,7 +20,7 @@ export default class DishonorableAssault extends ProvinceCard {
     }
 
     private getNumberOfLegalTargets(context: AbilityContext) {
-        if(!this.game.isDuringConflict() || !this.game.currentConflict) {
+        if(!this.game.currentConflict) {
             return 0;
         }
         return this.game.currentConflict.getParticipants((card) => card.isAttacking())

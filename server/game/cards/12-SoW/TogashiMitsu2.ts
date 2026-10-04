@@ -19,7 +19,7 @@ class TogashiMitsu2 extends DrawCard {
             .ringTarget('target', {
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
-                ringCondition: (ring, context) => !!context && RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context)
+                ringCondition: (ring, context) => RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context)
             }, AbilityDsl.actions.resolveRingEffect(context => ({ player: context.player })))
             .effect('resolve the {0}\'s effect');
     }

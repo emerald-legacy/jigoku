@@ -14,7 +14,7 @@ class YoungRumormonger extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card !== context.event.card && card.controller === context.event.card?.controller
+                    card !== context.event.card && card.controller === context.event.card.controller
             }, AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction:
                         context.event.name === EventName.OnCardHonored

@@ -17,6 +17,6 @@ export default class StrikeBeneathTheVeil extends DrawCard {
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: AbilityDsl.effects.modifyBothSkills(context.target ? penalty(context.target) : 0)
             })))
-            .effect('give {0} {1}{2} and {1}{3}', (context) => [context.target ? penalty(context.target) : 0, 'military','political']);
+            .effect('give {0} {1}{2} and {1}{3}', (context) => [penalty(context.target), 'military','political']);
     }
 }

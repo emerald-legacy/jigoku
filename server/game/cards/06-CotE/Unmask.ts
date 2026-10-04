@@ -22,7 +22,7 @@ class Unmask extends DrawCard {
                 }))
             ]))
             .gameAction(AbilityDsl.actions.gainHonor((context) => ({ amount: 2, target: context.target?.controller })))
-            .effect('discard all status tokens on {0} and set its skill to its printed value until the end of the conflict. {1} gains 2 honor.', (context) => context.target?.controller ?? '');
+            .effect('discard all status tokens on {0} and set its skill to its printed value until the end of the conflict. {1} gains 2 honor.', (context) => context.target.controller);
     }
 }
 

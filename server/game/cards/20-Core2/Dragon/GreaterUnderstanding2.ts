@@ -4,7 +4,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import Ring from '../../../Ring.js';
 
-export default class GreaterUnderstanding extends DrawCard {
+export default class GreaterUnderstanding2 extends DrawCard {
     static id = 'greater-understanding-2';
 
     setupCardAbilities() {
@@ -25,11 +25,11 @@ export default class GreaterUnderstanding extends DrawCard {
                 gameAction: AbilityDsl.actions.selectRing({
                     activePromptTitle: 'Choose a ring to attach Greater Understanding',
                     player: Players.Opponent,
-                    ringCondition: (ring) => ring !== context?.source.parent && ring.getFate() === 0,
-                    subActionProperties: (ring) => ({ attachment: context?.source, target: ring }),
+                    ringCondition: (ring) => ring !== context.source.parent && ring.getFate() === 0,
+                    subActionProperties: (ring) => ({ attachment: context.source, target: ring }),
                     gameAction: AbilityDsl.actions.attachToRing(),
                     message: '{0} moves {1} to {2} - enlightenment is elusive',
-                    messageArgs: (ring, player) => [player, context?.source, ring]
+                    messageArgs: (ring, player) => [player, context.source, ring]
                 })
             }));
     }

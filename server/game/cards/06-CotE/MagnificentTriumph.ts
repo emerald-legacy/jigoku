@@ -7,13 +7,11 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
-    private eventRegistrar?: EventRegistrar;
 
     private duelWinnersThisConflict = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
+        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
         this.action('Give a character +2/+2')
             .condition(() => this.game.isDuringConflict())
             .target('target', {

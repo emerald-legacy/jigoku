@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 
 class BayushiKachiko extends DrawCard {
     static id = 'bayushi-kachiko';
 
     setupCardAbilities() {
         this.action('Send a character home')
-            .condition(context => this.game.isDuringConflict('political') && context.source.isParticipating())
+            .condition(context => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating())
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating()

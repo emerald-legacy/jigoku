@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 
 class CrisisBreaker extends DrawCard {
     static id = 'crisis-breaker';
@@ -8,7 +8,7 @@ class CrisisBreaker extends DrawCard {
     setupCardAbilities() {
         this.action('Ready and bring into play')
             .condition(context => {
-                if(this.game.isDuringConflict('military') && this.game.currentConflict) {
+                if(this.game.isDuringConflict(ConflictType.Military) && this.game.currentConflict) {
                     const diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
                     return context.player.isAttackingPlayer() ? diff < 0 : diff > 0;
                 }

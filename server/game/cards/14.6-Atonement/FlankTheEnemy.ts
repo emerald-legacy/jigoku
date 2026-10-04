@@ -7,7 +7,7 @@ class FlankTheEnemy extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .condition(context => !!(context.player.opponent && context.game.isDuringConflict() && context.game.currentConflict?.hasMoreParticipants(context.player, () => true)))
+            .condition(context => !!(context.player.opponent && context.game.currentConflict?.hasMoreParticipants(context.player)))
             .target('target', {
                 player: Players.Opponent,
                 cardType: CardType.Character,

@@ -14,12 +14,12 @@ export default class UpholdingAuthority extends ProvinceCard {
 
         const gameAction = AbilityDsl.actions.menuPrompt((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
-            choices: (properties: MenuPromptProperties) =>
+            choices: (properties) =>
                 (context.game.currentConflict?.attackingPlayer.hand ?? [])
                     .filter((card) => card.name === this.chosenCard(properties)?.name)
                     .map((_, idx) => (idx + 1).toString()),
             gameAction: AbilityDsl.actions.discardCard(),
-            choiceHandler: (choice, displayMessage, properties: MenuPromptProperties) => {
+            choiceHandler: (choice, displayMessage, properties) => {
                 const chosenCard = this.chosenCard(properties);
                 if(displayMessage) {
                     this.game.addMessage(
@@ -43,7 +43,6 @@ export default class UpholdingAuthority extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source &&
                     context.game.currentConflict &&
-                    context.game.currentConflict.attackingPlayer &&
                     context.game.currentConflict.attackingPlayer.hand.length > 0
             })
             .gameAction(AbilityDsl.actions.sequential([

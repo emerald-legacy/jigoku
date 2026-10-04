@@ -23,10 +23,6 @@ export default class SneakAttack extends DrawCard {
                         }
 
                         this.setAsideCards = shuffle(opponent.hand).slice(0, 2);
-                        if(this.setAsideCards.length === 0) {
-                            return;
-                        }
-
                         this.game.addMessage('{0} sets aside {1}', opponent, this.setAsideCards);
                         for(const card of this.setAsideCards) {
                             opponent.moveCard(card, Location.RemovedFromGame);

@@ -2,18 +2,16 @@ import { EventName, Players, Duration, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import BaseCard from '../../../BaseCard.js';
-import { EventPayload } from '../../../Events/EventPayloads.js';
+import type BaseCard from '../../../BaseCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class ShosuroIsa extends DrawCard {
     static id = 'shosuro-isa';
 
     private shadows: BaseCard[] = [];
-    private eventRegistrar?: EventRegistrar;
 
     setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
 
         this.action('Manifest a shadow')
             .target('target', {
@@ -24,7 +22,7 @@ export default class ShosuroIsa extends DrawCard {
             }, AbilityDsl.actions.putIntoPlay())
             .effect('manifest a shadow of {0}')
             .then((context) => ({
-                thenCondition: () => context.target?.location === Location.PlayArea,
+                thenCondition: () => context.target.location === Location.PlayArea,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         target: context.target,
@@ -40,9 +38,7 @@ export default class ShosuroIsa extends DrawCard {
                     }),
                     AbilityDsl.actions.handler({
                         handler: () => {
-                            if(context.target) {
-                                this.shadows.push(context.target);
-                            }
+                            this.shadows.push(context.target);
                         }
                     })
                 ])

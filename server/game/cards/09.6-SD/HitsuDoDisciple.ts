@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HitsuDoDisciple extends DrawCard {
@@ -7,7 +7,7 @@ class HitsuDoDisciple extends DrawCard {
 
     setupCardAbilities() {
         this.action('Dishonor a character')
-            .condition(context => context.source.game.isDuringConflict('military') &&
+            .condition(context => context.game.isDuringConflict(ConflictType.Military) &&
                 context.source.isParticipating() &&
                 (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 3)
             .target('target', {

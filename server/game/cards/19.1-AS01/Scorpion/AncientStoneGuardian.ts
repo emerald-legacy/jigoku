@@ -2,7 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
+import type { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class AncientStoneGuardian extends DrawCard {
@@ -66,10 +66,8 @@ export default class AncientStoneGuardian extends DrawCard {
 
     private effectsForCard(target?: BaseCard | []) {
         if(target instanceof DrawCard) {
-            // Target selected
             return [' ', target.controller, ' dishonors ', target, ' to draw a card.'];
         }
-        // Target skipped
         return ['', '', '', '', ''];
     }
 }

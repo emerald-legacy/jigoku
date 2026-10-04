@@ -10,7 +10,7 @@ class FinalWhisper extends DrawCard {
         this.reaction('Copy status token')
             .when({
                 onStatusTokenGained: (event, context) =>
-                    event.card?.type === CardType.Character && event.card?.controller === context.player.opponent
+                    event.card.type === CardType.Character && event.card.controller === context.player.opponent
             })
             .target('target', {
                 cardType: CardType.Character,

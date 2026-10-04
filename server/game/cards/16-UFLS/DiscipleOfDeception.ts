@@ -1,4 +1,4 @@
-import { CardType } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { StatusToken } from '../../StatusToken.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -7,13 +7,10 @@ import DrawCard from '../../DrawCard.js';
 export default class DiscipleOfDeception extends DrawCard {
     static id = 'disciple-of-deception';
 
-    private eventRegistrar?: EventRegistrar;
-    private tokensChanged?: StatusToken[];
+    private tokensChanged: StatusToken[] = [];
 
     public setupCardAbilities() {
-        this.tokensChanged = [];
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onConflictFinished']);
+        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished]);
 
         this.action('Treat a status token as a different token')
             .condition((context) => context.game.isDuringConflict())
@@ -28,7 +25,7 @@ export default class DiscipleOfDeception extends DrawCard {
                 cardCondition: (card, context) =>
                     card !== context.tokens.first[0].card &&
                         !card.hasStatusToken(context.tokens.first[0].grantedStatus),
-                tokenCondition: (token, context) => token.grantedStatus !== context?.tokens.first?.[0]?.grantedStatus
+                tokenCondition: (token, context) => token.grantedStatus !== context.tokens.first[0].grantedStatus
             }, AbilityDsl.actions.handler({
                 handler: (context) => {
                     const targetToken = context.tokens.second[0];
@@ -38,7 +35,7 @@ export default class DiscipleOfDeception extends DrawCard {
                         return;
                     }
                     targetToken.overrideStatus = newStatus;
-                    this.tokensChanged?.push(targetToken);
+                    this.tokensChanged.push(targetToken);
                     targetCard.updateStatusTokenEffects();
                 }
             }))
@@ -50,7 +47,7 @@ export default class DiscipleOfDeception extends DrawCard {
     }
 
     public onConflictFinished() {
-        this.tokensChanged?.forEach((token) => {
+        this.tokensChanged.forEach((token) => {
             const targetCard = token.card;
             token.overrideStatus = undefined;
             if(targetCard) {

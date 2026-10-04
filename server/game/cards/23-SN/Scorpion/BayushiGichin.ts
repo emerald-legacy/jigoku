@@ -19,7 +19,7 @@ export default class BayushiGichin extends DrawCard {
                             cardType: CardType.Character,
                             controller: Players.Opponent,
                             cardCondition: (card) => {
-                                if(!context.event.duel?.isInvolved(card)) {
+                                if(!context.event.duel.isInvolved(card)) {
                                     return false;
                                 }
                                 const poisons = this.getPoisons(context);
@@ -30,7 +30,6 @@ export default class BayushiGichin extends DrawCard {
                                 return [context.player, cards];
                             },
                             subActionProperties: (card) => {
-                                context.targets.character = card;
                                 character = Array.isArray(card) ? undefined : card;
                                 return { target: card };
                             },
@@ -47,7 +46,6 @@ export default class BayushiGichin extends DrawCard {
                                 return [context.player, cards];
                             },
                             subActionProperties: (card) => {
-                                context.targets.attachment = card;
                                 poison = !Array.isArray(card) && card.isDrawCard() ? card : undefined;
                                 return { attachment: card };
                             },
@@ -55,7 +53,7 @@ export default class BayushiGichin extends DrawCard {
                         }),
                         AbilityDsl.actions.attach(() => {
                             return {
-                                target: context.targets.character,
+                                target: character,
                                 attachment: poison
                             };
                         })

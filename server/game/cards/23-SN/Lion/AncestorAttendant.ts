@@ -21,6 +21,6 @@ export default class AncestorAttendant extends DrawCard {
                     AbilityDsl.actions.dishonor()
                 ]
             })))
-            .effect('dishonor {0} and discard the top {1} cards of their dynasty deck', (context) => [context.target?.printedCost]);
+            .effect('dishonor {0} and discard the top {1} cards of their dynasty deck', (context) => [context.target.printedCost]);
     }
 }

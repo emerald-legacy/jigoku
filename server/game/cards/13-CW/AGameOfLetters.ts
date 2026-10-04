@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, CharacterStatus } from '../../Constants.js';
+import { CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .condition(() => this.game.isDuringConflict('political'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .tokenTarget('token', {
                 activePromptTitle: 'Choose a token',
                 cardType: CardType.Character,

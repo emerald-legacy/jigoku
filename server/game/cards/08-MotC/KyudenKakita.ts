@@ -12,7 +12,7 @@ export default class KyudenKakita extends StrongholdCard {
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => context.event.duel?.isInvolved(card) ?? false
+                cardCondition: (card, context) => context.event.duel.isInvolved(card)
             }, AbilityDsl.actions.honor());
     }
 }

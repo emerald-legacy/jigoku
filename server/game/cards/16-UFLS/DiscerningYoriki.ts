@@ -8,15 +8,10 @@ class DiscerningYoriki extends DrawCard {
     setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
-                onCardRevealed: (event, context) => {
-                    const cards = Array.isArray(event.card) ? event.card : [event.card];
-                    return cards.some((a) => a.location === Location.Hand && a.controller === context.player.opponent);
-                },
-                onLookAtCards: (event, context) => {
-                    const raw = event.stateBeforeResolution;
-                    const cards = Array.isArray(raw) ? raw : [raw];
-                    return cards.some((a) => a?.location === Location.Hand && a?.card?.controller === context.player.opponent);
-                }
+                onCardRevealed: (event, context) =>
+                    event.card.location === Location.Hand && event.card.controller === context.player.opponent,
+                onLookAtCards: (event, context) =>
+                    event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
             .target('target', {
                 activePromptTitle: 'Choose a character to honor',

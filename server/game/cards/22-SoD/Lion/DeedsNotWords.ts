@@ -10,11 +10,11 @@ export default class DeedsNotWords extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, _context) => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect(_context => ({
+                AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                })),
+                }),
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     targetController: context.player,
                     effect: AbilityDsl.effects.delayedEffect({
@@ -28,19 +28,19 @@ export default class DeedsNotWords extends DrawCard {
                     })
                 }))
             ]))
-            .effect('give {0} +2{1}', _context => ['military'])
+            .effect('give {0} +2{1}', () => ['military'])
             .then(context => ({
-                thenCondition: () => !!context && context.player.imperialFavor !== '',
+                thenCondition: () => context.player.imperialFavor !== '',
                 target: {
                     mode: TargetMode.Select,
                     choices: {
                         'Discard the Imperial Favor': AbilityDsl.actions.joint([
-                            AbilityDsl.actions.loseImperialFavor(() => ({
-                                target: context?.player
-                            })),
-                            AbilityDsl.actions.honor(() => ({
-                                target: context?.target
-                            }))
+                            AbilityDsl.actions.loseImperialFavor({
+                                target: context.player
+                            }),
+                            AbilityDsl.actions.honor({
+                                target: context.target
+                            })
                         ]),
                         'Done': () => true
                     }

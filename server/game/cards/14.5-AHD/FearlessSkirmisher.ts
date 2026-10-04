@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, CharacterStatus, CardType } from '../../Constants.js';
+import { Location, CharacterStatus, CardType, ConflictType } from '../../Constants.js';
 
 class FearlessSkirmisher extends DrawCard {
     static id = 'fearless-skirmisher';
@@ -11,7 +11,7 @@ class FearlessSkirmisher extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
-                    event.conflict.conflictType === 'military'
+                    event.conflict.conflictType === ConflictType.Military
             })
             .tokenTarget('token', {
                 activePromptTitle: 'Choose a dishonored token',

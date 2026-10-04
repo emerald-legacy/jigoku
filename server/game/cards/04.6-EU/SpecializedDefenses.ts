@@ -23,10 +23,10 @@ class SpecializedDefenses extends DrawCard {
                 }),
                 message: '{0} doubles the province strength of {1}',
                 messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrengthMultiplier(2)
-                }))
+                })
             })))
             .effect('double the province strength of an attacked province');
     }

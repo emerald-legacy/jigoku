@@ -1,4 +1,4 @@
-import { DuelType, Duration } from '../../../Constants.js';
+import { DuelType, Duration, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,7 +7,7 @@ export default class DaidojiAkikore extends DrawCard {
 
     setupCardAbilities() {
         this.duelFocus('Add +1 to your duel total', (duel, context) =>
-            context.game.isDuringConflict('political') && duel.participants.includes(context.source))
+            context.game.isDuringConflict(ConflictType.Political) && duel.participants.includes(context.source))
             .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: context.event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
@@ -27,10 +27,10 @@ export default class DaidojiAkikore extends DrawCard {
                 gameAction: (duel) =>
                     AbilityDsl.actions.conditional({
                         condition: duel.winningPlayer === context.player,
-                        trueGameAction: AbilityDsl.actions.playerLastingEffect((_context) => ({
+                        trueGameAction: AbilityDsl.actions.playerLastingEffect({
                             targetController: duel.winningPlayer,
                             effect: AbilityDsl.effects.changePlayerSkillModifier(3)
-                        })),
+                        }),
                         falseGameAction: AbilityDsl.actions.noAction()
                     })
             }));

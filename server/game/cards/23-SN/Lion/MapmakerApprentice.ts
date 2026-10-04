@@ -41,29 +41,28 @@ export default class MapmakerApprentice extends DrawCard {
                             context.target = card;
                             return { target: card };
                         },
-                        gameAction: AbilityDsl.actions.chooseAction(() => ({
-                            messages: {},
+                        gameAction: AbilityDsl.actions.chooseAction({
                             options: {
                                 'Raise attacked province\'s strength by 2': {
-                                    action: AbilityDsl.actions.cardLastingEffect(() => ({
+                                    action: AbilityDsl.actions.cardLastingEffect({
                                         targetLocation: Location.Provinces,
                                         effect: AbilityDsl.effects.modifyProvinceStrength(2)
-                                    })),
+                                    }),
                                     message: '{0} chooses to increase {1}\'s strength by 2'
                                 },
                                 'Lower attacked province\'s strength by 2': {
-                                    action: AbilityDsl.actions.cardLastingEffect(() => ({
+                                    action: AbilityDsl.actions.cardLastingEffect({
                                         targetLocation: Location.Provinces,
                                         effect: AbilityDsl.effects.modifyProvinceStrength(-2)
-                                    })),
+                                    }),
                                     message: '{0} chooses to reduce {1}\'s strength by 2'
                                 }
                             }
-                        }))
+                        })
                     }))
                 }),
                 duration: Duration.UntilEndOfRound
             })))
-            .effect('map {1}{2}{3} - the first event they play during each conflict at that province will also modify its strength', context => context.target?.facedown ? [context.target.controller, '\'s ', context.target.location] : ['', '', context.target]);
+            .effect('map {1}{2}{3} - the first event they play during each conflict at that province will also modify its strength', context => context.target.facedown ? [context.target.controller, '\'s ', context.target.location] : ['', '', context.target]);
     }
 }

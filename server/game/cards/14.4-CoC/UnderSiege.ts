@@ -6,13 +6,10 @@ import type Player from '../../Player.js';
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
 
-    setAsideCards!: DrawCard[];
-    targetPlayer!: Player | null;
+    private setAsideCards: DrawCard[] = [];
+    private targetPlayer: Player | null = null;
 
     setupCardAbilities() {
-        this.setAsideCards = [];
-        this.targetPlayer = null;
-
         this.reaction('Place defender under siege')
             .when({
                 onConflictDeclared: (event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
@@ -31,7 +28,7 @@ class UnderSiege extends DrawCard {
                             })),
                             AbilityDsl.actions.handler({
                                 handler: context => {
-                                    if(this.targetPlayer && this.setAsideCards && this.setAsideCards.length > 0) {
+                                    if(this.targetPlayer && this.setAsideCards.length > 0) {
                                         const targetPlayer = this.targetPlayer;
                                         context.game.addMessage('{0} picks up their original hand', targetPlayer);
 

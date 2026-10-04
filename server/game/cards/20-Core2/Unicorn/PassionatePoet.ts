@@ -13,6 +13,6 @@ export default class PassionatePoet extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(-1),
                 duration: Duration.UntilEndOfConflict
             })))
-            .effect('give all participating enemies -1{1}/-1{2} until the end of the conflict', () => (['military', 'political']));
+            .effect('give all participating enemies -1{1}/-1{2} until the end of the conflict', () => ['military', 'political']);
     }
 }

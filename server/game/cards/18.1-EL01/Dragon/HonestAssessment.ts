@@ -16,7 +16,7 @@ export default class HonestAssessment extends DrawCard {
             })
             .cost(AbilityDsl.costs.nameCard())
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
-                const hand: Array<DrawCard> = shuffle(context.player.opponent?.hand ?? []);
+                const hand = shuffle(context.player.opponent?.hand ?? []);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [

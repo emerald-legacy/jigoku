@@ -26,7 +26,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
             .then((context) => ({
                 gameAction: [
                     AbilityDsl.actions.moveCard({
-                        target: context?.source,
+                        target: context.source,
                         destination: Location.ConflictDeck,
                         bottom: true
                     })

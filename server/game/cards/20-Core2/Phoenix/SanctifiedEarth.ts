@@ -13,7 +13,7 @@ const trigger = {
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.attackers ?? []).includes(card)
     },
     onDefendersDeclared: {
-        when: (event: EventPayload<EventName.OnDefendersDeclared>, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
+        when: (event: EventPayload<EventName.OnDefendersDeclared>, context: TriggeredAbilityContext) => event.defenders.some(controlledBy(context.player)),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.defenders ?? []).includes(card)
     },
     onMoveToConflict: {
@@ -56,6 +56,6 @@ export default class SanctifiedEarth extends DrawCard {
                     }))
                 })
             ]))
-            .effect('give +2{1} and +2{2} to {3}', (context) => ['military', 'political', context.target ?? '']);
+            .effect('give +2{1} and +2{2} to {3}', (context) => ['military', 'political', context.target]);
     }
 }

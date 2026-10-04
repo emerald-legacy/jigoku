@@ -22,11 +22,11 @@ class StoneBreaker extends DrawCard {
                 cardCondition: (card, context) =>
                     card.location !== Location.StrongholdProvince &&
                         !card.isBroken &&
-                        ( //same controller check
+                        (
                             (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parentProvince?.controller) ||
                             (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
                         ) &&
-                        ( //different location check
+                        (
                             (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
                             (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                         )
@@ -57,10 +57,10 @@ class StoneBreaker extends DrawCard {
                 cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(-2)
-                }))
+                })
             })))
             .effect('reduce an attacked province strength by 2');
     }

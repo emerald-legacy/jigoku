@@ -14,7 +14,7 @@ export default class HirumaHarrower extends DrawCard {
                 target: context.source,
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
             })))
-            .effect('give itself +2{1}', () => (['military']))
+            .effect('give itself +2{1}', () => ['military'])
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

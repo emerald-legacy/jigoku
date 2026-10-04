@@ -18,9 +18,6 @@ class FieldTactician extends DrawCard {
             }, AbilityDsl.actions.handler({
                 handler: context => {
                     const card = context.target;
-                    if(!card?.isDrawCard()) {
-                        return;
-                    }
                     const player = card.owner;
                     player.moveCard(card, Location.ConflictDeck);
                     const index = player.conflictDeck.indexOf(card);
@@ -30,7 +27,7 @@ class FieldTactician extends DrawCard {
                     player.conflictDeck.splice(0, 2, ...orderedCards);
                 }
             }))
-            .effect('return {0} to {1}\'s conflict deck', context => [context.target?.owner ?? '']);
+            .effect('return {0} to {1}\'s conflict deck', context => [context.target.owner]);
     }
 }
 

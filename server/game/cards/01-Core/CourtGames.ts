@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 
 class CourtGames extends DrawCard {
     static id = 'court-games';
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .condition(() => this.game.currentConflict?.conflictType === 'political')
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .select('target', {}, {
                 'Honor a friendly character': AbilityDsl.actions.selectCard(context => ({
                     cardType: CardType.Character,

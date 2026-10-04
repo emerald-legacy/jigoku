@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, Players, CardType, EventName } from '../../Constants.js';
+import { Location, Players, CardType, EventName, ConflictType } from '../../Constants.js';
 
 class OfferTestimony extends DrawCard {
     static id = 'offer-testimony';
 
     setupCardAbilities() {
         this.action('Both players reveal a card')
-            .condition(context => !!(context.player.opponent && context.game.isDuringConflict('political')))
+            .condition(context => !!(context.player.opponent && context.game.isDuringConflict(ConflictType.Political)))
             .target('myCharacter', {
                 cardType: CardType.Character,
                 controller: Players.Self,

@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -18,12 +17,12 @@ class UnquestionedHeritage extends DrawCard {
                 cardCondition: card => card !== context.target.parentCharacter,
                 message: '{0} moves {1} to {2}',
                 messageArgs: card => [context.player, context.target, card],
-                gameAction: AbilityDsl.actions.ifAble((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+                gameAction: AbilityDsl.actions.ifAble({
                     ifAbleAction: AbilityDsl.actions.attach({
                         attachment: context.target
                     }),
                     otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.target })
-                }))
+                })
             })))
             .effect('move {0} to another character');
     }

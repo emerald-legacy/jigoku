@@ -11,7 +11,6 @@ export default class MatsuTsuko2 extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking() &&
-                    context.player.opponent &&
                     context.player.isMoreHonorable() &&
                     event.conflict.getConflictProvinces().some(p => p.location !== Location.StrongholdProvince)
             })

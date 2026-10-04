@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Duration } from '../../../Constants.js';
+import { Duration, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class UseTheTerrain extends DrawCard {
@@ -8,7 +8,7 @@ export default class UseTheTerrain extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give each character a military bonus')
-            .condition((context) => context.game.isDuringConflict('military'))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.hasKicker(context) ? 2 : 1),

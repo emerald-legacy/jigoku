@@ -1,7 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class ChroniclerOfCalamities extends DrawCard {
     static id = 'chronicler-of-calamities';
@@ -51,10 +51,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     }
                 }
             })))
-            .effect('dishonor or send home {0}', (context) => [
-                context.target?.isFacedown() ? 'a facedown card' : (context.target ?? ''),
-                context.target?.location ?? ''
-            ])
+            .effect('dishonor or send home {0}')
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

@@ -16,6 +16,6 @@ export default class UsogawaChidori extends DrawCard {
                 effect: AbilityDsl.effects.blank(),
                 duration: Duration.UntilEndOfPhase
             }))
-            .effect('treat {1} as if it had no printed abilities until the end of the phase', (context) => [context.target ?? '']);
+            .effect('treat {1} as if it had no printed abilities until the end of the phase', (context) => [context.target]);
     }
 }

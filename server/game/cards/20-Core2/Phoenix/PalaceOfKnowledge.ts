@@ -15,7 +15,7 @@ export default class PalaceOfKnowledge extends StrongholdCard {
             .ringTarget('target', {
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
-                    ring !== context?.event.ring && ring.isUnclaimed()
+                    ring !== context.event.ring && ring.isUnclaimed()
             }, AbilityDsl.actions.resolveRingEffect());
     }
 }

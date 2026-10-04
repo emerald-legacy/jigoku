@@ -9,7 +9,7 @@ class KeeperInitiate extends DrawCard {
         this.reaction('Put this into play')
             .when({
                 onClaimRing: (event, context) => event.player === context.player && !!context.player.role &&
-                                                 (event.conflict && event.conflict.elements.some(element => context.player.role?.hasTrait(element)) || context.player.role?.hasTrait(event.ring.element))
+                                                 (event.conflict && event.conflict.elements.some(element => context.player.role?.hasTrait(element)) || context.player.role.hasTrait(event.ring.element))
             })
             .gameAction(AbilityDsl.actions.putIntoPlay())
             .then(() => ({

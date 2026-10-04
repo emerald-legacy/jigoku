@@ -32,7 +32,7 @@ class PeasantsAdvice extends DrawCard {
                     })
                 }))
             ]))
-            .effect('look at {1}\'s {2}', context => [context.target?.controller ?? '', context.target?.location ?? ''])
+            .effect('look at {1}\'s {2}', context => [context.target.controller, context.target.location])
             .phase(Phases.Conflict);
     }
 }

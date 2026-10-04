@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoAtagi extends DrawCard {
@@ -26,10 +26,9 @@ export default class ShinjoAtagi extends DrawCard {
                 ],
                 cardCondition: (card) => card.isConflictProvince(),
                 subActionProperties: (card) => {
-                    context.targets.province = card;
                     const provinceStrength = card.isProvinceCard() ? card.getStrength() : 0;
                     const effect =
-                            context.game.currentConflict?.conflictType === 'military'
+                            context.game.currentConflict?.conflictType === ConflictType.Military
                                 ? AbilityDsl.effects.setMilitarySkill(provinceStrength)
                                 : AbilityDsl.effects.setPoliticalSkill(provinceStrength);
                     return {

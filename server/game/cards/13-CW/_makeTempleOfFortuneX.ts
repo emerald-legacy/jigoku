@@ -1,4 +1,4 @@
-import { Element } from '../../Constants.js';
+import type { Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { isRingClaimed } from '../claimedRings.js';

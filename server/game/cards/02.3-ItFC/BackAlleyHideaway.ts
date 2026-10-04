@@ -114,10 +114,9 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
 export default class BackAlleyHideaway extends DrawCard {
     static id = 'back-alley-hideaway';
 
-    backAlleyActionLimit!: ReturnType<typeof AbilityDsl.limit.perRound>;
+    backAlleyActionLimit = AbilityDsl.limit.perRound(1);
 
     setupCardAbilities() {
-        this.backAlleyActionLimit = AbilityDsl.limit.perRound(1);
         this.persistentEffect({
             effect: AbilityDsl.effects.customDetachedCard(backAlleyPersistentEffect)
         });

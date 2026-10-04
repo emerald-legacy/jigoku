@@ -1,4 +1,3 @@
-import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import UnleashedHound from '../../UnleashedHound.js';
@@ -11,7 +10,7 @@ export default class ShinjoSora extends DrawCard {
             .gameAction(AbilityDsl.actions.createToken((context) => ({
                 target: context.game
                     .getProvinceArray()
-                    .flatMap((location: Location) =>
+                    .flatMap((location) =>
                         context.player.getDynastyCardsInProvince(location).filter((card) => card.isFacedown())
                     ),
                 token: UnleashedHound,

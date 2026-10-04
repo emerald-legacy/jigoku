@@ -1,14 +1,13 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import { CardType, Players, TargetMode, ConflictType } from '../../Constants.js';
 
 class HandToHand extends DrawCard {
     static id = 'hand-to-hand';
 
     setupCardAbilities() {
         this.action('Discard an attachment')
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
@@ -31,7 +30,7 @@ class HandToHand extends DrawCard {
                         }
                     },
                     message: '{3} chooses {4}to resolve {1}\'s ability again',
-                    messageArgs: (thenContext: AbilityContext) => [ctx.player.opponent ?? ctx.player, thenContext.select === 'No' ? 'not ' : '']
+                    messageArgs: (thenContext) => [ctx.player.opponent ?? ctx.player, thenContext.select === 'No' ? 'not ' : '']
                 };
             });
     }

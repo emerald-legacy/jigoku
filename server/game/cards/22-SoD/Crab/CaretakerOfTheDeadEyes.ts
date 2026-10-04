@@ -12,17 +12,15 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
             .gameAction(AbilityDsl.actions.multipleContext(context => {
                 const card = context.event.card;
                 const gameActions = [];
-                if(card) {
-                    if(card.isDishonored) {
-                        gameActions.push(AbilityDsl.actions.honor({ target: card }));
-                    }
-                    if(card.hasTrait('berserker')) {
-                        gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                            target: card,
-                            effect: AbilityDsl.effects.addKeyword('courtesy'),
-                            message: 'give Courtesy to {0}'
-                        }));
-                    }
+                if(card.isDishonored) {
+                    gameActions.push(AbilityDsl.actions.honor({ target: card }));
+                }
+                if(card.hasTrait('berserker')) {
+                    gameActions.push(AbilityDsl.actions.cardLastingEffect({
+                        target: card,
+                        effect: AbilityDsl.effects.addKeyword('courtesy'),
+                        message: 'give Courtesy to {0}'
+                    }));
                 }
 
                 return { gameActions };

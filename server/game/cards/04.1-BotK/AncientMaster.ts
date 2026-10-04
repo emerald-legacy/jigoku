@@ -13,7 +13,7 @@ export default class AncientMaster extends DrawCard {
                 onConflictDeclared: (event, context) =>
                     context.source.type === CardType.Attachment && (event.attackers ?? []).some((card) => card === context.source.parentCharacter),
                 onDefendersDeclared: (event, context) =>
-                    context.source.type === CardType.Attachment && (event.defenders ?? []).some((card) => card === context.source.parentCharacter)
+                    context.source.type === CardType.Attachment && event.defenders.some((card) => card === context.source.parentCharacter)
             })
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 5,

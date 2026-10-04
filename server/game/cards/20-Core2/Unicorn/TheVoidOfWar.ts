@@ -16,25 +16,25 @@ export default class TheVoidOfWar extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow())
             .effect('bow {0}.')
-            .then((ctx) => {
+            .then((context) => {
                 return {
                     target: {
-                        player: ctx.player.opponent ? Players.Opponent : Players.Self,
+                        player: context.player.opponent ? Players.Opponent : Players.Self,
                         mode: TargetMode.Select,
                         activePromptTitle: 'Resolve The Void of War\'s ability again?',
                         choices: {
                             Yes: AbilityDsl.actions.resolveAbility({
-                                ability: ctx.ability,
-                                player: ctx.player.opponent ?? ctx.player,
+                                ability: context.ability,
+                                player: context.player.opponent ?? context.player,
                                 subResolution: true,
-                                choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
+                                choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
                             }),
                             No: () => true
                         }
                     },
                     message: '{3} chooses {4}to resolve {1}\'s ability again',
                     messageArgs: (thenContext: AbilityContext) => [
-                        ctx.player.opponent ?? ctx.player,
+                        context.player.opponent ?? context.player,
                         thenContext.select === 'No' ? 'not ' : ''
                     ]
                 };

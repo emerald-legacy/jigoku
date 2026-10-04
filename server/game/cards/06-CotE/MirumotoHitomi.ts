@@ -1,8 +1,6 @@
 import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
-import type { GameAction } from '../../GameActions/GameAction.js';
 
 export default class MirumotoHitomi extends DrawCard {
     static id = 'mirumoto-hitomi';
@@ -18,13 +16,13 @@ export default class MirumotoHitomi extends DrawCard {
                 numCards: 2
             }, AbilityDsl.actions.duel((context) => ({
                 type: DuelType.Military,
-                challenger: context.source,
+
                 message: '{0} chooses whether to dishonor or bow {1}',
-                messageArgs: (duel: Duel) => [
+                messageArgs: (duel) => [
                     duel.winner?.includes(context.source) ? context.player.opponent : context.player,
                     duel.loser
                 ],
-                gameAction: (duel: Duel): GameAction => {
+                gameAction: (duel) => {
                     if(!duel.loser) {
                         return AbilityDsl.actions.noAction();
                     }

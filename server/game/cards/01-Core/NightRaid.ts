@@ -10,7 +10,7 @@ export default class NightRaid extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             })
             .gameAction(AbilityDsl.actions.chosenDiscard((context) => ({
-                amount: context.game.currentConflict?.getNumberOfParticipantsFor?.('attacker') ?? 0
+                amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
             })));
     }
 }

@@ -20,7 +20,7 @@ export default class CloudStepValley extends ProvinceCard {
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,
                 player: (context) =>
-                    (context.targets[STARTED_IN_CONFLICT]).controller === context.player
+                    context.targets[STARTED_IN_CONFLICT].controller === context.player
                         ? Players.Self
                         : Players.Opponent,
                 cardCondition: (card, context) =>

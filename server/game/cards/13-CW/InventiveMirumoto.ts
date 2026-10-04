@@ -24,7 +24,7 @@ class InventiveMirumoto extends DrawCard {
                 }
 
             })))
-            .effect('play {0} onto {1}', context => [context.target ?? '', context.source]);
+            .effect('play {0} onto {1}', context => [context.target, context.source]);
     }
 
     getPrintedElementSymbols() {

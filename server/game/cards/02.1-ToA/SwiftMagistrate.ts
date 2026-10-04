@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SwiftMagistrate extends DrawCard {
@@ -8,7 +7,7 @@ class SwiftMagistrate extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
-            effect: AbilityDsl.effects.cannotContribute((_conflict: EffectTarget, context) => {
+            effect: AbilityDsl.effects.cannotContribute((_conflict, context) => {
                 return (card) => card.getFate() > 0 && card !== context.source;
             })
         });

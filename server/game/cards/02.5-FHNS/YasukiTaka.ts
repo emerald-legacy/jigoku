@@ -15,7 +15,7 @@ class YasukiTaka extends DrawCard {
                 }
             })
             .gameAction(AbilityDsl.actions.gainFate())
-            .limit(AbilityDsl.limit.perPhase(Infinity));
+            .limit(AbilityDsl.limit.unlimited());
     }
 }
 

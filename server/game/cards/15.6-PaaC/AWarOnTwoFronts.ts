@@ -21,7 +21,7 @@ class AWarOnTwoFronts extends DrawCard {
                     effect: AbilityDsl.effects.additionalAttackedProvince(context.target)
                 }))
             ]))
-            .effect('{2}also attack {1} this conflict!', context => [context.target ?? '', context.target?.isFacedown() ? 'reveal and ' : '']);
+            .effect('{2}also attack {1} this conflict!', context => [context.target, context.target.isFacedown() ? 'reveal and ' : '']);
     }
 }
 

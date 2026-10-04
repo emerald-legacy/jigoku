@@ -1,4 +1,4 @@
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Duration, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,8 +10,8 @@ export default class SupportingCast extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) => {
                     return (
-                        context.game.isDuringConflict('military') &&
-                        (event.cardTargets ?? []).some((card) => card.controller === context.player)
+                        context.game.isDuringConflict(ConflictType.Military) &&
+                        event.cardTargets.some((card) => card.controller === context.player)
                     );
                 }
             })
@@ -26,7 +26,7 @@ export default class SupportingCast extends DrawCard {
                 activePromptTitle: 'Choose a character to bow',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) =>
-                    (context.event.cardTargets ?? []).some((eventCard) => eventCard === card),
+                    context.event.cardTargets.some((eventCard) => eventCard === card),
                 subActionProperties: (card) => {
                     if(card.isDrawCard()) {
                         context.target = card;
@@ -38,7 +38,7 @@ export default class SupportingCast extends DrawCard {
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.modifyMilitarySkill(3)
             }))
-            .effect('give +3 military skill to {1} - {2} was just a distraction!', (context) => [context.target ?? '', context.event.cardTargets ?? []])
+            .effect('give +3 military skill to {1} - {2} was just a distraction!', (context) => [context.target, context.event.cardTargets])
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

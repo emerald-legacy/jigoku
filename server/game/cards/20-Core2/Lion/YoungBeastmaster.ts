@@ -1,11 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-function bonusSize(cards?: Array<DrawCard>) {
-    if(!cards) {
-        return 0;
-    }
-
+function bonusSize(cards: DrawCard[]) {
     let higherCost = 0;
     for(const card of cards) {
         const cardCost = card.getCost() ?? 0;

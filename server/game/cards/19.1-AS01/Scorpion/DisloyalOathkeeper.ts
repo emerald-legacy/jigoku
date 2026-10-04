@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class DisloyalOathkeeper extends DrawCard {
     static id = 'disloyal-oathkeeper';
@@ -14,7 +13,7 @@ export default class DisloyalOathkeeper extends DrawCard {
             match: (card) => card.location === this.uuid,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player) => player === this.controller,
+                    (player) => player === this.controller,
                     PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

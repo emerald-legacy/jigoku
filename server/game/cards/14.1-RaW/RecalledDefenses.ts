@@ -12,7 +12,7 @@ class RecalledDefenses extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source
             }, AbilityDsl.actions.moveCard({ destination: Location.StrongholdProvince }))
-            .effect('move {1} to their stronghold province', context => [context.target ?? '']);
+            .effect('move {1} to their stronghold province', context => [context.target]);
     }
 }
 

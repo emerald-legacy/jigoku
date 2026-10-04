@@ -47,7 +47,7 @@ class SlovenlyScavenger extends DrawCard {
                     opponent.shuffleConflictDeck();
                 }
             })
-            .effect('shuffle {1} into their deck', context => this.getEffectArg(context ? context.select : ''));
+            .effect('shuffle {1} into their deck', context => this.getEffectArg(context.select));
     }
 
     getEffectArg(selection: string) {

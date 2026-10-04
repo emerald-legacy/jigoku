@@ -49,7 +49,7 @@ export default class Retribution extends DrawCard {
                     AbilityDsl.actions.playerLastingEffect({
                         targetController: context.player,
                         duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.additionalConflict('military')
+                        effect: AbilityDsl.effects.additionalConflict(ConflictType.Military)
                     }),
                     AbilityDsl.actions.initiateConflict({
                         target: context.player,
@@ -58,7 +58,7 @@ export default class Retribution extends DrawCard {
                     })
                 ]
             })))
-            .effect('declare a military conflict, attacking with {1}', (context) => [context.target ?? ''])
+            .effect('declare a military conflict, attacking with {1}', (context) => [context.target])
             .max(AbilityDsl.limit.perRound(1));
     }
 }

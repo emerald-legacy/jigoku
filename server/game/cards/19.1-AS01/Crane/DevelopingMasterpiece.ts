@@ -28,11 +28,8 @@ export default class DevelopingMasterpiece extends DrawCard {
             })))
             .effect('gain {1} honor', (context) => [this.getHonorGain(context.costs.captureParentCost, context.source)])
             .then((context) => {
-                const haiku = randomHaiku();
-                if(haiku && context) {
-                    haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
-                    context.game.addMessage('>>>> Matsuo Bashō <<<<');
-                }
+                randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
+                context.game.addMessage('>>>> Matsuo Bashō <<<<');
             })
             .phase(Phases.Fate);
     }

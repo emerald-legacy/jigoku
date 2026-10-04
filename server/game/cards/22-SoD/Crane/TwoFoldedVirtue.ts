@@ -2,7 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Players } from '../../../Constants.js';
 
-export default class TwoFoldVirtue extends DrawCard {
+export default class TwoFoldedVirtue extends DrawCard {
     static id = 'two-folded-virtue';
 
     setupCardAbilities() {
@@ -23,12 +23,12 @@ export default class TwoFoldVirtue extends DrawCard {
                             afterConflict: (event) =>
                                 context.player === event.conflict.loser
                         },
-                        gameAction: AbilityDsl.actions.gainHonor(() => ({ target: context.player })),
+                        gameAction: AbilityDsl.actions.gainHonor({ target: context.player }),
                         message: '{0} gains 1 honor due to the delayed effect of {1}',
                         messageArgs: [context.player, context.source]
                     })
                 }))
             ]))
-            .effect('grant +2{1} to {0} and, if they lose the current conflict, gain 1 honor', () => (['military']));
+            .effect('grant +2{1} to {0} and, if they lose the current conflict, gain 1 honor', () => ['military']);
     }
 }

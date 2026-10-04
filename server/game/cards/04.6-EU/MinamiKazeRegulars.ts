@@ -10,7 +10,7 @@ class MinamiKazeRegulars extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
-                    context.game.currentConflict?.hasMoreParticipants(context.player, () => true)
+                    context.game.currentConflict?.hasMoreParticipants(context.player)
             })
             .gameAction(AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw())
             .effect('gain a fate and draw a card');

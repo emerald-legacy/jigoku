@@ -1,4 +1,4 @@
-import { DuelType, Duration } from '../../Constants.js';
+import { ConflictType, DuelType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -7,7 +7,7 @@ export default class CourteousScheming extends DrawCard {
 
     setupCardAbilities() {
         this.action('Initiate a political duel')
-            .condition(() => this.game.currentConflict !== null && this.game.currentConflict.conflictType === 'political')
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
@@ -18,7 +18,7 @@ export default class CourteousScheming extends DrawCard {
                         ? AbilityDsl.actions.playerLastingEffect({
                             targetController: duel.winnerController,
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.additionalConflict('political')
+                            effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
                         })
                         : AbilityDsl.actions.noAction()
             }))

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type Player from '../../Player.js';
+import { ConflictType } from '../../Constants.js';
 
 class DaidojiKageyu extends DrawCard {
     static id = 'daidoji-kageyu';
@@ -15,7 +16,7 @@ class DaidojiKageyu extends DrawCard {
         };
 
         this.action('Draw cards')
-            .condition((context) => this.game.isDuringConflict('political') &&
+            .condition((context) => this.game.isDuringConflict(ConflictType.Political) &&
                 context.source.isParticipating() &&
                 cardsPlayed(context.player.opponent) > 0)
             .gameAction(AbilityDsl.actions.draw((context) => ({ amount: cardsPlayed(context.player.opponent) })))

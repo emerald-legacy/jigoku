@@ -8,11 +8,9 @@ export default class ZealousExorcist extends DrawCard {
     static id = 'zealous-exorcist';
 
     private charactersPlayedThisConflict = new WeakSet<DrawCard>();
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnConflictStarted, EventName.OnCharacterEntersPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnConflictStarted, EventName.OnCharacterEntersPlay]);
 
         this.action('Remove a character from play')
             .condition((context) => context.source.isParticipating())

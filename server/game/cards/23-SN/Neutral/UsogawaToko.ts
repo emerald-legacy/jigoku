@@ -10,9 +10,9 @@ export default class UsogawaToko extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
+            }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyGlory(-3)
-            })))
+            }))
             .effect('give {0} -3 glory until the end of the conflict');
     }
 }

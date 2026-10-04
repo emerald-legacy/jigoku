@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Duration, Location, Players } from '../../Constants.js';
+import { CardType, Duration, Location, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ForebearersEchoes extends DrawCard {
@@ -7,7 +7,7 @@ class ForebearersEchoes extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put a character into play')
-            .condition(context => context.game.isDuringConflict('military'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: Location.DynastyDiscardPile,

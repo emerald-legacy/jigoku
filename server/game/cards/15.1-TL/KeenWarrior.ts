@@ -8,16 +8,10 @@ class KeenWarrior extends DrawCard {
     setupCardAbilities() {
         this.reaction('Draw 2 cards and return 1')
             .when({
-                onCardRevealed: (event, context) => {
-                    const raw = event.card;
-                    const cards = Array.isArray(raw) ? raw : [raw];
-                    return cards.some((a) => a.location === Location.Hand && a.controller === context.player.opponent);
-                },
-                onLookAtCards: (event, context) => {
-                    const raw = event.stateBeforeResolution;
-                    const cards = Array.isArray(raw) ? raw : raw ? [raw] : [];
-                    return cards.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent);
-                }
+                onCardRevealed: (event, context) =>
+                    event.card.location === Location.Hand && event.card.controller === context.player.opponent,
+                onLookAtCards: (event, context) =>
+                    event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.draw(context => ({ target: context.player, amount: 2 })),

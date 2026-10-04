@@ -1,5 +1,4 @@
 import { AbilityType, DuelType } from '../../../Constants.js';
-import type { Duel } from '../../../Duel.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,7 +15,7 @@ export default class JusticarsApproach2 extends DrawCard {
                 printedAbility: false,
                 initiateDuel: {
                     type: DuelType.Military,
-                    gameAction: (duel: Duel) =>
+                    gameAction: (duel) =>
                         AbilityDsl.actions.multiple(
                             duel.loser?.map((loserChar) => this.effectsOnLoser(loserChar)) ?? []
                         )

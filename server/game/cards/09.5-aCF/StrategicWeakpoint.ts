@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-class StrategicWeapoint extends DrawCard {
+class StrategicWeakpoint extends DrawCard {
     static id = 'strategic-weakpoint';
 
     setupCardAbilities() {
@@ -21,4 +21,4 @@ class StrategicWeapoint extends DrawCard {
 }
 
 
-export default StrategicWeapoint;
+export default StrategicWeakpoint;

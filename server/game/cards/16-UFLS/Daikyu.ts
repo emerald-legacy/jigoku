@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, CardType } from '../../Constants.js';
+import { AbilityType, CardType, ConflictType } from '../../Constants.js';
 
 class Daikyu extends DrawCard {
     static id = 'daikyu';
@@ -16,11 +16,11 @@ class Daikyu extends DrawCard {
                 title: 'Bow a character',
                 when: {
                     onConflictDeclared: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict('military'),
+                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
                     onDefendersDeclared: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict('military'),
+                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
                     onMoveToConflict: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict('military')
+                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
                 },
                 target: {
                     cardType: CardType.Character,

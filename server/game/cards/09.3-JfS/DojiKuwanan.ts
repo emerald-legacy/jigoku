@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 
 class DojiKuwanan extends DrawCard {
     static id = 'doji-kuwanan';
@@ -9,7 +9,7 @@ class DojiKuwanan extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 condition: (context) =>
-                    context.player && context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
+                    context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
                 message: '{1} is discarded from play as its controller controls {0}',
                 messageArgs: (context) => [
                     context.source,
@@ -22,7 +22,7 @@ class DojiKuwanan extends DrawCard {
         });
         this.action('Bow a participating character with lower military skill')
             .condition((context) =>
-                context.source.game.isDuringConflict('military') && context.source.isParticipating())
+                context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>

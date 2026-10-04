@@ -10,7 +10,7 @@ class RighteousSamurai extends DrawCard {
         this.reaction('Honor a character')
             .when({
                 onModifyHonor: (event, context) => {
-                    if(event.amount === undefined || event.context === undefined) {
+                    if(event.context === undefined) {
                         return false;
                     }
                     const honorLoss = event.amount < 0;
@@ -21,7 +21,7 @@ class RighteousSamurai extends DrawCard {
                     return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
                 },
                 onTransferHonor: (event, context) => {
-                    if(event.amount === undefined || event.context === undefined) {
+                    if(event.context === undefined) {
                         return false;
                     }
                     const honorLoss = event.amount > 0;

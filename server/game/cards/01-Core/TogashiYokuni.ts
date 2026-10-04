@@ -16,7 +16,7 @@ class TogashiYokuni extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: context.targetAbility ? AbilityDsl.effects.gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
             })))
-            .effect('copy {1}\'s \'{2}\' ability', context => [context.targetAbility?.card ?? '', context.targetAbility?.title ?? ''])
+            .effect('copy {1}\'s \'{2}\' ability', context => [context.targetAbility.card, context.targetAbility.title])
             .max(AbilityDsl.limit.perRound(1));
     }
 }

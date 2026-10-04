@@ -13,9 +13,9 @@ export default class ToStormAFortress extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasSomeTrait('bushi', 'monk')
             }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect(() => ({
+                AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                })),
+                }),
                 AbilityDsl.actions.menuPrompt((context) => ({
                     activePromptTitle: 'Discard each card in the attacked province?',
                     choices: ['Yes', 'No'],
@@ -39,6 +39,6 @@ export default class ToStormAFortress extends DrawCard {
                     gameAction: AbilityDsl.actions.discardCard()
                 }))
             ]))
-            .effect('grant +2{1} to {0}', () => (['military']));
+            .effect('grant +2{1} to {0}', () => ['military']);
     }
 }

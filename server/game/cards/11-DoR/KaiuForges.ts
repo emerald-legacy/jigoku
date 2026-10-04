@@ -13,9 +13,6 @@ class KaiuForges extends DrawCard {
             })
             .handler((context) => {
                 const province = context.target;
-                if(!province) {
-                    return;
-                }
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                     context: context,

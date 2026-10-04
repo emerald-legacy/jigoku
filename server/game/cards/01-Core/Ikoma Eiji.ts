@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 
 class IkomaEiji extends DrawCard {
     static id = 'ikoma-eiji';
@@ -8,7 +8,7 @@ class IkomaEiji extends DrawCard {
     setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
-                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === 'political'
+                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === ConflictType.Political
             })
             .gameAction(AbilityDsl.actions.selectCard(context => ({
                 cardType: CardType.Character,

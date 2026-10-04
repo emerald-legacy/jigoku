@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ClarityOfPurpose extends DrawCard {
@@ -12,7 +12,7 @@ class ClarityOfPurpose extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.cardLastingEffect({
-                condition: () => this.game.isDuringConflict('political'),
+                condition: () => this.game.isDuringConflict(ConflictType.Political),
                 effect: AbilityDsl.effects.doesNotBow()
             }), AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.cardCannot({

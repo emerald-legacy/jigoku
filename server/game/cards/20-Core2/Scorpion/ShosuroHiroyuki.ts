@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,7 +7,7 @@ export default class ShosuroHiroyuki extends DrawCard {
 
     setupCardAbilities() {
         this.action('Force opponent to discard card or dishonor a character')
-            .condition((context) => context.source.isParticipating('political'))
+            .condition((context) => context.source.isParticipating(ConflictType.Political))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,

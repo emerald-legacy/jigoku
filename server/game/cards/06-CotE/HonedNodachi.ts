@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 
 class HonedNodachi extends DrawCard {
     static id = 'honed-nodachi';
@@ -14,7 +14,7 @@ class HonedNodachi extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
-                                                   event.conflict.conflictType === 'military'
+                                                   event.conflict.conflictType === ConflictType.Military
             })
             .cost(AbilityDsl.costs.removeFateFromParent())
             .target('target', {

@@ -8,8 +8,7 @@ class WinterCourtHosts extends DrawCard {
         this.reaction('Draw a card')
             .when({
                 onCardPlayed: (event, context) => {
-                    return context.player.opponent &&
-                        event.player === context.player.opponent &&
+                    return event.player === context.player.opponent &&
                         context.source.isParticipating() &&
                         context.player.isMoreHonorable();
                 }

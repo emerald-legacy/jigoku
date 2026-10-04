@@ -1,12 +1,13 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { ConflictType } from '../../../Constants.js';
 
 class DiplomaticHall extends DrawCard {
     static id = 'diplomatic-hall';
 
     setupCardAbilities() {
         this.action('Select a player to draw a card')
-            .condition(context => context.game.isDuringConflict('political'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Political))
             .select('target', {
                 targets: true
             }, {

@@ -17,7 +17,7 @@ export default class CeremonialRobes extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.modifyGlory((_character, context) =>
                 context.player.cardsInPlay.reduce(
-                    (sum: number, card) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
+                    (sum, card) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
                 )
             )

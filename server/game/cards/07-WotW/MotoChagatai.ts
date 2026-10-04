@@ -8,11 +8,9 @@ export default class MotoChagatai extends DrawCard {
     static id = 'moto-chagatai';
 
     private provinceBroken = new Map<string, boolean>();
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictFinished]);
+        new EventRegistrar(this.game, this).register([EventName.OnBreakProvince, EventName.OnConflictFinished]);
 
         this.persistentEffect({
             condition: (context) =>

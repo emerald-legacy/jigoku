@@ -1,4 +1,4 @@
-import { CardType, Players, Duration } from '../../../Constants.js';
+import { CardType, Players, Duration, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class ForDeathAndGlory extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase a character\'s military skill')
-            .condition((context) => context.game.isDuringConflict('military'))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target(CHARACTER, {
                 controller: Players.Self,
                 cardType: CardType.Character,

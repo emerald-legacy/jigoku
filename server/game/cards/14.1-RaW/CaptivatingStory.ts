@@ -8,7 +8,7 @@ class CaptivatingStory extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +X pol')
-            .condition(context => context.game.isDuringConflict() && (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
+            .condition(context => (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,

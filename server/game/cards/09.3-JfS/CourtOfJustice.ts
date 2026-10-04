@@ -1,6 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
+import { ConflictType } from '../../Constants.js';
 
 export default class CourtOfJustice extends DrawCard {
     static id = 'court-of-justice';
@@ -10,7 +11,7 @@ export default class CourtOfJustice extends DrawCard {
             .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
-                    event.conflict.conflictType === 'political' &&
+                    event.conflict.conflictType === ConflictType.Political &&
                     context.player.opponent !== undefined
             })
             .gameAction(AbilityDsl.actions.lookAt((context) => ({

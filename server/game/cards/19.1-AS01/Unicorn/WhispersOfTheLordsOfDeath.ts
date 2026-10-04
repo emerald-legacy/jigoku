@@ -9,7 +9,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: AbilityDsl.effects.changePlayerGloryModifier((player: Player) => this.highestMilitaryForPlayer(player))
+            effect: AbilityDsl.effects.changePlayerGloryModifier((player) => this.highestMilitaryForPlayer(player))
         });
 
         this.reaction('Put into play')

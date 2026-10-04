@@ -14,14 +14,14 @@ class AppealToSympathy extends DrawCard {
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.moveCard((context) => ({
                     target: context.event.card,
-                    destination: context.event.card?.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
+                    destination: context.event.card.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
                 }))
             ]))
             .effect('cancel the effects of {1} and {2}', (context) => {
                 const card = context.event.card;
                 return [
-                    card ?? '',
-                    card?.isConflict
+                    card,
+                    card.isConflict
                         ? 'return it to the top of its owner\'s conflict deck'
                         : 'move it to its owner\'s dynasty discard pile'
                 ];

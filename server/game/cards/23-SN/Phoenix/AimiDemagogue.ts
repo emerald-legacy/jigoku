@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players } from '../../../Constants.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class AimiDemagogue extends DrawCard {
     static id = 'aimi-demagogue';
@@ -28,6 +28,6 @@ export default class AimiDemagogue extends DrawCard {
                 }
                 return { gameActions };
             }))
-            .effect('give {1}{0} pride the end of the conflict', (context) => [context.target?.controller !== context.player ? 'itself and ' : '']);
+            .effect('give {1}{0} pride the end of the conflict', (context) => [context.target.controller !== context.player ? 'itself and ' : '']);
     }
 }

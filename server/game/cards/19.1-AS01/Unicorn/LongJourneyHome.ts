@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 type SendOrReturnHomeEvent =
@@ -31,6 +31,6 @@ export default class LongJourneyHome extends DrawCard {
     }
 
     private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<this>) {
-        return !!event.card && event.card.type === CardType.Character && event.card.controller === context.source.controller.opponent;
+        return event.card.type === CardType.Character && event.card.controller === context.source.controller.opponent;
     }
 }

@@ -11,11 +11,11 @@ export default class Funeral extends DrawCard {
             .when({
                 onModifyHonor: (event, context) =>
                     event.player === context.player &&
-                    -(event.amount ?? 0) >= context.player.honor &&
+                    -event.amount >= context.player.honor &&
                     event.context?.stage === Stage.Effect,
                 onTransferHonor: (event, context) =>
                     event.player === context.player &&
-                    (event.amount ?? 0) >= context.player.honor &&
+                    event.amount >= context.player.honor &&
                     event.context?.stage === Stage.Effect
             })
             .gameAction(AbilityDsl.actions.sequential([

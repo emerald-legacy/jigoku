@@ -21,7 +21,7 @@ class EsteemedTeaHouse extends DrawCard {
                     params: context.target?.name
                 })
             })))
-            .effect('return {0} to {1}\'s hand and prevent them from playing copies this phase', context => [context.target?.owner ?? '']);
+            .effect('return {0} to {1}\'s hand and prevent them from playing copies this phase', context => [context.target.owner]);
     }
 }
 

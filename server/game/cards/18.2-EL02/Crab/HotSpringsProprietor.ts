@@ -2,7 +2,7 @@ import DrawCard from '../../../DrawCard.js';
 import { Decks, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
-class BiasedArbitrator extends DrawCard {
+class HotSpringsProprietor extends DrawCard {
     static id = 'hot-springs-proprietor';
 
     setupCardAbilities() {
@@ -21,4 +21,4 @@ class BiasedArbitrator extends DrawCard {
 }
 
 
-export default BiasedArbitrator;
+export default HotSpringsProprietor;

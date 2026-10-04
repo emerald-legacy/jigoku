@@ -22,8 +22,6 @@ export default class MirumotoRikitaro extends DrawCard {
                         isAttachment &&
                         sourceHasNoAttachment &&
                         ec.player === context.player &&
-                        ec.target &&
-                        ec.target.controller === context.player &&
                         ec.target === context.source &&
                         ec.ability.getReducedCost(ec) > 0
                     );
@@ -46,7 +44,7 @@ export default class MirumotoRikitaro extends DrawCard {
             .then((context) => ({
                 message: '{3} gains +2{4} due to discarding a weapon!',
                 messageArgs: () => [context.source, 'military'],
-                thenCondition: () => context.target?.hasTrait('weapon'),
+                thenCondition: () => context.target.hasTrait('weapon'),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context.source,
                     effect: AbilityDsl.effects.modifyMilitarySkill(2)

@@ -13,7 +13,7 @@ export default class YasukiYoshi extends DrawCard {
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Survey',
                 selectedCardsHandler: (context, _, [card]) => {
-                    if(card === null || card === undefined) {
+                    if(!card) {
                         return;
                     }
 
@@ -27,11 +27,11 @@ export default class YasukiYoshi extends DrawCard {
         this.reaction('Cause honor loss to the conflict loser')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict?.winner === context.source.controller &&
+                    event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
             .gameAction(AbilityDsl.actions.loseHonor((context) => ({
-                target: context.game.currentConflict?.loser
+                target: context.event.conflict.loser
             })))
             .limit(AbilityDsl.limit.unlimited());
     }

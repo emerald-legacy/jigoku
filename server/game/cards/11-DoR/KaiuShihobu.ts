@@ -44,12 +44,11 @@ export default class KaiuShihobu extends DrawCard {
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.UnderneathStronghold,
-                cardCondition: (card, context) => !!context?.player.stronghold && context.player.stronghold.childCards.includes(card)
+                cardCondition: (card, context) => !!context.player.stronghold && context.player.stronghold.childCards.includes(card)
             })
             .target('second', {
                 activePromptTitle: 'Choose an unbroken province',
                 dependsOn: 'first',
-                optional: false,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,

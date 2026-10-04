@@ -12,7 +12,7 @@ export default class UtakuProdigy extends DrawCard {
 
         this.wouldInterrupt('Gain 2 honor instead')
             .when({
-                onModifyHonor: (event, context) => event.dueToStatusToken && (event.amount ?? 0) > 0 && event.player === context.player
+                onModifyHonor: (event, context) => event.dueToStatusToken && event.amount > 0 && event.player === context.player
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cancel(),

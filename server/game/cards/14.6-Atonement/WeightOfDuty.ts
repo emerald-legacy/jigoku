@@ -1,8 +1,8 @@
-import { AbilityContext } from '../../AbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../DrawCard.js';
+import type DrawCard from '../../DrawCard.js';
 
 const ELEMENT_KEY = 'weight-of-duty-void';
 

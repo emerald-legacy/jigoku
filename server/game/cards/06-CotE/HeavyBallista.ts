@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HeavyBallista extends DrawCard {
@@ -8,7 +8,7 @@ class HeavyBallista extends DrawCard {
     setupCardAbilities() {
         this.action('Bow or remove 1 fate')
             .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
-            .condition(context => this.game.isDuringConflict('military') && context.player.isDefendingPlayer())
+            .condition(context => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
             .target('character', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking() && !card.bowed

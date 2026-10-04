@@ -26,7 +26,7 @@ export default class ParanoidHososhi extends DrawCard {
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {
         return context.game
             .findAnyCardsInPlay((card) => card.type === CardType.Character)
-            .reduce((prevHighestCost: number, card) => {
+            .reduce((prevHighestCost, card) => {
                 const cost = card.getCost();
                 return typeof cost === 'number' && cost > prevHighestCost ? cost : prevHighestCost;
             }, 0);

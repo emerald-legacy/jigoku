@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RaiseTheAlarm extends DrawCard {
@@ -7,7 +7,7 @@ class RaiseTheAlarm extends DrawCard {
 
     setupCardAbilities() {
         this.action('Flip a dynasty card')
-            .condition(context => this.game.isDuringConflict('military') && context.player.isDefendingPlayer())
+            .condition(context => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
             .target('target', {
                 controller: Players.Self,
                 location: Location.Provinces,

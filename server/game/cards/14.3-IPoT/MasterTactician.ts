@@ -3,20 +3,17 @@ import { EventName, Location, Players, PlayType } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
-    private eventRegistrar?: EventRegistrar;
 
     private cardsPlayedThisRound = 0;
     private mostRecentEvent?: EventPayload<EventName.OnCardPlayed>;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect<this>({
@@ -49,9 +46,7 @@ export default class MasterTactician extends DrawCard {
                         ) {
                             return;
                         }
-                        if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
-                            this.cardsPlayedThisRound = 0;
-                        }
+
                         this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck = this;
                         this.cardsPlayedThisRound++;
                         this.game.addMessage(
@@ -76,7 +71,7 @@ export default class MasterTactician extends DrawCard {
             match: (card, context) =>
                 !!(context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0]),
             effect: AbilityDsl.effects.canPlayFromOutOfPlay(
-                (player: Player, card) => player === card.owner,
+                (player, card) => player === card.owner,
                 PlayType.PlayFromHand
             )
         });

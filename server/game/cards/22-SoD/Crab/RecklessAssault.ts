@@ -10,12 +10,11 @@ export default class RecklessAssault extends DrawCard {
         this.reaction('Force defenders')
             .when({
                 onConflictDeclared: (event, context) =>
-                    !!context.game.currentConflict &&
-                    context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
-                    context.game.currentConflict.getParticipants(
+                    event.conflict.getNumberOfParticipantsFor(context.player) === 1 &&
+                    event.conflict.getParticipants(
                         participant => participant.hasTrait('berserker') && participant.controller === context.player
                     ).length === 1 &&
-                    context.player === context.game.currentConflict.attackingPlayer
+                    context.player === event.conflict.attackingPlayer
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getCharacters(context),
@@ -26,7 +25,6 @@ export default class RecklessAssault extends DrawCard {
     }
 
     private getCharacters(context: AbilityContext) {
-        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter(card => card.getMilitarySkill() < 3);
-        return cards || [];
+        return context.player.opponent?.cardsInPlay.filter(card => card.getMilitarySkill() < 3) ?? [];
     }
 }

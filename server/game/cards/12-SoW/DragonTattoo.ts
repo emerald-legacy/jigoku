@@ -54,7 +54,7 @@ export default class DragonTattoo extends DrawCard {
             }))
             .effect('{1}{2}{3}', (context) => [
                 this.cardPlayed ? 'play ' : 'remove ',
-                context.event.card?.name ?? '',
+                context.event.card.name,
                 this.cardPlayed ? '' : ' from the game'
             ]);
     }

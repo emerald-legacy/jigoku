@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
-import Ring from '../../Ring.js';
+import type BaseCard from '../../BaseCard.js';
+import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PitTrap extends DrawCard {

@@ -17,10 +17,10 @@ class RideThemDown extends DrawCard {
                 cardCondition: card => card.isConflictProvince(),
                 message: '{0} reduces the strength of {1} to 1',
                 messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.setBaseProvinceStrength(1)
-                }))
+                })
             })))
             .effect('reduce the strength of an attacked province to 1');
     }

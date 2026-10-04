@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Duration } from '../../Constants.js';
+import { CardType, Duration, Phases } from '../../Constants.js';
 
 class AgashaHiyori extends DrawCard {
     static id = 'agasha-hiyori';
@@ -8,7 +8,7 @@ class AgashaHiyori extends DrawCard {
     setupCardAbilities() {
         this.reaction('Blank an attachment')
             .when({
-                onPhaseStarted: (event) => event.phase !== 'setup'
+                onPhaseStarted: (event) => event.phase !== Phases.Setup
             })
             .cost(AbilityDsl.costs.payFateToRing(1))
             .target('target', {
@@ -18,7 +18,7 @@ class AgashaHiyori extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.blank()
             }))
-            .effect('treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase', (context) => context.target ?? '');
+            .effect('treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase', (context) => context.target);
     }
 }
 

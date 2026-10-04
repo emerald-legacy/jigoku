@@ -7,12 +7,10 @@ import type { Event } from '../../../Events/Event.js';
 export default class RiftToToshigoku extends ProvinceCard {
     static id = 'rift-to-toshigoku';
 
-    private eventRegistrar?: EventRegistrar;
     private cancelRingEffectsInConflict?: string;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
+        new EventRegistrar(this.game, this).register([
             {
                 [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
             }

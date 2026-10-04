@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Retreat extends DrawCard {
@@ -7,7 +7,7 @@ class Retreat extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character home')
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self

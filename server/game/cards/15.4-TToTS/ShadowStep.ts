@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, CharacterStatus, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShadowStep extends DrawCard {
@@ -24,7 +24,7 @@ class ShadowStep extends DrawCard {
                     })),
                     falseGameAction: AbilityDsl.actions.putIntoPlay(context => ({
                         target: context.target,
-                        status: 'dishonored'
+                        status: CharacterStatus.Dishonored
                     }))
                 })
             ]))

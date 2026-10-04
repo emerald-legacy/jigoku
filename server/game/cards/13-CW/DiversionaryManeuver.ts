@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, Players, TargetMode } from '../../Constants.js';
+import { Location, CardType, Players, TargetMode, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DiversionaryManeuver extends DrawCard {
@@ -7,7 +7,7 @@ class DiversionaryManeuver extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move the conflict to another province')
-            .condition(context => context.game.isDuringConflict('military') && context.player.isAttackingPlayer())
+            .condition(context => context.game.isDuringConflict(ConflictType.Military) && context.player.isAttackingPlayer())
             .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
@@ -49,7 +49,7 @@ class DiversionaryManeuver extends DrawCard {
                     gameAction: AbilityDsl.actions.moveToConflict()
                 })
             ]))
-            .effect('move the conflict to {1} and send all participating characters home bowed', context => [context.target ?? '']);
+            .effect('move the conflict to {1} and send all participating characters home bowed', context => [context.target]);
     }
 }
 

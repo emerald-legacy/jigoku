@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ConflictType } from '../../Constants.js';
 
 class LetterFromTheDaimyo extends DrawCard {
     static id = 'letter-from-the-daimyo';
@@ -13,7 +14,7 @@ class LetterFromTheDaimyo extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
-                                                   event.conflict.conflictType === 'political'
+                                                   event.conflict.conflictType === ConflictType.Political
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
             .gameAction(AbilityDsl.actions.chosenDiscard({ amount: 2 }));

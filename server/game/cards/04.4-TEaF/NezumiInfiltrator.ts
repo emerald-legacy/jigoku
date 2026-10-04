@@ -32,13 +32,12 @@ export default class NezumiInfiltrator extends DrawCard {
                     return { target: card };
                 },
                 gameAction: AbilityDsl.actions.chooseAction(() => ({
-                    messages: {},
                     options: {
                         'Raise attacked province\'s strength by 1': {
-                            action: AbilityDsl.actions.cardLastingEffect(() => ({
+                            action: AbilityDsl.actions.cardLastingEffect({
                                 targetLocation: Location.Provinces,
                                 effect: AbilityDsl.effects.modifyProvinceStrength(1)
-                            })),
+                            }),
                             message: '{0} chooses to increase {1}\'s strength by 1'
                         },
                         'Lower attacked province\'s strength by 1': {

@@ -2,13 +2,12 @@ import { Phases, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { AbilityContext } from '../../AbilityContext.js';
 export default class CityOfTheRichFrog extends ProvinceCard {
     static id = 'city-of-the-rich-frog';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.currentPhase !== 'setup',
+            condition: () => this.game.currentPhase !== Phases.Setup,
             effect: AbilityDsl.effects.refillProvinceTo(3)
         });
 
@@ -19,7 +18,7 @@ export default class CityOfTheRichFrog extends ProvinceCard {
                     onPhaseEnded: (event) => event.phase === Phases.Setup
                 },
                 message: '{0} fills to 3 cards!',
-                messageArgs: (effectContext: AbilityContext) => [effectContext.source],
+                messageArgs: (effectContext) => [effectContext.source],
                 gameAction: AbilityDsl.actions.fillProvince((context) => ({
                     location: context.source.location,
                     fillTo: 3

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, ConflictType, Players } from '../../Constants.js';
 
 class Deduction extends DrawCard {
     static id = 'deduction';
@@ -8,7 +8,7 @@ class Deduction extends DrawCard {
     setupCardAbilities() {
         this.action('Bow a character')
             .cost(AbilityDsl.costs.returnRings(1))
-            .condition(() => !!this.game.currentConflict && this.game.currentConflict.conflictType === 'political')
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,

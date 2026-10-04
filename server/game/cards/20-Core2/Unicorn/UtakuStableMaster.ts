@@ -5,7 +5,7 @@ import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
 
 /**
- * Returns -1 in case there are no cavalry characters. It is not exactly correct, but it works fine
+ * Returns -1 in case there are no cavalry characters
  */
 function participatingCavGlory(conflict: Conflict, player: Player): number {
     return Math.max(

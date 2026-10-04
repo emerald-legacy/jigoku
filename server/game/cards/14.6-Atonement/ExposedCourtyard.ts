@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location, Players, Duration } from '../../Constants.js';
+import { CardType, Location, Players, Duration, ConflictType } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
 
 const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => ({
@@ -30,7 +30,7 @@ class ExposedCourtyard extends DrawCard {
     setupCardAbilities() {
         this.action('Make an event in your conflict discard playable')
             .cost(exposedCourtyardCost())
-            .condition(context => context.game.isDuringConflict('military'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: () => true

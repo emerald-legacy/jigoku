@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Conflict } from '../../../Conflict.js';
 import { CardType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -21,7 +22,7 @@ export default class DeployedGarrison extends DrawCard {
                     context.player.isDefendingPlayer() &&
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
-                    this.conflictNearHolding(context)
+                    this.conflictNearHolding(context, event.conflict)
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
@@ -30,12 +31,8 @@ export default class DeployedGarrison extends DrawCard {
             .effect('not bow during the conflict resolution');
     }
 
-    private conflictNearHolding(context: AbilityContext) {
-        if(!context.player.isDefendingPlayer()) {
-            return false;
-        }
-
-        const attackedProvinces = context.game.requireConflict().getConflictProvinces();
+    private conflictNearHolding(context: AbilityContext, conflict: Conflict) {
+        const attackedProvinces = conflict.getConflictProvinces();
         const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province) => {
             for(const attackedProvince of attackedProvinces) {
                 if(

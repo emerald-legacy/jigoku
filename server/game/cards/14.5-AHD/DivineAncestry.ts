@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DivineAncestry extends DrawCard {
@@ -8,7 +8,7 @@ class DivineAncestry extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prevent losing honor this phase')
             .when({
-                onPhaseStarted: event => event.phase !== 'setup'
+                onPhaseStarted: event => event.phase !== Phases.Setup
             })
             .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,

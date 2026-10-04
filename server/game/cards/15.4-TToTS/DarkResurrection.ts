@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, TargetMode, CardType } from '../../Constants.js';
+import { Location, Players, TargetMode, CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DarkResurrection extends DrawCard {
@@ -7,7 +7,7 @@ class DarkResurrection extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put characters into play from your discard')
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .targetCards('target', {
                 activePromptTitle: 'Choose up to three characters',
                 numCards: 3,
@@ -17,7 +17,7 @@ class DarkResurrection extends DrawCard {
                 location: [Location.DynastyDiscardPile],
                 controller: Players.Self,
                 cardCondition: card => card.type === CardType.Character && (card.printedCost ?? 0) <= 3
-            }, AbilityDsl.actions.putIntoConflict({ status: 'dishonored' }));
+            }, AbilityDsl.actions.putIntoConflict({ status: CharacterStatus.Dishonored }));
     }
 
     isTemptationsMaho() {

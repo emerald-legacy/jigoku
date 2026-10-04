@@ -12,7 +12,7 @@ export default class GrizzledStrategist extends DrawCard {
 
         this.wouldInterrupt('Cancel an event')
             .when({
-                onInitiateAbilityEffects: (event, context) => context.game.isDuringConflict() &&
+                onInitiateAbilityEffects: (event, context) =>
                     context.source.isParticipating() &&
                     event.card.type === CardType.Event
             })

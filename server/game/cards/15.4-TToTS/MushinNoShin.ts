@@ -10,7 +10,7 @@ class MushinNoShin extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.context.ability.isTriggeredAbility() &&
-                    (event.cardTargets ?? []).some(
+                    event.cardTargets.some(
                         (card) =>
                             card.type === CardType.Character &&
                             card.location === Location.PlayArea &&

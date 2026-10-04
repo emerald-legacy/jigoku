@@ -2,7 +2,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 /** The card the chosen attachment sits on. Null while it is on a ring, which this card cannot move. */
 function parentCard(context: AbilityContext): BaseCard | null {

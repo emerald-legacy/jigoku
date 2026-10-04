@@ -8,17 +8,16 @@ import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class CastleOfAir extends DrawCard {
     static id = 'castle-of-air';
-    private eventRegistrar?: EventRegistrar;
-    private playersTriggered = new Map<string, boolean>();
+    private playersTriggered = new Set<string>();
 
     setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
+        const eventRegistrar = new EventRegistrar(this.game, this);
+        eventRegistrar.register([
             {
                 [EventName.OnModifyHonor + ':' + AbilityType.WouldInterrupt]: 'onHonorLoss'
             }
         ]);
-        this.eventRegistrar.register([EventName.OnConflictFinished]);
+        eventRegistrar.register([EventName.OnConflictFinished]);
 
         this.action('Add Province Strength')
             .cost(AbilityDsl.costs.bow({
@@ -44,7 +43,7 @@ export default class CastleOfAir extends DrawCard {
                     condition: context.player.hasAffinity('air', context),
                     trueGameAction: AbilityDsl.actions.handler({
                         handler: context => {
-                            this.playersTriggered.set(context.player.uuid, true);
+                            this.playersTriggered.add(context.player.uuid);
                         }
                     }),
                     falseGameAction: AbilityDsl.actions.noAction()
@@ -57,7 +56,7 @@ export default class CastleOfAir extends DrawCard {
         if(
             event.context.game.currentConflict &&
             event.dueToUnopposed &&
-            !!this.playersTriggered.get(event.context.player.uuid) &&
+            this.playersTriggered.has(event.context.player.uuid) &&
             !event.cancelled
         ) {
             event.cancel();

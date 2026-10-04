@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class AdvanceTowardsTheRear extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character home')
             .cost(AbilityDsl.costs.payHonor(1))
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self

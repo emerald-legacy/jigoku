@@ -1,7 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
@@ -36,9 +35,6 @@ export default class MiokosSong extends StrongholdCard {
                         return;
                     }
                     const province = context.target;
-                    if(!(province instanceof ProvinceCard)) {
-                        return;
-                    }
                     const topCards = opponent.dynastyDeck.slice(0, 2);
                     this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Which card do you want to put in the province?',

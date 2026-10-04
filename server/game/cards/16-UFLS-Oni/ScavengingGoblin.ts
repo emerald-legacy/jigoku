@@ -19,7 +19,7 @@ export default class ScavengingGoblin extends BaseOni {
                 const cardsToRemove = context.player.opponent?.conflictDeck.slice(0, 3) ?? [];
                 const cardNames = cardsToRemove.map((card) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
-                    if(card.location !== 'play area') {
+                    if(card.location !== Location.PlayArea) {
                         return false;
                     }
                     if(card.type !== CardType.Attachment) {

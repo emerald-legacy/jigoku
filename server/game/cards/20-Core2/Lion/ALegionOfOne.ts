@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { Event } from '../../../Events/Event.js';
-import { CardType, Players, TargetMode, EventName } from '../../../Constants.js';
+import { CardType, Players, TargetMode, EventName, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class ALegionOfOne extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a solitary character +3/+0')
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
@@ -22,14 +22,14 @@ export default class ALegionOfOne extends DrawCard {
                 effect: AbilityDsl.effects.modifyMilitarySkill(3)
             }))
             .effect('give {0} +3/+0')
-            .then((ctx) => {
-                if(ctx.subResolution) {
+            .then((context) => {
+                if(context.subResolution) {
                     return {
                         target: {
                             mode: TargetMode.Select,
                             choices: {
                                 'Remove 1 fate for no effect': AbilityDsl.actions.removeFate({
-                                    target: ctx.target
+                                    target: context.target
                                 }),
                                 Done: () => true
                             }
@@ -43,7 +43,7 @@ export default class ALegionOfOne extends DrawCard {
                         mode: TargetMode.Select,
                         choices: {
                             'Remove 1 fate to resolve this ability again': AbilityDsl.actions.removeFate({
-                                target: ctx.target
+                                target: context.target
                             }),
                             Done: () => true
                         }
@@ -52,11 +52,11 @@ export default class ALegionOfOne extends DrawCard {
                     messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : ''],
                     then: {
                         thenCondition: (event: Event & { origin?: BaseCard }) =>
-                            event.origin === ctx.target && !event.cancelled && event.name === EventName.OnMoveFate,
+                            event.origin === context.target && !event.cancelled && event.name === EventName.OnMoveFate,
                         gameAction: AbilityDsl.actions.resolveAbility({
-                            ability: ctx.ability,
+                            ability: context.ability,
                             subResolution: true,
-                            choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
+                            choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
                         })
                     }
                 };

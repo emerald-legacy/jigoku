@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -15,7 +13,7 @@ class KitsukiChiari extends DrawCard {
             })
             .cost(AbilityDsl.costs.nameCard())
             .gameAction(AbilityDsl.actions.multipleContext(context => {
-                const cards: DrawCard[] = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
+                const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({
                     gameActions: [
                         AbilityDsl.actions.lookAt(() => ({
@@ -34,10 +32,6 @@ class KitsukiChiari extends DrawCard {
             .effect('look at 4 random cards in {1}\'s hand and discard all cards named {2}', context => [context.player.opponent, context.costs.nameCardCost]);
     }
 
-    selectCardName(player: Player, cardName: string, context: AbilityContext) {
-        context.costs.kitsukiChiariCost = cardName;
-        return true;
-    }
 
     allowAttachment(attachment: DrawCard) {
         if(attachment.hasTrait('poison') && !this.isBlank()) {

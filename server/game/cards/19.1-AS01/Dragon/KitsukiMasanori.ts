@@ -1,7 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 const selectAttachmentPrompt = 'Select an attachment';

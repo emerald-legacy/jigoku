@@ -7,7 +7,7 @@ class SageOfGiseiToshi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move home, then move character home')
-            .condition((context) => Boolean(context.player.opponent) && context.player.isMoreHonorable())
+            .condition((context) => context.player.isMoreHonorable())
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -15,7 +15,7 @@ class SageOfGiseiToshi extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.sendHome())
             .then((context) => ({
-                gameAction: AbilityDsl.actions.sendHome({ target: context?.target })
+                gameAction: AbilityDsl.actions.sendHome({ target: context.target })
             }));
     }
 }

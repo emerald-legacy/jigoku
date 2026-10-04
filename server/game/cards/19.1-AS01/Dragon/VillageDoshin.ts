@@ -11,10 +11,10 @@ export default class VillageDoshin extends DrawCard {
         this.wouldInterrupt('Protect attachment from leaving play')
             .when({
                 onInitiateAbilityEffects: (event, context) =>
-                    (event.cardTargets ?? []).some((card) => {
+                    event.cardTargets.some((card) => {
                         const attachment = card.type === CardType.Attachment;
                         const onCharacterYouControl =
-                            card instanceof DrawCard && card.parentCharacter?.controller === context.player;
+                            card.parentCharacter?.controller === context.player;
                         const inPlay = card.location === Location.PlayArea;
                         return attachment && onCharacterYouControl && inPlay;
                     })
@@ -29,7 +29,7 @@ export default class VillageDoshin extends DrawCard {
                     return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
                 },
                 falseGameAction: AbilityDsl.actions.cancel(),
-                trueGameAction: AbilityDsl.actions.chooseAction(() => ({
+                trueGameAction: AbilityDsl.actions.chooseAction({
                     player: Players.Opponent,
                     activePromptTitle: 'Select one',
                     options: {
@@ -46,9 +46,9 @@ export default class VillageDoshin extends DrawCard {
                         }
                     },
                     messageArgs: [context.event.card]
-                }))
+                })
             })))
-            .effect('protect {1}', (context) => context.event.cardTargets ?? [])
+            .effect('protect {1}', (context) => context.event.cardTargets)
             .location(Location.Hand);
     }
 }

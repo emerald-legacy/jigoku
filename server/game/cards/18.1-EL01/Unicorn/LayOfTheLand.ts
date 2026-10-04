@@ -16,9 +16,6 @@ export default class LayOfTheLand extends DrawCard {
             }, AbilityDsl.actions.reveal(), AbilityDsl.actions.turnFacedown())
             .effect('{1} {2}', (context) => {
                 const target = context.target;
-                if(!target) {
-                    return ['reveal', ''];
-                }
                 return target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location];
             });
     }

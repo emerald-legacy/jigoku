@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class Kinki extends DrawCard {
         this.action('Remove a fate from or move home a character')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition((context) =>
-                !!(context.game.isDuringConflict('military') &&
+                !!(context.game.isDuringConflict(ConflictType.Military) &&
                 context.source.parentCharacter &&
                 context.source.parentCharacter.isParticipating()))
             .target('character', {

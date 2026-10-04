@@ -1,8 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location, Players, Duration, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
-import BaseCard from '../../../BaseCard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type BaseCard from '../../../BaseCard.js';
 
 export default class HirumasEyes extends DrawCard {
     static id = 'hiruma-s-eyes';

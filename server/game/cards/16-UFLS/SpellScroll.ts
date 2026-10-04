@@ -30,6 +30,6 @@ export default class SpellScroll extends DrawCard {
                 })),
                 AbilityDsl.actions.sacrifice((context) => ({ target: context.source }))
             ]))
-            .effect('move {1} to their hand and sacrifice {2}', (context) => [context.target ?? '', context.source]);
+            .effect('move {1} to their hand and sacrifice {2}', (context) => [context.target, context.source]);
     }
 }

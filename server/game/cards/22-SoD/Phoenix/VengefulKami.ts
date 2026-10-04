@@ -17,7 +17,7 @@ export default class VengefulKami extends DrawCard {
             .ringTarget('target', {
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
-                    !!context && context.game.requireConflict()
+                    context.game.requireConflict()
                         .getConflictProvinces()
                         .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict) && province.getElement().includes(ring.element))
             }, AbilityDsl.actions.resolveRingEffect())

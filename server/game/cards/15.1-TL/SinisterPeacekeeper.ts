@@ -8,9 +8,8 @@ class SinisterPeacekeeper extends DrawCard {
         this.reaction('Make opponent lose an honor')
             .when({
                 onModifyHonor: (event, context) =>
-                    (event.amount ?? 0) > 0 && context.player.opponent &&
-                    event.player === context.player.opponent,
-                onTransferHonor: (event, context) => event.player === context.player && (event.amount ?? 0) > 0
+                    event.amount > 0 && event.player === context.player.opponent,
+                onTransferHonor: (event, context) => event.player === context.player && event.amount > 0
             })
             .gameAction(AbilityDsl.actions.loseHonor((context) => ({
                 target: context.player.opponent

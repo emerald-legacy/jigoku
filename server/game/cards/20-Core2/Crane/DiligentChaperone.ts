@@ -12,7 +12,7 @@ function targetsFromEvent(event: ChaperoneEvent): WeakSet<BaseCard> {
         case EventName.OnStatusTokenMoved:
             return new WeakSet(event.donor ? [event.donor] : []);
         case EventName.OnCardDishonored:
-            return new WeakSet(event.card ? [event.card] : []);
+            return new WeakSet([event.card]);
         case EventName.OnStatusTokenDiscarded:
             return new WeakSet(event.cards);
         default:
@@ -36,24 +36,20 @@ export default class DiligentChaperone extends DrawCard {
         this.reaction('Rehonor the character')
             .when({
                 onStatusTokenMoved: (event, context) =>
-                    !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
+                    event.token.grantedStatus === CharacterStatus.Honored &&
                     !!event.donor && isFriendlyCharacter(context, event.donor) &&
                     !context.source.bowed,
                 onCardDishonored: (event, context) =>
                     event.card.isOrdinary() && isFriendlyCharacter(context, event.card) && !context.source.bowed,
                 onStatusTokenDiscarded: (event, context) =>
                     !context.source.bowed &&
-                    !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
-                    (event.cards ?? []).some(isFriendlyCharacter.bind(null, context))
+                    event.token.grantedStatus === CharacterStatus.Honored &&
+                    event.cards.some(isFriendlyCharacter.bind(null, context))
             })
             .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => targetsFromEvent(context.event).has(card),
-                subActionProperties: (card) => {
-                    context.target = card;
-                    return { target: card };
-                },
                 gameAction: AbilityDsl.actions.honor(),
                 message: '{0} honors {1}',
                 messageArgs: (card, player) => [player, card]

@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,14 +21,14 @@ export default class Pressure extends DrawCard {
                 cardCondition: (card, context) => card.isCharacter() && card.isDishonored && card.isParticipating() && (
                     context.event.attackers?.includes(card) ||
                     context.event.defenders?.includes(card) ||
-                    context.event?.card === card
+                    context.event.card === card
                 ),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.sendHome(),
                     AbilityDsl.actions.cardLastingEffect({
                         effect: [
-                            AbilityDsl.effects.cannotParticipateAsAttacker('military'),
-                            AbilityDsl.effects.cannotParticipateAsDefender('military')
+                            AbilityDsl.effects.cannotParticipateAsAttacker(ConflictType.Military),
+                            AbilityDsl.effects.cannotParticipateAsDefender(ConflictType.Military)
                         ]
                     })
                 ]),

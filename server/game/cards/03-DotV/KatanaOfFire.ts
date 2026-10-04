@@ -32,7 +32,7 @@ class KatanaOfFire extends DrawCard {
         return this.controller.getNumberOfCardsInPlay((card) => card.hasTrait('fire'));
     }
     totalKatanaModifier() {
-        var skillModifier = this.controllerHasFireRing() ? 2 : 0;
+        let skillModifier = this.controllerHasFireRing() ? 2 : 0;
         skillModifier += this.numberOfFireCards();
         return skillModifier;
     }

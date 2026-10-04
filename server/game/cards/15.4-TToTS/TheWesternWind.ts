@@ -14,14 +14,14 @@ class TheWesternWind extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.location !== 'stronghold province'
+                cardCondition: (card) => card.location !== Location.StrongholdProvince
             }, AbilityDsl.actions.deckSearch({
                 cardCondition: (card) => card.type === CardType.Character,
                 targetMode: TargetMode.UpToVariable,
                 numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
                 amount: 8,
                 deck: Decks.DynastyDeck,
-                selectedCardsHandler: (context, event, cards: DrawCard[]) => {
+                selectedCardsHandler: (context, event, cards) => {
                     const target = context.target;
                     if(!target) {
                         return;

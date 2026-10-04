@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import { ConflictType } from '../../Constants.js';
 
 class UtakuBattleSteed extends DrawCard {
     static id = 'utaku-battle-steed';
@@ -17,7 +18,7 @@ class UtakuBattleSteed extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
-                                                   event.conflict.conflictType === 'military'
+                                                   event.conflict.conflictType === ConflictType.Military
             })
             .gameAction(AbilityDsl.actions.honor((context) => ({
                 target: context.source.parentCharacter ?? []

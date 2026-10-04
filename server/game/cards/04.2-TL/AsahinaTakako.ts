@@ -47,8 +47,8 @@ export default class AsahinaTakako extends DrawCard {
                 }
             })))
             .effect('switch or discard {1} in {2}', (context) => [
-                context.target?.isFacedown() ? 'a facedown card' : context.target ?? '',
-                context.target?.location ?? ''
+                context.target.isFacedown() ? 'a facedown card' : context.target,
+                context.target.location
             ]);
     }
 }

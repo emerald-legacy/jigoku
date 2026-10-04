@@ -1,19 +1,17 @@
 import { CardType, Duration, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../BaseCard.js';
+import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class RisingStarsKata extends DrawCard {
     static id = 'rising-stars-kata';
-    private eventRegistrar?: EventRegistrar;
 
     private duelWinnersThisConflict = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
+        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
 
         this.action('Give a participating unique character +3 military skill')
             .target('target', {
@@ -25,7 +23,7 @@ export default class RisingStarsKata extends DrawCard {
                     ? AbilityDsl.effects.modifyMilitarySkill(5)
                     : AbilityDsl.effects.modifyMilitarySkill(3)
             })))
-            .effect('give {0} +{1} {2} skill until the end of the conflict', (context) => [context.target && this.duelWinnersThisConflict.has(context.target) ? 5 : 3, 'military'])
+            .effect('give {0} +{1} {2} skill until the end of the conflict', (context) => [this.duelWinnersThisConflict.has(context.target) ? 5 : 3, 'military'])
             .max(AbilityDsl.limit.perConflict(1));
     }
 
@@ -34,9 +32,8 @@ export default class RisingStarsKata extends DrawCard {
     }
 
     public afterDuel(event: EventPayload<EventName.AfterDuel>) {
-        if(event.duel?.winner) {
-            const winners: BaseCard[] = Array.isArray(event.duel.winner) ? event.duel.winner : [event.duel.winner];
-            winners.forEach((duelWinner) => this.duelWinnersThisConflict.add(duelWinner));
+        for(const winner of event.duel.winner ?? []) {
+            this.duelWinnersThisConflict.add(winner);
         }
     }
 }

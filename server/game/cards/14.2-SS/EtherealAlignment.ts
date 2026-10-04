@@ -14,8 +14,7 @@ class EtherealAlignment extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card, context) => {
-                    const province = card;
-                    return province.isBroken && province.element.some((element: string) => {
+                    return card.isBroken && card.element.some((element: string) => {
                         if(element === 'all') {
                             return true;
                         }

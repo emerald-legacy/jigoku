@@ -9,7 +9,7 @@ class TrustedAdvisor extends DrawCard {
             .when({
                 onMoveFate: (event, context) => context.source.isParticipating() &&
                     event.origin && event.origin.type === 'ring' &&
-                    event.recipient && event.recipient === context.player
+                    event.recipient === context.player
             })
             .gameAction(AbilityDsl.actions.draw())
             .effect('draw a card');

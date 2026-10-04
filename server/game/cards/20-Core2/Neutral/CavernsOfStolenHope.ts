@@ -10,7 +10,7 @@ export default class CavernsOfStolenHope extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             })
             .gameAction(AbilityDsl.actions.discardAtRandom((context) => ({
-                amount: Math.max(0, context.game.currentConflict?.getNumberOfParticipantsFor?.('attacker') ?? 0)
+                amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
             })));
     }
 }

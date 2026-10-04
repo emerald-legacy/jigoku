@@ -8,14 +8,12 @@ export default class DevotionInAction extends DrawCard {
     setupCardAbilities() {
         this.action('Put a character into play')
             .condition((context) =>
-                !!(context.game.isDuringConflict() &&
-        context.player.opponent &&
-        context.game.currentConflict?.hasMoreParticipants(context.player.opponent, () => true)))
+                !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
             .target('target', {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
-                cardCondition: (card) => card instanceof DrawCard && card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3
+                cardCondition: (card) => card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3
             }, AbilityDsl.actions.putIntoConflict((context) => ({
                 target: context.target,
                 status: context.target.hasTrait('yojimbo') ? 'honored' : 'ordinary'

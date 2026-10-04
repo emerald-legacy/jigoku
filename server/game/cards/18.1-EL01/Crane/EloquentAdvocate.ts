@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Location } from '../../../Constants.js';
+import { ConflictType, Location } from '../../../Constants.js';
 
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
@@ -9,7 +9,7 @@ class EloquentAdvocate extends DrawCard {
         this.reaction('Look at top 2 cards of conflict deck')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() &&
-                                                   event.conflict.conflictType === 'political'
+                                                   event.conflict.conflictType === ConflictType.Political
             })
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 2,

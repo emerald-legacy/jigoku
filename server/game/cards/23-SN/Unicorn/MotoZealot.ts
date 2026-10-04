@@ -7,7 +7,7 @@ export default class MotoZealot extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Pressure a character')
-            .condition(context => context.source.isAttacking() && !!context.game.currentConflict && !!context.player.opponent && !context.game.currentConflict.hasMoreParticipants(context.player.opponent, () => true))
+            .condition(context => context.source.isAttacking() && !!context.game.currentConflict && !!context.player.opponent && !context.game.currentConflict.hasMoreParticipants(context.player.opponent))
             .target('character', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
+import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location } from '../../Constants.js';
 
@@ -18,7 +18,7 @@ class KitsukiYaruma extends DrawCard {
             }, AbilityDsl.actions.turnFacedown());
     }
 
-    allowAttachment(attachment: BaseCard | DrawCard): boolean {
+    allowAttachment(attachment: BaseCard): boolean {
         if(attachment.hasTrait('poison') && !this.isBlank()) {
             return false;
         }

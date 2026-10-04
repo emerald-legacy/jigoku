@@ -2,7 +2,7 @@ import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Location } from '../../../Constants.js';
 
-class SearchTheArchives extends DrawCard {
+class EmptyCityArchivist extends DrawCard {
     static id = 'empty-city-archivist';
 
     setupCardAbilities() {
@@ -26,4 +26,4 @@ class SearchTheArchives extends DrawCard {
 }
 
 
-export default SearchTheArchives;
+export default EmptyCityArchivist;

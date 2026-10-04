@@ -14,7 +14,7 @@ export default class Coward extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => {
                     const duel = context.event.duel;
-                    if(!duel || !card.isDrawCard()) {
+                    if(!card.isDrawCard()) {
                         return false;
                     }
                     const isInvolved = duel.isInvolved(card);

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CavalryReserves extends DrawCard {
@@ -7,7 +7,7 @@ export default class CavalryReserves extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put Cavalry into play from your discard')
-            .condition((context) => context.game.isDuringConflict('military'))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .targetCards('target', {
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',

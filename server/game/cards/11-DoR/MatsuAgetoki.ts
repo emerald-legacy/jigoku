@@ -7,7 +7,7 @@ class MatsuAgetoki extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
-            .condition(context => !!(context.player && context.player.opponent && context.player.isMoreHonorable() && context.source.isAttacking()))
+            .condition(context => context.player.isMoreHonorable() && context.source.isAttacking())
             .gameAction(AbilityDsl.actions.selectCard(context => ({
                 cardType: CardType.Province,
                 location: Location.Provinces,

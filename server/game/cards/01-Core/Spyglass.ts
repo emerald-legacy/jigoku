@@ -8,7 +8,7 @@ class Spyglass extends DrawCard {
         this.reaction('Draw a card')
             .when({
                 onConflictDeclared: (event, context) => (event.attackers ?? []).some((card) => card === context.source.parentCharacter),
-                onDefendersDeclared: (event, context) => (event.defenders ?? []).some((card) => card === context.source.parentCharacter),
+                onDefendersDeclared: (event, context) => event.defenders.some((card) => card === context.source.parentCharacter),
                 onMoveToConflict: (event, context) => event.card === context.source.parentCharacter
             })
             .gameAction(AbilityDsl.actions.draw())

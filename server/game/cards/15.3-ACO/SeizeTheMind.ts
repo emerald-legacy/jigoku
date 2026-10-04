@@ -23,7 +23,7 @@ class SeizeTheMind extends DrawCard {
                 }))
             ]))
             .effect('take control of {0}{1}{2}{3}', context => {
-                const fate = context.target?.getFate() ?? 0;
+                const fate = context.target.getFate();
                 return fate > 0 ? [' and lose ', fate, ' honor'] : ['', '', ''];
             });
     }

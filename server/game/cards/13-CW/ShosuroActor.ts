@@ -17,6 +17,6 @@ export default class ShosuroActor extends DrawCard {
                 target: context.source,
                 effect: context.target ? AbilityDsl.effects.copyCard(context.target) : []
             })))
-            .effect('become a copy of {1}', (context) => [context.target ?? '']);
+            .effect('become a copy of {1}', (context) => [context.target]);
     }
 }

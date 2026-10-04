@@ -1,4 +1,4 @@
-import { CardType, Duration, Location, Phases } from '../../../Constants.js';
+import { CardType, Duration, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,15 +10,13 @@ export default class ObstinateWitchHunter extends DrawCard {
             .when({
                 onPhaseStarted: (event, context) =>
                     event.phase === Phases.Fate &&
-                    context.game.allCards.some(
+                    context.game.findAnyCardsInPlay(
                         (card) =>
-                            card instanceof DrawCard &&
                             card.type === CardType.Character &&
-                            card.location === Location.PlayArea &&
                             card.isFaceup() &&
                             card !== context.source &&
                             (card.isTainted || card.hasTrait('shadowlands'))
-                    )
+                    ).length > 0
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,

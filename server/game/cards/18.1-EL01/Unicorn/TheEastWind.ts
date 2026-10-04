@@ -14,7 +14,7 @@ export default class TheEastWind extends StrongholdCard {
             })
             .cost(AbilityDsl.costs.bowSelf())
             .gameAction(AbilityDsl.actions.deckSearch((context) => {
-                const playedCardTraits = context.event.card?.getTraitSet() ?? new Set<string>();
+                const playedCardTraits = context.event.card.getTraitSet();
                 return {
                     amount: 5,
                     cardCondition: (card) => {

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityContext } from '../../AbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class Blackmail extends DrawCard {
     static id = 'blackmail';
@@ -19,7 +19,7 @@ class Blackmail extends DrawCard {
             .effect('take control of {0}');
     }
 
-    canPlay(context: AbilityContext, playType: string = 'play'): boolean {
+    canPlay(context: AbilityContext, playType = 'play'): boolean {
         if(context.player.opponent && context.player.isLessHonorable()) {
             return super.canPlay(context, playType);
         }

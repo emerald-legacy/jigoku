@@ -38,7 +38,7 @@ export default class UnderTheNewMoon extends DrawCard {
 
     private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {
         const min = 1;
-        const max = event.attackerMatrix?.maximumNumberOfAttackers ?? 0;
+        const max = event.attackerMatrix.maximumNumberOfAttackers;
         const array = [];
         for(let i = min; i <= max; i++) {
             array.push(i.toString());

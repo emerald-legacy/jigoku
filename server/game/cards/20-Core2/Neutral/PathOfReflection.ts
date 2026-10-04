@@ -17,7 +17,7 @@ export default class PathOfReflection extends ProvinceCard {
             .effect('switch {0}\'s military and political skill')
             .conflictProvinceCondition((province, context) =>
                 province.isElement(this.getCurrentElementSymbol(this.provinceElement)) ||
-                (context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.conflictElement)) ?? false));
+                (context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(this.conflictElement)) ?? false));
     }
 
     getPrintedElementSymbols() {

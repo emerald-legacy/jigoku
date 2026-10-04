@@ -9,12 +9,10 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class HonoredVeterans extends DrawCard {
     static id = 'honored-veterans';
 
-    private eventRegistrar?: EventRegistrar;
     private charactersPlayedThisPhase = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
+        new EventRegistrar(this.game, this).register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
 
         this.action('Honor characters')
             .condition(() => this.canBePlayed())
@@ -37,7 +35,7 @@ export default class HonoredVeterans extends DrawCard {
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
-        if(event.player && event.card.type === CardType.Character) {
+        if(event.card.type === CardType.Character) {
             this.charactersPlayedThisPhase.add(event.card);
         }
     }

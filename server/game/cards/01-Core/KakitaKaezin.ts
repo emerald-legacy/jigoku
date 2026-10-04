@@ -16,7 +16,6 @@ export default class KakitaKaezin extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.duel((context) => ({
                 type: DuelType.Military,
-                challenger: context.source,
                 gameAction: (duel) =>
                     AbilityDsl.actions.sendHome({
                         target:

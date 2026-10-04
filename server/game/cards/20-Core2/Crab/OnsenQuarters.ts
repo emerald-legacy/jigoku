@@ -11,9 +11,8 @@ export default class OnsenQuarters extends ProvinceCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            condition: () => true,
             match: (card, context) =>
-                !!context && card.type === CardType.Province && card !== context?.source && card.controller === context?.player,
+                !!context && card.type === CardType.Province && card !== context.source && card.controller === context.player,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 

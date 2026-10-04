@@ -1,4 +1,4 @@
-import { CardType, Duration, Element, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Duration, Element, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
@@ -34,8 +34,6 @@ function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: Draw
                             context.game.promptForSelect(context.player, {
                                 activePromptTitle: 'Choose a card to discard',
                                 context: context,
-                                mode: TargetMode.Single,
-                                numCards: 1,
                                 location: Location.Hand,
                                 controller: Players.Self,
                                 onSelect: (_player, card) => {
@@ -85,9 +83,7 @@ export default class Maelstrom extends ProvinceCard {
                     context.costs.maelstromCostPaid ? true : card.controller === context.player
             }, AbilityDsl.actions.multipleContext((context) => {
                 const target = context.target;
-                // "you" is whoever triggered this, which is not always the province's
-                // controller (Contested Countryside). A delayed effect's own context is
-                // owned by the source's controller, so capture the player here.
+                // the triggering player, not always the controller (Contested Countryside)
                 const triggeringPlayer = context.player;
                 return {
                     gameActions: [
@@ -111,7 +107,7 @@ export default class Maelstrom extends ProvinceCard {
                 };
             }))
             .effect('move {0} into the conflict{1}', (context) =>
-                context.target?.controller === context.player ? ['. It will be honored if it wins the conflict'] : [''])
+                context.target.controller === context.player ? ['. It will be honored if it wins the conflict'] : [''])
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .cannotTargetFirst();
     }

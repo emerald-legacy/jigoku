@@ -8,11 +8,9 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
 
     private attackingAtConflictResolution = false;
     private provinceBroken = false;
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
+        new EventRegistrar(this.game, this).register([
             EventName.AfterConflict,
             EventName.OnBreakProvince,
             EventName.OnConflictDeclared

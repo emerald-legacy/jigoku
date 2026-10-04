@@ -8,7 +8,7 @@ class ReturnFromShadows extends DrawCard {
     setupCardAbilities() {
         this.reaction('Blank and reveal a province')
             .when({
-                afterConflict: (event, context) => event.conflict && event.conflict.winner === context.player && event.conflict.conflictUnopposed
+                afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictUnopposed
             })
             .target('target', {
                 location: Location.Provinces,

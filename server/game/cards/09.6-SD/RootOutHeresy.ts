@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, EventName, Location } from '../../Constants.js';
+import { CardType, EventName, Location, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RootOutHeresy extends DrawCard {
@@ -8,7 +8,7 @@ class RootOutHeresy extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a card at random from your opponent\'s hand')
-            .condition(() => this.game.isDuringConflict('political'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .gameAction(AbilityDsl.actions.discardAtRandom(context => ({ target: context.player.opponent })))
             .then((context) => ({
                 gameAction: AbilityDsl.actions.selectCard({

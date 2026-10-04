@@ -29,7 +29,7 @@ class HanteiXXXVIII extends DrawCard {
             .handler(context => {
                 context.event.context.choosingPlayerOverride = context.player;
             })
-            .effect('choose targets for {1}\'s {2} ability', context => [context.event.card ?? '', context.event.ability?.title ?? '']);
+            .effect('choose targets for {1}\'s {2} ability', context => [context.event.card, context.event.ability.title]);
     }
 }
 

@@ -41,9 +41,6 @@ class PrepareForWar extends DrawCard {
             ]))
             .effect('{1}{2} {0}', (context) => {
                 const target = context.target;
-                if(!target) {
-                    return ['', ''];
-                }
                 const isCommander = target.hasTrait('commander');
                 const hasAttachments = target.attachments.length > 0;
                 const hasToken = target.isDishonored || target.isHonored;

@@ -30,7 +30,6 @@ export default class Kuro extends DrawCard {
                     source: this,
                     payCosts: true,
                     target: context.target,
-                    optional: false,
                     playCardTarget: (attachContext) => {
                         attachContext.target = context.source;
                         attachContext.targets.target = context.source;
@@ -43,7 +42,7 @@ export default class Kuro extends DrawCard {
                 }))
             ]))
             .effect('seek the lost treasure \'{1}\'. {2}', (context) => [
-                context.target ?? '',
+                context.target,
                 context.source.isParticipating()
                     ? 'Kuro returns home with their treasure'
                     : 'Kuro swoops into the conflict'

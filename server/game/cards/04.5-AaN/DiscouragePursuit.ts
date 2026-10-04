@@ -11,9 +11,9 @@ class DiscouragePursuit extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
+            }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyMilitarySkill(-4)
-            })))
+            }))
             .effect('reduce {0}\'s military skill by 4');
     }
 }

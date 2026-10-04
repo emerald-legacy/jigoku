@@ -25,7 +25,7 @@ export default class KitsukiSeiji extends DrawCard {
             .when({
                 onMoveFate: (event) => this.fateRecipientIsSeijisRing(event.recipient),
                 onPlaceFateOnUnclaimedRings: (event) =>
-                    (event.recipients ?? []).some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
+                    event.recipients.some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             })
             .gameAction(AbilityDsl.actions.cancel((context) => {
                 const event = context.event;
@@ -67,7 +67,7 @@ export default class KitsukiSeiji extends DrawCard {
 
     private replacementForPlaceFateOnUnclaimedRings(event: GameEvent<EventName.OnPlaceFateOnUnclaimedRings>, source: BaseCard) {
         return AbilityDsl.actions.joint(
-            (event.recipients ?? []).map((recipient) => {
+            event.recipients.map((recipient) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({

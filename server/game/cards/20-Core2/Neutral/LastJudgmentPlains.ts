@@ -5,7 +5,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 const DONOR = 'donor';
 const RECIPIENT = 'recipient';
 
-export default class LastJudgementPlains extends ProvinceCard {
+export default class LastJudgmentPlains extends ProvinceCard {
     static id = 'last-judgment-plains';
 
     public setupCardAbilities() {
@@ -22,7 +22,6 @@ export default class LastJudgementPlains extends ProvinceCard {
                 controller: Players.Self
             }, AbilityDsl.actions.menuPrompt(({ targets }) => ({
                 activePromptTitle: 'How much fate do you want to move?',
-                optional: false,
                 choices: this.createChoiceArray(targets[DONOR].getFate()),
                 choiceHandler: (choice) => ({
                     amount: parseInt(choice, 10),

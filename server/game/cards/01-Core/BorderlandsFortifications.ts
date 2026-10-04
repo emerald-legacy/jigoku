@@ -9,12 +9,9 @@ class BorderlandsFortifications extends DrawCard {
             .target('target', {
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isDynasty && card !== context?.source
+                cardCondition: (card, context) => card.isDynasty && card !== context.source
             })
             .handler((context) => {
-                if(!context.target) {
-                    return;
-                }
                 const location = context.source.location;
                 context.player.removeCardFromPile(context.source);
                 context.player.removeCardFromPile(context.target);
@@ -23,7 +20,7 @@ class BorderlandsFortifications extends DrawCard {
                 context.player.getSourceList(location).push(context.target);
                 context.player.getSourceList(context.source.location).push(context.source);
             })
-            .effect('swap it with {1}', (context) => context.target?.isFacedown() ? 'a facedown card' : context.target ?? '');
+            .effect('swap it with {1}', (context) => context.target.isFacedown() ? 'a facedown card' : context.target);
     }
 }
 

@@ -1,4 +1,4 @@
-import { Duration } from '../../Constants.js';
+import { Duration, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -8,11 +8,9 @@ export default class PerfectGuest extends DrawCard {
     static id = 'perfect-guest';
 
     private barredThisRound?: Player;
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onRoundEnded']);
+        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded]);
 
         this.action('Give control of this character')
             .condition((context) => context.player.opponent !== undefined && context.player !== this.barredThisRound)

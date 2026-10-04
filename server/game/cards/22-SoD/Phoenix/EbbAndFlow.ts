@@ -20,32 +20,32 @@ export default class EbbAndFlow extends DrawCard {
                 effect: AbilityDsl.effects.switchBaseSkills()
             }))
             .effect('switch {1}\'s military and political skill', context => [context.targets.opponents])
-            .then((ctx) => {
+            .then((context) => {
                 return {
-                    thenCondition: () => ctx.player.fate > 0 && ctx.game.actions.loseFate().canAffect(ctx.player, ctx),
+                    thenCondition: () => context.player.fate > 0 && context.game.actions.loseFate().canAffect(context.player, context),
                     gameAction: AbilityDsl.actions.onAffinity({
                         trait: 'water',
                         promptTitleForConfirmingAffinity: 'Pay 1 fate to swap abilities?',
                         effect: 'swap the abilities of {0} and {1}',
-                        effectArgs: () => [ctx.targets.mine, ctx.targets.opponents],
+                        effectArgs: () => [context.targets.mine, context.targets.opponents],
                         gameAction: AbilityDsl.actions.joint([
                             AbilityDsl.actions.loseFate({
-                                target: ctx.player,
+                                target: context.player,
                                 amount: 1
                             }),
                             AbilityDsl.actions.cardLastingEffect({
-                                target: ctx.targets.mine,
+                                target: context.targets.mine,
                                 effect: [
                                     AbilityDsl.effects.blank(),
-                                    AbilityDsl.effects.gainAllAbilities(ctx.targets.opponents, true)
+                                    AbilityDsl.effects.gainAllAbilities(context.targets.opponents, true)
                                 ],
                                 duration: Duration.UntilEndOfConflict
                             }),
                             AbilityDsl.actions.cardLastingEffect({
-                                target: ctx.targets.opponents,
+                                target: context.targets.opponents,
                                 effect: [
                                     AbilityDsl.effects.blank(),
-                                    AbilityDsl.effects.gainAllAbilities(ctx.targets.mine, true)
+                                    AbilityDsl.effects.gainAllAbilities(context.targets.mine, true)
                                 ],
                                 duration: Duration.UntilEndOfConflict
                             })

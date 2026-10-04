@@ -7,10 +7,9 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prove yourself worthy of a Matsu name')
             .when({
-                onConflictDeclared: (_event, context) => {
-                    const conflict = context.game.currentConflict;
+                onConflictDeclared: (event, context) => {
+                    const conflict = event.conflict;
                     return (
-                        !!conflict &&
                         context.player === conflict.attackingPlayer &&
                         conflict.getNumberOfParticipantsFor(context.player) === 1 &&
                         conflict.getParticipants(

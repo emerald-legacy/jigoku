@@ -12,7 +12,7 @@ class UtakuKamoko extends DrawCard {
         });
         this.reaction('Ready and honor')
             .when({
-                onBreakProvince: (event, context) => context.player.opponent && event.conflict && event.conflict.attackingPlayer === context.player.opponent
+                onBreakProvince: (event, context) => !!event.conflict && event.conflict.attackingPlayer === context.player.opponent
             })
             .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand,

@@ -1,11 +1,11 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import Player from '../../../Player.js';
+import type Player from '../../../Player.js';
 import type { Event } from '../../../Events/Event.js';
 
 class HifumiCost extends ReduceableFateCost {
@@ -64,17 +64,16 @@ class HifumiCost extends ReduceableFateCost {
 
 export default class IsawaHifumi extends DrawCard {
     static id = 'isawa-hifumi';
-    private eventRegistrar?: EventRegistrar;
 
-    hifumiCost!: HifumiCost;
+    private hifumiCost?: HifumiCost;
 
     setupCardAbilities() {
-        this.hifumiCost = new HifumiCost(false);
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        const hifumiCost = new HifumiCost(false);
+        this.hifumiCost = hifumiCost;
+        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
         this.action('Play an event from discard')
-            .cost(this.hifumiCost)
+            .cost(hifumiCost)
             .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
@@ -91,18 +90,18 @@ export default class IsawaHifumi extends DrawCard {
                     }
                 })
             })))
-            .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [this.hifumiCost.currentCost(context.player), context.player])
+            .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [hifumiCost.currentCost(context.player), context.player])
             .limit(AbilityDsl.limit.unlimited())
             .cannotTargetFirst();
     }
 
     public onRoundEnded() {
-        this.hifumiCost.refreshHifumiCount();
+        this.hifumiCost?.refreshHifumiCount();
     }
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(event.card === this) {
-            this.hifumiCost.refreshHifumiCount();
+            this.hifumiCost?.refreshHifumiCount();
         }
     }
 }

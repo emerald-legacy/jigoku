@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Element } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SuddenTempest extends DrawCard {
@@ -16,7 +16,7 @@ class SuddenTempest extends DrawCard {
                     until: {
                         onBeginRound: () => true
                     },
-                    target: context.ring?.getElements().map((element: Element) => this.game.rings[element]),
+                    target: context.ring?.getElements().map((element) => this.game.rings[element]),
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onRoundEnded: () => true

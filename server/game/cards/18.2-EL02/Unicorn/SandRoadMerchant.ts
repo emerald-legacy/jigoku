@@ -25,11 +25,11 @@ export default class SandRoadMerchant extends DrawCard {
                 onConflictDeclared: (event, context) =>
                     (event.attackers ?? []).includes(context.source) && context.player.opponent !== undefined,
                 onDefendersDeclared: (event, context) =>
-                    (event.defenders ?? []).includes(context.source) && context.player.opponent !== undefined
+                    event.defenders.includes(context.source) && context.player.opponent !== undefined
             })
             .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.deckSearch(() => ({
+                    AbilityDsl.actions.deckSearch({
                         amount: 2,
                         player: context.player.opponent,
                         choosingPlayer: context.player,
@@ -38,7 +38,7 @@ export default class SandRoadMerchant extends DrawCard {
                         }),
                         shuffle: false,
                         reveal: true
-                    })),
+                    }),
                     AbilityDsl.actions.chooseAction(() => {
                         const topCard = context.player.opponent?.conflictDeck[0];
                         return {

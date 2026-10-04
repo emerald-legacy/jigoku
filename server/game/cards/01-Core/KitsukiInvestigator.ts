@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ConflictType } from '../../Constants.js';
 
 class KitsukiInvestigator extends DrawCard {
     static id = 'kitsuki-investigator';
@@ -7,7 +8,7 @@ class KitsukiInvestigator extends DrawCard {
     setupCardAbilities() {
         this.action('Look at opponent\'s hand')
             .cost(AbilityDsl.costs.payFateToRing())
-            .condition(context => context.source.isParticipating() && this.game.isDuringConflict('political') &&
+            .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political) &&
                                   !!context.player.opponent && context.player.opponent.hand.length > 0)
             .gameAction(AbilityDsl.actions.lookAt((context) => ({
                 target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name))

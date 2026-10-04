@@ -1,6 +1,6 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, TargetMode, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
@@ -28,8 +28,7 @@ function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: bool
                                 context.game.promptForSelect(opponent, {
                                     activePromptTitle: 'Choose a card to discard',
                                     context: context,
-                                    mode: TargetMode.Single,
-                                    numCards: 1,
+
                                     location: Location.Hand,
                                     controller: Players.Opponent,
                                     onSelect: (_player, card) => {

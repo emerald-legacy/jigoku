@@ -1,7 +1,7 @@
 import { DuelType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class IsawaHouseGuard extends DrawCard {
     static id = 'isawa-house-guard';

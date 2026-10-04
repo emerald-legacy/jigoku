@@ -19,10 +19,10 @@ export default class SagenOfHoneyedWords extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
-                effect: AbilityDsl.effects.modifyBothSkills(context.target ? skillBonus(context.target) : 0)
+                effect: AbilityDsl.effects.modifyBothSkills(skillBonus(context.target))
             })))
             .effect('get +{1}{2} and +{3}{4}', (context) => {
-                const bonus = context.target ? skillBonus(context.target) : 0;
+                const bonus = skillBonus(context.target);
                 return [bonus, 'military', bonus, 'political'];
             });
     }

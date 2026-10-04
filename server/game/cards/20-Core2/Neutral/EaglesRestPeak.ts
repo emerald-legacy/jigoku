@@ -17,7 +17,7 @@ export default class EaglesRestPeak extends ProvinceCard {
             .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const opponent = context.player.opponent;
                 const setAsideCards = shuffle(opponent?.hand ?? [])
-                    .slice(0, context.target?.getCost() ?? 0);
+                    .slice(0, context.target.getCost() ?? 0);
 
                 return {
                     gameActions: [
@@ -54,6 +54,6 @@ export default class EaglesRestPeak extends ProvinceCard {
                     ]
                 };
             }))
-            .effect('use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand', context => [context.target?.getCost() ?? 0, context.player.opponent]);
+            .effect('use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand', context => [context.target.getCost() ?? 0, context.player.opponent]);
     }
 }

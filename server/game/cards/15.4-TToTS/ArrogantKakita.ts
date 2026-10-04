@@ -16,6 +16,6 @@ export default class ArrogantKakita extends DrawCard {
                     target: duel.loser?.includes(context.source) ? context.source : []
                 })
             }))
-            .limit(AbilityDsl.limit.perRound(Infinity));
+            .limit(AbilityDsl.limit.unlimited());
     }
 }

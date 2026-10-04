@@ -7,10 +7,10 @@ class WholenessOfTheWorld extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Keep a claimed ring')
             .when({
-                onReturnRing: (event, context) => event.ring?.claimedBy === context.player.name
+                onReturnRing: (event, context) => event.ring.claimedBy === context.player.name
             })
             .gameAction(AbilityDsl.actions.cancel())
-            .effect('prevent {1} from returning to the unclaimed pool', context => context.event.ring ?? '')
+            .effect('prevent {1} from returning to the unclaimed pool', context => context.event.ring)
             .max(AbilityDsl.limit.perRound(1))
             .cannotBeMirrored();
     }

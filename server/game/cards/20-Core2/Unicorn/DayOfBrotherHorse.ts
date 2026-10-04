@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 
@@ -41,14 +40,14 @@ export default class DayOfBrotherHorse extends DrawCard {
                         duration: Duration.UntilEndOfPhase,
                         target: context.ring.getElements().map((element) => context.game.rings[element]),
                         effect: AbilityDsl.effects.cannotDeclareRing(
-                            (player: Player) => player === context.player.opponent
+                            (player) => player === context.player.opponent
                         )
                     }),
                     AbilityDsl.actions.draw({ target: context.player, amount: 3 }),
                     AbilityDsl.actions.chosenDiscard({ target: context.player })
                 ]
             })))
-            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring?.element ?? 'air')])
+            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
             .max(AbilityDsl.limit.perRound(1));
     }
 }

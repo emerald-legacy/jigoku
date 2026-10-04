@@ -9,9 +9,9 @@ class Duty extends DrawCard {
         this.wouldInterrupt('Cancel honor loss')
             .when({
                 onModifyHonor: (event, context) =>
-                    event.player === context.player && -(event.amount ?? 0) >= context.player.honor && event.context?.stage === Stage.Effect,
+                    event.player === context.player && -event.amount >= context.player.honor && event.context?.stage === Stage.Effect,
                 onTransferHonor: (event, context) =>
-                    event.player === context.player && (event.amount ?? 0) >= context.player.honor && event.context?.stage === Stage.Effect
+                    event.player === context.player && event.amount >= context.player.honor && event.context?.stage === Stage.Effect
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cancel(),

@@ -1,4 +1,4 @@
-import { AbilityType, CardType } from '../../../Constants.js';
+import { AbilityType, CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class MagariYari extends DrawCard {
                 title: 'Bow a character',
                 when: {
                     onMoveToConflict: (event, context) =>
-                        context.source.isParticipating('military') &&
+                        context.source.isParticipating(ConflictType.Military) &&
                         event.card.type === CardType.Character &&
                         event.card.isParticipating() &&
                         event.card.getMilitarySkill() < context.source.getMilitarySkill()

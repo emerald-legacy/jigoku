@@ -11,7 +11,7 @@ class SufferTheConsequences extends DrawCard {
         this.action('Gain another political conflict')
             .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.traits.some((trait: string) => validSacrificeTraits.includes(trait)) && card.bowed
+                cardCondition: (card) => card.traits.some((trait) => validSacrificeTraits.includes(trait)) && card.bowed
             }))
             .condition(context => context.game.currentPhase === Phases.Conflict)
             .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({

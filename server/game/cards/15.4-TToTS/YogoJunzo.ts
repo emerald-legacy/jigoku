@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { AbilityType, CardType, Players} from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -12,8 +11,8 @@ class YogoJunzo extends DrawCard {
                 title: 'Remove all fate from a character',
                 target: {
                     cardType: CardType.Character,
-                    gameAction: AbilityDsl.actions.removeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        amount: context.target.getFate()
+                    gameAction: AbilityDsl.actions.removeFate((context) => ({
+                        amount: context.target?.getFate() ?? 0
                     }))
                 },
                 effect: 'remove all fate from {0}'

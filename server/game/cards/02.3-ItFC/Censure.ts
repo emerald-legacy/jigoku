@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
-import { AbilityContext } from '../../AbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class Censure extends DrawCard {
     static id = 'censure';
@@ -15,7 +15,7 @@ class Censure extends DrawCard {
             .cannotBeMirrored();
     }
 
-    canPlay(context: AbilityContext, playType: string = 'play'): boolean {
+    canPlay(context: AbilityContext, playType = 'play'): boolean {
         if(context.player.imperialFavor !== '') {
             return super.canPlay(context, playType);
         }

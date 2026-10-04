@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OneWithTheSea extends DrawCard {
@@ -15,7 +15,7 @@ export default class OneWithTheSea extends DrawCard {
         this.action('Move any character to the conflict')
             .cost(AbilityDsl.costs.payFate(1))
             .condition((context) =>
-                context.game.isDuringConflict() && context.game.rings['water'].isConsideredClaimed(context.player))
+                context.game.isDuringConflict() && context.game.rings[Element.Water].isConsideredClaimed(context.player))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any

@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import { ConflictType } from '../../../Constants.js';
 
 export default class CompositeYumi extends DrawCard {
     static id = 'composite-yumi';
@@ -21,6 +22,6 @@ export default class CompositeYumi extends DrawCard {
     }
 
     private matchCondition(context: TriggeredAbilityContext<this>) {
-        return context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.game.isDuringConflict('military');
+        return context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.game.isDuringConflict(ConflictType.Military);
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HidaBackbreaker extends DrawCard {
@@ -9,7 +9,7 @@ class HidaBackbreaker extends DrawCard {
         this.reaction('Dishonor a character')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                                                   context.source.isParticipating() && context.game.isDuringConflict('military')
+                                                   context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
             })
             .target('target', {
                 activePromptTitle: 'Choose a character to dishonor',

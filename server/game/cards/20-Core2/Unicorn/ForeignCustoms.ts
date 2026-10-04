@@ -1,4 +1,4 @@
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, CharacterStatus, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,8 +15,7 @@ export default class ForeignCustoms extends DrawCard {
                 controller: Players.Self,
                 message: '{0} puts into the conflict {1} - they challenge the traditions of the empire',
                 messageArgs: (cards) => [context.player, cards],
-                subActionProperties: (card) => ({ target: card }),
-                gameAction: AbilityDsl.actions.putIntoConflict({ status: 'dishonored' })
+                gameAction: AbilityDsl.actions.putIntoConflict({ status: CharacterStatus.Dishonored })
             })));
 
         this.action('Ready a non-unicorn character')
@@ -25,7 +24,7 @@ export default class ForeignCustoms extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) =>
                         card.isFaction('unicorn') ||
-                        card.attachments?.some((a) => a.isFaction('unicorn'))
+                        card.attachments.some((a) => a.isFaction('unicorn'))
                 ))
             .target('target', {
                 cardType: CardType.Character,

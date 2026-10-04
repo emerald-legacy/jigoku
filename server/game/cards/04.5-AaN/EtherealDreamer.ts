@@ -15,7 +15,7 @@ class EtherealDreamer extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
-                condition: () => !!context.ring?.isContested(),
+                condition: () => context.ring.isContested(),
                 effect: AbilityDsl.effects.modifyBothSkills(2)
             })))
             .effect('give herself +2{1}/+2{2} while the {0} is contested', () => (['military', 'political']));

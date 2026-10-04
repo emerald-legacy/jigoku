@@ -47,5 +47,5 @@ type CardStatusEvent =
     | EventPayload<EventName.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext) {
-    return event.card?.controller === context.player && event.context?.source instanceof Ring;
+    return event.card.controller === context.player && event.context?.source instanceof Ring;
 }

@@ -62,16 +62,16 @@ export default class EyesOfTheSerpent extends DrawCard {
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.taint(),
-                AbilityDsl.actions.onAffinity((_context) => ({
+                AbilityDsl.actions.onAffinity({
                     trait: 'air',
                     gameAction: AbilityDsl.actions.gainHonor(context => ({
                         target: context.player,
                         amount: 1
                     })),
                     effect: 'gain 1 honor'
-                }))
+                })
             ]))
-            .effect('taint {1}', (context) => [context.target ?? '']);
+            .effect('taint {1}', (context) => [context.target]);
     }
 
     canPlay(context: AbilityContext, playType: string) {

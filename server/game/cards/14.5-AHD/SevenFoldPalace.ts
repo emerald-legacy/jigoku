@@ -13,6 +13,6 @@ export default class SevenFoldPalace extends StrongholdCard {
                     event.conflict.getAttackers().some((card) => card.isHonored && card.controller === context.player)
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.gainHonor(() => ({ amount: 2 })));
+            .gameAction(AbilityDsl.actions.gainHonor({ amount: 2 }));
     }
 }

@@ -14,7 +14,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
-                        AbilityDsl.actions.deckSearch(() => ({
+                        AbilityDsl.actions.deckSearch({
                             activePromptTitle: 'Choose a character to put into play',
                             amount: 5,
                             deck: Decks.DynastyDeck,
@@ -27,7 +27,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                                 return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
                             },
                             gameAction: AbilityDsl.actions.putIntoPlay()
-                        })),
+                        }),
                         AbilityDsl.actions.moveCard((context2) => ({
                             target: topFive.filter((a) => {
                                 const deckSearch = context2.events

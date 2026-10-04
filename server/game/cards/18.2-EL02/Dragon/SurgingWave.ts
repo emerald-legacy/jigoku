@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players, Duration } from '../../../Constants.js';
@@ -16,7 +15,7 @@ class SurgingWave extends DrawCard {
                 const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                 const gameActions = [];
                 gameActions.push(
-                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+                    AbilityDsl.actions.cardLastingEffect(() => ({
                         duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
@@ -37,7 +36,7 @@ class SurgingWave extends DrawCard {
                 );
                 if(kihoPlayed) {
                     gameActions.push(
-                        AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+                        AbilityDsl.actions.menuPrompt(() => ({
                             activePromptTitle:
                                     'Spend 1 fate to prevent ' +
                                     context.target.name +
@@ -56,7 +55,7 @@ class SurgingWave extends DrawCard {
                             },
                             gameAction: AbilityDsl.actions.joint([
                                 AbilityDsl.actions.loseFate({ target: context.player }),
-                                AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+                                AbilityDsl.actions.cardLastingEffect(() => ({
                                     effect: AbilityDsl.effects.doesNotBow(),
                                     target: context.target
                                 }))

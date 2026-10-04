@@ -1,7 +1,6 @@
 import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { Conflict } from '../../../Conflict.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class TwoHands extends DrawCard {
@@ -17,7 +16,7 @@ export default class TwoHands extends DrawCard {
 
         this.action('Set the skill of two enemy character to the lowest between them')
             .condition((context) =>
-                context.game.currentConflict instanceof Conflict &&
+                !!context.game.currentConflict &&
                 context.player.cardsInPlay.some(
                     (card) =>
                         card.isParticipating() && card.attachments.some((attachment) => attachment.hasTrait('weapon'))

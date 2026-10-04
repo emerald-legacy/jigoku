@@ -1,6 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
-import { StatusToken } from '../../../StatusToken.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,10 +19,9 @@ export default class AsakoKousuke extends DrawCard {
             .selectFrom(SELECTION, {
                 dependsOn: ORIGINL_TOKEN
             }, (context) => {
-                const targetToken: StatusToken = context.tokens[ORIGINL_TOKEN][0];
+                const targetToken = context.tokens[ORIGINL_TOKEN][0];
                 const targetCard = targetToken.card;
                 if(!(targetCard instanceof DrawCard)) {
-                    // should never happen
                     return {};
                 }
 

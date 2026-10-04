@@ -8,12 +8,10 @@ import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class CraneIndustry extends DrawCard {
     static id = 'crane-industry';
 
-    private eventRegistrar?: EventRegistrar;
     private eventsPlayedThisConflictByThisPlayer = new Set<string>();
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onConflictFinished', 'onCardPlayed']);
+        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.OnCardPlayed]);
         this.reaction('Reduce the cost to play events')
             .when({
                 onConflictStarted: () => true

@@ -1,4 +1,4 @@
-import { CardType, EventName } from '../../Constants.js';
+import { CardType, EventName, ConflictType } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -6,15 +6,13 @@ import DrawCard from '../../DrawCard.js';
 
 export default class KakitasFinalStance extends DrawCard {
     static id = 'kakita-s-final-stance';
-    private eventRegistrar?: EventRegistrar;
 
     private duelParticipantsInThisConflict = new Set<DrawCard>();
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
+        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
         this.action('Character cannot be bowed and doesn\'t bow during resolution')
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
-import { CardType, Players, AbilityType, TargetMode, Location } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
+import { CardType, Players, AbilityType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { Cost } from '../../costs/Cost.js';
@@ -18,17 +18,13 @@ function ancestralSightCost(): Cost<{ ancestralSightCost: DrawCard }> {
             return ['returning {0} to the bottom of the dynasty deck'];
         },
         canPay(context) {
-            const discardPile = context.player.dynastyDiscardPile;
-            if(!discardPile) {
-                return false;
-            }
-            return discardPile.some((card) => isCopyInPlay(card, context));
+            return context.player.dynastyDiscardPile.some((card) => isCopyInPlay(card, context));
         },
         resolve(context, result) {
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a card to return to your deck',
                 context: context,
-                mode: TargetMode.Single,
+
                 location: Location.DynastyDiscardPile,
                 cardType: CardType.Character,
                 controller: Players.Self,

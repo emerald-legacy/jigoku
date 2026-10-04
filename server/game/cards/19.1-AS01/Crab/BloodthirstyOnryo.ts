@@ -6,11 +6,9 @@ import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class BloodthirstyOnryo extends DrawCard {
     static id = 'bloodthirsty-onryo';
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onCardLeavesPlay']);
+        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
 
         this.action('Put this into play')
             .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))

@@ -10,7 +10,7 @@ class AsakoAzunami extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Bow and ready two characters instead of the ring effect')
             .when({
-                onResolveRingElement: (event, context) => !!event.ring && event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
+                onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
             .gameAction(AbilityDsl.actions.cancel(context => ({
                 replacementGameAction: AbilityDsl.actions.multiple([

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 
 class IkomaIkehata extends DrawCard {
     static id = 'ikoma-ikehata';
@@ -8,7 +8,7 @@ class IkomaIkehata extends DrawCard {
     setupCardAbilities() {
         this.reaction('Honor a character and draw a card')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() && event.conflict.conflictType === 'political'
+                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() && event.conflict.conflictType === ConflictType.Political
             })
             .target('target', {
                 activePromptTitle: 'Choose a character to honor',

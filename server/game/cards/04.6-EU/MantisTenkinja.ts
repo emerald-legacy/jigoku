@@ -11,7 +11,7 @@ class MantisTenkinja extends DrawCard {
                 onCardPlayed: (event, context) =>
                     event.card.type === CardType.Event && event.player === context.player &&
                     !!event.context &&
-                    (event.context.ability.getReducedCost?.(event.context) ?? 0) > 0
+                    event.context.ability.getReducedCost(event.context) > 0
             })
             .cost(AbilityDsl.costs.payHonor(1))
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({

@@ -1,6 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import { Conflict } from '../../../Conflict.js';
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +13,7 @@ export default class KakitaMio extends DrawCard {
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Sanctification',
                 selectedCardsHandler: (context, _, [card]) => {
-                    if(card === null || card === undefined) {
+                    if(!card) {
                         return;
                     }
 
@@ -40,12 +38,12 @@ export default class KakitaMio extends DrawCard {
 
         this.persistentEffect({
             condition: (context) =>
-                context.game.currentConflict instanceof Conflict &&
+                !!context.game.currentConflict &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait('shadowlands') || card.isTainted)) > 0,
             match: (card, context) =>
                 card.type === CardType.Character &&
                 !!context && card.isParticipatingFor(context.player) &&
-                (card.hasTrait('imperial') || card.attachments.some((attachment: BaseCard) => attachment.hasTrait('imperial'))),
+                (card.hasTrait('imperial') || card.attachments.some((attachment) => attachment.hasTrait('imperial'))),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
     }

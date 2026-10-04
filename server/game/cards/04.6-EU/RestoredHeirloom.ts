@@ -10,7 +10,7 @@ class RestoredHeirloom extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Put into play')
             .when({
-                onResolveRingElement: (event, context) => !!event.ring && event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
+                onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
             .target('target', {
                 cardType: CardType.Character,

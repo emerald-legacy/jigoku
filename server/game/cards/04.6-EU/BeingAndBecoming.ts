@@ -19,7 +19,7 @@ class BeingAndBecoming extends DrawCard {
                 amount: context.ring.fate,
                 target: context.source.parentCharacter ?? []
             })))
-            .effect('move {1} fate from {2} to {3}', context => [context.ring ? context.ring.fate : 0, context.ring, context.source.parentCharacter]);
+            .effect('move {1} fate from {2} to {3}', context => [context.ring.fate, context.ring, context.source.parentCharacter]);
     }
 }
 

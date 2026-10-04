@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { EffectName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KissOfTheSea extends DrawCard {
@@ -8,18 +9,18 @@ export default class KissOfTheSea extends DrawCard {
         this.reaction('Bow attached character')
             .when({
                 onEffectApplied: (event, context) => {
-                    const effects = [
-                        'modifyBothSkills',
-                        'modifyMilitarySkill',
-                        'modifyMilitarySkillMultiplier',
-                        'modifyPoliticalSkill',
-                        'modifyPoliticalSkillMultiplier',
-                        'switchBaseSkills',
-                        'setMilitarySkill',
-                        'setPoliticalSkill',
-                        'setBaseMilitarySkill',
-                        'setBasePoliticalSkill',
-                        'setBaseDash'
+                    const effects: string[] = [
+                        EffectName.ModifyBothSkills,
+                        EffectName.ModifyMilitarySkill,
+                        EffectName.ModifyMilitarySkillMultiplier,
+                        EffectName.ModifyPoliticalSkill,
+                        EffectName.ModifyPoliticalSkillMultiplier,
+                        EffectName.SwitchBaseSkills,
+                        EffectName.SetMilitarySkill,
+                        EffectName.SetPoliticalSkill,
+                        EffectName.SetBaseMilitarySkill,
+                        EffectName.SetBasePoliticalSkill,
+                        EffectName.SetBaseDash
                     ];
 
                     if(!event.effectTypes) {

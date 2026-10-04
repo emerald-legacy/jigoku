@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TheFiresOfJustice extends DrawCard {
@@ -8,7 +8,7 @@ class TheFiresOfJustice extends DrawCard {
     setupCardAbilities() {
         this.reaction('Remove fate or move fate to a character')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === 'military'
+                afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military
             })
             .target('character', {
                 cardType: CardType.Character,

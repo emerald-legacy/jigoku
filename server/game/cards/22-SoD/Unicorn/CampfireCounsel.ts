@@ -14,12 +14,12 @@ export default class CampfireCounsel extends DrawCard {
                 cardCondition: card => (card.printedCost ?? 0) <= 3
             }, AbilityDsl.actions.ready())
             .then(context => ({
-                thenCondition: () => !!context && !context.player.isCharacterTraitInPlay('storyteller'),
+                thenCondition: () => !context.player.isCharacterTraitInPlay('storyteller'),
                 gameAction: AbilityDsl.actions.dishonor({
-                    target: context?.target
+                    target: context.target
                 }),
                 message: '{3} is dishonored',
-                messageArgs: () => [context?.target]
+                messageArgs: () => [context.target]
             }));
     }
 }

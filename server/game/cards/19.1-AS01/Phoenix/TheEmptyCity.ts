@@ -9,11 +9,9 @@ export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';
 
     private invokedSpirit?: BaseCard;
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
         const sharedLimit = AbilityDsl.limit.perRound(1);
 

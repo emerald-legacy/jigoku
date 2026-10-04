@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ConflictType } from '../../Constants.js';
 
 class SpoilsOfWar extends DrawCard {
     static id = 'spoils-of-war';
@@ -7,7 +8,7 @@ class SpoilsOfWar extends DrawCard {
     setupCardAbilities() {
         this.reaction('Draw 3 cards and discard 1')
             .when({
-                afterConflict: (event, context) => event.conflict.conflictType === 'military' &&
+                afterConflict: (event, context) => event.conflict.conflictType === ConflictType.Military &&
                                                    event.conflict.winner === context.player &&
                                                    context.player.isAttackingPlayer()
             })

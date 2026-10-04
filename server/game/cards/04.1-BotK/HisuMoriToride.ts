@@ -1,4 +1,4 @@
-import { CardType, Duration } from '../../Constants.js';
+import { CardType, Duration, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,7 +10,7 @@ export default class HisuMoriToride extends StrongholdCard {
             .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
-                    event.conflict.conflictType === 'military' &&
+                    event.conflict.conflictType === ConflictType.Military &&
                     (event.conflict.skillDifference ?? 0) >= 5
             })
             .cost(AbilityDsl.costs.bowSelf())

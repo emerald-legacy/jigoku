@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { AbilityType, CardType, Location, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -42,6 +42,6 @@ export default class ArmorOfTheFallen extends DrawCard {
     }
 
     private sumCharactersInPile(pile: DrawCard[]): number {
-        return pile.reduce((sum: number, card) => (card.type === CardType.Character ? sum + 1 : sum), 0);
+        return pile.reduce((sum, card) => (card.type === CardType.Character ? sum + 1 : sum), 0);
     }
 }

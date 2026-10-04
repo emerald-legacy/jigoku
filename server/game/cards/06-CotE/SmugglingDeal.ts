@@ -19,7 +19,7 @@ class SmugglingDeal extends DrawCard {
                     targetAbility: context.targetAbility
                 })
             })))
-            .effect('increase the limit on {1}\'s \'{2}\' ability', context => [context.targetAbility?.card, context.targetAbility?.title ?? '']);
+            .effect('increase the limit on {1}\'s \'{2}\' ability', context => [context.targetAbility.card, context.targetAbility.title]);
     }
 }
 

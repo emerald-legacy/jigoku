@@ -9,7 +9,6 @@ export default class DeadEyes extends DrawCard {
         this.attachmentConditions({ trait: 'berserker' });
 
         this.whileAttached({
-            match: _card => true,
             effect: AbilityDsl.effects.setGlory(0)
         });
 

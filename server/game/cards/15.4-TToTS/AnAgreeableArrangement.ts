@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type { Cost } from '../../costs/Cost.js';
-import { CardType, Players, Duration, TargetMode, Location } from '../../Constants.js';
+import { CardType, Players, Duration, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
@@ -19,8 +19,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
         context.game.promptForSelect(context.player, {
             activePromptTitle: 'Choose a card to give to your opponent',
             context: context,
-            mode: TargetMode.Single,
-            numCards: 1,
+
             location: Location.PlayArea,
             cardType: CardType.Character,
             controller: Players.Self,

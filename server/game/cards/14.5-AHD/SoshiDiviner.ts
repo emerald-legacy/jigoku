@@ -10,7 +10,7 @@ class SoshiDiviner extends DrawCard {
             .condition((context) => context.game.isDuringConflict())
             .target('cardInProvince', {
                 location: [Location.Provinces, Location.PlayArea],
-                cardCondition: card => (card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold)
+                cardCondition: card => card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold
             })
             .target('province', {
                 dependsOn: 'cardInProvince',
@@ -18,12 +18,8 @@ class SoshiDiviner extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card, context) =>
                     card.location !== Location.StrongholdProvince &&
-                        ( //same controller check
-                            (card.controller === context.targets.cardInProvince.controller)
-                        ) &&
-                        ( //different location check
-                            (card.location !== context.targets.cardInProvince.location)
-                        )
+                    card.controller === context.targets.cardInProvince.controller &&
+                    card.location !== context.targets.cardInProvince.location
             }, AbilityDsl.actions.moveCard(context => ({
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location

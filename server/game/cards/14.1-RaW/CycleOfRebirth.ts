@@ -35,9 +35,6 @@ class CycleOfRebirth extends DrawCard {
             ]))
             .effect('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', context => {
                 const target = context.target;
-                if(!target) {
-                    return ['', '', '', '', '', '', '', '', '', context.source.controller];
-                }
                 return [
                     target,
                     target.controller,

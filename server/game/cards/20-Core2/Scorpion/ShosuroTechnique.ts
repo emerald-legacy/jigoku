@@ -20,14 +20,12 @@ export default class ShosuroTechnique extends DrawCard {
                 activePromptTitle: 'Choose a Shinobi you control',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                optional: false,
                 cardCondition: (card) => card.hasTrait('shinobi') && card.isParticipating()
             })
             .target('enemy', {
                 dependsOn: 'shinobi',
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                optional: false,
                 cardCondition: (card) => card.isParticipating()
             })
             .gameAction(AbilityDsl.actions.multiple([

@@ -9,8 +9,8 @@ class Stowaway extends DrawCard {
         this.reaction('Place cards underneath self')
             .when({
                 onConflictDeclared: (event, context) => !!event.attackers?.includes(context.source),
-                onDefendersDeclared: (event, context) => !!event.defenders?.includes(context.source),
-                onCharacterEntersPlay: (event, context) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
+                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
+                onCharacterEntersPlay: (event, context) => event.card === context.source && context.source.isParticipating()
             })
             .targetCards('target', {
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],

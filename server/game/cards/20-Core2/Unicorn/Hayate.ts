@@ -12,7 +12,7 @@ export default class Hayate extends DrawCard {
             effect: AbilityDsl.effects.reduceCost({
                 amount: (_, player) =>
                     player.cardsInPlay.reduce(
-                        (cavCount: number, card) => (card.hasTrait('cavalry') ? cavCount + 1 : cavCount),
+                        (cavCount, card) => (card.hasTrait('cavalry') ? cavCount + 1 : cavCount),
                         0
                     ),
                 match: (card, source) => card === source

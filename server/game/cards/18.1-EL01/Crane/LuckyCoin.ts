@@ -14,9 +14,9 @@ export default class LuckyCoin extends DrawCard {
                 onRevealFacedownDynastyCards: (_, context) => {
                     const totalCost = context.player
                         .getDynastyCardsInProvince(Location.Provinces)
-                        .reduce((totalCost: number, card) => {
+                        .reduce((totalCost, card) => {
                             const cost = !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
-                            return totalCost + (cost ?? 0);
+                            return totalCost + cost;
                         }, 0);
                     return totalCost < 6 || totalCost > 12;
                 }

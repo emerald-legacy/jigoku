@@ -1,7 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Ring from '../../../Ring.js';
 
 export default class IllusionaryDecoy extends DrawCard {
     static id = 'illusionary-decoy';
@@ -36,13 +35,13 @@ export default class IllusionaryDecoy extends DrawCard {
 
         this.action('Return to hand')
             .condition((context) => {
-                const claimedRings: Ring[] = context.source.controller.getClaimedRings();
+                const claimedRings = context.source.controller.getClaimedRings();
                 const matchShugenjaElementWithClaimedRing = context.source.controller.cardsInPlay.some(
                     (card) =>
                         card.getType() === CardType.Character &&
                         card.hasTrait('shugenja') &&
                         claimedRings.some((ring) =>
-                            ring.getElements().some((element: string) => card.hasTrait(element))
+                            ring.getElements().some((element) => card.hasTrait(element))
                         )
                 );
                 return matchShugenjaElementWithClaimedRing;

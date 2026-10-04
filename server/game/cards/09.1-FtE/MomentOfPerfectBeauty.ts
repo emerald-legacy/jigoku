@@ -9,7 +9,7 @@ class MomentOfPerfectBeauty extends DrawCard {
         this.action('One more action and then end the conflict')
             .condition(context => {
                 const conflict = this.game.currentConflict;
-                return !!conflict && this.game.isDuringConflict() &&
+                return !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
             })

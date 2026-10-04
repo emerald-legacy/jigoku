@@ -10,7 +10,7 @@ export default class SoshiAya extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Character &&
                     event.card.hasTrait('courtier') && event.card.controller === context.player.opponent &&
-                    context.event.context?.ability instanceof CardAbility && context.event.context.ability.printedAbility
+                    event.context.ability instanceof CardAbility && event.context.ability.printedAbility
             })
             .cost(AbilityDsl.costs.putSelfIntoPlay())
             .gameAction(AbilityDsl.actions.cancel())

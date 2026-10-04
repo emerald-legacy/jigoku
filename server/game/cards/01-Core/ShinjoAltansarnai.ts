@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoAltansarnai extends DrawCard {
@@ -8,7 +8,7 @@ class ShinjoAltansarnai extends DrawCard {
     setupCardAbilities() {
         this.reaction('Discard a character')
             .when({
-                onBreakProvince: (event, context) => event.conflict?.conflictType === 'military' && context.source.isAttacking()
+                onBreakProvince: (event, context) => event.conflict?.conflictType === ConflictType.Military && context.source.isAttacking()
             })
             .target('target', {
                 activePromptTitle: 'Choose a character to discard',

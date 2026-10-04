@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 
 class AcolyteOfKoyane extends DrawCard {
     static id = 'acolyte-of-koyane';
 
     setupCardAbilities() {
         this.action('Gain or lose pride')
-            .condition(context => context.game.isDuringConflict('political'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Political))
             .target('character', {
                 controller: Players.Any,
                 cardType: CardType.Character,

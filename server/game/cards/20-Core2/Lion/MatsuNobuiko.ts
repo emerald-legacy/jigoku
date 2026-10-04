@@ -1,5 +1,4 @@
-import { DuelType } from '../../../Constants.js';
-import type { Duel } from '../../../Duel.js';
+import { AbilityType, DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,13 +10,13 @@ export default class MatsuNobuiko extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) =>
                     context.player.opponent &&
-                    event.context.ability.abilityType === 'action' &&
+                    event.context.ability.abilityType === AbilityType.Action &&
                     context.source.isParticipating()
             })
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel: Duel) =>
+                gameAction: (duel) =>
                     duel.winner && duel.winningPlayer === context.player ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()
             }));
     }

@@ -8,11 +8,9 @@ export default class IkomaAnakazu extends DrawCard {
     static id = 'ikoma-anakazu';
 
     private brokenProvincesThisPhase = new Map<string, number>();
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
+        new EventRegistrar(this.game, this).register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
 
         this.persistentEffect({
             condition: (context) =>
@@ -28,7 +26,7 @@ export default class IkomaAnakazu extends DrawCard {
     }
 
     public onBreakProvince(event: EventPayload<EventName.OnBreakProvince>) {
-        if(event.conflict && event.conflict.attackingPlayer) {
+        if(event.conflict) {
             const oldValue = this.brokenProvincesThisPhase.get(event.conflict.attackingPlayer.name) || 0;
             this.brokenProvincesThisPhase.set(event.conflict.attackingPlayer.name, oldValue + 1);
         }

@@ -11,7 +11,7 @@ export default class FukurokushisBlessing extends DrawCard {
                 onInitiateAbilityEffects: ({ card }) => card instanceof ProvinceCard
             })
             .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', (context) => context.event.card ?? '')
+            .effect('cancel the effects of {1}\'s ability', (context) => context.event.card)
             .max(AbilityDsl.limit.perRound(1));
     }
 }

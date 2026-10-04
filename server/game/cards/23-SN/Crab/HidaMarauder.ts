@@ -13,7 +13,7 @@ export default class HidaMarauder extends DrawCard {
                     context.player.opponent
             })
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
-                const count = context.game.currentConflict?.getCharacters(context.player)?.length || 0;
+                const count = context.game.currentConflict?.getCharacters(context.player).length ?? 0;
                 const cards =
                     context.player.opponent && count > 0
                         ? shuffle(context.player.opponent.hand).slice(0, count)
@@ -36,9 +36,9 @@ export default class HidaMarauder extends DrawCard {
                 };
             }))
             .effect('make {2} reveal {1} random card{3} from their hand', (context) => [
-                (context.game.currentConflict?.getCharacters(context.player)?.length || 0),
+                context.game.currentConflict?.getCharacters(context.player).length ?? 0,
                 context.player.opponent,
-                (context.game.currentConflict?.getCharacters(context.player)?.length || 0) === 1 ? '' : 's'
+                (context.game.currentConflict?.getCharacters(context.player).length ?? 0) === 1 ? '' : 's'
             ]);
     }
 }

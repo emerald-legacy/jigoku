@@ -1,4 +1,4 @@
-import { DuelType } from '../../../Constants.js';
+import { DuelType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Duel } from '../../../Duel.js';
@@ -12,12 +12,12 @@ export default class TruthIsInTheKilling extends DrawCard {
 
     setupCardAbilities() {
         this.action('Initiate a military duel, discarding the loser')
-            .condition((context) => context.game.isDuringConflict('military'))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),
-                gameAction: ((duel: Duel) =>
-                    (duel.loser ?
+                gameAction: (duel) =>
+                    duel.loser ?
                         AbilityDsl.actions.sequential(
                             duel.loser.flatMap((loser) =>
                                 applyFullEffect(duel)
@@ -37,7 +37,7 @@ export default class TruthIsInTheKilling extends DrawCard {
                                         })
                                     ]
                             )
-                        ) : AbilityDsl.actions.noAction())),
+                        ) : AbilityDsl.actions.noAction(),
                 message: 'return all fate on {0} to {1}\'s fate pool{2}',
                 messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
             }));

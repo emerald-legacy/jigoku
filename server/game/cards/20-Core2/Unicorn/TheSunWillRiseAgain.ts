@@ -16,9 +16,9 @@ export default class TheSunWillRiseAgain extends DrawCard {
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(context.event.conflict?.conflictType)
+                effect: AbilityDsl.effects.additionalConflict(context.event.conflict.conflictType)
             })))
-            .effect('gain an additional {1} conflict this round. They will not forget this defeat.', (context) => [context.event.conflict?.conflictType ?? ''])
+            .effect('gain an additional {1} conflict this round. They will not forget this defeat.', (context) => [context.event.conflict.conflictType])
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

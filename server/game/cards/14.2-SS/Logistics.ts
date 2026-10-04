@@ -22,11 +22,11 @@ class Logistics extends DrawCard {
                     const moving = context.targets.cardInProvince;
                     return card.location !== Location.StrongholdProvince &&
                         !card.isBroken &&
-                        ( //same controller check
+                        (
                             (moving.type === CardType.Attachment && card.controller === moving.parentProvince?.controller) ||
                             (moving.type !== CardType.Attachment && card.controller === moving.controller)
                         ) &&
-                        ( //different location check
+                        (
                             (moving.type === CardType.Attachment && card.location !== moving.parentProvince?.location) ||
                             (moving.type !== CardType.Attachment && card.location !== moving.location)
                         );

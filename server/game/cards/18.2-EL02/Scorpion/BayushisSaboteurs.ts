@@ -22,7 +22,7 @@ export default class BayushisSaboteurs extends DrawCard {
         this.reaction('Discard or flip facedown cards in the defender\'s provinces')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source),
-                onDefendersDeclared: (event, context) => event.defenders?.includes(context.source),
+                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onMoveToConflict: (event, context) => event.card === context.source
             })
             .select('target', {

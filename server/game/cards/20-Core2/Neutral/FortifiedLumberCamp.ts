@@ -14,15 +14,15 @@ export default class FortifiedLumberCamp extends DrawCard {
                 cardType: CardType.Province
             })
             .gameAction(AbilityDsl.actions.multipleContext((context) => ({
-                gameActions: context.target ? [
+                gameActions: [
                     AbilityDsl.actions.moveCard({
                         destination: Location.DynastyDiscardPile,
                         target: this.cardsInProvince(context.target)
                     }),
                     AbilityDsl.actions.discardFromPlay({ target: context.target.attachments })
-                ] : []
+                ]
             })))
-            .effect('discard {1}', (context) => [context.target ? this.cardsInProvince(context.target).concat(context.target.attachments) : []]);
+            .effect('discard {1}', (context) => [this.cardsInProvince(context.target).concat(context.target.attachments)]);
     }
 
     private cardsInProvince(targetProvince: ProvinceCard) {

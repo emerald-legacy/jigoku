@@ -11,7 +11,7 @@ class PathfindersBlade extends DrawCard {
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
             .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card ?? '');
+            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }
 

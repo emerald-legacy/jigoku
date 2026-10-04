@@ -1,7 +1,7 @@
 import { AbilityType, CardType, Duration, EffectName, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class LoyalWarhound extends DrawCard {
     static id = 'loyal-warhound';

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { arrangeTopOfDeck } from '../arrangeTopOfDeck.js';
@@ -13,7 +13,7 @@ class StolenSecrets extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .condition((context) => this.game.isDuringConflict('political') && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
+            .condition((context) => this.game.isDuringConflict(ConflictType.Political) && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
             .handler((context) => {
                 const opponent = context.player.opponent;
                 if(!opponent) {
@@ -29,7 +29,7 @@ class StolenSecrets extends DrawCard {
             .effect('look at the top 4 cards of {1}\'s conflict deck and remove one from the game', (context) => context.player.opponent);
     }
 
-    private stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext<this>) {
+    private stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext) {
         card.owner.removeCardFromPile(card);
         card.controller = context.player;
         card.moveTo(Location.RemovedFromGame);

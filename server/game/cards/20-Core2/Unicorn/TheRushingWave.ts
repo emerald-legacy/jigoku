@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -28,12 +27,14 @@ export default class TheRushingWave extends DrawCard {
                 cardType: CardType.Province
             }, AbilityDsl.actions.onAffinity({
                 trait: 'water',
-                gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
-                    target: target.controller.getProvinces(
-                        (province) =>
-                            target.location === province.location ||
-                                target.controller.areLocationsAdjacent(target.location, province.location)
-                    ),
+                gameAction: AbilityDsl.actions.cardLastingEffect(({ target }) => ({
+                    target: target?.isProvinceCard()
+                        ? target.controller.getProvinces(
+                            (province) =>
+                                target.location === province.location ||
+                                    target.controller.areLocationsAdjacent(target.location, province.location)
+                        )
+                        : [],
                     targetLocation: Location.Provinces,
                     duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.setProvinceStrength(0)
@@ -46,6 +47,6 @@ export default class TheRushingWave extends DrawCard {
                 effect: 'also set the strength of {0} to 0',
                 effectArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
             }))
-            .effect('set {1}\'s strength to 0 until the end of the phase', (context) => [context.target ? provinceLog(context.target) : '']);
+            .effect('set {1}\'s strength to 0 until the end of the phase', (context) => [provinceLog(context.target)]);
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HighKick extends DrawCard {
@@ -11,7 +11,7 @@ class HighKick extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('monk') && card.isParticipating()
             }))
-            .condition(() => this.game.isDuringConflict('military'))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,

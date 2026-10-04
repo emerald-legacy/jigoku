@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import { ConflictType } from '../../Constants.js';
 
 export default class HidaYakamo extends DrawCard {
     static id = 'hida-yakamo';
@@ -12,7 +13,7 @@ export default class HidaYakamo extends DrawCard {
 
         this.persistentEffect({
             condition: (context) =>
-                Boolean(context.player.opponent) && context.player.isLessHonorable() && this.game.isDuringConflict('military'),
+                Boolean(context.player.opponent) && context.player.isLessHonorable() && this.game.isDuringConflict(ConflictType.Military),
             effect: AbilityDsl.effects.doesNotBow()
         });
     }

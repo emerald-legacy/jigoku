@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Location } from '../../../Constants.js';
+import { Location, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class FieldOfTheFallen extends DrawCard {
@@ -8,7 +8,7 @@ class FieldOfTheFallen extends DrawCard {
     setupCardAbilities() {
         this.action('Discard then draw a card')
             .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
-            .condition(context => context.game.isDuringConflict('military'))
+            .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .gameAction(AbilityDsl.actions.sequentialContext(context => {
                 const moreHonorable = context.player.isMoreHonorable();
                 const gameActions = [];

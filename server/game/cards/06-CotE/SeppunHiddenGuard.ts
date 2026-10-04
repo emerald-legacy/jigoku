@@ -10,7 +10,7 @@ class SeppunHiddenGuard extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Character &&
-                    (event.cardTargets ?? []).some(
+                    event.cardTargets.some(
                         (card) =>
                             card.isUnique() &&
                             card.controller === context.player &&

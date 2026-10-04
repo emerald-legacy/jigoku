@@ -15,7 +15,7 @@ class BeastmasterMatriarch extends DrawCard {
         if(!player.opponent) {
             return 0;
         }
-        return 2 * (player.opponent?.getClaimedRings().length ?? 0);
+        return 2 * player.opponent.getClaimedRings().length;
     }
 }
 

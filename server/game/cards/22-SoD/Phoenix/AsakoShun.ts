@@ -25,12 +25,11 @@ export default class AsakoShun extends DrawCard {
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
             })))
-            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target ?? ''])
+            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target])
             .then((context) => ({
                 thenCondition: () => {
                     const conflict = context.game.currentConflict;
-                    const target = context.target;
-                    return !!conflict && !!target && conflict.calculateSkillFor([target]) === 0;
+                    return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
                 },
                 gameAction: AbilityDsl.actions.gainHonor({
                     target: context.player,

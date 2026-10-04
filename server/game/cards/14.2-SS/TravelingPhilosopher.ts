@@ -3,7 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
-class TravelingPhilospher extends DrawCard {
+class TravelingPhilosopher extends DrawCard {
     static id = 'traveling-philosopher';
 
     setupCardAbilities() {
@@ -21,4 +21,4 @@ class TravelingPhilospher extends DrawCard {
 }
 
 
-export default TravelingPhilospher;
+export default TravelingPhilosopher;

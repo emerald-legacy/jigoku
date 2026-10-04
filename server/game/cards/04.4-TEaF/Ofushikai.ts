@@ -2,7 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType, AbilityType } from '../../Constants.js';
 
-class Ofushukai extends DrawCard {
+class Ofushikai extends DrawCard {
     static id = 'ofushikai';
 
     setupCardAbilities() {
@@ -36,4 +36,4 @@ class Ofushukai extends DrawCard {
 }
 
 
-export default Ofushukai;
+export default Ofushikai;

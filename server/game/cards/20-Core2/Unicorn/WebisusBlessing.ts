@@ -13,7 +13,7 @@ export default class WebisusBlessing extends DrawCard {
                 activePromptTitle: 'Choose a status token',
                 dependsOn: 'first',
                 optional: true,
-                tokenCondition: (token, context) => token !== context?.tokens.first?.[0]
+                tokenCondition: (token, context) => token !== context.tokens.first[0]
             }, AbilityDsl.actions.discardStatusToken())
             .effect('discard {1}\'s {2}{3}{4}{5}{6}', (context) =>
                 context.tokens.second

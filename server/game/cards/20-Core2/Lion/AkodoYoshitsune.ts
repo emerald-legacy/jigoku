@@ -7,7 +7,7 @@ export default class AkodoYoshitsune extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain an honor')
             .when({
-                afterConflict: (event, context) => event.conflict?.winner === context.player
+                afterConflict: (event, context) => event.conflict.winner === context.player
             })
             .gameAction(AbilityDsl.actions.gainHonor((context) => ({ target: context.player })))
             .limit(AbilityDsl.limit.unlimitedPerConflict());

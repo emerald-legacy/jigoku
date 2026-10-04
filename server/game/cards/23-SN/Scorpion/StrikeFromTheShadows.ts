@@ -17,7 +17,7 @@ export default class StrikeFromTheShadows extends DrawCard {
                 ],
                 duration: Duration.UntilEndOfConflict
             })))
-            .effect('give all participating Shinobi they control +1{1}/+1{2} until the end of the conflict', () => (['military', 'political']))
+            .effect('give all participating Shinobi they control +1{1}/+1{2} until the end of the conflict', () => ['military', 'political'])
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

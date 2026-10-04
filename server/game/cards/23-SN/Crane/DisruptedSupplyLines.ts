@@ -47,13 +47,11 @@ function disruptedSupplyLinesCost(): Cost<{ disruptedSupplyLinesCostFatePaid: bo
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isDrawCard() && cards.includes(card),
+                cardCondition: (card) => cards.includes(card),
                 context: context,
                 onSelect: (_player, card) => {
-                    if(card.isDrawCard()) {
-                        context.costs.disruptedSupplyLinesCostFatePaid = !freeCharacters.includes(card);
-                        context.costs.disruptedSupplyLinesCostDishonoredCharacter = card;
-                    }
+                    context.costs.disruptedSupplyLinesCostFatePaid = !freeCharacters.includes(card);
+                    context.costs.disruptedSupplyLinesCostDishonoredCharacter = card;
                     return true;
                 },
                 onCancel: () => {

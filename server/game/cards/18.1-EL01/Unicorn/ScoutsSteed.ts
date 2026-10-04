@@ -44,7 +44,7 @@ export default class ScoutsSteed extends DrawCard {
                 const target = context.target;
                 return [
                     context.source.parentCharacter,
-                    target && target.isFacedown() ? target.location : target ?? ''
+                    target.isFacedown() ? target.location : target
                 ];
             });
     }

@@ -8,7 +8,7 @@ class IkomaKiyono extends DrawCard {
         this.wouldInterrupt('Ready for Glory Count')
             .when({
                 onGloryCount: (event, context) => {
-                    return context.player && context.player.opponent && context.player.isMoreHonorable();
+                    return context.player.isMoreHonorable();
                 }
             })
             .gameAction(AbilityDsl.actions.ready());

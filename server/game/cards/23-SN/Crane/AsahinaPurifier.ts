@@ -8,7 +8,7 @@ export default class AsahinaPurifier extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Gain honor instead of losing honor')
             .when({
-                onModifyHonor: (event) => event.dueToStatusToken && (event.amount ?? 0) < 0
+                onModifyHonor: (event) => event.dueToStatusToken && event.amount < 0
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cancel(),

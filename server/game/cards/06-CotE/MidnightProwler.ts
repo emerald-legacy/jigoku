@@ -1,4 +1,4 @@
-import { Location } from '../../Constants.js';
+import { Location, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MidnightProwler extends DrawCard {
@@ -8,7 +8,7 @@ export default class MidnightProwler extends DrawCard {
         this.reaction('Look at the top two cards of your opponent\'s conflict deck')
             .when({
                 afterConflict: (event, context) =>
-                    this.game.isDuringConflict('military') &&
+                    this.game.isDuringConflict(ConflictType.Military) &&
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined

@@ -9,7 +9,7 @@ class YogoTadashi extends DrawCard {
         this.reaction('Prevent a character from being targeted by events')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false,
-                onDefendersDeclared: (event, context) => event.defenders?.includes(context.source) ?? false,
+                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onMoveToConflict: (event, context) => event.card === context.source
             })
             .target('target', {

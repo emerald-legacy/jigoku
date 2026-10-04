@@ -15,11 +15,11 @@ export default class KaiuScout extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.handler({
                 handler: (context) => {
-                    const cards = context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? [];
+                    const cards = context.target.controller.getDynastyCardsInProvince(context.target.location);
                     this.chooseCardsToTurnFaceup(context, cards.filter(a => a.isFacedown()));
                 }
             }))
-            .effect('look at facedown dynasty cards in {1}', context => [context.target?.isFacedown() ? context.target.location : context.target])
+            .effect('look at facedown dynasty cards in {1}', context => [context.target.isFacedown() ? context.target.location : context.target])
             .evenDuringDynasty();
     };
 

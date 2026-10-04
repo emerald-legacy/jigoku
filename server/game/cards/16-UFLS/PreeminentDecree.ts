@@ -18,7 +18,7 @@ class PreeminentDecree extends DrawCard {
                 target: context.game.currentConflict?.getParticipants().filter((a) => a !== context.target) ?? [],
                 effect: AbilityDsl.effects.modifyPoliticalSkill(-1 * ((context.target && context.target.glory) || 0))
             })))
-            .effect('give all participating characters except {0} -{1}{2}', context => [context.target?.glory ?? 0, 'political']);
+            .effect('give all participating characters except {0} -{1}{2}', context => [context.target.glory, 'political']);
     }
 }
 

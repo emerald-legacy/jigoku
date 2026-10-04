@@ -10,7 +10,7 @@ export default class SeekingEnlightenment extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             })
             .gameAction(AbilityDsl.actions.loseFate((context) => ({
-                amount: context.game.currentConflict?.getNumberOfParticipantsFor?.('attacker') ?? 0
+                amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
             })));
     }
 }

@@ -8,11 +8,11 @@ class Cursecatcher extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel province ability')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Province && //province
-                    event.card.controller && event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFacedown()) //any facedown cards
+                onInitiateAbilityEffects: event => event.card.type === CardType.Province &&
+                    event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFacedown())
             })
             .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card ?? '');
+            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }
 

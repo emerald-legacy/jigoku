@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FallenInBattle extends DrawCard {
@@ -8,7 +8,7 @@ class FallenInBattle extends DrawCard {
     setupCardAbilities() {
         this.reaction('Discard a character')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === 'military' &&
+                afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military &&
                                                    (event.conflict.skillDifference ?? 0) >= 5
             })
             .target('target', {

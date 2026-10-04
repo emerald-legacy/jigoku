@@ -9,7 +9,7 @@ class AkodoMotivator extends DrawCard {
         this.reaction('Opponent discards an equal number of cards at random')
             .when({
                 onCardsDiscardedFromHand: (event, context) => {
-                    if(!event.player || !event.context) {
+                    if(!event.context) {
                         return false;
                     }
                     const discardedFromOwnHand = event.player === context.player;

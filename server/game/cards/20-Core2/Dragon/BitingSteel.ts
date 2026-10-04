@@ -1,4 +1,4 @@
-import { CardType, DuelType, Duration, Players } from '../../../Constants.js';
+import { CardType, DuelType, Duration, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -40,11 +40,11 @@ export default class BitingSteel extends DrawCard {
                 ),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add the skill bonus of {0} ({1}) to their duel total', (context) => [context.target ? getAttachmentSkill(context.target) : 0]);
+            .effect('add the skill bonus of {0} ({1}) to their duel total', (context) => [getAttachmentSkill(context.target)]);
 
         this.action('Send an enemy home')
             .condition((context) =>
-                !!context.source.parentCharacter?.isParticipating('military') &&
+                !!context.source.parentCharacter?.isParticipating(ConflictType.Military) &&
                 context.player.hasAffinity('fire', context))
             .target('target', {
                 cardType: CardType.Character,

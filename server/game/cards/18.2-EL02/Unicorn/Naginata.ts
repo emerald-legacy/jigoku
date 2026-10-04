@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType } from '../../../Constants.js';
+import { AbilityType, CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Naginata extends DrawCard {
@@ -18,13 +18,13 @@ export default class Naginata extends DrawCard {
                 title: 'Bow a character',
                 when: {
                     onMoveToConflict: (event, context) =>
-                        context.source.isParticipating('military') &&
-                        event.card?.type === CardType.Character &&
-                        event.card?.isParticipating(),
+                        context.source.isParticipating(ConflictType.Military) &&
+                        event.card.type === CardType.Character &&
+                        event.card.isParticipating(),
                     onSendHome: (event, context) =>
-                        context.source.isParticipating('military') &&
-                        event.card?.type === CardType.Character &&
-                        !event.card?.isParticipating()
+                        context.source.isParticipating(ConflictType.Military) &&
+                        event.card.type === CardType.Character &&
+                        !event.card.isParticipating()
                 },
                 target: {
                     cardType: CardType.Character,

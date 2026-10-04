@@ -2,7 +2,7 @@ import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-export default class SharingShineisWisdom extends ProvinceCard {
+export default class SharingShinseisWisdom extends ProvinceCard {
     static id = 'sharing-shinsei-s-wisdom';
 
     setupCardAbilities() {

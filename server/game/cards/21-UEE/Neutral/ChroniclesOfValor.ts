@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ChroniclesOfValor extends DrawCard {
@@ -8,7 +7,7 @@ export default class ChroniclesOfValor extends DrawCard {
     setupCardAbilities() {
         this.reaction('Take honor from your opponent')
             .when({
-                afterConflict: ({ conflict }: { conflict: Conflict }, context) =>
+                afterConflict: ({ conflict }, context) =>
                     conflict.winner === context.player && conflict.attackerSkill + conflict.defenderSkill >= 25
             })
             .gameAction(AbilityDsl.actions.takeHonor((context) => ({

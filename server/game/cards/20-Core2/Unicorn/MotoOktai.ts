@@ -1,10 +1,9 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-function skillBonus(card: BaseCard) {
-    return card.isDrawCard() ? card.getMilitarySkill() : 0;
+function skillBonus(card: DrawCard) {
+    return card.getMilitarySkill();
 }
 
 export default class MotoOktai extends DrawCard {
@@ -28,6 +27,6 @@ export default class MotoOktai extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.discardFromPlay())
-            .effect('discard {1} - purge the weak!', (context) => [context.target ?? '']);
+            .effect('discard {1} - purge the weak!', (context) => [context.target]);
     }
 }

@@ -11,7 +11,6 @@ export default class KyudenIkoma extends StrongholdCard {
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player &&
                     event.conflict.defendingPlayer !== context.player &&
-                    event.conflict.getAttackers() &&
                     event.conflict.getAttackers().length !== 0
             })
             .cost(AbilityDsl.costs.bowSelf())

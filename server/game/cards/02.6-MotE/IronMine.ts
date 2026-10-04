@@ -13,7 +13,7 @@ class IronMine extends DrawCard {
             .gameAction(AbilityDsl.actions.cancel({
                 replacementGameAction: AbilityDsl.actions.sacrifice(context => ({ target: context.source }))
             }))
-            .effect('prevent {1} from leaving play', context => context.event.card ?? '');
+            .effect('prevent {1} from leaving play', context => context.event.card);
     }
 }
 

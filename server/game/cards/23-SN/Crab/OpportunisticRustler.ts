@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { ConflictType, TargetMode, Decks, Location } from '../../../Constants.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
+import { ConflictType, Decks, Location } from '../../../Constants.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class OpportunisticRustler extends DrawCard {
     static id = 'opportunistic-rustler';
@@ -12,8 +12,6 @@ export default class OpportunisticRustler extends DrawCard {
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military
             })
             .gameAction(AbilityDsl.actions.deckSearch(context => ({
-                targetMode: TargetMode.Single,
-                numCards: 1,
                 amount: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
                 player: context.player.opponent,
                 choosingPlayer: context.player,
@@ -27,7 +25,7 @@ export default class OpportunisticRustler extends DrawCard {
                     [context.player, 'removes', cards, 'from the game and gives', context.source, cards[0].getTraitSet().size, 'military'] :
                     [context.player, 'puts', cards, 'faceup into the attacked province and gives', context.source, cards[0].getTraitSet().size, 'military'],
                 gameAction: AbilityDsl.actions.multipleContext((context) => {
-                    const selected: DrawCard = context?.deckSearchSelected[0];
+                    const selected = context.deckSearchSelected[0];
                     if(!selected || !context.game.currentConflict) {
                         return { gameActions: [AbilityDsl.actions.noAction()] };
                     }

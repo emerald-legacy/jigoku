@@ -12,7 +12,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.conditional((context) => ({
                 condition: !!context.source.parentCharacter?.isParticipating() &&
-                    context.event.conflict?.winner === context.source.parentCharacter?.controller,
+                    context.event.conflict.winner === context.source.parentCharacter?.controller,
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.gainFate({
                         amount: 1,

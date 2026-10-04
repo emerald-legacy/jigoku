@@ -9,11 +9,8 @@ import { EventRegistrar } from '../../../EventRegistrar.js';
 export default class StormFromSakkaku extends DrawCard {
     static id = 'storm-from-sakkaku';
 
-    private eventRegistrar?: EventRegistrar;
-
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
+        new EventRegistrar(this.game, this).register([
             { [`${EventName.OnResolveRingElement}:${AbilityType.WouldInterrupt}`]: 'cancelRingEffect' }
         ]);
 

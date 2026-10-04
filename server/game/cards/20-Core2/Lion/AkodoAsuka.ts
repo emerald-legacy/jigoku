@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-function getCharactersWithoutFate(context: AbilityContext) {
+function charactersOnYourSide(context: AbilityContext) {
     return context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0;
 }
 
@@ -19,7 +19,7 @@ export default class AkodoAsuka extends DrawCard {
                     context.player.conflictDeck.length > 0
             })
             .gameAction(AbilityDsl.actions.deckSearch({
-                amount: (context) => getCharactersWithoutFate(context),
+                amount: (context) => charactersOnYourSide(context),
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Location.Hand
@@ -27,6 +27,6 @@ export default class AkodoAsuka extends DrawCard {
                 shuffle: true,
                 reveal: false
             }))
-            .effect('look at the top {1} cards of their conflict deck', (context) => getCharactersWithoutFate(context));
+            .effect('look at the top {1} cards of their conflict deck', (context) => charactersOnYourSide(context));
     }
 }

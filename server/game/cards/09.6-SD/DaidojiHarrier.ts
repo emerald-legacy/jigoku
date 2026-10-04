@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, TargetMode } from '../../Constants.js';
+import { Location, Players, TargetMode, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DaidojiHarrier extends DrawCard {
@@ -10,7 +10,7 @@ class DaidojiHarrier extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() &&
                                                     event.conflict.winner === context.source.controller &&
-                                                    context.player.opponent && event.conflict.conflictType === 'military'
+                                                    context.player.opponent && event.conflict.conflictType === ConflictType.Military
             })
             .targetCards('target', {
                 activePromptTitle: 'Choose two cards to reveal',

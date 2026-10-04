@@ -8,10 +8,9 @@ class EvenTheOdds extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character to the conflict')
             .condition((context) =>
-                this.game.isDuringConflict() &&
                 !!this.game.currentConflict &&
                 !!context.player.opponent &&
-                this.game.currentConflict.hasMoreParticipants(context.player.opponent, () => true))
+                this.game.currentConflict.hasMoreParticipants(context.player.opponent))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self

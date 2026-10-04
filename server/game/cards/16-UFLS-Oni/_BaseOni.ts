@@ -4,11 +4,8 @@ import type { GameEvent } from '../../Events/EventPayloads.js';
 import DrawCard from '../../DrawCard.js';
 
 export class BaseOni extends DrawCard {
-    private eventRegistrar?: EventRegistrar;
-
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onCardLeavesPlay']);
+        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
     }
 
     public onCardLeavesPlay(event: GameEvent<EventName.OnCardLeavesPlay>) {

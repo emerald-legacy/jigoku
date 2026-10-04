@@ -11,8 +11,7 @@ class MakeAnOpening extends DrawCard {
             .condition(context => {
                 const conflict = this.game.currentConflict;
                 const opponent = context.player.opponent;
-                return this.game.isDuringConflict() &&
-                    !!opponent &&
+                return !!opponent &&
                     !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player) >= 1 &&
                     conflict.getNumberOfParticipantsFor(opponent) >= 1 &&
@@ -36,7 +35,7 @@ class MakeAnOpening extends DrawCard {
         if(!opp) {
             return 0;
         }
-        return Math.abs((context.player.showBid ?? 0) - (opp.showBid ?? 0));
+        return Math.abs(context.player.showBid - opp.showBid);
     }
 }
 
