@@ -2,7 +2,6 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { MsgArg } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { Event } from '../Events/Event.js';
-import type Player from '../Player.js';
 
 export type Result = {
     canCancel?: boolean;
@@ -21,12 +20,10 @@ export interface Cost<Results extends object = object, C extends AbilityContext 
     action?: GameAction;
     activePromptTitle?: string;
 
-    selectCardName?(player: Player, cardName: string, context: AbilityContext): boolean;
     promptsPlayer?: boolean;
     dependsOn?: string;
     isPrintedFateCost?: boolean;
     isPlayCost?: boolean;
-    canIgnoreForTargeting?: boolean;
     payFateCostToOpponent?: boolean;
 
     getActionName?(context: AbilityContext): string;

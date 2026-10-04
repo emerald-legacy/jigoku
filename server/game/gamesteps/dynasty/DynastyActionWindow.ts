@@ -51,7 +51,7 @@ export class DynastyActionWindow extends ActionWindow {
         this.game.raiseEvent(
             EventName.OnPassDuringDynasty,
             { player: this.currentPlayer, firstToPass: true },
-            (event) => event.player?.modifyFate(1)
+            (event) => event.player.modifyFate(1)
         );
     }
 

@@ -21,7 +21,6 @@ interface ElementTargetResults {
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTargetElementSymbol | null;
-    costsFirst?: boolean;
 }
 
 interface PromptButton {
@@ -153,13 +152,7 @@ class AbilityTargetElementSymbol {
                 targetResults.cancelled = true;
                 return true;
             },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'costsFirst') {
-                    targetResults.costsFirst = true;
-                    return true;
-                }
-                return true;
-            }
+            onMenuCommand: () => true
         };
         if(!player) {
             // a solo game has no opponent to choose

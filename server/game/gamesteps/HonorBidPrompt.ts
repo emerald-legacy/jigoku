@@ -83,8 +83,8 @@ class HonorBidPrompt extends AllPlayerPrompt {
             return;
         }
 
-        const modifyGivenAmount = givingPlayer.getEffects(EffectName.ModifyHonorTransferGiven).reduce((a: number, b: number) => a + b, 0);
-        const modifyReceivedAmount = receivingPlayer.getEffects(EffectName.ModifyHonorTransferReceived).reduce((a: number, b: number) => a + b, 0);
+        const modifyGivenAmount = givingPlayer.sumEffects(EffectName.ModifyHonorTransferGiven);
+        const modifyReceivedAmount = receivingPlayer.sumEffects(EffectName.ModifyHonorTransferReceived);
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
         var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);

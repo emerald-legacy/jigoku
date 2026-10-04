@@ -1,9 +1,9 @@
 import { EventName } from './Constants.js';
-import Player from './Player.js';
+import type Player from './Player.js';
 import type CardAbility from './CardAbility.js';
 import type { EventHandler } from './GameEventBus.js';
 
-export interface EventBusLike {
+interface EventBusLike {
     on(eventName: string, handler: EventHandler): void;
     removeListener(eventName: string, handler: EventHandler): void;
 }

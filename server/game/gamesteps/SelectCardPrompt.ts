@@ -8,8 +8,7 @@ import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
-import type { CardType } from '../Constants.js';
-import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
+import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
 interface PromptButton {
     text: string;
@@ -134,8 +133,6 @@ function single(selected: BaseCard | BaseCard[]): BaseCard {
     }
     return selected;
 }
-
-const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
 
 /**
  * General purpose prompt that asks the user to select 1 or more cards.

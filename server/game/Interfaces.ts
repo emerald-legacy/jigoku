@@ -65,7 +65,6 @@ export interface TargetToken extends BaseTarget {
     optional?: boolean;
     location?: Location | Location[];
     cardType?: CardType | CardType[];
-    singleToken?: boolean;
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
 }
@@ -184,15 +183,9 @@ interface AbilityProps<Context> {
 export interface ActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
     condition?: OwnContextCallback<[context: AbilityContext<Source, Target>], boolean>;
     phase?: Phases | 'any';
-    emeraldWorksInDynsty?: boolean;
-    /**
-     * @deprecated
-     */
     anyPlayer?: boolean;
     conflictProvinceCondition?: OwnContextCallback<[province: ProvinceCard, context: AbilityContext<Source, Target>], boolean>;
     canTriggerOutsideConflict?: boolean;
-    /** Its choices are not targets, so cards reacting to targeting ignore them. */
-    doesNotTarget?: boolean;
 }
 
 export interface ConflictActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
@@ -247,10 +240,10 @@ export type TriggeredAbilityProps<Source extends EffectSource = BaseCard, Target
 export type TargetLocation = Location | (string & {});
 
 /** A card effect matches the cards in its target location: only draw cards are in play. */
-export type MatchTarget<T, L extends TargetLocation> = T extends BaseCard ? (L extends Location.PlayArea ? DrawCard : BaseCard) : T;
+type MatchTarget<T, L extends TargetLocation> = T extends BaseCard ? (L extends Location.PlayArea ? DrawCard : BaseCard) : T;
 
 export interface PersistentEffectProps<Source extends EffectSource = BaseCard, T extends EffectTarget = EffectTarget, L extends TargetLocation = Location.PlayArea> {
-    location?: Location | Location[];
+    location?: Location;
     condition?: (context: AbilityContext<Source>) => boolean;
     match?: (target: MatchTarget<T, L>, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
@@ -275,17 +268,3 @@ export interface AttachmentConditionProps {
     limitTrait?: traitLimit | traitLimit[];
     cardCondition?: (card: DrawCard) => boolean;
 }
-
-interface HonoredToken {
-    honored: true;
-    card: DrawCard;
-    type: 'token';
-}
-
-interface DishonoredToken {
-    dishonored: true;
-    card: DrawCard;
-    type: 'token';
-}
-
-export type Token = HonoredToken | DishonoredToken;

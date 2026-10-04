@@ -12,7 +12,7 @@ import { isEffectOf } from './Effects/types.js';
 /**
  * Used to track whether a player has played a specific type of duel effect yet
  */
-export interface DuelAbilities {
+interface DuelAbilities {
     challenge: boolean;
     focus: boolean;
     strike: boolean;

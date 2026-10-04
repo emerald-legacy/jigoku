@@ -45,7 +45,7 @@ type Props = {
 };
 
 /** A value, or a calculation of it for each target. Values are never functions, so a function is a calculation. */
-export type FlexibleValue<V, T> = V | DynamicValue<V, T>;
+type FlexibleValue<V, T> = V | DynamicValue<V, T>;
 
 function isCalculation<V, T>(value: FlexibleValue<V, T>): value is DynamicValue<V, T> {
     return typeof value === 'function';

@@ -3,7 +3,7 @@ import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
-export interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
+interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
     cardStat: (card: BaseCard) => number;
     maxStat: () => number;
     numCards: number;

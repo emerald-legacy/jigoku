@@ -74,8 +74,8 @@ export class PlayerCostManager {
     }
 
     findPlayType(card: BaseCard): PlayType | undefined {
-        if(card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card)).length > 0) {
-            const effects = card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card));
+        const effects = card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card));
+        if(effects.length > 0) {
             return effects[effects.length - 1].playType || PlayType.PlayFromHand;
         }
 
@@ -94,10 +94,9 @@ export class PlayerCostManager {
             return pool && pool.getFate() > 0 ? [pool] : [];
         });
 
-        if(context && context.source && context.source.isTemptationsMaho()) {
-            alternateFatePools.push(...this.player.cardsInPlay.filter((a: DrawCard) => a.type === 'character'));
-        }
-        if(context && context.source && context.source.isTemptationsMaho()) {
+        const maho = !!context?.source.isTemptationsMaho();
+        if(maho) {
+            alternateFatePools.push(...this.player.cardsInPlay.filter((a) => a.type === CardType.Character));
             alternateFatePools = alternateFatePools.filter(
                 (a) => a.printedType !== 'ring' && a.type === CardType.Character
             );
@@ -107,7 +106,7 @@ export class PlayerCostManager {
         const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
         if(
             !this.player.checkRestrictions('takeFateFromRings', context) ||
-            (context && context.source && context.source.isTemptationsMaho())
+            maho
         ) {
             rings.forEach((ring) => {
                 alternateFatePools = alternateFatePools.filter((a) => a !== ring);
@@ -219,8 +218,8 @@ export class PlayerCostManager {
         return targetCost;
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: BaseCard | null = null): void {
-        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType, card, target ?? undefined));
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard): void {
+        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType, card, target));
         matchingReducers.forEach((reducer) => {
             reducer.markUsed();
             if(reducer.isExpired()) {

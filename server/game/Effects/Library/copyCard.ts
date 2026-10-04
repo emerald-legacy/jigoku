@@ -48,7 +48,7 @@ export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
                 (target.getType() === CardType.Holding && effect.location === Location.Provinces) ||
                 (target.getType() === CardType.Province && effect.location === Location.Provinces)
             ) {
-                effect.ref = target.addEffectToEngine({ ...effect, location: effect.location });
+                effect.ref = target.addEffectToEngine(effect);
             }
         }
     }
@@ -73,7 +73,7 @@ export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
     getReactions(target: BaseCard) {
         const copied = this.abilitiesForTargets.get(target)?.reactions ?? [];
         const ownKeywordReactions = target.abilities.reactions.filter(
-            (ability) => typeof ability.isKeywordAbility === 'function' && ability.isKeywordAbility()
+            (ability) => ability.isKeywordAbility()
         );
         return [...copied, ...ownKeywordReactions];
     }

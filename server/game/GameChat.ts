@@ -9,7 +9,7 @@ type Player = {
 /** Game objects appear in a message as their short summary, which the client renders. */
 type MessageFragment = string | number | { name: string };
 
-export type MessageText = string | Array<MessageFragment>;
+type MessageText = string | Array<MessageFragment>;
 
 export type MsgArg =
     | string

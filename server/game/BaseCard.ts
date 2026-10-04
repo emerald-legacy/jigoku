@@ -62,7 +62,7 @@ export interface StoredPersistentEffect {
     condition?(context: AbilityContext): boolean;
     match?(card: GameObject, context?: AbilityContext): boolean;
     targetController?: Players;
-    targetLocation?: Location | (string & {});
+    targetLocation?: TargetLocation;
     effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
     ref?: Effect[];
@@ -368,7 +368,7 @@ class BaseCard extends EffectSource {
         this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
-    createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target> | TriggeredAbilityProperties<this>): TriggeredAbility {
+    createTriggeredAbility(abilityType: AbilityType, properties: TriggeredAbilityProps<this> | TriggeredAbilityProperties<this>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties);
     }
 
@@ -419,8 +419,7 @@ class BaseCard extends EffectSource {
             stronghold: Location.Provinces
         };
 
-        const locationProp = properties.location || defaultLocationForType[this.getType()] || Location.PlayArea;
-        const location = Array.isArray(locationProp) ? locationProp[0] : locationProp;
+        const location = properties.location || defaultLocationForType[this.getType()] || Location.PlayArea;
         if(!allowedLocations.includes(location)) {
             throw new Error(`'${location}' is not a supported effect location.`);
         }
@@ -514,8 +513,8 @@ class BaseCard extends EffectSource {
 
     hasKeyword(keyword: string): boolean {
         const targetKeyword = keyword.toLowerCase();
-        const added = this.getEffects(EffectName.AddKeyword).filter((value: string) => value === targetKeyword).length;
-        const lost = this.getEffects(EffectName.LoseKeyword).filter((value: string) => value === targetKeyword).length;
+        const added = this.getEffects(EffectName.AddKeyword).filter((value) => value === targetKeyword).length;
+        const lost = this.getEffects(EffectName.LoseKeyword).filter((value) => value === targetKeyword).length;
         return added > lost;
     }
 
@@ -563,7 +562,7 @@ class BaseCard extends EffectSource {
         if(copiedCard) {
             return copiedCard.traits;
         }
-        const traitsBlanked = this.getEffects(EffectName.Blank).some((blankTraits: boolean) => blankTraits);
+        const traitsBlanked = this.getEffects(EffectName.Blank).some((blankTraits) => blankTraits);
         return traitsBlanked ? [] : this.traits;
     }
 
@@ -636,7 +635,7 @@ class BaseCard extends EffectSource {
     applyAnyLocationPersistentEffects(): void {
         for(const effect of this.persistentEffects) {
             if(effect.location === Location.Any) {
-                effect.ref = this.addEffectToEngine({ ...effect, location: effect.location });
+                effect.ref = this.addEffectToEngine(effect);
             }
         }
     }
@@ -760,7 +759,7 @@ class BaseCard extends EffectSource {
                 total++;
             }
         }
-        for(const effect of this.getRawEffects().filter((effect) => effect.type === EffectName.IncreaseLimitOnPrintedAbilities)) {
+        for(const effect of this.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.IncreaseLimitOnPrintedAbilities))) {
             const value = effect.getValue(this);
             if(ability.printedAbility && (value === true || value === ability) && effect.context.player === player) {
                 total++;
@@ -1093,9 +1092,6 @@ class BaseCard extends EffectSource {
     }
 
     private getAbilityLimitSummary(): Array<{ max: number; current: number; exhausted: boolean }> | undefined {
-        if(!this.controller) {
-            return undefined;
-        }
         const seen = new Set();
         const limits: Array<{ max: number; current: number; exhausted: boolean }> = [];
         const gainedAbilities = this.getEffects(EffectName.GainAbility).filter(
@@ -1103,7 +1099,7 @@ class BaseCard extends EffectSource {
         );
         for(const ability of [...this.abilities.actions, ...this.abilities.reactions, ...gainedAbilities]) {
             const limit = ability.limit;
-            if(!limit || seen.has(limit)) {
+            if(seen.has(limit)) {
                 continue;
             }
             seen.add(limit);
@@ -1172,7 +1168,7 @@ class BaseCard extends EffectSource {
             type: this.getType(),
             isDishonored: this.isDishonored,
             isHonored: this.isHonored,
-            isTainted: !!this.isTainted,
+            isTainted: this.isTainted,
             uuid: this.uuid,
             abilityLimits: this.getAbilityLimitSummary(),
             playableBy: this.getPlayableBy()

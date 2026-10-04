@@ -326,7 +326,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     {}
                 );
                 this.game.queueSimpleStep(() => {
-                    if(costEvents && costEvents.length > 0) {
+                    if(costEvents.length > 0) {
                         const placeFateEvent: AnyEvent = costEvents[0];
                         this.game.addMessage(
                             '{0} places {1} fate on the {2}',

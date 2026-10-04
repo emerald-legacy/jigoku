@@ -295,7 +295,6 @@ export class Conflict extends GameObject {
 
         for(const card of this.attackingPlayer.cardsInPlay) {
             if(
-                card instanceof DrawCard &&
                 card.anyEffect(EffectName.ParticipatesFromHome) &&
                 card.canParticipateAsAttacker(this.conflictType) &&
                 card.isAtHome() &&
@@ -316,7 +315,6 @@ export class Conflict extends GameObject {
         }
         for(const card of this.defendingPlayer.cardsInPlay) {
             if(
-                card instanceof DrawCard &&
                 card.anyEffect(EffectName.ParticipatesFromHome) &&
                 card.canParticipateAsDefender(this.conflictType) &&
                 card.isAtHome() &&
@@ -421,7 +419,7 @@ export class Conflict extends GameObject {
             this.attackerSkill = this.attackingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
         } else {
             const additionalAttackers = additionalContributingCards.filter((card) =>
-                card.getEffects(EffectName.ContributeToConflict).some((value: Player) => value === this.attackingPlayer)
+                card.getEffects(EffectName.ContributeToConflict).some((value) => value === this.attackingPlayer)
             );
             this.attackerSkill =
                 this.calculateSkillFor(this.getAttackers().concat(additionalAttackers)) +
@@ -439,7 +437,7 @@ export class Conflict extends GameObject {
             this.defenderSkill = this.defendingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
         } else {
             const additionalDefenders = additionalContributingCards.filter((card) =>
-                card.getEffects(EffectName.ContributeToConflict).some((value: Player) => value === this.defendingPlayer)
+                card.getEffects(EffectName.ContributeToConflict).some((value) => value === this.defendingPlayer)
             );
             this.defenderSkill =
                 this.calculateSkillFor(this.getDefenders().concat(additionalDefenders)) +

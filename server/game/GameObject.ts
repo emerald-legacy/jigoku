@@ -11,7 +11,7 @@ import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
 import type { StateViewer } from './types/StateViewer.js';
 
-export interface ShortSummary {
+interface ShortSummary {
     name: string;
     [key: string]: unknown;
 }

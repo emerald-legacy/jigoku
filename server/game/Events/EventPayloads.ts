@@ -20,7 +20,7 @@ import type { StrongholdCard } from '../StrongholdCard.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 
-export interface BaseEventPayload {
+interface BaseEventPayload {
     name?: string;
     cancelled?: boolean;
     resolved?: boolean;
@@ -28,7 +28,7 @@ export interface BaseEventPayload {
     cannotBeCancelled?: boolean;
 }
 
-export interface EventPayloadMap {
+interface EventPayloadMap {
     /** Carries whatever the action that raised it set: a card, player or ring action's target. */
     [EventName.Unnamed]: BaseEventPayload & {
         card?: BaseCard;
@@ -356,13 +356,12 @@ export type EventPayload<K extends string> =
 // its narrower `card` wins over `Event.card` when their methods differ (`createSnapshot`).
 export type GameEvent<N extends string = EventName> = EventPayload<N> & Event;
 
-export type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
+type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
     ? P extends object ? keyof P : never
     : never;
 
-// The union of every value `K` can take across all payloads — used to type the
-// fallback fields declared on the Event class.
-export type PayloadValueAt<K extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer P
+// The union of every value `K` can take across all payloads, for `EventUnion`.
+type PayloadValueAt<K extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer P
     ? P extends object ? (K extends keyof P ? P[K] : never) : never
     : never;
 

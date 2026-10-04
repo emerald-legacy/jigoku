@@ -72,7 +72,7 @@ export interface GameState {
     [key: string]: unknown;
 }
 
-export interface GameDetails {
+interface GameDetails {
     id: string;
     name: string;
     allowSpectators: boolean;
@@ -119,12 +119,10 @@ const APPLY_CARD_ACTIONS = {
 const APPLY_PLAYER_ACTIONS = {
     discardAtRandom: (target: ApplyGameActionPlayerTarget) => GameActions.discardAtRandom({ target }),
     draw: (target: ApplyGameActionPlayerTarget) => GameActions.draw({ target }),
-    gainFate: (target: ApplyGameActionPlayerTarget) => GameActions.gainFate({ target }),
-    gainHonor: (target: ApplyGameActionPlayerTarget) => GameActions.gainHonor({ target }),
-    loseHonor: (target: ApplyGameActionPlayerTarget) => GameActions.loseHonor({ target })
+    gainFate: (target: ApplyGameActionPlayerTarget) => GameActions.gainFate({ target })
 };
 
-export type GameActionRequest = Partial<
+type GameActionRequest = Partial<
     { [K in keyof typeof APPLY_CARD_ACTIONS]: ApplyGameActionCardTarget } &
     { [K in keyof typeof APPLY_PLAYER_ACTIONS]: ApplyGameActionPlayerTarget }
 >;
@@ -833,22 +831,6 @@ class Game {
     }
 
     /**
-     * Raises a custom event window for checking for any cancels to a card
-     * ability
-     */
-    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
-        this.events.raiseInitiateAbilityEvent(params, handler);
-    }
-
-    /**
-     * Raises a custom event window for checking for any cancels to several card
-     * abilities which initiate simultaneously
-     */
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
-        this.events.raiseMultipleInitiateAbilityEvents(eventProps);
-    }
-
-    /**
      * Checks whether a game action can be performed on a card or an array of
      * cards, and performs it on all legal targets.
      */
@@ -890,7 +872,7 @@ class Game {
             player,
             player.opponent,
             undefined,
-            forceProvinceTarget ?? undefined,
+            forceProvinceTarget,
             forcedDeclaredType
         );
         this.queueStep(new ConflictFlow(this, conflict, canPass));

@@ -16,7 +16,6 @@ interface PreparedDeck {
     conflictCards: DrawCard[];
     dynastyCards: DrawCard[];
     provinceCards: ProvinceCard[];
-    outOfPlayCards: DrawCard[];
     outsideTheGameCards: DrawCard[];
     stronghold: StrongholdCard | undefined;
     role: RoleCard | undefined;
@@ -42,7 +41,6 @@ export class Deck {
             conflictCards: [],
             dynastyCards: [],
             provinceCards: [],
-            outOfPlayCards: [],
             outsideTheGameCards: [],
             stronghold: undefined,
             role: undefined,

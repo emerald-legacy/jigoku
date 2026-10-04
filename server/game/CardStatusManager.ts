@@ -16,10 +16,8 @@ export class CardStatusManager {
                 this.removeStatusToken(CharacterStatus.Honored);
             } else {
                 const token = StatusToken.create(this.card.game, this.card, status);
-                if(token) {
-                    token.setCard(this.card);
-                    this.statusTokens.push(token);
-                }
+                token.setCard(this.card);
+                this.statusTokens.push(token);
             }
         }
     }

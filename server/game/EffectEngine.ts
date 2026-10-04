@@ -11,18 +11,14 @@ import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';
 
-function isEventNamed<N extends EventName>(event: Event, name: N): event is GameEvent<N> {
-    return event.name === name;
-}
-
 function fireTrigger<N extends EventName>(when: DelayedEffectWhen, name: N, event: Event, context: AbilityContext): unknown {
     const trigger = when[name];
-    return trigger && isEventNamed(event, name) && trigger(event, context);
+    return trigger && event.is(name) && trigger(event, context);
 }
 
 function untilEnds<N extends EventName>(until: EffectUntil, name: N, event: Event): unknown {
     const ends = until[name];
-    return ends && isEventNamed(event, name) && ends(event);
+    return ends && event.is(name) && ends(event);
 }
 
 interface CustomDurationEvent {

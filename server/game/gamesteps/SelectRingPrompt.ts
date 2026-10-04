@@ -26,7 +26,7 @@ interface SelectRingPromptProperties {
  * General purpose prompt that asks the user to select a ring.
  *
  * The properties option object has the following properties:
- * additionalButtons  - array of additional buttons for the prompt.
+ * buttons            - array of additional buttons for the prompt.
  * activePromptTitle  - the title that should be used in the prompt for the
  *                      choosing player.
  * waitingPromptTitle - the title that should be used in the prompt for the

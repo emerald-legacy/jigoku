@@ -44,7 +44,7 @@ export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
         };
         for(const effect of this.persistentEffects) {
             if(effect.location === Location.PlayArea || effect.location === Location.Any) {
-                effect.ref = target.addEffectToEngine({ ...effect, location: effect.location });
+                effect.ref = target.addEffectToEngine(effect);
             }
         }
     }

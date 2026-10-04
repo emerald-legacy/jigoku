@@ -80,7 +80,7 @@ export interface PlayerState extends Partial<ReturnType<PlayerPromptState['getSt
     clock?: ReturnType<ClockInterface['getState']>;
 }
 
-export interface OptionSettings {
+interface OptionSettings {
     markCardsUnselectable?: boolean;
     cancelOwnAbilities?: boolean;
     orderForcedAbilities?: boolean;
@@ -92,23 +92,23 @@ export interface OptionSettings {
     [key: string]: boolean | undefined;
 }
 
-export interface TimerSettings {
+interface TimerSettings {
     events?: boolean;
     eventsInDeck?: boolean;
     windowTimer?: number | string;
     [key: string]: boolean | number | string | undefined;
 }
 
-export interface DeckFaction {
+interface DeckFaction {
     name?: string;
     value?: string;
 }
 
-export interface MoveCardOptions {
+interface MoveCardOptions {
     bottom?: boolean;
 }
 
-export interface PatronSettings {
+interface PatronSettings {
     dial?: string;
     tokens?: string;
     rings?: string;
@@ -358,11 +358,6 @@ class Player extends GameObject {
         return this.zones.getSourceList(source);
     }
 
-
-    createAdditionalPile(name: string, properties?: Record<string, unknown>): void {
-        this.zones.createAdditionalPile(name, properties);
-    }
-
     getDynastyCardInProvince(location: string): DrawCard | undefined {
         return this.zones.getDynastyCardInProvince(location);
     }
@@ -545,14 +540,6 @@ class Player extends GameObject {
 
     getLegalConflictTypes(properties: ConflictDeclarationProperties): string[] {
         return this.conflictManager.getLegalConflictTypes(properties);
-    }
-
-    getConflictsWhenMaxIsSet(maxConflicts: number): number {
-        return this.conflictManager.getConflictsWhenMaxIsSet(maxConflicts);
-    }
-
-    getMaxConflictOpportunitiesForPlayerByType(type: string): number {
-        return this.conflictManager.getMaxConflictOpportunitiesForPlayerByType(type);
     }
 
     get declaredConflictOpportunities(): Record<string, number> {
@@ -761,10 +748,10 @@ class Player extends GameObject {
         const preparedDeck = deck.prepare(this);
         this.faction = preparedDeck.faction ?? {};
         this.provinceDeck = preparedDeck.provinceCards;
-        if(preparedDeck.stronghold instanceof StrongholdCard) {
+        if(preparedDeck.stronghold) {
             this.stronghold = preparedDeck.stronghold;
         }
-        if(preparedDeck.role instanceof RoleCard) {
+        if(preparedDeck.role) {
             this.role = preparedDeck.role;
         }
         this.conflictDeck = preparedDeck.conflictCards;
@@ -834,7 +821,7 @@ class Player extends GameObject {
         return this.costManager.getTargetingCost(abilitySource, targets);
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: BaseCard | null = null): void {
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard): void {
         this.costManager.markUsedReducers(playingType, card, target);
     }
 
@@ -1015,17 +1002,11 @@ class Player extends GameObject {
     }
 
     get gloryModifier(): number {
-        return this.getEffects(EffectName.ChangePlayerGloryModifier).reduce(
-            (total: number, value: number) => total + value,
-            0
-        );
+        return this.sumEffects(EffectName.ChangePlayerGloryModifier);
     }
 
     get skillModifier(): number {
-        return this.getEffects(EffectName.ChangePlayerSkillModifier).reduce(
-            (total: number, value: number) => total + value,
-            0
-        );
+        return this.sumEffects(EffectName.ChangePlayerSkillModifier);
     }
 
     honorGained(round: number | null = null, phase: string | null = null, onlyPositive: boolean = false): number {
@@ -1144,7 +1125,7 @@ class Player extends GameObject {
 
         const targetPile = this.getSourceList(targetLocation);
 
-        if(!this.isLegalLocationForCard(card, targetLocation) || (targetPile && targetPile.includes(card))) {
+        if(!this.isLegalLocationForCard(card, targetLocation) || targetPile.includes(card)) {
             return;
         }
 
@@ -1162,7 +1143,7 @@ class Player extends GameObject {
                 return;
             }
 
-            for(const attachment of card.attachments || []) {
+            for(const attachment of card.attachments) {
                 attachment.leavesPlay(targetLocation);
                 attachment.owner.moveCard(
                     attachment,
@@ -1204,7 +1185,7 @@ class Player extends GameObject {
             targetLocation === Location.RemovedFromGame
         ) {
             targetPile.unshift(card);
-        } else if(targetPile) {
+        } else {
             targetPile.push(card);
         }
 

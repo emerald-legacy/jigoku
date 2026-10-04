@@ -14,7 +14,6 @@ interface AbilityTargetTokenProperties {
     gameAction: GameAction[];
     location?: Location | Location[];
     cardType?: CardType | CardType[];
-    singleToken?: boolean;
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     dependsOn?: string;
@@ -25,7 +24,6 @@ interface TokenTargetResults {
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTargetToken | null;
-    costsFirst?: boolean;
 }
 
 interface PromptButton {
@@ -45,7 +43,6 @@ class AbilityTargetToken {
         this.properties = properties;
         this.properties.location = this.properties.location || Location.PlayArea;
         this.selector = this.getSelector(properties);
-        this.properties.singleToken = this.properties.singleToken || true;
         for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.tokens[name]);
         }
@@ -62,7 +59,7 @@ class AbilityTargetToken {
     getSelector(properties: AbilityTargetTokenProperties): CardSelectorInstance {
         const cardCondition = (card: BaseCard, context: AbilityContext) => {
             const tokens: StatusToken[] = [...card.statusTokens];
-            if(!tokens || tokens.length === 0) {
+            if(tokens.length === 0) {
                 return false;
             }
             const contextCopy = context.copy({});
@@ -138,7 +135,7 @@ class AbilityTargetToken {
 
                 const selectedCard = Array.isArray(card) ? card[0] : card;
                 const validTokens: StatusToken[] = selectedCard.statusTokens.filter((token: StatusToken) => (!this.properties.tokenCondition || this.properties.tokenCondition(token, context)) && (this.properties.gameAction.length === 0 || this.properties.gameAction.some((action) => action.canAffect(token, context))));
-                if(this.properties.singleToken && validTokens.length > 1) {
+                if(validTokens.length > 1) {
                     context.game.promptWithHandlerMenu(player, {
                         activePromptTitle: 'Which token do you wish to select?',
                         options: validTokens.map((token: StatusToken) => ({
@@ -165,13 +162,7 @@ class AbilityTargetToken {
                 targetResults.cancelled = true;
                 return true;
             },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'costsFirst') {
-                    targetResults.costsFirst = true;
-                    return true;
-                }
-                return true;
-            }
+            onMenuCommand: () => true
         };
         if(!player) {
             // a solo game has no opponent to choose

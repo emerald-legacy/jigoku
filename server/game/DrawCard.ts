@@ -115,10 +115,7 @@ class DrawCard extends BaseCard {
     printedStrengthBonus: number;
     fate = 0;
     covert = false;
-    declare isConflict: boolean;
-    declare isDynasty: boolean;
     allowDuplicatesOfAttachment: boolean;
-    inConflict: boolean = false;
     new: boolean = false;
     private skillCalculator: SkillCalculator;
     private childCardHost = new ChildCardManager(this);
@@ -610,7 +607,7 @@ class DrawCard extends BaseCard {
      */
     leavesPlay(_destination?: string): void {
         // If this is an attachment and is attached to another card, we need to remove all links between them
-        if(this.parent && this.parent.attachments) {
+        if(this.parent) {
             this.parent.removeAttachment(this);
             this.parent = null;
         }
@@ -744,7 +741,7 @@ class DrawCard extends BaseCard {
 
         if(this.controller.anyEffect(EffectName.LimitLegalAttackers)) {
             const checks = this.controller.getEffects(EffectName.LimitLegalAttackers);
-            if(!checks.every((check) => typeof check !== 'function' || check(this))) {
+            if(!checks.every((check) => check(this))) {
                 return false;
             }
         }
@@ -814,7 +811,7 @@ class DrawCard extends BaseCard {
         //empty function so playcardaction doesn't crash the game
     }
 
-    allowAttachment(attachment: BaseCard | DrawCard): boolean {
+    allowAttachment(attachment: BaseCard): boolean {
         if(
             MODES_LIMITING_REPEATED_ATTACHMENTS.has(this.game.gameMode) &&
             this.type === CardType.Character &&

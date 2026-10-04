@@ -59,7 +59,7 @@ export class ConflictPhase extends Phase {
             ) {
                 initiateConflict(props).resolve(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer));
             } else {
-                var conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent);
+                const conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent);
                 conflict.passConflict(
                     '{0} passes their conflict opportunity as none of their characters can be declared as an attacker'
                 );

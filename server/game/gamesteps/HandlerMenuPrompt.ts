@@ -29,7 +29,7 @@ export interface HandlerMenuPromptProperties<T extends BaseCard = BaseCard, C ex
     cards?: T[];
     cardCondition?: (card: T, context: AbilityContext) => boolean;
     cardHandler?: (card: T) => void;
-    controls?: { type: string; targets: BaseCard[] } | Array<{ type: string; source: unknown; targets: unknown[] }>;
+    controls?: Array<{ type: string; source: unknown; targets: unknown[] }>;
     target?: GameObject | GameObject[];
 }
 
@@ -127,14 +127,6 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
     }
 
     getAdditionalPromptControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
-        const controls = this.properties.controls;
-        if(controls && !Array.isArray(controls) && controls.type === 'targeting') {
-            return [{
-                type: 'targeting',
-                source: this.source.getShortSummary(),
-                targets: controls.targets.map((target: BaseCard) => target.getShortSummaryForControls(this.player))
-            }];
-        }
         // a source that is not a card has no type
         const sourceType: string = this.context.source.type;
         if(sourceType === '') {

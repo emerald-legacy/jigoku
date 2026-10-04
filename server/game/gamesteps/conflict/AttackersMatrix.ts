@@ -145,7 +145,7 @@ class AttackersMatrix {
             return [];
         }
 
-        if(this.player.getEffects(EffectName.MustDeclareMaximumAttackers).some((effect: string) => effect === 'both' || effect === conflictType)) {
+        if(this.player.getEffects(EffectName.MustDeclareMaximumAttackers).some((effect) => effect === 'both' || effect === conflictType)) {
             const cards = this.characters;
             const forcedAttackers: DrawCard[] = [];
             cards.forEach(card => {
@@ -161,7 +161,7 @@ class AttackersMatrix {
 
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect) => effect === 'both' || effect === conflictType));
     }
 
     //Internal use only
@@ -171,7 +171,7 @@ class AttackersMatrix {
         }
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectName.MustBeDeclaredAsAttackerIfType).some((effect: string) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsAttackerIfType).some((effect) => effect === 'both' || effect === conflictType));
     }
 
     getForcedAttackersByDeclarationRequirement(ring: Ring | undefined, conflictType: ConflictType | undefined, province?: ProvinceCard | null): DrawCard[] {
@@ -180,7 +180,7 @@ class AttackersMatrix {
         }
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect) => effect === 'both' || effect === conflictType));
     }
 }
 

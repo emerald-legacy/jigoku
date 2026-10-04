@@ -12,7 +12,7 @@ export interface PromptButton {
     [key: string]: unknown;
 }
 
-export interface RenderedPromptButton {
+interface RenderedPromptButton {
     text?: string | number;
     arg?: string | number;
     method?: string;

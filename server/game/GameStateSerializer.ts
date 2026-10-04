@@ -77,7 +77,7 @@ export class GameStateSerializer {
             honor: player.getTotalHonor(),
             lostProvinces: player
                 .getProvinceCards()
-                .reduce((count: number, card) => (card && card.isBroken ? count + 1 : count), 0),
+                .reduce((count: number, card) => (card.isBroken ? count + 1 : count), 0),
             deck: this.formatDeckForSaving(player.deck),
             deckId: player.deck._id === undefined || player.deck._id === null ? undefined : String(player.deck._id)
         }));

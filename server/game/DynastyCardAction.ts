@@ -7,7 +7,6 @@ import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { EffectValue } from './Effects/EffectValue.js';
-import type { Event } from './Events/Event.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -76,18 +75,14 @@ class DynastyCardAction extends BaseAction {
             context.source,
             context
         );
-        const card = context.source;
-        const events: Event[] = [enterPlayEvent];
-        if(card.isDrawCard()) {
-            events.push(context.game.getEvent(EventName.OnCardPlayed, {
-                player: context.player,
-                card,
-                context: context,
-                originalLocation: card.location,
-                playType: PlayType.PlayFromProvince
-            }));
-        }
-        context.game.openEventWindow(events);
+        const card = this.card;
+        context.game.openEventWindow([enterPlayEvent, context.game.getEvent(EventName.OnCardPlayed, {
+            player: context.player,
+            card,
+            context: context,
+            originalLocation: card.location,
+            playType: PlayType.PlayFromProvince
+        })]);
     }
 
     isCardPlayed(): boolean {

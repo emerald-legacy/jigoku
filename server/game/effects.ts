@@ -1,5 +1,5 @@
 import * as AbilityLimit from './AbilityLimit.js';
-import GainAllAbiliitesDynamic from './Effects/GainAllAbilitiesDynamic.js';
+import GainAllAbilitiesDynamic from './Effects/GainAllAbilitiesDynamic.js';
 import Restriction from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
 import { EffectBuilder } from './Effects/EffectBuilder.js';
@@ -136,7 +136,7 @@ const Effects = {
     gainAbility,
     gainAllAbilities,
     gainAllAbilitiesDynamic: (match: DynamicMatch, printedAbilitiesOnly = false) =>
-        EffectBuilder.card.static(EffectName.GainAllAbilitiesDynamic, new GainAllAbiliitesDynamic(match, printedAbilitiesOnly)),
+        EffectBuilder.card.static(EffectName.GainAllAbilitiesDynamic, new GainAllAbilitiesDynamic(match, printedAbilitiesOnly)),
     gainExtraFateWhenPlayed: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectName.GainExtraFateWhenPlayed, amount),
     gainPlayAction: (playActionClass: new (card: DrawCard) => BaseAction) =>
         EffectBuilder.card.detached(EffectName.GainPlayAction, {
@@ -211,15 +211,12 @@ const Effects = {
     suppressEffects: (condition: (effect: EffectBase) => boolean) =>
         EffectBuilder.card.static(EffectName.SuppressEffects, new SuppressEffect(condition)),
     takeControl: (player: Player | undefined) => EffectBuilder.card.static(EffectName.TakeControl, player),
-    triggersAbilitiesFromHome: (properties: object) =>
-        EffectBuilder.card.static(EffectName.TriggersAbilitiesFromHome, properties),
     participatesFromHome: () => EffectBuilder.card.static(EffectName.ParticipatesFromHome, true),
     unlessActionCost: (properties: UnlessActionCostValue) => EffectBuilder.card.static(EffectName.UnlessActionCost, properties),
     replacePrintedElement: (value: EffectValueMap[EffectName.ReplacePrintedElement]) => EffectBuilder.card.static(EffectName.ReplacePrintedElement, value),
     winDuel: (duel: Duel) => EffectBuilder.card.static(EffectName.WinDuel, duel),
     winDuelTies: () => EffectBuilder.card.static(EffectName.WinDuelTies, true),
     ignoreDuelSkill: () => EffectBuilder.card.static(EffectName.IgnoreDuelSkill, true),
-    payPrintedCostToOpponent: () => EffectBuilder.card.static(EffectName.PayPrintedCostToOpponent, true),
     // Ring effects
     addElement: (element: Flexible<Element | Element[], Ring>) => EffectBuilder.ring.flexible(EffectName.AddElement, element),
     cannotBidInDuels: (num: number | string) => EffectBuilder.player.static(EffectName.CannotBidInDuels, num),

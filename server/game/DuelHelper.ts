@@ -3,7 +3,6 @@ import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import { CardType, Players } from './Constants.js';
 import type DrawCard from './DrawCard.js';
-import type Game from './Game.js';
 import { InitiateDuel } from './Interfaces.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 
@@ -16,13 +15,13 @@ interface InitiateDuelHelperProps {
     targets?: Record<string, TargetPropertiesInput>;
 }
 
-export const initiateDuel = (game: Game, card: BaseCard, properties: InitiateDuelHelperProps): void => {
+export const initiateDuel = (card: BaseCard, properties: InitiateDuelHelperProps): void => {
     const source = properties.initiateDuel;
     if(source) {
         if(card.isCharacter()) {
-            initiateDuelFromCharacter(game, card, properties, source);
+            initiateDuelFromCharacter(card, properties, source);
         } else {
-            initiateDuelFromOther(game, card, properties, source);
+            initiateDuelFromOther(properties, source);
         }
     }
 };
@@ -43,7 +42,7 @@ const checkChallengerCondition = (card: DrawCard, context: AbilityContext, sourc
     return challengerCondition(card, context);
 };
 
-const initiateDuelFromCharacter = (_game: Game, card: DrawCard, properties: InitiateDuelHelperProps, source: DuelSource): void => {
+const initiateDuelFromCharacter = (card: DrawCard, properties: InitiateDuelHelperProps, source: DuelSource): void => {
     const prevCondition = properties.condition;
     properties.condition = (context: AbilityContext) => {
         const abilityCondition = (!prevCondition || prevCondition(context));
@@ -58,7 +57,7 @@ const initiateDuelFromCharacter = (_game: Game, card: DrawCard, properties: Init
     };
 };
 
-const initiateDuelFromOther = (_game: Game, _card: BaseCard, properties: InitiateDuelHelperProps, source: DuelSource): void => {
+const initiateDuelFromOther = (properties: InitiateDuelHelperProps, source: DuelSource): void => {
     properties.targets = {
         challenger: {
             cardType: CardType.Character,

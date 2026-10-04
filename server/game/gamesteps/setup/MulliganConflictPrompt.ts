@@ -2,7 +2,6 @@ import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
 import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
-import type DrawCard from '../../DrawCard.js';
 
 class MulliganConflictPrompt extends MulliganDynastyPrompt {
     readyToStart?: boolean;
@@ -49,10 +48,8 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
             }
             this.game.getProvinceArray(false).forEach((location: Location) => {
                 const cards = player.getDynastyCardsInProvince(location);
-                cards.forEach((card: DrawCard) => {
-                    if(card) {
-                        card.facedown = true;
-                    }
+                cards.forEach((card) => {
+                    card.facedown = true;
                 });
             });
             player.clearSelectedCards();

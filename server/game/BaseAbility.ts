@@ -99,7 +99,6 @@ class BaseAbility {
     cannotBeCancelled?: boolean;
     cannotBeMirrored?: boolean;
     printedAbility?: boolean;
-    doesNotTarget?: boolean;
     origin?: BaseCard;
 
     /**
@@ -256,7 +255,7 @@ class BaseAbility {
     resolveTargets(context: AbilityContext): TargetResults {
         const targetResults: TargetResults = {
             canIgnoreAllCosts:
-                context.stage === Stage.PreTarget ? this.cost.every((cost) => cost.canIgnoreForTargeting) : false,
+                context.stage === Stage.PreTarget && this.cost.length === 0,
             cancelled: false,
             payCostsFirst: false,
             delayTargeting: null

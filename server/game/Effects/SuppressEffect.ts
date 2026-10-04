@@ -8,9 +8,6 @@ export class SuppressEffect extends EffectValue<CardEffect[]> {
     }
 
     recalculate() {
-        if(typeof this.predicate !== 'function') {
-            return false;
-        }
         const oldValue = this.value;
         const suppressedEffects = this.requireContext().game.effectEngine.effects.filter((effect) =>
             this.predicate(effect.effect)

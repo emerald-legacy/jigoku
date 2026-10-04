@@ -10,7 +10,7 @@ import { Event } from './Events/Event.js';
 import type { OwnContextCallback, WhenType } from './Interfaces.js';
 import type { EventHandler } from './GameEventBus.js';
 
-export type AggregateContext<S extends BaseCard = BaseCard> = TriggeredAbilityContext<S, BaseCard, Event[]>;
+type AggregateContext<S extends BaseCard = BaseCard> = TriggeredAbilityContext<S, BaseCard, Event[]>;
 
 export type TriggerChoice = TriggeredAbilityContext<BaseCard, BaseCard, AnyEventOrAggregate>;
 type AnyEventOrAggregate = Exclude<TriggeringEvent, undefined>;
@@ -45,34 +45,7 @@ interface RegisteredEvent {
     handler: EventHandler;
 }
 
-/**
- * Represents a reaction/interrupt ability provided by card text.
- *
- * Properties:
- * when    - object whose keys are event names to listen to for the reaction and
- *           whose values are functions that return a boolean about whether to
- *           trigger the reaction when that event is fired. For example, to
- *           trigger only at the end of the challenge phase, you would do:
- *           when: {
- *               onPhaseEnded: event => event.phase === 'conflict'
- *           }
- *           Multiple events may be specified for cards that have multiple
- *           possible triggers for the same reaction.
- * title   - string which is displayed to the player to reference this ability
- * cost    - object or array of objects representing the cost required to be
- *           paid before the action will activate. See Costs.
- * target  - object giving properties for the target API
- * handler - function that will be executed if the player chooses 'Yes' when
- *           asked to trigger the reaction. If the reaction has more than one
- *           choice, use the choices sub object instead.
- * limit   - optional AbilityLimit object that represents the max number of uses
- *           for the reaction as well as when it resets.
- * max     - optional AbilityLimit object that represents the max number of
- *           times the ability by card title can be used. Contrast with `limit`
- *           which limits per individual card.
- * location - string or array of strings indicating the location the card should
- *            be in in order to activate the reaction. Defaults to 'play area'.
- */
+/** A reaction or interrupt ability provided by card text; cards declare it through the builder (docs/ability_dsl.md). */
 
 class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     when?: WhenType;

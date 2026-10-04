@@ -69,11 +69,4 @@ export default class DynamicEffect<N extends EffectName = EffectName, T extends 
         this.context = context;
         this.value.setContext(context);
     }
-
-    getDebugInfo() {
-        return {
-            type: this.type,
-            value: this.value
-        };
-    }
 }

@@ -490,10 +490,6 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: Ab
 
 export function nameCard(): Cost<{ nameCardCost: string }> {
     return {
-        selectCardName(player: Player, cardName: string, context: AbilityContext) {
-            context.costs.nameCardCost = cardName;
-            return true;
-        },
         getActionName(_context) {
             return 'nameCard';
         },
@@ -505,7 +501,7 @@ export function nameCard(): Cost<{ nameCardCost: string }> {
         },
         resolve(context) {
             const dummyObject = {
-                selectCardName: (player: Player, cardName: string, context: AbilityContext) => {
+                selectCardName: (_player: Player, cardName: string, context: AbilityContext) => {
                     context.costs.nameCardCost = cardName;
                     return true;
                 }

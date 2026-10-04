@@ -57,13 +57,6 @@ class StaticEffect<N extends EffectName = EffectName, T extends GameObject = Gam
         this.context = context;
         this.value.setContext(context);
     }
-
-    getDebugInfo() {
-        return {
-            type: this.type,
-            value: this.value
-        };
-    }
 }
 
 export default StaticEffect;

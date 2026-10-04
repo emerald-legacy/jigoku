@@ -23,7 +23,7 @@ function isPrintedKeyword(keyword: string): keyword is PrintedKeyword {
     return ValidKeywords.has(keyword);
 }
 
-export interface ParsedKeywords {
+interface ParsedKeywords {
     keywords: PrintedKeyword[];
     disguisedTraits: string[];
     allowedAttachmentTraits: string[];

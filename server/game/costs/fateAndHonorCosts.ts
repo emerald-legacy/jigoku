@@ -109,7 +109,7 @@ export function variableFateCost(properties: {
         return properties.minAmount === undefined ? 1 : derive(properties.minAmount, context);
     }
     function deriveMaxAmount(context: AbilityContext) {
-        return properties.maxAmount === undefined ? -1 : derive(properties.maxAmount, context);
+        return derive(properties.maxAmount, context);
     }
     return {
         promptsPlayer: true,

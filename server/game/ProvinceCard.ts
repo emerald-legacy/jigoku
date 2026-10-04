@@ -228,7 +228,7 @@ export class ProvinceCard extends BaseCard {
         if(
             this.location === Location.StrongholdProvince ||
             (this.game.gameMode === GameModes.Skirmish &&
-                this.controller.getProvinces((card: ProvinceCard) => card.isBroken).length > 2)
+                this.controller.getProvinces((card) => card.isBroken).length > 2)
         ) {
             this.game.recordWinner(this.controller.opponent, 'conquest');
             return;
@@ -240,9 +240,6 @@ export class ProvinceCard extends BaseCard {
 
         const choosingPlayer = this.game.currentConflict?.attackingPlayer ?? this.controller.opponent;
         for(const dynastyCard of this.cardsInSelf()) {
-            if(!dynastyCard) {
-                continue;
-            }
             const cardLabel = () => (dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard);
             this.game.promptWithHandlerMenu(choosingPlayer, {
                 activePromptTitle: `Do you wish to discard ${dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard.name}?`,
@@ -329,8 +326,4 @@ export class ProvinceCard extends BaseCard {
     cardsInSelf(): DrawCard[] {
         return this.controller.getDynastyCardsInProvince(this.location);
     }
-}
-
-export function isProvinceCard(card: BaseCard): card is ProvinceCard {
-    return card.isProvince;
 }

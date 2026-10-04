@@ -5,7 +5,7 @@ import type { ElementSymbolInfo } from '../ElementSymbol.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 
-export type ClaimedRingSymbol = { key: string; element: Element };
+type ClaimedRingSymbol = { key: string; element: Element };
 
 /** Whether the player has claimed the ring of the card's element symbol `key`. */
 export function hasClaimedRing(card: BaseCard, key: string, player: Player): boolean {

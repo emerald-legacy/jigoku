@@ -7,7 +7,7 @@ import { secret } from './env.js';
 
 /** The part of a verified JWT payload the game node relies on. */
 export const SocketUserSchema = z.looseObject({ username: z.string() });
-export type SocketUser = z.infer<typeof SocketUserSchema>;
+type SocketUser = z.infer<typeof SocketUserSchema>;
 
 declare module 'http' {
     interface IncomingMessage {

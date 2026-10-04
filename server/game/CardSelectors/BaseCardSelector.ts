@@ -3,10 +3,9 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
+import { isCardTypeList } from '../types/CardOfType.js';
 
 type ControllerProp = Players | ((context: AbilityContext) => Players);
-
-const isCardTypeList = (cardType: CardType | readonly CardType[] | undefined): cardType is readonly CardType[] => Array.isArray(cardType);
 
 export type NumCardsFunc = (context: AbilityContext) => number;
 
@@ -90,11 +89,8 @@ class BaseCardSelector {
 
         attachments = attachments.concat(allProvinceAttachments);
 
-        if(context.game.rings) {
-            const rings = Object.values(context.game.rings);
-            const allRingAttachments = rings.map((ring) => ring.attachments).flat();
-            attachments = attachments.concat(allRingAttachments);
-        }
+        const allRingAttachments = Object.values(context.game.rings).map((ring) => ring.attachments).flat();
+        attachments = attachments.concat(allRingAttachments);
         if(context.player.opponent) {
             attachments = attachments.concat(...context.player.opponent.cardsInPlay.map((card: DrawCard) => card.attachments));
         }
@@ -156,8 +152,7 @@ class BaseCardSelector {
         if(card.location === Location.Hand && card.controller !== choosingPlayer) {
             return false;
         }
-        const cardTypes: readonly (string | undefined)[] = this.cardType;
-        return cardTypes.includes(card.getType()) && this.cardCondition(card, context);
+        return this.cardType.includes(card.getType()) && this.cardCondition(card, context);
     }
 
     getAllLegalTargets(context: AbilityContext, choosingPlayer?: Player): BaseCard[] {

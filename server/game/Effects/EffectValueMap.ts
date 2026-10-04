@@ -72,7 +72,7 @@ export interface UnlessActionCostValue {
     cost: GameAction | UnlessActionCostCallback['cost'];
 }
 
-export interface CanPlayFromOutOfPlayValue {
+interface CanPlayFromOutOfPlayValue {
     player: (player: Player, card: BaseCard) => boolean;
     playType?: PlayType;
 }
@@ -184,7 +184,6 @@ export interface EffectValueMap {
     [EffectName.SwitchBaseSkills]: boolean;
     [EffectName.SuppressEffects]: CardEffect[];
     [EffectName.TakeControl]: Player | undefined;
-    [EffectName.TerminalCondition]: unknown;
     [EffectName.UnlessActionCost]: UnlessActionCostValue;
     [EffectName.AddElement]: Element | Element[];
     [EffectName.CannotBidInDuels]: number | string;
@@ -240,13 +239,11 @@ export interface EffectValueMap {
     [EffectName.WinDuel]: Duel;
     [EffectName.WinDuelTies]: boolean;
     [EffectName.IgnoreDuelSkill]: boolean;
-    [EffectName.PayPrintedCostToOpponent]: boolean;
     [EffectName.ConflictIgnoreStatusTokens]: boolean;
     [EffectName.LimitLegalAttackers]: (card: DrawCard) => boolean;
     [EffectName.ModifyHonorTransferGiven]: number;
     [EffectName.ModifyHonorTransferReceived]: number;
     [EffectName.ModifyUnopposedHonorLoss]: number;
-    [EffectName.TriggersAbilitiesFromHome]: object;
     [EffectName.ModifyDuelSkill]: { player?: Player; amount: number };
     [EffectName.ApplyStatusTokensToDuel]: boolean;
     [EffectName.DuelIgnorePrintedSkill]: boolean;

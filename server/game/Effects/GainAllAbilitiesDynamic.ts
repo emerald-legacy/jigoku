@@ -22,7 +22,6 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
     abilitiesForTargets: Record<string, GainedAbilities>;
     actions: GainAbility[];
     reactions: GainAbility[];
-    persistentEffects: StoredPersistentEffect[];
     printedAbilitiesOnly: boolean;
 
     constructor(match: DynamicMatch, printedAbilitiesOnly = false) {
@@ -32,7 +31,6 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
         this.abilitiesForTargets = {};
         this.actions = [];
         this.reactions = [];
-        this.persistentEffects = [];
         this.printedAbilitiesOnly = printedAbilitiesOnly;
     }
 
@@ -41,7 +39,6 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
 
         this.actions = [];
         this.reactions = [];
-        this.persistentEffects = [];
         cardList.forEach((card: BaseCard) => {
             card._getActions(true)
                 .filter((a: CardAction) => a.isTriggeredAbility() && (!card.isBlank() || (!this.printedAbilitiesOnly && !a.printedAbility)))
@@ -116,6 +113,6 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
     }
 
     getPersistentEffects(): StoredPersistentEffect[] {
-        return this.persistentEffects;
+        return [];
     }
 }

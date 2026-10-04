@@ -3,7 +3,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import CardAbility from './CardAbility.js';
-import { CardType, type EventName, type Location, type Phases, type Players, TargetMode } from './Constants.js';
+import { type EventName, type Location, type Phases, type Players, TargetMode } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type { GameEvent } from './Events/EventPayloads.js';
@@ -35,7 +35,7 @@ import { ElementSymbol } from './ElementSymbol.js';
 import { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import { isCardOfType, type CardOfType } from './types/CardOfType.js';
+import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from './types/CardOfType.js';
 
 /** A skipped optional target holds `[]`, or nothing if its prompt was hidden (`hideIfNoLegalTargets`). */
 type ChosenCard<K, O> = true extends O ? CardOfType<K> | [] | undefined : CardOfType<K>;
@@ -203,12 +203,11 @@ interface SelectTargetProps<Context, D> {
     condition?: (context: Context) => boolean;
 }
 
-function holdsCardOf<K extends CardType | readonly CardType[] | undefined>(cardType: K | undefined): (value: unknown) => value is CardOfType<K> {
+function holdsCardOf<K extends CardTypes>(cardType: K | undefined): (value: unknown) => value is CardOfType<K> {
     const isCard = isCardOfType(cardType);
     return (value: unknown): value is CardOfType<K> => value instanceof BaseCard && isCard(value);
 }
 
-const isCardTypeList = (cardType: CardType | readonly CardType[]): cardType is readonly CardType[] => Array.isArray(cardType);
 const holdsRing = (value: unknown): value is Ring => value instanceof Ring;
 const holdsTokens = (value: unknown): value is StatusToken[] =>
     Array.isArray(value) && value.every((token) => token instanceof StatusToken);
@@ -279,7 +278,7 @@ export class AbilityBuilder<
         ];
     }
 
-    #cardChoice<K extends CardType | readonly CardType[] | undefined>(props: CardChoiceProps<never, K, string>): CardChoiceEntry {
+    #cardChoice<K extends CardTypes>(props: CardChoiceProps<never, K, string>): CardChoiceEntry {
         const [earlier, others] = this.#earlier(props.dependsOn);
         const entry: CardChoiceEntry = {};
         for(const key of ['location', 'activePromptTitle', 'dependsOn', 'hideIfNoLegalTargets'] as const) {
@@ -325,7 +324,7 @@ export class AbilityBuilder<
 
     target<
         const Name extends string,
-        const K extends CardType | readonly CardType[] | undefined = undefined,
+        const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never,
         const O extends boolean = false
     >(
@@ -360,7 +359,7 @@ export class AbilityBuilder<
     /** Several cards at once, by `mode`. Its callbacks see one candidate at a time; later ones, every card chosen. */
     targetCards<
         const Name extends string,
-        const K extends CardType | readonly CardType[] | undefined = undefined,
+        const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never
     >(
         name: Name,
@@ -389,7 +388,7 @@ export class AbilityBuilder<
         return new AbilityBuilder(this.draft);
     }
 
-    #multiCardEntry<K extends CardType | readonly CardType[] | undefined, EarlierContext extends BuilderContext<Base, object, object, CO>>(
+    #multiCardEntry<K extends CardTypes, EarlierContext extends BuilderContext<Base, object, object, CO>>(
         choice: CardChoiceEntry,
         props: CardsModeProps<EarlierContext, K>,
         holdsCard: (value: unknown) => value is CardOfType<K>,
@@ -426,7 +425,7 @@ export class AbilityBuilder<
     /** The status tokens on a chosen card. Its own conditions run before it is set. */
     tokenTarget<
         const Name extends string,
-        const K extends CardType | readonly CardType[] | undefined = undefined,
+        const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never,
         const O extends boolean = false
     >(
@@ -462,7 +461,7 @@ export class AbilityBuilder<
     /** A triggered ability printed on a chosen card, in `context.targetAbility`. */
     abilityTarget<
         const Name extends string,
-        const K extends CardType | readonly CardType[] | undefined = undefined,
+        const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never
     >(
         name: Name,
@@ -490,7 +489,7 @@ export class AbilityBuilder<
     }
 
     /** An element symbol printed on a chosen card, in `context.element`; the card is `context.elementCard`. */
-    elementTarget<const K extends CardType | readonly CardType[] | undefined = undefined>(
+    elementTarget<const K extends CardTypes = undefined>(
         props: Pick<CardChoiceProps<never, K, never>, 'cardType' | 'location' | 'activePromptTitle'>,
         ...gameActions: NoInfer<BuilderAction<Base & { element: ElementSymbol; elementCard: BaseCard }, TG, RG, CO, TK>>[]
     ): AbilityBuilder<Base & { element: ElementSymbol; elementCard: BaseCard }, TG, RG, CO, TK, SL> {
@@ -710,7 +709,7 @@ type AggregateBase<S extends BaseCard, EventOptional extends boolean> = EventOpt
     ? AbilityContext<S> & Pick<TriggeredAbilityContext<S>, 'cancel'> & { event?: Event[] }
     : TriggeredAbilityContext<S> & { event: Event[] };
 
-export type AggregateWhen<S extends BaseCard> = (events: Event[], context: TriggeredAbilityContext<S, BaseCard, Event[]>) => boolean;
+type AggregateWhen<S extends BaseCard> = (events: Event[], context: TriggeredAbilityContext<S, BaseCard, Event[]>) => boolean;
 
 interface TriggerStarts<S extends BaseCard> {
     when<W extends WhenType<S>>(when: W): AbilityDraft;

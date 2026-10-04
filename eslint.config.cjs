@@ -102,7 +102,7 @@ module.exports = [
             }
         },
         rules: {
-            // TypeScript rules (disabled for gradual migration — re-enable as codebase improves)
+            // TypeScript rules
             ...tseslint.configs.recommended.rules,
             'no-unused-vars': 'off',
             '@typescript-eslint/no-explicit-any': 'error',

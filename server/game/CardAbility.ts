@@ -69,7 +69,7 @@ class CardAbility extends ThenAbility {
 
     constructor(card: BaseCard, properties: CardAbilityProperties) {
         if(properties.initiateDuel) {
-            initiateDuel(card.game, card, properties);
+            initiateDuel(card, properties);
         }
         super(card, properties);
 

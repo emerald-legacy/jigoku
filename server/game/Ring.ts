@@ -39,7 +39,7 @@ class Ring extends EffectSource {
 
     isConsideredClaimed(player: Player | null = null): boolean {
         const check = (p: Player) =>
-            this.getEffects(EffectName.ConsiderRingAsClaimed).some((match: (player: Player) => boolean) => match(p)) ||
+            this.getEffects(EffectName.ConsiderRingAsClaimed).some((match) => match(p)) ||
             this.claimedBy === p.name;
         if(player) {
             return check(player);
@@ -53,7 +53,7 @@ class Ring extends EffectSource {
 
     canDeclare(player: Player): boolean {
         return (
-            !this.getEffects(EffectName.CannotDeclareRing).some((match: (player: Player) => boolean) => match(player)) &&
+            !this.getEffects(EffectName.CannotDeclareRing).some((match) => match(player)) &&
             !this.claimed &&
             !this.removedFromGame
         );
@@ -85,7 +85,7 @@ class Ring extends EffectSource {
 
     getElements(): Element[] {
         let elements: (Element | Element[])[] = this.getEffects(EffectName.AddElement).concat([this.element]);
-        if(this.game.isDuringConflict() && this.game.currentConflict) {
+        if(this.game.currentConflict) {
             if(this.isContested()) {
                 elements = elements.concat(
                     ...this.game.currentConflict

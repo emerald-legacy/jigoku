@@ -31,7 +31,6 @@ export class TriggeredAbilityContext<
 
     constructor(properties: TriggeredAbilityContextProperties<E>) {
         super(properties);
-        this.ability = properties.ability;
         this.event = properties.event;
     }
 

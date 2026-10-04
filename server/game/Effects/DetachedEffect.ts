@@ -51,11 +51,4 @@ export default class DetachedEffect<N extends EffectName = EffectName, T extends
             }
         }
     }
-
-    getDebugInfo() {
-        return {
-            type: this.type,
-            value: this.value
-        };
-    }
 }

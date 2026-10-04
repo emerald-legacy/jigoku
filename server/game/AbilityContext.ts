@@ -24,7 +24,6 @@ export interface AbilityContextProperties {
     selects?: Record<string, SelectChoice>;
     tokens?: Record<string, StatusToken | StatusToken[]>;
     elements?: Record<string, ElementSymbol>;
-    events?: Event[];
     stage?: Stage;
     targetAbility?: CardAbility | null;
 }
@@ -173,7 +172,6 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
             selects: Object.assign({}, this.selects),
             tokens: Object.assign({}, this.tokens),
             elements: Object.assign({}, this.elements),
-            events: this.events,
             stage: this.stage,
             targetAbility: this.targetAbility
         };

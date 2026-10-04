@@ -1,9 +1,7 @@
 import { Event } from './Events/Event.js';
 import type { EventParams, EventPayload, GameEvent } from './Events/EventPayloads.js';
-import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
-import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
 import { EventName } from './Constants.js';
 import { GameEventBus, type EventHandler } from './GameEventBus.js';
 import type Game from './Game.js';
@@ -64,14 +62,5 @@ export class GameEventManager {
             return this.game.queueStep(new ThenEventWindow(this.game, events));
         }
         return this.openEventWindow(events);
-    }
-
-    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
-        this.raiseMultipleInitiateAbilityEvents([{ params: params, handler: handler }]);
-    }
-
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
-        const events = eventProps.map((event) => new InitiateCardAbilityEvent(event.params, event.handler));
-        this.game.queueStep(new InitiateAbilityEventWindow(this.game, events));
     }
 }

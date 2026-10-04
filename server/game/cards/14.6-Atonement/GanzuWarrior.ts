@@ -1,4 +1,3 @@
-import { isProvinceCard } from '../../ProvinceCard.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -18,7 +17,7 @@ class GanzuWarrior extends DrawCard {
                 targets: false,
                 message: '{0} resolves the {1}\'s effect',
                 ringCondition: (ring) =>
-                    !!context.event.card && isProvinceCard(context.event.card) && context.event.card.element.includes(ring.element),
+                    !!context.event.card && context.event.card.isProvinceCard() && context.event.card.element.includes(ring.element),
                 messageArgs: (ring) => [context.player, ring],
                 gameAction: AbilityDsl.actions.resolveRingEffect({ player: context.player })
             })))

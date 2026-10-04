@@ -37,7 +37,6 @@ class AbilityResolver extends BaseStepWithPipeline {
     initiateAbility: boolean;
     passPriority: boolean;
     events: Event[];
-    provincesToRefill: unknown[];
     targetResults: AbilityResolverTargetResults;
     costResults: AbilityResolverCostResults;
     cancelled?: boolean;
@@ -50,7 +49,6 @@ class AbilityResolver extends BaseStepWithPipeline {
         this.initiateAbility = false;
         this.passPriority = false;
         this.events = [];
-        this.provincesToRefill = [];
         this.targetResults = {};
         this.costResults = this.getCostResults();
         this.initialise();

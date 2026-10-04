@@ -16,7 +16,7 @@ import type {
 
 type TriggeredAbilityType = Exclude<AbilityType, AbilityType.Action | AbilityType.Persistent>;
 
-export type GainedPersistentProps = PersistentEffectProps & { location?: Location };
+type GainedPersistentProps = PersistentEffectProps;
 
 /** Authored properties, whose kind the ability type decides, or a printed or gained ability to copy. */
 export type GainAbilityArgs =
@@ -36,7 +36,7 @@ interface CopiedProps {
 type PersistentGain = GainedPersistentProps & { printedAbility: boolean; location: Location; abilityType?: AbilityType };
 
 // read back as a stored persistent effect, which has no duration
-export type PersistentGainValue = PersistentGain & { ref?: Effect[]; duration?: Duration };
+type PersistentGainValue = PersistentGain & { ref?: Effect[]; duration?: Duration };
 
 type Grant =
     | { kind: AbilityType.Action; properties: ActionProps }
