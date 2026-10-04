@@ -14,12 +14,12 @@ export interface GainHonorProperties extends PlayerActionProperties {
 export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName.OnModifyHonor, C> {
     defaultProperties: GainHonorProperties = { amount: 1, dueToStatusToken: false };
 
-    name: string = 'gainHonor';
+    name = 'gainHonor';
     eventName = EventName.OnModifyHonor;
 
     getEffectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
-        var [_, amountToTransfer] = CalculateHonorLimit(
+        const [, amountToTransfer] = CalculateHonorLimit(
             context.player,
             context.game.roundNumber,
             context.game.currentPhase,
@@ -30,13 +30,13 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        var wouldGainAnyHonor = properties.amount !== 0;
+        const wouldGainAnyHonor = properties.amount !== 0;
 
         if(!wouldGainAnyHonor) {
             return false;
         }
 
-        var [hasHonorLimit, amountToTransfer] = CalculateHonorLimit(
+        const [hasHonorLimit, amountToTransfer] = CalculateHonorLimit(
             player,
             context.game.roundNumber,
             context.game.currentPhase,
@@ -64,14 +64,14 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
         const context = event.context;
         const player = event.player;
-        var [_, amountToTransfer] = CalculateHonorLimit(
+        const [, amountToTransfer] = CalculateHonorLimit(
             player,
             context.game.roundNumber,
             context.game.currentPhase,
             event.amount
         );
         player.modifyHonor(amountToTransfer);
-        if(amountToTransfer && context?.game) {
+        if(amountToTransfer) {
             context.game.addAnimation({ type: 'honor', playerName: player.name, amount: amountToTransfer });
         }
     }

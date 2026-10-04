@@ -14,10 +14,6 @@ export interface MenuPromptProperties extends GameActionProperties {
 }
 
 export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends GameAction<MenuPromptProperties, EventName, C> {
-    constructor(properties: MenuPromptProperties | ((context: C) => MenuPromptProperties)) {
-        super(properties);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const { target } = this.getProperties(context);
         return ['make a choice for {0}', [target]];

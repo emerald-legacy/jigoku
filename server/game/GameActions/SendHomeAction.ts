@@ -23,8 +23,6 @@ export class SendHomeAction<C extends AbilityContext = AbilityContext> extends C
 
     eventHandler(event: ActionEvent<EventName.OnSendHome, C>): void {
         const context = event.context;
-        if(event.card) {
-            context.game.requireConflict().removeFromConflict(event.card);
-        }
+        context.game.requireConflict().removeFromConflict(event.card);
     }
 }

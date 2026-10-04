@@ -41,11 +41,7 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
-        if(event.player) {
-            event.player.modifyHonor(event.amount);
-            if(event.context?.game) {
-                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount });
-            }
-        }
+        event.player.modifyHonor(event.amount);
+        event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount });
     }
 }

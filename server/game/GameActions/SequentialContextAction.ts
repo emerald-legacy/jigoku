@@ -10,8 +10,6 @@ export interface SequentialContextProperties extends GameActionProperties {
 }
 
 export class SequentialContextAction<C extends AbilityContext = AbilityContext> extends GameAction<SequentialContextProperties, EventName, C> {
-    declare defaultProperties: SequentialContextProperties;
-
     getEffectMessage(context: C): MessageArgs {
         const properties = super.getProperties(context);
         return properties.gameActions[0].getEffectMessage(context);

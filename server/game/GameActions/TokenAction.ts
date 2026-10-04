@@ -17,9 +17,6 @@ export class TokenAction<P extends TokenActionProperties = TokenActionProperties
     }
 
     canAffect(target: StatusToken, context: C, _additionalProperties = {}): boolean {
-        if(Array.isArray(target)) {
-            return target.length > 0 && target.every((a) => a.type === 'token');
-        }
         return target.type === 'token';
     }
 

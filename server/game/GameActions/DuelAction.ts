@@ -36,7 +36,6 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-
     getProperties(context: C, additionalProperties = {}): WithDefaults<DuelProperties, 'challenger'> {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
@@ -77,8 +76,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             return false;
         }
 
-        return !!(
-            properties.challenger &&
+        return (
             !properties.challenger.hasDash(properties.type) &&
             card.location === Location.PlayArea &&
             !card.hasDash(properties.type)
@@ -89,8 +87,8 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         const properties = this.getProperties(context, additionalProperties);
         const gameAction =
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
-        const isNoAction = !!gameAction?.isNoAction;
-        if(gameAction && !isNoAction && gameAction.hasLegalTarget(context)) {
+        const isNoAction = !!gameAction.isNoAction;
+        if(!isNoAction && gameAction.hasLegalTarget(context)) {
             const [message, messageArgs]: MessageArgs = properties.message
                 ? [properties.message, properties.messageArgs ? toArray(properties.messageArgs(duel, context)) : []]
                 : gameAction.getEffectMessage(context);
@@ -175,19 +173,19 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     }
 
     eventHandler(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const context: C = event.context;
-        const cards: DrawCard[] = event.cards;
+        const context = event.context;
+        const cards = event.cards;
         const properties = this.getProperties(context, additionalProperties);
         if(
             properties.challenger.location !== Location.PlayArea ||
-            cards.every((card: DrawCard) => card.location !== Location.PlayArea)
+            cards.every((card) => card.location !== Location.PlayArea)
         ) {
             context.game.addMessage(
                 'The duel cannot proceed as at least one participant for each side has to be in play'
             );
             return;
         }
-        const duel: Duel = event.duel;
+        const duel = event.duel;
         if(properties.challengerEffect) {
             context.game.actions
                 .cardLastingEffect({
@@ -223,7 +221,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     }
 
     checkEventCondition(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return event.cards.some((card: DrawCard) => this.canAffect(card, event.context, additionalProperties));
+        return event.cards.some((card) => this.canAffect(card, event.context, additionalProperties));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
@@ -241,6 +239,6 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             typeof properties.gameAction === 'function'
                 ? properties.gameAction(mockDuel, context)
                 : properties.gameAction;
-        return !!(gameAction && gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties));
+        return gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
     }
 }

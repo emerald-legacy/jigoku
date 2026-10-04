@@ -10,13 +10,11 @@ export interface MultipleContextActionProperties extends GameActionProperties {
 }
 
 export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleContextActionProperties, EventName, C> {
-    declare defaultProperties: MultipleContextActionProperties;
-
     getEffectMessage(context: C): MessageArgs {
         const { gameActions } = this.getProperties(context);
         const legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
         let message = '{0}';
-        for(var i = 1; i < legalGameActions.length; i++) {
+        for(let i = 1; i < legalGameActions.length; i++) {
             message += i === legalGameActions.length - 1 ? ' and ' : ', ';
             message += '{' + i + '}';
         }

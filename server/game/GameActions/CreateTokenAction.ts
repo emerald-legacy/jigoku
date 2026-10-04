@@ -8,7 +8,6 @@ import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
 import type { ActionEvent } from './GameAction.js';
 
 export interface CreateTokenProperties extends CardActionProperties {
-    atHome?: boolean;
     token: new (card: DrawCard) => DrawCard;
     leavingPlayMessage?: string;
     canEnterConflict: (type: 'military' | 'political') => boolean;
@@ -19,7 +18,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
-    defaultProperties: CreateTokenProperties = { atHome: false, token: SpiritOfTheRiver, canEnterConflict: () => true };
+    defaultProperties: CreateTokenProperties = { token: SpiritOfTheRiver, canEnterConflict: () => true };
 
     canAffect(card: BaseCard, context: C): boolean {
         const { canEnterConflict } = this.getProperties(context);
@@ -36,7 +35,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
 
     eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
-        const { atHome, token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
+        const { token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
         const card = event.card;
         const token = context.game.createToken(card, propToken);
         card.owner.removeCardFromPile(card);
@@ -44,7 +43,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
         card.moveTo(Location.RemovedFromGame);
         card.owner.moveCard(token, Location.PlayArea);
         const conflict = context.game.currentConflict;
-        if(!atHome && conflict) {
+        if(conflict) {
             if(context.player.isAttackingPlayer()) {
                 conflict.addAttacker(token);
             } else {

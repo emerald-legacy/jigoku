@@ -9,13 +9,8 @@ export interface ShuffleDeckProperties extends PlayerActionProperties {
 }
 
 export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ShuffleDeckProperties, EventName.Unnamed, C> {
-    declare defaultProperties: ShuffleDeckProperties;
-
     name = 'refill';
     effect = 'refill its province faceup';
-    constructor(propertyFactory: ShuffleDeckProperties | ((context: C) => ShuffleDeckProperties)) {
-        super(propertyFactory);
-    }
 
     defaultTargets(context: C): Player[] {
         return [context.player];

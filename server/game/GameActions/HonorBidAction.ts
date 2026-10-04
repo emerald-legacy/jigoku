@@ -22,20 +22,15 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     defaultProperties: HonorBidProperties = {
         giveHonor: false,
         prohibitedBids: [],
-        players: Players.Any,
-        postBidAction: undefined
+        players: Players.Any
     };
-
-    constructor(propertyFactory: HonorBidProperties | ((context: C) => HonorBidProperties)) {
-        super(propertyFactory);
-    }
 
     defaultTargets(context: C) {
         return [context.player];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        const properties: HonorBidProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         if(properties.giveHonor) {
             return ['bid honor', []];
         }

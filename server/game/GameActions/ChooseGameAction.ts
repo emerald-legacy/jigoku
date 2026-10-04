@@ -19,9 +19,6 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
         options: {},
         messageArgs: []
     };
-    constructor(properties: ChooseActionProperties | ((context: C) => ChooseActionProperties)) {
-        super(properties);
-    }
 
     getProperties(context: C, additionalProperties = {}): ChooseActionProperties {
         const properties = super.getProperties(context, additionalProperties);

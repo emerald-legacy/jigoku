@@ -19,10 +19,6 @@ export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
     defaultProperties: RemoveFateProperties = { amount: 1 };
-    constructor(properties: ((context: C) => RemoveFateProperties) | RemoveFateProperties) {
-        super(properties);
-    }
-
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['removing {1} fate from {0}', [properties.amount]];

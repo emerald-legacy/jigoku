@@ -25,16 +25,12 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         direction: Direction.Increase
     };
 
-    constructor(propertyFactory: ModifyBidProperties | ((context: C) => ModifyBidProperties)) {
-        super(propertyFactory);
-    }
-
     defaultTargets(context: C) {
         return [context.player];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        const properties: ModifyBidProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', [properties.amount]];
         }
@@ -42,7 +38,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        const properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || (properties.direction === Direction.Decrease && player.honorBid === 0)) {
             return false;
         }
@@ -50,7 +46,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
-        const properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
         }

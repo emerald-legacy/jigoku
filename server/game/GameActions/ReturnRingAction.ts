@@ -16,6 +16,6 @@ export class ReturnRingAction<C extends AbilityContext = AbilityContext> extends
     }
 
     eventHandler(event: ActionEvent<EventName.OnReturnRing, C>): void {
-        event.ring?.resetRing();
+        event.ring.resetRing();
     }
 }

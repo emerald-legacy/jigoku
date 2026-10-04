@@ -23,10 +23,6 @@ export class RestoreProvinceAction<C extends AbilityContext = AbilityContext> ex
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnRestoreProvince, C>, card: ProvinceCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        super.addPropertiesToEvent(event, card, context, additionalProperties);
-    }
-
     eventHandler(event: ActionEvent<EventName.OnRestoreProvince, C>): void {
         event.card.restoreProvince();
     }

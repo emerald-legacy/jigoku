@@ -14,22 +14,18 @@ export class LoseFateAction<C extends AbilityContext = AbilityContext> extends P
     eventName = EventName.OnModifyFate;
     defaultProperties: LoseFateProperties = { amount: 1 };
 
-    constructor(propertyFactory: LoseFateProperties | ((context: C) => LoseFateProperties)) {
-        super(propertyFactory);
-    }
-
     getEffectMessage(context: C): MessageArgs {
-        const properties: LoseFateProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['make {0} lose {1} fate', [properties.target, properties.amount]];
     }
 
     getCostMessage(context: C): MessageArgs {
-        const properties: LoseFateProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['spending {1} fate', [properties.amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        const properties: LoseFateProperties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return (properties.amount ?? 0) > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
     }
 

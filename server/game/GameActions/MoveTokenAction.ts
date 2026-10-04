@@ -22,7 +22,7 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
 
     canAffect(token: StatusToken, context: C, additionalProperties = {}): boolean {
         const { recipient } = this.getProperties(context);
-        if(!recipient || recipient.location !== Location.PlayArea) {
+        if(recipient.location !== Location.PlayArea) {
             return false;
         } else if(
             token.grantedStatus === CharacterStatus.Honored &&

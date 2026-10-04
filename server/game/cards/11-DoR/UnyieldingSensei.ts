@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { CardType, Players, Location, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -25,7 +24,7 @@ class UnyieldingSensei extends DrawCard {
                     const province = context.target;
                     return [context.player, cards, province?.isFacedown() ? 'a facedown province' : province?.name];
                 },
-                gameAction: AbilityDsl.actions.moveCard<ProvinceCard>(context => ({
+                gameAction: AbilityDsl.actions.moveCard(context => ({
                     destination: context.target?.location,
                     faceup: true
                 }))

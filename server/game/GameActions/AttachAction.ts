@@ -17,7 +17,6 @@ export interface AttachActionProperties extends CardActionProperties {
     giveControl?: boolean;
     ignoreUniqueness?: boolean;
     viaDisguised?: boolean;
-    controlSwitchOptional?: boolean;
     wasACharacter?: boolean;
 }
 
@@ -29,7 +28,6 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         ignoreType: false,
         takeControl: false,
         giveControl: false,
-        controlSwitchOptional: false,
         ignoreUniqueness: false,
         viaDisguised: false,
         wasACharacter: false
@@ -57,12 +55,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
             return true;
         }
 
-        if(
-            !context ||
-            !context.player ||
-            !card ||
-            (card.location !== Location.PlayArea && card.type !== CardType.Province)
-        ) {
+        if(!context.player || (card.location !== Location.PlayArea && card.type !== CardType.Province)) {
             return false;
         } else if(
             !properties.attachment ||
@@ -73,17 +66,9 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
             })
         ) {
             return false;
-        } else if(
-            !properties.controlSwitchOptional &&
-            properties.takeControl &&
-            properties.attachment.controller === context.player
-        ) {
+        } else if(properties.takeControl && properties.attachment.controller === context.player) {
             return false;
-        } else if(
-            !properties.controlSwitchOptional &&
-            properties.giveControl &&
-            properties.attachment.controller !== context.player
-        ) {
+        } else if(properties.giveControl && properties.attachment.controller !== context.player) {
             return false;
         } else if(!card.checkRestrictions('play', context)) {
             return false;

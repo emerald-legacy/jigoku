@@ -2,8 +2,8 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-
 import type { ActionEvent } from './GameAction.js';
+
 export type MoveConflictProperties = CardActionProperties;
 
 export class MoveConflictAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName.OnConflictMoved, C> {
@@ -12,14 +12,9 @@ export class MoveConflictAction<C extends AbilityContext = AbilityContext> exten
     targetType = [CardType.Province];
     effect = 'move the conflict to {0}';
     cost = 'moves the conflict to {0}';
-    defaultProperties: MoveConflictProperties = {};
-    constructor(properties: ((context: C) => MoveConflictProperties) | MoveConflictProperties) {
-        super(properties);
-    }
 
     canAffect(card: ProvinceCard, context: C): boolean {
         if(
-            !card ||
             !context.game.isDuringConflict() ||
             card.type !== CardType.Province ||
             card.isConflictProvince() ||

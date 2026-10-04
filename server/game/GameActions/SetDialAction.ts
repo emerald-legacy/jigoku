@@ -14,10 +14,6 @@ export class SetDialAction<C extends AbilityContext = AbilityContext> extends Pl
 
     name = 'setDial';
     eventName = EventName.OnSetHonorDial;
-    constructor(propertyFactory: SetDialProperties | ((context: C) => SetDialProperties)) {
-        super(propertyFactory);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['set {0}\'s dial to {1}', [properties.target, properties.value]];

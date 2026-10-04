@@ -4,8 +4,8 @@ import { CardType, EventName, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-
 import type { ActionEvent } from './GameAction.js';
+
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
     status?: 'honored' | 'ordinary' | 'dishonored';
@@ -23,9 +23,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
     defaultProperties: PutIntoPlayProperties = {
         fate: 0,
         status: 'ordinary',
-        controller: Players.Self,
-        side: undefined,
-        overrideLocation: undefined
+        controller: Players.Self
     };
     constructor(
         properties: ((context: C) => PutIntoPlayProperties) | PutIntoPlayProperties,
@@ -54,7 +52,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         const player = this.getPutIntoPlayPlayer(contextCopy);
         const targetSide = properties.side || this.getDefaultSide(contextCopy);
 
-        if(!context || !super.canAffect(card, context)) {
+        if(!super.canAffect(card, context)) {
             return false;
         } else if(!player || card.anotherUniqueInPlay(player)) {
             return false;

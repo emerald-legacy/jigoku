@@ -3,8 +3,8 @@ import { ConflictType, EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-
 import type { ActionEvent } from './GameAction.js';
+
 export interface InitiateConflictProperties extends PlayerActionProperties {
     canPass?: boolean;
     forcedDeclaredType?: ConflictType;

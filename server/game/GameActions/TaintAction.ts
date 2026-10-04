@@ -17,9 +17,6 @@ export class TaintAction<C extends AbilityContext = AbilityContext> extends Card
         if(card.isTainted) {
             return false;
         }
-        if(!this.targetType.includes(card.type)) {
-            return false;
-        }
         if(card.type === CardType.Character && card.location !== Location.PlayArea) {
             return false;
         }

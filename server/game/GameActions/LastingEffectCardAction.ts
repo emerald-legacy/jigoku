@@ -6,7 +6,6 @@ import { CardGameAction, type CardActionProperties, type CardEvent } from './Car
 import type { ActionEvent } from './GameAction.js';
 import { toEffectList, type LastingEffectFields } from './LastingEffectAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
-import type Effect from '../Effects/Effect.js';
 
 export interface LastingEffectCardProperties extends CardActionProperties, LastingEffectFields {
     targetLocation?: Location | Location[];
@@ -43,7 +42,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
         return (
             super.canAffect(card, context) &&
             effects.some(
-                (props: Effect) =>
+                (props) =>
                     props.effect.canBeApplied(card) &&
                     !lastingEffectRestrictions.some((condition) => condition(props.effect))
             )
@@ -52,16 +51,15 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnEffectApplied, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
-        const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
+        const { effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context;
         const effectProperties = Object.assign({ match: event.card, location: Location.Any }, otherProperties);
-        const effects = _effect.map((factory) =>
+        const effects = effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
 
         event.effectTypes = effects.map((eff) => eff.effect.type);
-        const matches = effects.map((eff) => eff.match);
-        event.matches = Array.isArray(matches) ? matches : [matches];
+        event.matches = effects.map((eff) => eff.match);
     }
 
     eventHandler(event: CardEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
@@ -79,7 +77,7 @@ export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> 
             factory(eventContext.game, eventContext.source, effectProperties)
         );
         effects = effects.filter(
-            (props: Effect) =>
+            (props) =>
                 props.effect.canBeApplied(card) &&
                 !lastingEffectRestrictions.some((condition) => condition(props.effect))
         );

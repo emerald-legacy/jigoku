@@ -102,14 +102,8 @@ export interface ResolveAbilityProperties extends CardActionProperties {
 export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, C> {
     name = 'resolveAbility';
     defaultProperties: Partial<ResolveAbilityProperties> = {
-        subResolution: false,
-        choosingPlayerOverride: undefined
+        subResolution: false
     };
-    constructor(
-        properties: ((context: C) => ResolveAbilityProperties) | ResolveAbilityProperties
-    ) {
-        super(properties);
-    }
 
     getProperties(context: C, additionalProperties = {}): WithDefaults<ResolveAbilityProperties, 'ignoredRequirements'> {
         const properties = super.getProperties(context, additionalProperties);

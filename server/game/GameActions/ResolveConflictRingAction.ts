@@ -11,12 +11,9 @@ import type { ActionEvent } from './GameAction.js';
 export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, C> {
     name = 'resolveRing';
     eventName = EventName.OnResolveConflictRing;
-    constructor(properties: ((context: C) => RingActionProperties) | RingActionProperties) {
-        super(properties);
-    }
 
     getEffectMessage(context: C): MessageArgs {
-        const properties: RingActionProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['resolve {0}', [properties.target]];
     }
 
@@ -122,9 +119,6 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
     }
 
     resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
-        if(!Array.isArray(elements)) {
-            elements = [elements];
-        }
         const rings = elements.map((element) => player.game.rings[element]);
         const action = new ResolveElementAction({
             target: rings,

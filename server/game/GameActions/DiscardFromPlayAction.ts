@@ -1,17 +1,14 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type DrawCard from '../DrawCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, Location } from '../Constants.js';
 import type { CardActionProperties } from './CardGameAction.js';
-import { LeavesPlayAction, type LeavesPlayEvent } from './LeavesPlayAction.js';
+import { LeavesPlayAction } from './LeavesPlayAction.js';
 
-import type { ActionEvent } from './GameAction.js';
 export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, C> {
     name = 'discardFromPlay';
-    eventName = EventName.OnCardLeavesPlay;
     cost = 'sacrificing {0}';
     targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
 
@@ -39,13 +36,5 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
             return false;
         }
         return super.canAffect(card, context);
-    }
-
-    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        this.updateLeavesPlayEvent(event, card, context, additionalProperties);
-    }
-
-    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
-        this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

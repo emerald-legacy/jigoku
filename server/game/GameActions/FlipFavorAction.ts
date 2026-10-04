@@ -4,9 +4,7 @@ import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export interface FlipFavorProperties extends PlayerActionProperties {
-    target?: Player;
-}
+export type FlipFavorProperties = PlayerActionProperties;
 
 export class FlipFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FlipFavorProperties, EventName.OnFlipFavor, C> {
     name = 'claimFavor';
@@ -18,11 +16,11 @@ export class FlipFavorAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     playerHasFlippableFavor(player: Player) {
-        return !!player && !!player.imperialFavor && player.imperialFavor !== 'both';
+        return !!player.imperialFavor && player.imperialFavor !== 'both';
     }
 
     canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
-        return !!player && this.playerHasFlippableFavor(player) && super.canAffect(player, context);
+        return this.playerHasFlippableFavor(player) && super.canAffect(player, context);
     }
 
     eventHandler(event: ActionEvent<EventName.OnFlipFavor, C>): void {

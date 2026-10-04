@@ -26,7 +26,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
             .reduce((a, b) => a + b, 0);
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
-        var [_, amountToTransfer] = CalculateHonorLimit(
+        const [, amountToTransfer] = CalculateHonorLimit(
             receivingPlayer,
             context.game.roundNumber,
             context.game.currentPhase,
@@ -35,17 +35,13 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
         return amountToTransfer;
     }
 
-    constructor(propertyFactory: TransferHonorProperties | ((context: C) => TransferHonorProperties)) {
-        super(propertyFactory);
-    }
-
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['giving {1} honor to {2}', [0, null]];
         }
-        var amountToTransfer = this.getAmountToTransfer(
+        const amountToTransfer = this.getAmountToTransfer(
             context.player,
             opponent,
             context,
@@ -60,7 +56,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
         if(!opponent) {
             return ['take {1} honor from {0}', [null, 0]];
         }
-        var amountToTransfer = this.getAmountToTransfer(
+        const amountToTransfer = this.getAmountToTransfer(
             opponent,
             context.player,
             context,
@@ -82,13 +78,13 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
             return false;
         }
 
-        var [hasLimit, amountToTransfer] = CalculateHonorLimit(
+        const [hasLimit] = CalculateHonorLimit(
             opponent,
             context.game.roundNumber,
             context.game.currentPhase,
             amount
         );
-        amountToTransfer = this.getAmountToTransfer(player, opponent, context, amount);
+        const amountToTransfer = this.getAmountToTransfer(player, opponent, context, amount);
         if(hasLimit && !amountToTransfer) {
             return false;
         }
@@ -112,7 +108,7 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
         const amountToTransfer = this.getAmountToTransfer(player, opponent, event.context, event.amount);
         player.modifyHonor(-amountToTransfer);
         opponent.modifyHonor(amountToTransfer);
-        if(amountToTransfer && event.context?.game) {
+        if(amountToTransfer) {
             event.context.game.addAnimation({ type: 'honor', playerName: player.name, amount: -amountToTransfer });
             event.context.game.addAnimation({ type: 'honor', playerName: opponent.name, amount: amountToTransfer });
         }

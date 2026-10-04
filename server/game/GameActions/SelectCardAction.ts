@@ -118,10 +118,6 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         manuallyRaiseEvent: false
     };
 
-    constructor(properties: SelectCardActionProperties<C> | ((context: C) => SelectCardActionProperties<C>)) {
-        super(properties);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
@@ -181,7 +177,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
                 .filter((card: BaseCard) =>
                     card
                         .getEffects(EffectName.MustBeChosen)
-                        .some((restriction: { isMatch: (kind: string, context: C) => boolean }) => restriction.isMatch('target', context))
+                        .some((restriction) => restriction.isMatch('target', context))
                 );
         }
         if(!properties.selector.hasEnoughTargets(context, player)) {

@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export type DishonorProvinceProperties = CardActionProperties;
 
@@ -15,21 +15,7 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
     effect = 'dishonor {0}';
 
     getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        const targetArray = [];
-        if(properties.target) {
-            if(Array.isArray(properties.target)) {
-                properties.target.forEach((t) => {
-                    const target = t;
-                    const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
-                    targetArray.push(targetMessage);
-                });
-            } else {
-                const target = properties.target;
-                const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
-                targetArray.push(targetMessage);
-            }
-        }
+        const targetArray = targetList(this.getProperties(context).target).map((target) => target.isFacedown() ? target.location : target);
         return ['place a dishonored status token on {0}, blanking it', [targetArray]];
     }
 

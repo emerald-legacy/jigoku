@@ -14,10 +14,6 @@ export class TransferFateAction<C extends AbilityContext = AbilityContext> exten
     eventName = EventName.OnMoveFate;
     defaultProperties: TransferFateProperties = { amount: 1 };
 
-    constructor(propertyFactory: TransferFateProperties | ((context: C) => TransferFateProperties)) {
-        super(propertyFactory);
-    }
-
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];

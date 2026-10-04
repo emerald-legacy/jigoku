@@ -34,10 +34,6 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         subActionProperties: (token) => ({ target: token })
     };
 
-    constructor(properties: SelectTokenProperties | ((context: C) => SelectTokenProperties)) {
-        super(properties);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
@@ -81,7 +77,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         if(!properties) {
             return false;
         }
-        return properties.card.statusTokens.some((token: StatusToken) => this.canAffect(token, context, additionalProperties));
+        return properties.card.statusTokens.some((token) => this.canAffect(token, context, additionalProperties));
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
@@ -91,7 +87,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         }
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
-        } else if(!properties.card.statusTokens.some((token: StatusToken) => properties.tokenCondition(token, context))) {
+        } else if(!properties.card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
@@ -101,14 +97,14 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
-        const validTokens = properties.card.statusTokens.filter((token: StatusToken) =>
+        const validTokens = properties.card.statusTokens.filter((token) =>
             properties.gameAction.canAffect(token, context)
         );
         const messageArgs = properties.messageArgs;
         if(properties.singleToken && validTokens.length > 1) {
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: properties.activePromptTitle,
-                options: validTokens.map((token: StatusToken) => ({
+                options: validTokens.map((token) => ({
                     text: token.name,
                     handler: () => {
                         if(properties.message && messageArgs) {

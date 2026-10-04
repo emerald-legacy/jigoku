@@ -24,7 +24,7 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(!context || !context.player || !ring) {
+        if(!context.player) {
             return false;
         } else if(
             !properties.attachment ||

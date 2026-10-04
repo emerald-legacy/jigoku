@@ -4,7 +4,6 @@ import { Duration, EventName, Players } from '../Constants.js';
 import type { EffectUntil } from '../Effects/Effect.js';
 import type Player from '../Player.js';
 import { GameAction, type ActionEvent, type GameActionProperties } from './GameAction.js';
-
 import type { Event } from '../Events/Event.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 

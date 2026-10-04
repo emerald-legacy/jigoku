@@ -11,8 +11,6 @@ export interface IfAbleActionProperties extends GameActionProperties {
 }
 
 export class IfAbleAction<C extends AbilityContext = AbilityContext> extends GameAction<IfAbleActionProperties, EventName, C> {
-    declare defaultProperties: IfAbleActionProperties;
-
     getProperties(context: C, additionalProperties = {}): IfAbleActionProperties {
         const properties = super.getProperties(context, additionalProperties);
         properties.ifAbleAction.setDefaultTarget(() => properties.target);

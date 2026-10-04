@@ -1,13 +1,7 @@
 import type { GameAction } from './GameAction.js';
 import type * as GameActions from './GameActions.js';
 
-/**
- * Factory type for catalog lookups. The args are `never[]` rather than `any[]`: the catalog is
- * keyed by a runtime string, so the exact per-factory argument types can't be recovered at the
- * lookup site — `never[]` makes that explicit (callers can't pass arbitrary unchecked args, only
- * call with no args), instead of `any[]` which silently accepted anything. Code that knows a
- * factory's real signature should import it from GameActions directly rather than via the catalog.
- */
+/** Looked up by a runtime name, so the argument types are unknown: callable with no args only. */
 export type GameActionFactory = (...args: never[]) => GameAction;
 
 /** The names `allowGameAction` accepts: `GameActions` exports only factories. Keys only, so no factory type is resolved. */

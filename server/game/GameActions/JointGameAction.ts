@@ -10,7 +10,6 @@ export interface JointGameProperties extends GameActionProperties {
 
 export class JointGameAction<C extends AbilityContext = AbilityContext> extends GameAction<JointGameProperties, EventName, C> {
     effect = 'do several things';
-    declare defaultProperties: JointGameProperties;
 
     constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
         super({ gameActions: gameActions });

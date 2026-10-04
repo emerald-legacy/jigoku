@@ -25,10 +25,6 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
         subActionProperties: (ring) => ({ target: ring })
     };
 
-    constructor(properties: SelectRingProperties | ((context: C) => SelectRingProperties)) {
-        super(properties);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const { target } = this.getProperties(context);
         return ['choose a ring for {0}', [target]];
@@ -57,7 +53,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        return Object.values(context.game.rings).some((ring: Ring) =>
+        return Object.values(context.game.rings).some((ring) =>
             this.canAffect(ring, context, additionalProperties)
         );
     }
@@ -67,7 +63,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
         } else if(
-            !Object.values(context.game.rings).some((ring: Ring): boolean => properties.ringCondition(ring, context))
+            !Object.values(context.game.rings).some((ring) => properties.ringCondition(ring, context))
         ) {
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {

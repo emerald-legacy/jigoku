@@ -19,7 +19,6 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         return !!(
-            card &&
             card.location === Location.PlayArea &&
             card.parent &&
             super.canAffect(card, context, additionalProperties)

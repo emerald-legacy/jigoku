@@ -10,8 +10,6 @@ export interface SequentialProperties extends GameActionProperties {
 }
 
 export class SequentialAction<C extends AbilityContext = AbilityContext> extends GameAction<SequentialProperties, EventName, C> {
-    declare defaultProperties: SequentialProperties;
-
     constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
         super({ gameActions: gameActions });
     }

@@ -17,18 +17,14 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
     defaultProperties: MatchingDiscardProperties = {
         amount: -1,
         reveal: false,
-        cards: undefined,
         match: () => true
     };
 
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
-    constructor(propertyFactory: MatchingDiscardProperties | ((context: C) => MatchingDiscardProperties)) {
-        super(propertyFactory);
-    }
 
     getEffectMessage(context: C): MessageArgs {
-        const properties: MatchingDiscardProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['make {0} discard all cards that match a condition', [properties.target]];
     }
 
@@ -37,7 +33,7 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        const properties: MatchingDiscardProperties = this.getProperties(
+        const properties = this.getProperties(
             context,
             additionalProperties
         );

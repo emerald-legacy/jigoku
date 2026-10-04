@@ -18,13 +18,6 @@ export interface FateBidProperties extends PlayerActionProperties {
 export class FateBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FateBidProperties, EventName.Unnamed, C> {
     name = 'fateBid';
     eventName = EventName.Unnamed;
-    defaultProperties: FateBidProperties = {
-        postBidAction: undefined
-    };
-
-    constructor(propertyFactory: FateBidProperties | ((context: C) => FateBidProperties)) {
-        super(propertyFactory);
-    }
 
     defaultTargets(context: C) {
         return [context.player];

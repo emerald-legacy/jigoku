@@ -15,10 +15,6 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: TakeFateRingProperties = { amount: 1, removeOnly: false };
-    constructor(properties: ((context: C) => TakeFateRingProperties) | TakeFateRingProperties) {
-        super(properties);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return [

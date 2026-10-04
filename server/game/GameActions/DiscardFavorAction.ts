@@ -1,7 +1,7 @@
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
-import Player from '../Player.js';
-import { PlayerAction, PlayerActionProperties } from './PlayerAction.js';
+import type Player from '../Player.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
 
 export type DiscardFavorProperties = PlayerActionProperties;
@@ -17,6 +17,6 @@ export class DiscardFavorAction<C extends AbilityContext = AbilityContext> exten
     }
 
     eventHandler(event: ActionEvent<EventName.OnDiscardFavor, C>): void {
-        event.player?.loseImperialFavor();
+        event.player.loseImperialFavor();
     }
 }

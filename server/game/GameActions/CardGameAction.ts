@@ -1,12 +1,11 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
-import type Ring from '../Ring.js';
-import { GameAction, GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
+import { GameAction, type GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
 import { LoseFateAction } from './LoseFateAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
-
 import { Event } from '../Events/Event.js';
+
 export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
@@ -31,10 +30,6 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
     checkEventCondition(event: ActionEvent<N, C>, additionalProperties = {}): boolean {
         return !!event.card && this.canAffect(event.card, event.context, additionalProperties);
-    }
-
-    canAffect(target: BaseCard | Ring, context: C, additionalProperties = {}): boolean {
-        return super.canAffect(target, context, additionalProperties);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {

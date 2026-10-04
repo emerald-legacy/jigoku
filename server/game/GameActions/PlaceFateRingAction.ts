@@ -17,17 +17,13 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: PlaceFateRingProperties = { amount: 1 };
-    constructor(properties: ((context: C) => PlaceFateRingProperties) | PlaceFateRingProperties) {
-        super(properties);
-    }
-
     getCostMessage(context: C): MessageArgs {
-        const properties: PlaceFateRingProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['placing {1} fate on the {0}', [properties.amount, properties.target]];
     }
 
     getEffectMessage(context: C): MessageArgs {
-        const properties: PlaceFateRingProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         if(properties.origin) {
             return ['move {1} fate from {2} to {0}', [properties.target, properties.amount, properties.origin]];
         }
@@ -35,7 +31,7 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
-        const properties: PlaceFateRingProperties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(
             properties.origin &&
             (!properties.origin.checkRestrictions('spendFate', context) || properties.origin.fate === 0)

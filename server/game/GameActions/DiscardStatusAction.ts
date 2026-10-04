@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName } from '../Constants.js';
 import type { StatusToken } from '../StatusToken.js';
-import { TokenAction, TokenActionProperties } from './TokenAction.js';
+import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
 export type DiscardStatusProperties = TokenActionProperties;

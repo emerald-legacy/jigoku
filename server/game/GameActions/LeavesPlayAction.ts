@@ -6,13 +6,13 @@ import { isEnumValue } from '../utils/helpers.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-/** A leaves-play event this action created: `updateLeavesPlayEvent` always sets its destination. */
+/** A leaves-play event this action created: `updateEvent` always sets its destination. */
 export type LeavesPlayEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, C> & { destination: Location };
 
 export class LeavesPlayAction<P extends CardActionProperties = CardActionProperties, C extends AbilityContext = AbilityContext> extends CardGameAction<P, EventName.OnCardLeavesPlay, C> {
     eventName = EventName.OnCardLeavesPlay;
 
-    updateLeavesPlayEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
+    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
         event.isSacrifice = this.name === 'sacrifice';
@@ -36,7 +36,7 @@ export class LeavesPlayAction<P extends CardActionProperties = CardActionPropert
             const evCard = event.card;
             // Add an imminent triggering condition for all attachments leaving play
 
-            for(const attachment of (evCard.attachments ?? [])) {
+            for(const attachment of evCard.attachments) {
                 // we only need to add events for attachments that are in play.
                 if(attachment.location === Location.PlayArea) {
                     const attachmentEvent = context.game.actions
@@ -64,7 +64,7 @@ export class LeavesPlayAction<P extends CardActionProperties = CardActionPropert
         };
     }
 
-    leavesPlayEventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
         const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {

@@ -103,73 +103,71 @@ import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAct
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction.js';
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
 
-// C is inferred from an annotated callback (`(context: AbilityContext<DrawCard, DrawCard>) => ...`);
-// an explicit `<Target>` type argument stops that inference, so drop it when annotating.
-type PropsFactory<Props, _Target = unknown, C extends AbilityContext = AbilityContext> =
+type PropsFactory<Props, C extends AbilityContext = AbilityContext> =
     Props | ((context: C) => Props);
 
 //////////////
 // CARD
 //////////////
-export function addToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AddTokenProperties, NoInfer<Target>, C> = {}): AddTokenAction<C> {
+export function addToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AddTokenProperties, C> = {}): AddTokenAction<C> {
     return new AddTokenAction<C>(propertyFactory);
 }
-export function attach<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachActionProperties, NoInfer<Target>, C> = {}): AttachAction<C> {
+export function attach<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachActionProperties, C> = {}): AttachAction<C> {
     return new AttachAction<C>(propertyFactory);
 }
-export function attachToRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachToRingActionProperties, NoInfer<Target>, C> = {}): AttachToRingAction<C> {
+export function attachToRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachToRingActionProperties, C> = {}): AttachToRingAction<C> {
     return new AttachToRingAction<C>(propertyFactory);
 }
-export function bow<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BowActionProperties, NoInfer<Target>, C> = {}): BowAction<C> {
+export function bow<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BowActionProperties, C> = {}): BowAction<C> {
     return new BowAction<C>(propertyFactory);
 }
-export function breakProvince<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BreakProperties, NoInfer<Target>, C> = {}): BreakAction<C> {
+export function breakProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BreakProperties, C> = {}): BreakAction<C> {
     return new BreakAction<C>(propertyFactory);
 }
-export function cardLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, NoInfer<Target>, C>): LastingEffectCardAction<C> {
+export function cardLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, C>): LastingEffectCardAction<C> {
     return new LastingEffectCardAction<C>(propertyFactory);
 }
-export function claimImperialFavor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimFavorProperties, NoInfer<Target>, C>): ClaimFavorAction<C> {
+export function claimImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimFavorProperties, C>): ClaimFavorAction<C> {
     return new ClaimFavorAction<C>(propertyFactory);
 }
-export function createToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CreateTokenProperties, NoInfer<Target>, C>): CreateTokenAction<C> {
+export function createToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CreateTokenProperties, C>): CreateTokenAction<C> {
     return new CreateTokenAction<C>(propertyFactory);
 }
-export function detach<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DetachActionProperties, NoInfer<Target>, C> = {}): DetachAction<C> {
+export function detach<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DetachActionProperties, C> = {}): DetachAction<C> {
     return new DetachAction<C>(propertyFactory);
 }
-export function discardCard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardCardProperties, NoInfer<Target>, C> = {}): DiscardCardAction<C> {
+export function discardCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardCardProperties, C> = {}): DiscardCardAction<C> {
     return new DiscardCardAction<C>(propertyFactory);
 }
-export function discardFromPlay<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFromPlayProperties, NoInfer<Target>, C> = {}): DiscardFromPlayAction<C> {
+export function discardFromPlay<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFromPlayProperties, C> = {}): DiscardFromPlayAction<C> {
     return new DiscardFromPlayAction<C>(propertyFactory);
 }
-export function dishonor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DishonorProperties, NoInfer<Target>, C> = {}): DishonorAction<C> {
+export function dishonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DishonorProperties, C> = {}): DishonorAction<C> {
     return new DishonorAction<C>(propertyFactory);
 }
-export function dishonorProvince<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DishonorProvinceProperties, NoInfer<Target>, C> = {}): DishonorProvinceAction<C> {
+export function dishonorProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DishonorProvinceProperties, C> = {}): DishonorProvinceAction<C> {
     return new DishonorProvinceAction<C>(propertyFactory);
 }
-export function duel<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DuelProperties, NoInfer<Target>, C>): DuelAction<C> {
+export function duel<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DuelProperties, C>): DuelAction<C> {
     return new DuelAction<C>(propertyFactory);
 }
-export function duelAddParticipant<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DuelAddParticipantProperties, NoInfer<Target>, C>): DuelAddParticipantAction<C> {
+export function duelAddParticipant<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DuelAddParticipantProperties, C>): DuelAddParticipantAction<C> {
     return new DuelAddParticipantAction<C>(propertyFactory);
 }
-export function flipDynasty<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipDynastyProperties, NoInfer<Target>, C> = {}): FlipDynastyAction<C> {
+export function flipDynasty<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipDynastyProperties, C> = {}): FlipDynastyAction<C> {
     return new FlipDynastyAction<C>(propertyFactory);
 }
-export function flipImperialFavor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipFavorProperties, NoInfer<Target>, C>): FlipFavorAction<C> {
+export function flipImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipFavorProperties, C>): FlipFavorAction<C> {
     return new FlipFavorAction<C>(propertyFactory);
 }
-export function honor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HonorProperties, NoInfer<Target>, C> = {}): HonorAction<C> {
+export function honor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HonorProperties, C> = {}): HonorAction<C> {
     return new HonorAction<C>(propertyFactory);
 }
-export function injure<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<InjureActionProperties, NoInfer<Target>, C> = {}): InjureAction<C> {
+export function injure<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<InjureActionProperties, C> = {}): InjureAction<C> {
     return new InjureAction<C>(propertyFactory);
 }
 
-export function lookAt<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LookAtProperties, NoInfer<Target>, C> = {}): LookAtAction<C> {
+export function lookAt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LookAtProperties, C> = {}): LookAtAction<C> {
     return new LookAtAction<C>(propertyFactory);
 }
 /**
@@ -177,112 +175,112 @@ export function lookAt<Target = unknown, C extends AbilityContext = AbilityConte
  * default shuffle = false
  * default faceup = false
  */
-export function moveCard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveCardProperties, NoInfer<Target>, C>): MoveCardAction<C> {
+export function moveCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveCardProperties, C>): MoveCardAction<C> {
     return new MoveCardAction<C>(propertyFactory);
 }
-export function moveToConflict<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveToConflictProperties, NoInfer<Target>, C> = {}): MoveToConflictAction<C> {
+export function moveToConflict<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveToConflictProperties, C> = {}): MoveToConflictAction<C> {
     return new MoveToConflictAction<C>(propertyFactory);
 }
 /**
  * default amount = 1
  */
-export function placeFate<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateProperties, NoInfer<Target>, C> = {}): PlaceFateAction<C> {
+export function placeFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateProperties, C> = {}): PlaceFateAction<C> {
     return new PlaceFateAction<C>(propertyFactory);
 }
 /**
  * default resetOnCancel = false
  */
-export function playCard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlayCardProperties, NoInfer<Target>, C> = {}): PlayCardAction<C> {
+export function playCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlayCardProperties, C> = {}): PlayCardAction<C> {
     return new PlayCardAction<C>(propertyFactory);
 }
-export function performGloryCount<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GloryCountProperties, NoInfer<Target>, C>): GloryCountAction<C> {
+export function performGloryCount<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GloryCountProperties, C>): GloryCountAction<C> {
     return new GloryCountAction<C>(propertyFactory);
 }
 /**
  * default fate = 0
  * default status = ordinary
  */
-export function putIntoConflict<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutIntoPlayProperties, NoInfer<Target>, C> = {}): PutIntoPlayAction<C> {
+export function putIntoConflict<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutIntoPlayProperties, C> = {}): PutIntoPlayAction<C> {
     return new PutIntoPlayAction<C>(propertyFactory);
 }
 /**
  * default fate = 0
  * default status = ordinary
  */
-export function putIntoPlay<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutIntoPlayProperties, NoInfer<Target>, C> = {}): PutIntoPlayAction<C> {
+export function putIntoPlay<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutIntoPlayProperties, C> = {}): PutIntoPlayAction<C> {
     return new PutIntoPlayAction<C>(propertyFactory, false);
 }
-export function putIntoProvince<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutInProvinceProperties, NoInfer<Target>, C>): PutInProvinceAction<C> {
+export function putIntoProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutInProvinceProperties, C>): PutInProvinceAction<C> {
     return new PutInProvinceAction<C>(propertyFactory);
 }
 /**
  * default fate = 0
  * default status = ordinary
  */
-export function opponentPutIntoPlay<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<OpponentPutIntoPlayProperties, NoInfer<Target>, C> = {}): OpponentPutIntoPlayAction<C> {
+export function opponentPutIntoPlay<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<OpponentPutIntoPlayProperties, C> = {}): OpponentPutIntoPlayAction<C> {
     return new OpponentPutIntoPlayAction<C>(propertyFactory, false);
 }
-export function ready<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReadyProperties, NoInfer<Target>, C> = {}): ReadyAction<C> {
+export function ready<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReadyProperties, C> = {}): ReadyAction<C> {
     return new ReadyAction<C>(propertyFactory);
 }
 /**
  * default amount = 1
  */
-export function removeFate<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RemoveFateProperties, NoInfer<Target>, C> = {}): RemoveFateAction<C> {
+export function removeFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RemoveFateProperties, C> = {}): RemoveFateAction<C> {
     return new RemoveFateAction<C>(propertyFactory);
 }
-export function removeFromGame<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RemoveFromGameProperties, NoInfer<Target>, C> = {}): RemoveFromGameAction<C> {
+export function removeFromGame<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RemoveFromGameProperties, C> = {}): RemoveFromGameAction<C> {
     return new RemoveFromGameAction<C>(propertyFactory);
 }
-export function resolveAbility<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ResolveAbilityProperties, NoInfer<Target>, C>): ResolveAbilityAction<C> {
+export function resolveAbility<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ResolveAbilityProperties, C>): ResolveAbilityAction<C> {
     return new ResolveAbilityAction<C>(propertyFactory);
 }
-export function restoreProvince<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RestoreProvinceProperties, NoInfer<Target>, C> = {}): RestoreProvinceAction<C> {
+export function restoreProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RestoreProvinceProperties, C> = {}): RestoreProvinceAction<C> {
     return new RestoreProvinceAction<C>(propertyFactory);
 }
 /**
  * default bottom = false
  */
-export function returnToDeck<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnToDeckProperties, NoInfer<Target>, C> = {}): ReturnToDeckAction<C> {
+export function returnToDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnToDeckProperties, C> = {}): ReturnToDeckAction<C> {
     return new ReturnToDeckAction<C>(propertyFactory);
 }
-export function returnToHand<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnToHandProperties, NoInfer<Target>, C> = {}): ReturnToHandAction<C> {
+export function returnToHand<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnToHandProperties, C> = {}): ReturnToHandAction<C> {
     return new ReturnToHandAction<C>(propertyFactory);
 }
 /**
  * default chatMessage = false
  */
-export function reveal<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RevealProperties, NoInfer<Target>, C> = {}): RevealAction<C> {
+export function reveal<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RevealProperties, C> = {}): RevealAction<C> {
     return new RevealAction<C>(propertyFactory);
 }
-export function sendHome<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SendHomeProperties, NoInfer<Target>, C> = {}): SendHomeAction<C> {
+export function sendHome<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SendHomeProperties, C> = {}): SendHomeAction<C> {
     return new SendHomeAction<C>(propertyFactory);
 }
-export function sacrifice<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFromPlayProperties, NoInfer<Target>, C> = {}): DiscardFromPlayAction<C> {
+export function sacrifice<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFromPlayProperties, C> = {}): DiscardFromPlayAction<C> {
     return new DiscardFromPlayAction<C>(propertyFactory, true);
 }
-export function taint<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TaintProperties, NoInfer<Target>, C> = {}): TaintAction<C> {
+export function taint<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TaintProperties, C> = {}): TaintAction<C> {
     return new TaintAction<C>(propertyFactory);
 }
-export function takeControl<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeControlProperties, NoInfer<Target>, C> = {}): TakeControlAction<C> {
+export function takeControl<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeControlProperties, C> = {}): TakeControlAction<C> {
     return new TakeControlAction<C>(propertyFactory);
 }
-export function triggerAbility<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TriggerAbilityProperties, NoInfer<Target>, C>): TriggerAbilityAction<C> {
+export function triggerAbility<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TriggerAbilityProperties, C>): TriggerAbilityAction<C> {
     return new TriggerAbilityAction<C>(propertyFactory);
 }
-export function turnFacedown<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TurnCardFacedownProperties, NoInfer<Target>, C> = {}): TurnCardFacedownAction<C> {
+export function turnFacedown<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TurnCardFacedownProperties, C> = {}): TurnCardFacedownAction<C> {
     return new TurnCardFacedownAction<C>(propertyFactory);
 }
-export function gainStatusToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainStatusTokenProperties, NoInfer<Target>, C> = {}): GainStatusTokenAction<C> {
+export function gainStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainStatusTokenProperties, C> = {}): GainStatusTokenAction<C> {
     return new GainStatusTokenAction<C>(propertyFactory);
 }
-export function moveConflict<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveConflictProperties, NoInfer<Target>, C> = {}): MoveConflictAction<C> {
+export function moveConflict<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveConflictProperties, C> = {}): MoveConflictAction<C> {
     return new MoveConflictAction<C>(propertyFactory);
 }
 /**
  * default hideWhenFaceup = true
  */
-export function placeCardUnderneath<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceCardUnderneathProperties, NoInfer<Target>, C>): PlaceCardUnderneathAction<C> {
+export function placeCardUnderneath<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceCardUnderneathProperties, C>): PlaceCardUnderneathAction<C> {
     return new PlaceCardUnderneathAction<C>(propertyFactory);
 }
 
@@ -292,13 +290,13 @@ export function placeCardUnderneath<Target = unknown, C extends AbilityContext =
 /**
  * default amount = 1
  */
-export function chosenDiscard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChosenDiscardProperties, NoInfer<Target>, C> = {}): ChosenDiscardAction<C> {
+export function chosenDiscard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChosenDiscardProperties, C> = {}): ChosenDiscardAction<C> {
     return new ChosenDiscardAction<C>(propertyFactory);
 }
 /**
  * default amount = 1
  */
-export function chosenReturnToDeck<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChosenReturnToDeckProperties, NoInfer<Target>, C> = {}): ChosenReturnToDeckAction<C> {
+export function chosenReturnToDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChosenReturnToDeckProperties, C> = {}): ChosenReturnToDeckAction<C> {
     return new ChosenReturnToDeckAction<C>(propertyFactory);
 }
 /**
@@ -306,38 +304,38 @@ export function chosenReturnToDeck<Target = unknown, C extends AbilityContext = 
  * default reveal = true
  * default cardCondition = always true
  */
-export function deckSearch<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DeckSearchProperties, NoInfer<Target>, C>): DeckSearchAction<C> {
+export function deckSearch<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DeckSearchProperties, C>): DeckSearchAction<C> {
     return new DeckSearchAction<C>(propertyFactory);
 }
 /**
  * default amount = 1
  */
-export function discardAtRandom<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RandomDiscardProperties, NoInfer<Target>, C> = {}): RandomDiscardAction<C> {
+export function discardAtRandom<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RandomDiscardProperties, C> = {}): RandomDiscardAction<C> {
     return new RandomDiscardAction<C>(propertyFactory);
 }
 /**
- * default amount = 1
+ * default amount = -1
  */
-export function discardMatching<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MatchingDiscardProperties, NoInfer<Target>, C> = {}): MatchingDiscardAction<C> {
+export function discardMatching<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MatchingDiscardProperties, C> = {}): MatchingDiscardAction<C> {
     return new MatchingDiscardAction<C>(propertyFactory);
 }
 /**
  * default amount = 1
  */
-export function draw<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DrawProperties, NoInfer<Target>, C> = {}): DrawAction<C> {
+export function draw<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DrawProperties, C> = {}): DrawAction<C> {
     return new DrawAction<C>(propertyFactory);
 }
 /**
- * default amount = 1
+ * default fillTo = 1
  * default faceup = false
  */
-export function fillProvince<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FillProvinceProperties, NoInfer<Target>, C>): FillProvinceAction<C> {
+export function fillProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FillProvinceProperties, C>): FillProvinceAction<C> {
     return new FillProvinceAction<C>(propertyFactory);
 }
-export function gainFate<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainFateProperties, NoInfer<Target>, C> = {}): GainFateAction<C> {
+export function gainFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainFateProperties, C> = {}): GainFateAction<C> {
     return new GainFateAction<C>(propertyFactory);
 } // amount = 1
-export function gainHonor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainHonorProperties, NoInfer<Target>, C> = {}): GainHonorAction<C> {
+export function gainHonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainHonorProperties, C> = {}): GainHonorAction<C> {
     return new GainHonorAction<C>(propertyFactory);
 } // amount = 1
 /**
@@ -345,106 +343,106 @@ export function gainHonor<Target = unknown, C extends AbilityContext = AbilityCo
  * default players = Players.Any
  * default prohibitedBids = All bids allowed
  */
-export function honorBid<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HonorBidProperties, NoInfer<Target>, C> = {}): HonorBidAction<C> {
+export function honorBid<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HonorBidProperties, C> = {}): HonorBidAction<C> {
     return new HonorBidAction<C>(propertyFactory);
 }
-export function fateBid<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FateBidProperties, NoInfer<Target>, C> = {}): FateBidAction<C> {
+export function fateBid<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FateBidProperties, C> = {}): FateBidAction<C> {
     return new FateBidAction<C>(propertyFactory);
 }
-export function initiateConflict<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<InitiateConflictProperties, NoInfer<Target>, C> = {}): InitiateConflictAction<C> {
+export function initiateConflict<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<InitiateConflictProperties, C> = {}): InitiateConflictAction<C> {
     return new InitiateConflictAction<C>(propertyFactory);
 } // canPass = true
-export function loseFate<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LoseFateProperties, NoInfer<Target>, C> = {}): LoseFateAction<C> {
+export function loseFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LoseFateProperties, C> = {}): LoseFateAction<C> {
     return new LoseFateAction<C>(propertyFactory);
 }
-export function loseHonor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LoseHonorProperties, NoInfer<Target>, C> = {}): LoseHonorAction<C> {
+export function loseHonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LoseHonorProperties, C> = {}): LoseHonorAction<C> {
     return new LoseHonorAction<C>(propertyFactory);
 } // amount = 1
-export function loseImperialFavor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFavorProperties, NoInfer<Target>, C> = {}): DiscardFavorAction<C> {
+export function loseImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFavorProperties, C> = {}): DiscardFavorAction<C> {
     return new DiscardFavorAction<C>(propertyFactory);
 }
-export function modifyBid<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ModifyBidProperties, NoInfer<Target>, C> = {}): ModifyBidAction<C> {
+export function modifyBid<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ModifyBidProperties, C> = {}): ModifyBidAction<C> {
     return new ModifyBidAction<C>(propertyFactory);
-} // amount = 1, direction = 'increast', promptPlayer = false
-export function playerLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
+} // amount = 1, direction = Direction.Increase
+export function playerLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, C>): LastingEffectAction<C> {
     return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
-export function refillFaceup<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RefillFaceupProperties, NoInfer<Target>, C>): RefillFaceupAction<C> {
+export function refillFaceup<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RefillFaceupProperties, C>): RefillFaceupAction<C> {
     return new RefillFaceupAction<C>(propertyFactory);
 } // location
-export function setHonorDial<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SetDialProperties, NoInfer<Target>, C>): SetDialAction<C> {
+export function setHonorDial<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SetDialProperties, C>): SetDialAction<C> {
     return new SetDialAction<C>(propertyFactory);
 } // value
-export function shuffleDeck<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ShuffleDeckProperties, NoInfer<Target>, C>): ShuffleDeckAction<C> {
+export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ShuffleDeckProperties, C>): ShuffleDeckAction<C> {
     return new ShuffleDeckAction<C>(propertyFactory);
 }
-export function takeFate<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferFateProperties, NoInfer<Target>, C> = {}): TransferFateAction<C> {
+export function takeFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferFateProperties, C> = {}): TransferFateAction<C> {
     return new TransferFateAction<C>(propertyFactory);
 } // amount = 1
-export function takeHonor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferHonorProperties, NoInfer<Target>, C> = {}): TransferHonorAction<C> {
+export function takeHonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferHonorProperties, C> = {}): TransferHonorAction<C> {
     return new TransferHonorAction<C>(propertyFactory);
 } // amount = 1
 
 //////////////
 // RING
 //////////////
-export function placeFateOnRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateRingProperties, NoInfer<Target>, C> = {}): PlaceFateRingAction<C> {
+export function placeFateOnRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateRingProperties, C> = {}): PlaceFateRingAction<C> {
     return new PlaceFateRingAction<C>(propertyFactory);
 } // amount = 1, origin
-export function resolveConflictRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RingActionProperties, NoInfer<Target>, C> = {}): ResolveConflictRingAction<C> {
+export function resolveConflictRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RingActionProperties, C> = {}): ResolveConflictRingAction<C> {
     return new ResolveConflictRingAction<C>(propertyFactory);
-} // resolveAsAttacker = true
-export function resolveRingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ResolveElementProperties, NoInfer<Target>, C> = {}): ResolveElementAction<C> {
+}
+export function resolveRingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ResolveElementProperties, C> = {}): ResolveElementAction<C> {
     return new ResolveElementAction<C>(propertyFactory);
-} // options = false
-export function returnRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnRingProperties, NoInfer<Target>, C> = {}): ReturnRingAction<C> {
+}
+export function returnRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnRingProperties, C> = {}): ReturnRingAction<C> {
     return new ReturnRingAction<C>(propertyFactory);
 }
-export function ringLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectRingProperties, NoInfer<Target>, C>): LastingEffectRingAction<C> {
+export function ringLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectRingProperties, C>): LastingEffectRingAction<C> {
     return new LastingEffectRingAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, condition, until
-export function selectRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectRingProperties, NoInfer<Target>, C>): SelectRingAction<C> {
+export function selectRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectRingProperties, C>): SelectRingAction<C> {
     return new SelectRingAction<C>(propertyFactory);
 }
-export function switchConflictElement<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SwitchConflictElementProperties, NoInfer<Target>, C> = {}): SwitchConflictElementAction<C> {
+export function switchConflictElement<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SwitchConflictElementProperties, C> = {}): SwitchConflictElementAction<C> {
     return new SwitchConflictElementAction<C>(propertyFactory);
 }
-export function switchConflictType<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SwitchConflictTypeProperties, NoInfer<Target>, C> = {}): SwitchConflictTypeAction<C> {
+export function switchConflictType<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SwitchConflictTypeProperties, C> = {}): SwitchConflictTypeAction<C> {
     return new SwitchConflictTypeAction<C>(propertyFactory);
 }
-export function takeFateFromRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeFateRingProperties, NoInfer<Target>, C> = {}): TakeFateRingAction<C> {
+export function takeFateFromRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeFateRingProperties, C> = {}): TakeFateRingAction<C> {
     return new TakeFateRingAction<C>(propertyFactory);
 } // amount = 1
-export function takeRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeRingProperties, NoInfer<Target>, C> = {}): TakeRingAction<C> {
+export function takeRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeRingProperties, C> = {}): TakeRingAction<C> {
     return new TakeRingAction<C>(propertyFactory);
 }
-export function claimRing<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimRingProperties, NoInfer<Target>, C> = {}): ClaimRingAction<C> {
+export function claimRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimRingProperties, C> = {}): ClaimRingAction<C> {
     return new ClaimRingAction<C>(propertyFactory);
 }
-export function removeRingFromPlay<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RemoveRingFromPlayProperties, NoInfer<Target>, C> = {}): RemoveRingFromPlayAction<C> {
+export function removeRingFromPlay<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RemoveRingFromPlayProperties, C> = {}): RemoveRingFromPlayAction<C> {
     return new RemoveRingFromPlayAction<C>(propertyFactory);
 }
-export function returnRingToPlay<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnRingToPlayProperties, NoInfer<Target>, C> = {}): ReturnRingToPlayAction<C> {
+export function returnRingToPlay<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnRingToPlayProperties, C> = {}): ReturnRingToPlayAction<C> {
     return new ReturnRingToPlayAction<C>(propertyFactory);
 }
 
 //////////////
 // STATUS TOKEN
 //////////////
-export function discardStatusToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardStatusProperties, NoInfer<Target>, C> = {}): DiscardStatusAction<C> {
+export function discardStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardStatusProperties, C> = {}): DiscardStatusAction<C> {
     return new DiscardStatusAction<C>(propertyFactory);
 }
-export function moveStatusToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveTokenProperties, NoInfer<Target>, C>): MoveTokenAction<C> {
+export function moveStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveTokenProperties, C>): MoveTokenAction<C> {
     return new MoveTokenAction<C>(propertyFactory);
 }
 
 //////////////
 // GENERIC
 //////////////
-export function cancel<Target = unknown, C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelActionProperties, NoInfer<Target>, C> = {}): CancelAction<C> {
+export function cancel<C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelActionProperties, C> = {}): CancelAction<C> {
     return new CancelAction<C>(propertyFactory);
 }
-export function handler<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, NoInfer<Target>, C> = {}): HandlerAction<C> {
+export function handler<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, C> = {}): HandlerAction<C> {
     return new HandlerAction<C>(propertyFactory);
 }
 export function noAction(): GameAction {
@@ -456,36 +454,36 @@ export function noAction(): GameAction {
 //////////////
 // CONFLICT
 //////////////
-export function conflictLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
+export function conflictLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, C>): LastingEffectAction<C> {
     return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
 
 //////////////
 // DUEL
 //////////////
-export function duelLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
+export function duelLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, C>): LastingEffectAction<C> {
     return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
 
 //////////////
 // META
 //////////////
-export function cardMenu<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CardMenuProperties, NoInfer<Target>, C>): CardMenuAction<C> {
+export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CardMenuProperties, C>): CardMenuAction<C> {
     return new CardMenuAction<C>(propertyFactory);
 }
-export function chooseAction<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties, NoInfer<Target>, C>): ChooseGameAction<C> {
+export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties, C>): ChooseGameAction<C> {
     return new ChooseGameAction<C>(propertyFactory);
-} // choices, activePromptTitle = 'Select one'
-export function conditional<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalActionProperties<C>, NoInfer<Target>, C>): ConditionalAction<C> {
+} // options, activePromptTitle = 'Select an action:'
+export function conditional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalActionProperties<C>, C>): ConditionalAction<C> {
     return new ConditionalAction<C>(propertyFactory);
 }
-export function onAffinity<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AffinityActionProperties, NoInfer<Target>, C>): AffinityAction<C> {
+export function onAffinity<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AffinityActionProperties, C>): AffinityAction<C> {
     return new AffinityAction<C>(propertyFactory);
 }
-export function optional<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<OptionalActionProperties, NoInfer<Target>, C>): OptionalAction<C> {
+export function optional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<OptionalActionProperties, C>): OptionalAction<C> {
     return new OptionalAction<C>(propertyFactory);
 }
-export function ifAble<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<IfAbleActionProperties, NoInfer<Target>, C>): IfAbleAction<C> {
+export function ifAble<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<IfAbleActionProperties, C>): IfAbleAction<C> {
     return new IfAbleAction<C>(propertyFactory);
 }
 export function joint<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): JointGameAction<C> {
@@ -494,29 +492,29 @@ export function joint<C extends AbilityContext = AbilityContext>(gameActions: Ga
 export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): MultipleGameAction<C> {
     return new MultipleGameAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
-export function multipleContext<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MultipleContextActionProperties, NoInfer<Target>, C>): MultipleContextGameAction<C> {
+export function multipleContext<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MultipleContextActionProperties, C>): MultipleContextGameAction<C> {
     return new MultipleContextGameAction<C>(propertyFactory);
 }
-export function menuPrompt<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, NoInfer<Target>, C>): MenuPromptAction<C> {
+export function menuPrompt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
 }
-export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardProperties<C, K>, NoInfer<Target>, C>): SelectCardAction<C> {
+export function selectCard<C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardProperties<C, K>, C>): SelectCardAction<C> {
     return new SelectCardAction<C>(typeof propertyFactory === 'function'
         ? (context) => eraseSelectCardProperties(propertyFactory(context))
         : eraseSelectCardProperties(propertyFactory));
 }
 /** Several cards; `mode` says how many. */
-export function selectCards<Target = unknown, C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardsProperties<C, K> & { mode: MultiCardMode }, NoInfer<Target>, C>): SelectCardAction<C> {
+export function selectCards<C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardsProperties<C, K> & { mode: MultiCardMode }, C>): SelectCardAction<C> {
     return new SelectCardAction<C>(typeof propertyFactory === 'function'
         ? (context) => eraseSelectCardsProperties(propertyFactory(context))
         : eraseSelectCardsProperties(propertyFactory));
 }
-export function selectToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, NoInfer<Target>, C>): SelectTokenAction<C> {
+export function selectToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, C>): SelectTokenAction<C> {
     return new SelectTokenAction<C>(propertyFactory);
 }
 export function sequential<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): SequentialAction<C> {
     return new SequentialAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
-export function sequentialContext<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SequentialContextProperties, NoInfer<Target>, C>): SequentialContextAction<C> {
+export function sequentialContext<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SequentialContextProperties, C>): SequentialContextAction<C> {
     return new SequentialContextAction<C>(propertyFactory);
 }

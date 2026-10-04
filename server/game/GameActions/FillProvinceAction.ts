@@ -35,9 +35,7 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
             context.game.queueSimpleStep(() => {
                 const cards = player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card) => {
-                    if(card) {
-                        card.facedown = false;
-                    }
+                    card.facedown = false;
                 });
             });
         }

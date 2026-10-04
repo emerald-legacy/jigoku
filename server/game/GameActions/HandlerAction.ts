@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import DrawCard from '../DrawCard.js';
 import { GameAction, targetList, type GameActionProperties, type GameActionTarget, type ActionEvent } from './GameAction.js';
-
 import type { Event } from '../Events/Event.js';
 import type { EventName } from '../Constants.js';
+import type { GameObject } from '../GameObject.js';
+
 export interface HandlerProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     /** `targets` are what the action resolved for, such as the card a `selectCard` chose. */
     handler?: (context: C, targets: GameActionTarget[]) => void;
@@ -20,7 +20,7 @@ export class HandlerAction<C extends AbilityContext = AbilityContext> extends Ga
         return true;
     }
 
-    canAffect(_card: DrawCard, _context: AbilityContext): boolean {
+    canAffect(_target: GameObject, _context: C): boolean {
         return true;
     }
 

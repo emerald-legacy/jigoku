@@ -2,12 +2,12 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
-import { GameAction, GameActionProperties, targetList } from './GameAction.js';
+import { GameAction, type GameActionProperties, targetList } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
 import { CardType, Location, type EventName } from '../Constants.js';
 import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
 import DrawCard from '../DrawCard.js';
-import BaseCard from '../BaseCard.js';
+import type BaseCard from '../BaseCard.js';
 
 export interface InjureActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];

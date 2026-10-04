@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { RingAction } from './RingAction.js';
 import { Duration, EventName } from '../Constants.js';
-import { LastingEffectGeneralProperties } from './LastingEffectAction.js';
-
+import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 import type { ActionEvent } from './GameAction.js';
+
 export type LastingEffectRingProperties = LastingEffectGeneralProperties;
 
 export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, C> {
@@ -12,8 +12,7 @@ export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> 
     effect = 'apply a lasting effect';
     defaultProperties: LastingEffectRingProperties = {
         duration: Duration.UntilEndOfConflict,
-        effect: [],
-        ability: undefined
+        effect: []
     };
 
     eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {

@@ -1,9 +1,9 @@
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
-import Player from '../Player.js';
-import { GameAction, GameActionProperties, type ActionEvent } from './GameAction.js';
-
+import type Player from '../Player.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
+
 export interface GloryCountProperties extends GameActionProperties {
     gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction | null) | GameAction;
 }
@@ -24,7 +24,7 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
         const game = event.context.game;
         const properties = this.getProperties(event.context, additionalProperties);
 
-        const gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
+        const gloryTotals = game.getPlayersInFirstPlayerOrder().map((player) => {
             return player.getGloryCount();
         });
         let winner: Player | null = game.getFirstPlayer() ?? null;

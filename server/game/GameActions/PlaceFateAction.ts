@@ -1,5 +1,5 @@
 import type { MessageArgs } from '../GameChat.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -19,10 +19,6 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
     defaultProperties: PlaceFateProperties = { amount: 1 };
-    constructor(properties: ((context: C) => PlaceFateProperties) | PlaceFateProperties) {
-        super(properties);
-    }
-
     getEffectMessage(context: C): MessageArgs {
         const { amount, target } = this.getProperties(context);
         return ['place {1} fate on {0}', [target, amount]];

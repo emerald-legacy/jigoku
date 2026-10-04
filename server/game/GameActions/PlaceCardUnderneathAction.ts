@@ -15,14 +15,8 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
     name = 'placeCardUnderneath';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: PlaceCardUnderneathProperties = {
-        destination: undefined,
         hideWhenFaceup: true
     };
-    constructor(
-        properties: PlaceCardUnderneathProperties | ((context: C) => PlaceCardUnderneathProperties)
-    ) {
-        super(properties);
-    }
 
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);

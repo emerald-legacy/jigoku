@@ -16,8 +16,6 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
     cost = 'moving {0} into the conflict';
     effect = 'move {0} into the conflict';
     targetType = [CardType.Character];
-    defaultProperties: MoveToConflictProperties = { side: undefined };
-
     canAffect(card: DrawCard, context: C): boolean {
         const properties = this.getProperties(context);
         if(!super.canAffect(card, context)) {

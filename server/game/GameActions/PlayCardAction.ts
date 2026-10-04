@@ -131,17 +131,8 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         payCosts: true,
         ignoreFateCost: false,
         allowReactions: false,
-        ignoredRequirements: [],
-        playAction: undefined,
-        source: undefined
+        ignoredRequirements: []
     };
-    constructor(properties: ((context: C) => PlayCardProperties) | PlayCardProperties) {
-        super(properties);
-    }
-
-    getProperties(context: C, additionalProperties = {}): PlayCardProperties {
-        return super.getProperties(context, additionalProperties);
-    }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         if(!super.canAffect(card, context)) {
@@ -161,7 +152,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
             const newContext = createContext(context.player);
             newContext.gameActionsResolutionChain = context.gameActionsResolutionChain.concat(this);
             newContext.ignoreFateCost = properties.ignoreFateCost;
-            this.setPlayType(newContext, properties.playType ?? PlayType.Other, card.location);
+            this.setPlayType(newContext, properties.playType ?? PlayType.Other);
             return !ability.meetsRequirements(newContext, ignoredRequirements);
         });
     }
@@ -181,20 +172,14 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         }));
     }
 
-    setPlayType(context: AbilityContext, playType: PlayType, location: Location): void {
-        context.playType =
-            playType ||
-            context.playType ||
-            (location.includes('province') && PlayType.PlayFromProvince) ||
-            (location === 'hand' && PlayType.PlayFromHand) ||
-            PlayType.Other;
+    setPlayType(context: AbilityContext, playType: PlayType): void {
+        context.playType = playType;
     }
 
-    cancelAction(context: C, properties: PlayCardProperties): number {
+    cancelAction(context: C, properties: PlayCardProperties): void {
         if(properties.parentAction) {
             properties.parentAction.resolve(undefined, context);
         }
-        return 0;
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
@@ -236,7 +221,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         const properties = this.getProperties(context, additionalProperties);
         const event = this.createEvent(card, context, additionalProperties);
         this.updateEvent(event, card, context, additionalProperties);
-        this.setPlayType(actionContext, properties.playType ?? PlayType.Other, card.location);
+        this.setPlayType(actionContext, properties.playType ?? PlayType.Other);
         event.replaceHandler(() =>
             context.game.queueStep(new PlayCardResolver(context.game, actionContext, this, context, properties))
         );

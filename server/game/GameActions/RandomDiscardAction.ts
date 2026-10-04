@@ -15,12 +15,8 @@ export class RandomDiscardAction<C extends AbilityContext = AbilityContext> exte
 
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
-    constructor(propertyFactory: RandomDiscardProperties | ((context: C) => RandomDiscardProperties)) {
-        super(propertyFactory);
-    }
-
     getEffectMessage(context: C): MessageArgs {
-        const properties: RandomDiscardProperties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return [
             'make {0} discard {1} {2} at random',
             [properties.target, properties.amount, (properties.amount ?? 0) > 1 ? 'cards' : 'card']
@@ -28,7 +24,7 @@ export class RandomDiscardAction<C extends AbilityContext = AbilityContext> exte
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        const properties: RandomDiscardProperties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return (properties.amount ?? 0) > 0 && player.hand.length > 0 && super.canAffect(player, context);
     }
 

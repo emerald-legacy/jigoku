@@ -4,15 +4,14 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-
 import { targetList, type ActionEvent } from './GameAction.js';
+
 export interface PutInProvinceProperties extends CardActionProperties {
     destination?: Location;
     switch?: boolean;
     switchTarget?: DrawCard;
     faceup?: boolean;
     changePlayer?: boolean;
-    canBeStronghold?: boolean;
     discardDestinationCards?: boolean;
 }
 
@@ -21,17 +20,11 @@ export class PutInProvinceAction<C extends AbilityContext = AbilityContext> exte
     eventName = EventName.OnCardLeavesPlay;
     targetType = [CardType.Character, CardType.Attachment];
     defaultProperties: PutInProvinceProperties = {
-        destination: undefined,
         switch: false,
-        switchTarget: undefined,
         faceup: true,
-        canBeStronghold: false,
         changePlayer: false,
         discardDestinationCards: false
     };
-    constructor(properties: PutInProvinceProperties | ((context: C) => PutInProvinceProperties)) {
-        super(properties);
-    }
 
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);

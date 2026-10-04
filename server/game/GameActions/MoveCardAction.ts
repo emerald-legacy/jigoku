@@ -4,8 +4,8 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
-
 import { targetList } from './GameAction.js';
+
 export interface MoveCardProperties extends CardActionProperties {
     destination?: Location;
     switch?: boolean;
@@ -21,18 +21,13 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
     name = 'move';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: MoveCardProperties = {
-        destination: undefined,
         switch: false,
-        switchTarget: undefined,
         shuffle: false,
         faceup: false,
         bottom: false,
         changePlayer: false,
         discardDestinationCards: false
     };
-    constructor(properties: MoveCardProperties | ((context: C) => MoveCardProperties)) {
-        super(properties);
-    }
 
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
@@ -91,8 +86,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         if(properties.destination) {
             player.moveCard(card, properties.destination, { bottom: !!properties.bottom });
         }
-        const target = properties.target;
-        const targetArr = Array.isArray(target) ? target : target ? [target] : [];
+        const targetArr = targetList(properties.target);
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {
             if(properties.destination === Location.ConflictDeck) {
                 card.owner.shuffleConflictDeck();
