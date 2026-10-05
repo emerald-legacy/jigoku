@@ -70,7 +70,7 @@ describe('triggered ability window', function () {
                 this.player1.clickPrompt('Yes');
                 this.player1.clickPrompt('Don\'t Resolve');
                 expect(this.player1).toBeAbleToSelect(this.kudaka);
-                expect(this.player1.currentPrompt().menuTitle).toBe('Any reactions to to the air ring being claimed?');
+                expect(this.player1.currentPrompt().menuTitle).toBe('Any reactions to the air ring being claimed?');
             });
         });
         describe('when the cards its events name have left play', function () {

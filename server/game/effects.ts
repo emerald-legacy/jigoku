@@ -253,18 +253,13 @@ const Effects = {
                 }
                 return p.addPlayableLocation(playType, p.opponent, location, cards);
             },
-            unapply: (player, context, location) => {
+            unapply: (player, _context, location) => {
                 if(!location) {
                     return;
                 }
                 player.removePlayableLocation(location);
                 for(const card of location.cards) {
-                    if(Array.isArray(card.fromOutOfPlaySource)) {
-                        card.fromOutOfPlaySource.filter((a) => a !== context.source);
-                        if(card.fromOutOfPlaySource.length === 0) {
-                            delete card.fromOutOfPlaySource;
-                        }
-                    }
+                    card.removeOutOfPlaySource(sourceOfEffect);
                 }
             }
         }),

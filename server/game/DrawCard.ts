@@ -214,6 +214,13 @@ class DrawCard extends BaseCard {
         }
     }
 
+    removeOutOfPlaySource(source: BaseCard): void {
+        const sources = this.fromOutOfPlaySource ?? [];
+        const index = sources.indexOf(source);
+        const remaining = sources.filter((_source, i) => i !== index);
+        this.fromOutOfPlaySource = remaining.length > 0 ? remaining : undefined;
+    }
+
     isAttachmentBonusModifierSwitchActive() {
         const switches = this.getEffects(EffectName.SwitchAttachmentSkillModifiers).filter(Boolean);
         // each pair of switches cancels each other. Need an odd number of switches to be active

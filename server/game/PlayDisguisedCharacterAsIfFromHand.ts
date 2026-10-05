@@ -34,3 +34,11 @@ export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedChara
         super(card, PlayDisguisedCharacterIntoLocation.Home);
     }
 }
+
+// Like PlayFacedownCharacterAsIfFromHand: putIntoPlay refuses a facedown card.
+export class PlayFacedownDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAsIfFromHand {
+    executeHandler(context: AbilityContext<DrawCard>) {
+        context.source.facedown = false;
+        super.executeHandler(context);
+    }
+}

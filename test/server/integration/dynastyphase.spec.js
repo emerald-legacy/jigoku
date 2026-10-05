@@ -1,3 +1,5 @@
+import { Duration, Location } from '../../../build/server/game/Constants.js';
+
 describe('dynasty phase', function() {
     integration(function() {
         describe('playing a card from a province', function() {
@@ -218,6 +220,32 @@ describe('dynasty phase', function() {
                 expect(this.matsuBerserker.facedown).toBe(false);
                 expect(this.dojiChallenger.facedown).toBe(false);
                 expect(this.kakitaToshimoko.facedown).toBe(false);
+            });
+        });
+
+        describe('a computed extra fate effect', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        dynastyDiscard: ['akodo-gunso'],
+                        fate: 10
+                    }
+                });
+                this.akodoGunso = this.player1.placeCardInProvince('akodo-gunso', 'province 1');
+                this.akodoGunso.applyDurationEffect(Duration.UntilEndOfPhase, (dsl) => ({
+                    match: this.akodoGunso,
+                    targetLocation: Location.Provinces,
+                    effect: dsl.effects.gainExtraFateWhenPlayed(() => 2)
+                }));
+                this.game.checkGameState(true);
+            });
+
+            it('names the computed amount in the extra fate message', function() {
+                this.player1.clickCard(this.akodoGunso);
+                this.player1.clickPrompt('0');
+                expect(this.akodoGunso.fate).toBe(2);
+                expect(this.getChatLogs(5)).toContain('Akodo Gunsō enters play with 2 additional fate due to Akodo Gunsō');
             });
         });
     });

@@ -82,5 +82,45 @@ describe('playing a character as if it were in hand', function () {
                 expect(this.warrior.facedown).toBe(false);
             });
         });
+
+        describe('disguised from the top of the dynasty deck with Third Whisker Warrens', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['agasha-swordsmith']
+                    },
+                    player2: {
+                        inPlay: ['akodo-gunso'],
+                        dynastyDiscard: ['akodo-zentaro', 'third-whisker-warrens'],
+                        fate: 10
+                    }
+                });
+                this.swordsmith = this.player1.findCardByName('agasha-swordsmith');
+                this.gunso = this.player2.findCardByName('akodo-gunso');
+                this.zentaro = this.player2.findCardByName('akodo-zentaro', 'dynasty discard pile');
+                this.warrens = this.player2.findCardByName('third-whisker-warrens');
+                this.player2.moveCard(this.warrens, 'province 1');
+                this.warrens.facedown = false;
+                this.player2.moveCard(this.zentaro, 'dynasty deck');
+                this.province = this.player2.findCardByName('shameful-display', 'province 1');
+            });
+
+            it('plays a top card that is still marked facedown', function () {
+                this.zentaro.facedown = true;
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.swordsmith],
+                    defenders: [],
+                    province: this.province
+                });
+                this.player2.clickCard(this.zentaro);
+                this.player2.clickPrompt('Play this character with Disguise');
+                this.player2.clickCard(this.gunso);
+                expect(this.zentaro.location).toBe('play area');
+                expect(this.zentaro.facedown).toBe(false);
+                expect(this.gunso.location).toBe('dynasty discard pile');
+            });
+        });
     });
 });

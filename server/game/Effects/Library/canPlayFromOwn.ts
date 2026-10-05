@@ -29,18 +29,7 @@ export function canPlayFromOwn(
         unapply(player, _context, location) {
             player.removePlayableLocation(location);
             for(const card of location.cards) {
-                if(Array.isArray(card.fromOutOfPlaySource)) {
-                    // @TODO - The following commented line does nothing
-                    // It might need a new implementation for cleaning up this property
-                    // If we update the fromOutOfPlaySource property, it impacts
-                    // cards like Master Tactician and Bayushi Kachiko 2
-                    // A possible solution is to mark on the OnCardPlayed event
-                    // what is allowing the card to be played
-                    // card.fromOutOfPlaySource.filter((a) => a !== context.source);
-                    if(card.fromOutOfPlaySource.length === 0) {
-                        delete card.fromOutOfPlaySource;
-                    }
-                }
+                card.removeOutOfPlaySource(sourceOfEffect);
             }
         }
     });

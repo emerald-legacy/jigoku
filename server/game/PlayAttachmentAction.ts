@@ -61,6 +61,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: context.onPlayCardSource,
+            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
             playType: context.playType
         });
         context.game.openEventWindow([

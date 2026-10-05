@@ -26,7 +26,7 @@ export default class MasterTactician extends DrawCard {
                         return (
                             event.originalLocation === Location.ConflictDeck &&
                             !event.onPlayCardSource &&
-                            !event.card.fromOutOfPlaySource &&
+                            !event.playedFromOutOfPlaySource &&
                             event.originallyOnTopOfConflictDeck &&
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDeck &&

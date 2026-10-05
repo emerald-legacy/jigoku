@@ -49,6 +49,8 @@ interface EventPayloadMap {
         originallyOnTopOfConflictDeck?: boolean;
         playType?: PlayType;
         onPlayCardSource?: BaseCard;
+        /** The cards whose effects made it playable from out of play, as it was played. */
+        playedFromOutOfPlaySource?: BaseCard[];
         resolver?: AbilityResolver;
         /** Stamped by the card whose limited-use ability let it be played (Master Tactician). */
         sourceOfCardPlayedFromConflictDeck?: BaseCard;

@@ -6,7 +6,7 @@ import { EffectName, Phases, PlayType, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-import { EffectValue } from './Effects/EffectValue.js';
+import { isEffectOf } from './Effects/types.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -47,19 +47,16 @@ class DynastyCardAction extends BaseAction {
             context.chooseFate
         );
         if(context.source.checkRestrictions('placeFate', context)) {
-            context.source
-                .getRawEffects()
-                .filter((effect) => effect.type === EffectName.GainExtraFateWhenPlayed)
-                .map((effect) => {
-                    // the effect's value is the amount of fate
-                    const amount = effect.value instanceof EffectValue ? effect.value.value : undefined;
+            for(const effect of context.source.getRawEffects()) {
+                if(isEffectOf(effect, EffectName.GainExtraFateWhenPlayed)) {
                     context.game.addMessage(
                         '{0} enters play with {1} additional fate due to {2}',
                         context.source,
-                        typeof amount === 'number' ? amount : undefined,
+                        effect.getValue(context.source),
                         effect.context.source
                     );
-                });
+                }
+            }
         }
     }
 

@@ -7,16 +7,13 @@ import type { DashSkillType } from './Effects/EffectValueMap.js';
 
 export type Exclusions = EffectName[] | ((effect: EffectBase) => boolean);
 
-// only military counts SetDash, whichever skill it dashes
 const skillEffectNames = {
     military: {
-        set: [EffectName.SetMilitarySkill, EffectName.SetDash],
         setSkill: EffectName.SetMilitarySkill,
         modifiers: [EffectName.AttachmentMilitarySkillModifier, EffectName.ModifyMilitarySkill, EffectName.ModifyBothSkills],
         multiplier: EffectName.ModifyMilitarySkillMultiplier
     },
     political: {
-        set: [EffectName.SetPoliticalSkill],
         setSkill: EffectName.SetPoliticalSkill,
         modifiers: [EffectName.AttachmentPoliticalSkillModifier, EffectName.ModifyPoliticalSkill, EffectName.ModifyBothSkills],
         multiplier: EffectName.ModifyPoliticalSkillMultiplier
@@ -207,7 +204,9 @@ export class SkillCalculator {
             ? this.card.getRawEffects().filter((effect) => !exclusions(effect))
             : this.card.getRawEffects().filter((effect) => !exclusions.includes(effect.type));
 
-        const setEffects = rawEffects.filter((effect) => isEffectOfAny(effect, names.set));
+        const setEffects = rawEffects.filter((effect) =>
+            isEffectOf(effect, names.setSkill) || (isEffectOf(effect, EffectName.SetDash) && effect.getValue(this.card) === type)
+        );
         if(setEffects.length > 0) {
             const latestSetEffect = setEffects[setEffects.length - 1];
             // a dash is NaN

@@ -40,6 +40,14 @@ describe('Dash skill summary', function() {
             expect('amount' in summary.modifiers[0]).toBe(false);
         });
 
+        it('dashes only the skill a set dash names', function() {
+            const military = this.brash.getMilitarySkill();
+            this.applyDash((dsl) => dsl.effects.setDash('political'));
+            expect(this.brash.getMilitarySkill()).toBe(military);
+            expect(this.sentSummary().stat).toBe(military.toString());
+            expect(this.brash.getSummary(this.player1.player).politicalSkillSummary.stat).toBe('-');
+        });
+
         it('keeps the amounts of ordinary modifiers', function() {
             const summary = this.sentSummary();
             expect(summary.stat).toBe(this.brash.getMilitarySkill().toString());

@@ -67,6 +67,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: context.onPlayCardSource,
+            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
             playType: PlayType.PlayFromHand
         });
         const atHomeHandler = () => {

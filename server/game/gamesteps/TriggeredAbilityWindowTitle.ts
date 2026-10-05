@@ -15,7 +15,7 @@ function eventTitle(event: Event): string | undefined {
     } else if(event.is(EventName.OnCharacterEntersPlay)) {
         return `${event.card.name} entering play`;
     } else if(event.is(EventName.OnClaimRing)) {
-        return `to the ${event.ring.element} ring being claimed`;
+        return `the ${event.ring.element} ring being claimed`;
     } else if(event.is(EventName.OnInitiateAbilityEffects)) {
         return `the effects of ${event.card.name}`;
     } else if(event.is(EventName.OnMoveFate)) {

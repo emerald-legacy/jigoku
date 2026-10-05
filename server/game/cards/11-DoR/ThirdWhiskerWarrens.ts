@@ -1,6 +1,6 @@
 import { Location, Players } from '../../Constants.js';
 import { PlayFacedownCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
-import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
+import { PlayFacedownDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
@@ -16,7 +16,7 @@ export default class ThirdWhiskerWarrens extends DrawCard {
             effect: [
                 AbilityDsl.effects.hideWhenFaceUp(),
                 AbilityDsl.effects.gainPlayAction(PlayFacedownCharacterAsIfFromHand),
-                AbilityDsl.effects.gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
+                AbilityDsl.effects.gainPlayAction(PlayFacedownDisguisedCharacterAsIfFromHand)
             ]
         });
 
