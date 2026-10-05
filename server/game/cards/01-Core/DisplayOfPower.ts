@@ -41,7 +41,7 @@ class DisplayOfPower extends DrawCard {
         window.addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
 
         if(context.player.checkRestrictions('claimRings', context)) {
-            window.addEvent(this.game.getEvent(EventName.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
+            window.addEvent(this.game.getEvent(EventName.OnClaimRing, { player: context.player, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
         }
         event.cancel();
     }

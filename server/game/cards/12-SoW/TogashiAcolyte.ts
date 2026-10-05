@@ -23,9 +23,4 @@ export default class TogashiAcolyte extends DrawCard {
             .effect('give +1{1} and +1{2} to {3}', (context) => ['political', 'military', context.source.parentCharacter])
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
-    }
 }

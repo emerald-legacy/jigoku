@@ -4,7 +4,6 @@ import { Phases } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
     static id = 'subterfuge';
-    private messageShown?: boolean;
 
     setupCardAbilities() {
         this.wouldInterrupt('Prevent draw')
@@ -24,7 +23,6 @@ class Subterfuge extends DrawCard {
                     const discardAmount = Math.min(eventAmount, 3);
                     const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
                     const drawAmount = eventAmount - discardAmount;
-                    this.messageShown = false;
                     return {
                         gameActions: [
                             AbilityDsl.actions.discardCard({
@@ -32,22 +30,18 @@ class Subterfuge extends DrawCard {
                             }),
                             AbilityDsl.actions.handler({
                                 handler: (context) => {
-                                    if(!this.messageShown) {
-                                        // for some reason, it shows the message twice
+                                    context.game.addMessage(
+                                        '{0} discards {1}',
+                                        context.player.opponent,
+                                        cardsToDiscard
+                                    );
+                                    if(drawAmount > 0) {
                                         context.game.addMessage(
-                                            '{0} discards {1}',
+                                            '{0} draws {1} card{2}',
                                             context.player.opponent,
-                                            cardsToDiscard
+                                            drawAmount,
+                                            drawAmount > 1 ? 's' : ''
                                         );
-                                        if(drawAmount > 0) {
-                                            context.game.addMessage(
-                                                '{0} draws {1} card{2}',
-                                                context.player.opponent,
-                                                drawAmount,
-                                                drawAmount > 1 ? 's' : ''
-                                            );
-                                        }
-                                        this.messageShown = true;
                                     }
                                 }
                             }),

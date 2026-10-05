@@ -1,4 +1,4 @@
-import { CardType, Element, Players } from '../../../Constants.js';
+import { Element, Players } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -24,11 +24,6 @@ export default class JealousAncestor extends DrawCard {
         );
         this.addAttachedEffectOnOpponent(AbilityDsl.effects.playerCannot({ cannot: 'move', restricts: 'toHand' }));
         this.addAttachedEffectOnOpponent(AbilityDsl.effects.playerCannot({ cannot: 'returnToHand' }));
-    }
-
-    public leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
     }
 
     public getPrintedElementSymbols() {

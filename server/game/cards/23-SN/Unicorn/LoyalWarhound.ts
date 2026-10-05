@@ -83,9 +83,4 @@ export default class LoyalWarhound extends DrawCard {
             }))
             .effect('attach itself to {0}');
     }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
-    }
 }

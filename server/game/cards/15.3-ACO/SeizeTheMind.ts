@@ -15,7 +15,7 @@ class SeizeTheMind extends DrawCard {
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.loseHonor((context) => ({
                     target: context.player,
-                    amount: context.target?.fate ?? 0
+                    amount: context.target?.getFate() ?? 0
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: AbilityDsl.effects.takeControl(context.player),

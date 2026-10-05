@@ -22,9 +22,4 @@ export default class TogashiKazue extends DrawCard {
             .effect('steal a fate from {0} and place it on {1}', (context) => context.source.parentCharacter ?? '')
             .notPrinted();
     }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
-    }
 }

@@ -20,7 +20,7 @@ export default class ForceOfTheRiver extends DrawCard {
                 token: SpiritOfTheRiver,
                 canEnterConflict: (type) => type === 'military'
             })))
-            .effect('summon {1}', () => ({
+            .effect('summon {1}!', () => ({
                 id: 'spirit-of-the-river',
                 label: 'Spirits of the River',
                 name: 'Spirits of the River',

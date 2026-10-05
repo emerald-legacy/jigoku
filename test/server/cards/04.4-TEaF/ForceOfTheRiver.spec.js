@@ -61,6 +61,12 @@ describe('Force of the River', function() {
 
                 expect(attackersValid).toBe(true);
             });
+
+            it('should announce the summon', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.river);
+                expect(this.getChatLogs(5)).toContain('player1 uses Force of the River to summon Spirits of the River!');
+            });
         });
     });
 });

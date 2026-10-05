@@ -32,6 +32,7 @@ class ExposedCourtyard extends DrawCard {
             .cost(exposedCourtyardCost())
             .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .gameAction(AbilityDsl.actions.sequential([
+                // always legal, so this can trigger when only the cards the cost discards give it a choice
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),

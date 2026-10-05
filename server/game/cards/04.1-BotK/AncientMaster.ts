@@ -25,9 +25,4 @@ export default class AncientMaster extends DrawCard {
             .effect('look at the top five cards of their deck')
             .notPrinted();
     }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
-    }
 }

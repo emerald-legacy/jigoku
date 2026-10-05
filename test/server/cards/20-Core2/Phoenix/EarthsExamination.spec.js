@@ -117,3 +117,46 @@ describe('Earth\'s Examination', function () {
         });
     });
 });
+
+describe('Earth\'s Examination with only an attached Shugenja', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger']
+                },
+                player2: {
+                    fate: 5,
+                    hand: ['earth-s-examination', 'togashi-kazue'],
+                    inPlay: ['doji-whisperer']
+                }
+            });
+
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.examination = this.player2.findCardByName('earth-s-examination');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.kazue = this.player2.findCardByName('togashi-kazue');
+            this.kazue.traits = [...this.kazue.traits, 'shugenja'];
+
+            this.player1.pass();
+            this.player2.clickCard(this.kazue);
+            this.player2.clickPrompt('Play Togashi Kazue as an attachment');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.attachments).toContain(this.kazue);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer],
+                type: 'political'
+            });
+        });
+
+        it('should not be playable', function () {
+            this.player2.clickCard(this.examination);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.challenger.isTainted).toBe(false);
+        });
+    });
+});

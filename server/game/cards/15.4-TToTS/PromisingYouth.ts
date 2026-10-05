@@ -24,9 +24,4 @@ export default class PromisingYouth extends DrawCard {
                 AbilityDsl.actions.detach((context) => ({ target: context.source }))
             ]));
     }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
-    }
 }

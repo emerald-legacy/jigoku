@@ -30,7 +30,6 @@ export default class BayushiKotaro extends DrawCard {
                         AbilityDsl.actions.putIntoConflict(),
                         AbilityDsl.actions.cardLastingEffect(() => ({
                             duration: Duration.UntilEndOfPhase,
-                            location: [Location.PlayArea],
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: { onConflictFinished: () => true },
                                 gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })

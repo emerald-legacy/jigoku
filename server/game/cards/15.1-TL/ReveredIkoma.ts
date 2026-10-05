@@ -6,7 +6,7 @@ class ReveredIkoma extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card === this,
+            match: (card, context) => card === context?.source,
             effect: AbilityDsl.effects.cannotReceiveDishonorToken()
         });
 

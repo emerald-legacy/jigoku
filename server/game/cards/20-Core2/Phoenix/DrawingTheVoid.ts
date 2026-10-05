@@ -2,13 +2,14 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
 
     setupCardAbilities() {
         this.action('Gaze into the void')
-            .condition((context) => context.player.isTraitInPlay('shugenja'))
+            .condition((context) => controlsShugenja(context.player))
             .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const revealedCards = shuffle(context.player.opponent?.hand ?? [])
                     .slice(0, 2)

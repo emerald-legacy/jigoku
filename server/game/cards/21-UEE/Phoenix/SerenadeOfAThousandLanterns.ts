@@ -1,13 +1,14 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class SerenadeOfAThousandLanterns extends DrawCard {
     static id = 'serenade-of-a-thousand-lanterns';
 
     setupCardAbilities() {
         this.action('Send characters home')
-            .condition((context) => context.player.isTraitInPlay('shugenja'))
+            .condition((context) => controlsShugenja(context.player))
             .targetCards({
                 activePromptTitle: 'Choose characters adding up to 4 printed cost',
                 numCards: Infinity,

@@ -28,7 +28,7 @@ describe('Illustrious Plagiarist', function() {
                 expect(this.bayushiShoju.isDishonored).toBe(true);
                 expect(this.bayushiShoju.bowed).toBe(true);
                 this.illustriousPlagiarist = this.player1.clickCard('illustrious-plagiarist');
-                this.player2.clickCard(this.aFateWorseThanDeath);
+                this.player1.clickCard(this.aFateWorseThanDeath);
                 this.player2.pass();
                 this.player1.clickCard(this.illustriousPlagiarist);
                 expect(this.player1).toHavePrompt('Illustrious Plagiarist');
@@ -72,7 +72,7 @@ describe('Illustrious Plagiarist', function() {
                 this.player1.playAttachment('cloud-the-mind', this.dojiWhisperer);
                 this.player2.pass();
                 this.illustriousPlagiarist = this.player1.clickCard('illustrious-plagiarist');
-                this.player2.clickCard(this.assassination);
+                this.player1.clickCard(this.assassination);
                 this.player2.clickCard('banzai');
                 this.player2.clickCard(this.dojiWhisperer);
                 this.player2.clickPrompt('Done');
@@ -104,9 +104,9 @@ describe('Illustrious Plagiarist', function() {
             it('should only allow choosing the topmost event', function() {
                 this.aFateWorseThanDeath = this.player2.findCardByName('a-fate-worse-than-death', 'conflict discard pile');
                 this.player1.clickCard(this.illustriousPlagiarist);
-                expect(this.player2).toHavePrompt('Illustrious Plagiarist');
-                expect(this.player2).toBeAbleToSelect(this.banzai);
-                expect(this.player2).not.toBeAbleToSelect(this.aFateWorseThanDeath);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player1).toBeAbleToSelect(this.banzai);
+                expect(this.player1).not.toBeAbleToSelect(this.aFateWorseThanDeath);
             });
         });
 
@@ -151,9 +151,9 @@ describe('Illustrious Plagiarist', function() {
             it('should allow choosing the topmost event', function() {
                 this.fineKatana = this.player2.findCardByName('fine-katana', 'conflict discard pile');
                 this.player1.clickCard(this.illustriousPlagiarist);
-                expect(this.player2).toHavePrompt('Illustrious Plagiarist');
-                expect(this.player2).toBeAbleToSelect(this.banzai);
-                expect(this.player2).not.toBeAbleToSelect(this.fineKatana);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player1).toBeAbleToSelect(this.banzai);
+                expect(this.player1).not.toBeAbleToSelect(this.fineKatana);
             });
         });
     });

@@ -56,3 +56,38 @@ describe('Drawing the Void', function () {
         });
     });
 });
+
+describe('Drawing the Void with only an attached Shugenja', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['drawing-the-void', 'togashi-kazue']
+                },
+                player2: {
+                    hand: ['regal-bearing', 'reprieve']
+                }
+            });
+
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.drawingTheVoid = this.player1.findCardByName('drawing-the-void');
+            this.kazue = this.player1.findCardByName('togashi-kazue');
+            this.kazue.traits = [...this.kazue.traits, 'shugenja'];
+
+            this.player1.clickCard(this.kazue);
+            this.player1.clickPrompt('Play Togashi Kazue as an attachment');
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.attachments).toContain(this.kazue);
+            this.player2.pass();
+        });
+
+        it('should not be playable', function () {
+            this.player1.clickCard(this.drawingTheVoid);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.drawingTheVoid.location).toBe('hand');
+        });
+    });
+});

@@ -1,6 +1,7 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class IllusionaryDecoy extends DrawCard {
     static id = 'illusionary-decoy';
@@ -8,8 +9,7 @@ export default class IllusionaryDecoy extends DrawCard {
     public setupCardAbilities() {
         this.reaction('Put into play')
             .when({
-                onConflictStarted: (_event, context) =>
-                    context.player.anyCardsInPlay((card) => card.hasTrait('shugenja'))
+                onConflictStarted: (_event, context) => controlsShugenja(context.player)
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.putIntoConflict((context) => ({ target: context.source })),

@@ -12,6 +12,7 @@ export default class SpectralVisitation extends ProvinceCard {
             })
             .cost(AbilityDsl.costs.discardTopCardsFromDeck({ amount: 4, deck: Decks.DynastyDeck }))
             .gameAction(AbilityDsl.actions.sequential([
+                // always legal, so this can trigger when only the cards the cost discards give it a choice
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),
