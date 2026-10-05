@@ -475,11 +475,11 @@ class DrawCard extends BaseCard {
     }
 
     get militarySkillSummary(): StatSummary {
-        return this.showStats ? statSummary(this.skillCalculator.getMilitaryModifiers(), formatSkill) : {};
+        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers('military'), formatSkill) : {};
     }
 
     get politicalSkillSummary(): StatSummary {
-        return this.showStats ? statSummary(this.skillCalculator.getPoliticalModifiers(), formatSkill) : {};
+        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers('political'), formatSkill) : {};
     }
 
     get glorySummary(): StatSummary {
@@ -504,11 +504,11 @@ class DrawCard extends BaseCard {
     }
 
     getMilitaryModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getMilitaryModifiers(exclusions);
+        return this.skillCalculator.getSkillModifiers('military', exclusions);
     }
 
     getPoliticalModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getPoliticalModifiers(exclusions);
+        return this.skillCalculator.getSkillModifiers('political', exclusions);
     }
 
     get militarySkill(): number {
@@ -516,11 +516,11 @@ class DrawCard extends BaseCard {
     }
 
     getMilitarySkill(floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getMilitaryModifiers()), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('military')), floor);
     }
 
     getMilitarySkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getMilitaryModifiers(toExclusions(exclusions))), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('military', toExclusions(exclusions))), floor);
     }
 
     get politicalSkill(): number {
@@ -528,11 +528,11 @@ class DrawCard extends BaseCard {
     }
 
     getPoliticalSkill(floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getPoliticalModifiers()), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('political')), floor);
     }
 
     getPoliticalSkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getPoliticalModifiers(toExclusions(exclusions))), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('political', toExclusions(exclusions))), floor);
     }
 
     get baseMilitarySkill(): number {

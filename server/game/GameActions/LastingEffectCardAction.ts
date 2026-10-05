@@ -6,9 +6,10 @@ import { CardGameAction, type CardActionProperties, type CardEvent } from './Car
 import type { ActionEvent } from './GameAction.js';
 import { toEffectList, type LastingEffectFields } from './LastingEffectAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
+import type { TargetLocation } from '../Interfaces.js';
 
 export interface LastingEffectCardProperties extends CardActionProperties, LastingEffectFields {
-    targetLocation?: Location | Location[];
+    targetLocation?: TargetLocation;
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
 }

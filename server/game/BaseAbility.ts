@@ -50,9 +50,9 @@ export interface DeclaredGameAction<C = never> {
     hasLegalTarget(context: C, additionalProperties?: object): boolean;
 }
 
-function toGameAction(action: DeclaredGameAction): GameAction {
+export function toGameAction(action: object, message = 'An ability\'s gameAction must be a game action'): GameAction {
     if(!(action instanceof GameAction)) {
-        throw new Error('An ability\'s gameAction must be a game action');
+        throw new Error(message);
     }
     return action;
 }
@@ -64,11 +64,13 @@ export interface BaseAbilityProperties {
     gameAction?: DeclaredGameAction | DeclaredGameAction[];
 }
 
-interface TargetResults {
+/** What resolving an ability's targets reports back: a cancel, a request to pay costs first, a target left for later. */
+export interface TargetResults {
     canIgnoreAllCosts?: boolean;
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTarget | null;
+    noCostsFirstButton?: boolean;
     playCosts?: boolean;
     triggerCosts?: boolean;
     events?: Event[];
@@ -111,7 +113,7 @@ class BaseAbility {
      */
     constructor(properties: BaseAbilityProperties) {
         const gameActions = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
-        this.gameAction = gameActions.map(toGameAction);
+        this.gameAction = gameActions.map((action) => toGameAction(action));
         this.targets = [];
         this.buildTargets(properties);
         this.cost = this.buildCost(properties.cost);

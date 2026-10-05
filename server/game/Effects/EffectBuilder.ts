@@ -1,16 +1,14 @@
-import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import type EffectSource from '../EffectSource.js';
-import type { Duration, EffectName, Location } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
 import type Game from '../Game.js';
-import type { GameAction, GameActionProperties } from '../GameActions/GameAction.js';
 import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 import type Effect from './Effect.js';
-import type { EffectProperties, EffectUntil } from './Effect.js';
+import type { EffectProperties } from './Effect.js';
 import type { EffectBase } from './EffectBase.js';
 import type { EffectValueMap, FlexibleEffectName } from './EffectValueMap.js';
 import CardEffect from './CardEffect.js';
@@ -24,28 +22,17 @@ import StaticEffect, { type StaticValue } from './StaticEffect.js';
 import type { Duel } from '../Duel.js';
 import type { Conflict } from '../Conflict.js';
 
-export type { DetachedValue, DynamicValue };
-
 export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel | Conflict;
-/** `appliesTo` is never set; it records what the effect targets, so `match` can be typed by it. */
-export type EffectFactory<T = EffectTarget> = ((game: Game, source: EffectSource, props: Props) => Effect) & { readonly appliesTo?: T };
 
-type Props = {
-    targetLocation?: Location | Location[];
-    canChangeZoneOnce?: boolean;
-    canChangeZoneNTimes?: number;
-    duration?: Duration;
-    condition?: (context: AbilityContext) => boolean;
-    until?: EffectUntil;
-    ability?: BaseAbility;
-    target?: EffectTarget | EffectTarget[];
-    cannotBeCancelled?: boolean;
-    optional?: boolean;
-    parentAction?: GameAction<GameActionProperties>;
-};
+// Method syntax on purpose: a factory for a narrower target type is still an `EffectFactory`.
+interface Factory<T extends GameObject> {
+    create(game: Game, source: EffectSource, props: EffectProperties<T>): Effect;
+}
+/** `appliesTo` is never set; it records what the effect targets, so `match` can be typed by it. */
+export type EffectFactory<T extends GameObject = EffectTarget> = Factory<T>['create'] & { readonly appliesTo?: T };
 
 /** A value, or a calculation of it for each target. Values are never functions, so a function is a calculation. */
-type FlexibleValue<V, T> = V | DynamicValue<V, T>;
+export type FlexibleValue<V, T = DrawCard> = V | DynamicValue<V, T>;
 
 function isCalculation<V, T>(value: FlexibleValue<V, T>): value is DynamicValue<V, T> {
     return typeof value === 'function';

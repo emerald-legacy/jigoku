@@ -7,7 +7,8 @@ import { type EventName, type Location, type Phases, type Players, TargetMode } 
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type { GameEvent } from './Events/EventPayloads.js';
-import { GameAction } from './GameActions/GameAction.js';
+import type { GameAction } from './GameActions/GameAction.js';
+import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
 import type {
     ActionCardTarget,
     ActionProps,
@@ -65,20 +66,11 @@ type NamedToken<TK> = TK extends { target: infer T } ? { token: T } : unknown;
  * One method only: TypeScript infers `actions.x((context) => ...)` from it exactly, and since methods
  * compare bivariantly, an action built for a wider context fits too.
  */
-interface BuilderAction<Base extends AbilityContext, TG, RG, CO, TK = object> {
-    hasLegalTarget(context: BuilderContext<Base, TG, RG, CO, TK>, additionalProperties?: object): boolean;
-}
-
-function toGameAction(title: string, action: object): GameAction {
-    if(!(action instanceof GameAction)) {
-        throw new Error(`${title}: not a game action`);
-    }
-    return action;
-}
+type BuilderAction<Base extends AbilityContext, TG, RG, CO, TK = object> = DeclaredGameAction<BuilderContext<Base, TG, RG, CO, TK>>;
 
 function withGameActions(title: string, entry: { gameAction?: GameAction | GameAction[] }, actions: object[]): void {
     if(actions.length > 0) {
-        const gameActions = actions.map((action) => toGameAction(title, action));
+        const gameActions = actions.map((action) => toGameAction(action, `${title}: not a game action`));
         entry.gameAction = gameActions.length === 1 ? gameActions[0] : gameActions;
     }
 }
@@ -581,7 +573,7 @@ export class AbilityBuilder<
     #actionChoices(choices: Record<string, object>): Record<string, GameAction> {
         const actions: Record<string, GameAction> = {};
         for(const [label, choice] of Object.entries(choices)) {
-            actions[label] = toGameAction(this.draft.title, choice);
+            actions[label] = toGameAction(choice, `${this.draft.title}: not a game action`);
         }
         return actions;
     }
@@ -617,7 +609,7 @@ export class AbilityBuilder<
     }
 
     gameAction(...actions: BuilderAction<Base, TG, RG, CO, TK>[]): this {
-        this.draft.gameActions = this.draft.gameActions.concat(actions.map((action) => toGameAction(this.draft.title, action)));
+        this.draft.gameActions = this.draft.gameActions.concat(actions.map((action) => toGameAction(action, `${this.draft.title}: not a game action`)));
         return this;
     }
 

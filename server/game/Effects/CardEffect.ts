@@ -8,12 +8,13 @@ import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type { EffectBase } from './EffectBase.js';
 import type Player from '../Player.js';
+import type { TargetLocation } from '../Interfaces.js';
 
 const provinceCardTypes: readonly string[] = [CardType.Province, CardType.Stronghold, CardType.Holding];
 
 export default class CardEffect extends Effect<BaseCard> {
     targetController: string | Player;
-    targetLocation: Location | Location[];
+    targetLocation: TargetLocation;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<BaseCard>, effect: EffectBase<EffectName, BaseCard>) {
         if(!properties.match) {

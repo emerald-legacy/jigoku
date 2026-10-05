@@ -22,7 +22,7 @@ export default class SpellScroll extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.type !== CardType.Character &&
-                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraitSet())
+                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraits())
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.moveCard((context) => ({
                     target: context.target,

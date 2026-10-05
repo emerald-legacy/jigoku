@@ -41,8 +41,7 @@ type PersistentGainValue = PersistentGain & { ref?: Effect[]; duration?: Duratio
 type Grant =
     | { kind: AbilityType.Action; properties: ActionProps }
     | { kind: AbilityType.Persistent; properties: PersistentGain }
-    | { kind: 'triggered'; properties: TriggeredAbilityProps }
-    | { kind: 'copiedTriggered'; properties: TriggeredAbilityProperties };
+    | { kind: 'triggered'; properties: TriggeredAbilityProperties };
 
 export type GainedAbilityValue = boolean | CardAction | TriggeredAbility | PersistentGainValue;
 
@@ -78,7 +77,7 @@ function grantFor(args: GainAbilityArgs): Grant {
         const ability = args[1];
         return ability.isCardAction()
             ? { kind: AbilityType.Action, properties: Object.assign({}, ability.properties, copiedProps(ability)) }
-            : { kind: 'copiedTriggered', properties: Object.assign({}, ability.properties, copiedProps(ability)) };
+            : { kind: 'triggered', properties: Object.assign({}, ability.properties, copiedProps(ability)) };
     }
     if(args[0] === AbilityType.Action) {
         return { kind: AbilityType.Action, properties: Object.assign({ printedAbility: false }, args[1]) };

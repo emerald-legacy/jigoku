@@ -17,7 +17,6 @@ import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { MsgArg } from '../GameChat.js';
 import type { EffectBase } from './EffectBase.js';
-import type { CardEffect } from './types.js';
 import type { GainedAbilityValue } from './GainAbility.js';
 import type { DynamicMatch } from './GainAllAbilitiesDynamic.js';
 
@@ -182,7 +181,7 @@ export interface EffectValueMap {
     [EffectName.SetProvinceStrengthBonus]: number;
     [EffectName.SetProvinceStrength]: number;
     [EffectName.SwitchBaseSkills]: boolean;
-    [EffectName.SuppressEffects]: CardEffect[];
+    [EffectName.SuppressEffects]: EffectBase<EffectName, GameObject, unknown>[];
     [EffectName.TakeControl]: Player | undefined;
     [EffectName.UnlessActionCost]: UnlessActionCostValue;
     [EffectName.AddElement]: Element | Element[];
@@ -227,7 +226,7 @@ export interface EffectValueMap {
     [EffectName.StrongholdCanBeAttacked]: boolean;
     [EffectName.DefendersChosenFirstDuringConflict]: number;
     [EffectName.LimitHonorGainPerPhase]: number;
-    [EffectName.RegisterToPlayFromOutOfPlay]: unknown;
+    [EffectName.RegisterToPlayFromOutOfPlay]: boolean;
     [EffectName.CostToDeclareAnyParticipants]: ParticipantCostEffect;
     [EffectName.LoseAllNonKeywordAbilities]: boolean;
     [EffectName.ParticipatesFromHome]: true;

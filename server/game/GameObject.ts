@@ -2,7 +2,8 @@ import { v1 as uuidV1 } from 'uuid';
 
 import type { AbilityContext } from './AbilityContext.js';
 import { type CardType, EffectName, Stage } from './Constants.js';
-import { type CardEffect, isEffectOf } from './Effects/types.js';
+import { isEffectOf } from './Effects/types.js';
+import type { EffectBase } from './Effects/EffectBase.js';
 import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -23,8 +24,8 @@ export class GameObject {
     protected id: string;
     public printedType = '';
     public facedown = false;
-    protected effects: CardEffect[] = [];
-    protected effectsByType = new Map<EffectName, CardEffect[]>();
+    protected effects: EffectBase[] = [];
+    protected effectsByType = new Map<EffectName, EffectBase[]>();
     private suppressEffectCount = 0;
 
     public constructor(
@@ -48,7 +49,7 @@ export class GameObject {
         this._name = value;
     }
 
-    public addEffect(effect: CardEffect) {
+    public addEffect(effect: EffectBase) {
         this.effects.push(effect);
         const bucket = this.effectsByType.get(effect.type);
         if(bucket) {
@@ -61,7 +62,7 @@ export class GameObject {
         }
     }
 
-    public removeEffect(effect: CardEffect) {
+    public removeEffect(effect: EffectBase) {
         if(effect.type === EffectName.SuppressEffects) {
             this.suppressEffectCount--;
         }
@@ -202,7 +203,7 @@ export class GameObject {
             return this.effects;
         }
         const suppressEffects = this.effects.filter((effect) => isEffectOf(effect, EffectName.SuppressEffects));
-        const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
+        const suppressedEffects = suppressEffects.reduce<EffectValueMap[EffectName.SuppressEffects]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
     }
 
@@ -211,7 +212,7 @@ export class GameObject {
     // hand-copying in subclasses could not reach it and silently dropped it.
     protected cloneEffectStateInto(target: GameObject): void {
         target.effects = [...this.effects];
-        const clonedIndex = new Map<EffectName, CardEffect[]>();
+        const clonedIndex = new Map<EffectName, EffectBase[]>();
         for(const [type, bucket] of this.effectsByType) {
             clonedIndex.set(type, [...bucket]);
         }

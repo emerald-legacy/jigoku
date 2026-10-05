@@ -368,7 +368,7 @@ class BaseCard extends EffectSource {
         this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
-    createTriggeredAbility(abilityType: AbilityType, properties: TriggeredAbilityProps<this> | TriggeredAbilityProperties<this>): TriggeredAbility {
+    createTriggeredAbility(abilityType: AbilityType, properties: TriggeredAbilityProperties<this>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties);
     }
 
@@ -529,22 +529,18 @@ class BaseCard extends EffectSource {
     hasEveryTrait(traits: Set<string>): boolean;
     hasEveryTrait(...traits: string[]): boolean;
     hasEveryTrait(traitSetOrFirstTrait: Set<string> | string, ...otherTraits: string[]): boolean {
-        const cardTraits = this.getTraitSet();
+        const cardTraits = this.getTraits();
         return [...traitsToCheck(traitSetOrFirstTrait, otherTraits)].every((trait) => cardTraits.has(trait.toLowerCase()));
     }
 
     hasSomeTrait(traits: Set<string>): boolean;
     hasSomeTrait(...traits: string[]): boolean;
     hasSomeTrait(traitSetOrFirstTrait: Set<string> | string, ...otherTraits: string[]): boolean {
-        const cardTraits = this.getTraitSet();
+        const cardTraits = this.getTraits();
         return [...traitsToCheck(traitSetOrFirstTrait, otherTraits)].some((trait) => cardTraits.has(trait.toLowerCase()));
     }
 
     getTraits(): Set<string> {
-        return this.getTraitSet();
-    }
-
-    getTraitSet(): Set<string> {
         const set = new Set(this.printedTraits());
 
         for(const gainedTrait of this.getEffects(EffectName.AddTrait)) {
@@ -824,7 +820,7 @@ class BaseCard extends EffectSource {
     }
 
     getPrintedFaction(): string {
-        return this.cardData.clan ?? this.cardData.faction ?? '';
+        return this.printedFaction;
     }
 
     checkRestrictions(actionType: string, context: AbilityContext): boolean {

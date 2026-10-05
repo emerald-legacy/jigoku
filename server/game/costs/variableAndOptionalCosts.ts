@@ -170,7 +170,11 @@ export function chooseFate(type: PlayType): Cost {
     };
 }
 
-export function discardCardsUpToVariableX(amountDerivable: Derivable<number, AbilityContext>): Cost<{ discardCardsUpToVariableX: DrawCard[] }> {
+function discardCardsVariableX<K extends string>(
+    key: K,
+    mode: TargetMode.UpTo | TargetMode.Exactly,
+    amountDerivable: Derivable<number, AbilityContext>
+): Cost<Record<K, DrawCard[]>> {
     return {
         promptsPlayer: true,
         canPay(context) {
@@ -181,21 +185,19 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
         },
         resolve(context, result) {
             const amount = derive(amountDerivable, context);
-            const max = Math.min(amount, context.player.hand.length);
+            const count = mode === TargetMode.UpTo ? 'up to ' + Math.min(amount, context.player.hand.length) : amount;
             context.game.promptForSelect(context.player, {
-                activePromptTitle: 'Choose up to ' + max + ' card' + (amount === 1 ? '' : 's') + ' to discard',
+                activePromptTitle: 'Choose ' + count + ' card' + (amount === 1 ? '' : 's') + ' to discard',
                 context: context,
-                mode: TargetMode.UpTo,
+                mode: mode,
                 numCards: amount,
                 ordered: false,
                 location: Location.Hand,
                 controller: Players.Self,
                 onSelect: (_player: Player, cards) => {
+                    Object.assign(context.costs, { [key]: cards.filter((card) => card.isDrawCard()) });
                     if(cards.length === 0) {
-                        context.costs.discardCardsUpToVariableX = [];
                         result.cancelled = true;
-                    } else {
-                        context.costs.discardCardsUpToVariableX = cards.filter((card) => card.isDrawCard());
                     }
                     return true;
                 },
@@ -206,51 +208,18 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
             });
         },
         payEvent(context) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardCardsUpToVariableX });
-            return action.getEvent(context.costs.discardCardsUpToVariableX, context);
+            const action = context.game.actions.discardCard({ target: context.costs[key] });
+            return action.getEvent(context.costs[key], context);
         }
     };
 }
 
-export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, AbilityContext>): Cost<{ discardCardsExactlyVariableX: DrawCard[] }> {
-    return {
-        promptsPlayer: true,
-        canPay(context) {
-            return (
-                derive(amountDerivable, context) > 0 &&
-                context.game.actions.chosenDiscard().canAffect(context.player, context)
-            );
-        },
-        resolve(context, result) {
-            const amount = derive(amountDerivable, context);
-            context.game.promptForSelect(context.player, {
-                activePromptTitle: 'Choose ' + amount + ' card' + (amount === 1 ? '' : 's') + ' to discard',
-                context: context,
-                mode: TargetMode.Exactly,
-                numCards: amount,
-                ordered: false,
-                location: Location.Hand,
-                controller: Players.Self,
-                onSelect: (_player: Player, cards) => {
-                    if(cards.length === 0) {
-                        context.costs.discardCardsExactlyVariableX = [];
-                        result.cancelled = true;
-                    } else {
-                        context.costs.discardCardsExactlyVariableX = cards.filter((card) => card.isDrawCard());
-                    }
-                    return true;
-                },
-                onCancel: () => {
-                    result.cancelled = true;
-                    return true;
-                }
-            });
-        },
-        payEvent(context) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardCardsExactlyVariableX });
-            return action.getEvent(context.costs.discardCardsExactlyVariableX, context);
-        }
-    };
+export function discardCardsUpToVariableX(amountDerivable: Derivable<number, AbilityContext>) {
+    return discardCardsVariableX('discardCardsUpToVariableX', TargetMode.UpTo, amountDerivable);
+}
+
+export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, AbilityContext>) {
+    return discardCardsVariableX('discardCardsExactlyVariableX', TargetMode.Exactly, amountDerivable);
 }
 
 export function discardHand(): Cost<{ discardHand: DrawCard[] }> {
@@ -398,8 +367,8 @@ export function optionalFateCost(amount: number, forcePayment: (context: Ability
 
 export function optionalOpponentLoseHonor(
     prompt = 'Lose 1 honor?',
-    canPayFunc?: (context: AbilityContext) => boolean
-): Cost {
+    canPayFunc = (_context: AbilityContext) => true
+): Cost<{ optionalOpponentLoseHonorPaid: boolean }> {
     const NAME = 'optionalOpponentLoseHonorPaid';
     return {
         promptsPlayer: true,
@@ -407,7 +376,7 @@ export function optionalOpponentLoseHonor(
         resolve: (context) => {
             context.costs[NAME] = false;
 
-            if((typeof canPayFunc === 'function' && !canPayFunc(context)) || !context.player.opponent) {
+            if(!canPayFunc(context) || !context.player.opponent) {
                 return;
             }
 

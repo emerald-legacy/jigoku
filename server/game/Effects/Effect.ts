@@ -10,6 +10,7 @@ import type { EventName } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { EffectBase } from './EffectBase.js';
 import type Player from '../Player.js';
+import type { TargetLocation } from '../Interfaces.js';
 
 // Method syntax on purpose: a match function may take a narrower target type than its effect's targets.
 interface Matcher<T> {
@@ -30,14 +31,14 @@ export interface EffectProperties<T extends GameObject = GameObject> {
     duration?: Duration;
     until?: EffectUntil;
     condition?: (context: AbilityContext) => boolean;
-    location?: string;
+    location?: Location;
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
     ability?: BaseAbility;
     endingMessage?: string;
     // a player, or which players relative to the source's controller
     targetController?: string | Player;
-    targetLocation?: Location | Location[];
+    targetLocation?: TargetLocation;
     target?: GameObject | GameObject[];
 }
 
@@ -74,7 +75,7 @@ class Effect<T extends GameObject = GameObject> {
     duration: Duration | undefined;
     until: EffectUntil;
     condition: (context: AbilityContext) => boolean;
-    location: string;
+    location: Location;
     canChangeZoneOnce: boolean;
     canChangeZoneNTimes: number;
     effect: EffectBase<EffectName, T>;

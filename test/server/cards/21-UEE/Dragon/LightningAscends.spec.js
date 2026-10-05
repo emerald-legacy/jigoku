@@ -55,7 +55,7 @@ describe('Lightning Ascends', function () {
             expect(this.itinerantPhilosopher.getMilitarySkill()).toBe(currentMilitarySkill + 2);
             expect(this.itinerantPhilosopher.getPoliticalSkill()).toBe(currentPoliticalSkill);
 
-            expect(this.solemnScholar.getTraitSet().size).toBe(0);
+            expect(this.solemnScholar.getTraits().size).toBe(0);
 
             expect(this.getChatLogs(3)).toContain(
                 'player1 plays Lightning Ascends to grant +2 military to Itinerant Philosopher and remove all traits from Solemn Scholar'

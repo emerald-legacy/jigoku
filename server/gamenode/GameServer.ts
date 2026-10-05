@@ -13,6 +13,7 @@ import type Player from '../game/Player.js';
 import { logger } from '../logger.js';
 import Socket, { SocketUserSchema } from '../Socket.js';
 import { detectBinary } from '../util.js';
+import { isOwnKey } from '../game/utils/helpers.js';
 import { stringifyWithoutCycles, WsSocket } from './WsSocket.js';
 import { DeckSchema, ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortCardData, type UserIdentity } from './LobbyProtocol.js';
 import * as env from '../env.js';
@@ -589,7 +590,7 @@ export class GameServer implements GameRouter {
             return this.onLeaveGame(socket);
         }
 
-        const handler = typeof command === 'string' && Object.hasOwn(GameServer.GAME_COMMANDS, command) ? GameServer.GAME_COMMANDS[command] : undefined;
+        const handler = typeof command === 'string' && isOwnKey(GameServer.GAME_COMMANDS, command) ? GameServer.GAME_COMMANDS[command] : undefined;
         if(!handler) {
             logger.info(`Rejected unknown game command '${command}' from ${socket.user.username}`);
             return;

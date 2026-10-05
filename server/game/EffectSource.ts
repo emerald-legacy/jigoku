@@ -1,23 +1,15 @@
 import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
-import type { AbilityContext } from './AbilityContext.js';
 import { GameObject } from './GameObject.js';
 import { Location, Duration } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type Effect from './Effects/Effect.js';
-import type { EffectFactory } from './Effects/EffectBuilder.js';
-import type { EffectMatch, EffectUntil } from './Effects/Effect.js';
+import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
+import type { EffectProperties } from './Effects/Effect.js';
 
-interface EffectProperties {
-    duration?: Duration;
-    location?: Location;
-    effect?: EffectFactory | EffectFactory[];
-    match?: EffectMatch;
-    until?: EffectUntil;
-    condition?: (context: AbilityContext) => boolean;
-}
+type EffectSourceProperties = EffectProperties<EffectTarget> & { effect?: EffectFactory | EffectFactory[] };
 
-type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
+type PropertyFactory = (dsl: AbilityDslType) => EffectSourceProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
 
@@ -136,7 +128,7 @@ class EffectSource extends GameObject {
      * Adds a persistent/lasting/delayed effect to the effect engine
      * @param {Object} properties - properties for the effect - see Effects/Effect.js
      */
-    addEffectToEngine(properties: EffectProperties): Effect[] {
+    addEffectToEngine(properties: EffectSourceProperties): Effect[] {
         const { effect, ...rest } = properties;
         if(Array.isArray(effect)) {
             return effect.map((factory) => this.game.effectEngine.add(factory(this.game, this, rest)));

@@ -7,12 +7,13 @@ import type { CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import { LastingEffectCardAction, type LastingEffectCardProperties } from './LastingEffectCardAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
+import type { TargetLocation } from '../Interfaces.js';
 
 export interface TakeControlProperties extends CardActionProperties {
     duration?: Duration;
     until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
-    targetLocation?: Location | Location[];
+    targetLocation?: TargetLocation;
 }
 
 export class TakeControlAction<C extends AbilityContext = AbilityContext> extends LastingEffectCardAction<C> {
