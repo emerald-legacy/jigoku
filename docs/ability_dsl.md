@@ -54,7 +54,7 @@ this.action('Bow a character')
     .phase(Phases.Conflict)
     .condition((context) => context.source.isParticipating())
     .cost(AbilityDsl.costs.bowSelf())
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
     }, AbilityDsl.actions.bow())
@@ -69,10 +69,10 @@ Builder methods shared by actions and triggered abilities:
 | Method | Description |
 |--------|-------------|
 | `cost(cost)` | A cost to pay before resolving (see [Costs](#costs)). Call once per cost. Costs that record a result put it in `context.costs`, typed but optional (it is only set once paid) |
-| `target(name, props, ...actions)` | A card target (see [Targets](#targets)) |
-| `targetCards(name, props, ...actions)` | Several cards, by `mode` |
-| `ringTarget(name, props, ...actions)` | A ring target |
-| `select(name, props, choices)` / `selectIf` / `selectFrom` | A choice between labelled options |
+| `target(props, ...actions)` | A card target (see [Targets](#targets)) |
+| `targetCards(props, ...actions)` | Several cards, by `mode` |
+| `ringTarget(props, ...actions)` | A ring target |
+| `select(props, choices)` / `selectIf` / `selectFrom` | A choice between labelled options |
 | `tokenTarget` / `abilityTarget` / `elementTarget` | Status tokens, a printed ability, an element symbol on a chosen card |
 | `gameAction(...actions)` | Action(s) to resolve (see [Game Actions](#game-actions)) |
 | `handler(fn)` | Low-level handler called after costs are paid (use `gameAction` when possible) |
@@ -229,12 +229,12 @@ this.attachmentConditions({
 
 ## Targets
 
-Each target method takes a name, the target's properties, and the game actions that resolve on it. The chosen card is stored in `context.targets[name]`; a target named `target` is also `context.target` (and a ring target named `target` is `context.ring`, a select named `target` is `context.select`). A target can depend on an earlier one with `dependsOn: 'earlierName'`.
+Each target method takes the target's properties and the game actions that resolve on it. The chosen card is stored in `context.targets[name]`. Without a `name` property the target is named `target`, which is also `context.target` and `{0}` in the effect message (a ring target named `target` is `context.ring`, a select named `target` is `context.select`). An ability with several targets names them (`name: 'character'`), and a target can depend on an earlier one with `dependsOn: 'character'`.
 
 ### Single card target
 
 ```typescript
-.target('target', {
+.target({
     cardType: CardType.Character,      // filter by type; also types the card
     controller: Players.Opponent,       // whose cards
     location: Location.PlayArea,       // where the card must be
@@ -247,7 +247,7 @@ With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt
 ### Multiple cards
 
 ```typescript
-.targetCards('target', {
+.targetCards({
     mode: TargetMode.UpTo,
     numCards: 3,
     cardType: CardType.Character
@@ -268,7 +268,7 @@ With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt
 ### Ring target
 
 ```typescript
-.ringTarget('target', {
+.ringTarget({
     ringCondition: (ring, context) => ring.isUnclaimed()
 }, AbilityDsl.actions.claimRing())
 ```
@@ -277,10 +277,12 @@ With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt
 
 ```typescript
 this.action('Bow or honor a character')
-    .target('character', {
+    .target({
+        name: 'character',
         cardType: CardType.Character
     })
-    .select('choice', {
+    .select({
+        name: 'choice',
         dependsOn: 'character',
         player: Players.Self
     }, {
@@ -295,11 +297,13 @@ The choices object maps button labels to game actions. A choice is shown only if
 
 ```typescript
 this.action('Detach an attachment')
-    .target('attacker', {
+    .target({
+        name: 'attacker',
         cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
     })
-    .target('attachment', {
+    .target({
+        name: 'attachment',
         dependsOn: 'attacker',
         cardType: CardType.Attachment,
         cardCondition: (card, context) => card.parent === context.targets.attacker
@@ -328,11 +332,11 @@ The same applies to `AbilityDsl.effects.gainAbility(...)`: the granted ability's
 
 ### Typed targets
 
-Each target method adds its name to `context.targets`, typed by `cardType`: `CardType.Province` gives a `ProvinceCard`, `CardType.Character` (or attachment, event, holding) a `DrawCard`, a list of types the union of theirs, and no `cardType` a `BaseCard`. `cardCondition` receives the card with the same type. `targetCards` gives an array, and an optional target adds `[]` (and `undefined`) to the type.
+Each target adds its name to `context.targets`, typed by `cardType`: `CardType.Province` gives a `ProvinceCard`, `CardType.Character` (or attachment, event, holding) a `DrawCard`, a list of types the union of theirs, and no `cardType` a `BaseCard`. `cardCondition` receives the card with the same type. `targetCards` gives an array, and an optional target adds `[]` (and `undefined`) to the type.
 
 ```typescript
 this.action('Bow a character')
-    .target('target', {
+    .target({
         cardType: CardType.Character
     })
     .handler((context) => {
@@ -1021,7 +1025,7 @@ The follow-up ability is a properties object (`gameAction`, `target`, `handler`,
 
 ```typescript
 this.action('Bow, then choose an effect')
-    .target('target', {
+    .target({
         cardType: CardType.Character
     }, AbilityDsl.actions.bow())
     .then(() => ({

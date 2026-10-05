@@ -156,13 +156,13 @@ Keep the condition when it serves a distinct purpose beyond the presence of a co
 
 ```typescript
 // WRONG — isParticipating already enforced by sendHome.canAffect
-.target('target', {
+.target({
     cardType: CardType.Character,
     cardCondition: (card) => card.isParticipating()
 }, AbilityDsl.actions.sendHome())
 
 // WRONG — !isParticipating already enforced by moveToConflict.canAffect
-.target('target', {
+.target({
     cardType: CardType.Character,
     cardCondition: (card) => !card.isParticipating()
 }, AbilityDsl.actions.moveToConflict())
@@ -173,7 +173,7 @@ Keep the condition when it serves a distinct purpose beyond the presence of a co
 Compound conditions keep the non-redundant part:
 ```typescript
 // OK — printedCost check is still needed; !isParticipating() removed
-.target('target', {
+.target({
     cardType: CardType.Character,
     cardCondition: (card) => (card.printedCost ?? 0) <= 2  // was: !isParticipating() && printedCost <= 2
 }, AbilityDsl.actions.moveToConflict())
@@ -187,14 +187,14 @@ If a target's `cardCondition` requires `card.isParticipating()` (for any gameAct
 // WRONG — isParticipating() in cardCondition already implies conflict
 this.action('Dishonor a character')
     .condition((context) => context.game.isDuringConflict())
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
     }, AbilityDsl.actions.dishonor());
 
 // CORRECT
 this.action('Dishonor a character')
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
     }, AbilityDsl.actions.dishonor());
@@ -212,14 +212,14 @@ The same applies when `condition` uses `anyCardsInPlay(card => card.isParticipat
 // WRONG — isDuringConflict() is redundant: isAttacking() already returns false when no conflict
 this.action('Bow an attacking character')
     .condition((context) => context.game.isDuringConflict())
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
     }, ability.actions.bow());
 
 // CORRECT
 this.action('Bow an attacking character')
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
     }, ability.actions.bow());
@@ -264,7 +264,7 @@ this.action('Human-readable title')
     .cost(AbilityDsl.costs.payHonor(1))
 
     // Single target; its game actions follow the properties
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         controller: Players.Self,               // whose cards are selectable
         player: Players.Self,                   // who makes the selection
@@ -286,11 +286,13 @@ Types flow left to right: a call sees the targets and costs declared before it.
 
 ```typescript
 this.action('Choose two characters')
-    .target('first', {
+    .target({
+        name: 'first',
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
     })
-    .target('second', {
+    .target({
+        name: 'second',
         dependsOn: 'first',
         cardType: CardType.Character,
         cardCondition: (card, context) => card !== context.targets.first
@@ -302,7 +304,7 @@ this.action('Choose two characters')
 Use when the card text says "Select one —":
 
 ```typescript
-.select('target', {}, {
+.select({}, {
     'Move into conflict': AbilityDsl.actions.moveToConflict((context) => ({ target: context.source })),
     'Move home': AbilityDsl.actions.sendHome((context) => ({ target: context.source }))
 })
@@ -482,7 +484,7 @@ AbilityDsl.actions.moveConflict((context) => ({ target: context.source }))
 AbilityDsl.actions.multiple([action1, action2])
 // or as several arguments
 .gameAction(AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
-.target('target', { ... }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
+.target({ ... }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
 
 // Conditional action (silent — no player prompt)
 AbilityDsl.actions.conditional({
@@ -642,7 +644,7 @@ These are distinct and must not be confused:
 
 Example: opponent selects from their own discard pile:
 ```typescript
-.target('target', {
+.target({
     player: Players.Opponent,        // opponent makes the selection
     location: Location.ConflictDiscardPile,
     controller: Players.Opponent,    // only opponent's cards are selectable
@@ -788,7 +790,7 @@ export default class Example extends ProvinceCard {
     setupCardAbilities() {
         this.action('Do something')
             // No condition needed — engine enforces "must be conflict province"
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow());
@@ -808,7 +810,7 @@ this.persistentEffect({
 `conflictAction` requires a conflict and this card participating in it; `{ conflictType: 'political' }` restricts the type, `{ evenFromHome: true }` drops the participation check.
 ```typescript
 this.conflictAction('Bow a participating character')
-    .target('target', {
+    .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
     }, AbilityDsl.actions.bow());
