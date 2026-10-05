@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { playerChoices } from '../playerChoices.js';
 
 const elementKey = 'kuni-yori-earth';
 
@@ -17,13 +18,10 @@ class KuniYori extends DrawCard {
         this.action('Select a player to discard a card at random')
             .cost(AbilityDsl.costs.payHonor(1))
             .condition(() => this.game.isDuringConflict())
-            .select({
+            .selectFrom({
                 activePromptTitle: 'Select a player to discard a random card from his/her hand',
                 targets: true
-            }, {
-                [this.owner.name]: AbilityDsl.actions.discardAtRandom({ target: this.owner }),
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.discardAtRandom({ target: this.owner.opponent })
-            });
+            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.discardAtRandom({ target: player })));
     }
 
     getPrintedElementSymbols() {

@@ -3,33 +3,31 @@ import AbilityDsl from '../../abilitydsl.js';
 import { Location } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
+import { playerChoices } from '../playerChoices.js';
 
 class DanceOfChikushoDo extends DrawCard {
     static id = 'dance-of-chikusho-do';
 
     setupCardAbilities() {
         this.action('Put cards into provinces')
-            .select({
+            .selectFrom({
                 targets: true,
                 activePromptTitle: 'Choose any number of players'
-            }, {
-                [this.owner.name]: this.fillProvinces(this.owner),
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: this.fillProvinces(this.owner.opponent),
-                [this.owner.name + ' and ' + (this.owner.opponent && this.owner.opponent.name || 'NA')]: AbilityDsl.actions.multiple([
-                    this.fillProvinces(this.owner),
-                    this.fillProvinces(this.owner.opponent)
+            }, (context) => playerChoices(
+                context.player,
+                (player) => this.fillProvinces(player),
+                (player, opponent) => AbilityDsl.actions.multiple([
+                    this.fillProvinces(player),
+                    this.fillProvinces(opponent)
                 ])
-            })
+            ))
             .effect('have {1} place 2 cards in each unbroken province they control', context => context.select)
             .max(AbilityDsl.limit.perRound(1));
     }
 
-    fillProvinces(player: Player | undefined) {
+    fillProvinces(player: Player) {
         return AbilityDsl.actions.handler({
             handler: () => {
-                if(!player) {
-                    return;
-                }
                 const unbrokenProvinces = this.getUnbrokenProvinces(player);
                 unbrokenProvinces.forEach(province => {
                     this.game.queueSimpleStep(() => player.putTopDynastyCardInProvince(province, true));

@@ -1,24 +1,19 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { playerChoices } from '../playerChoices.js';
 
 class BackhandedCompliment extends DrawCard {
     static id = 'backhanded-compliment';
 
     setupCardAbilities() {
         this.action('Select a player to lose an honor and draw a card')
-            .select({
+            .selectFrom({
                 targets: true
-            }, {
-                [this.owner.name]: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.loseHonor({ target: this.owner }),
-                    AbilityDsl.actions.draw({ target: this.owner })
-                ]),
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.loseHonor({ target: this.owner.opponent }),
-                    AbilityDsl.actions.draw({ target: this.owner.opponent })
-                ])
-            })
-            .effect('make {1} lose an honor and draw a card', context => context.select === this.owner.name ? this.owner : (this.owner.opponent ?? ''));
+            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.multiple([
+                AbilityDsl.actions.loseHonor({ target: player }),
+                AbilityDsl.actions.draw({ target: player })
+            ])))
+            .effect('make {1} lose an honor and draw a card', context => context.select === context.player.name ? context.player : (context.player.opponent ?? ''));
     }
 }
 

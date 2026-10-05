@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import { playerChoices } from '../playerChoices.js';
 
 class SoshiShiori extends DrawCard {
     static id = 'soshi-shiori';
@@ -9,13 +10,10 @@ class SoshiShiori extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player
             })
-            .select({
+            .selectFrom({
                 activePromptTitle: 'Choose a player to lose 1 honor',
                 targets: true
-            }, {
-                [this.owner.name]: AbilityDsl.actions.loseHonor({ target: this.owner }),
-                [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.loseHonor({ target: this.owner.opponent })
-            })
+            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.loseHonor({ target: player })))
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

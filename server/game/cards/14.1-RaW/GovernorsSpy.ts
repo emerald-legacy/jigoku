@@ -4,6 +4,7 @@ import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, Players, CardType } from '../../Constants.js';
+import { playerChoices } from '../playerChoices.js';
 
 class GovernorsSpy extends DrawCard {
     static id = 'governor-s-spy';
@@ -11,21 +12,12 @@ class GovernorsSpy extends DrawCard {
     setupCardAbilities() {
         this.action('Flip a player\'s dynasty cards facedown and rearrange them')
             .condition((context) => context.source.isParticipating())
-            .select({
+            .selectFrom({
                 targets: true
-            }, {
-                [this.owner.name]: AbilityDsl.actions.handler({
-                    handler: (context) => this.rearrange(context, this.owner)
-                }),
-                [(this.owner.opponent && this.owner.opponent.name) || 'NA']: AbilityDsl.actions.handler({
-                    handler: (context) => {
-                        if(this.owner.opponent) {
-                            this.rearrange(context, this.owner.opponent);
-                        }
-                    }
-                })
-            })
-            .effect('turn facedown and rearrange all of {1}\'s dynasty cards', (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent));
+            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.handler({
+                handler: (handlerContext) => this.rearrange(handlerContext, player)
+            })))
+            .effect('turn facedown and rearrange all of {1}\'s dynasty cards', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
     }
 
     private rearrange(context: AbilityContext, targetPlayer: Player) {

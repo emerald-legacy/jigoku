@@ -170,7 +170,12 @@ describe('Masterpiece Painter - opponent controls', function() {
             expect(this.player2).toHavePrompt('Choose any number of players');
             expect(this.player2).toHavePromptButton('player1');
             expect(this.player2).toHavePromptButton('player2');
-            expect(this.player2).toHavePromptButton('player1 and player2');
+            expect(this.player2).toHavePromptButton('player2 and player1');
+        });
+
+        it('should list its controller first', function () {
+            this.player2.clickCard(this.masterpiecePainter);
+            expect(this.player2.currentButtons.slice(0, 3)).toEqual(['player2', 'player1', 'player2 and player1']);
         });
 
         it('should display the effect message - (p1 target)', function () {
@@ -178,7 +183,7 @@ describe('Masterpiece Painter - opponent controls', function() {
             expect(this.player2).toHavePrompt('Choose any number of players');
             expect(this.player2).toHavePromptButton('player1');
             expect(this.player2).toHavePromptButton('player2');
-            expect(this.player2).toHavePromptButton('player1 and player2');
+            expect(this.player2).toHavePromptButton('player2 and player1');
 
             this.player2.clickPrompt('player1');
 
@@ -190,7 +195,7 @@ describe('Masterpiece Painter - opponent controls', function() {
             expect(this.player2).toHavePrompt('Choose any number of players');
             expect(this.player2).toHavePromptButton('player1');
             expect(this.player2).toHavePromptButton('player2');
-            expect(this.player2).toHavePromptButton('player1 and player2');
+            expect(this.player2).toHavePromptButton('player2 and player1');
 
             this.player2.clickPrompt('player2');
 
@@ -202,11 +207,11 @@ describe('Masterpiece Painter - opponent controls', function() {
             expect(this.player2).toHavePrompt('Choose any number of players');
             expect(this.player2).toHavePromptButton('player1');
             expect(this.player2).toHavePromptButton('player2');
-            expect(this.player2).toHavePromptButton('player1 and player2');
+            expect(this.player2).toHavePromptButton('player2 and player1');
 
-            this.player2.clickPrompt('player1 and player2');
+            this.player2.clickPrompt('player2 and player1');
 
-            expect(this.getChatLogs(3)).toContain('player2 uses Masterpiece Painter to make player1 and player2 reveal the top card of their deck. They may play their card until the end of the phase');
+            expect(this.getChatLogs(3)).toContain('player2 uses Masterpiece Painter to make player2 and player1 reveal the top card of their deck. They may play their card until the end of the phase');
         });
 
         it('should let the target play the top card of their deck. - (p1 target)', function () {
@@ -240,7 +245,7 @@ describe('Masterpiece Painter - opponent controls', function() {
 
         it('should let the target play the top card of their deck. - (p1 and p2 target)', function () {
             this.player2.clickCard(this.masterpiecePainter);
-            this.player2.clickPrompt('player1 and player2');
+            this.player2.clickPrompt('player2 and player1');
 
             expect(this.player1.player.isTopConflictCardShown(this.player1.player)).toBe(true);
             expect(this.player1.player.isTopConflictCardShown(this.player2.player)).toBe(true);
@@ -257,4 +262,3 @@ describe('Masterpiece Painter - opponent controls', function() {
         });
     });
 });
-
