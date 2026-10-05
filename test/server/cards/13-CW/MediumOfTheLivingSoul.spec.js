@@ -110,8 +110,7 @@ describe('Medium of the Living Soul', function() {
             this.player1.clickCard(this.keepsakes);
             this.player2.pass();
 
-            let i = 0;
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.mitsu);
                 this.player2.pass();
             }
@@ -143,8 +142,7 @@ describe('Medium of the Living Soul', function() {
             this.player1.clickCard(this.keepsakes);
             this.player2.pass();
 
-            let i = 0;
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.mitsu);
                 this.player2.pass();
             }

@@ -212,7 +212,7 @@ export class GameStateSerializer {
         const playerSummaries: Record<string, PlayerSummary> = {};
 
         for(const player of game.getPlayers()) {
-            let deck: { name?: string; selected?: boolean } | undefined = undefined;
+            let deck: { name?: string; selected?: boolean } | undefined;
             if(player.left) {
                 return;
             }

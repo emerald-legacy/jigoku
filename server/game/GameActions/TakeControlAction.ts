@@ -26,10 +26,6 @@ export class TakeControlAction<C extends AbilityContext = AbilityContext> extend
         canChangeZoneNTimes: 0
     };
 
-    constructor(properties: ((context: C) => TakeControlProperties) | TakeControlProperties) {
-        super(properties);
-    }
-
     getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         if(properties.effect.length === 0) {

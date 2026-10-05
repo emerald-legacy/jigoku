@@ -345,7 +345,7 @@ class PlayerInteractionWrapper {
                 side
             );
         } catch(e) {
-            throw new Error(`Name: ${name}, Location: ${String(locs)}. Error thrown: ${String(e)}`);
+            throw new Error(`Name: ${name}, Location: ${String(locs)}. Error thrown: ${String(e)}`, { cause: e });
         }
     }
 

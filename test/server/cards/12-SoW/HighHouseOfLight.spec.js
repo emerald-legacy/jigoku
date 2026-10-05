@@ -69,8 +69,7 @@ describe('High House of Light', function() {
         });
 
         it('if you played 5 cards should also allow you to pick a ring with a fate and move it to the monk', function() {
-            let i = 0;
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player2.pass();
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
             }
@@ -100,8 +99,7 @@ describe('High House of Light', function() {
         });
 
         it('Stone of Sorrows should prevent you from taking the fate', function() {
-            let i = 0;
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player2.pass();
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
             }

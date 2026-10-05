@@ -27,8 +27,6 @@ class UnlimitedAbilityLimit {
     public currentUser: null | string = null;
     #useCount = new Map<string, number>();
 
-    constructor() {}
-
     public clone() {
         return new UnlimitedAbilityLimit();
     }

@@ -157,34 +157,19 @@ export class PlayerConflictManager {
         }
 
         if(setConflictType && type === setConflictType) {
-            let declaredConflictsOfOtherType = 0;
-            if(setConflictType === ConflictType.Military) {
-                declaredConflictsOfOtherType = this.declaredConflictOpportunities[ConflictType.Political];
-            } else {
-                declaredConflictsOfOtherType = this.declaredConflictOpportunities[ConflictType.Military];
-            }
+            const declaredConflictsOfOtherType = this.declaredConflictOpportunities[setConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
             return baselineAvailableConflicts + additionalConflictEffects.length - declaredConflictsOfOtherType;
         } else if(setConflictType && type !== setConflictType) {
             return 0;
         }
         if(forceConflictType && type === forceConflictType) {
-            let declaredConflictsOfOtherType = 0;
-            if(forceConflictType === ConflictType.Military) {
-                declaredConflictsOfOtherType = this.declaredConflictOpportunities[ConflictType.Political];
-            } else {
-                declaredConflictsOfOtherType = this.declaredConflictOpportunities[ConflictType.Military];
-            }
+            const declaredConflictsOfOtherType = this.declaredConflictOpportunities[forceConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
             return baselineAvailableConflicts + additionalConflictEffects.length - declaredConflictsOfOtherType;
         } else if(forceConflictType && type !== forceConflictType) {
             return 0;
         }
         if(provideConflictDeclarationType) {
-            let declaredConflictsOfOtherType = 0;
-            if(type === ConflictType.Military) {
-                declaredConflictsOfOtherType = this.declaredConflictOpportunities[ConflictType.Political];
-            } else {
-                declaredConflictsOfOtherType = this.declaredConflictOpportunities[ConflictType.Military];
-            }
+            const declaredConflictsOfOtherType = this.declaredConflictOpportunities[type === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
             const availableAll =
                 baselineAvailableConflicts +
                 this.player.getEffects(EffectName.AdditionalConflict).length -

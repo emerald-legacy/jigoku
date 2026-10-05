@@ -10,13 +10,6 @@ module.exports = [
         ignores: ['build/**', 'node_modules/**', 'coverage/**']
     },
     js.configs.recommended,
-    // Disable new ESLint 10 rules that flag many existing patterns — enable later
-    {
-        rules: {
-            'no-useless-assignment': 'off',
-            'preserve-caught-error': 'off'
-        }
-    },
     {
         rules: {
             'prefer-const': 'error'
@@ -39,9 +32,9 @@ module.exports = [
         },
         rules: {
             // Jasmine rules
-            'jasmine/no-spec-dupes': 'off',
-            'jasmine/no-suite-dupes': 'off',
-            'jasmine/missing-expect': 'warn',
+            'jasmine/no-spec-dupes': ['error', 'branch'],
+            'jasmine/no-suite-dupes': ['error', 'branch'],
+            'jasmine/missing-expect': 'error',
             'jasmine/new-line-before-expect': 'off',
             'jasmine/prefer-toHaveBeenCalledWith': 'off',
 
@@ -49,17 +42,17 @@ module.exports = [
             'indent': ['error', 4, { SwitchCase: 1 }],
             'quotes': ['error', 'single'],
             'brace-style': ['error', '1tbs'],
-            'no-sparse-arrays': 'warn',
+            'no-sparse-arrays': 'error',
             'eqeqeq': 'error',
             'no-else-return': 'error',
             'no-extra-bind': 'error',
             'curly': ['error', 'all'],
             'no-multi-spaces': 'error',
             'no-invalid-this': 'error',
-            'no-useless-escape': 'warn',
-            'no-useless-concat': 'warn',
-            'no-useless-constructor': 'warn',
-            'array-bracket-spacing': ['warn', 'never'],
+            'no-useless-escape': 'error',
+            'no-useless-concat': 'error',
+            'no-useless-constructor': 'error',
+            'array-bracket-spacing': ['error', 'never'],
             'block-spacing': ['error', 'always'],
             'camelcase': ['error', { properties: 'never' }],
             'comma-dangle': 'error',
@@ -122,13 +115,14 @@ module.exports = [
             '@typescript-eslint/no-duplicate-enum-values': 'error',
             '@typescript-eslint/no-unused-expressions': 'error',
             '@typescript-eslint/no-this-alias': 'error',
+            '@typescript-eslint/no-useless-constructor': 'error',
             'local/declared-target-names': 'error',
             'no-redeclare': 'off',
 
             // Jasmine rules
-            'jasmine/no-spec-dupes': 'off',
-            'jasmine/no-suite-dupes': 'off',
-            'jasmine/missing-expect': 'warn',
+            'jasmine/no-spec-dupes': ['error', 'branch'],
+            'jasmine/no-suite-dupes': ['error', 'branch'],
+            'jasmine/missing-expect': 'error',
             'jasmine/new-line-before-expect': 'off',
             'jasmine/prefer-toHaveBeenCalledWith': 'off',
 
@@ -136,15 +130,15 @@ module.exports = [
             'indent': ['error', 4, { SwitchCase: 1 }],
             'quotes': ['error', 'single'],
             'brace-style': ['error', '1tbs'],
-            'no-sparse-arrays': 'warn',
+            'no-sparse-arrays': 'error',
             'eqeqeq': 'error',
             'no-else-return': 'error',
             'no-extra-bind': 'error',
             'curly': ['error', 'all'],
             'no-multi-spaces': 'error',
-            'no-useless-escape': 'warn',
-            'no-useless-concat': 'warn',
-            'array-bracket-spacing': ['warn', 'never'],
+            'no-useless-escape': 'error',
+            'no-useless-concat': 'error',
+            'array-bracket-spacing': ['error', 'never'],
             'block-spacing': ['error', 'always'],
             'camelcase': ['error', { properties: 'never' }],
             'comma-dangle': 'error',

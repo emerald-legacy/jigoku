@@ -66,12 +66,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
     }
 
     calculate(target: BaseCard, context: AbilityContext) {
-        let cards: BaseCard | BaseCard[] = [];
-        if(typeof this.match === 'function') {
-            cards = this.match(target, context);
-        } else {
-            cards = this.match;
-        }
+        const cards: BaseCard | BaseCard[] = typeof this.match === 'function' ? this.match(target, context) : this.match;
 
         this.unapply(target);
         this._setAbilities(cards, target);

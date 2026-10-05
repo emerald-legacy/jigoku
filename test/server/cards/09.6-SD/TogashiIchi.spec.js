@@ -46,8 +46,7 @@ describe('Togashi Ichi', function() {
                 });
 
                 this.player2.pass();
-                let i = 0;
-                for(i = 0; i < this.P1ANN.length; i++) {
+                for(let i = 0; i < this.P1ANN.length; i++) {
                     this.player1.clickCard(this.ichi);
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.P1ANN[i]);
@@ -68,8 +67,7 @@ describe('Togashi Ichi', function() {
                     province: this.shameful1
                 });
 
-                let i = 0;
-                for(i = 0; i < this.P1ANN.length; i++) {
+                for(let i = 0; i < this.P1ANN.length; i++) {
                     this.player2.clickCard(this.P2ANN[i]);
                     this.player2.clickCard(this.ichi);
                     if(i !== this.P1ANN.length - 1) {
@@ -92,8 +90,7 @@ describe('Togashi Ichi', function() {
                     province: this.shameful1
                 });
 
-                let i = 0;
-                for(i = 0; i < 5; i++) {
+                for(let i = 0; i < 5; i++) {
                     this.player2.clickCard(this.P2ANN[i]);
                     this.player2.clickCard(this.ichi);
 
@@ -118,8 +115,7 @@ describe('Togashi Ichi', function() {
                 });
 
                 this.player2.pass();
-                let i = 0;
-                for(i = 0; i < this.P1ANN.length; i++) {
+                for(let i = 0; i < this.P1ANN.length; i++) {
                     this.player1.clickCard(this.P1ANN[i]);
                     this.player1.clickCard(this.ichi);
                     this.player2.pass();
@@ -140,8 +136,7 @@ describe('Togashi Ichi', function() {
                 });
 
                 this.player2.pass();
-                let i = 0;
-                for(i = 0; i < this.P1ANN.length; i++) {
+                for(let i = 0; i < this.P1ANN.length; i++) {
                     this.player1.clickCard(this.P1ANN[i]);
                     this.player1.clickCard(this.ichi);
                     this.player2.pass();
@@ -164,8 +159,7 @@ describe('Togashi Ichi', function() {
                     province: this.p1shameful1
                 });
 
-                let i = 0;
-                for(i = 0; i < this.P1ANN.length; i++) {
+                for(let i = 0; i < this.P1ANN.length; i++) {
                     this.player1.clickCard(this.P1ANN[i]);
                     this.player1.clickCard(this.ichi);
                     this.player2.pass();

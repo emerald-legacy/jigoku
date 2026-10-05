@@ -86,6 +86,7 @@ describe('Crane Industry', function() {
             let fate = this.player2.fate;
             this.player2.clickCard(this.afwtd);
             this.player2.clickCard(this.challenger);
+            expect(this.player2.fate).toBe(fate - 4);
 
             fate = this.player1.fate;
             this.player1.clickCard(this.scorpion);

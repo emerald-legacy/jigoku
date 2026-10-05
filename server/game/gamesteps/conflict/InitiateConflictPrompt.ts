@@ -93,8 +93,8 @@ class InitiateConflictPrompt extends UiPrompt {
 
     activePrompt() {
         const buttons: Array<{ text: string; arg: string }> = [];
-        let menuTitle = '';
-        let promptTitle = '';
+        let menuTitle: string;
+        let promptTitle: string;
 
         if(this.canPass) {
             buttons.push({ text: 'Pass Conflict', arg: 'pass' });
