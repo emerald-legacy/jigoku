@@ -21,7 +21,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         AbilityDsl.effects.delayedEffect({
                             when: {
                                 afterConflict: (event) =>
-                                    event.conflict.winner !== target.controller && target.isParticipating()
+                                    event.conflict.winner !== target.controller || !target.isParticipating()
                             },
                             gameAction: AbilityDsl.actions.discardFromPlay(),
                             message: '{0} is discarded from play due to failing at {1}',

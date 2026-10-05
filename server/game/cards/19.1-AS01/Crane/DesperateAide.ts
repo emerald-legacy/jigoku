@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType } from '../../../Constants.js';
+import { AbilityType, CardType, EffectName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -28,14 +28,17 @@ export default class DesperateAide extends DrawCard {
     private controllerHasHigherPol(context: AbilityContext): boolean {
         return (
             !context.player.opponent ||
-            this.participatingPolSkillTotal(context.player) > this.participatingPolSkillTotal(context.player.opponent)
+            this.currentPoliticalSkill(context.player) > this.currentPoliticalSkill(context.player.opponent)
         );
     }
 
-    private participatingPolSkillTotal(player: Player): number {
+    /** As the conflict counts it: bowed characters count only if they can contribute while bowed. */
+    private currentPoliticalSkill(player: Player): number {
         return player.cardsInPlay.reduce(
             (total, card) =>
-                card.type === CardType.Character && card.isParticipating() ? total + card.politicalSkill : total,
+                card.type === CardType.Character && card.isParticipating() && (!card.bowed || card.anyEffect(EffectName.CanContributeWhileBowed))
+                    ? total + card.politicalSkill
+                    : total,
             0
         );
     }

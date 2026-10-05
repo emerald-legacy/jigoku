@@ -19,14 +19,16 @@ export function resolveAbilityAgain(context: ResolvingContext, player?: Player) 
 /** A `then` letting the opponent (or the player in a solo game) choose to resolve the ability again. */
 export function opponentMayResolveAgain(context: ResolvingContext, activePromptTitle: string): ThenAbilityProperties {
     const player = context.player.opponent ?? context.player;
+    const resolveAgain = resolveAbilityAgain(context, player);
     return {
         target: {
             player: context.player.opponent ? Players.Opponent : Players.Self,
             mode: TargetMode.Select,
             activePromptTitle,
             choices: {
-                Yes: resolveAbilityAgain(context, player),
-                No: () => true
+                Yes: resolveAgain,
+                // nothing to choose when the ability can't resolve again
+                No: (thenContext: AbilityContext) => resolveAgain.hasLegalTarget(thenContext)
             }
         },
         message: '{3} chooses {4}to resolve {1}\'s ability again',

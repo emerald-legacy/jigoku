@@ -25,9 +25,9 @@ export default class JakIthith extends DrawCard {
             .target({
                 name: ATTACHMENT,
                 cardType: CardType.Attachment,
-                controller: Players.Opponent,
-                cardCondition: (card) =>
-                    Boolean(card.parentCharacter?.isParticipating())
+                controller: Players.Any,
+                cardCondition: (card, context) =>
+                    !!card.parentCharacter?.isParticipating() && card.parentCharacter.controller !== context.player
             })
             .target({
                 name: RECEIVER,

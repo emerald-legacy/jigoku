@@ -5,11 +5,11 @@ describe('Jak\'Ithith', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['togashi-initiate'],
-                    hand: ['centipede-tattoo', 'fine-katana']
+                    hand: ['centipede-tattoo', 'fine-katana', 'ornate-fan']
                 },
                 player2: {
                     inPlay: ['jak-ithith', 'borderlands-defender'],
-                    hand: ['lurking-affliction']
+                    hand: ['lurking-affliction', 'ornate-fan']
                 }
             });
 
@@ -103,6 +103,37 @@ describe('Jak\'Ithith', function() {
                 this.player2.clickCard(this.borderlands);
                 expect(this.tattoo.location).toBe('conflict discard pile');
                 expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to discard Centipede Tattoo');
+            });
+        });
+
+        describe('attachments on the enemy side', function() {
+            beforeEach(function() {
+                this.ownFanOnEnemyCharacter = this.player2.playAttachment(
+                    this.player2.findCardByName('ornate-fan', 'hand'),
+                    this.initiate
+                );
+                this.enemyFanOnOwnCharacter = this.player1.playAttachment(
+                    this.player1.findCardByName('ornate-fan', 'hand'),
+                    this.borderlands
+                );
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.initiate],
+                    defenders: [this.borderlands, this.jakithit],
+                    type: 'military'
+                });
+                this.noMoreActions();
+                this.player2.clickCard(this.jakithit);
+            });
+
+            it('can choose its own attachment on a participating enemy character', function() {
+                expect(this.player2).toHavePrompt('Choose an attachment');
+                expect(this.player2).toBeAbleToSelect(this.ownFanOnEnemyCharacter);
+            });
+
+            it('cannot choose an opponent\'s attachment on a character on its own side', function() {
+                expect(this.player2).toHavePrompt('Choose an attachment');
+                expect(this.player2).not.toBeAbleToSelect(this.enemyFanOnOwnCharacter);
             });
         });
 
