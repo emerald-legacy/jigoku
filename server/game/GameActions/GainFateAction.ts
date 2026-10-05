@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
@@ -9,8 +9,8 @@ export interface GainFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class GainFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainFateProperties, EventName, C> {
-    defaultProperties: GainFateProperties = { amount: 1 };
+export class GainFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainFateProperties, EventName.OnModifyFate, C, 'amount'> {
+    defaultProperties = { amount: 1 };
 
     name = 'gainFate';
     eventName = EventName.OnModifyFate;
@@ -19,23 +19,26 @@ export class GainFateAction<C extends AbilityContext = AbilityContext> extends P
         return [context.player];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['gain {0} fate', [properties.amount]];
+    protected effectMessage(): MessageArgs {
+        return ['gain {0} fate', []];
+    }
+
+    protected effectMessageTarget(context: C): MsgArg {
+        return this.getProperties(context).amount;
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
-        return (properties.amount ?? 0) > 0 && super.canAffect(player, context);
+        const properties = this.getProperties(context, additionalProperties);
+        return properties.amount > 0 && super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties);
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
     eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
-        (event.player as Player).modifyFate(event.amount as number);
+        event.player.modifyFate(event.amount);
     }
 }

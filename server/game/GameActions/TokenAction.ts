@@ -3,35 +3,34 @@ import { GameAction, type GameActionProperties, type ActionEvent } from './GameA
 import type { StatusToken } from '../StatusToken.js';
 import type { EventName } from '../Constants.js';
 
-import type { Event } from '../Events/Event.js';
 export interface TokenActionProperties extends GameActionProperties {
     target?: StatusToken | StatusToken[];
 }
 
-export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {
+export type TokenEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { token: StatusToken };
+
+export class TokenAction<
+    P extends TokenActionProperties = TokenActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends GameAction<P, N, C, D> {
     targetType = ['token'];
 
     defaultTargets(context: C): StatusToken[] {
         return context.source.statusTokens ? [...context.source.statusTokens] : [];
     }
 
-    canAffect(target: StatusToken, context: C, _additionalProperties = {}): boolean {
-        if(Array.isArray(target)) {
-            return target.length > 0 && target.every((a) => a.type === 'token');
-        }
+    canAffect(target: StatusToken, _context: C, _additionalProperties = {}): boolean {
         return target.type === 'token';
     }
 
-    checkEventCondition(event: ActionEvent<N, C>, additionalProperties = {}): boolean {
-        return this.canAffect((event as { token?: StatusToken | StatusToken[] }).token as StatusToken, (event.context), additionalProperties);
+    checkEventCondition(event: TokenEvent<N, C>, additionalProperties = {}): boolean {
+        return this.canAffect(event.token, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: ActionEvent<N, C>, token: StatusToken, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: TokenEvent<N, C>, token: StatusToken, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
-        const typedEvent = event as Event & { token: StatusToken | StatusToken[] };
-        typedEvent.token = token;
-        if(Array.isArray(typedEvent.token)) {
-            typedEvent.token = [...typedEvent.token];
-        }
+        event.token = token;
     }
 }

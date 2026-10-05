@@ -23,8 +23,8 @@ describe('Divine Ancestry', function() {
             });
 
             it ('should prevent losing honor from a bid', function() {
-                let honor = this.player1.honor;
-                let p2honor = this.player2.honor;
+                const honor = this.player1.honor;
+                const p2honor = this.player2.honor;
                 this.player1.clickCard(this.ancestry);
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
@@ -33,8 +33,8 @@ describe('Divine Ancestry', function() {
             });
 
             it ('should not prevent gaining honor from a bid', function() {
-                let honor = this.player1.honor;
-                let p2honor = this.player2.honor;
+                const honor = this.player1.honor;
+                const p2honor = this.player2.honor;
                 this.player1.clickCard(this.ancestry);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
@@ -121,7 +121,7 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('shouldn\'t lose honor when dishonored characters leave play', function() {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.shrineMaiden.honor();
                 this.shibaTsukune.dishonor();
@@ -151,8 +151,8 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('should stop you from losing honor during duels', function() {
-                let honor = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -173,8 +173,8 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('should be able to play cards with losing honor in the effect', function() {
-                let honor = this.player1.honor;
-                let hand = this.player1.hand.length;
+                const honor = this.player1.honor;
+                const hand = this.player1.hand.length;
 
                 this.player1.clickCard(this.backhanded);
                 this.player1.clickPrompt('player1');
@@ -194,7 +194,7 @@ describe('Divine Ancestry - Reactions', function() {
                 this.noMoreActions();
                 this.player1.passConflict();
                 this.noMoreActions();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.initiateConflict({
                     type: 'military',
@@ -213,7 +213,7 @@ describe('Divine Ancestry - Reactions', function() {
 
             it('reshuffling', function() {
                 this.player1.reduceDeckToNumber('conflict deck', 0);
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.advisor);
                 expect(this.player1.honor).toBe(honor);
                 expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');

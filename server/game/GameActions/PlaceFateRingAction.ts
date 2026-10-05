@@ -6,47 +6,44 @@ import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface PlaceFateRingProperties extends RingActionProperties {
     amount?: number;
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName, C> {
+export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
-    defaultProperties: PlaceFateRingProperties = { amount: 1 };
-    constructor(properties: ((context: C) => PlaceFateRingProperties) | PlaceFateRingProperties) {
-        super(properties);
-    }
-
+    defaultProperties = { amount: 1 };
     getCostMessage(context: C): MessageArgs {
-        let properties: PlaceFateRingProperties = this.getProperties(context);
-        return ['placing {1} fate on the {0}', [properties.amount, properties.target]];
+        const properties = this.getProperties(context);
+        return ['placing {1} fate on the {0}', [properties.amount]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        let properties: PlaceFateRingProperties = this.getProperties(context);
+    protected effectMessage(context: C): MessageArgs {
+        const properties = this.getProperties(context);
         if(properties.origin) {
-            return ['move {1} fate from {2} to {0}', [properties.target, properties.amount, properties.origin]];
+            return ['move {1} fate from {2} to {0}', [properties.amount, properties.origin]];
         }
-        return ['place {1} fate on {0}', [properties.target, properties.amount]];
+        return ['place {1} fate on {0}', [properties.amount]];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
-        let properties: PlaceFateRingProperties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(
             properties.origin &&
             (!properties.origin.checkRestrictions('spendFate', context) || properties.origin.fate === 0)
         ) {
             return false;
         }
-        return (properties.amount ?? 0) > 0 && super.canAffect(ring, context);
+        return properties.amount > 0 && super.canAffect(ring, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, origin } = this.getProperties(context, additionalProperties);
-        event.fate = amount ?? 0;
+        const { amount, origin } = this.getProperties(context, additionalProperties);
+        event.fate = amount;
         event.origin = origin;
         event.context = context;
         event.recipient = ring;
@@ -56,8 +53,8 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount, origin } = this.getProperties(context, additionalProperties);
+    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+        const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

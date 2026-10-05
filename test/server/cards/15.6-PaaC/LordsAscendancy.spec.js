@@ -34,8 +34,8 @@ describe('Lord\'s Ascendancy', function() {
         });
 
         it('should move a fate from the controllers pool to the character (opponent)', function() {
-            let p1fate = this.player1.fate;
-            let p2fate = this.player2.fate;
+            const p1fate = this.player1.fate;
+            const p2fate = this.player2.fate;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -52,8 +52,8 @@ describe('Lord\'s Ascendancy', function() {
         });
 
         it('should move a fate from the controllers pool to the character (own character)', function() {
-            let p1fate = this.player1.fate;
-            let p2fate = this.player2.fate;
+            const p1fate = this.player1.fate;
+            const p2fate = this.player2.fate;
 
             this.noMoreActions();
             this.initiateConflict({

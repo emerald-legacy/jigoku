@@ -19,7 +19,11 @@ export type PrintedKeyword = (typeof printedKeywords)[number];
 
 const ValidKeywords = new Set<string>(printedKeywords);
 
-export interface ParsedKeywords {
+function isPrintedKeyword(keyword: string): keyword is PrintedKeyword {
+    return ValidKeywords.has(keyword);
+}
+
+interface ParsedKeywords {
     keywords: PrintedKeyword[];
     disguisedTraits: string[];
     allowedAttachmentTraits: string[];
@@ -38,8 +42,8 @@ export function parseKeywords(text: string): ParsedKeywords {
     let allowedAttachmentTraits: string[] = [];
 
     for(const keyword of potentialKeywords) {
-        if(ValidKeywords.has(keyword)) {
-            keywords.push(keyword as PrintedKeyword);
+        if(isPrintedKeyword(keyword)) {
+            keywords.push(keyword);
         } else if(keyword.startsWith('disguised ')) {
             disguisedTraits.push(keyword.replace('disguised ', ''));
         } else if(keyword.startsWith('no attachments except')) {

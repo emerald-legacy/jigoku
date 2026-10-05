@@ -1,13 +1,13 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
 function shinobiCount(context: AbilityContext): number {
     return (
-        (context.game.currentConflict)?.getParticipants(
-            (card: DrawCard) => card.controller === context.player && card.hasTrait('shinobi')
-        )?.length ?? 0
+        context.game.currentConflict?.getParticipants(
+            (card) => card.controller === context.player && card.hasTrait('shinobi')
+        ).length ?? 0
     );
 }
 
@@ -15,19 +15,18 @@ export default class SpiderwebPassage extends DrawCard {
     static id = 'spiderweb-passage';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Discard a participating character with 0 skill',
-            condition: (context) => shinobiCount(context) > 0,
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
+        this.action('Discard a participating character with 0 skill')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .condition((context) => shinobiCount(context) > 0)
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard) =>
+                cardCondition: (card) =>
                     card.isParticipating() &&
                     ((!card.hasDash('political') && card.getPoliticalSkill() === 0) ||
                         (!card.hasDash('military') && card.getMilitarySkill() === 0))
-            },
-            gameAction: AbilityDsl.actions.conditional(context => {
+            })
+            .gameAction(AbilityDsl.actions.conditional(context => {
                 const discardCount = shinobiCount(context);
                 const discardFromHandAction = AbilityDsl.actions.discardAtRandom({
                     amount: discardCount,
@@ -56,9 +55,7 @@ export default class SpiderwebPassage extends DrawCard {
                         messageArgs: [context.target]
                     }))
                 };
-            }),
-            effect: 'ambush {1}',
-            effectArgs: (context) => context.target ?? ''
-        });
+            }))
+            .effect('ambush {1}', (context) => context.target);
     }
 }

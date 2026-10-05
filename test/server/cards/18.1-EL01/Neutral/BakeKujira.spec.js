@@ -47,11 +47,9 @@ describe('Bake Kujira', function () {
             this.player2.moveCard(this.whale2, 'play area');
             this.player1.placeCardInProvince(this.mine, 'province 2');
 
-            this.fumiki.action({
-                title: 'Discard a character',
-                target: {
-                    gameAction: discardFromPlay()
-                }
+            this.fumiki.declareAbilities(() => {
+                this.fumiki.action('Discard a character')
+                    .target({}, discardFromPlay());
             });
 
             this.noMoreActions();
@@ -87,7 +85,23 @@ describe('Bake Kujira', function () {
 
             this.player1.clickCard(this.kuwanan);
             expect(this.kuwanan.location).toBe('dynasty discard pile');
-            expect(this.getChatLogs(5)).toContain('player1 uses Bake-Kujira to discard Doji Kuwanan');
+            expect(this.getChatLogs(5)).toContain('player1 uses Bake-Kujira to injure Doji Kuwanan');
+        });
+
+        it('removes a fate from a character with fate when it wins a conflict', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whale],
+                defenders: [this.kuwanan, this.fumiki],
+                type: 'military'
+            });
+
+            this.noMoreActions();
+            this.player1.clickCard(this.whale);
+            this.player1.clickCard(this.fumiki);
+            expect(this.fumiki.location).toBe('play area');
+            expect(this.fumiki.fate).toBe(4);
+            expect(this.getChatLogs(5)).toContain('player1 uses Bake-Kujira to injure Doji Fumiki');
         });
     });
 });

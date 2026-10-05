@@ -180,9 +180,7 @@ describe('Return The Offense', function() {
             this.player2.clickPrompt('1');
             this.player1.clickPrompt('1');
 
-            let i = 0;
-
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.mitsu);
                 this.player2.pass();
             }

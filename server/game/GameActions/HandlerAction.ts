@@ -1,25 +1,26 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import DrawCard from '../DrawCard.js';
-import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
-
+import { GameAction, targetList, type GameActionProperties, type GameActionTarget, type ActionEvent } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
 import type { EventName } from '../Constants.js';
-export interface HandlerProperties extends GameActionProperties {
-    handler?: (context: AbilityContext) => void;
+import type { GameObject } from '../GameObject.js';
+
+export interface HandlerProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+    /** `targets` are what the action resolved for, such as the card a `selectCard` chose. */
+    handler?: (context: C, targets: GameActionTarget[]) => void;
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties, EventName, C> {
-    defaultProperties: HandlerProperties = {
+export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties<C>, EventName.Unnamed, C, 'handler' | 'hasTargetsChosenByInitiatingPlayer'> {
+    defaultProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
     };
 
-    hasLegalTarget(): boolean {
+    hasLegalTarget(_context: C): boolean {
         return true;
     }
 
-    canAffect(_card: DrawCard, _context: AbilityContext): boolean {
+    canAffect(_target: GameObject, _context: C): boolean {
         return true;
     }
 
@@ -28,15 +29,11 @@ export class HandlerAction<C extends AbilityContext = AbilityContext> extends Ga
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const properties = this.getProperties((event.context), additionalProperties);
-        properties.handler?.((event.context));
+        const properties = this.getProperties(event.context, additionalProperties);
+        properties.handler(event.context, targetList(properties.target));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
-        const { hasTargetsChosenByInitiatingPlayer } = this.getProperties(
-            context,
-            additionalProperties
-        );
-        return !!hasTargetsChosenByInitiatingPlayer;
+        return this.getProperties(context, additionalProperties).hasTargetsChosenByInitiatingPlayer;
     }
 }

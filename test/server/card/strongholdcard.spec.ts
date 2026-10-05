@@ -1,4 +1,6 @@
+import { CardType } from '../../../server/game/Constants.js';
 import { StrongholdCard } from '../../../server/game/StrongholdCard.js';
+import type { CardSummary } from '../../../server/game/BaseCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
 
 function makeGame() {
@@ -30,7 +32,7 @@ describe('StrongholdCard', () => {
         cardData = {
             id: 'stronghold-test',
             name: 'Test Stronghold',
-            type: 'stronghold',
+            type: CardType.Stronghold,
             clan: 'crab',
             fate: 7,
             honor: 10,
@@ -63,17 +65,6 @@ describe('StrongholdCard', () => {
         it('returns the correct value when fate differs', () => {
             const other = new StrongholdCard(owner, { ...cardData, fate: 9 });
             expect(other.getFate()).toBe(9);
-        });
-    });
-
-    describe('getStartingHonor()', () => {
-        it('returns the starting honor from card data', () => {
-            expect(card.getStartingHonor()).toBe(10);
-        });
-
-        it('returns the correct value when honor differs', () => {
-            const other = new StrongholdCard(owner, { ...cardData, honor: 13 });
-            expect(other.getStartingHonor()).toBe(13);
         });
     });
 
@@ -128,17 +119,6 @@ describe('StrongholdCard', () => {
         });
     });
 
-    describe('flipFaceup()', () => {
-        beforeEach(() => {
-            card.facedown = true;
-        });
-
-        it('sets facedown to false', () => {
-            card.flipFaceup();
-            expect(card.facedown).toBe(false);
-        });
-    });
-
     describe('getSummary()', () => {
         let summary: ReturnType<StrongholdCard['getSummary']>;
 
@@ -165,7 +145,9 @@ describe('StrongholdCard', () => {
         });
 
         it('reflects base card summary fields', () => {
-            expect((summary as Record<string, unknown>).uuid).toBeDefined();
+            // the subclass summary spreads the base one, whose fields are only typed by its index signature
+            const baseSummary: CardSummary = summary;
+            expect(baseSummary.uuid).toBeDefined();
         });
     });
 });

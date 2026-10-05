@@ -1,9 +1,8 @@
 import DrawCard from '../../DrawCard.js';
-import type { Conflict } from '../../Conflict.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetMode, CardType, Element } from '../../Constants.js';
+import { countTargetable } from '../countTargetable.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
 
@@ -11,47 +10,35 @@ class IsawaTsuke2 extends DrawCard {
     static id = 'isawa-tsuke-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Lose honor to discard fate',
-            effect: 'lose {1} honor to discard a fate from {2}',
-            effectArgs: (context) => [context.costs.variableHonorCost as number, context.targets.target as BaseCard[]],
-            condition: (context) =>
+        this.action('Lose honor to discard fate')
+            .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
+            .condition((context) =>
                 context.game.isDuringConflict() &&
-                context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed(),
-            cost: AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)),
-            target: {
+                context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())
+            .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
-                    if(context && context.costs && context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost as number;
+                    if(context.costs.variableHonorCost) {
+                        return context.costs.variableHonorCost;
                     }
 
                     return this.getNumberOfLegalTargets(context);
                 },
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.removeFate((context: AbilityContext) => {
-                    return { target: Object.values(context.targets).flat() };
-                })
-            },
-            cannotTargetFirst: true
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.removeFate((context) => {
+                return { target: Object.values(context.targets).flat() };
+            }))
+            .effect('lose {1} honor to discard a fate from {2}', (context) => [context.costs.variableHonorCost, context.targets.target])
+            .cannotTargetFirst();
     }
 
-    getNumberOfLegalTargets(context: AbilityContext) {
-        const cards = (context.game.currentConflict as Conflict).getParticipants((card) => card.allowGameAction('removeFate'));
-        const selectedCards: DrawCard[] = [];
-        cards.forEach((card) => {
-            if(card.canBeTargeted(context, selectedCards)) {
-                selectedCards.push(card);
-            }
-        });
-
-        return selectedCards.length;
+    private getNumberOfLegalTargets(context: AbilityContext) {
+        return countTargetable(context.game.requireConflict().getParticipants((card) => card.allowGameAction('removeFate')), context);
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Unclaimed Ring',

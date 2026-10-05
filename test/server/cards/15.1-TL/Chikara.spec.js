@@ -38,14 +38,14 @@ describe('Chikara', function() {
             });
 
             it('should grant the ability to a character that is a champion when attached', function() {
-                let actionCount = this.kisadaP1.getReactions().length;
+                const actionCount = this.kisadaP1.getReactions().length;
                 this.player1.playAttachment(this.chikara, this.kisadaP1);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.kisadaP1.getReactions().length).toBe(actionCount + 1);
             });
 
             it('should not grant an ability to a character that is not a champion when attached', function() {
-                let actionCount = this.oushi.getReactions().length;
+                const actionCount = this.oushi.getReactions().length;
                 this.player1.playAttachment(this.chikara, this.oushi);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.oushi.getReactions().length).toBe(actionCount);
@@ -63,7 +63,7 @@ describe('Chikara', function() {
                 });
 
                 it('should grant the ability if the character is a champion', function() {
-                    let actionCount = this.yoritomo.getReactions().length;
+                    const actionCount = this.yoritomo.getReactions().length;
                     this.player1.playAttachment(this.chikara, this.yoritomo);
                     expect(this.yoritomo.getReactions().length).toBe(actionCount + 1);
                 });
@@ -132,9 +132,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.kisadaP2.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.kisadaP2.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -153,9 +153,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.kisadaP1.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.kisadaP1.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -175,9 +175,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.kisadaP1.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.kisadaP1.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -196,9 +196,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.yoritomo.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.yoritomo.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);

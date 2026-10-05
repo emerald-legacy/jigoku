@@ -1,32 +1,28 @@
 import { CardType, Decks, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
 
-const ELEMENT_KEY = 'cinder-salamander-fire';
+const elementSymbol = { key: 'cinder-salamander-fire', element: Element.Fire };
 
 export default class CinderSalamander extends DrawCard {
     static id = 'cinder-salamander';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Shuffle this character back into the deck',
-            location: Location.DynastyDiscardPile,
-            when: {
+        this.reaction('Shuffle this character back into the deck')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.moveCard({
+            })
+            .gameAction(AbilityDsl.actions.moveCard({
                 destination: Location.DynastyDeck,
                 shuffle: true
-            })
-        });
+            }))
+            .location(Location.DynastyDiscardPile);
 
-        this.action({
-            title: 'Search other copies of this character and put them into play',
-            condition: (context) =>
-                this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(context.player),
-
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Search other copies of this character and put them into play')
+            .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.deckSearch({
                     activePromptTitle: 'Select characters to put into play from your deck',
                     deck: Decks.DynastyDeck,
@@ -38,7 +34,7 @@ export default class CinderSalamander extends DrawCard {
                     message: '{0} finds {1} in their deck',
                     messageArgs: (context, cards) => [context.player, this.salamanderCountToText(cards.length)]
                 }),
-                AbilityDsl.actions.selectCard({
+                AbilityDsl.actions.selectCards({
                     activePromptTitle: 'Select characters to put into play from your provinces',
                     controller: Players.Self,
                     cardType: CardType.Character,
@@ -48,22 +44,15 @@ export default class CinderSalamander extends DrawCard {
                     cardCondition: (card) => this.isSalamanderCard(card),
                     gameAction: AbilityDsl.actions.putIntoPlay(),
                     message: '{0} finds {1} in their provinces',
-                    messageArgs: (cards: DrawCard[], player) => [player, this.salamanderCountToText(cards.length)]
+                    messageArgs: (cards, player) => [player, this.salamanderCountToText(cards.length)]
                 })
-            ]),
-            effect: 'search their deck and provinces for other copies of {0} and put them into play',
-            max: AbilityDsl.limit.perRound(1)
-        });
+            ]))
+            .effect('search their deck and provinces for other copies of {0} and put them into play')
+            .max(AbilityDsl.limit.perRound(1));
     }
 
     public getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: ELEMENT_KEY,
-            prettyName: 'Claimed Ring',
-            element: Element.Fire
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 
     private isSalamanderCard(card: BaseCard): boolean {

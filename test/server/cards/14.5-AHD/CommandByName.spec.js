@@ -33,7 +33,7 @@ describe('Command By Name', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.clickCard(this.command);
                 expect(this.player1).toHavePrompt('Select card to discard');

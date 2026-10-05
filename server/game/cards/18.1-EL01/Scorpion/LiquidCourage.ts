@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { ConflictType } from '../../../Constants.js';
 
 class LiquidCourage extends DrawCard {
     static id = 'liquid-courage';
@@ -11,8 +12,8 @@ class LiquidCourage extends DrawCard {
 
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.mustBeDeclaredAsAttackerIfType('military'),
-                AbilityDsl.effects.mustBeDeclaredAsDefender('military')
+                AbilityDsl.effects.mustBeDeclaredAsAttackerIfType(ConflictType.Military),
+                AbilityDsl.effects.mustBeDeclaredAsDefender(ConflictType.Military)
             ]
         });
     }

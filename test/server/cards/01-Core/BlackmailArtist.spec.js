@@ -19,8 +19,8 @@ describe('Blackmail Artist', function () {
             });
 
             it('should take one honor from the opponent when winning a political conflict', function () {
-                let honorPlayer1 = this.player1.player.honor;
-                let honorPlayer2 = this.player2.player.honor;
+                const honorPlayer1 = this.player1.player.honor;
+                const honorPlayer2 = this.player2.player.honor;
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.blackmailArtist, this.bayushiLiar],

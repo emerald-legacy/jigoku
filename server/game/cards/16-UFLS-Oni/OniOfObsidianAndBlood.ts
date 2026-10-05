@@ -1,26 +1,23 @@
 import { CardType, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../BaseCard.js';
+import type BaseCard from '../../BaseCard.js';
 
 export default class OniOfObsidianAndBlood extends BaseOni {
     static id = 'oni-of-obsidian-and-blood';
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Discard a character',
-            when: {
+        this.reaction('Discard a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isTainted,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.isTainted
+            }, AbilityDsl.actions.discardFromPlay());
     }
 
     public allowAttachment(attachment: BaseCard) {

@@ -74,8 +74,8 @@ describe('Mirumoto Dojo', function() {
                 this.player1.clickCard(this.brashSamurai);
                 this.player1.clickCard(this.doomedShugenja);
 
-                let player1Fate = this.player1.player.fate;
-                let brashSamuraiFate = this.brashSamurai.fate;
+                const player1Fate = this.player1.player.fate;
+                const brashSamuraiFate = this.brashSamurai.fate;
 
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
@@ -96,8 +96,8 @@ describe('Mirumoto Dojo', function() {
                 this.player1.clickCard(this.dojiChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
 
-                let player1Fate = this.player1.player.fate;
-                let dojiChallengerFate = this.dojiChallenger.fate;
+                const player1Fate = this.player1.player.fate;
+                const dojiChallengerFate = this.dojiChallenger.fate;
 
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');

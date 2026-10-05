@@ -40,7 +40,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -103,7 +103,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -132,7 +132,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -157,7 +157,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.clickCard(this.assassination2);
             this.player2.clickCard(this.map1);
@@ -181,7 +181,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -244,7 +244,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);

@@ -3,6 +3,7 @@ import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { EventName } from '../Constants.js';
 import type EventWindow from './EventWindow.js';
+import type { GameEvent } from './EventPayloads.js';
 
 export class Event {
     cancelled = false;
@@ -29,7 +30,7 @@ export class Event {
     ) {
         for(const key in params) {
             if(Object.prototype.hasOwnProperty.call(params, key) && !Event.RESERVED_PARAM_KEYS.has(key)) {
-                (this as Record<string, unknown>)[key] = params[key];
+                Reflect.set(this, key, params[key]);
             }
         }
     }
@@ -53,6 +54,10 @@ export class Event {
         return event instanceof Event ? event.getPromptCard() : undefined;
     }
 
+    is<N extends EventName>(name: N): this is GameEvent<N> {
+        return this.name === name;
+    }
+
     cancel() {
         this.cancelled = true;
         if(this.window) {
@@ -62,10 +67,6 @@ export class Event {
 
     setWindow(window: EventWindow) {
         this.window = window;
-    }
-
-    unsetWindow() {
-        this.window = null;
     }
 
     checkCondition() {

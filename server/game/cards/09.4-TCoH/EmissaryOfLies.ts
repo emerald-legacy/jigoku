@@ -1,24 +1,32 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
-import type Player from '../../Player.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type Player from '../../Player.js';
 
 class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character home',
-            condition: context => context.source.isParticipating(),
-            target: {
+        this.action('Move a character home')
+            .condition(context => context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.controller === context.player.opponent
-            },
-            handler: (context) => {
-                if(!context || !context.player.opponent) {
+                controller: Players.Opponent,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .handler((context) => {
+                const opponent = context.player.opponent;
+                if(!opponent) {
                     return;
                 }
-                this.game.promptWithMenu(context.player.opponent, this, {
+                this.game.promptWithMenu(opponent, {
+                    selectCardName: (player: Player, cardName: string) => {
+                        this.game.addMessage('{0} names {1} - {2} must choose if they want to reveal their hand', player, cardName, context.player);
+                        this.offerToRevealHand(context, context.target, cardName);
+                        return true;
+                    }
+                }, {
                     context: context,
                     activePrompt: {
                         menuTitle: 'Name a card',
@@ -27,29 +35,29 @@ class EmissaryOfLies extends DrawCard {
                         ]
                     }
                 });
-            }
-        });
+            });
     }
 
-    selectCardName(player: Player, cardName: string, context: AbilityContext) {
-        this.game.addMessage('{0} names {1} - {2} must choose if they want to reveal their hand', player, cardName, player.opponent);
-        let opponent = player.opponent as Player;
-        this.game.promptWithHandlerMenu(context.player, {
-            context: context,
-            choices: ['Yes', 'No'],
-            handlers: [() => {
-                let handCardNames = opponent.hand.map((card: DrawCard) => card.name);
-                this.game.actions.lookAt().resolve(opponent.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)), context);
-                if(!handCardNames.includes(cardName)) {
-                    this.game.actions.sendHome().resolve(context.target, context);
-                    return true;
-                }
-                return true;
-            }, () => true],
+    private offerToRevealHand(context: AbilityContext, character: DrawCard, cardName: string) {
+        AbilityDsl.actions.chooseAction({
             activePromptTitle: 'Do you want to reveal your hand?',
-            waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not'
-        });
-        return true;
+            waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not',
+            options: {
+                'Yes': {
+                    action: AbilityDsl.actions.multiple([
+                        AbilityDsl.actions.lookAt({
+                            target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
+                        }),
+                        AbilityDsl.actions.conditional({
+                            condition: () => !context.player.hand.some((card) => card.name === cardName),
+                            trueGameAction: AbilityDsl.actions.sendHome({ target: character }),
+                            falseGameAction: AbilityDsl.actions.noAction()
+                        })
+                    ])
+                },
+                'No': { action: AbilityDsl.actions.noAction() }
+            }
+        }).resolve(undefined, context);
     }
 }
 

@@ -1,13 +1,21 @@
 import StaticEffect from '../../server/game/Effects/StaticEffect.js';
 import GainAbility from '../../server/game/Effects/GainAbility.js';
 import { EffectName, AbilityType } from '../../server/game/Constants.js';
-import type { GameObject } from '../../server/game/GameObject.js';
+import { GameObject } from '../../server/game/GameObject.js';
+import { AbilityContext } from '../../server/game/AbilityContext.js';
+import type DrawCard from '../../server/game/DrawCard.js';
+import type Game from '../../server/game/Game.js';
+import { createTestCharacter, createTestGame } from '../helpers/fixtures.js';
 
 describe('StaticEffect', function() {
-    let target: jasmine.SpyObj<{ addEffect: (e: unknown) => void; removeEffect: (e: unknown) => void }>;
+    let game: Game;
+    let target: GameObject;
 
     beforeEach(function() {
-        target = jasmine.createSpyObj('target', ['addEffect', 'removeEffect']);
+        game = createTestGame();
+        target = new GameObject(game, 'target');
+        spyOn(target, 'addEffect');
+        spyOn(target, 'removeEffect');
     });
 
     describe('getValue()', function() {
@@ -25,16 +33,16 @@ describe('StaticEffect', function() {
 
         it('should be assigned by setContext', function() {
             const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
-            const context = { name: 'ctx' };
-            effect.setContext(context as never);
-            expect(effect.context).toBe(context as never);
+            const context = new AbilityContext({ game });
+            effect.setContext(context);
+            expect(effect.context).toBe(context);
         });
     });
 
     describe('apply()', function() {
         it('should register itself on the target', function() {
             const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
-            effect.apply(target as never);
+            effect.apply(target);
             expect(target.addEffect).toHaveBeenCalledWith(effect);
         });
     });
@@ -42,30 +50,37 @@ describe('StaticEffect', function() {
     describe('unapply()', function() {
         it('should deregister itself from the target', function() {
             const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
-            effect.unapply(target as never);
+            effect.unapply(target);
             expect(target.removeEffect).toHaveBeenCalledWith(effect);
         });
     });
 
     describe('persistent ability gain applied to multiple targets', function() {
-        let target1: GameObject;
-        let target2: GameObject;
-        let copy1: jasmine.SpyObj<{ apply: (t: unknown) => void; unapply: (t: unknown) => void }>;
-        let copy2: jasmine.SpyObj<{ apply: (t: unknown) => void; unapply: (t: unknown) => void }>;
+        let target1: DrawCard;
+        let target2: DrawCard;
+        let copy1: GainAbility;
+        let copy2: GainAbility;
         let gain: GainAbility;
-        let effect: StaticEffect;
+        let effect: StaticEffect<EffectName.GainAbility, DrawCard>;
 
         beforeEach(function() {
-            target1 = { ...jasmine.createSpyObj('target1', ['addEffect', 'removeEffect']), uuid: 'uuid-1' } as GameObject;
-            target2 = { ...jasmine.createSpyObj('target2', ['addEffect', 'removeEffect']), uuid: 'uuid-2' } as GameObject;
+            target1 = createTestCharacter(game, 'Target One');
+            target2 = createTestCharacter(game, 'Target Two');
+            for(const card of [target1, target2]) {
+                spyOn(card, 'addEffect');
+                spyOn(card, 'removeEffect');
+            }
 
-            copy1 = jasmine.createSpyObj('copy1', ['apply', 'unapply']);
-            copy2 = jasmine.createSpyObj('copy2', ['apply', 'unapply']);
-
-            gain = Object.create(GainAbility.prototype);
-            gain.abilityType = AbilityType.Persistent;
-            const queued = [copy1, copy2];
-            spyOn(gain, 'getCopy').and.callFake(() => queued.shift() as unknown as GainAbility);
+            gain = new GainAbility(AbilityType.Persistent, { effect: [] });
+            copy1 = new GainAbility(AbilityType.Persistent, { effect: [] });
+            copy2 = new GainAbility(AbilityType.Persistent, { effect: [] });
+            for(const copy of [copy1, copy2]) {
+                spyOn(copy, 'apply');
+                spyOn(copy, 'unapply');
+            }
+            const copies = [copy1, copy2];
+            let next = 0;
+            spyOn(gain, 'getCopy').and.callFake(() => copies[next++]);
 
             effect = new StaticEffect(EffectName.GainAbility, gain);
             effect.apply(target1);

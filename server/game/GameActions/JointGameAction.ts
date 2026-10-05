@@ -10,14 +10,13 @@ export interface JointGameProperties extends GameActionProperties {
 
 export class JointGameAction<C extends AbilityContext = AbilityContext> extends GameAction<JointGameProperties, EventName, C> {
     effect = 'do several things';
-    declare defaultProperties: JointGameProperties;
 
-    constructor(gameActions: GameAction[]) {
+    constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
         super({ gameActions: gameActions });
     }
 
-    getProperties(context: C, additionalProperties = {}): JointGameProperties {
-        let properties = super.getProperties(context, additionalProperties);
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
@@ -25,19 +24,19 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.every((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.every((gameAction) =>
             gameAction.canAffect(target, context, additionalProperties)
         );
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         if(this.hasLegalTarget(context, additionalProperties)) {
             for(const gameAction of properties.gameActions) {
                 gameAction.addEventsToArray(events, context, additionalProperties);
@@ -46,7 +45,7 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C) {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

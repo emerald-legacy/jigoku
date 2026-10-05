@@ -1,49 +1,43 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ShinjoAtagi extends DrawCard {
     static id = 'shinjo-atagi';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Set a participating character\'s skills',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Set a participating character\'s skills')
+            .condition((context) => context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.selectCard((context) => ({
-                    activePromptTitle: 'Choose an attacked province',
-                    hidePromptIfSingleCard: true,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    message: '{3} sets the {1} skill of {0} to {2}{1}',
-                    messageArgs: (card: ProvinceCard) => [
-                        context.target,
-                        context.game.currentConflict?.conflictType,
-                        card.getStrength(),
-                        context.source
-                    ],
-                    cardCondition: (card) => card.isConflictProvince(),
-                    subActionProperties: (card: ProvinceCard) => {
-                        context.targets.province = card;
-                        const provinceStrength = card.getStrength();
-                        const effect =
-                            context.game.currentConflict?.conflictType === 'military'
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.selectCard((context) => ({
+                activePromptTitle: 'Choose an attacked province',
+                hidePromptIfSingleCard: true,
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                message: '{3} sets the {1} skill of {0} to {2}{1}',
+                messageArgs: (card) => [
+                    context.target,
+                    context.game.currentConflict?.conflictType,
+                    card.isProvinceCard() ? card.getStrength() : 0,
+                    context.source
+                ],
+                cardCondition: (card) => card.isConflictProvince(),
+                subActionProperties: (card) => {
+                    const provinceStrength = card.isProvinceCard() ? card.getStrength() : 0;
+                    const effect =
+                            context.game.currentConflict?.conflictType === ConflictType.Military
                                 ? AbilityDsl.effects.setMilitarySkill(provinceStrength)
                                 : AbilityDsl.effects.setPoliticalSkill(provinceStrength);
-                        return {
-                            target: context.target,
-                            effect: effect
-                        };
-                    },
-                    gameAction: AbilityDsl.actions.cardLastingEffect({})
-                }))
-            },
-            effect: 'set the {1} skill of {0} to the strength of an attacked province',
-            effectArgs: (context) => [context.game.currentConflict?.conflictType ?? '']
-        });
+                    return {
+                        target: context.target,
+                        effect: effect
+                    };
+                },
+                gameAction: AbilityDsl.actions.cardLastingEffect({})
+            })))
+            .effect('set the {1} skill of {0} to the strength of an attacked province', (context) => [context.game.currentConflict?.conflictType ?? '']);
     }
 }

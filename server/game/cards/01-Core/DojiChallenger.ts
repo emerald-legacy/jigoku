@@ -5,16 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class DojiChallenger extends DrawCard {
     static id = 'doji-challenger';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move a character into the conflict',
-            condition: context => context.source.isAttacking(),
-            target: {
+    setupCardAbilities() {
+        this.action('Move a character into the conflict')
+            .condition(context => context.source.isAttacking())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                gameAction: ability.actions.moveToConflict()
-            }
-        });
+                controller: Players.Opponent
+            }, AbilityDsl.actions.moveToConflict());
     }
 }
 

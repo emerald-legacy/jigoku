@@ -1,5 +1,5 @@
 import { UiPrompt } from '../UiPrompt.js';
-import { Location, CardType, ConflictType, Element } from '../../Constants.js';
+import { Location, ConflictType } from '../../Constants.js';
 import AttackersMatrix from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
@@ -9,7 +9,6 @@ import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { Conflict } from '../../Conflict.js';
 
 const capitalize: Record<string, string> = {
@@ -82,7 +81,7 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     highlightSelectableRings(): void {
-        let selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
+        const selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
             return this.checkRingCondition(ring);
         });
         this.choosingPlayer.setSelectableRings(selectableRings);
@@ -93,9 +92,9 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons: Array<{ text: string; arg: string }> = [];
-        let menuTitle = '';
-        let promptTitle = '';
+        const buttons: Array<{ text: string; arg: string }> = [];
+        let menuTitle: string;
+        let promptTitle: string;
 
         if(this.canPass) {
             buttons.push({ text: 'Pass Conflict', arg: 'pass' });
@@ -106,7 +105,7 @@ class InitiateConflictPrompt extends UiPrompt {
             menuTitle = this.conflict.forcedDeclaredType ? 'Choose an elemental ring' : 'Choose an elemental ring\n(click the ring again to change conflict type)';
             promptTitle = 'Initiate Conflict';
         } else {
-            promptTitle = capitalize[this.conflict.conflictType as ConflictType] + ' ' + capitalize[this.conflict.element as Element] + ' Conflict';
+            promptTitle = capitalize[ring.conflictType] + ' ' + capitalize[ring.element] + ' Conflict';
             if(!this.conflict.conflictProvince && !this.conflict.isSinglePlayer) {
                 menuTitle = 'Choose province to attack';
             } else if(this.conflict.attackers.length === 0) {
@@ -115,7 +114,7 @@ class InitiateConflictPrompt extends UiPrompt {
                 if(this.covertRemaining && this.game.gameMode !== GameModes.Emerald) {
                     menuTitle = 'Choose defenders to Covert';
                 } else {
-                    menuTitle = capitalize[this.conflict.conflictType as ConflictType] + ' skill: '.concat(String(this.conflict.attackerSkill));
+                    menuTitle = capitalize[ring.conflictType] + ' skill: '.concat(String(this.conflict.attackerSkill));
                 }
                 if(this.conflict.attackers.length === this.attackerMatrix.requiredNumberOfAttackers || this.attackerMatrix.requiredNumberOfAttackers <= 0) {
                     buttons.unshift({ text: 'Initiate Conflict', arg: 'done' });
@@ -144,15 +143,15 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     selectRing(ring: Ring): boolean {
-        let player = this.choosingPlayer;
+        const player = this.choosingPlayer;
 
         if(this.conflict.ring === ring) {
             ring.flipConflictType();
         } else {
             const type = ring.conflictType;
 
-            let polValid = this.attackerMatrix.isCombinationValid(ring, ConflictType.Political, this.conflict.conflictProvince);
-            let milValid = this.attackerMatrix.isCombinationValid(ring, ConflictType.Military, this.conflict.conflictProvince);
+            const polValid = this.attackerMatrix.isCombinationValid(ring, ConflictType.Political, this.conflict.conflictProvince);
+            const milValid = this.attackerMatrix.isCombinationValid(ring, ConflictType.Military, this.conflict.conflictProvince);
 
             if(!player.hasLegalConflictDeclaration({ type, ring, province: this.conflict.conflictProvince })) {
                 ring.flipConflictType();
@@ -191,7 +190,7 @@ class InitiateConflictPrompt extends UiPrompt {
     checkRingCondition(ring: Ring): boolean {
         const player = this.choosingPlayer;
         const province = this.conflict.conflictProvince;
-        let attackers = this.conflict.attackers;
+        const attackers = this.conflict.attackers;
         this.conflict.attackers = [];
         if(this.conflict.ring === ring) {
             const newType = ring.conflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military;
@@ -208,29 +207,28 @@ class InitiateConflictPrompt extends UiPrompt {
             this.conflict.attackers = attackers;
             return true;
         }
-        let result = this.attackerChoosesRing && player.hasLegalConflictDeclaration({ ring, province }) && (this.attackerMatrix.isCombinationValid(ring, ConflictType.Political) || this.attackerMatrix.isCombinationValid(ring, ConflictType.Military));
+        const result = this.attackerChoosesRing && player.hasLegalConflictDeclaration({ ring, province }) && (this.attackerMatrix.isCombinationValid(ring, ConflictType.Political) || this.attackerMatrix.isCombinationValid(ring, ConflictType.Military));
         this.conflict.attackers = attackers;
         return result;
     }
 
     checkCardCondition(card: BaseCard): boolean {
-        if(card.isProvince && card.controller !== this.choosingPlayer) {
+        if(card.isProvinceCard() && card.controller !== this.choosingPlayer) {
             return card === this.conflict.conflictProvince || this.choosingPlayer.hasLegalConflictDeclaration({
                 type: this.conflict.conflictType,
                 ring: this.conflict.ring,
-                province: card as ProvinceCard
+                province: card
             });
-        } else if(card.type === CardType.Character && card.location === Location.PlayArea) {
-            const drawCard = card as DrawCard;
+        } else if(card.isCharacter() && card.location === Location.PlayArea) {
             if(card.controller === this.choosingPlayer) {
-                if(this.conflict.attackers.includes(drawCard)) {
-                    let forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring as Ring, this.conflict.conflictType as ConflictType, this.conflict.conflictProvince).includes(drawCard);
-                    let extraAttackers = this.attackerMatrix.requiredNumberOfAttackers > 0 ? this.conflict.attackers.length > this.attackerMatrix.requiredNumberOfAttackers : false;
+                if(this.conflict.attackers.includes(card)) {
+                    const forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(card);
+                    const extraAttackers = this.attackerMatrix.requiredNumberOfAttackers > 0 ? this.conflict.attackers.length > this.attackerMatrix.requiredNumberOfAttackers : false;
                     let enoughForcedRemaining = true;
 
                     if(forced && extraAttackers) {
-                        let forcedRemainingCount = this.conflict.attackers.filter((a: DrawCard) =>
-                            this.attackerMatrix.getForcedAttackers(this.conflict.ring as Ring, this.conflict.conflictType as ConflictType, this.conflict.conflictProvince).includes(a)).length - 1; //-1 because we're trying to remove a character from the list
+                        const forcedRemainingCount = this.conflict.attackers.filter((a: DrawCard) =>
+                            this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(a)).length - 1; //-1 because we're trying to remove a character from the list
                         if(forcedRemainingCount < this.attackerMatrix.requiredNumberOfAttackers) {
                             enoughForcedRemaining = false;
                         }
@@ -242,20 +240,20 @@ class InitiateConflictPrompt extends UiPrompt {
                     type: this.conflict.conflictType,
                     ring: this.conflict.ring,
                     province: this.conflict.conflictProvince,
-                    attacker: drawCard
+                    attacker: card
                 });
             }
 
-            if(this.selectedDefenders.includes(card as DrawCard)) {
+            if(this.selectedDefenders.includes(card)) {
                 return true;
             }
-            if((card as DrawCard).isCovert() || !this.covertRemaining || this.game.gameMode === GameModes.Emerald) {
+            if(card.isCovert() || !this.covertRemaining || this.game.gameMode === GameModes.Emerald) {
                 return false;
             }
 
             //Make sure the covert is legal
-            let attackersWithCovert = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
-            let covertContexts = attackersWithCovert.map((card: DrawCard) => new AbilityContext({
+            const attackersWithCovert = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
+            const covertContexts = attackersWithCovert.map((card: DrawCard) => new AbilityContext({
                 game: this.game,
                 player: this.conflict.attackingPlayer,
                 source: card,
@@ -266,7 +264,7 @@ class InitiateConflictPrompt extends UiPrompt {
 
             for(const context of covertContexts) {
                 if(context.player.checkRestrictions('initiateKeywords', context)) {
-                    if((card as DrawCard).canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
+                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
                         targetable = true;
                     }
                 }
@@ -279,40 +277,39 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     recalculateCovert(): void {
-        let attackersWithCovert = this.conflict.attackers.filter((card: DrawCard) => card.isCovert()).length;
+        const attackersWithCovert = this.conflict.attackers.filter((card: DrawCard) => card.isCovert()).length;
         this.covertRemaining = attackersWithCovert > this.selectedDefenders.length;
     }
 
     selectCard(card: BaseCard): boolean {
-        if(card.isProvince) {
+        if(card.isProvinceCard()) {
             if(this.conflict.conflictProvince) {
                 this.conflict.conflictProvince.inConflict = false;
                 this.conflict.conflictProvince = null;
             } else {
-                const province = card as ProvinceCard;
-                this.conflict.conflictProvince = province;
-                province.inConflict = true;
+                this.conflict.conflictProvince = card;
+                card.inConflict = true;
             }
-        } else if(card.type === CardType.Character) {
-            const character = card as DrawCard;
+        } else if(card.isCharacter()) {
             if(card.controller === this.choosingPlayer) {
-                if(!this.conflict.attackers.includes(character)) {
-                    this.conflict.addAttacker(character);
+                if(!this.conflict.attackers.includes(card)) {
+                    this.conflict.addAttacker(card);
                 } else {
-                    this.removeFromConflict(character);
+                    this.removeFromConflict(card);
                 }
+                // before a ring is chosen, ring and type restrictions are undecided; choosing the ring checks them
                 this.conflict.attackers.forEach((card: DrawCard) => {
-                    if(!card.canDeclareAsAttacker(this.conflict.conflictType || 'military', this.conflict.ring || this.game.rings['air'], this.conflict.conflictProvince, this.conflict.attackers)) {
+                    if(!card.canDeclareAsAttacker(this.conflict.conflictType, this.conflict.ring, this.conflict.conflictProvince, this.conflict.attackers)) {
                         this.removeFromConflict(card);
                     }
                 });
             } else {
-                if(!this.selectedDefenders.includes(card as DrawCard)) {
-                    this.selectedDefenders.push(card as DrawCard);
-                    (card as DrawCard).covert = true;
+                if(!this.selectedDefenders.includes(card)) {
+                    this.selectedDefenders.push(card);
+                    card.covert = true;
                 } else {
                     this.selectedDefenders = this.selectedDefenders.filter((c: DrawCard) => c !== card);
-                    (card as DrawCard).covert = false;
+                    card.covert = false;
                 }
             }
         }
@@ -335,7 +332,7 @@ class InitiateConflictPrompt extends UiPrompt {
 
     menuCommand(_player: Player, arg: string): boolean {
         if(arg === 'done') {
-            if(!this.conflict.ring || this.game.rings[this.conflict.element as Element] !== this.conflict.ring ||
+            if(!this.conflict.ring || this.game.rings[this.conflict.ring.element] !== this.conflict.ring ||
                 (!this.conflict.isSinglePlayer && !this.conflict.conflictProvince) || this.conflict.attackers.length === 0) {
                 return false;
             }
@@ -348,13 +345,15 @@ class InitiateConflictPrompt extends UiPrompt {
             this.game.promptWithHandlerMenu(this.choosingPlayer, {
                 activePromptTitle: 'Are you sure you want to pass your conflict opportunity?',
                 source: 'Pass Conflict',
-                choices: ['Yes', 'No'],
-                handlers: [
-                    () => {
-                        this.complete();
-                        this.conflict.passConflict();
+                options: [
+                    {
+                        text: 'Yes',
+                        handler: () => {
+                            this.complete();
+                            this.conflict.passConflict();
+                        }
                     },
-                    () => true
+                    { text: 'No', handler: () => true }
                 ]
             });
             return true;

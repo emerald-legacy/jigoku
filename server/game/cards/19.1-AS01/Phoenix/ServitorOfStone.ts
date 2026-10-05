@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,9 +14,9 @@ export default class ServitorOfStone extends DrawCard {
 
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) => !this.controllerHasShugenjaAtSameLocation(context),
+                condition: (context) => !this.controllerHasShugenjaAtSameLocation(context),
                 message: '{0} is discarded from play because {1} controls no Shugenja at their location',
-                messageArgs: (context: AbilityContext) => [context.source, context.player],
+                messageArgs: (context) => [context.source, context.player],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });
@@ -25,7 +24,7 @@ export default class ServitorOfStone extends DrawCard {
 
     private controllerHasShugenjaAtSameLocation(context: AbilityContext) {
         return context.player.anyCardsInPlay(
-            (otherCard: BaseCard) =>
+            (otherCard) =>
                 otherCard.type === CardType.Character &&
                 otherCard.hasTrait('shugenja') &&
                 context.source.isInConflict() === otherCard.isInConflict()

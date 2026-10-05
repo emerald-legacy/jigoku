@@ -58,7 +58,7 @@ describe('CardMenuAction', function() {
             expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(override);
         });
 
-        it('should not prompt when cards and choices are both empty', function() {
+        it('should not prompt when cards and options are both empty', function() {
             const action = new CardMenuAction({
                 cards: [], gameAction: this.gameAction
             });
@@ -66,9 +66,9 @@ describe('CardMenuAction', function() {
             expect(this.game.promptWithHandlerMenu).not.toHaveBeenCalled();
         });
 
-        it('should prompt when cards is empty but choices is non-empty (handlers provide legal target)', function() {
+        it('should prompt when cards is empty but options is non-empty (options provide legal target)', function() {
             const action = new CardMenuAction({
-                cards: [], choices: ['x'], handlers: [() => {}], gameAction: this.gameAction
+                cards: [], options: [{ text: 'x', handler: () => {} }], gameAction: this.gameAction
             });
             action.addEventsToArray([], this.context);
             expect(this.game.promptWithHandlerMenu).toHaveBeenCalled();
@@ -154,9 +154,9 @@ describe('CardMenuAction', function() {
     });
 
     describe('hasLegalTarget()', function() {
-        it('should short-circuit to true when handlers are present, without consulting the gameAction', function() {
+        it('should short-circuit to true when options are present, without consulting the gameAction', function() {
             const action = new CardMenuAction({
-                cards: [], handlers: [() => {}], gameAction: this.gameAction
+                cards: [], options: [{ text: 'x', handler: () => {} }], gameAction: this.gameAction
             });
             expect(action.hasLegalTarget(this.context)).toBe(true);
             expect(this.gameAction.hasLegalTarget).not.toHaveBeenCalled();

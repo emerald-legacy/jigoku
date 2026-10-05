@@ -1,23 +1,19 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class GloriousVictory extends DrawCard {
     static id = 'glorious-victory';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor each character you control',
-            when: {
-                onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context: AbilityContext) =>
-                    this.game.isDuringConflict('military') && !!event.conflict && event.conflict.attackingPlayer === context.player
-            },
-            gameAction: AbilityDsl.actions.honor((context: AbilityContext) => ({
+        this.reaction('Honor each character you control')
+            .when({
+                onBreakProvince: (event, context) =>
+                    this.game.isDuringConflict(ConflictType.Military) && !!event.conflict && event.conflict.attackingPlayer === context.player
+            })
+            .gameAction(AbilityDsl.actions.honor((context) => ({
                 target: context.player.filterCardsInPlay((card) => card.getType() === CardType.Character)
-            }))
-        });
+            })));
     }
 }
 

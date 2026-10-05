@@ -3,9 +3,9 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
+import { targetList } from './GameAction.js';
 
-import type { ActionEvent } from './GameAction.js';
 export interface MoveCardProperties extends CardActionProperties {
     destination?: Location;
     switch?: boolean;
@@ -17,44 +17,38 @@ export interface MoveCardProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class MoveCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveCardProperties, EventName, C> {
+export class MoveCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    MoveCardProperties,
+    EventName.Unnamed,
+    C,
+    'switch' | 'shuffle' | 'faceup' | 'bottom' | 'changePlayer' | 'discardDestinationCards'
+> {
     name = 'move';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
-    defaultProperties: MoveCardProperties = {
-        destination: undefined,
+    defaultProperties = {
         switch: false,
-        switchTarget: undefined,
         shuffle: false,
         faceup: false,
         bottom: false,
         changePlayer: false,
         discardDestinationCards: false
     };
-    constructor(properties: MoveCardProperties | ((context: C) => MoveCardProperties)) {
-        super(properties);
-    }
 
     getCostMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
+        const properties = this.getProperties(context);
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
-        const target = properties.target as BaseCard | BaseCard[];
-        let destinationController = Array.isArray(target)
-            ? properties.changePlayer
-                ? (target[0] as DrawCard).controller.opponent
-                : (target[0] as DrawCard).controller
-            : properties.changePlayer
-                ? (target as DrawCard).controller.opponent
-                : (target as DrawCard).controller;
+    protected effectMessage(context: C): MessageArgs {
+        const properties = this.getProperties(context);
+        const [target] = targetList(properties.target);
+        const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
         if(properties.shuffle) {
-            return ['shuffle {0} into {1}\'s {2}', [properties.target, destinationController, properties.destination]];
+            return ['shuffle {0} into {1}\'s {2}', [destinationController, properties.destination]];
         }
         return [
             'move {0} to ' + (properties.bottom ? 'the bottom of ' : '') + '{1}\'s {2}',
-            [properties.target, destinationController, properties.destination]
+            [destinationController, properties.destination]
         ];
     }
 
@@ -63,20 +57,22 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         return (
             (!changePlayer ||
                 (card.checkRestrictions(EffectName.TakeControl, context) &&
-                    !(card as DrawCard).anotherUniqueInPlay(context.player))) &&
+                    !(card.isDrawCard() && card.anotherUniqueInPlay(context.player)))) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
             card.location !== Location.PlayArea &&
             super.canAffect(card, context)
         );
     }
 
-    eventHandler(event: ActionEvent<EventName.Unnamed, C>, additionalProperties = {}): void {
-        let context = (event.context);
-        let card = event.card as DrawCard;
-        event.cardStateWhenMoved = card.createSnapshot();
-        let properties = this.getProperties(context, additionalProperties);
+    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties = {}): void {
+        const context = event.context;
+        const card = event.card;
+        if(card.isDrawCard()) {
+            event.cardStateWhenMoved = card.createSnapshot();
+        }
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.switch && properties.switchTarget) {
-            let otherCard = properties.switchTarget;
+            const otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);
         } else {
             this.checkForRefillProvince(card, event, additionalProperties);
@@ -87,14 +83,15 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
             properties.destination &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
-            let cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => (card as DrawCard).isDynasty);
+            const cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => card.isDynasty);
             for(const card of cardsToDiscard) {
                 player.moveCard(card, Location.DynastyDiscardPile);
             }
         }
-        player.moveCard(card, properties.destination as Location, { bottom: !!properties.bottom });
-        let target = properties.target;
-        const targetArr = Array.isArray(target) ? target : target ? [target] : [];
+        if(properties.destination) {
+            player.moveCard(card, properties.destination, { bottom: properties.bottom });
+        }
+        const targetArr = targetList(properties.target);
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {
             if(properties.destination === Location.ConflictDeck) {
                 card.owner.shuffleConflictDeck();

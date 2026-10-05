@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,9 +7,9 @@ export default class NamelessBrother extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard, context) => card.controller === context?.player && card.type === CardType.Character,
-            effect: AbilityDsl.effects.modifyBothSkills((character: BaseCard, context) =>
-                (context.player.cardsInPlay as BaseCard[]).reduce(
+            match: (card, context) => card.controller === context?.player && card.type === CardType.Character,
+            effect: AbilityDsl.effects.modifyBothSkills((character, context) =>
+                context.player.cardsInPlay.reduce(
                     (skillBonus, otherCard) =>
                         otherCard.type === CardType.Character &&
                         otherCard.name === character.name &&

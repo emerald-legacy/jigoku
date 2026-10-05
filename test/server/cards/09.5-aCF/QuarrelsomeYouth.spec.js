@@ -45,7 +45,7 @@ describe('Quarrelsome Youth', function() {
                 this.player1.pass();
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 this.player1.clickCard(this.youth);
                 expect(this.player2).not.toHavePrompt('Choose a card to discard');
                 expect(this.player2.player.hand.length).toBe(player2hand - 1);
@@ -57,7 +57,7 @@ describe('Quarrelsome Youth', function() {
                 this.player1.clickCard(this.yoshi);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 expect(this.player2.player.hand.length).toBe(player2hand);
             });
 
@@ -69,7 +69,7 @@ describe('Quarrelsome Youth', function() {
                 this.player1.clickCard(this.yoshi);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 expect(this.player2.player.hand.length).toBe(player2hand);
             });
 
@@ -78,7 +78,7 @@ describe('Quarrelsome Youth', function() {
                 this.player1.clickCard(this.mount);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 expect(this.player2.player.hand.length).toBe(player2hand);
             });
 
@@ -103,7 +103,7 @@ describe('Quarrelsome Youth', function() {
                 this.noMoreActions();
 
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 expect(this.player2.player.hand.length).toBe(player2hand);
             });
         });

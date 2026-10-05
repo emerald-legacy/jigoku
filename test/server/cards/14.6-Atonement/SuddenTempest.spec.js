@@ -158,8 +158,8 @@ describe('Sudden Tempest', function() {
                 this.noMoreActions();
                 this.noMoreActions();
 
-                let airFate = this.game.rings.air.fate;
-                let fireFate = this.game.rings.fire.fate;
+                const airFate = this.game.rings.air.fate;
+                const fireFate = this.game.rings.fire.fate;
 
                 this.player1.clickPrompt('Military');
 

@@ -9,15 +9,13 @@ class AspiringChallenger extends DrawCard {
         this.composure({
             effect: AbilityDsl.effects.modifyGlory(2)
         });
-        this.action({
-            title: 'Initiate a Military duel',
-            initiateDuel: {
+        this.action('Initiate a Military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: duel => AbilityDsl.actions.honor({
                     target: duel.winner
                 })
-            }
-        });
+            }));
     }
 }
 

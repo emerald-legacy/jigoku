@@ -28,8 +28,8 @@ describe('Use the Terrain', function () {
                     defenders: [this.challenger]
                 });
 
-                let riderMil = this.rider.getMilitarySkill();
-                let scholarMil = this.scholar.getMilitarySkill();
+                const riderMil = this.rider.getMilitarySkill();
+                const scholarMil = this.scholar.getMilitarySkill();
 
                 this.player2.pass();
                 this.player1.clickCard(this.terrain);
@@ -80,7 +80,7 @@ describe('Use the Terrain', function () {
                     defenders: [this.challenger]
                 });
 
-                let riderMil = this.rider.getMilitarySkill();
+                const riderMil = this.rider.getMilitarySkill();
                 this.player2.pass();
                 this.player1.clickCard(this.terrain);
                 expect(this.rider.getMilitarySkill()).toBe(riderMil + 2);

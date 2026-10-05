@@ -176,7 +176,7 @@ describe('Illusionary Terrain', function () {
             expect(this.getChatLogs(10)).toContain('player2 plays Illusionary Terrain to transform the attacked province into a copy of Manicured Garden');
             this.player2.clickPrompt('Done'); // defenders
 
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player2.clickCard(this.fury);
             expect(this.player2.fate).toBe(fate + 1);
 
@@ -258,7 +258,7 @@ describe('Illusionary Terrain', function () {
         });
 
         it('discount 0', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.toshimoko],
@@ -277,7 +277,7 @@ describe('Illusionary Terrain', function () {
 
         it('discount 1', function () {
             this.player2.moveCard(this.purifier, 'play area');
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.toshimoko],
@@ -297,7 +297,7 @@ describe('Illusionary Terrain', function () {
         it('discount 2', function () {
             this.player2.moveCard(this.purifier, 'play area');
             this.player2.moveCard(this.doomed, 'play area');
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.toshimoko],

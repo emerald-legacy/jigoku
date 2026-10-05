@@ -36,21 +36,25 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     continue(): boolean {
-        let completed = super.continue();
+        const completed = super.continue();
 
         if(completed) {
-            const eventName = this.raiseEvent ? EventName.OnHonorDialsRevealed : EventName.Unnamed;
-            const eventProps = { duel: this.duel, isHonorBid: typeof this.costHandler !== 'function' };
-            this.game.raiseEvent(eventName, eventProps, () => {
+            const isHonorBid = typeof this.costHandler !== 'function';
+            const revealDials = () => {
                 for(const player of this.game.getPlayers()) {
                     player.honorBidModifier = 0;
                     this.game.actions
                         .setHonorDial({ value: this.bid[player.uuid] })
                         .resolve(player, this.game.getFrameworkContext());
                 }
-            });
+            };
+            if(this.raiseEvent) {
+                this.game.raiseEvent(EventName.OnHonorDialsRevealed, { duel: this.duel, isHonorBid }, revealDials);
+            } else {
+                this.game.raiseEvent(EventName.Unnamed, { duel: this.duel, isHonorBid }, revealDials);
+            }
             if(this.duel) {
-                this.game.raiseEvent(EventName.OnDuelFocus, eventProps);
+                this.game.raiseEvent(EventName.OnDuelFocus, { duel: this.duel, isHonorBid });
             }
             if(this.costHandler) {
                 const costHandler = this.costHandler;
@@ -64,23 +68,23 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     transferHonorAfterBid(context = this.game.getFrameworkContext()) {
-        let firstPlayer = this.game.getFirstPlayer();
+        const firstPlayer = this.game.getFirstPlayer();
         if(!firstPlayer || !firstPlayer.opponent) {
             return;
         }
-        let difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
+        const difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
         if(difference === 0) {
             return;
         }
         let amount = Math.abs(difference);
-        let givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
-        let receivingPlayer = givingPlayer.opponent;
+        const givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
+        const receivingPlayer = givingPlayer.opponent;
         if(!receivingPlayer) {
             return;
         }
 
-        const modifyGivenAmount = givingPlayer.getEffects(EffectName.ModifyHonorTransferGiven).reduce((a: number, b: number) => a + b, 0);
-        const modifyReceivedAmount = receivingPlayer.getEffects(EffectName.ModifyHonorTransferReceived).reduce((a: number, b: number) => a + b, 0);
+        const modifyGivenAmount = givingPlayer.sumEffects(EffectName.ModifyHonorTransferGiven);
+        const modifyReceivedAmount = receivingPlayer.sumEffects(EffectName.ModifyHonorTransferReceived);
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
         var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);
@@ -95,7 +99,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
             buttons = ['1', '2', '3'];
         }
 
-        let prohibitedBids = this.prohibitedBids[player.uuid] || [];
+        const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         buttons = buttons.filter(num => !prohibitedBids.includes(num));
         return {
             promptTitle: 'Honor Bid',

@@ -239,7 +239,7 @@ describe('Togashi Hoshi', function () {
             this.player1.clickCard(this.jadeTetsubo);
             this.player2.pass();
             this.player1.clickCard(this.jadeTetsubo);
-            let mil = this.mirumotoRaitsugu.getMilitarySkill();
+            const mil = this.mirumotoRaitsugu.getMilitarySkill();
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.mirumotoRaitsugu.attachments).toContain(this.jadeTetsubo);
             expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(mil + 3);

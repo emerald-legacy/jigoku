@@ -45,21 +45,16 @@ export class StatusToken extends EffectSource {
         return this.card?.controller;
     }
 
-    get grantedStatus() {
-        return this.overrideStatus ?? this.initialStatus;
+    getEffectController() {
+        return this.controller;
     }
 
-    get grantedStatusName(): string {
-        switch(this.grantedStatus) {
-            case CharacterStatus.Honored:
-                return 'Honorable';
-            case CharacterStatus.Dishonored:
-                return 'Dishonorable';
-            case CharacterStatus.Tainted:
-                return 'Tainter';
-            default:
-                return '';
-        }
+    getPersistentEffectRecords(): readonly StatusTokenEffect[] {
+        return this.persistentEffects;
+    }
+
+    get grantedStatus() {
+        return this.overrideStatus ?? this.initialStatus;
     }
 
     applyEffects(): void {

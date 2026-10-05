@@ -3,7 +3,7 @@ import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
-export interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
+interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
     cardStat: (card: BaseCard) => number;
     maxStat: () => number;
     numCards: number;
@@ -26,7 +26,7 @@ class MaxStatCardSelector extends BaseCardSelector {
     }
 
     wouldExceedLimit(selectedCards: BaseCard[], card: BaseCard): boolean {
-        let currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
+        const currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
         return this.cardStat(card) + currentStatSum > this.maxStat();
     }
 
@@ -35,7 +35,7 @@ class MaxStatCardSelector extends BaseCardSelector {
     }
 
     hasExceededLimit(selectedCards: BaseCard[]): boolean {
-        let currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
+        const currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
         return currentStatSum > this.maxStat() || (this.numCards > 0 && selectedCards.length > this.numCards);
     }
 }

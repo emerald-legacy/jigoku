@@ -1,30 +1,23 @@
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { Players } from '../Constants.js';
 import type Player from '../Player.js';
-import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction.js';
+import { PutIntoPlayAction, type PutIntoPlayDefaults, type PutIntoPlayProperties } from './PutIntoPlayAction.js';
+import type { Defaults } from './GameAction.js';
 
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 
 export class OpponentPutIntoPlayAction<C extends AbilityContext = AbilityContext> extends PutIntoPlayAction<C> {
-    defaultProperties: PutIntoPlayProperties = {
+    defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
         status: 'ordinary',
-        controller: Players.Opponent,
-        side: undefined
+        controller: Players.Opponent
     };
 
-    getDefaultSide(context: C): Player {
+    getDefaultSide(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 
-    constructor(
-        properties: ((context: C) => PutIntoPlayProperties) | PutIntoPlayProperties,
-        intoConflict = true
-    ) {
-        super(properties, intoConflict);
-    }
-
-    getPutIntoPlayPlayer(context: C): Player {
+    getPutIntoPlayPlayer(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 }

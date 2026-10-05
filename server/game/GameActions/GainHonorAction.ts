@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
@@ -11,36 +11,40 @@ export interface GainHonorProperties extends PlayerActionProperties {
     dueToStatusToken?: boolean;
 }
 
-export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName, C> {
-    defaultProperties: GainHonorProperties = { amount: 1, dueToStatusToken: false };
+export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName.OnModifyHonor, C, 'amount' | 'dueToStatusToken'> {
+    defaultProperties = { amount: 1, dueToStatusToken: false };
 
-    name: string = 'gainHonor';
+    name = 'gainHonor';
     eventName = EventName.OnModifyHonor;
 
-    getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
-        var [_, amountToTransfer] = CalculateHonorLimit(
+    protected effectMessage(context: C): MessageArgs {
+        const properties = this.getProperties(context);
+        const [, amountToTransfer] = CalculateHonorLimit(
             context.player,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount ?? 0
+            properties.amount
         );
         return ['gain ' + amountToTransfer + ' honor', []];
     }
 
+    protected effectMessageTarget(): MsgArg {
+        return undefined;
+    }
+
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
-        var wouldGainAnyHonor = properties.amount !== 0;
+        const properties = this.getProperties(context, additionalProperties);
+        const wouldGainAnyHonor = properties.amount !== 0;
 
         if(!wouldGainAnyHonor) {
             return false;
         }
 
-        var [hasHonorLimit, amountToTransfer] = CalculateHonorLimit(
+        const [hasHonorLimit, amountToTransfer] = CalculateHonorLimit(
             player,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount ?? 0
+            properties.amount
         );
 
         if(hasHonorLimit && !amountToTransfer) {
@@ -55,7 +59,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
+        const { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.dueToStatusToken = dueToStatusToken;
@@ -63,15 +67,15 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
 
     eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
         const context = event.context;
-        const player = event.player as Player;
-        var [_, amountToTransfer] = CalculateHonorLimit(
+        const player = event.player;
+        const [, amountToTransfer] = CalculateHonorLimit(
             player,
             context.game.roundNumber,
             context.game.currentPhase,
-            event.amount as number
+            event.amount
         );
         player.modifyHonor(amountToTransfer);
-        if(amountToTransfer && context?.game) {
+        if(amountToTransfer) {
             context.game.addAnimation({ type: 'honor', playerName: player.name, amount: amountToTransfer });
         }
     }

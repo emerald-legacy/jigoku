@@ -5,5 +5,7 @@ export enum CardType {
     Character = 'character',
     Holding = 'holding',
     Event = 'event',
-    Attachment = 'attachment'
+    Attachment = 'attachment',
+    Warlord = 'warlord',
+    Treaty = 'treaty'
 }

@@ -26,7 +26,7 @@ describe('Temple of Osano-Wo', function() {
             });
 
             it('should put a fate on the earth ring if it is unclaimed', function() {
-                let fate = this.game.rings.earth.fate;
+                const fate = this.game.rings.earth.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],
@@ -39,7 +39,7 @@ describe('Temple of Osano-Wo', function() {
             });
 
             it('should not put a fate on the earth ring if it is contested', function() {
-                let fate = this.game.rings.earth.fate;
+                const fate = this.game.rings.earth.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],

@@ -12,13 +12,11 @@ export default class DemonstratingExcellence extends ProvinceCard {
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 
-        this.interrupt({
-            title: 'Gain 1 fate and draw 1 card',
-            when: {
+        this.interrupt('Gain 1 fate and draw 1 card')
+            .when({
                 onBreakProvince: (event, context) => event.card === context.source
-            },
-            effect: 'gain 1 fate and draw a card',
-            gameAction: [AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw()]
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw())
+            .effect('gain 1 fate and draw a card');
     }
 }

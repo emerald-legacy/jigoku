@@ -1,5 +1,4 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityType, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,12 +14,12 @@ export default class ContemplativeWisdom extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: card => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
+                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                         effect: AbilityDsl.effects.gainAllAbilities(context.source)
                     }))
                 },
                 effect: 'give {0} all the printed abilities of {1}',
-                effectArgs: (context: AbilityContext) => [context.source],
+                effectArgs: (context) => [context.source],
                 printedAbility: false
             })
         });

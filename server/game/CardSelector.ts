@@ -1,6 +1,6 @@
 import ExactlyXCardSelector from './CardSelectors/ExactlyXCardSelector.js';
 import ExactlyVariableXCardSelector from './CardSelectors/ExactlyVariableXCardSelector.js';
-import MaxStatCardSelector, { type MaxStatCardSelectorProperties } from './CardSelectors/MaxStatCardSelector.js';
+import MaxStatCardSelector from './CardSelectors/MaxStatCardSelector.js';
 import SingleCardSelector from './CardSelectors/SingleCardSelector.js';
 import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector.js';
 import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
@@ -10,13 +10,37 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { BaseCardSelectorProperties } from './CardSelectors/BaseCardSelector.js';
 import type BaseCard from './BaseCard.js';
 
-interface CardSelectorProperties extends BaseCardSelectorProperties {
+export interface CardSelectorProperties extends BaseCardSelectorProperties {
     numCards?: number;
     numCardsFunc?: (context: AbilityContext) => number;
     multiSelect?: boolean;
     mode?: TargetMode;
     maxStat?: () => number;
-    cardStat?(card: BaseCard): number;
+    cardStat?: (card: BaseCard) => number;
+}
+
+/** Modes whose selector passes the chosen card on its own. */
+export type SingleCardMode = TargetMode.Single | TargetMode.AutoSingle | TargetMode.Ability | TargetMode.Token | TargetMode.ElementSymbol;
+export type MultiCardMode = TargetMode.Exactly | TargetMode.ExactlyVariable | TargetMode.MaxStat | TargetMode.Unlimited | TargetMode.UpTo | TargetMode.UpToVariable;
+
+const MULTI_CARD_MODES: readonly TargetMode[] = [
+    TargetMode.Exactly, TargetMode.ExactlyVariable, TargetMode.MaxStat, TargetMode.Unlimited, TargetMode.UpTo, TargetMode.UpToVariable
+];
+
+export function isMultiCardMode(mode: TargetMode): mode is MultiCardMode {
+    return MULTI_CARD_MODES.includes(mode);
+}
+
+/** The mode a selector gets when none is given. */
+export function defaultMode({ numCards = 1, multiSelect = false, maxStat }: Pick<CardSelectorProperties, 'numCards' | 'multiSelect' | 'maxStat'>): TargetMode {
+    if(maxStat) {
+        return TargetMode.MaxStat;
+    } else if(numCards === 1 && !multiSelect) {
+        return TargetMode.Single;
+    } else if(numCards === 0) {
+        return TargetMode.Unlimited;
+    }
+    return TargetMode.UpTo;
 }
 
 type BaseSelector = SingleCardSelector | ExactlyXCardSelector | ExactlyVariableXCardSelector |
@@ -36,7 +60,13 @@ const ModeToSelector: Record<string, (p: CardSelectorProperties) => BaseSelector
     autoSingle: (p) => new SingleCardSelector(p),
     exactly: (p) => new ExactlyXCardSelector(p.numCards ?? 1, p),
     exactlyVariable: (p) => new ExactlyVariableXCardSelector(p.numCardsFunc ?? (() => 1), p),
-    maxStat: (p) => new MaxStatCardSelector(p as MaxStatCardSelectorProperties),
+    maxStat: (p) => {
+        const { cardStat, maxStat } = p;
+        if(!cardStat || !maxStat) {
+            throw new Error('A maxStat card selector needs cardStat and maxStat');
+        }
+        return new MaxStatCardSelector({ ...p, cardStat, maxStat, numCards: p.numCards ?? 1 });
+    },
     single: (p) => new SingleCardSelector(p),
     token: (p) => new SingleCardSelector(p),
     elementSymbol: (p) => new SingleCardSelector(p),
@@ -64,15 +94,7 @@ class CardSelector {
             return properties;
         }
 
-        if(properties.maxStat) {
-            properties.mode = TargetMode.MaxStat;
-        } else if(properties.numCards === 1 && !properties.multiSelect) {
-            properties.mode = TargetMode.Single;
-        } else if(properties.numCards === 0) {
-            properties.mode = TargetMode.Unlimited;
-        } else {
-            properties.mode = TargetMode.UpTo;
-        }
+        properties.mode = defaultMode(properties);
 
         return properties;
     }

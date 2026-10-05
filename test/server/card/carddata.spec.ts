@@ -1,3 +1,4 @@
+import { CardType } from '../../../server/game/Constants.js';
 import BaseCard from '../../../server/game/BaseCard.js';
 import DrawCard from '../../../server/game/DrawCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
@@ -31,7 +32,7 @@ function makeOwner(game: ReturnType<typeof makeGame>) {
 const minimalCardData: CardData = {
     id: 'test-card',
     name: 'Test Card',
-    type: 'character',
+    type: CardType.Character,
     faction: 'crab',
     side: 'conflict',
     traits: [],
@@ -171,12 +172,12 @@ describe('CardData field extraction', function() {
             });
 
             it('sets printedCost to 0 for events with no cost', function() {
-                const card = new DrawCard(owner, { ...minimalDrawCardData, type: 'event', cost: null });
+                const card = new DrawCard(owner, { ...minimalDrawCardData, type: CardType.Event, cost: null });
                 expect(card.printedCost).toBe(0);
             });
 
             it('sets printedCost to null for non-event cards with no cost', function() {
-                const card = new DrawCard(owner, { ...minimalDrawCardData, type: 'holding', cost: null });
+                const card = new DrawCard(owner, { ...minimalDrawCardData, type: CardType.Holding, cost: null });
                 expect(card.printedCost).toBeNull();
             });
         });

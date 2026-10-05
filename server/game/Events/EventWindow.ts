@@ -16,7 +16,6 @@ interface ThenAbilityLike {
 export default class EventWindow extends BaseStepWithPipeline {
     events: Event[] = [];
     thenAbilities: Array<{ ability: ThenAbilityLike; context: AbilityContext; condition: (event: Event) => boolean }> = [];
-    provincesToRefill: unknown[] = [];
     previousEventWindow: EventWindow | null = null;
     eventsToExecute: Event[] = [];
 

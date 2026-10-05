@@ -8,14 +8,11 @@ class AsakoAzunami extends DrawCard {
     static id = 'asako-azunami';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Bow and ready two characters instead of the ring effect',
-            when: {
-                onResolveRingElement: (event, context) => !!event.ring && event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
-            },
-            effect: 'replace the {1} ring effect with bowing and readying two characters',
-            effectArgs: () => [this.getCurrentElementSymbol(elementKey)],
-            gameAction: AbilityDsl.actions.cancel(context => ({
+        this.wouldInterrupt('Bow and ready two characters instead of the ring effect')
+            .when({
+                onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
+            })
+            .gameAction(AbilityDsl.actions.cancel(context => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a character to bow',
@@ -36,12 +33,12 @@ class AsakoAzunami extends DrawCard {
                         messageArgs: (card, player) => [player, card, context.source]
                     })
                 ])
-            }))
-        });
+            })))
+            .effect('replace the {1} ring effect with bowing and readying two characters', () => [this.getCurrentElementSymbol(elementKey)]);
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Resolved Ring',

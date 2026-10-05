@@ -5,11 +5,11 @@ import AbilityDsl from '../../abilitydsl.js';
 class GuestOfHonor extends DrawCard {
     static id = 'guest-of-honor';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Opponent,
-            effect: ability.effects.playerCannot({
+            effect: AbilityDsl.effects.playerCannot({
                 cannot: 'play',
                 restricts: 'events'
             })

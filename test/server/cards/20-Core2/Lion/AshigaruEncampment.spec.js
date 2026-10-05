@@ -19,7 +19,7 @@ describe('Ashigaru Encampment', function () {
             expect(ashigaru.politicalSkill).toBe(0);
             expect(ashigaru.glory).toBe(1);
             expect(ashigaru.isFaction('lion')).toBe(true);
-            expect(this.getChatLogs(5)).toContain('player1 uses Ashigaru Encampment to recruit Ashigaru Recruit!');
+            expect(this.getChatLogs(5)).toContain('player1 uses Ashigaru Encampment to recruit Ashigaru Recruit');
         });
     });
 });

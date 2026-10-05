@@ -9,24 +9,22 @@ class IconOfFavor extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: () => this.controller.imperialFavor !== '',
+            condition: (context) => context.player.imperialFavor !== '',
             effect: AbilityDsl.effects.modifyGlory(1)
         });
-        this.reaction({
-            title: 'Honor attached character',
-            when: {
+        this.reaction('Honor attached character')
+            .when({
                 afterConflict: (event, context) =>
-                    event.conflict.elements.some(element => element === this.getCurrentElementSymbol(elementKey)) &&
+                    event.conflict.hasElement(this.getCurrentElementSymbol(elementKey)) &&
                     event.conflict.winner === context.player
-            },
-            gameAction: AbilityDsl.actions.honor(context => ({
+            })
+            .gameAction(AbilityDsl.actions.honor(context => ({
                 target: context.source.parentCharacter ?? []
-            }))
-        });
+            })));
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

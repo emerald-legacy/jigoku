@@ -1,19 +1,17 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type Player from '../../Player.js';
 
 export default class AgashaSumiko2 extends DrawCard {
     static id = 'agasha-sumiko-2';
 
     public setupCardAbilities() {
-        this.interrupt({
-            title: 'Honor a character',
-            when: {
+        this.interrupt('Honor a character')
+            .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.loseHonor((context) => ({
                     target: context.player.opponent,
                     amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
@@ -26,14 +24,12 @@ export default class AgashaSumiko2 extends DrawCard {
                     target: context.player.opponent,
                     amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
                 }))
-            ]),
-            effect: 'make {1} {2}',
-            effectArgs: (context) => [context.player.opponent as Player, this.getChatMessage(context)]
-        });
+            ]))
+            .effect('make {1} {2}', (context) => [context.player.opponent, this.getChatMessage(context)]);
     }
 
     private getChatMessage(context: TriggeredAbilityContext) {
-        let messages: string[] = [];
+        const messages: string[] = [];
         if(context.player.opponent) {
             if(context.player.opponent.honor > context.player.honor) {
                 messages.push('lose 2 honor');
@@ -42,7 +38,7 @@ export default class AgashaSumiko2 extends DrawCard {
                 messages.push('lose 2 fate');
             }
             if(context.player.opponent.hand.length > context.player.hand.length) {
-                messages.push('disard 2 cards');
+                messages.push('discard 2 cards');
             }
 
             if(messages.length === 3) {

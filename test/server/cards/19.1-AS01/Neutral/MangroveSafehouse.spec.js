@@ -192,6 +192,38 @@ describe('Mangrove Safehouse', function () {
                         });
                     });
 
+                    describe('if a character that gained the Mantis Clan trait is selected', function () {
+                        beforeEach(function () {
+                            this.adeptOfTheWaves.untilEndOfRound((AbilityDsl) => ({
+                                match: this.adeptOfTheWaves,
+                                effect: AbilityDsl.effects.addTrait('mantis-clan')
+                            }));
+                            this.player1.clickCard(this.adeptOfTheWaves);
+                        });
+
+                        it('moves the target home and steals 1 fate', function () {
+                            expect(this.adeptOfTheWaves.inConflict).toBe(false);
+                            expect(this.player1.fate).toBe(this.p1FateBefore + 1);
+                            expect(this.player2.fate).toBe(this.p2FateBefore - 1);
+                        });
+                    });
+
+                    describe('if a Mantis character that lost the Mantis Clan trait is selected', function () {
+                        beforeEach(function () {
+                            this.kudaka.untilEndOfRound((AbilityDsl) => ({
+                                match: this.kudaka,
+                                effect: AbilityDsl.effects.loseTrait('mantis-clan')
+                            }));
+                            this.player1.clickCard(this.kudaka);
+                        });
+
+                        it('moves the target home and steals no fate', function () {
+                            expect(this.kudaka.inConflict).toBe(false);
+                            expect(this.player1.fate).toBe(this.p1FateBefore);
+                            expect(this.player2.fate).toBe(this.p2FateBefore);
+                        });
+                    });
+
                     describe('if a Mantis character is selected but opponent has 0 fate', function () {
                         beforeEach(function () {
                             this.player2.player.fate = 0;

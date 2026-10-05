@@ -1,16 +1,13 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Phases } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
     static id = 'subterfuge';
-    private messageShown?: boolean;
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent draw',
-            when: {
+        this.wouldInterrupt('Prevent draw')
+            .when({
                 onCardsDrawn: (event, context) => {
                     return (
                         context.player.opponent &&
@@ -19,14 +16,13 @@ class Subterfuge extends DrawCard {
                         event.player === context.player.opponent
                     );
                 }
-            },
-            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
                     const eventAmount = context.event.amount ?? 0;
                     const discardAmount = Math.min(eventAmount, 3);
                     const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
                     const drawAmount = eventAmount - discardAmount;
-                    this.messageShown = false;
                     return {
                         gameActions: [
                             AbilityDsl.actions.discardCard({
@@ -34,22 +30,18 @@ class Subterfuge extends DrawCard {
                             }),
                             AbilityDsl.actions.handler({
                                 handler: (context) => {
-                                    if(!this.messageShown) {
-                                        // for some reason, it shows the message twice
+                                    context.game.addMessage(
+                                        '{0} discards {1}',
+                                        context.player.opponent,
+                                        cardsToDiscard
+                                    );
+                                    if(drawAmount > 0) {
                                         context.game.addMessage(
-                                            '{0} discards {1}',
+                                            '{0} draws {1} card{2}',
                                             context.player.opponent,
-                                            cardsToDiscard
+                                            drawAmount,
+                                            drawAmount > 1 ? 's' : ''
                                         );
-                                        if(drawAmount > 0) {
-                                            context.game.addMessage(
-                                                '{0} draws {1} card{2}',
-                                                context.player.opponent,
-                                                drawAmount,
-                                                drawAmount > 1 ? 's' : ''
-                                            );
-                                        }
-                                        this.messageShown = true;
                                     }
                                 }
                             }),
@@ -60,17 +52,15 @@ class Subterfuge extends DrawCard {
                         ]
                     };
                 })
-            })),
-            effect: 'prevent {1} card{2} from being drawn, discarding {3} instead',
-            effectArgs: (context) => {
+            })))
+            .effect('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
                 const amount = context.event.amount ?? 0;
                 return [
                     Math.min(amount, 3),
                     amount > 1 ? 's' : '',
                     amount > 1 ? 'them' : 'it'
                 ];
-            }
-        });
+            });
     }
 }
 

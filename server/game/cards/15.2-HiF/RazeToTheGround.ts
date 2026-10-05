@@ -1,4 +1,4 @@
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -6,18 +6,14 @@ export default class RazeToTheGround extends DrawCard {
     static id = 'raze-to-the-ground';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Break the attacked province',
-            cost: [
-                AbilityDsl.costs.dishonor({ cardCondition: (card) => card.isParticipating() }),
-                AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() })
-            ],
-            when: {
+        this.reaction('Break the attacked province')
+            .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.player && event.conflict.conflictType === 'military'
-            },
-            effect: 'break an attacked province',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+                    event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military
+            })
+            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
+            .cost(AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -26,7 +22,7 @@ export default class RazeToTheGround extends DrawCard {
                 message: '{0} breaks {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.breakProvince()
-            }))
-        });
+            })))
+            .effect('break an attacked province');
     }
 }

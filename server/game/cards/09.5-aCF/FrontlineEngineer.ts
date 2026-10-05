@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,39 +10,37 @@ class FrontlineEngineer extends DrawCard {
             effect: AbilityDsl.effects.modifyGlory(() => this.getHoldingsInPlay())
         });
 
-        this.action({
-            title: 'Place a holding from your deck faceup in the defending province',
-            condition: context => context.player.dynastyDeck.length > 0 && context.source.isDefending(),
-            effect: 'look at the top five cards of their dynasty deck',
-            gameAction: AbilityDsl.actions.selectCard<ProvinceCard>(context => ({
+        this.action('Place a holding from your deck faceup in the defending province')
+            .condition(context => context.player.dynastyDeck.length > 0 && context.source.isDefending())
+            .gameAction(AbilityDsl.actions.selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: card => card.isConflictProvince(),
-                subActionProperties: (card: ProvinceCard) => {
-                    context.target = card;
-                    return ({ target: card });
-                },
                 gameAction: AbilityDsl.actions.handler({
-                    handler: context => this.game.promptWithHandlerMenu(context.player, {
+                    handler: (context, [province]) => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
                         context: context,
-                        cardCondition: (card: BaseCard) => card.getType() === CardType.Holding,
+                        cardCondition: (card) => card.getType() === CardType.Holding,
                         cards: context.player.dynastyDeck.slice(0, 5),
-                        choices: ['Take nothing'],
-                        handlers: [() => {
-                            this.game.addMessage('{0} takes nothing', context.player);
-                            context.player.shuffleDynastyDeck();
-                            return true;
-                        }],
-                        cardHandler: (cardFromDeck: BaseCard) => {
-                            if(!context.target) {
+                        options: [
+                            {
+                                text: 'Take nothing',
+                                handler: () => {
+                                    this.game.addMessage('{0} takes nothing', context.player);
+                                    context.player.shuffleDynastyDeck();
+                                    return true;
+                                }
+                            }
+                        ],
+                        cardHandler: (cardFromDeck) => {
+                            if(!province?.isCard()) {
                                 return;
                             }
-                            let cards = context.player.getDynastyCardsInProvince(context.target.location);
+                            const cards = context.player.getDynastyCardsInProvince(province.location);
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
-                            context.player.moveCard(cardFromDeck, context.target.location);
+                            context.player.moveCard(cardFromDeck, province.location);
                             cardFromDeck.facedown = false;
                             cards.forEach(element => {
                                 context.player.moveCard(element, Location.DynastyDiscardPile);
@@ -54,7 +50,7 @@ class FrontlineEngineer extends DrawCard {
                     })
                 })
             }))
-        });
+            .effect('look at the top five cards of their dynasty deck');
     }
 
     getHoldingsInPlay() {

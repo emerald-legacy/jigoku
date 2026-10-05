@@ -27,9 +27,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
                 }
@@ -72,9 +70,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.wildfire);
@@ -96,9 +92,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
                 }
@@ -119,9 +113,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
                 }

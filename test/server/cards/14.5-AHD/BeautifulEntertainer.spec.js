@@ -27,7 +27,7 @@ describe('Beautiful Entertainer', function() {
         it('should prompt you to gain 2 honor if you are less honorable', function() {
             this.player1.honor = 10;
             this.player2.honor = 9;
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.player1.clickCard(this.bayushiShoju);
             this.player1.clickCard(this.entertainer);

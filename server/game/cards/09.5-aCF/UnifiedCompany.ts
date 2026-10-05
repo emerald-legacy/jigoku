@@ -6,17 +6,16 @@ class UnifiedCompany extends DrawCard {
     static id = 'unified-company';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Put a 2 cost or less bushi into play from dynasty discard',
-            when: {
+        this.reaction('Put a 2 cost or less bushi into play from dynasty discard')
+            .when({
                 afterConflict: (event, context) => {
                     return event.conflict.winner === context.source.controller &&
                         context.source.isParticipating() &&
                         context.player.opponent &&
                         context.player.hand.length < context.player.opponent.hand.length;
                 }
-            },
-            gameAction: AbilityDsl.actions.selectCard(() => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard(() => ({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
@@ -26,8 +25,7 @@ class UnifiedCompany extends DrawCard {
                         !card.isUnique();
                 },
                 gameAction: AbilityDsl.actions.putIntoPlay()
-            }))
-        });
+            })));
     }
 }
 

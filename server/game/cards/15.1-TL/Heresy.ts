@@ -6,19 +6,16 @@ class Heresy extends DrawCard {
     static id = 'heresy';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesChallenger: true,
                 message: 'remove a fate from {0}',
                 messageArgs: duel => [duel.loser],
                 gameAction: duel => AbilityDsl.actions.removeFate({
-                    target: duel.loser,
-                    amount: 1
+                    target: duel.loser
                 })
-            }
-        });
+            }));
     }
 }
 

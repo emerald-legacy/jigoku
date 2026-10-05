@@ -2,16 +2,16 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gaze into the void',
-            condition: (context) => context.player.isTraitInPlay('shugenja'),
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
-                const revealedCards = (shuffle(context.player.opponent?.hand ?? []))
+        this.action('Gaze into the void')
+            .condition((context) => controlsShugenja(context.player))
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+                const revealedCards = shuffle(context.player.opponent?.hand ?? [])
                     .slice(0, 2)
                     .sort((a, b) => a.name.localeCompare(b.name));
                 return {
@@ -26,7 +26,7 @@ export default class DrawingTheVoid extends DrawCard {
                             cards: revealedCards,
                             targets: true,
                             player: Players.Self,
-                            message: '{0} removes {1} from the game - the void consumes!',
+                            message: '{0} removes {1} from the game - the void consumes',
                             messageArgs: (card, player) => [player, card],
                             gameAction: AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame })
                         })),
@@ -37,8 +37,7 @@ export default class DrawingTheVoid extends DrawCard {
                         }))
                     ]
                 };
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

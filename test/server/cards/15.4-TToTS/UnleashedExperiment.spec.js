@@ -24,7 +24,7 @@ describe('Unleashed Experiment', function () {
             });
 
             it('should make you lose 2 honor if you declare as an attacker', function () {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',
@@ -37,7 +37,7 @@ describe('Unleashed Experiment', function () {
             });
 
             it('should make you lose 2 honor if you declare as a defender', function () {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.player1.passConflict();
                 this.noMoreActions();
@@ -52,7 +52,7 @@ describe('Unleashed Experiment', function () {
             });
 
             it('should properly stack', function () {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',
@@ -137,7 +137,7 @@ describe('Unleashed Experiment', function () {
             });
 
             it('should not make you lose 2 honor if you declare as an attacker', function () {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',
@@ -149,7 +149,7 @@ describe('Unleashed Experiment', function () {
             });
 
             it('should not make you lose 2 honor if you declare as a defender', function () {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.player1.passConflict();
                 this.noMoreActions();
@@ -207,13 +207,13 @@ describe('Unleashed Experiment', function () {
             });
 
             it('should still get stat bonuses', function () {
-                let mil = this.experiment.militarySkill;
+                const mil = this.experiment.militarySkill;
                 this.player1.playAttachment(this.blade, this.experiment);
                 expect(this.experiment.militarySkill).toBe(mil + 2);
             });
 
             it('should still be able to have constant effects applied from attachments', function () {
-                let pol = this.experiment.politicalSkill;
+                const pol = this.experiment.politicalSkill;
                 this.player1.playAttachment(this.blade, this.experiment);
                 this.noMoreActions();
                 this.initiateConflict({

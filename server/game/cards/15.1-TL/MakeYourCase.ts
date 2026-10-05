@@ -6,9 +6,8 @@ class MakeYourCase extends DrawCard {
     static id = 'make-your-case';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: '{0}{1}',
@@ -17,11 +16,9 @@ class MakeYourCase extends DrawCard {
                     duel.winner ? ' gains a fate' : ''
                 ],
                 gameAction: duel => AbilityDsl.actions.placeFate({
-                    target: duel.winner,
-                    amount: 1
+                    target: duel.winner
                 })
-            }
-        });
+            }));
     }
 }
 

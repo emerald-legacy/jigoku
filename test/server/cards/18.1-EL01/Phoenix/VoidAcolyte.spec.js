@@ -72,5 +72,25 @@ describe('Void Acolyte', function() {
             this.player1.clickCard(this.acolyte);
             expect(this.acolyte.fate).toBe(1);
         });
+
+        it('should trigger when the player claims another ring that gained the void element', function() {
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: ['seeker-of-knowledge'],
+                defenders: []
+            });
+            this.acolyte.untilEndOfRound((AbilityDsl) => ({
+                match: this.game.rings.fire,
+                effect: AbilityDsl.effects.addElement('void')
+            }));
+            this.player2.pass();
+            this.player1.clickCard(this.commune);
+            this.player1.clickRing('fire');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.acolyte);
+            this.player1.clickCard(this.acolyte);
+            expect(this.acolyte.fate).toBe(1);
+        });
     });
 });

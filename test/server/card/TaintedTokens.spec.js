@@ -26,8 +26,8 @@ describe('Tainted Tokens', function() {
         });
 
         it('should give tainted characters +2/+2', function() {
-            let mil = this.brash.getMilitarySkill();
-            let pol = this.brash.getPoliticalSkill();
+            const mil = this.brash.getMilitarySkill();
+            const pol = this.brash.getPoliticalSkill();
             this.brash.taint();
             this.game.checkGameState(true);
 
@@ -36,8 +36,8 @@ describe('Tainted Tokens', function() {
         });
 
         it('should stack with honored status tokens', function() {
-            let mil = this.brash.getMilitarySkill();
-            let pol = this.brash.getPoliticalSkill();
+            const mil = this.brash.getMilitarySkill();
+            const pol = this.brash.getPoliticalSkill();
             this.brash.taint();
             this.brash.honor();
             this.game.checkGameState(true);
@@ -47,8 +47,8 @@ describe('Tainted Tokens', function() {
         });
 
         it('should stack with dishonored status tokens', function() {
-            let mil = this.whisperer.getMilitarySkill();
-            let pol = this.whisperer.getPoliticalSkill();
+            const mil = this.whisperer.getMilitarySkill();
+            const pol = this.whisperer.getPoliticalSkill();
             this.whisperer.taint();
             this.whisperer.dishonor();
             this.game.checkGameState(true);
@@ -58,7 +58,7 @@ describe('Tainted Tokens', function() {
         });
 
         it('should give tainted provinces +2 strength', function() {
-            let str = this.shameful.getStrength();
+            const str = this.shameful.getStrength();
             this.shameful.taint();
             this.game.checkGameState(true);
 
@@ -67,7 +67,7 @@ describe('Tainted Tokens', function() {
 
         it('should make you lose an honor if you defend on tainted province', function () {
             this.shameful.taint();
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -82,7 +82,7 @@ describe('Tainted Tokens', function() {
 
         it('should NOT make you lose an honor if you defend on non-tainted province', function () {
             this.shameful.taint();
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -117,8 +117,8 @@ describe('Tainted Tokens', function() {
             this.brash.taint();
             this.sotorii.taint();
             this.shugenja.taint();
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -137,8 +137,8 @@ describe('Tainted Tokens', function() {
             this.brash.taint();
             this.sotorii.taint();
             this.shugenja.taint();
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player1.playAttachment(this.mount, this.brash);
 
@@ -164,8 +164,8 @@ describe('Tainted Tokens', function() {
             this.brash.taint();
             this.sotorii.taint();
             this.shugenja.taint();
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player1.playAttachment(this.mount, this.brash);
 
@@ -184,7 +184,7 @@ describe('Tainted Tokens', function() {
 
         it('yojiro should not prevent the honor loss from the province', function () {
             this.shameful.taint();
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({

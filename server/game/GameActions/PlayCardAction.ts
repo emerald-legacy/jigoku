@@ -7,15 +7,16 @@ import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/AbilityResolver.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
+import { targetList, type WithDefaults } from './GameAction.js';
 
 class PlayCardResolver extends AbilityResolver {
     playGameAction: PlayCardAction;
     gameActionContext: AbilityContext;
-    gameActionProperties: PlayCardProperties;
+    gameActionProperties: ResolvedPlayCardProperties;
     cancelPressed: boolean;
-    constructor(game: Game, context: AbilityContext, playGameAction: PlayCardAction, gameActionContext: AbilityContext, gameActionProperties: PlayCardProperties) {
+    constructor(game: Game, context: AbilityContext, playGameAction: PlayCardAction, gameActionContext: AbilityContext, gameActionProperties: ResolvedPlayCardProperties) {
         super(game, context);
         this.playGameAction = playGameAction;
         this.gameActionContext = gameActionContext;
@@ -76,7 +77,7 @@ class PlayCardResolver extends AbilityResolver {
                     this.gameActionContext.source
                 );
             }
-            if(location === Location.ConflictDeck && this.gameActionProperties.destinationOptions?.bottom) {
+            if(location === Location.ConflictDeck && this.gameActionProperties.destinationOptions.bottom) {
                 this.game.addMessage(
                     '{0} is placed on the bottom of {1}\'s deck by {2}\'s effect',
                     this.context.source,
@@ -91,7 +92,7 @@ class PlayCardResolver extends AbilityResolver {
     refillProvinces() {
         super.refillProvinces();
         if(!this.cancelPressed) {
-            this.game.queueSimpleStep(() => this.gameActionProperties.postHandler?.(this.context));
+            this.game.queueSimpleStep(() => this.gameActionProperties.postHandler(this.context));
         }
     }
 }
@@ -103,7 +104,7 @@ export interface PlayCardProperties extends CardActionProperties {
     playCardTarget?: (context: AbilityContext, properties: PlayCardProperties) => void;
     location?: Location;
     destination?: Location;
-    destinationOptions?: { bottom?: boolean; [key: string]: unknown };
+    destinationOptions?: { bottom?: boolean };
     payCosts?: boolean;
     ignoreFateCost?: boolean;
     source?: BaseCard;
@@ -111,29 +112,40 @@ export interface PlayCardProperties extends CardActionProperties {
     ignoredRequirements?: string[];
     playAction?: BaseAction | BaseAction[];
     payFateToOpponent?: boolean;
+    /** The event a reaction is played in response to, when it is played again (Dragon Tattoo). */
+    event?: Event;
 }
 
-export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName, C> {
+type PlayCardDefaults =
+    | 'resetOnCancel'
+    | 'postHandler'
+    | 'playType'
+    | 'destinationOptions'
+    | 'payCosts'
+    | 'ignoreFateCost'
+    | 'allowReactions'
+    | 'ignoredRequirements';
+
+type ResolvedPlayCardProperties = WithDefaults<PlayCardProperties, PlayCardDefaults>;
+
+interface PlayableAbility {
+    ability: BaseCardAbility;
+    createContext(player: Player): AbilityContext;
+}
+
+export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName.Unnamed, C, PlayCardDefaults> {
     name = 'playCard';
     effect = 'play {0} as if it were in their hand';
-    defaultProperties: PlayCardProperties = {
+    defaultProperties = {
         resetOnCancel: false,
         postHandler: () => true,
+        playType: PlayType.Other,
         destinationOptions: {},
         payCosts: true,
         ignoreFateCost: false,
         allowReactions: false,
-        ignoredRequirements: [],
-        playAction: undefined,
-        source: undefined
+        ignoredRequirements: []
     };
-    constructor(properties: ((context: C) => PlayCardProperties) | PlayCardProperties) {
-        super(properties);
-    }
-
-    getProperties(context: C, additionalProperties = {}): PlayCardProperties {
-        return super.getProperties(context, additionalProperties);
-    }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         if(!super.canAffect(card, context)) {
@@ -143,67 +155,53 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         return this.getLegalAbilities(card, context, properties).length > 0;
     }
 
-    getLegalAbilities(card: DrawCard, context: C, properties: PlayCardProperties) {
-        let legalActions = this.getLegalActions(card, context, properties);
-        let legalReactions = this.getLegalReactions(card, context, properties);
-
-        let legalAbilities = legalActions.concat(legalReactions);
-
-        return legalAbilities.filter((ability: BaseCardAbility) => {
-            const ignoredRequirements = ['location', 'player', ...(properties.ignoredRequirements ?? [])];
+    getLegalAbilities(card: DrawCard, context: C, properties: ResolvedPlayCardProperties): PlayableAbility[] {
+        const playable = this.getLegalActions(card, context, properties).concat(this.getLegalReactions(card, context, properties));
+        return playable.filter(({ ability, createContext }) => {
+            const ignoredRequirements = ['location', 'player', ...properties.ignoredRequirements];
             if(!properties.payCosts) {
                 ignoredRequirements.push('cost');
             }
-            let newContext = ability.createContext(context.player);
+            const newContext = createContext(context.player);
             newContext.gameActionsResolutionChain = context.gameActionsResolutionChain.concat(this);
             newContext.ignoreFateCost = properties.ignoreFateCost;
-            this.setPlayType(newContext, properties.playType ?? PlayType.Other, card.location);
+            this.setPlayType(newContext, properties.playType);
             return !ability.meetsRequirements(newContext, ignoredRequirements);
         });
     }
 
-    getLegalActions(card: DrawCard, context: C, properties: PlayCardProperties) {
-        if(properties.playAction) {
-            let actions = properties.playAction;
-            if(!Array.isArray(actions)) {
-                actions = [actions];
-            }
-            return actions;
-        }
-        return card.getPlayActions();
+    getLegalActions(card: DrawCard, _context: C, properties: PlayCardProperties): PlayableAbility[] {
+        const actions: BaseCardAbility[] = properties.playAction ? [properties.playAction].flat() : card.getPlayActions();
+        return actions.map((ability) => ({ ability, createContext: (player) => ability.createContext(player) }));
     }
 
-    getLegalReactions(card: DrawCard, context: C, properties: PlayCardProperties) {
+    getLegalReactions(card: DrawCard, _context: C, properties: PlayCardProperties): PlayableAbility[] {
         if(!properties.allowReactions) {
             return [];
         }
-        return card.getReactions();
+        return card.getReactions().map((ability) => ({
+            ability,
+            createContext: (player) => ability.createContext(player, properties.event)
+        }));
     }
 
-    setPlayType(context: AbilityContext, playType: PlayType, location: Location): void {
-        context.playType =
-            playType ||
-            context.playType ||
-            (location.includes('province') && PlayType.PlayFromProvince) ||
-            (location === 'hand' && PlayType.PlayFromHand) ||
-            PlayType.Other;
+    setPlayType(context: AbilityContext, playType: PlayType): void {
+        context.playType = playType;
     }
 
-    cancelAction(context: C, properties: PlayCardProperties): number {
+    cancelAction(context: C, properties: PlayCardProperties): void {
         if(properties.parentAction) {
             properties.parentAction.resolve(undefined, context);
         }
-        return 0;
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        const targets = properties.target as DrawCard | DrawCard[] | undefined;
-        if(!targets || (Array.isArray(targets) && targets.length === 0)) {
+        const properties = this.getProperties(context, additionalProperties);
+        const [card] = targetList(properties.target);
+        if(!card || !card.isDrawCard()) {
             return;
         }
-        let card: DrawCard = Array.isArray(targets) ? targets[0] : targets;
-        let abilities = this.getLegalAbilities(card, context, properties);
+        const abilities = this.getLegalAbilities(card, context, properties);
         if(abilities.length === 1) {
             events.push(
                 this.getPlayCardEvent(card, context, abilities[0].createContext(context.player), additionalProperties)
@@ -212,24 +210,18 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         }
         context.game.promptWithHandlerMenu(context.player, {
             source: card,
-            choices: abilities.map((action: BaseCardAbility) => action.title).concat(properties.resetOnCancel ? 'Cancel' : []),
-            handlers: abilities
-                .map(
-                    (action: BaseCardAbility) => () =>
-                        events.push(
-                            this.getPlayCardEvent(
-                                card,
-                                context,
-                                action.createContext(context.player),
-                                additionalProperties
-                            )
-                        )
-                )
-                .concat(() => this.cancelAction(context, properties))
+            options: abilities
+                .map(({ ability, createContext }) => ({
+                    text: ability.title,
+                    handler: () => {
+                        events.push(this.getPlayCardEvent(card, context, createContext(context.player), additionalProperties));
+                    }
+                }))
+                .concat(properties.resetOnCancel ? [{ text: 'Cancel', handler: () => this.cancelAction(context, properties) }] : [])
         });
     }
 
-    addPropertiesToEvent(event: Event, card: DrawCard, context: C): void {
+    addPropertiesToEvent(event: Event, _card: DrawCard, context: C): void {
         event.onPlayCardSource = context.source;
     }
 
@@ -239,22 +231,14 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         actionContext: AbilityContext,
         additionalProperties: Record<string, unknown> = {}
     ): Event {
-        this.updateForDragonTattoo_DYH(context, actionContext);
-        let properties = this.getProperties(context, additionalProperties);
-        let event = this.createEvent(card, context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
+        const event = this.createEvent(card, context, additionalProperties);
         this.updateEvent(event, card, context, additionalProperties);
-        this.setPlayType(actionContext, properties.playType ?? PlayType.Other, card.location);
+        this.setPlayType(actionContext, properties.playType);
         event.replaceHandler(() =>
             context.game.queueStep(new PlayCardResolver(context.game, actionContext, this, context, properties))
         );
         return event;
-    }
-
-    updateForDragonTattoo_DYH(context: AbilityContext, actionContext: AbilityContext) {
-        const innerCtx = (context as TriggeredAbilityContext).event?.context as TriggeredAbilityContext | undefined;
-        if(innerCtx?.event) {
-            (actionContext as TriggeredAbilityContext).event = innerCtx.event;
-        }
     }
 
     checkEventCondition(): boolean {

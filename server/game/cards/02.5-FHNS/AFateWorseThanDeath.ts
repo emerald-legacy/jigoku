@@ -5,26 +5,16 @@ import AbilityDsl from '../../abilitydsl.js';
 class AFateWorseThanDeath extends DrawCard {
     static id = 'a-fate-worse-than-death';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Bow, move home, dishonor, remove a fate and blank a character',
-
-            target: {
+    setupCardAbilities() {
+        this.action('Bow, move home, dishonor, remove a fate and blank a character')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: [
-                    ability.actions.bow(),
-                    ability.actions.dishonor(),
-                    ability.actions.removeFate(),
-                    ability.actions.sendHome(),
-                    ability.actions.cardLastingEffect({
-                        duration: Duration.UntilEndOfPhase,
-                        effect: ability.effects.blank()
-                    })
-                ]
-            },
-            effect: 'bow, dishonor, blank, move home, and remove a fate from {0}'
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor(), AbilityDsl.actions.removeFate(), AbilityDsl.actions.sendHome(), AbilityDsl.actions.cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.blank()
+            }))
+            .effect('bow, dishonor, blank, move home, and remove a fate from {0}');
     }
 }
 

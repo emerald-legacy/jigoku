@@ -52,7 +52,7 @@ describe('Stowaway', function() {
             expect(this.player1).toBeAbleToSelect(this.fan);
             expect(this.player1).toBeAbleToSelect(this.katana);
 
-            let mil = this.stowaway.getMilitarySkill();
+            const mil = this.stowaway.getMilitarySkill();
 
             this.player1.clickCard(this.katana);
             expect(this.player1).not.toBeAbleToSelect(this.mine);
@@ -97,7 +97,7 @@ describe('Stowaway', function() {
             expect(this.player1).toBeAbleToSelect(this.fan);
             expect(this.player1).toBeAbleToSelect(this.katana);
 
-            let mil = this.stowaway.getMilitarySkill();
+            const mil = this.stowaway.getMilitarySkill();
 
             this.player1.clickCard(this.mine);
             expect(this.player1).toBeAbleToSelect(this.mine);

@@ -1,33 +1,23 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { StatusToken } from '../../../StatusToken.js';
 
 export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';
 
     public setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Remove negative status tokens from a character, and discard it from play',
-            effect: 'expiate {0}\'s misdeeds by retiring them to the nearest monatery{1} Let them contemplate their sins.',
-            effectArgs: (context) => {
-                const target = context.target;
-                return [
-                    target && target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
-                ];
-            },
-            target: {
+        this.action('Remove negative status tokens from a character, and discard it from play')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.multiple([
                         AbilityDsl.actions.discardStatusToken({
                             target: context.target.statusTokens.filter(
-                                (t: StatusToken) =>
+                                (t) =>
                                     t.grantedStatus === CharacterStatus.Dishonored ||
                                     t.grantedStatus === CharacterStatus.Tainted
                             )
@@ -43,12 +33,16 @@ export default class ForcedRetirement extends DrawCard {
                             target: context.target
                         }),
                         AbilityDsl.actions.gainHonor({
-                            target: context.player,
-                            amount: 1
+                            target: context.player
                         })
                     ])
                 ]
-            }))
-        });
+            })))
+            .effect('expiate {0}\'s misdeeds by retiring them to the nearest monastery{1}. Let them contemplate their sins', (context) => {
+                const target = context.target;
+                return [
+                    target.fate > 0 ? ', recovering their ' + target.fate + ' fate' : ''
+                ];
+            });
     }
 }

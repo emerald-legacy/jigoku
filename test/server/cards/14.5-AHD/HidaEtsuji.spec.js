@@ -65,7 +65,7 @@ describe('Hida Etsuji', function() {
             });
 
             it('should allow using actions twice', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -153,7 +153,7 @@ describe('Hida Etsuji', function() {
                 this.coco2 = this.player2.moveCard('contested-countryside', 'province 2');
                 this.coco2.facedown = false;
 
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -179,7 +179,7 @@ describe('Hida Etsuji', function() {
                 this.coco2 = this.player2.moveCard('contested-countryside', 'province 2');
                 this.coco2.facedown = false;
 
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
 
                 this.noMoreActions();
                 this.player1.passConflict();

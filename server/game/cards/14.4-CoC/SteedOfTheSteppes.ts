@@ -1,20 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { Cost } from '../../costs/Cost.js';
-
-const steedOfTheSteppesCaptureParentCost = function(): Cost {
-    return {
-        canPay: function() {
-            return true;
-        },
-        resolve: function(context: AbilityContext) {
-            context.costs.steedOfTheSteppesCaptureParentCost = (context.source as DrawCard).parentCharacter;
-        },
-        pay: function() {
-        }
-    };
-};
+import { captureParentCost } from '../captureParentCost.js';
 
 class SteedOfTheSteppes extends DrawCard {
     static id = 'steed-of-the-steppes';
@@ -24,17 +10,13 @@ class SteedOfTheSteppes extends DrawCard {
             effect: AbilityDsl.effects.addTrait('cavalry')
         });
 
-        this.action({
-            title: 'Ready attached character',
-            condition: context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3),
-            cost: [
-                steedOfTheSteppesCaptureParentCost(),
-                AbilityDsl.costs.sacrificeSelf()
-            ],
-            //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.steedOfTheSteppesCaptureParentCost is for the actual stand
-            //I don't like it, but it isnn't work otherwise
-            gameAction: AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost as DrawCard].filter((card) => card !== null) }))
-        });
+        this.action('Ready attached character')
+            .cost(captureParentCost())
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .condition(context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
+            //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.captureParentCost is for the actual stand
+
+            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
     }
 }
 

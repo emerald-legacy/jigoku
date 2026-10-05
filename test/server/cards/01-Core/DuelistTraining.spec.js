@@ -51,6 +51,7 @@ describe('Duelist Training', function () {
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
                 expect(this.player1).toHavePrompt('Duelist Training');
+                expect(this.player1).toHavePrompt('Difference in bids: 1');
                 this.player1.clickPrompt('Pay with honor');
                 expect(this.player1.honor).toBe(10);
             });

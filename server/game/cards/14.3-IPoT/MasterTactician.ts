@@ -1,35 +1,24 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import { EventName, Location, Players, PlayType } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
-type CardPlayedEvent = EventPayload<EventName.OnCardPlayed> & {
-    onPlayCardSource?: unknown;
-    originallyOnTopOfConflictDeck?: boolean;
-    sourceOfCardPlayedFromConflictDeck?: BaseCard;
-};
-
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
-    private eventRegistrar?: EventRegistrar;
 
     private cardsPlayedThisRound = 0;
-    private mostRecentEvent?: CardPlayedEvent;
+    private mostRecentEvent?: EventPayload<EventName.OnCardPlayed>;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: AbilityDsl.effects.delayedEffect<this>({
                 when: {
-                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext<this>) => {
+                    onCardPlayed: (event, context) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -37,7 +26,7 @@ export default class MasterTactician extends DrawCard {
                         return (
                             event.originalLocation === Location.ConflictDeck &&
                             !event.onPlayCardSource &&
-                            !event.card.fromOutOfPlaySource &&
+                            !event.playedFromOutOfPlaySource &&
                             event.originallyOnTopOfConflictDeck &&
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDeck &&
@@ -57,9 +46,7 @@ export default class MasterTactician extends DrawCard {
                         ) {
                             return;
                         }
-                        if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
-                            this.cardsPlayedThisRound = 0;
-                        }
+
                         this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck = this;
                         this.cardsPlayedThisRound++;
                         this.game.addMessage(
@@ -84,7 +71,7 @@ export default class MasterTactician extends DrawCard {
             match: (card, context) =>
                 !!(context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0]),
             effect: AbilityDsl.effects.canPlayFromOutOfPlay(
-                (player: Player, card: BaseCard) => player === card.owner,
+                (player, card) => player === card.owner,
                 PlayType.PlayFromHand
             )
         });

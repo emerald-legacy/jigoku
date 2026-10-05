@@ -1,26 +1,18 @@
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { TargetMode } from '../../../Constants.js';
+import { ConflictType } from '../../../Constants.js';
+import { playerChoices } from '../../playerChoices.js';
 
 class DiplomaticHall extends DrawCard {
     static id = 'diplomatic-hall';
 
     setupCardAbilities() {
-        this.action({
-            condition: context => context.game.isDuringConflict('political'),
-            title: 'Select a player to draw a card',
-            target: {
-                mode: TargetMode.Select,
-                targets: true,
-                choices:  {
-                    [this.owner.name]: AbilityDsl.actions.draw({ target: this.owner }),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.draw({ target: this.owner.opponent })
-                }
-            },
-            effect: 'have {1} draw a card',
-            effectArgs: context => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
-        });
+        this.action('Select a player to draw a card')
+            .condition(context => context.game.isDuringConflict(ConflictType.Political))
+            .selectFrom({
+                targets: true
+            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.draw({ target: player })))
+            .effect('have {1} draw a card', context => (context.select === context.player.name ? context.player : context.player.opponent));
     }
 }
 

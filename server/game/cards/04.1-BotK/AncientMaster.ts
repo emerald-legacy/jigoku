@@ -8,28 +8,21 @@ export default class AncientMaster extends DrawCard {
 
     setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
-        this.reaction({
-            title: 'Search top 5 card for kiho or tattoo',
-            when: {
+        this.reaction('Search top 5 cards for kiho or tattoo')
+            .when({
                 onConflictDeclared: (event, context) =>
                     context.source.type === CardType.Attachment && (event.attackers ?? []).some((card) => card === context.source.parentCharacter),
                 onDefendersDeclared: (event, context) =>
-                    context.source.type === CardType.Attachment && (event.defenders ?? []).some((card) => card === context.source.parentCharacter)
-            },
-            printedAbility: false,
-            effect: 'look at the top five cards of their deck',
-            gameAction: AbilityDsl.actions.deckSearch({
+                    context.source.type === CardType.Attachment && event.defenders.some((card) => card === context.source.parentCharacter)
+            })
+            .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 5,
                 cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Location.Hand
                 })
-            })
-        });
-    }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
+            }))
+            .effect('look at the top five cards of their deck')
+            .notPrinted();
     }
 }

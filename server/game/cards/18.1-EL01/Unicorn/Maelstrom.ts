@@ -1,51 +1,45 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
-import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Duration, Element, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type BaseCard from '../../../BaseCard.js';
 import type DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-const maelstromCost = function (): Cost {
+function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
     return {
         getActionName(_context) {
             return 'maelstromCost';
         },
-        getCostMessage: function (context) {
+        getCostMessage(context) {
             if(context.costs.maelstromCostPaid) {
                 return ['discarding {0}'];
             }
             return [];
         },
-        canPay: function () {
+        canPay() {
             return true;
         },
-        resolve: function (context, result) {
-            let cardAvailable = true;
-            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
-                cardAvailable = false;
-            }
-
+        resolve(context, result) {
             context.costs.maelstromCostPaid = false;
-            if(cardAvailable) {
-                context.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Discard a card?',
-                    source: context.source,
-                    choices: ['Yes', 'No'],
-                    handlers: [
-                        () => {
+            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
+                return;
+            }
+            context.game.promptWithHandlerMenu(context.player, {
+                activePromptTitle: 'Discard a card?',
+                source: context.source,
+                options: [
+                    {
+                        text: 'Yes',
+                        handler: () => {
                             context.costs.maelstromCostPaid = true;
                             context.game.promptForSelect(context.player, {
                                 activePromptTitle: 'Choose a card to discard',
                                 context: context,
-                                mode: TargetMode.Single,
-                                numCards: 1,
                                 location: Location.Hand,
                                 controller: Players.Self,
-                                onSelect: (player: Player, card: BaseCard) => {
-                                    context.costs.maelstromCost = card;
+                                onSelect: (_player, card) => {
+                                    if(card.isDrawCard()) {
+                                        context.costs.maelstromCost = card;
+                                    }
                                     return true;
                                 },
                                 onCancel: () => {
@@ -53,82 +47,73 @@ const maelstromCost = function (): Cost {
                                     return true;
                                 }
                             });
-                        },
-                        () => (context.costs.maelstromCostPaid = false)
-                    ]
-                });
-            }
+                        }
+                    },
+                    { text: 'No', handler: () => (context.costs.maelstromCostPaid = false) }
+                ]
+            });
         },
-        payEvent: function (context) {
+        payEvent(context) {
             if(context.costs.maelstromCostPaid) {
-                let events = [];
-
-                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost as DrawCard });
-                events.push(discardAction.getEvent(context.costs.maelstromCost, context));
+                const discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
+                const event = discardAction.getEvent(context.costs.maelstromCost, context);
                 context.game.addMessage('{0} chooses to discard a card', context.player);
-
-                return events;
+                return [event];
             }
 
             //this is a do-nothing event to allow you to opt out and not scuttle the event
-            let noop = context.game.actions.handler({ handler: () => {} });
+            const noop = context.game.actions.handler({ handler: () => {} });
             return noop.getEvent(context.player, context);
         },
         promptsPlayer: true
     };
-};
+}
 
 const elementKey = 'maelstrom-water';
 
 export default class Maelstrom extends ProvinceCard {
     static id = 'maelstrom';
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Move a character into the conflict',
-            cost: maelstromCost(),
-            conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
-            cannotTargetFirst: true,
-            target: {
+        this.action('Move a character into the conflict')
+            .cost(maelstromCost())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
-                    context.costs.maelstromCostPaid ? true : card.controller === context.player,
-                gameAction: AbilityDsl.actions.multipleContext((context: ResolvedAbilityContext<ProvinceCard, DrawCard>) => {
-                    const target = context.target;
-                    // "you" is whoever triggered this, which is not always the province's
-                    // controller (Contested Countryside). A delayed effect's own context is
-                    // owned by the source's controller, so capture the player here.
-                    const triggeringPlayer = context.player;
-                    return {
-                        gameActions: [
-                            AbilityDsl.actions.moveToConflict(),
-                            AbilityDsl.actions.cardLastingEffect({
-                                target: target,
-                                duration: Duration.UntilEndOfPhase,
-                                effect: AbilityDsl.effects.delayedEffect({
-                                    when: {
-                                        afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
-                                            event.conflict.winner === target.controller &&
+                    context.costs.maelstromCostPaid ? true : card.controller === context.player
+            }, AbilityDsl.actions.multipleContext((context) => {
+                const target = context.target;
+                // the triggering player, not always the controller (Contested Countryside)
+                const triggeringPlayer = context.player;
+                return {
+                    gameActions: [
+                        AbilityDsl.actions.moveToConflict(),
+                        AbilityDsl.actions.cardLastingEffect({
+                            target: target,
+                            duration: Duration.UntilEndOfPhase,
+                            effect: AbilityDsl.effects.delayedEffect({
+                                when: {
+                                    afterConflict: (event) =>
+                                        event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === triggeringPlayer
-                                    },
-                                    message: '{0} is honored due to {1}\'s effect',
-                                    messageArgs: [target, context.source],
-                                    gameAction: AbilityDsl.actions.honor()
-                                })
+                                },
+                                message: '{0} is honored due to {1}\'s effect',
+                                messageArgs: [target, context.source],
+                                gameAction: AbilityDsl.actions.honor()
                             })
-                        ]
-                    };
-                })
-            },
-            effect: 'move {0} into the conflict{1}',
-            effectArgs: (context) =>
-                context.target?.controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
-        });
+                        })
+                    ]
+                };
+            }))
+            .effect('move {0} into the conflict{1}', (context) =>
+                context.target.controller === context.player ? ['. It will be honored if it wins the conflict'] : [''])
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
+            .cannotTargetFirst();
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Ability - Province Element',

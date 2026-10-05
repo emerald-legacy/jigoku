@@ -2,30 +2,31 @@ import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type Ring from './Ring.js';
 
+/** A prompt button; a `card` button shows that card and defaults its text and arg to it. */
 export interface PromptButton {
     text?: string | number;
     arg?: string | number;
     method?: string;
+    command?: string;
+    uuid?: string;
     timer?: boolean;
     timerCancel?: boolean;
+    disabled?: boolean;
     card?: BaseCard;
-    [key: string]: unknown;
 }
 
-export interface RenderedPromptButton {
-    text?: string | number;
-    arg?: string | number;
+type RenderedPromptButton = Omit<PromptButton, 'card'> & { card?: ReturnType<BaseCard['getShortSummary']> };
+
+/** A 'targeting' control shows a source and its targets; a 'card-name' control is a card-name input. */
+export type PromptControl = {
+    type: string;
+    uuid?: string;
+    source?: unknown;
+    targets?: unknown[];
+    command?: string;
     method?: string;
-    timer?: boolean;
-    timerCancel?: boolean;
-    card?: ReturnType<BaseCard['getShortSummary']>;
-    [key: string]: unknown;
-}
-
-export interface PromptControl {
-    type?: string;
-    [key: string]: unknown;
-}
+    name?: string;
+};
 
 export class PlayerPromptState {
     selectCard = false;
@@ -105,9 +106,9 @@ export class PlayerPromptState {
     }
 
     getCardSelectionState(card: BaseCard) {
-        let selectable = this.selectableCards.includes(card);
-        let index = this.selectedCards?.indexOf(card) ?? -1;
-        let result = {
+        const selectable = this.selectableCards.includes(card);
+        const index = this.selectedCards?.indexOf(card) ?? -1;
+        const result = {
             selected: index !== -1,
             selectable: selectable,
             unselectable: this.selectCard && !selectable

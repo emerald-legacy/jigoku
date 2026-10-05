@@ -6,10 +6,6 @@ import type DrawCard from './DrawCard.js';
 class DuplicateUniqueAction extends PlayCardSourceAction {
     title = 'Add fate to a duplicate';
 
-    constructor(card: DrawCard) {
-        super(card);
-    }
-
     meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
         if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
             return 'facedown';

@@ -1,6 +1,5 @@
 import { Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class ConflictBetweenKin extends ProvinceCard {
@@ -10,7 +9,7 @@ export default class ConflictBetweenKin extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
-            match: (card: DrawCard) => card.isParticipating(),
+            match: (card) => card.isParticipating(),
             effect: [
                 AbilityDsl.effects.cardCannot({
                     cannot: 'target',

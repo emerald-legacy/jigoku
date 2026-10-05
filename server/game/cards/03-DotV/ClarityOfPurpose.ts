@@ -1,33 +1,27 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ClarityOfPurpose extends DrawCard {
     static id = 'clarity-of-purpose';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Character cannot be bowed and doesn\'t bow during political conflicts',
-            condition: () => this.game.isDuringConflict(),
-            target: {
+    setupCardAbilities() {
+        this.action('Character cannot be bowed and doesn\'t bow during political conflicts')
+            .condition(() => this.game.isDuringConflict())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: [
-                    ability.actions.cardLastingEffect({
-                        condition: () => this.game.isDuringConflict('political'),
-                        effect: ability.effects.doesNotBow()
-                    }),
-                    ability.actions.cardLastingEffect(context => ({
-                        effect: ability.effects.cardCannot({
-                            cannot: 'bow',
-                            restricts: 'opponentsCardEffects',
-                            applyingPlayer: context.player
-                        })
-                    }))
-                ]
-            },
-            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of a political conflict'
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.cardLastingEffect({
+                condition: () => this.game.isDuringConflict(ConflictType.Political),
+                effect: AbilityDsl.effects.doesNotBow()
+            }), AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: AbilityDsl.effects.cardCannot({
+                    cannot: 'bow',
+                    restricts: 'opponentsCardEffects',
+                    applyingPlayer: context.player
+                })
+            })))
+            .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of a political conflict');
     }
 }
 

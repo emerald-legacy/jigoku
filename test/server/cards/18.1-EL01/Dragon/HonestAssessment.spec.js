@@ -48,7 +48,7 @@ describe('Honest Assessment', function() {
         });
 
         it('should let you to name a card and then sac itself to discard all matching cards from a revealed random subset of your opponent\'s hand', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);
             this.player2.clickCard(this.assessment);
@@ -64,7 +64,7 @@ describe('Honest Assessment', function() {
         });
 
         it('hand has no matching cards', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);
             this.player2.clickCard(this.assessment);
@@ -79,7 +79,7 @@ describe('Honest Assessment', function() {
 
         it('shoud work with less than 4 cards', function() {
             this.player1.moveCard(this.ornateFan, 'conflict disard pile');
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);
             this.player2.clickCard(this.assessment);

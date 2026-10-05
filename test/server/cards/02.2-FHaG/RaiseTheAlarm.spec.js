@@ -58,7 +58,7 @@ describe('Raise The Alarm', function() {
             expect(this.game.currentConflict.defenders).toContain(this.kisada);
 
             expect(this.getChatLogs(5)).toContain('player2 plays Raise the Alarm to flip the card in the conflict province faceup');
-            expect(this.getChatLogs(5)).toContain('Hida Kisada is revealed and brought into the conflict!');
+            expect(this.getChatLogs(5)).toContain('Hida Kisada is revealed and brought into the conflict');
         });
 
         it('should do nothing if you reveal a holding', function() {
@@ -70,7 +70,7 @@ describe('Raise The Alarm', function() {
             this.player2.clickCard(this.storehouse);
 
             expect(this.getChatLogs(5)).toContain('player2 plays Raise the Alarm to flip the card in the conflict province faceup');
-            expect(this.getChatLogs(5)).toContain('Imperial Storehouse is revealed but cannot be brought into the conflict!');
+            expect(this.getChatLogs(5)).toContain('Imperial Storehouse is revealed but cannot be brought into the conflict');
         });
 
         it('should do nothing if you reveal a dash character', function() {
@@ -84,7 +84,7 @@ describe('Raise The Alarm', function() {
             expect(this.game.currentConflict.defenders).not.toContain(this.liar);
 
             expect(this.getChatLogs(5)).toContain('player2 plays Raise the Alarm to flip the card in the conflict province faceup');
-            expect(this.getChatLogs(5)).toContain('Bayushi Liar is revealed but cannot be brought into the conflict!');
+            expect(this.getChatLogs(5)).toContain('Bayushi Liar is revealed but cannot be brought into the conflict');
         });
     });
 });

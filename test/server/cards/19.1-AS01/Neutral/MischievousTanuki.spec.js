@@ -82,8 +82,8 @@ describe('Mischievous Tanuki', function () {
             });
 
             it('should prompt each player to choose a bid and not transfer honor and should not proc dial revealed reactions', function () {
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
                 this.player1.clickCard(this.tanuki);
                 expect(this.player1).toHavePrompt('Choose your bid');
                 expect(this.player2).toHavePrompt('Choose your bid');
@@ -118,8 +118,8 @@ describe('Mischievous Tanuki', function () {
             });
 
             it('both same parity', function () {
-                let p1Fate = this.player1.fate;
-                let p2Fate = this.player2.fate;
+                const p1Fate = this.player1.fate;
+                const p2Fate = this.player2.fate;
 
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');
@@ -134,8 +134,8 @@ describe('Mischievous Tanuki', function () {
 
             it('both same parity, but player 2 has only one fate', function () {
                 this.player2.fate = 1;
-                let p1Fate = this.player1.fate;
-                let p2Fate = this.player2.fate;
+                const p1Fate = this.player1.fate;
+                const p2Fate = this.player2.fate;
 
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');
@@ -149,12 +149,12 @@ describe('Mischievous Tanuki', function () {
             });
 
             it('different parity', function () {
-                let p1Fate = this.player1.fate;
-                let p2Fate = this.player2.fate;
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
-                let p1cards = this.player1.hand.length;
-                let p2cards = this.player2.hand.length;
+                const p1Fate = this.player1.fate;
+                const p2Fate = this.player2.fate;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
+                const p1cards = this.player1.hand.length;
+                const p2cards = this.player2.hand.length;
 
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');
@@ -175,8 +175,8 @@ describe('Mischievous Tanuki', function () {
             it('interacts with abilities that change dials on reveal', function () {
                 this.player1.moveCard(this.ideNegotiator, 'play area');
 
-                let p1Fate = this.player1.fate;
-                let p2Fate = this.player2.fate;
+                const p1Fate = this.player1.fate;
+                const p2Fate = this.player2.fate;
 
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');

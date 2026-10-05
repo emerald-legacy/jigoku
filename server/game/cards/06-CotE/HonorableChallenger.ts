@@ -6,9 +6,8 @@ class HonorableChallenger extends DrawCard {
     static id = 'honorable-challenger';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: {
+        this.action('Initiate a military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} will not bow as a result of this conflict\'s resolution',
                 messageArgs: duel => duel.winner,
@@ -16,8 +15,7 @@ class HonorableChallenger extends DrawCard {
                     target: duel.winner,
                     effect: AbilityDsl.effects.doesNotBow()
                 })
-            }
-        });
+            }));
     }
 }
 

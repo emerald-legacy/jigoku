@@ -70,7 +70,7 @@ describe('Watch Commander', function () {
                 this.player1.clickCard(this.watchCommander);
                 this.player1.clickCard(this.wanderingRonin);
                 expect(this.wanderingRonin.attachments).toContain(this.watchCommander);
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 this.player2.clickPrompt('Done');

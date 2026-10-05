@@ -35,7 +35,7 @@ describe('Kujira\'s Hireling', function() {
 
             it('should cost 1 fate', function() {
                 this.player1.pass();
-                let player2fate = this.player2.player.fate;
+                const player2fate = this.player2.player.fate;
                 this.player2.clickCard(this.kujirasHireling);
                 this.player2.clickPrompt('+1/+1');
                 expect(this.player2.player.fate).toBe(player2fate - 1);

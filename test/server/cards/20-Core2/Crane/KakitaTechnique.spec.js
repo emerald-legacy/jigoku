@@ -24,8 +24,8 @@ describe('Kakita Technique', function () {
             });
 
             it('should set bid to 0', function () {
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -110,8 +110,8 @@ describe('Kakita Technique', function () {
             it('lasting delayed effect', function () {
                 this.player1.fate = 20;
 
-                let baseMil = this.kuwanan.getMilitarySkill();
-                let basePol = this.kuwanan.getPoliticalSkill();
+                const baseMil = this.kuwanan.getMilitarySkill();
+                const basePol = this.kuwanan.getPoliticalSkill();
 
                 this.noMoreActions();
                 this.initiateConflict({

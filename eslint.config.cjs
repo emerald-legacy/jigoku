@@ -3,17 +3,16 @@ const jasmine = require('eslint-plugin-jasmine');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsparser = require('@typescript-eslint/parser');
 const globals = require('globals');
+const declaredTargetNames = require('./eslint/declared-target-names.cjs');
 
 module.exports = [
     {
         ignores: ['build/**', 'node_modules/**', 'coverage/**']
     },
     js.configs.recommended,
-    // Disable new ESLint 10 rules that flag many existing patterns — enable later
     {
         rules: {
-            'no-useless-assignment': 'off',
-            'preserve-caught-error': 'off'
+            'prefer-const': 'error'
         }
     },
     // JavaScript files
@@ -23,19 +22,19 @@ module.exports = [
             jasmine
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2024,
             sourceType: 'module',
             globals: {
                 ...globals.node,
-                ...globals.es2020,
+                ...globals.es2024,
                 ...globals.jasmine
             }
         },
         rules: {
             // Jasmine rules
-            'jasmine/no-spec-dupes': 'off',
-            'jasmine/no-suite-dupes': 'off',
-            'jasmine/missing-expect': 'warn',
+            'jasmine/no-spec-dupes': ['error', 'branch'],
+            'jasmine/no-suite-dupes': ['error', 'branch'],
+            'jasmine/missing-expect': 'error',
             'jasmine/new-line-before-expect': 'off',
             'jasmine/prefer-toHaveBeenCalledWith': 'off',
 
@@ -43,17 +42,17 @@ module.exports = [
             'indent': ['error', 4, { SwitchCase: 1 }],
             'quotes': ['error', 'single'],
             'brace-style': ['error', '1tbs'],
-            'no-sparse-arrays': 'warn',
+            'no-sparse-arrays': 'error',
             'eqeqeq': 'error',
             'no-else-return': 'error',
             'no-extra-bind': 'error',
             'curly': ['error', 'all'],
             'no-multi-spaces': 'error',
             'no-invalid-this': 'error',
-            'no-useless-escape': 'warn',
-            'no-useless-concat': 'warn',
-            'no-useless-constructor': 'warn',
-            'array-bracket-spacing': ['warn', 'never'],
+            'no-useless-escape': 'error',
+            'no-useless-concat': 'error',
+            'no-useless-constructor': 'error',
+            'array-bracket-spacing': ['error', 'never'],
             'block-spacing': ['error', 'always'],
             'camelcase': ['error', { properties: 'never' }],
             'comma-dangle': 'error',
@@ -81,10 +80,11 @@ module.exports = [
         files: ['server/**/*.ts'],
         plugins: {
             '@typescript-eslint': tseslint,
-            jasmine
+            jasmine,
+            local: { rules: { 'declared-target-names': declaredTargetNames } }
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2024,
             sourceType: 'module',
             parser: tsparser,
             parserOptions: {
@@ -92,12 +92,12 @@ module.exports = [
             },
             globals: {
                 ...globals.node,
-                ...globals.es2020,
+                ...globals.es2024,
                 ...globals.jasmine
             }
         },
         rules: {
-            // TypeScript rules (disabled for gradual migration — re-enable as codebase improves)
+            // TypeScript rules
             ...tseslint.configs.recommended.rules,
             'no-unused-vars': 'off',
             '@typescript-eslint/no-explicit-any': 'error',
@@ -107,19 +107,22 @@ module.exports = [
                 varsIgnorePattern: '^_'
             }],
             '@typescript-eslint/no-non-null-assertion': 'error',
-            '@typescript-eslint/ban-ts-comment': 'error',
+            '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
+            '@typescript-eslint/ban-ts-comment': ['error', { 'ts-expect-error': true, 'ts-ignore': true, 'ts-nocheck': true }],
             '@typescript-eslint/no-require-imports': 'error',
             '@typescript-eslint/no-empty-object-type': 'error',
             '@typescript-eslint/no-unsafe-function-type': 'error',
             '@typescript-eslint/no-duplicate-enum-values': 'error',
             '@typescript-eslint/no-unused-expressions': 'error',
             '@typescript-eslint/no-this-alias': 'error',
+            '@typescript-eslint/no-useless-constructor': 'error',
+            'local/declared-target-names': 'error',
             'no-redeclare': 'off',
 
             // Jasmine rules
-            'jasmine/no-spec-dupes': 'off',
-            'jasmine/no-suite-dupes': 'off',
-            'jasmine/missing-expect': 'warn',
+            'jasmine/no-spec-dupes': ['error', 'branch'],
+            'jasmine/no-suite-dupes': ['error', 'branch'],
+            'jasmine/missing-expect': 'error',
             'jasmine/new-line-before-expect': 'off',
             'jasmine/prefer-toHaveBeenCalledWith': 'off',
 
@@ -127,15 +130,15 @@ module.exports = [
             'indent': ['error', 4, { SwitchCase: 1 }],
             'quotes': ['error', 'single'],
             'brace-style': ['error', '1tbs'],
-            'no-sparse-arrays': 'warn',
+            'no-sparse-arrays': 'error',
             'eqeqeq': 'error',
             'no-else-return': 'error',
             'no-extra-bind': 'error',
             'curly': ['error', 'all'],
             'no-multi-spaces': 'error',
-            'no-useless-escape': 'warn',
-            'no-useless-concat': 'warn',
-            'array-bracket-spacing': ['warn', 'never'],
+            'no-useless-escape': 'error',
+            'no-useless-concat': 'error',
+            'array-bracket-spacing': ['error', 'never'],
             'block-spacing': ['error', 'always'],
             'camelcase': ['error', { properties: 'never' }],
             'comma-dangle': 'error',
@@ -165,12 +168,12 @@ module.exports = [
             jasmine
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2024,
             sourceType: 'module',
             parser: tsparser,
             globals: {
                 ...globals.node,
-                ...globals.es2020,
+                ...globals.es2024,
                 ...globals.jasmine,
                 integration: 'readonly',
                 fillers: 'readonly'
@@ -180,6 +183,7 @@ module.exports = [
             'no-unused-vars': 'off',
             // stub-based unit tests opt out with a file-level eslint-disable
             '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'

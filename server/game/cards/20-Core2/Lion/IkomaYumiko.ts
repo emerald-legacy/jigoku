@@ -8,24 +8,22 @@ export default class IkomaYumiko extends DrawCard {
         this.persistentEffect({
             effect: [
                 AbilityDsl.effects.modifyBothSkills(
-                    (card, context) =>
-                        (context.player.opponent)?.cardsInPlay.reduce(
-                            (total: number, char: DrawCard) => (char.isDishonored ? total + 1 : total),
+                    (_card, context) =>
+                        context.player.opponent?.cardsInPlay.reduce(
+                            (total, char) => (char.isDishonored ? total + 1 : total),
                             0
                         ) ?? 0
                 )
             ]
         });
 
-        this.reaction({
-            title: 'Claim Imperial favor',
-            when: {
+        this.reaction('Claim Imperial favor')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            effect: 'claim the Emperor\'s favor',
-            gameAction: AbilityDsl.actions.claimImperialFavor((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.claimImperialFavor((context) => ({
                 target: context.player
-            }))
-        });
+            })))
+            .effect('claim the Emperor\'s favor');
     }
 }

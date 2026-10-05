@@ -168,10 +168,10 @@ describe('The Wealth of the Crane', function() {
         });
 
         it('should not discard the cards already there', function() {
-            let p1Count = this.player1.player.getDynastyCardsInProvince('province 1').length;
-            let p2Count = this.player1.player.getDynastyCardsInProvince('province 2').length;
-            let p3Count = this.player1.player.getDynastyCardsInProvince('province 3').length;
-            let p4Count = this.player1.player.getDynastyCardsInProvince('province 4').length;
+            const p1Count = this.player1.player.getDynastyCardsInProvince('province 1').length;
+            const p2Count = this.player1.player.getDynastyCardsInProvince('province 2').length;
+            const p3Count = this.player1.player.getDynastyCardsInProvince('province 3').length;
+            const p4Count = this.player1.player.getDynastyCardsInProvince('province 4').length;
 
             this.player1.clickCard(this.wealth);
             expect(this.player1).toHavePrompt('The Wealth of the Crane');
@@ -228,14 +228,14 @@ describe('The Wealth of the Crane', function() {
 
         describe('Cost Reduction', function() {
             it('should cost 5 with no faceup provinces', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wealth);
                 expect(this.player1.fate).toBe(fate - 5);
             });
 
             it('should cost 4 with 1 faceup province', function() {
                 this.p1.facedown = false;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wealth);
                 expect(this.player1.fate).toBe(fate - 4);
             });
@@ -243,7 +243,7 @@ describe('The Wealth of the Crane', function() {
             it('should cost 3 with 2 faceup provinces', function() {
                 this.p1.facedown = false;
                 this.p2.facedown = false;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wealth);
                 expect(this.player1.fate).toBe(fate - 3);
             });
@@ -252,7 +252,7 @@ describe('The Wealth of the Crane', function() {
                 this.p1.facedown = false;
                 this.p2.facedown = false;
                 this.p3.facedown = false;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wealth);
                 expect(this.player1.fate).toBe(fate - 2);
             });
@@ -262,7 +262,7 @@ describe('The Wealth of the Crane', function() {
                 this.p2.facedown = false;
                 this.p3.facedown = false;
                 this.p4.facedown = false;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wealth);
                 expect(this.player1.fate).toBe(fate - 1);
             });
@@ -273,7 +273,7 @@ describe('The Wealth of the Crane', function() {
                 this.p3.facedown = false;
                 this.p4.facedown = false;
                 this.pStronghold.facedown = false;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wealth);
                 expect(this.player1.fate).toBe(fate - 0);
             });

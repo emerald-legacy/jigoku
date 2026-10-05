@@ -10,14 +10,12 @@ class IuchiShahai2 extends DrawCard {
             effect: AbilityDsl.effects.addKeyword('covert')
         });
 
-        this.reaction({
-            title: 'Place 1 fate on this character',
-            cost: AbilityDsl.costs.payHonor(1),
-            when: {
+        this.reaction('Place 1 fate on this character')
+            .when({
                 onCardPlayed: (event, context) => (event.card.hasTrait('meishodo') || event.card.hasTrait('maho')) && event.player === context.player
-            },
-            gameAction: AbilityDsl.actions.placeFate()
-        });
+            })
+            .cost(AbilityDsl.costs.payHonor(1))
+            .gameAction(AbilityDsl.actions.placeFate());
     }
 }
 

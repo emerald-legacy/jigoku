@@ -6,9 +6,8 @@ class ReturnTheOffense extends DrawCard {
     static id = 'return-the-offense';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 message: '{0}{1}{2}{3}{4}',
                 messageArgs: (duel) => [
@@ -31,8 +30,7 @@ class ReturnTheOffense extends DrawCard {
                         })
                     })
                 ])
-            }
-        });
+            }));
     }
 }
 

@@ -16,21 +16,18 @@ class ThirdWhiskerSneak extends DrawCard {
                 })]
         });
 
-        this.reaction({
-            title: 'Add a card to your hand',
-            when: {
+        this.reaction('Add a card to your hand')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && event.conflict.conflictUnopposed && context.source.isParticipating()
-            },
-            effect: 'look at the top {1} cards of their conflict deck',
-            effectArgs: context => [context.player.getProvinces(a => !a.isBroken).length],
-            gameAction: AbilityDsl.actions.deckSearch({
+            })
+            .gameAction(AbilityDsl.actions.deckSearch({
                 amount: (context) => context.player.getProvinces(a => !a.isBroken).length,
                 reveal: false,
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Location.Hand
                 })
-            })
-        });
+            }))
+            .effect('look at the top {1} cards of their conflict deck', context => [context.player.getProvinces(a => !a.isBroken).length]);
     }
 }
 

@@ -6,18 +6,16 @@ class AustereExemplar extends DrawCard {
     static id = 'austere-exemplar';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Take three actions',
-            limit: AbilityDsl.limit.perConflict(1),
-            cost: AbilityDsl.costs.payFateToRing(),
-            condition: (context) => context.source.isAttacking(),
-            effect: 'take three actions',
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
+        this.action('Take three actions')
+            .cost(AbilityDsl.costs.payFateToRing())
+            .condition((context) => context.source.isAttacking())
+            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Duration.UntilPassPriority,
                 effect: AbilityDsl.effects.additionalAction(3)
-            }))
-        });
+            })))
+            .effect('take three actions')
+            .limit(AbilityDsl.limit.perConflict(1));
     }
 }
 

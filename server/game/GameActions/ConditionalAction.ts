@@ -5,22 +5,22 @@ import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface ConditionalActionProperties extends GameActionProperties {
-    condition: ((context: AbilityContext, properties: ConditionalActionProperties) => boolean) | boolean;
+export interface ConditionalActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+    condition: ((context: C, properties: ConditionalActionProperties<C>) => boolean) | boolean;
     trueGameAction: GameAction;
     falseGameAction: GameAction;
 }
 
-export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties, EventName, C> {
-    getProperties(context: C, additionalProperties = {}): ConditionalActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
+export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties<C>, EventName, C> {
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         properties.trueGameAction.setDefaultTarget(() => properties.target);
         properties.falseGameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
     getGameAction(context: C, additionalProperties = {}): GameAction {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         let condition = properties.condition;
         if(typeof condition === 'function') {
             condition = condition(context, properties);

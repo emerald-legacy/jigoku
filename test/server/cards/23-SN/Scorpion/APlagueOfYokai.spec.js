@@ -50,7 +50,7 @@ describe('A Plague of Yokai', function () {
             expect(this.challenger.getMilitarySkill()).toBe(2);
             expect(this.challenger.getPoliticalSkill()).toBe(2);
 
-            let length = this.player1.conflictDeck.length;
+            const length = this.player1.conflictDeck.length;
 
             this.player1.clickCard(this.plague1);
 

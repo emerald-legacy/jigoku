@@ -4,53 +4,62 @@ import { EventName } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type { GameAction, ActionEvent } from './GameAction.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
 import { LoseFateAction } from './LoseFateAction.js';
 import { JointGameAction } from './JointGameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;
     message?: string;
     messageArgs?: (context: AbilityContext) => MsgArg[];
 }
 
+type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message' | 'messageArgs'>;
+
+export function queuePostBidSteps(event: PostBid, context: AbilityContext): void {
+    context.game.queueStep(
+        new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
+    );
+    context.game.queueStep(
+        new SimpleStep(context.game, () => {
+            const [message, messageArgs]: MessageArgs = event.message
+                ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
+                : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
+            context.game.addMessage(message, ...messageArgs);
+        })
+    );
+}
+
 export class FateBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FateBidProperties, EventName.Unnamed, C> {
     name = 'fateBid';
     eventName = EventName.Unnamed;
-    defaultProperties: FateBidProperties = {
-        postBidAction: undefined
-    };
-
-    constructor(propertyFactory: FateBidProperties | ((context: C) => FateBidProperties)) {
-        super(propertyFactory);
-    }
 
     defaultTargets(context: C) {
         return [context.player];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const players = [context.player, context.player.opponent];
-        return ['have {0} select an amount of fate from their pool', [players]];
+    protected effectMessage(): MessageArgs {
+        return ['have {0} select an amount of fate from their pool', []];
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
-        let { postBidAction, message, messageArgs } = this.getProperties(
+    protected effectMessageTarget(context: C): MsgArg {
+        return [context.player, context.player.opponent];
+    }
+
+    addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
+        const { postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
         );
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        const bidEvent = event as GameEvent<EventName.OnHonorBid>;
-        bidEvent.postBidAction = postBidAction;
-        bidEvent.message = message;
-        bidEvent.messageArgs = messageArgs;
+        event.postBidAction = postBidAction;
+        event.message = message;
+        event.messageArgs = messageArgs;
     }
 
     eventHandler(event: ActionEvent<EventName.Unnamed, C>): void {
-        const bidEvent = event as GameEvent<EventName.OnHonorBid>;
-        const context = (event.context);
+        const context = event.context;
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                 const actions: Array<LoseFateAction> = [];
@@ -59,20 +68,8 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
                     actions.push(new LoseFateAction({ amount, target: player }));
                 }
                 new JointGameAction(actions).resolve(undefined, context);
-                // @ts-expect-error -- fateBidResult is dynamically added to context for downstream ability resolution
-                context.fateBidResult = result;
             })
         );
-        context.game.queueStep(
-            new SimpleStep(context.game, () => bidEvent.postBidAction && bidEvent.postBidAction.resolve(context.player, context))
-        );
-        context.game.queueStep(
-            new SimpleStep(context.game, () => {
-                const [message, messageArgs]: MessageArgs = bidEvent.message
-                    ? [bidEvent.message, bidEvent.messageArgs ? Array.from(bidEvent.messageArgs(context)) : []]
-                    : (bidEvent.postBidAction ? bidEvent.postBidAction.getEffectMessage(context) : ['', []]);
-                context.game.addMessage(message, ...messageArgs);
-            })
-        );
+        queuePostBidSteps(event, context);
     }
 }

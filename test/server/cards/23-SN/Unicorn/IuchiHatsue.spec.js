@@ -25,8 +25,8 @@ describe('Iuchi Hatsue', function () {
                 attackers: [this.challenger],
                 defenders: [this.mitsu]
             });
-            let mil = this.hatsue.getMilitarySkill();
-            let pol = this.hatsue.getPoliticalSkill();
+            const mil = this.hatsue.getMilitarySkill();
+            const pol = this.hatsue.getPoliticalSkill();
 
             this.player2.pass();
 

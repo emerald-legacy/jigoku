@@ -20,7 +20,7 @@ describe('Captive Audience', function () {
             });
 
             it('should cost 1 honor and switch the conflict type from political to military', function () {
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.dojiWhisperer],
@@ -30,6 +30,20 @@ describe('Captive Audience', function () {
                 this.player2.clickCard(this.captiveAudience);
                 expect(this.player2.player.honor).toBe(honor - 1);
                 expect(this.game.currentConflict.conflictType).toBe('military');
+            });
+
+            it('should switch the conflict type through a switch conflict type event', function () {
+                const switched = jasmine.createSpy('onSwitchConflictType');
+                this.game.on('onSwitchConflictType', switched);
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.dojiWhisperer],
+                    defenders: []
+                });
+                this.player2.clickCard(this.captiveAudience);
+                expect(switched).toHaveBeenCalledTimes(1);
+                expect(this.game.currentConflict.conflictType).toBe('military');
+                expect(this.getChatLogs(5)).toContain('player2 plays Captive Audience, losing 1 honor to switch the conflict type from political to military');
             });
 
             it('should send home and bow characters with a dash in military', function () {
@@ -44,7 +58,7 @@ describe('Captive Audience', function () {
             });
 
             it('should not switch the conflict from military to political', function () {
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.brashSamurai],

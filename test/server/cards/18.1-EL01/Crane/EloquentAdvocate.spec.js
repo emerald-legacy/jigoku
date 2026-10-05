@@ -36,7 +36,7 @@ describe('Eloquent Advocate', function() {
                 type: 'political'
             });
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.advocate);

@@ -23,8 +23,8 @@ describe('Shinjo Trailblazer', function() {
             });
 
             it('should give +2/+2', function() {
-                let militarySkill = this.shinjoTrailblazer.getMilitarySkill();
-                let politicalSkill = this.shinjoTrailblazer.getPoliticalSkill();
+                const militarySkill = this.shinjoTrailblazer.getMilitarySkill();
+                const politicalSkill = this.shinjoTrailblazer.getPoliticalSkill();
                 this.player1.declareConflict('military', null, [this.shinjoTrailblazer], 'air');
                 this.player1.clickCard(this.shinjoTrailblazer);
                 expect(this.shinjoTrailblazer.getMilitarySkill()).toBe(militarySkill + 2);
@@ -32,8 +32,8 @@ describe('Shinjo Trailblazer', function() {
             });
 
             it('should expire at the end of the conflict', function() {
-                let militarySkill = this.shinjoTrailblazer.getMilitarySkill();
-                let politicalSkill = this.shinjoTrailblazer.getPoliticalSkill();
+                const militarySkill = this.shinjoTrailblazer.getMilitarySkill();
+                const politicalSkill = this.shinjoTrailblazer.getPoliticalSkill();
                 this.player1.declareConflict('military', null, [this.shinjoTrailblazer], 'air');
                 this.player1.clickCard(this.shinjoTrailblazer);
                 expect(this.shinjoTrailblazer.getMilitarySkill()).toBe(militarySkill + 2);

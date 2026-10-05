@@ -1,25 +1,22 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HidaBackbreaker extends DrawCard {
     static id = 'hida-backbreaker';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                                                   context.source.isParticipating() && context.game.isDuringConflict('military')
-            },
-            target: {
+                                                   context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
+            })
+            .target({
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.dishonor());
     }
 
     allowAttachment(attachment: DrawCard) {

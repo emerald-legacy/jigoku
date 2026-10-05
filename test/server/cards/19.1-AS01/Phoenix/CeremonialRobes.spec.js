@@ -33,8 +33,8 @@ describe('Ceremonial Robes', function () {
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
 
-            let p1InitialHonor = this.player1.honor;
-            let p2InitialHonor = this.player2.honor;
+            const p1InitialHonor = this.player1.honor;
+            const p2InitialHonor = this.player2.honor;
 
             this.player1.clickCard(this.robes);
             expect(this.player1).toHavePrompt('Choose a province');
@@ -81,8 +81,8 @@ describe('Ceremonial Robes', function () {
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
 
-            let p1InitialHonor = this.player1.honor;
-            let p2InitialHonor = this.player2.honor;
+            const p1InitialHonor = this.player1.honor;
+            const p2InitialHonor = this.player2.honor;
 
             this.player1.clickCard(this.robes);
             expect(this.player1).toHavePrompt('Choose a province');
@@ -125,6 +125,33 @@ describe('Ceremonial Robes', function () {
             expect(this.getChatLogs(5)).toContain(
                 'Kami of Ancient Wisdom was a Spirit! player1 and player2 lose 1 honor'
             );
+        });
+
+        it('puts the last card on the bottom without a prompt when only 2 cards are left', function () {
+            this.player1.reduceDeckToNumber('dynasty deck', 0);
+            this.player1.player.moveCard(this.solemn, 'dynasty deck');
+            this.player1.player.moveCard(this.dojo, 'dynasty deck');
+
+            this.player1.clickCard(this.robes);
+            this.player1.clickCard(this.prov1);
+            expect(this.player1).toHavePrompt('Select a card to put into the province faceup');
+            this.player1.clickPrompt('Guardian Dōjō');
+            expect(this.dojo.location).toBe('province 1');
+            expect(this.player1.player.dynastyDeck).toEqual([this.solemn]);
+            expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
+            expect(this.getChatLogs(5)).toContain('player1 places a card on the bottom of the deck');
+        });
+
+        it('places a single card into the province without a prompt', function () {
+            this.player1.reduceDeckToNumber('dynasty deck', 0);
+            this.player1.player.moveCard(this.dojo, 'dynasty deck');
+
+            this.player1.clickCard(this.robes);
+            this.player1.clickCard(this.prov1);
+            expect(this.dojo.location).toBe('province 1');
+            expect(this.dojo.facedown).toBe(false);
+            expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
+            expect(this.getChatLogs(5)).toContain('player1 places Guardian Dōjō into their province');
         });
     });
 });

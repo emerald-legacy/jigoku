@@ -47,12 +47,12 @@ describe('Shinjo Sora', function () {
                     defenders: [this.sora]
                 });
                 this.player2.clickCard(this.sora);
-                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
+                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
 
-                let houndsValid = this.game.currentConflict.defenders.length >= 5;
+                const houndsValid = this.game.currentConflict.defenders.length >= 5;
                 expect(houndsValid).toBe(true);
 
-                let hound = this.game.currentConflict.defenders[1];
+                const hound = this.game.currentConflict.defenders[1];
                 this.player1.pass();
                 this.player2.clickCard(this.scorp);
                 this.player2.clickCard(hound);
@@ -98,14 +98,14 @@ describe('Shinjo Sora', function () {
                     defenders: [this.sora]
                 });
                 this.player2.clickCard(this.sora);
-                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
+                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
 
                 expect(this.kuwanan.location).toBe('province 1');
                 expect(this.storehouse.location).toBe('province 2');
                 expect(this.kisada.location).toBe('province 3');
                 expect(this.liar.location).toBe('removed from game');
 
-                let houndsValid = this.game.currentConflict.defenders.length >= 2;
+                const houndsValid = this.game.currentConflict.defenders.length >= 2;
                 expect(houndsValid).toBe(true);
             });
         });
@@ -154,7 +154,7 @@ describe('Shinjo Sora', function () {
                 expect(this.infantry.getPoliticalSkill()).toBe(2);
 
                 this.player2.clickCard(this.sora);
-                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
+                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
 
                 const hounds = this.game.currentConflict.defenders.filter((card) => card.name === 'Unleashed Hound');
                 expect(hounds.length).toBe(4);

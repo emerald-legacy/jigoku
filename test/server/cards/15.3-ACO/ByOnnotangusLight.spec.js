@@ -63,7 +63,7 @@ describe('By Onnotangu\'s Light', function() {
                     province: this.light
                 });
                 this.noMoreActions();
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.kisada);
                 this.player1.clickCard(this.kisada);
@@ -296,7 +296,7 @@ describe('By Onnotangu\'s Light', function() {
                 this.player2.pass();
                 this.player1.playAttachment(this.ambush, this.light);
                 this.player2.pass();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.prodigy);
                 this.player1.clickPrompt('1');
                 expect(this.player1).toBeAbleToSelect(this.prodigy);

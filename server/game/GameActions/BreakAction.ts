@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type BreakProperties = CardActionProperties;
 
-export class BreakAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BreakProperties, EventName, C> {
+export class BreakAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BreakProperties, EventName.OnBreakProvince, C> {
     name = 'break';
     eventName = EventName.OnBreakProvince;
     targetType = [CardType.Province];

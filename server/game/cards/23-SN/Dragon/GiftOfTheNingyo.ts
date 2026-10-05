@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GiftOfTheNingyo extends DrawCard {
@@ -7,7 +7,7 @@ export default class GiftOfTheNingyo extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: (context: AbilityContext<this>) => (
+            condition: (context) => (
                 Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     this.getCharacters(context).some(card => card.hasSomeTrait('creature', 'spirit') ||
                         card.attachments.some(attachment => attachment.hasSomeTrait('creature', 'spirit'))
@@ -18,7 +18,7 @@ export default class GiftOfTheNingyo extends DrawCard {
     }
 
 
-    getCharacters(context: AbilityContext<this>): DrawCard[] {
+    private getCharacters(context: AbilityContext<this>): DrawCard[] {
         if(!context.game.currentConflict || !context.source.parentCharacter) {
             return [];
         }

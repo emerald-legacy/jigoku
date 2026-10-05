@@ -52,6 +52,22 @@ describe('Exposed Courtyard', function() {
             expect(this.fan.location).toBe('conflict deck');
         });
 
+        it('should work when the only event in the discard pile is one discarded by the cost', function () {
+            for(const card of [...this.player2.player.conflictDiscardPile]) {
+                this.player2.moveCard(card, 'removed from game');
+            }
+            expect(this.player2.player.conflictDiscardPile.length).toBe(0);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.warrior],
+                defenders: [this.tsuko]
+            });
+            this.player2.clickCard(this.courtyard);
+            expect(this.player2).toHavePrompt('Choose an event');
+            expect(this.player2).toBeAbleToSelect(this.fury);
+        });
+
         it('should not work in a pol conflict', function () {
             this.noMoreActions();
             this.initiateConflict({

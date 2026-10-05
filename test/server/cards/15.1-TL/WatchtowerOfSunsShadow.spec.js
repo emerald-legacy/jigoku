@@ -212,7 +212,7 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.p1
             });
 
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.kisada.bowed = true;
             this.noMoreActions();

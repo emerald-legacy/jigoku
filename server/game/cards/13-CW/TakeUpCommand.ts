@@ -1,5 +1,4 @@
 import { Players, CardType, AbilityType } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +11,7 @@ class TakeUpCommand extends DrawCard {
                 AbilityDsl.effects.addTrait('commander'),
                 AbilityDsl.effects.gainAbility(AbilityType.Action, {
                     title: 'Ready character and move to conflict',
-                    condition: (context: AbilityContext<this>) => context.source.isParticipating(),
+                    condition: (context) => context.source.isParticipating(),
                     target: {
                         cardType: CardType.Character,
                         controller: Players.Self,

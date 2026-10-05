@@ -3,19 +3,19 @@ import { ConflictType, EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-
 import type { ActionEvent } from './GameAction.js';
+
 export interface InitiateConflictProperties extends PlayerActionProperties {
     canPass?: boolean;
     forcedDeclaredType?: ConflictType;
     forceProvinceTarget?: ProvinceCard;
 }
 
-export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName, C> {
+export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName.OnConflictInitiated, C, 'canPass'> {
     name = 'initiateConflict';
     eventName = EventName.OnConflictInitiated;
     effect = 'declare a new conflict';
-    defaultProperties: InitiateConflictProperties = {
+    defaultProperties = {
         canPass: true
     };
 
@@ -33,7 +33,7 @@ export class InitiateConflictAction<C extends AbilityContext = AbilityContext> e
         const properties = this.getProperties(context, additionalProperties);
         context.game.initiateConflict(
             event.player,
-            properties.canPass ?? true,
+            properties.canPass,
             properties.forcedDeclaredType,
             properties.forceProvinceTarget
         );

@@ -6,13 +6,13 @@ import type { ProvinceCard } from './ProvinceCard.js';
 
 type RingChoices = Record<string, (context: AbilityContext) => boolean>;
 
-export const AIR_CHOICE = {
+const AIR_CHOICE = {
     GAIN_2: 'Gain 2 Honor',
     TAKE_1: 'Take 1 Honor from opponent',
     SKIP: 'Don\'t resolve'
 } as const;
 
-export const EARTH_CHOICE = {
+const EARTH_CHOICE = {
     DRAW: 'Draw a card',
     FORCE_DISCARD: 'Opponent discards a card',
     DRAW_AND_FORCE_DISCARD: 'Draw a card and opponent discards',
@@ -156,7 +156,7 @@ const Emerald: GameMode = {
     dynastyPhaseCanPlayConflictEvents: (action) =>
         action.abilityType !== AbilityType.Action ||
         action.phase === Phases.Dynasty ||
-        (action.card).isDynasty,
+        action.card.isDynasty,
     dynastyPhaseCanPlayConflictCharacters: false,
     dynastyPhasePassingFate: false,
     dynastyPhaseActionsFromCardsInPlay: false
@@ -174,7 +174,7 @@ const Obsidian: GameMode = {
     dynastyPhaseCanPlayConflictCharacters: true
 };
 
-export function parseGameMode(candidateStr: string): GameMode {
+export function parseGameMode(candidateStr: string | undefined): GameMode {
     switch(candidateStr) {
         case 'skirmish':
             return Skirmish;

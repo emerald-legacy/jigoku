@@ -32,11 +32,11 @@ describe('Retreat to Safety', () => {
             noMoreActions = () => this.noMoreActions();
             getChatLogs = (n) => this.getChatLogs(n);
 
-            borderRider = player1.findCardByName('border-rider') as DrawCard;
-            matsuBerserker = player2.findCardByName('matsu-berserker') as DrawCard;
-            kitsuMotso = player2.findCardByName('kitsu-motso') as DrawCard;
-            ikomaProdigy = player2.findCardByName('ikoma-prodigy') as DrawCard;
-            retreatToSafety = player2.findCardByName('retreat-to-safety') as DrawCard;
+            borderRider = player1.findDrawCard('border-rider');
+            matsuBerserker = player2.findDrawCard('matsu-berserker');
+            kitsuMotso = player2.findDrawCard('kitsu-motso');
+            ikomaProdigy = player2.findDrawCard('ikoma-prodigy');
+            retreatToSafety = player2.findDrawCard('retreat-to-safety');
             ikomaProdigy.bowed = true;
         });
 

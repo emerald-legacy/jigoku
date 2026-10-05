@@ -4,39 +4,67 @@ import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
 import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
 import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
 import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType, Players } from './Constants.js';
+import { Stage, TargetMode, AbilityType, Players, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import type { GameAction } from './GameActions/GameAction.js';
+import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
+import type { AbilityLimit } from './AbilityLimit.js';
+import type BaseCard from './BaseCard.js';
+import type CardAbility from './CardAbility.js';
 
 interface AbilityTargetProperties {
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-interface AbilityTarget {
+/** What a target knows of the target that depends on it (of any kind): it checks it for each candidate. */
+export interface DependentTarget {
+    hasLegalTarget(context: AbilityContext): boolean;
+    checkGameActionsForTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
+}
+
+/** The ability a target belongs to, as seen by the target: its sibling targets. */
+export interface OwningAbility {
+    targets: { name: string; dependentTarget: DependentTarget | null }[];
+}
+
+interface AbilityTarget extends DependentTarget {
     name: string;
     properties: AbilityTargetProperties;
+    dependentTarget: DependentTarget | null;
     dependentCost?: Cost | null;
     canResolve(context: AbilityContext): boolean;
     resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
-    hasLegalTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
     getGameAction(context: AbilityContext): GameAction[];
+}
+
+/**
+ * A game action as ability properties declare it: typed for the ability's own context, so nested
+ * property factories get that context. The ability checks that it is a `GameAction` when stored.
+ */
+export interface DeclaredGameAction<C = never> {
+    hasLegalTarget(context: C, additionalProperties?: object): boolean;
+}
+
+export function toGameAction(action: object, message = 'An ability\'s gameAction must be a game action'): GameAction {
+    if(!(action instanceof GameAction)) {
+        throw new Error(message);
+    }
+    return action;
 }
 
 export interface BaseAbilityProperties {
     cost?: Cost | Cost[];
     target?: TargetPropertiesInput;
     targets?: Record<string, TargetPropertiesInput>;
-    gameAction?: GameAction | GameAction[];
+    gameAction?: DeclaredGameAction | DeclaredGameAction[];
 }
 
-interface TargetResults {
+export interface TargetResults {
     canIgnoreAllCosts?: boolean;
     cancelled?: boolean;
     payCostsFirst?: boolean;
@@ -62,6 +90,16 @@ class BaseAbility {
     targets: AbilityTarget[];
     cost: Cost[];
     nonDependentTargets: AbilityTarget[];
+    // set by card abilities; the engine and cards read them from any ability
+    title?: string;
+    limit?: AbilityLimit;
+    max?: AbilityLimit;
+    maxIdentifier?: string;
+    cannotTargetFirst?: boolean;
+    cannotBeCancelled?: boolean;
+    cannotBeMirrored?: boolean;
+    printedAbility?: boolean;
+    origin?: BaseCard;
 
     /**
      * Creates an ability.
@@ -72,7 +110,8 @@ class BaseAbility {
      * @param properties.gameAction - optional array of game actions
      */
     constructor(properties: BaseAbilityProperties) {
-        this.gameAction = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
+        const gameActions = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
+        this.gameAction = gameActions.map((action) => toGameAction(action));
         this.targets = [];
         this.buildTargets(properties);
         this.cost = this.buildCost(properties.cost);
@@ -186,8 +225,8 @@ class BaseAbility {
                         context.game.queueSimpleStep(() => {
                             if(!results.cancelled) {
                                 const newEvents = cost.payEvent
-                                    ? cost.payEvent(context as TriggeredAbilityContext)
-                                    : context.game.getEvent('payCost', {}, () => cost.pay?.(context as TriggeredAbilityContext));
+                                    ? cost.payEvent(context)
+                                    : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
                                 if(Array.isArray(newEvents)) {
                                     for(const event of newEvents) {
                                         results.events?.push(event);
@@ -216,7 +255,7 @@ class BaseAbility {
     resolveTargets(context: AbilityContext): TargetResults {
         const targetResults: TargetResults = {
             canIgnoreAllCosts:
-                context.stage === Stage.PreTarget ? this.cost.every((cost) => cost.canIgnoreForTargeting) : false,
+                context.stage === Stage.PreTarget && this.cost.length === 0,
             cancelled: false,
             payCostsFirst: false,
             delayTargeting: null
@@ -260,6 +299,11 @@ class BaseAbility {
 
     displayMessage(_context: AbilityContext): void {}
 
+    /** The fate cost after reductions; only play actions and events have one. */
+    getReducedCost(_context: AbilityContext): number {
+        return 0;
+    }
+
     /**
      * Executes the ability once all costs have been paid. Inheriting classes
      * should override this method to implement their behavior; by default it
@@ -280,6 +324,10 @@ class BaseAbility {
     }
 
     isTriggeredAbility(): boolean {
+        return false;
+    }
+
+    isCardAbilityInstance(): this is CardAbility {
         return false;
     }
 

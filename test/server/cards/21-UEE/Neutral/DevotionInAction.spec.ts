@@ -37,16 +37,20 @@ describe('Devotion in Action', () => {
             initiateConflict = (config) => this.initiateConflict(config);
             getChatLogs = (n) => this.getChatLogs(n);
 
-            devotionInAction = player1.findCardByName('devotion-in-action') as DrawCard;
-            ikomaProdigy = player1.findCardByName('ikoma-prodigy') as DrawCard;
-            masterOfTheSpear = player1.findCardByName('master-of-the-spear') as DrawCard;
-            matsuBerserker = player1.placeCardInProvince('matsu-berserker', 'province 1') as DrawCard;
-            ikomaMessageRunner = player1.placeCardInProvince('ikoma-message-runner', 'province 2') as DrawCard;
-            matsuSakura = player1.placeCardInProvince('matsu-sakura', 'province 3') as DrawCard;
-            akodoYoshitsune = player1.placeCardInProvince('akodo-yoshitsune', 'province 4') as DrawCard;
+            devotionInAction = player1.findDrawCard('devotion-in-action');
+            ikomaProdigy = player1.findDrawCard('ikoma-prodigy');
+            masterOfTheSpear = player1.findDrawCard('master-of-the-spear');
+            matsuBerserker = player1.findDrawCard('matsu-berserker');
+            player1.placeCardInProvince(matsuBerserker, 'province 1');
+            ikomaMessageRunner = player1.findDrawCard('ikoma-message-runner');
+            player1.placeCardInProvince(ikomaMessageRunner, 'province 2');
+            matsuSakura = player1.findDrawCard('matsu-sakura');
+            player1.placeCardInProvince(matsuSakura, 'province 3');
+            akodoYoshitsune = player1.findDrawCard('akodo-yoshitsune');
+            player1.placeCardInProvince(akodoYoshitsune, 'province 4');
 
-            bayushiManipulator = player2.findCardByName('bayushi-manipulator') as DrawCard;
-            courtNovice = player2.findCardByName('court-novice') as DrawCard;
+            bayushiManipulator = player2.findDrawCard('bayushi-manipulator');
+            courtNovice = player2.findDrawCard('court-novice');
 
             noMoreActions();
         });

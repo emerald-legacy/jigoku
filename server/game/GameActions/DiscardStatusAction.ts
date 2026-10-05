@@ -1,23 +1,27 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName } from '../Constants.js';
 import type { StatusToken } from '../StatusToken.js';
-import { TokenAction, TokenActionProperties } from './TokenAction.js';
-import type { ActionEvent } from './GameAction.js';
+import { TokenAction, type TokenActionProperties } from './TokenAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export type DiscardStatusProperties = TokenActionProperties;
 
-export class DiscardStatusAction<C extends AbilityContext = AbilityContext> extends TokenAction<DiscardStatusProperties, EventName, C> {
+export class DiscardStatusAction<C extends AbilityContext = AbilityContext> extends TokenAction<DiscardStatusProperties, EventName.OnStatusTokenDiscarded, C> {
     name = 'discardStatus';
     eventName = EventName.OnStatusTokenDiscarded;
     cost = 'discarding a status token';
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const cardsLosingStatus = this.#cardsLosingStatus(context);
         return cardsLosingStatus.length === 0
             ? ['discard a status token', []]
-            : ['discard {0}\'s status token', cardsLosingStatus];
+            : ['discard {0}\'s status token', cardsLosingStatus.slice(1)];
+    }
+
+    protected effectMessageTarget(context: C): MsgArg {
+        return this.#cardsLosingStatus(context)[0];
     }
 
     addPropertiesToEvent(
@@ -27,31 +31,17 @@ export class DiscardStatusAction<C extends AbilityContext = AbilityContext> exte
         additionalProperties: Record<string, unknown>
     ): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
-        event.cards = this.#cardsLosingStatus(context) as BaseCard[];
+        event.cards = this.#cardsLosingStatus(context);
     }
 
     eventHandler(event: ActionEvent<EventName.OnStatusTokenDiscarded, C>): void {
-        const tokens = Array.isArray(event.token) ? event.token : [event.token];
-        for(const token of tokens) {
-            if(token.card) {
-                token.card.removeStatusToken(token);
-            }
+        const token = event.token;
+        if(token.card) {
+            token.card.removeStatusToken(token);
         }
     }
 
-    #cardsLosingStatus(context: C) {
-        let properties = this.getProperties(context);
-        if(!properties.target) {
-            return [];
-        }
-
-        const targets = Array.isArray(properties.target) ? properties.target : [properties.target];
-        return targets.map((a) => {
-            let token = a;
-            if(token) {
-                return token.card;
-            }
-            return a;
-        });
+    #cardsLosingStatus(context: C): BaseCard[] {
+        return targetList(this.getProperties(context).target).flatMap((token) => token.card ? [token.card] : []);
     }
 }

@@ -4,15 +4,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class PacifistPhilosopher extends DrawCard {
     static id = 'pacifist-philosopher';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain 1 fate',
-            limit: ability.limit.perRound(2),
-            when: {
+    setupCardAbilities() {
+        this.reaction('Gain 1 fate')
+            .when({
                 onConflictPass: () => true
-            },
-            gameAction: ability.actions.gainFate()
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainFate())
+            .limit(AbilityDsl.limit.perRound(2));
     }
 }
 

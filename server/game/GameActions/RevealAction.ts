@@ -3,24 +3,20 @@ import type BaseCard from '../BaseCard.js';
 import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-
 import type { ActionEvent } from './GameAction.js';
+
 export interface RevealProperties extends CardActionProperties {
     chatMessage?: boolean;
     player?: Player;
     onDeclaration?: boolean;
 }
 
-export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName, C> {
+export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName.OnCardRevealed, C, 'chatMessage'> {
     name = 'reveal';
     eventName = EventName.OnCardRevealed;
     effect = 'reveal a card';
     cost = 'revealing {0}';
-    defaultProperties: RevealProperties = { chatMessage: false };
-    constructor(properties: ((context: C) => RevealProperties) | RevealProperties) {
-        super(properties);
-    }
-
+    defaultProperties = { chatMessage: false };
     canAffect(card: BaseCard, context: C): boolean {
         if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
@@ -29,7 +25,7 @@ export class RevealAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardRevealed, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { onDeclaration } = this.getProperties(context, additionalProperties);
+        const { onDeclaration } = this.getProperties(context, additionalProperties);
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
@@ -45,6 +41,6 @@ export class RevealAction<C extends AbilityContext = AbilityContext> extends Car
                 context.source
             );
         }
-        (event.card).facedown = false;
+        event.card.facedown = false;
     }
 }

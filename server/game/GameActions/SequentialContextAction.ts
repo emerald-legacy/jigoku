@@ -10,15 +10,13 @@ export interface SequentialContextProperties extends GameActionProperties {
 }
 
 export class SequentialContextAction<C extends AbilityContext = AbilityContext> extends GameAction<SequentialContextProperties, EventName, C> {
-    declare defaultProperties: SequentialContextProperties;
-
     getEffectMessage(context: C): MessageArgs {
-        let properties = super.getProperties(context);
+        const properties = super.getProperties(context);
         return properties.gameActions[0].getEffectMessage(context);
     }
 
-    getProperties(context: C, additionalProperties = {}): SequentialContextProperties {
-        let properties = super.getProperties(context, additionalProperties);
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
@@ -26,21 +24,21 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        let { gameActions } = this.getProperties(context, additionalProperties);
+        const { gameActions } = this.getProperties(context, additionalProperties);
         return gameActions.some((gameAction) => gameAction.hasLegalTarget(context));
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context));
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context, additionalProperties)) {
-                    let eventsForThisAction: Event[] = [];
+                    const eventsForThisAction: Event[] = [];
                     gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
                     context.game.queueSimpleStep(() => {
                         for(const event of eventsForThisAction) {
@@ -56,7 +54,7 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}) {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) =>
             gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
         );

@@ -14,13 +14,12 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
     name = 'onAddDuelParticipant';
     eventName = EventName.OnAddDuelParticipant;
 
-    getEffectMessage(context: C): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['extend the duel challenge to {0}', [properties.target]];
+    protected effectMessage(): MessageArgs {
+        return ['extend the duel challenge to {0}', []];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
 
         if(card.type !== CardType.Character) {
             return false;
@@ -37,7 +36,7 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        let { duel } = this.getProperties(context, additionalProperties);
+        const { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }

@@ -1,17 +1,15 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-export default class EnlightenedWarrior extends DrawCard {
+export default class EnlightenedWarrior2 extends DrawCard {
     static id = 'enlightened-warrior-2';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Gain 1 fate',
-            when: {
+        this.reaction('Gain 1 fate')
+            .when({
                 onConflictDeclared: (event, context) =>
                     (event.ringFate ?? 0) > 0 && event.conflict.attackingPlayer === context.player.opponent
-            },
-            gameAction: AbilityDsl.actions.placeFate()
-        });
+            })
+            .gameAction(AbilityDsl.actions.placeFate());
     }
 }

@@ -13,16 +13,14 @@ class TaintedHero extends DrawCard {
             ]
         });
 
-        this.action({
-            title: 'Make text box blank',
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
-            effect: 'blank himself',
-            gameAction: AbilityDsl.actions.cardLastingEffect({
+        this.action('Make text box blank')
+            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .gameAction(AbilityDsl.actions.cardLastingEffect({
                 target: this,
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.blank()
-            })
-        });
+            }))
+            .effect('blank himself');
     }
 }
 

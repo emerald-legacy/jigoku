@@ -52,7 +52,7 @@ describe('Ki Alignment', function() {
         });
 
         it('should prompt you to pick two kihos with different names and add them to your hand', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.initiateConflict({
                 attackers: [this.ancientMaster]

@@ -6,14 +6,11 @@ class FestivalForTheFortunes extends DrawCard {
     static id = 'festival-for-the-fortunes';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Honor each character',
-            effect: 'honor each character',
-            gameAction:
-                AbilityDsl.actions.honor(() => ({
-                    target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character)
-                }))
-        });
+        this.action('Honor each character')
+            .gameAction(AbilityDsl.actions.honor(() => ({
+                target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character)
+            })))
+            .effect('honor each character');
     }
 }
 

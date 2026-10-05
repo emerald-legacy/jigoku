@@ -31,7 +31,7 @@ describe('Adorned Temple', function() {
         });
 
         it('should draw a card if the character is honored', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.shoju.honor();
             this.player1.clickCard(this.warrior);
             this.player1.clickCard(this.shoju);
@@ -41,7 +41,7 @@ describe('Adorned Temple', function() {
         });
 
         it('should draw a card if the character is dishonored', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.shoju.dishonor();
             this.player1.clickCard(this.warrior);
             this.player1.clickCard(this.shoju);
@@ -51,7 +51,7 @@ describe('Adorned Temple', function() {
         });
 
         it('should draw two cards if the character is ordinary', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.warrior);
             this.player1.clickCard(this.shoju);
             this.player1.clickCard(this.temple);

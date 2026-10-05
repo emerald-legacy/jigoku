@@ -38,7 +38,7 @@ describe('Doom Thrower', function () {
                 attackers: [this.outrider],
                 defenders: []
             });
-            let pStrength = this.p2Pilgrimage.strength;
+            const pStrength = this.p2Pilgrimage.strength;
             this.player2.pass();
             this.player1.clickCard(this.thrower);
             expect(this.player1).toBeAbleToSelect(this.rider);
@@ -56,7 +56,7 @@ describe('Doom Thrower', function () {
                 attackers: [this.outrider],
                 defenders: []
             });
-            let pStrength = this.p2Pilgrimage.strength;
+            const pStrength = this.p2Pilgrimage.strength;
             this.player2.pass();
             this.player1.clickCard(this.thrower);
             this.player1.clickCard(this.rider);

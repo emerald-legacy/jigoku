@@ -1,16 +1,13 @@
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, CharacterStatus, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Duel } from '../../../Duel.js';
 
 export default class ForeignCustoms extends DrawCard {
     static id = 'foreign-customs';
 
     setupCardAbilities() {
-        this.duelStrike({
-            title: 'Put a character into play',
-            duelCondition: (duel: Duel, context) => duel.loserController === context.player,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.duelStrike('Put a character into play', (duel, context) => duel.loserController === context.player)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
@@ -18,25 +15,20 @@ export default class ForeignCustoms extends DrawCard {
                 controller: Players.Self,
                 message: '{0} puts into the conflict {1} - they challenge the traditions of the empire',
                 messageArgs: (cards) => [context.player, cards],
-                subActionProperties: (card) => ({ target: card }),
-                gameAction: AbilityDsl.actions.putIntoConflict({ status: 'dishonored' })
-            }))
-        });
+                gameAction: AbilityDsl.actions.putIntoConflict({ status: CharacterStatus.Dishonored })
+            })));
 
-        this.action({
-            title: 'Ready a non-unicorn character',
-            condition: (context) =>
+        this.action('Ready a non-unicorn character')
+            .condition((context) =>
                 context.player.stronghold?.isFaction('unicorn') ||
                 context.player.cardsInPlay.some(
-                    (card: DrawCard) =>
+                    (card) =>
                         card.isFaction('unicorn') ||
-                        card.attachments?.some((a: DrawCard) => a.isFaction('unicorn'))
-                ),
-            target: {
+                        card.attachments.some((a) => a.isFaction('unicorn'))
+                ))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin')),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin'))
+            }, AbilityDsl.actions.ready());
     }
 }

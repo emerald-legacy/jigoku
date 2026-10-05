@@ -39,6 +39,7 @@ describe('Undead Horror', function () {
                 'player1 uses Undead Horror to attach a random character from player2\'s dynasty discard pile to Undead Horror'
             );
             expect(this.getChatLogs(5)).toContain('Kakita Toshimoko is attached to Undead Horror');
+            expect(this.getChatLogs(10).filter((log) => log === 'Kakita Toshimoko is attached to Undead Horror').length).toBe(1);
         });
 
         it('random', function () {

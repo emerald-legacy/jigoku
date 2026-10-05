@@ -108,3 +108,40 @@ describe('Whispers Of Power', function() {
         });
     });
 });
+
+describe('Whispers Of Power\'s target', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kudaka'],
+                    hand: ['whispers-of-power']
+                },
+                player2: {
+                    inPlay: ['togashi-yokuni', 'matsu-berserker']
+                }
+            });
+            this.kudaka = this.player1.findCardByName('kudaka');
+            this.whispersOfPower = this.player1.findCardByName('whispers-of-power');
+            this.togashiYokuni = this.player2.findCardByName('togashi-yokuni');
+            this.matsuBerserker = this.player2.findCardByName('matsu-berserker');
+            this.kudaka.fate = 1;
+        });
+
+        it('should not be able to target a character with a dash political skill', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kudaka],
+                defenders: [this.togashiYokuni]
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.whispersOfPower);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.togashiYokuni);
+            expect(this.player1).not.toBeAbleToSelect(this.matsuBerserker);
+        });
+    });
+});

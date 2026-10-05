@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,32 +16,24 @@ export default class AsakoShun extends DrawCard {
     static id = 'asako-shun';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Give a skill penalty to a participating character',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Give a skill penalty to a participating character')
+            .condition((context) => context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
-                }))
-            },
-            then: (context) => ({
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
+            })))
+            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target])
+            .then((context) => ({
                 thenCondition: () => {
-                    const conflict = context?.game.currentConflict;
-                    const target = context?.target;
-                    return !!conflict && !!target && conflict.calculateSkillFor([target]) === 0;
+                    const conflict = context.game.currentConflict;
+                    return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
                 },
-                gameAction: AbilityDsl.actions.gainHonor({
-                    target: context?.player,
-                    amount: 1
-                }),
+                gameAction: AbilityDsl.actions.gainHonor(),
                 message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
-                messageArgs: () => [context?.target, context?.player]
-            }),
-            effect: 'give {4} {1}{2} and {1}{3}',
-            effectArgs: (context) => [penalty(context), 'military', 'political', context.target ?? '']
-        });
+                messageArgs: () => [context.target, context.player]
+            }));
     }
 }

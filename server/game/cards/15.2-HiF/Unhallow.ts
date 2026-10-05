@@ -1,12 +1,9 @@
-import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, CardType, Players } from '../../Constants.js';
-import type BaseCard from '../../BaseCard.js';
-import type Ring from '../../Ring.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
+import { Location, Players } from '../../Constants.js';
 import type Player from '../../Player.js';
+import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
-class Unhallow extends DrawCard {
+class Unhallow extends ProvinceAttachment {
     static id = 'unhallow';
 
     setupCardAbilities() {
@@ -28,27 +25,14 @@ class Unhallow extends DrawCard {
                 type: 'defenders',
                 message: 'loses 1 honor',
                 cost: (player: Player) => AbilityDsl.actions.loseHonor({
-                    target: player,
-                    amount: 1
+                    target: player
                 })
             })
         });
     }
 
-    canPlayOn(source: BaseCard | Ring) {
-        return source && source.getType() === 'province' && (source as ProvinceCard).controller === this.controller && !(source as ProvinceCard).isBroken && this.getType() === CardType.Attachment;
-    }
-
-    canAttach(parent: BaseCard) {
-        if(parent.type === CardType.Province && (parent as ProvinceCard).isBroken) {
-            return false;
-        }
-
-        if(parent.controller !== this.controller) {
-            return false;
-        }
-
-        return parent && parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
+    protected controllerProvinceOnly(): boolean {
+        return true;
     }
 
     isTemptationsMaho() {

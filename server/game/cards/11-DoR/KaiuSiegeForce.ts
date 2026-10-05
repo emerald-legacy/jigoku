@@ -6,15 +6,13 @@ class KaiuSiegeForce extends DrawCard {
     static id = 'kaiu-siege-force';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready this character',
-            cost: AbilityDsl.costs.returnToDeck({
+        this.action('Ready this character')
+            .cost(AbilityDsl.costs.returnToDeck({
                 location: Location.Provinces,
                 cardCondition: card => card.type === CardType.Holding,
                 bottom: true
-            }),
-            gameAction: AbilityDsl.actions.ready()
-        });
+            }))
+            .gameAction(AbilityDsl.actions.ready());
     }
 }
 

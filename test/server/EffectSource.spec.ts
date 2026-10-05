@@ -1,18 +1,22 @@
 import EffectSource from '../../server/game/EffectSource.js';
+import type { EffectEngine } from '../../server/game/EffectEngine.js';
 import { getAbilityDsl, setAbilityDsl, type AbilityDslType } from '../../server/game/AbilityDslProvider.js';
+import { createTestGame } from '../helpers/fixtures.js';
 
 describe('EffectSource', function() {
-    let effectEngine: jasmine.SpyObj<{ add: (effect: unknown) => unknown }>;
+    let effectEngine: EffectEngine;
     let source: EffectSource;
     let fakeDsl: AbilityDslType;
     let originalDsl: AbilityDslType;
 
     beforeEach(function() {
-        effectEngine = jasmine.createSpyObj('effectEngine', ['add']);
-        effectEngine.add.and.callFake((effect: unknown) => effect);
-        source = new EffectSource({ effectEngine } as never);
-        fakeDsl = { marker: 'fake-dsl' } as never;
+        const game = createTestGame();
+        effectEngine = game.effectEngine;
+        spyOn(effectEngine, 'add').and.callFake((effect) => effect);
+        source = new EffectSource(game);
         originalDsl = getAbilityDsl();
+        // a distinct object, so the spec can tell which DSL the factory received
+        fakeDsl = { ...originalDsl };
         setAbilityDsl(fakeDsl);
     });
 

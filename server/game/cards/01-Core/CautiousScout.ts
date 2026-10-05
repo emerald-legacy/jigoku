@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +7,7 @@ class CautiousScout extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: ProvinceCard) => card.isConflictProvince(),
+            match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Opponent,
             condition: context => context.source.isAttacking() && context.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,

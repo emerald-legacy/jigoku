@@ -27,8 +27,8 @@ describe('Way Station Trader', function () {
         });
 
         it('should activate when this character reveals a province when attacking', function () {
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -63,8 +63,8 @@ describe('Way Station Trader', function () {
         });
 
         it('should activate when a province is revealed mid-conflict', function () {
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.noMoreActions();
             this.player1.passConflict();

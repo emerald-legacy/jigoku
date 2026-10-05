@@ -2,24 +2,22 @@ import { CardType, Decks, Duration, Location, PlayType } from '../../../Constant
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Play a character from your opponent\'s dynasty deck',
-            condition: (context) => context.game.isDuringConflict(),
-            cost: AbilityDsl.costs.nameCard(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Play a character from your opponent\'s dynasty deck')
+            .cost(AbilityDsl.costs.nameCard())
+            .condition((context) => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     duration: Duration.UntilPassPriority,
                     targetController: context.player,
                     effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                         3,
-                        (card: BaseCard) => card.name === context.costs.nameCardCost
+                        (card) => card.name === context.costs.nameCardCost
                     )
                 })),
                 AbilityDsl.actions.deckSearch((context) => ({
@@ -46,9 +44,9 @@ export default class AshalanLantern extends DrawCard {
                             postHandler: () => context.player.moveCard(context.source, Location.ConflictDiscardPile)
                         };
                     }),
-                    remainingCardsHandler: (context, event, cards) => {
+                    remainingCardsHandler: (context, _event, cards) => {
                         context.game.addMessage(
-                            '{0} puts {1} on the top of {2}\' dynasty deck',
+                            '{0} puts {1} on the top of {2}\'s dynasty deck',
                             context.player,
                             cards,
                             context.player.opponent
@@ -62,9 +60,7 @@ export default class AshalanLantern extends DrawCard {
                         selectedCards.length > 0 ? ' into service' : ''
                     ]
                 }))
-            ]),
-            effect: 'look for a character on the top of {1}\'s dynasty deck. They reveal {2}',
-            effectArgs: (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]
-        });
+            ]))
+            .effect('look for a character on the top of {1}\'s dynasty deck. They reveal {2}', (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]);
     }
 }

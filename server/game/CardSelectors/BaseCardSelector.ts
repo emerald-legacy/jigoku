@@ -3,14 +3,15 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
+import { isCardTypeList } from '../types/CardOfType.js';
 
 type ControllerProp = Players | ((context: AbilityContext) => Players);
 
 export type NumCardsFunc = (context: AbilityContext) => number;
 
 export interface BaseCardSelectorProperties {
-    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
-    cardType?: CardType | CardType[];
+    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardType?: CardType | readonly CardType[];
     optional?: boolean;
     location?: Location | Location[];
     controller?: ControllerProp;
@@ -20,7 +21,9 @@ export interface BaseCardSelectorProperties {
 
 class BaseCardSelector {
     cardCondition: (card: BaseCard, context: AbilityContext) => boolean = () => true;
-    cardType: CardType[];
+    // a selector built without a card type holds [undefined], which matches nothing
+    cardType: (CardType | undefined)[];
+    numCards?: number;
     optional: boolean;
     location: Location[];
     controller: ControllerProp;
@@ -29,25 +32,22 @@ class BaseCardSelector {
 
     constructor(properties: BaseCardSelectorProperties) {
         this.cardCondition = properties.cardCondition ?? (() => true);
-        this.cardType = (properties.cardType as CardType[]) ?? [];
+        const { cardType } = properties;
+        this.cardType = isCardTypeList(cardType) ? [...cardType] : [cardType];
         this.optional = properties.optional ?? false;
         this.location = this.buildLocation(properties.location);
         this.controller = properties.controller || Players.Any;
         this.checkTarget = !!properties.targets;
         this.sameDiscardPile = !!properties.sameDiscardPile;
-
-        if(!Array.isArray(properties.cardType)) {
-            this.cardType = [properties.cardType as CardType];
-        }
     }
 
     buildLocation(property?: Location | Location[]): Location[] {
-        let location: Location[] = property
+        const location: Location[] = property
             ? Array.isArray(property)
                 ? property
                 : [property]
             : [Location.PlayArea];
-        let index = location.indexOf(Location.Provinces);
+        const index = location.indexOf(Location.Provinces);
         if(index > -1) {
             location.splice(
                 index,
@@ -89,18 +89,15 @@ class BaseCardSelector {
 
         attachments = attachments.concat(allProvinceAttachments);
 
-        if(context.game.rings) {
-            let rings = Object.values(context.game.rings);
-            let allRingAttachments = rings.map((ring) => ring.attachments).flat();
-            attachments = attachments.concat(allRingAttachments);
-        }
+        const allRingAttachments = Object.values(context.game.rings).map((ring) => ring.attachments).flat();
+        attachments = attachments.concat(allRingAttachments);
         if(context.player.opponent) {
             attachments = attachments.concat(...context.player.opponent.cardsInPlay.map((card: DrawCard) => card.attachments));
         }
         let possibleCards: BaseCard[] = [];
         if(controllerProp !== Players.Opponent) {
             possibleCards = this.location.reduce((array: BaseCard[], location: Location) => {
-                let cards = context.player.getSourceList(location).slice();
+                const cards = context.player.getSourceList(location).slice();
                 if(location === Location.PlayArea) {
                     return array.concat(
                         cards,
@@ -110,10 +107,10 @@ class BaseCardSelector {
                 return array.concat(cards);
             }, possibleCards);
         }
-        let opponent = context.player.opponent;
+        const opponent = context.player.opponent;
         if(controllerProp !== Players.Self && opponent) {
             possibleCards = this.location.reduce((array: BaseCard[], location: Location) => {
-                let cards = opponent.getSourceList(location).slice();
+                const cards = opponent.getSourceList(location).slice();
                 if(location === Location.PlayArea) {
                     return array.concat(
                         cards,
@@ -155,7 +152,7 @@ class BaseCardSelector {
         if(card.location === Location.Hand && card.controller !== choosingPlayer) {
             return false;
         }
-        return this.cardType.includes(card.getType() as CardType) && this.cardCondition(card, context);
+        return this.cardType.includes(card.getType()) && this.cardCondition(card, context);
     }
 
     getAllLegalTargets(context: AbilityContext, choosingPlayer?: Player): BaseCard[] {
@@ -166,7 +163,7 @@ class BaseCardSelector {
         return this.optional || selectedCards.length > 0;
     }
 
-    hasEnoughTargets(context: AbilityContext, choosingPlayer: Player): boolean {
+    hasEnoughTargets(context: AbilityContext, choosingPlayer?: Player): boolean {
         return this.findPossibleCards(context).some((card: BaseCard) => this.canTarget(card, context, choosingPlayer));
     }
 

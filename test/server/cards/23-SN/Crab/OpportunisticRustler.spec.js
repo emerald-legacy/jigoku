@@ -36,8 +36,8 @@ describe('Opportunistic Rustler', function () {
                 province: this.sd1
             });
 
-            let mil = this.rustler.getMilitarySkill();
-            let pol = this.rustler.getPoliticalSkill();
+            const mil = this.rustler.getMilitarySkill();
+            const pol = this.rustler.getPoliticalSkill();
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.rustler);
@@ -70,8 +70,8 @@ describe('Opportunistic Rustler', function () {
                 province: this.sd1
             });
 
-            let mil = this.rustler.getMilitarySkill();
-            let pol = this.rustler.getPoliticalSkill();
+            const mil = this.rustler.getMilitarySkill();
+            const pol = this.rustler.getPoliticalSkill();
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.rustler);

@@ -1,16 +1,13 @@
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type { EventName } from '../../Constants.js';
+import { AbilityType, EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 
 export default class HenshinMysteries extends ProvinceCard {
     static id = 'henshin-mysteries';
 
-    private eventRegistrar?: EventRegistrar;
-
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([{ 'onClaimRing:OtherEffects': 'cancelRingClaim' }]);
+        new EventRegistrar(this.game, this).register([{ [EventName.OnClaimRing + ':' + AbilityType.OtherEffects]: 'cancelRingClaim' }]);
     }
 
     public cancelRingClaim(event: GameEvent<EventName.OnClaimRing>) {
@@ -18,7 +15,7 @@ export default class HenshinMysteries extends ProvinceCard {
             !this.isBroken &&
             !this.isBlank() &&
             event.conflict &&
-            (event.conflict.getConflictProvinces()).some((a) => a === this) &&
+            event.conflict.getConflictProvinces().some((a) => a === this) &&
             !event.cancelled
         ) {
             event.cancel();

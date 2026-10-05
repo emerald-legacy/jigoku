@@ -15,7 +15,7 @@ describe('Aspiring Challenger', function() {
             });
 
             it('should have +2 glory if controller has composure', function() {
-                let glory = this.aspiringChallenger.glory;
+                const glory = this.aspiringChallenger.glory;
                 expect(this.player1.player.hasComposure()).toBe(false);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');

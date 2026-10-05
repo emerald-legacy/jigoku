@@ -1,43 +1,31 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import { Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { attachSearchedCard } from '../../attachSearchedCard.js';
 
 export default class YasukiYoshi extends DrawCard {
     static id = 'yasuki-yoshi';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Search for Writ of Survey',
-            when: { onCharacterEntersPlay: (event, context) => event.card === context.source },
-            gameAction: AbilityDsl.actions.deckSearch({
+        this.reaction('Search for Writ of Survey')
+            .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
+            .gameAction(AbilityDsl.actions.deckSearch({
                 activePromptTitle: 'Choose a Writ of Survey',
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Survey',
-                selectedCardsHandler: (context, _, [card]) => {
-                    if(card === null || card === undefined) {
-                        return;
-                    }
+                selectedCardsHandler: (context, _, [card]) =>
+                    attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])
+            }));
 
-                    context.game.addMessage('{0} receives their {1}', context.source, card);
-                    context.game.queueSimpleStep(() =>
-                        AbilityDsl.actions.attach({ target: context.source, attachment: card }).resolve(undefined, context)
-                    );
-                }
-            })
-        });
-
-        this.reaction({
-            title: 'Cause honor loss to the conflict loser',
-            when: {
+        this.reaction('Cause honor loss to the conflict loser')
+            .when({
                 afterConflict: (event, context) =>
-                    (event.conflict as undefined | Conflict)?.winner === context.source.controller &&
+                    event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.loseHonor((context) => ({
-                target: (context.game.currentConflict as undefined | Conflict)?.loser
-            })),
-            limit: AbilityDsl.limit.unlimited()
-        });
+            })
+            .gameAction(AbilityDsl.actions.loseHonor((context) => ({
+                target: context.event.conflict.loser
+            })))
+            .limit(AbilityDsl.limit.unlimited());
     }
 }

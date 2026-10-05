@@ -39,9 +39,9 @@ describe('Planted Fields', function() {
         });
 
         it('should sacrifice itself to give 2 fate and draw 2 cards on first trigger', function() {
-            let honor = this.player1.honor;
-            let fate = this.player1.fate;
-            let handSize = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const fate = this.player1.fate;
+            const handSize = this.player1.hand.length;
             this.noMoreActions();
             this.player1.clickCard(this.plantedFields);
 
@@ -55,9 +55,9 @@ describe('Planted Fields', function() {
         it('should give 2 honor instead if a copy was already triggered this round', function() {
             this.plantedFields.triggeredByPlayer.add(this.player1.player.name);
 
-            let honor = this.player1.honor;
-            let fate = this.player1.fate;
-            let handSize = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const fate = this.player1.fate;
+            const handSize = this.player1.hand.length;
             this.noMoreActions();
             this.player1.clickCard(this.plantedFields);
 
@@ -66,6 +66,28 @@ describe('Planted Fields', function() {
             expect(this.player1.hand.length).toBe(handSize);
             expect(this.plantedFields.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(5)).toContain('player1 uses Planted Fields, sacrificing Planted Fields to gain 2 honor');
+        });
+
+        it('should gain fate and draw through game events on the first trigger', function() {
+            const fateGained = jasmine.createSpy('onModifyFate');
+            const drawn = jasmine.createSpy('onCardsDrawn');
+            this.game.on('onModifyFate', fateGained);
+            this.game.on('onCardsDrawn', drawn);
+            this.noMoreActions();
+            this.player1.clickCard(this.plantedFields);
+
+            expect(fateGained).toHaveBeenCalledWith(jasmine.objectContaining({ amount: 2 }));
+            expect(drawn).toHaveBeenCalledWith(jasmine.objectContaining({ amount: 2 }));
+        });
+
+        it('should gain honor through a game event if a copy was already triggered this round', function() {
+            this.plantedFields.triggeredByPlayer.add(this.player1.player.name);
+            const honorGained = jasmine.createSpy('onModifyHonor');
+            this.game.on('onModifyHonor', honorGained);
+            this.noMoreActions();
+            this.player1.clickCard(this.plantedFields);
+
+            expect(honorGained).toHaveBeenCalledWith(jasmine.objectContaining({ amount: 2 }));
         });
     });
 });

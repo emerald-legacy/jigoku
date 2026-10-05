@@ -20,7 +20,7 @@ describe('Duplicate Unique', function() {
             });
 
             it('should add a fate if you control the unique', function() {
-                let fate = this.yokuni.fate;
+                const fate = this.yokuni.fate;
                 this.player1.clickCard(this.yokuni2);
                 expect(this.yokuni2.location).toBe('dynasty discard pile');
                 expect(this.yokuni.fate).toBe(fate + 1);
@@ -32,7 +32,7 @@ describe('Duplicate Unique', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.yokuni);
                 expect(this.yokuni.controller).toBe(this.player2.player);
-                let fate = this.yokuni.fate;
+                const fate = this.yokuni.fate;
                 expect(this.player1).toHavePrompt('Play cards from provinces');
                 this.player1.clickCard(this.yokuni2);
                 expect(this.yokuni2.location).toBe('province 1');

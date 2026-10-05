@@ -1,7 +1,7 @@
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
-import type { Step } from './gamesteps/Step.js';
+import type { MenuArg, Step } from './gamesteps/Step.js';
 
 type StepFactory = () => Step;
 type StepItem = Step | StepFactory;
@@ -87,7 +87,7 @@ export class GamePipeline {
         return false;
     }
 
-    handleMenuCommand(player: Player, arg: string, uuid: string, method: string) {
+    handleMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null) {
         if(this.length === 0) {
             return false;
         }
@@ -146,9 +146,9 @@ export class GamePipeline {
             return step.toString();
         }
 
-        let name = step.constructor.name;
+        const name = step.constructor.name;
         if(step.pipeline) {
-            let result: Record<string, unknown> = {};
+            const result: Record<string, unknown> = {};
             result[name] = step.pipeline.getDebugInfo();
             return result;
         }

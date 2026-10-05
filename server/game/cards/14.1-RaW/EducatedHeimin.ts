@@ -1,12 +1,8 @@
-import BaseCard from '../../BaseCard.js';
-import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import type Player from '../../Player.js';
-import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location } from '../../Constants.js';
+import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
-class EducatedHeimin extends DrawCard {
+class EducatedHeimin extends ProvinceAttachment {
     static id = 'educated-heimin';
 
     setupCardAbilities() {
@@ -18,50 +14,27 @@ class EducatedHeimin extends DrawCard {
             condition: context => !!context?.source.parent,
             targetLocation: Location.Provinces,
             match: (card, context) => !!context && card === context.source.parent,
-            effect: AbilityDsl.effects.customRefillProvince((player: Player, province: ProvinceCard) => {
-                let cards: DrawCard[] = [];
-                if(province.isFacedown()) {
-                    cards = player.dynastyDeck.slice(0, 4);
-                } else {
-                    cards = player.dynastyDeck.slice(0, 2);
-                }
-
+            effect: AbilityDsl.effects.customRefillProvince((player, province) => {
+                const cards = player.dynastyDeck.slice(0, province.isFacedown() ? 4 : 2);
                 this.game.promptWithHandlerMenu(player, {
                     activePromptTitle: 'Choose a card to refill the province with',
                     cards: cards,
-                    cardHandler: (cardFromDeck: DrawCard) => {
-                        let provinceLocation = province.location;
-                        player.moveCard(cardFromDeck, provinceLocation);
+                    cardHandler: (cardFromDeck) => {
+                        player.moveCard(cardFromDeck, province.location);
                         cardFromDeck.facedown = true;
-                        cards.splice(cards.indexOf(cardFromDeck), 1);
-                        cards.forEach((card: DrawCard) => {
+                        const discarded = cards.filter((card) => card !== cardFromDeck);
+                        discarded.forEach((card) => {
                             player.moveCard(card, Location.DynastyDiscardPile);
                         });
-                        this.game.addMessage('{0} chooses a card to put into {1} and discards {2} from the constant effect of Educated Heimin', player, province.isFacedown() ? 'a facedown province' : province.name, cards);
+                        this.game.addMessage('{0} chooses a card to put into {1} and discards {2} from the constant effect of Educated Heimin', player, province.isFacedown() ? 'a facedown province' : province.name, discarded);
                     }
                 });
             })
         });
     }
 
-    canPlayOn(source: BaseCard | Ring) {
-        return source instanceof BaseCard && source.getType() === 'province' && source.controller === this.controller && !(source as ProvinceCard).isBroken && this.getType() === CardType.Attachment;
-    }
-
-    canAttach(parent?: BaseCard | Ring) {
-        if(!(parent instanceof BaseCard)) {
-            return false;
-        }
-
-        if(parent.type === CardType.Province && (parent as ProvinceCard).isBroken) {
-            return false;
-        }
-
-        if(parent.controller !== this.controller) {
-            return false;
-        }
-
-        return parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
+    protected controllerProvinceOnly(): boolean {
+        return true;
     }
 }
 

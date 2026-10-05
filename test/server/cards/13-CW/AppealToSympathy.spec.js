@@ -37,7 +37,7 @@ describe('Appeal to Sympathy', function() {
             });
 
             it('should put the event on top of the deck', function() {
-                let deckSize = this.player1.conflictDeck.length;
+                const deckSize = this.player1.conflictDeck.length;
                 this.player1.clickCard(this.crane);
                 this.player1.clickCard(this.whisperer);
                 expect(this.player2).toHavePrompt('Triggered Abilities');

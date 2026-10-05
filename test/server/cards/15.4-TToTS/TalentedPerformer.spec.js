@@ -61,7 +61,7 @@ describe('Talented Performer', function() {
                 attackers: [this.performer, this.challenger],
                 defenders: [this.mirumotoRaitsugu, this.whisperer]
             });
-            let mil = this.performer.militarySkill;
+            const mil = this.performer.militarySkill;
 
             this.player2.clickCard(this.banzai);
             expect(this.player2).toHavePrompt('Banzai!');

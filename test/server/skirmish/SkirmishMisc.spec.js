@@ -362,7 +362,7 @@ describe('Skirmish Reshuffling', function() {
         });
 
         it('should lose 3 honor to reshuffle conflict', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player1.clickCard(this.advisor);
 
@@ -372,7 +372,7 @@ describe('Skirmish Reshuffling', function() {
 
         it('should lose 3 honor to reshuffle dynasty', function() {
             this.game.rings.air.claimRing(this.player2);
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.player1.pass();
             this.player2.clickCard(this.eju);

@@ -1,21 +1,18 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 
 class Sabotage extends DrawCard {
     static id = 'sabotage';
 
     setupCardAbilities() {
-        this.action({
-            condition: () => this.game.isDuringConflict('military'),
-            title: 'Discard a card in a province',
-            target: {
+        this.action('Discard a card in a province')
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+            .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,
-                cardType: [CardType.Character, CardType.Holding, CardType.Event],
-                gameAction: AbilityDsl.actions.discardCard()
-            }
-        });
+                cardType: [CardType.Character, CardType.Holding, CardType.Event]
+            }, AbilityDsl.actions.discardCard());
     }
 }
 

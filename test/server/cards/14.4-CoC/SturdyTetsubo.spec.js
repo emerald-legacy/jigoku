@@ -28,7 +28,7 @@ describe('Sturdy Tetsubo', function () {
         it('should make opponent discard a card when parent wins a conflict', function () {
             this.player1.playAttachment(this.tetsubo, this.manipulator);
             this.noMoreActions();
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'political',
@@ -78,7 +78,7 @@ describe('Sturdy Tetsubo', function () {
         it('attaching to an opponents character', function () {
             this.player1.playAttachment(this.tetsubo, this.yogoHiroue);
             this.noMoreActions();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.initiateConflict({
                 type: 'political',
@@ -133,7 +133,7 @@ describe('Sturdy Tetsubo - moving it around', function () {
         it('should work 4x per turn if you move it', function () {
             this.player1.playAttachment(this.tetsubo, this.manipulator);
             this.noMoreActions();
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'military',
@@ -214,7 +214,7 @@ describe('Sturdy Tetsubo - moving it around', function () {
         it('if you move it, then move it back should only work 3x per turn', function () {
             this.player1.playAttachment(this.tetsubo, this.manipulator);
             this.noMoreActions();
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'military',

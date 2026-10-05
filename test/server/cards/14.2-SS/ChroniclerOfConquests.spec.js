@@ -37,8 +37,8 @@ describe('Chronicler of Conquests', function() {
         });
 
         it('should work if a battlefield is in play during a conflict - attachment', function() {
-            let p1honor = this.player1.honor;
-            let p2honor = this.player2.honor;
+            const p1honor = this.player1.honor;
+            const p2honor = this.player2.honor;
             this.player2.pass();
             this.player1.playAttachment(this.totalWarfare, this.fields);
             this.player2.pass();
@@ -49,8 +49,8 @@ describe('Chronicler of Conquests', function() {
         });
 
         it('should work if a battlefield is in play during a conflict - province', function() {
-            let p1honor = this.player1.honor;
-            let p2honor = this.player2.honor;
+            const p1honor = this.player1.honor;
+            const p2honor = this.player2.honor;
             this.assault.facedown = false;
             this.player2.pass();
             this.player1.clickCard(this.chronicler);
@@ -60,8 +60,8 @@ describe('Chronicler of Conquests', function() {
         });
 
         it('should work if a battlefield is in play during a conflict - holding', function() {
-            let p1honor = this.player1.honor;
-            let p2honor = this.player2.honor;
+            const p1honor = this.player1.honor;
+            const p2honor = this.player2.honor;
             this.player1.placeCardInProvince(this.fortification, 'province 1');
             this.player2.pass();
             this.player1.clickCard(this.chronicler);

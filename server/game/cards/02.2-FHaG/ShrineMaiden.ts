@@ -1,22 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import { EventName, Location } from '../../Constants.js';
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { Location } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Reveal your top 3 conflict cards',
-            when: {
-                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: TriggeredAbilityContext) => event.card === context.source
-            },
-            cost: ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0, 3)),
-            effect: 'take any revealed spells into their hand',
-            handler: (context: TriggeredAbilityContext) => {
+    setupCardAbilities() {
+        this.reaction('Reveal your top 3 conflict cards')
+            .when({
+                onCharacterEntersPlay: (event, context) => event.card === context.source
+            })
+            .cost(AbilityDsl.costs.reveal((context) => context.player.conflictDeck.slice(0, 3)))
+            .handler((context) => {
                 const cards = context.player.conflictDeck.slice(0, 3);
                 const toHand = cards.filter((card) => card.hasTrait('kiho') || card.hasTrait('spell'));
                 const toDiscard = cards.filter((card) => !card.hasTrait('kiho') && !card.hasTrait('spell'));
@@ -36,8 +31,8 @@ class ShrineMaiden extends DrawCard {
                 } else {
                     this.game.addMessage('{0} discards {1}', context.player, toDiscard);
                 }
-            }
-        });
+            })
+            .effect('take any revealed spells into their hand');
     }
 }
 

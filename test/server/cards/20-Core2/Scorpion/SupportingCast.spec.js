@@ -42,7 +42,7 @@ describe('Supporting Cast', function () {
             expect(this.player2).toHavePrompt('Choose a character to give +3 military skill');
             this.player2.clickCard(this.bayushiManipulator);
             expect(this.getChatLogs(5)).toContain(
-                'player2 plays Supporting Cast to give +3 military skill to Bayushi Manipulator - Shosuro Sadako was just a distraction!'
+                'player2 plays Supporting Cast to give +3 military skill to Bayushi Manipulator - Shosuro Sadako was just a distraction'
             );
         });
 
@@ -61,7 +61,7 @@ describe('Supporting Cast', function () {
 
             expect(this.shosuroSadako.bowed).toBe(true);
             expect(this.getChatLogs(5)).toContain(
-                'player2 plays Supporting Cast to give +3 military skill to Bayushi Manipulator - Shosuro Sadako was just a distraction!'
+                'player2 plays Supporting Cast to give +3 military skill to Bayushi Manipulator - Shosuro Sadako was just a distraction'
             );
         });
     });

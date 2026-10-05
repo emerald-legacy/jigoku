@@ -17,7 +17,7 @@ describe('Iuchi Daiyu', function() {
 
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
 
-                let provinces = this.player2.provinces;
+                const provinces = this.player2.provinces;
                 provinces['province 1'].provinceCard.facedown = false;
                 provinces['province 2'].provinceCard.facedown = false;
                 provinces['province 3'].provinceCard.facedown = false;
@@ -52,7 +52,7 @@ describe('Iuchi Daiyu', function() {
 
                 it('should give the chosen character +1 military skill for each faceup non-stronghold province your opponent controls', function() {
                     this.player2.pass();
-                    let militarySkill = this.borderRider.getMilitarySkill();
+                    const militarySkill = this.borderRider.getMilitarySkill();
                     this.player1.clickCard(this.iuchiDaiyu);
                     this.player1.clickCard(this.borderRider);
                     expect(this.borderRider.getMilitarySkill()).toBe(militarySkill + 3);
@@ -61,7 +61,7 @@ describe('Iuchi Daiyu', function() {
 
                 it('should last until the end of the conflict', function() {
                     this.player2.pass();
-                    let militarySkill = this.borderRider.getMilitarySkill();
+                    const militarySkill = this.borderRider.getMilitarySkill();
                     this.player1.clickCard(this.iuchiDaiyu);
                     this.player1.clickCard(this.borderRider);
                     this.player2.pass();
@@ -70,6 +70,43 @@ describe('Iuchi Daiyu', function() {
                     this.player1.clickPrompt('Don\'t Resolve');
                     expect(this.borderRider.getMilitarySkill()).toBe(militarySkill);
                 });
+            });
+        });
+
+        describe('Iuchi Daiyu\'s targeting', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['iuchi-daiyu', 'border-rider'],
+                        hand: ['fine-katana']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        hand: ['ornate-fan']
+                    }
+                });
+
+                this.iuchiDaiyu = this.player1.findCardByName('iuchi-daiyu');
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+                this.fineKatana = this.player1.playAttachment('fine-katana', this.borderRider);
+                this.ornateFan = this.player2.playAttachment('ornate-fan', this.dojiWhisperer);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider],
+                    defenders: [this.dojiWhisperer]
+                });
+                this.player2.pass();
+            });
+
+            it('should not be able to choose an attachment', function() {
+                this.player1.clickCard(this.iuchiDaiyu);
+                expect(this.player1).toHavePrompt('Iuchi Daiyu');
+                expect(this.player1).toBeAbleToSelect(this.borderRider);
+                expect(this.player1).not.toBeAbleToSelect(this.fineKatana);
+                expect(this.player1).not.toBeAbleToSelect(this.ornateFan);
             });
         });
     });

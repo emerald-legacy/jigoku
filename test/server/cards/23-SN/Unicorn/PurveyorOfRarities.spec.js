@@ -31,9 +31,9 @@ describe('Purveyor Of Rarities', function () {
             });
             this.player2.pass();
 
-            let fate = this.player1.fate;
-            let mil = this.rarities.getMilitarySkill();
-            let pol = this.rarities.getPoliticalSkill();
+            const fate = this.player1.fate;
+            const mil = this.rarities.getMilitarySkill();
+            const pol = this.rarities.getPoliticalSkill();
 
             this.player1.clickCard(this.rarities);
             this.player1.clickCard(this.unicorn);
@@ -53,9 +53,9 @@ describe('Purveyor Of Rarities', function () {
             });
             this.player2.pass();
 
-            let fate = this.player1.fate;
-            let mil = this.rarities.getMilitarySkill();
-            let pol = this.rarities.getPoliticalSkill();
+            const fate = this.player1.fate;
+            const mil = this.rarities.getMilitarySkill();
+            const pol = this.rarities.getPoliticalSkill();
 
             this.player1.clickCard(this.rarities);
             this.player1.clickCard(this.voice);
@@ -75,9 +75,9 @@ describe('Purveyor Of Rarities', function () {
             });
             this.player2.pass();
 
-            let fate = this.player1.fate;
-            let mil = this.rarities.getMilitarySkill();
-            let pol = this.rarities.getPoliticalSkill();
+            const fate = this.player1.fate;
+            const mil = this.rarities.getMilitarySkill();
+            const pol = this.rarities.getPoliticalSkill();
 
             this.player1.clickCard(this.rarities);
             this.player1.clickCard(this.customs);

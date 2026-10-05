@@ -1,7 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 import { AbilityType, CardType, Location, Players, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,21 +11,20 @@ class VoiceOfTheAncestors extends DrawCard {
             glory: '0',
             side: 'dynasty',
             text: '',
-            type: 'attachment',
+            type: CardType.Attachment,
             name: 'Spirit Attachment',
             id: 'dummy-spirit-attachment',
             traits: ['spirit']
         });
 
-        this.action({
-            title: 'Attach a character as a Spirit',
-            target: {
+        this.action('Attach a character as a Spirit')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
-            },
-            gameAction: AbilityDsl.actions.selectCard({
+            })
+            .gameAction(AbilityDsl.actions.selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 cardCondition: card => card.isFaction('lion'),
@@ -47,10 +43,10 @@ class VoiceOfTheAncestors extends DrawCard {
                             AbilityDsl.effects.addTrait('spirit'),
                             AbilityDsl.effects.attachmentRestrictTraitAmount({ spirit: 1 }),
                             AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
-                                match: (card: BaseCard, context?: AbilityContext<this>) => card === context?.source?.parentCharacter,
+                                match: (card, context) => card === context?.source.parentCharacter,
                                 effect: [
-                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context) => (context.source as DrawCard).printedMilitarySkill || 0),
-                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context) => (context.source as DrawCard).printedPoliticalSkill || 0)
+                                    AbilityDsl.effects.modifyMilitarySkill((_card, context) => (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0),
+                                    AbilityDsl.effects.modifyPoliticalSkill((_card, context) => (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0)
                                 ]
                             })
                         ]
@@ -63,8 +59,7 @@ class VoiceOfTheAncestors extends DrawCard {
                         }
                     }))
                 ])
-            })
-        });
+            }));
     }
 }
 

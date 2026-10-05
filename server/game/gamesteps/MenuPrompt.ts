@@ -1,18 +1,14 @@
-import { UiPrompt } from './UiPrompt.js';
+import { type ActivePrompt, UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 
-type MenuCommandHandler = (player: Player, arg: string, context?: unknown) => boolean;
-
 type MenuContext = object;
-
-type MenuPromptButton = { text?: string; arg?: string; method?: string; [key: string]: unknown };
 
 interface MenuPromptProperties {
     source?: { name: string } | string;
     waitingPromptTitle?: string;
     promptTitle?: string;
-    activePrompt: { buttons?: MenuPromptButton[]; [key: string]: unknown };
+    activePrompt: ActivePrompt;
     context?: unknown;
 }
 
@@ -48,7 +44,7 @@ class MenuPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
+        const promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
         return Object.assign({ promptTitle: promptTitle }, this.properties.activePrompt);
     }
 
@@ -57,21 +53,20 @@ class MenuPrompt extends UiPrompt {
     }
 
     menuCommand(player: Player, arg: string, method: string): boolean {
-        const context = this.context as Record<string, MenuCommandHandler>;
-        if(!context[method]) {
+        const context = this.context;
+        // a method on the context object, named by the button
+        const handler: unknown = Reflect.get(context, method);
+        if(typeof handler !== 'function') {
             return false;
         }
 
-        if(context[method](player, arg, this.properties.context)) {
+        if(handler.call(context, player, arg, this.properties.context)) {
             this.complete();
         }
 
         return true;
     }
 
-    hasMethodButton(method: string): boolean {
-        return (this.properties.activePrompt.buttons ?? []).some((button: MenuPromptButton) => button.method === method);
-    }
 }
 
 export default MenuPrompt;

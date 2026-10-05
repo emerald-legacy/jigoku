@@ -1,5 +1,5 @@
 import type { MessageArgs } from '../GameChat.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -7,24 +7,20 @@ import type Player from '../Player.js';
 import Ring from '../Ring.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface PlaceFateProperties extends CardActionProperties {
     amount?: number;
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName, C> {
+export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
-    defaultProperties: PlaceFateProperties = { amount: 1 };
-    constructor(properties: ((context: C) => PlaceFateProperties) | PlaceFateProperties) {
-        super(properties);
-    }
-
-    getEffectMessage(context: C): MessageArgs {
-        const { amount, target } = this.getProperties(context);
-        return ['place {1} fate on {0}', [target, amount]];
+    defaultProperties = { amount: 1 };
+    protected effectMessage(context: C): MessageArgs {
+        return ['place {1} fate on {0}', [this.getProperties(context).amount]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
@@ -51,9 +47,9 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         );
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
-        event.fate = amount ?? 0;
+        event.fate = amount;
         event.origin = origin;
         event.context = context;
         event.recipient = card;
@@ -63,7 +59,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&

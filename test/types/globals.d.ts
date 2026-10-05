@@ -3,6 +3,7 @@ export {};
 
 declare global {
     var integration: (definitions: () => void) => void;
+    var fillers: typeof import('../helpers/deckbuilder.js').fillers;
 
     namespace jasmine {
         interface Matchers<T> {

@@ -77,7 +77,7 @@ describe('Dance Of Chikusho-Do', function() {
         });
 
         it('should put 2 cards in each of their unbroken provinces - player1', function() {
-            let cards = this.player1.player.getDynastyCardsInProvince('stronghold province').length;
+            const cards = this.player1.player.getDynastyCardsInProvince('stronghold province').length;
 
             this.player1.clickCard(this.dance);
             this.player1.clickPrompt('player1');
@@ -169,10 +169,10 @@ describe('Dance Of Chikusho-Do', function() {
         });
 
         it('should work if you deck yourself', function() {
-            let cards1 = this.player1.player.getDynastyCardsInProvince('province 1').length;
-            let cards2 = this.player1.player.getDynastyCardsInProvince('province 2').length;
-            let cards3 = this.player1.player.getDynastyCardsInProvince('province 3').length;
-            let cards4 = this.player1.player.getDynastyCardsInProvince('province 4').length;
+            const cards1 = this.player1.player.getDynastyCardsInProvince('province 1').length;
+            const cards2 = this.player1.player.getDynastyCardsInProvince('province 2').length;
+            const cards3 = this.player1.player.getDynastyCardsInProvince('province 3').length;
+            const cards4 = this.player1.player.getDynastyCardsInProvince('province 4').length;
 
             this.player1.reduceDeckToNumber('dynasty deck', 5);
             this.player1.moveCard(this.dojiWhisperer, 'dynasty discard pile');

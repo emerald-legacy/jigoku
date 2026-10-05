@@ -52,6 +52,17 @@ describe('AbilityLimit', function () {
             this.limit.unregisterEvents(this.eventEmitterSpy);
             expect(this.eventEmitterSpy.removeListener).toHaveBeenCalledWith('onEventForReset', jasmine.any(Function));
         });
+
+        it('should remove the listener that was registered', function () {
+            const eventEmitter = new EventEmitter();
+            this.limit.registerEvents(eventEmitter);
+            this.limit.unregisterEvents(eventEmitter);
+            expect(eventEmitter.listenerCount('onEventForReset')).toBe(0);
+
+            this.limit.increment(this.player);
+            eventEmitter.emit('onEventForReset');
+            expect(this.limit.currentForPlayer(this.player)).toBe(1);
+        });
     });
 
     describe('resetting the use count', function () {

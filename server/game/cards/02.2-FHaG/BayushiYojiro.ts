@@ -9,7 +9,7 @@ class BayushiYojiro extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
-            match: (card: DrawCard) => card.isParticipating(),
+            match: (card) => card.isParticipating(),
             effect: [
                 AbilityDsl.effects.honorStatusDoesNotModifySkill(),
                 AbilityDsl.effects.honorStatusDoesNotAffectLeavePlay(),

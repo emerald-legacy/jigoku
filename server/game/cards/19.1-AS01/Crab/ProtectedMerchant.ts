@@ -12,7 +12,7 @@ export default class ProtectedMerchant extends DrawCard {
     }
 
     private getHoldingsInPlay(): number {
-        return (this.game.allCards).reduce(
+        return this.game.allCards.reduce(
             (sum, card) =>
                 card.type === CardType.Holding &&
                 card.controller === this.controller &&

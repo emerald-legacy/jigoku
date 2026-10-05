@@ -4,7 +4,6 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../costs/Cost.js';
 import type Player from '../../../Player.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type Game from '../../../Game.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 
@@ -37,7 +36,7 @@ class ObjectionCost implements Cost {
         return amount === 0 || AbilityDsl.actions.loseFate({ target: context.player, amount }).hasLegalTarget(context);
     }
 
-    pay(context: TriggeredAbilityContext): void {
+    pay(context: AbilityContext): void {
         const fateCost = currentObjectionCost(context.player);
         if(fateCost > 0) {
             AbilityDsl.actions.loseFate({ target: context.player, amount: fateCost }).resolve(context.player, context);
@@ -49,22 +48,18 @@ class ObjectionCost implements Cost {
 
 export default class Objection extends DrawCard {
     static id = 'objection-';
-    private eventRegistrar?: EventRegistrar;
 
     setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnPhaseStarted]);
+        new EventRegistrar(this.game, this).register([EventName.OnPhaseStarted]);
 
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event && context.player.imperialFavor !== ''
-            },
-            cannotBeMirrored: true,
-            cost: new ObjectionCost(),
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .cost(new ObjectionCost())
+            .gameAction(AbilityDsl.actions.cancel())
+            .cannotBeMirrored();
     }
 
     onPhaseStarted() {

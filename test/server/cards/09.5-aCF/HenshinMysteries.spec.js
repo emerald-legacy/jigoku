@@ -61,7 +61,7 @@ describe('Henshin Mysteries', function() {
             });
 
             it('should not stop the ring effect', function() {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.player1.clickPrompt('Gain 2 Honor');
                 expect(this.player1).toHavePrompt('Action Window');

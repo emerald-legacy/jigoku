@@ -78,7 +78,7 @@ describe('Developing Masterpiece', function () {
             this.player1.clickPrompt('Done');
             this.player2.clickPrompt('Done');
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player1.clickCard(this.masterpiece);
             expect(this.masterpiece.location).toBe('removed from game');
             expect(this.player1.honor).toBe(honor + 3);

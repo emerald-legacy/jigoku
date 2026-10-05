@@ -7,23 +7,21 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ChooseActionProperties extends GameActionProperties {
     activePromptTitle?: string;
+    waitingPromptTitle?: string;
     messageArgs?: MsgArg[];
     player?: Players.Self | Players.Opponent;
     options: { [label: string]: { action: GameAction; message?: string } };
 }
 
-export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseActionProperties, EventName, C> {
+export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseActionProperties, EventName, C, 'activePromptTitle' | 'options' | 'messageArgs'> {
     effect = 'choose between different actions';
-    defaultProperties: ChooseActionProperties = {
+    defaultProperties = {
         activePromptTitle: 'Select an action:',
         options: {},
         messageArgs: []
     };
-    constructor(properties: ChooseActionProperties | ((context: C) => ChooseActionProperties)) {
-        super(properties);
-    }
 
-    getProperties(context: C, additionalProperties = {}): ChooseActionProperties {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         for(const opt of Object.values(properties.options)) {
             opt.action.setDefaultTarget(() => properties.target);
@@ -45,7 +43,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
             return;
         }
 
-        const { activePromptTitle, target } = properties;
+        const { activePromptTitle, waitingPromptTitle, target } = properties;
         const opponent = context.player.opponent;
         const player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         const choiceLabels = legalChoices.map(([label, _]) => label);
@@ -55,12 +53,13 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
                 return;
             }
             if(choice.message) {
-                context.game.addMessage(choice.message, player, properties.target, ...((properties.messageArgs ?? [])));
+                context.game.addMessage(choice.message, player, properties.target, ...properties.messageArgs);
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
         };
         context.game.promptWithHandlerMenu(player, {
             activePromptTitle,
+            waitingPromptTitle,
             context,
             choices: choiceLabels,
             choiceHandler,

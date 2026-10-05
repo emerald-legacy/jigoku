@@ -3,14 +3,14 @@ import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromH
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { article } from '../../article.js';
 
 export default class UtakuTakeko extends DrawCard {
     static id = 'utaku-takeko';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Play a character from your dynasty deck',
-            gameAction: AbilityDsl.actions.deckSearch(() => ({
+        this.action('Play a character from your dynasty deck')
+            .gameAction(AbilityDsl.actions.deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
                 amount: 8,
                 deck: Decks.DynastyDeck,
@@ -40,32 +40,21 @@ export default class UtakuTakeko extends DrawCard {
                 message: '{0} recalls a {1} relative who is {2} {3}',
                 messageArgs: (context, cards) => [
                     context.source,
-                    this.#msgDistance(cards[0]),
-                    this.#msgArticle(cards[0]),
+                    this.msgDistance(cards[0]),
+                    this.msgArticle(cards[0]),
                     cards[0]
                 ]
-            }))
-        });
+            })));
     }
 
-    #msgDistance(card: DrawCard): string {
+    private msgDistance(card: DrawCard): string {
         return card.hasTrait('gaijin') ? 'very distant' : 'distant';
     }
 
-    #msgArticle(card: DrawCard): string {
+    private msgArticle(card: DrawCard): string {
         if(card.hasTrait('army')) {
             return 'in the';
         }
-
-        switch(card.name[0]) {
-            case 'A':
-            case 'E':
-            case 'I':
-            case 'O':
-            case 'U':
-                return 'an';
-            default:
-                return 'a';
-        }
+        return article(card.name);
     }
 }

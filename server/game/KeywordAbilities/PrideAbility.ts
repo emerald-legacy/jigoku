@@ -1,5 +1,4 @@
 import * as AbilityLimit from '../AbilityLimit.js';
-import type { Conflict } from '../Conflict.js';
 import { AbilityType, EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -20,10 +19,14 @@ export default class PrideAbility extends TriggeredAbility<DrawCard> {
             title: card.name + '\'s Pride',
             printedAbility: false,
             message: '{0} is {1}honored due to their Pride',
-            messageArgs: (context: TriggeredAbilityContext) => [context.source, (context.event.conflict as Conflict).winner === context.player ? '' : 'dis'],
+            messageArgs: (context: TriggeredAbilityContext) => [context.source, context.event.conflict?.winner === context.player ? '' : 'dis'],
             limit: AbilityLimit.perConflict(1),
             handler: (context: TriggeredAbilityContext) => {
-                if((context.event.conflict as Conflict).winner === context.player) {
+                const conflict = context.event.conflict;
+                if(!conflict) {
+                    return;
+                }
+                if(conflict.winner === context.player) {
                     this.game.applyGameAction(context, { honor: context.source });
                 } else {
                     this.game.applyGameAction(context, { dishonor: context.source });

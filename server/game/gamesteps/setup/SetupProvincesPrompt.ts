@@ -16,9 +16,9 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         this.clickedDone = {};
         this.selectedCards = {};
         this.selectableCards = {};
-        for(let player of game.getPlayers()) {
+        for(const player of game.getPlayers()) {
             this.selectedCards[player.uuid] = [];
-            this.selectableCards[player.uuid] = player.provinceDeck.slice() as ProvinceCard[];
+            this.selectableCards[player.uuid] = player.provinceDeck.slice();
         }
     }
 
@@ -91,11 +91,13 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
     }
 
     menuCommand(player: Player, arg: string): boolean {
-        let stronghold = this.strongholdProvince[player.uuid];
+        const stronghold = this.strongholdProvince[player.uuid];
         if(arg === 'change' || !stronghold) {
-            (stronghold as ProvinceCard).inConflict = false;
+            if(stronghold) {
+                stronghold.inConflict = false;
+            }
             this.strongholdProvince[player.uuid] = null;
-            this.selectableCards[player.uuid] = player.provinceDeck.slice() as ProvinceCard[];
+            this.selectableCards[player.uuid] = player.provinceDeck.slice();
             this.selectedCards[player.uuid] = [];
             return true;
         } else if(arg !== 'done') {
@@ -108,16 +110,16 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         }
         this.clickedDone[player.uuid] = true;
         this.game.addMessage('{0} has placed their provinces', player);
-        player.moveCard(this.strongholdProvince[player.uuid] as ProvinceCard, Location.StrongholdProvince);
+        player.moveCard(stronghold, Location.StrongholdProvince);
         // Shuffle remaining selectable cards using Fisher-Yates
         const shuffled = [...this.selectableCards[player.uuid]];
         for(let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
-        let provinces = [...new Set(this.selectedCards[player.uuid].concat(shuffled))];
+        const provinces = [...new Set(this.selectedCards[player.uuid].concat(shuffled))];
         for(let i = 1; i < 5; i++) {
-            let provinceCard = provinces[i - 1];
+            const provinceCard = provinces[i - 1];
             if(!provinceCard.startsGameFaceup()) {
                 provinceCard.facedown = true;
             }

@@ -4,10 +4,10 @@ import AbilityDsl from '../../abilitydsl.js';
 class PoliticalRival extends DrawCard {
     static id = 'political-rival';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isDefending(),
-            effect: ability.effects.modifyPoliticalSkill(3)
+            effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
     }
 }

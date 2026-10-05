@@ -4,7 +4,7 @@ import type { Event } from '../Events/Event.js';
 import { Players, type EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import type { GameAction, WithDefaults } from './GameAction.js';
+import type { GameAction } from './GameAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface SelectRingProperties extends RingActionProperties {
@@ -19,26 +19,14 @@ export interface SelectRingProperties extends RingActionProperties {
     gameAction: GameAction;
 }
 
-export class SelectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<SelectRingProperties, EventName, C> {
-    defaultProperties: Partial<SelectRingProperties> = {
+export class SelectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<SelectRingProperties, EventName, C, 'ringCondition' | 'subActionProperties'> {
+    defaultProperties = {
         ringCondition: () => true,
-        subActionProperties: (ring) => ({ target: ring })
+        subActionProperties: (ring: Ring) => ({ target: ring })
     };
 
-    constructor(properties: SelectRingProperties | ((context: C) => SelectRingProperties)) {
-        super(properties);
-    }
-
-    getEffectMessage(context: C): MessageArgs {
-        let { target } = this.getProperties(context);
-        return ['choose a ring for {0}', [target]];
-    }
-
-    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectRingProperties, 'ringCondition' | 'subActionProperties'> {
-        const properties = super.getProperties(context, additionalProperties);
-        const ringCondition = properties.ringCondition ?? (() => true);
-        const subActionProperties = properties.subActionProperties ?? ((ring: Ring) => ({ target: ring }));
-        return Object.assign(properties, { ringCondition, subActionProperties });
+    protected effectMessage(): MessageArgs {
+        return ['choose a ring for {0}', []];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
@@ -57,7 +45,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        return Object.values(context.game.rings).some((ring: Ring) =>
+        return Object.values(context.game.rings).some((ring) =>
             this.canAffect(ring, context, additionalProperties)
         );
     }
@@ -67,13 +55,14 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
         } else if(
-            !Object.values(context.game.rings).some((ring: Ring): boolean => properties.ringCondition(ring, context))
+            !Object.values(context.game.rings).some((ring) => properties.ringCondition(ring, context))
         ) {
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
-        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
+        const opponent = context.player.opponent;
+        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
@@ -84,7 +73,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
             onCancel: properties.cancelHandler,
             onSelect: (selectingPlayer: Player, ring: Ring) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...(messageArgs(ring, selectingPlayer)));
+                    context.game.addMessage(properties.message, ...messageArgs(ring, selectingPlayer));
                 }
                 properties.gameAction.addEventsToArray(
                     events,

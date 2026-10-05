@@ -45,7 +45,7 @@ describe('Cultured Facade', function() {
             });
             this.player2.clickCard(this.facade);
 
-            expect(this.getChatLogs(3)).toContain('player2 plays Cultured Facade to prevent characters from being targetted by events played by players with a higher bid value than that of the character\'s controller');
+            expect(this.getChatLogs(3)).toContain('player2 plays Cultured Facade to prevent characters from being targeted by events played by players with a higher bid value than that of the character\'s controller');
         });
 
         it('should do nothing if honor bids are equal', function() {

@@ -27,8 +27,8 @@ describe('Till the Last One Falls!', function () {
                 defenders: [this.challenger, this.scholar]
             });
 
-            let brashMil = this.brash.getMilitarySkill();
-            let brashPol = this.brash.getPoliticalSkill();
+            const brashMil = this.brash.getMilitarySkill();
+            const brashPol = this.brash.getPoliticalSkill();
 
             this.player2.pass();
             this.player1.clickCard(this.card);

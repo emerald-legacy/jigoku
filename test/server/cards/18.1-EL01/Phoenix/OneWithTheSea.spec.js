@@ -56,7 +56,7 @@ describe('One With the Sea', function() {
             });
             this.player2.pass();
             this.player1.clickCard(this.sea);
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             expect(this.player1).toHavePrompt('One with the Sea');
             expect(this.player1).toHavePromptButton('Move a character you control to the conflict');
             expect(this.player1).toHavePromptButton('Move any character to the conflict');

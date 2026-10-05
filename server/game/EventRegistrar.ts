@@ -53,12 +53,12 @@ export class EventRegistrar {
      * Registers a single event handler.
      */
     public registerEvent(eventName: string, methodName = '') {
-        const method = (this.context as Record<string, unknown>)[methodName || eventName];
+        const method: unknown = Reflect.get(this.context, methodName || eventName);
         if(typeof method !== 'function') {
             throw new Error(`Cannot bind event handler for ${eventName}`);
         }
 
-        const boundHandler = (method as (event: unknown) => void).bind(this.context);
+        const boundHandler = method.bind(this.context);
         this.game.on(eventName, boundHandler);
         this.events.push({ name: eventName, handler: boundHandler });
     }

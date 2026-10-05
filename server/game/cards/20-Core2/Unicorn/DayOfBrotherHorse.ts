@@ -1,22 +1,21 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Duration, TargetMode } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 
 function fluff(element: Element): string {
     switch(element) {
         case 'air':
-            return 'with a glorious race they celebrate. A day of games and friendly competition, the herd and the samurai in communion!';
+            return 'with a glorious race they celebrate. A day of games and friendly competition, the herd and the samurai in communion';
         case 'earth':
-            return 'high in the mountains they celebrate. Around a fire, close to the stars, sharing some tasty kumis!';
+            return 'high in the mountains they celebrate. Around a fire, close to the stars, sharing some tasty kumis';
         case 'fire':
-            return 'it\'s a sunny day filled with celebration. The Moto share tales of the desert!';
+            return 'it\'s a sunny day filled with celebration. The Moto share tales of the desert';
         case 'water':
-            return 'they celebrate at the beach. A day of joyful play for the riders, and the first sight of the sea for a few foals!';
+            return 'they celebrate at the beach. A day of joyful play for the riders, and the first sight of the sea for a few foals';
         case 'void':
-            return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year!';
+            return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year';
         default:
             return '';
     }
@@ -26,33 +25,29 @@ export default class DayOfBrotherHorse extends DrawCard {
     static id = 'day-of-brother-horse';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Protect a ring and draw three card',
-            when: {
+        this.reaction('Protect a ring and draw three cards')
+            .when({
                 onConflictPass: (event, context) =>
                     context.player === event.conflict.attackingPlayer &&
-                    (context.player.cardsInPlay).some((card: DrawCard) => !card.bowed)
-            },
-            target: {
-                mode: TargetMode.Ring,
+                    context.player.cardsInPlay.some((card) => !card.bowed)
+            })
+            .ringTarget({
                 ringCondition: () => true
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.ringLastingEffect({
                         duration: Duration.UntilEndOfPhase,
-                        target: (context.ring?.getElements() as Element[]).map((element) => context.game.rings[element]),
+                        target: context.ring.getElements().map((element) => context.game.rings[element]),
                         effect: AbilityDsl.effects.cannotDeclareRing(
-                            (player: Player) => player === context.player.opponent
+                            (player) => player === context.player.opponent
                         )
                     }),
                     AbilityDsl.actions.draw({ target: context.player, amount: 3 }),
                     AbilityDsl.actions.chosenDiscard({ target: context.player })
                 ]
-            })),
-            max: AbilityDsl.limit.perRound(1),
-            effect: 'prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}',
-            effectArgs: (context) => [context.player.opponent ?? '', fluff((context.ring?.element ?? 'air') as Element)]
-        });
+            })))
+            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

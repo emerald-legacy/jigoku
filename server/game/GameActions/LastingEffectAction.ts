@@ -1,10 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import { Duration, EventName, Players } from '../Constants.js';
-import type { WhenType } from '../Interfaces.js';
+import type { EffectUntil } from '../Effects/Effect.js';
 import type Player from '../Player.js';
 import { GameAction, type ActionEvent, type GameActionProperties } from './GameAction.js';
-
 import type { Event } from '../Events/Event.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
@@ -12,7 +11,7 @@ import type { EffectFactory } from '../Effects/EffectBuilder.js';
 export interface LastingEffectFields {
     duration?: Duration;
     condition?: (context: AbilityContext) => boolean;
-    until?: WhenType;
+    until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
     message?: string;
     ability?: BaseAbility;
@@ -32,21 +31,21 @@ export interface LastingEffectProperties extends LastingEffectGeneralProperties 
     targetController?: Players | Player;
 }
 
-export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName, C> {
+export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, C, 'duration'> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect';
-    defaultProperties: Partial<LastingEffectProperties> = {
+    defaultProperties = {
         duration: Duration.UntilEndOfConflict
     };
 
-    getProperties(context: C, additionalProperties = {}): LastingEffectProperties & { effect: EffectFactory[] } {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return properties.effect.length > 0;
     }
 
@@ -57,10 +56,10 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties(event.context, additionalProperties);
+        const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => properties);
+        event.context.source.applyDurationEffect(properties.duration, () => properties);
     }
 }

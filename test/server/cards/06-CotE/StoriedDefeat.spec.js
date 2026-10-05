@@ -65,7 +65,7 @@ describe('Storied Defeat', function() {
             });
 
             it('should dishonor the target if the player spends fate', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player2.pass();
                 this.player1.clickCard(this.storiedDefeat);
                 this.player1.clickCard(this.dojiWhisperer);
@@ -125,7 +125,7 @@ describe('Storied Defeat', function() {
             });
 
             it('should not prompt the player to spend a fate when playing Storied Defeat on Borderlands Defender', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.storiedDefeat);
                 this.player1.clickCard(this.borderlandsDefender);
                 expect(this.borderlandsDefender.isDishonored).toBe(true);

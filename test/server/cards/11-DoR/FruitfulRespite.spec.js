@@ -22,7 +22,7 @@ describe('Fruitful Respite', function() {
             });
 
             it('should prompt you to gain two fate if opponent passes with a ready character', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.noMoreActions();
                 this.player1.passConflict();
                 expect(this.player2).toHavePrompt('Triggered abilities');
@@ -32,7 +32,7 @@ describe('Fruitful Respite', function() {
             });
 
             it('should let you play more than one copy', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.noMoreActions();
                 this.player1.passConflict();
                 expect(this.player2).toHavePrompt('Triggered abilities');
@@ -44,7 +44,7 @@ describe('Fruitful Respite', function() {
             });
 
             it('should not prompt you to gain two fate if opponent passes with no ready characters', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player1.clickCard(this.atw);
                 this.player1.clickCard(this.asakoTsuki);
                 this.noMoreActions();
@@ -56,7 +56,7 @@ describe('Fruitful Respite', function() {
             });
 
             it('should not prompt you to gain two fate if you pass with ready characters', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player1.clickCard(this.atw);
                 this.player1.clickCard(this.asakoTsuki);
                 this.noMoreActions();

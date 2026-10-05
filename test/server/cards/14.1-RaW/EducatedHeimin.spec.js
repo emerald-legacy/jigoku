@@ -61,7 +61,7 @@ describe('Educated Heimin', function() {
             this.player1.moveCard(this.akodoToturi, 'dynasty deck');
 
             this.player2.clickCard(this.academy);
-            let cards = this.player1.player.getDynastyCardsInProvince(this.garden.location);
+            const cards = this.player1.player.getDynastyCardsInProvince(this.garden.location);
             cards.forEach(card => {
                 if(card !== this.kuwanan) {
                     this.player1.moveCard(card, 'dynasty discard pile');
@@ -99,7 +99,7 @@ describe('Educated Heimin', function() {
             this.player1.moveCard(this.akodoToturi, 'dynasty deck');
 
             this.player2.clickCard(this.academy);
-            let cards = this.player1.player.getDynastyCardsInProvince(this.eminient.location);
+            const cards = this.player1.player.getDynastyCardsInProvince(this.eminient.location);
             cards.forEach(card => {
                 if(card !== this.kuwanan) {
                     this.player1.moveCard(card, 'dynasty discard pile');
@@ -133,7 +133,7 @@ describe('Educated Heimin', function() {
             this.player1.moveCard(this.akodoToturi, 'dynasty deck');
 
             this.player2.clickCard(this.academy);
-            let cards = this.player1.player.getDynastyCardsInProvince(this.frog.location);
+            const cards = this.player1.player.getDynastyCardsInProvince(this.frog.location);
             cards.forEach(card => {
                 if(card !== this.kuwanan) {
                     this.player1.moveCard(card, 'dynasty discard pile');
@@ -194,7 +194,7 @@ describe('Educated Heimin', function() {
             });
 
             this.player2.clickCard('sabotage');
-            let cards = this.player1.player.getDynastyCardsInProvince(this.garden.location);
+            const cards = this.player1.player.getDynastyCardsInProvince(this.garden.location);
             cards.forEach(card => {
                 if(card !== this.kuwanan) {
                     this.player1.moveCard(card, 'dynasty discard pile');

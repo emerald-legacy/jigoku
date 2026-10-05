@@ -30,7 +30,7 @@ describe('Objection', function () {
         });
 
         it('increases cost during cancel wars', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.tadaka.honor();
 
             this.player1.pass();
@@ -54,7 +54,7 @@ describe('Objection', function () {
         });
 
         it('should increase cost by 1 for each copy that you play in the phase', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player1.pass();
             this.player2.clickCard(this.atws[0]);

@@ -28,7 +28,7 @@ describe('Yogo Asami', function() {
                 expect(this.yogoAsami.bowed).toBe(false);
                 this.player1.clickCard(this.yogoAsami);
 
-                let mil = this.doomed.getMilitarySkill();
+                const mil = this.doomed.getMilitarySkill();
                 expect(this.player1).toBeAbleToSelect(this.yogoAsami);
                 expect(this.player1).toBeAbleToSelect(this.brash);
                 expect(this.player1).toBeAbleToSelect(this.doomed);
@@ -47,7 +47,7 @@ describe('Yogo Asami', function() {
                 expect(this.yogoAsami.bowed).toBe(false);
                 this.player1.clickCard(this.yogoAsami);
 
-                let mil = this.doomed.getMilitarySkill();
+                const mil = this.doomed.getMilitarySkill();
                 expect(this.player1).toBeAbleToSelect(this.yogoAsami);
                 expect(this.player1).toBeAbleToSelect(this.brash);
                 expect(this.player1).toBeAbleToSelect(this.doomed);

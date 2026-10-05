@@ -5,7 +5,7 @@ import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
 
 /**
- * Returns -1 in case there are no cavalry characters. It is not exactly correct, but it works fine
+ * Returns -1 in case there are no cavalry characters
  */
 function participatingCavGlory(conflict: Conflict, player: Player): number {
     return Math.max(
@@ -20,16 +20,13 @@ export default class UtakuStableMaster extends DrawCard {
     static id = 'utaku-stable-master';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow participating character with lower glory than participating cavalry.',
-            condition: (context) => context.game.isDuringConflict(),
-            target: {
+        this.action('Bow participating character with lower glory than participating cavalry')
+            .condition((context) => context.game.isDuringConflict())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard, context) =>
+                cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    card.glory <= participatingCavGlory(context.game.currentConflict as Conflict, context.player),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                    card.glory <= participatingCavGlory(context.game.requireConflict(), context.player)
+            }, AbilityDsl.actions.bow());
     }
 }

@@ -26,8 +26,8 @@ export class ConflictTracker {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictType.Passed]++;
         } else if(conflict.forcedDeclaredType) {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictType.Forced]++;
-        } else {
-            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType as ConflictType]++;
+        } else if(conflict.declaredType) {
+            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType]++;
         }
     }
 

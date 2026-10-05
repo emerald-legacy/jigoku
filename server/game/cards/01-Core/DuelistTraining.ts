@@ -1,36 +1,38 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityType, CardType, DuelType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
-import type HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
+import HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 
 class DuelistTraining extends DrawCard {
     static id = 'duelist-training';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.gainAbility(AbilityType.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Initiate a duel to bow',
-                condition: (context: AbilityContext<this>) => context.source.isParticipating(),
+                condition: (context) => context.source.isParticipating(),
                 printedAbility: false,
                 target: {
                     cardType: CardType.Character,
                     controller: Players.Opponent,
-                    cardCondition: (card: DrawCard) => card.isParticipating(),
-                    gameAction: ability.actions.duel((context: AbilityContext<this>) => ({
+                    cardCondition: (card) => card.isParticipating(),
+                    gameAction: AbilityDsl.actions.duel({
                         type: DuelType.Military,
-                        challenger: context.source,
-                        gameAction: (duel: Duel) => ability.actions.bow({ target: duel.loser }),
-                        costHandler: (context: AbilityContext, prompt: unknown) => this.costHandler(context, prompt as HonorBidPrompt)
-                    }))
+                        gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser }),
+                        costHandler: (context, prompt) => {
+                            if(prompt instanceof HonorBidPrompt) {
+                                this.costHandler(context, prompt);
+                            }
+                        }
+                    })
                 }
             })
         });
     }
 
-    costHandler(context: AbilityContext, prompt: HonorBidPrompt) {
+    private costHandler(context: AbilityContext, prompt: HonorBidPrompt) {
         let lowBidder = this.game.getFirstPlayer();
         if(!lowBidder || !lowBidder.opponent) {
             return;
@@ -47,12 +49,11 @@ class DuelistTraining extends DrawCard {
             return;
         }
         this.game.promptWithHandlerMenu(lowBidder, {
-            activePromptTite: 'Difference in bids: ' + difference.toString(),
+            activePromptTitle: 'Difference in bids: ' + difference.toString(),
             source: this,
-            choices: ['Pay with honor', 'Pay with cards'],
-            handlers: [
-                () => prompt.transferHonorAfterBid(context),
-                () => GameActions.chosenDiscard({ amount: difference }).resolve(lowBidder, context)
+            options: [
+                { text: 'Pay with honor', handler: () => prompt.transferHonorAfterBid(context) },
+                { text: 'Pay with cards', handler: () => GameActions.chosenDiscard({ amount: difference }).resolve(lowBidder, context) }
             ]
         });
     }

@@ -1,8 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { AbilityType, CardType, Players, TargetMode } from '../../../Constants.js';
+import { AbilityType, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class WritOfSurvey extends DrawCard {
     static id = 'writ-of-survey';
@@ -24,11 +23,10 @@ export default class WritOfSurvey extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     controller: Players.Any,
-                    mode: TargetMode.Single,
                     cardCondition: (card) => card.isParticipating() && card.isDishonored,
                     gameAction: AbilityDsl.actions.bow()
                 }
-            } as ActionProps<this>)
+            })
         });
     }
 

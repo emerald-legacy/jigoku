@@ -97,8 +97,8 @@ describe('Sharing Shinseis Wisdom', function() {
                 province: this.wisdom
             });
 
-            let yoshiFate = this.yoshi.fate;
-            let fumikiFate = this.fumiki.fate;
+            const yoshiFate = this.yoshi.fate;
+            const fumikiFate = this.fumiki.fate;
 
             this.player2.clickCard(this.wisdom);
             this.player2.clickCard(this.yoshi);

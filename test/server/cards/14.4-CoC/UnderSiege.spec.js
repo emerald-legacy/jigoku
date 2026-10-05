@@ -201,7 +201,7 @@ describe('Under Siege', function() {
             this.noMoreActions();
             this.player1.clickPrompt('Don\'t Resolve');
             expect(this.player1).toHavePrompt('Action Window');
-            expect(this.getChatLogs(20)).toContain('player1 plays Under Siege to place player2 under siege!');
+            expect(this.getChatLogs(20)).toContain('player1 plays Under Siege to place player2 under siege');
             expect(this.getChatLogs(20)).toContain('player2 sets their hand aside and draws 5 cards');
             expect(this.getChatLogs(20)).toContain('player2 discards Way of the Crane, Assassination, Court Games, Way of the Dragon and Backhanded Compliment');
             expect(this.getChatLogs(20)).toContain('player2 picks up their original hand');
@@ -219,7 +219,7 @@ describe('Under Siege', function() {
             this.player1.clickPrompt('Don\'t Resolve');
             expect(this.player1).not.toHavePrompt('Order Simultaneous effects');
             expect(this.player1).toHavePrompt('Action Window');
-            expect(this.getChatLogs(20)).toContain('player1 plays Under Siege to place player2 under siege!');
+            expect(this.getChatLogs(20)).toContain('player1 plays Under Siege to place player2 under siege');
             expect(this.getChatLogs(20)).toContain('player2 sets their hand aside and draws 5 cards');
             expect(this.getChatLogs(20)).toContain('player2 discards Way of the Crane, Assassination, Court Games, Way of the Dragon and Backhanded Compliment');
             expect(this.getChatLogs(20)).toContain('player2 picks up their original hand');
@@ -246,6 +246,34 @@ describe('Under Siege', function() {
 
             expect(this.shame.location).toBe('hand');
             expect(this.fan.location).toBe('hand');
+        });
+
+        it('should not return the cards set aside by an earlier use', function() {
+            this.initiateConflict({
+                attackers: [this.wanderer]
+            });
+            this.player1.clickCard(this.siege);
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.fan.location).toBe('hand');
+
+            this.player2.moveCard(this.fan, 'conflict discard pile');
+            expect(this.player2.player.hand.length).toBe(0);
+            this.player1.moveCard(this.siege, 'hand');
+            this.wanderer.bowed = false;
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'fire',
+                attackers: [this.wanderer]
+            });
+            this.player1.clickCard(this.siege);
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.fan.location).toBe('conflict discard pile');
         });
     });
 });
@@ -308,7 +336,7 @@ describe('Two Under Sieges', function() {
             });
             this.player1.pass();
             this.player2.clickCard(this.siege2);
-            expect(this.getChatLogs(2)).toContain('player2 plays Under Siege to place player2 under siege!');
+            expect(this.getChatLogs(2)).toContain('player2 plays Under Siege to place player2 under siege');
             expect(this.getChatLogs(1)).toContain('player2 sets their hand aside and draws 5 cards');
 
             expect(this.fan.location).toBe('removed from game');
@@ -320,7 +348,7 @@ describe('Two Under Sieges', function() {
             expect(this.bhc.location).toBe('hand');
 
             this.player1.clickCard(this.siege);
-            expect(this.getChatLogs(3)).toContain('player1 plays Under Siege to place player2 under siege!');
+            expect(this.getChatLogs(3)).toContain('player1 plays Under Siege to place player2 under siege');
             expect(this.getChatLogs(2)).toContain('player2 sets their hand aside and draws 5 cards');
 
             expect(this.fan.location).toBe('removed from game');
@@ -564,5 +592,6 @@ describe('Under Siege - Bug Report', function() {
             expect(this.shame.location).toBe('conflict deck');
             expect(this.player2.hand.length).toBe(7);
         });
+
     });
 });
