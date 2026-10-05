@@ -87,7 +87,7 @@ export class PlayerCostManager {
         return undefined;
     }
 
-    getAlternateFatePools(playingType: PlayType | undefined, card: BaseCard, context?: AbilityContext): FatePool[] {
+    getAlternateFatePools(card: BaseCard, context?: AbilityContext): FatePool[] {
         const effects = this.player.getEffects(EffectName.AlternateFatePool);
         let alternateFatePools: FatePool[] = effects.flatMap((match) => {
             const pool = match(card);
@@ -125,7 +125,7 @@ export class PlayerCostManager {
     getMinimumCost(playingType: PlayType | undefined, context: AbilityContext<DrawCard>, target?: BaseCard, ignoreType: boolean = false): number {
         const card = context.source;
         const reducedCost = this.getReducedCost(playingType, card, target, ignoreType);
-        const alternateFatePools = this.getAlternateFatePools(playingType, card, context);
+        const alternateFatePools = this.getAlternateFatePools(card, context);
         const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         let triggeredCostReducers = 0;
         const fakeWindow = { addChoice: () => triggeredCostReducers++ };
@@ -173,8 +173,8 @@ export class PlayerCostManager {
         return reducedCost;
     }
 
-    getAvailableAlternateFate(playingType: PlayType | undefined, context: AbilityContext): number {
-        const alternateFatePools = this.getAlternateFatePools(playingType, context.source);
+    getAvailableAlternateFate(context: AbilityContext): number {
+        const alternateFatePools = this.getAlternateFatePools(context.source);
         const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         return Math.max(alternateFate, 0);
     }

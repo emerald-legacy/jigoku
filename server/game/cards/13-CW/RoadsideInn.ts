@@ -24,7 +24,7 @@ class RoadsideInn extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
+                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
             }, AbilityDsl.actions.placeFate(context => ({ origin: context.player.opponent })))
             .effect('place a fate from their pool on {1}{2}', (context) => [
                 context.targets.myCharacter,

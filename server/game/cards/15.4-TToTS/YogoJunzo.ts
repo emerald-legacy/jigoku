@@ -25,7 +25,7 @@ class YogoJunzo extends DrawCard {
                 controller: Players.Self
             }, AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Select fate amount:',
-                choices: Array.from(Array(context.target.getFate()), (x, i) => (i + 1).toString()),
+                choices: Array.from(Array(context.target.getFate()), (_x, i) => (i + 1).toString()),
                 choiceHandler: (choice, displayMessage) => {
                     if(displayMessage) {
                         this.game.addMessage('{0} chooses to move {1} fate from {2} to {3}\'s pool', context.player, choice, context.target, context.player);

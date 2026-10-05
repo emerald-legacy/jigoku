@@ -12,7 +12,7 @@ class Dispatch extends DrawCard {
                 cardCondition: card => card.isFaction('unicorn'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: (context, properties) => {
+                    condition: (_context, properties) => {
                         const target = properties.target;
                         if(!target || !Array.isArray(target)) {
                             return false;

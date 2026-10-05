@@ -8,7 +8,7 @@ export default class IllusionaryDecoy extends DrawCard {
     public setupCardAbilities() {
         this.reaction('Put into play')
             .when({
-                onConflictStarted: (event, context) =>
+                onConflictStarted: (_event, context) =>
                     context.player.anyCardsInPlay((card) => card.hasTrait('shugenja'))
             })
             .gameAction(AbilityDsl.actions.multiple([

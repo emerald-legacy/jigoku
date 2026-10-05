@@ -8,7 +8,7 @@ export default class ArrogantKakita extends DrawCard {
     setupCardAbilities() {
         this.forcedReaction('Initiate a military duel')
             .when({
-                onDefendersDeclared: (event, context) => context.source.isParticipating()
+                onDefendersDeclared: (_event, context) => context.source.isParticipating()
             })
             .initiateDuel((context) => ({
                 type: DuelType.Military,

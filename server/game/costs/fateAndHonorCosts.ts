@@ -75,7 +75,7 @@ export function variableHonorCost(amountFunc: (context: AbilityContext) => numbe
         resolve(context, result) {
             const amount = amountFunc(context);
             const max = Math.min(amount, context.player.honor);
-            const choices = Array.from(Array(max), (x, i) => String(i + 1));
+            const choices = Array.from(Array(max), (_x, i) => String(i + 1));
             if(result.canCancel) {
                 choices.push('Cancel');
             }

@@ -44,7 +44,7 @@ export default class AshalanLantern extends DrawCard {
                             postHandler: () => context.player.moveCard(context.source, Location.ConflictDiscardPile)
                         };
                     }),
-                    remainingCardsHandler: (context, event, cards) => {
+                    remainingCardsHandler: (context, _event, cards) => {
                         context.game.addMessage(
                             '{0} puts {1} on the top of {2}\'s dynasty deck',
                             context.player,

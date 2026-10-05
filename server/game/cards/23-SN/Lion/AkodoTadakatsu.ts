@@ -25,7 +25,7 @@ export default class AkodoTadakatsu extends DrawCard {
 
         this.reaction('Injure or bow a character')
             .when({
-                onConflictStarted: (event, context) => context.source.isAttacking()
+                onConflictStarted: (_event, context) => context.source.isAttacking()
             })
             .target({
                 name: 'character',

@@ -8,7 +8,7 @@ class IssueAChallenge extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prevent more than 1 declared defender')
             .when({
-                onConflictDeclared: (event, context) => {
+                onConflictDeclared: (_event, context) => {
                     const conflict = context.game.currentConflict;
                     if(!conflict) {
                         return false;

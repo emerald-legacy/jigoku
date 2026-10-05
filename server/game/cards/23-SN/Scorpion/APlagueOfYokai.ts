@@ -8,10 +8,10 @@ export default class APlagueOfYokai extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((card, context) => -this.getSkillModifier(context))
+            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((_card, context) => -this.getSkillModifier(context))
         });
         this.whileAttached({
-            effect: AbilityDsl.effects.attachmentPoliticalSkillModifier((card, context) => -this.getSkillModifier(context))
+            effect: AbilityDsl.effects.attachmentPoliticalSkillModifier((_card, context) => -this.getSkillModifier(context))
         });
 
         this.action('Spread the plague')

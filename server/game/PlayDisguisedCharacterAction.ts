@@ -29,7 +29,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
                 controller: Players.Self,
                 cardCondition: (card: BaseCard) => card.isDrawCard() && context.source.canDisguise(card, context, !!intoConflictOnly),
                 context: context,
-                onSelect: (player: Player, card: BaseCard) => {
+                onSelect: (_player: Player, card: BaseCard) => {
                     context.costs.chooseDisguisedCharacter = card;
                     return true;
                 },

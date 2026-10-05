@@ -157,12 +157,12 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    getLegalActions(card: DrawCard, context: C, properties: PlayCardProperties): PlayableAbility[] {
+    getLegalActions(card: DrawCard, _context: C, properties: PlayCardProperties): PlayableAbility[] {
         const actions: BaseCardAbility[] = properties.playAction ? [properties.playAction].flat() : card.getPlayActions();
         return actions.map((ability) => ({ ability, createContext: (player) => ability.createContext(player) }));
     }
 
-    getLegalReactions(card: DrawCard, context: C, properties: PlayCardProperties): PlayableAbility[] {
+    getLegalReactions(card: DrawCard, _context: C, properties: PlayCardProperties): PlayableAbility[] {
         if(!properties.allowReactions) {
             return [];
         }
@@ -208,7 +208,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    addPropertiesToEvent(event: Event, card: DrawCard, context: C): void {
+    addPropertiesToEvent(event: Event, _card: DrawCard, context: C): void {
         event.onPlayCardSource = context.source;
     }
 

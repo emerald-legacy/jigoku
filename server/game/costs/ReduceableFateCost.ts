@@ -47,7 +47,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getAlternateFatePools(context: AbilityContext<DrawCard>): Set<BaseCard | Ring> {
-        return new Set(context.player.getAlternateFatePools(context.playType, context.source, context));
+        return new Set(context.player.getAlternateFatePools(context.source, context));
     }
 
     public resolve(context: FateCostContext, result: Result): void {

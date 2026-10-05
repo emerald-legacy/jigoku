@@ -38,7 +38,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         if(this.playEvent) {
             const context = this.playEvent.context;
             const ability = context.ability;
-            const alternatePools = context.player.getAlternateFatePools(this.playEvent.playType, this.playEvent.card, context);
+            const alternatePools = context.player.getAlternateFatePools(this.playEvent.card, context);
             const alternatePoolTotal = alternatePools.reduce((total: number, pool: { fate: number }) => total + pool.fate, 0);
             const maxPlayerFate = context.player.checkRestrictions('spendFate', context) ? context.player.fate : 0;
             const reducedCost = ability.getReducedCost(context);

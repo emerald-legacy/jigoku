@@ -170,18 +170,18 @@ export class GameAction<
         return events;
     }
 
-    addPropertiesToEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, _additionalProperties = {}): void {
+    addPropertiesToEvent(event: ActionEvent<N, C>, _target: TargetValue, context: C, _additionalProperties = {}): void {
         event.context = context;
     }
 
-    eventHandler(event: ActionEvent<N, C>, _additionalProperties = {}): void {}
+    eventHandler(_event: ActionEvent<N, C>, _additionalProperties = {}): void {}
 
-    checkEventCondition(event: ActionEvent<N, C>, _additionalProperties = {}): boolean {
+    checkEventCondition(_event: ActionEvent<N, C>, _additionalProperties = {}): boolean {
         return true;
     }
 
     /** `event` is the event that finally resolved, which a replacement effect may have swapped for another kind. */
-    isEventFullyResolved(event: AnyEvent, target: TargetValue, context: C, _additionalProperties = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, _target: TargetValue, _context: C, _additionalProperties = {}): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 
@@ -223,7 +223,7 @@ export class GameAction<
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, _additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(_context: C, _additionalProperties = {}): boolean {
         return false;
     }
 }

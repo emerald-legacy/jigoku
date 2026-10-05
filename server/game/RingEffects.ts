@@ -27,10 +27,10 @@ function ringForElement(element: string) {
             return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
                 new EarthRingEffect(optional, gameMode, onResolution);
         case 'fire':
-            return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
+            return (optional: boolean, _gameMode: GameModes, onResolution: ResolutionCb) =>
                 new FireRingEffect(optional, onResolution);
         case 'void':
-            return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
+            return (optional: boolean, _gameMode: GameModes, onResolution: ResolutionCb) =>
                 new VoidRingEffect(optional, onResolution);
         case 'water':
             return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>

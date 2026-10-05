@@ -7,7 +7,7 @@ class IdeTrader extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain a fate/card')
             .when({
-                onMoveToConflict: (event, context) => context.source.isParticipating()
+                onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
             .select({}, {
                 'Gain 1 fate': AbilityDsl.actions.gainFate(),

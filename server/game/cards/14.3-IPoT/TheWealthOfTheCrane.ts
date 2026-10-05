@@ -12,7 +12,7 @@ class TheWealthOfTheCrane extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (card, player: Player) => {
+                amount: (_card, player: Player) => {
                     return player.getNumberOfFaceupProvinces();
                 },
                 match: (card, source) => card === source

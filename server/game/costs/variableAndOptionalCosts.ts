@@ -44,7 +44,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
                         ringCondition(ring, context) &&
                         ring.claimedBy === context.player.name &&
                         !chosenRings.includes(ring),
-                    onSelect: (player: Player, ring: Ring) => {
+                    onSelect: (_player: Player, ring: Ring) => {
                         chosenRings.push(ring);
                         if(
                             Object.values(context.game.rings).some(
@@ -60,7 +60,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
                         }
                         return true;
                     },
-                    onMenuCommand: (player: Player, arg: string): boolean | undefined => {
+                    onMenuCommand: (_player: Player, arg: string): boolean | undefined => {
                         if(arg === 'done') {
                             context.costs.returnRing = chosenRings;
                             return true;
@@ -190,7 +190,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
                 ordered: false,
                 location: Location.Hand,
                 controller: Players.Self,
-                onSelect: (player: Player, cards) => {
+                onSelect: (_player: Player, cards) => {
                     if(cards.length === 0) {
                         context.costs.discardCardsUpToVariableX = [];
                         result.cancelled = true;
@@ -231,7 +231,7 @@ export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, 
                 ordered: false,
                 location: Location.Hand,
                 controller: Players.Self,
-                onSelect: (player: Player, cards) => {
+                onSelect: (_player: Player, cards) => {
                     if(cards.length === 0) {
                         context.costs.discardCardsExactlyVariableX = [];
                         result.cancelled = true;

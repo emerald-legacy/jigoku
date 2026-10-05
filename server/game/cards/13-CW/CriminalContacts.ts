@@ -20,7 +20,7 @@ class CriminalContacts extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
+                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
             }, AbilityDsl.actions.removeFate())
             .effect('discard a fate from {1}{2}', (context) => [
                 context.targets.myCharacter,

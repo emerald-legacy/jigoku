@@ -7,7 +7,7 @@ class KitsukiJusai extends DrawCard {
     setupCardAbilities() {
         this.reaction('Put a fate from your opponent pool on an unclaimed ring')
             .when({
-                onHonorDialsRevealed: (event, context) =>
+                onHonorDialsRevealed: (_event, context) =>
                     context.player.opponent &&
                     context.player.honorBid === context.player.opponent.honorBid &&
                     context.player.opponent.fate > 0

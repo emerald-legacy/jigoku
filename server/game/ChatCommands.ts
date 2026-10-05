@@ -208,7 +208,7 @@ class ChatCommands {
             waitingPromptTitle: 'Waiting for opponent to send a card to the bottom of one of their decks',
             location: Location.Any,
             controller: Players.Self,
-            onSelect: (p: Player, card: BaseCard) => {
+            onSelect: (_p: Player, card: BaseCard) => {
                 const cardInitialLocation = card.location;
                 const cardNewLocation = card.isConflict
                     ? Location.ConflictDeck

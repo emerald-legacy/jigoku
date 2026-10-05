@@ -39,11 +39,11 @@ export default class UndeadHorror extends BaseOni {
                                     targetController: Players.Opponent,
                                     effect: [
                                         AbilityDsl.effects.modifyMilitarySkill(
-                                            (card, context) =>
+                                            (_card, context) =>
                                                 (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0
                                         ),
                                         AbilityDsl.effects.modifyPoliticalSkill(
-                                            (card, context) =>
+                                            (_card, context) =>
                                                 (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0
                                         )
                                     ]

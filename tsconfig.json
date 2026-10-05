@@ -18,7 +18,7 @@
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": false,
+        "noUnusedParameters": true,
         "useDefineForClassFields": false,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true

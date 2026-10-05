@@ -21,7 +21,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     adjacentCharacters: (context, effect) =>
         context.source.type === CardType.Character &&
         context.player.areLocationsAdjacent(context.source.location, effect.requireContext().source.location),
-    attachmentsWithSameClan: (context, effect, card) =>
+    attachmentsWithSameClan: (context, _effect, card) =>
         context.source.type === CardType.Attachment &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
@@ -55,7 +55,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.player.conflictDiscardPile.some((card: DrawCard) => card.name === context.source.name),
     copiesOfX: (context, effect) => context.source.name === effect.params,
     events: (context) => context.source.type === CardType.Event,
-    eventsWithSameClan: (context, effect, card) =>
+    eventsWithSameClan: (context, _effect, card) =>
         context.source.type === CardType.Event &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
@@ -118,15 +118,15 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.ability.isTriggeredAbility() &&
         context.ability.abilityType !== AbilityType.ForcedReaction &&
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
-    equalOrMoreExpensiveCharacterTriggeredAbilities: (context, effect, card) =>
+    equalOrMoreExpensiveCharacterTriggeredAbilities: (context, _effect, card) =>
         context.source.type === CardType.Character &&
         !context.ability.isKeywordAbility() &&
         !!card && printedCostOf(context.source) >= printedCostOf(card),
-    equalOrMoreExpensiveCharacterKeywords: (context, effect, card) =>
+    equalOrMoreExpensiveCharacterKeywords: (context, _effect, card) =>
         context.source.type === CardType.Character &&
         context.ability.isKeywordAbility() &&
         !!card && printedCostOf(context.source) >= printedCostOf(card),
-    eventPlayedByHigherBidPlayer: (context, effect, card) =>
+    eventPlayedByHigherBidPlayer: (context, _effect, card) =>
         context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
     toHand: (context) => {
         if(!(context.ability instanceof ThenAbility)) {

@@ -16,7 +16,7 @@ export default class KaiuShihobu extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Holding,
                 targetMode: TargetMode.Unlimited,
                 deck: Decks.DynastyDeck,
-                selectedCardsHandler: (context, event, cards) => {
+                selectedCardsHandler: (_context, event, cards) => {
                     if(cards.length > 0) {
                         this.game.addMessage('{0} selects {1}', event.player, cards);
                         cards.forEach((card) => {

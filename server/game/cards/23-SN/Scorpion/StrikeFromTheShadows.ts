@@ -8,7 +8,7 @@ export default class StrikeFromTheShadows extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Give Shinobi +1/+1')
             .when({
-                afterConflict: (event, context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')).length > 0
+                afterConflict: (_event, context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')).length > 0
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')),

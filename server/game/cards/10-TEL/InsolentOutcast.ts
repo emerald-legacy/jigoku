@@ -8,7 +8,7 @@ class InsolentOutcast extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills((card, context) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
+            effect: AbilityDsl.effects.modifyBothSkills((_card, context) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
         });
     }
 

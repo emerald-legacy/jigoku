@@ -10,7 +10,7 @@ export default class IllusionaryTerrain extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (card, player) => {
+                amount: (_card, player) => {
                     return player.filterCardsInPlay((card) => {
                         return card.hasTrait('shugenja');
                     }).length;

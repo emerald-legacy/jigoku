@@ -8,7 +8,7 @@ export default class Kakudaira extends ProvinceCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    onPhaseStarted: (event, context) =>
+                    onPhaseStarted: (_event, context) =>
                         context.source.isProvinceCard() &&
                         context.source.isFaceup() &&
                         !context.source.isBroken &&

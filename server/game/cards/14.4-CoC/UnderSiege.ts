@@ -12,7 +12,7 @@ class UnderSiege extends DrawCard {
     setupCardAbilities() {
         this.reaction('Place defender under siege')
             .when({
-                onConflictDeclared: (event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
+                onConflictDeclared: (_event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
             })
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.playerLastingEffect(context => ({

@@ -16,7 +16,7 @@ export class TokenAction<P extends TokenActionProperties = TokenActionProperties
         return context.source.statusTokens ? [...context.source.statusTokens] : [];
     }
 
-    canAffect(target: StatusToken, context: C, _additionalProperties = {}): boolean {
+    canAffect(target: StatusToken, _context: C, _additionalProperties = {}): boolean {
         return target.type === 'token';
     }
 

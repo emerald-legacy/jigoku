@@ -10,7 +10,7 @@ class BornInWar extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((card, context) => Object.values(context.game.rings).filter(ring => ring.isUnclaimed()).length)
+            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((_card, context) => Object.values(context.game.rings).filter(ring => ring.isUnclaimed()).length)
         });
     }
 }

@@ -152,7 +152,7 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    menuCommand(player: Player, arg: string | number): boolean {
+    menuCommand(_player: Player, arg: string | number): boolean {
         if(typeof arg === 'string') {
             if(arg === 'cancel') {
                 this.complete();

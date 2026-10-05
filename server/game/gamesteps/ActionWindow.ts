@@ -132,7 +132,7 @@ class ActionWindow extends UiPrompt {
         return { menuTitle: 'Waiting for opponent to take an action or pass' };
     }
 
-    menuCommand(player: Player, choice: string) {
+    menuCommand(_player: Player, choice: string) {
         if(choice === 'manual') {
             this.game.promptForSelect(this.currentPlayer, {
                 source: 'Manual Action',
