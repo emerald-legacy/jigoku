@@ -26,13 +26,14 @@ class MercenaryCompany extends DrawCard {
                             {
                                 text: 'Yes',
                                 handler: () => {
-                                    opponent.modifyFate(-1);
-                                    source.modifyFate(1);
-                                    context.source.lastingEffect(() => ({
-                                        duration: Duration.Custom,
-                                        effect: AbilityDsl.effects.takeControl(opponent)
-                                    }));
-                                    this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                                    AbilityDsl.actions.placeFate({ origin: opponent }).resolve(source, context);
+                                    context.game.queueSimpleStep(() => {
+                                        context.source.lastingEffect(() => ({
+                                            duration: Duration.Custom,
+                                            effect: AbilityDsl.effects.takeControl(opponent)
+                                        }));
+                                        this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                                    });
                                 }
                             },
                             {

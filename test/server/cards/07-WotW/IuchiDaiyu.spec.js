@@ -72,6 +72,43 @@ describe('Iuchi Daiyu', function() {
                 });
             });
         });
+
+        describe('Iuchi Daiyu\'s targeting', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['iuchi-daiyu', 'border-rider'],
+                        hand: ['fine-katana']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        hand: ['ornate-fan']
+                    }
+                });
+
+                this.iuchiDaiyu = this.player1.findCardByName('iuchi-daiyu');
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+                this.fineKatana = this.player1.playAttachment('fine-katana', this.borderRider);
+                this.ornateFan = this.player2.playAttachment('ornate-fan', this.dojiWhisperer);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider],
+                    defenders: [this.dojiWhisperer]
+                });
+                this.player2.pass();
+            });
+
+            it('should not be able to choose an attachment', function() {
+                this.player1.clickCard(this.iuchiDaiyu);
+                expect(this.player1).toHavePrompt('Iuchi Daiyu');
+                expect(this.player1).toBeAbleToSelect(this.borderRider);
+                expect(this.player1).not.toBeAbleToSelect(this.fineKatana);
+                expect(this.player1).not.toBeAbleToSelect(this.ornateFan);
+            });
+        });
     });
 });
 

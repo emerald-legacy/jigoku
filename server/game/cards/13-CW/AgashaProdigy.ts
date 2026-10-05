@@ -34,7 +34,7 @@ class AgashaProdigys extends DrawCard {
                 cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.discardCard(context => ({
-                    target: context.targets.oppCharacter ? context.player.opponent?.conflictDeck[0] : []
+                    target: this.oppCharacterChosen(context) ? context.player.opponent?.conflictDeck[0] : []
                 })),
                 AbilityDsl.actions.ifAble(context => ({
                     ifAbleAction: AbilityDsl.actions.attach({
@@ -48,6 +48,11 @@ class AgashaProdigys extends DrawCard {
                 context.targets.myCharacter,
                 honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)
             ]);
+    }
+
+    private oppCharacterChosen(context: AbilityContext): boolean {
+        const chosen = context.targets.oppCharacter;
+        return !!chosen && !Array.isArray(chosen);
     }
 
     private getDiscardedCards(context: AbilityContext) {

@@ -23,7 +23,7 @@ export default class TributeToANewDawn extends DrawCard {
                 numCards: 2,
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent)
-            }, AbilityDsl.actions.bow())
+            })
             .targetCards({
                 name: SECOND,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
@@ -32,7 +32,7 @@ export default class TributeToANewDawn extends DrawCard {
                 numCards: 2,
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self)
-            }, AbilityDsl.actions.bow())
+            })
             .gameAction(AbilityDsl.actions.removeFromGame((context) => ({
                 target: this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])
             })))

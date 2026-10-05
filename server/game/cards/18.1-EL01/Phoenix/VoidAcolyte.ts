@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Element } from '../../../Constants.js';
+import { claimsRingOf } from '../../claimedRings.js';
 
 const elementKey = 'void-acolyte-void';
 
@@ -10,8 +11,7 @@ class VoidAcolyte extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain fate')
             .when({
-                onClaimRing: (event, context) => event.player === context.player &&
-                (event.conflict && event.conflict.elements.some(element => element === this.getCurrentElementSymbol(elementKey)) || event.ring.element === this.getCurrentElementSymbol(elementKey))
+                onClaimRing: (event, context) => event.player === context.player && claimsRingOf(this, elementKey, event)
             })
             .gameAction(AbilityDsl.actions.placeFate());
     }

@@ -53,12 +53,12 @@ export default class StrangeMirror extends DrawCard {
                     activePromptTitle: 'Choose a cost for Strange Mirror',
                     options: {
                         'Sacrifice Strange Mirror': {
-                            action: AbilityDsl.actions.discardFromPlay({ target: context.source }),
-                            message: '{0} sacrifices {1}'
+                            action: AbilityDsl.actions.sacrifice({ target: context.source }),
+                            message: '{0} sacrifices {2}'
                         },
                         'Injure attached character': {
                             action: AbilityDsl.actions.injure({ target: context.source.parentCharacter ?? [] }),
-                            message: '{0} injures {2}'
+                            message: '{0} injures {3}'
                         }
                     },
                     messageArgs: [context.source, context.source.parentCharacter]

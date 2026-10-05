@@ -72,6 +72,24 @@ describe('Strange Mirror', function () {
                 expect(this.outrider.location).toBe('play area');
             });
 
+            it('sacrifices the attachment rather than discarding it', function () {
+                let leavesPlayEvent;
+                this.game.on('onCardLeavesPlay', (event) => {
+                    if(event.card === this.mirror) {
+                        leavesPlayEvent = event;
+                    }
+                });
+                this.player1.clickCard(this.mirror);
+                this.player1.clickCard(this.banzai);
+                this.player1.clickCard(this.outrider);
+                this.player1.clickPrompt('Done');
+                this.player1.clickPrompt('Sacrifice Strange Mirror');
+
+                expect(leavesPlayEvent).toBeDefined();
+                expect(leavesPlayEvent.isSacrifice).toBe(true);
+                expect(this.getChatLogs(5)).toContain('player1 sacrifices Strange Mirror');
+            });
+
             it('resolves the replayed event\'s ability', function () {
                 this.player1.clickCard(this.mirror);
                 this.player1.clickCard(this.banzai);
@@ -103,6 +121,7 @@ describe('Strange Mirror', function () {
 
                 expect(this.outrider.fate).toBe(0);
                 expect(this.mirror.location).toBe('play area');
+                expect(this.getChatLogs(5)).toContain('player1 injures Shinjo Outrider');
             });
 
             it('is not available when nothing is underneath attached character', function () {

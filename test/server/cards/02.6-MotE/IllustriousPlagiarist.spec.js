@@ -84,5 +84,77 @@ describe('Illustrious Plagiarist', function() {
                 expect(this.player1.honor).toBe(7);
             });
         });
+
+        describe('When an older event is under the topmost event', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['banzai', 'a-fate-worse-than-death']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.banzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+            });
+
+            it('should only allow choosing the topmost event', function() {
+                this.aFateWorseThanDeath = this.player2.findCardByName('a-fate-worse-than-death', 'conflict discard pile');
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player2).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player2).toBeAbleToSelect(this.banzai);
+                expect(this.player2).not.toBeAbleToSelect(this.aFateWorseThanDeath);
+            });
+        });
+
+        describe('When the topmost event has no action ability', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['voice-of-honor', 'banzai']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.banzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+            });
+
+            it('should not be able to trigger', function() {
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
+
+        describe('When a non-event card is on top of the topmost event', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['fine-katana', 'banzai']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.banzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+            });
+
+            it('should allow choosing the topmost event', function() {
+                this.fineKatana = this.player2.findCardByName('fine-katana', 'conflict discard pile');
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player2).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player2).toBeAbleToSelect(this.banzai);
+                expect(this.player2).not.toBeAbleToSelect(this.fineKatana);
+            });
+        });
     });
 });

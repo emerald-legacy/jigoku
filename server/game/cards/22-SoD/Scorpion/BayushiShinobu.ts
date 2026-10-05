@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, CharacterStatus, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BayushiShinobu extends DrawCard {
@@ -7,9 +7,16 @@ export default class BayushiShinobu extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
+            location: Location.Any,
+            targetLocation: Location.Any,
+            effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Dishonored)
+        });
+
+        // entersPlayWithStatus only covers playing it; put into play by an effect, it is dishonored afterwards
+        this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCharacterEntersPlay: (event, context) => event.card === context.source
+                    onCharacterEntersPlay: (event, context) => event.card === context.source && !context.source.isDishonored
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
