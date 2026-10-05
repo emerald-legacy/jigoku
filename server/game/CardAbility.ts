@@ -10,7 +10,7 @@ import BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
-import type { MsgArg } from './GameChat.js';
+import type { MessageArgs, MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
@@ -25,7 +25,8 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     abilityIdentifier?: string;
     origin?: BaseCard;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
-    effect?: string;
+    /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
+    effect?: string | OwnContextCallback<[context: C], MessageArgs>;
     effectArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
 }
 
@@ -267,10 +268,13 @@ class CardAbility extends ThenAbility {
         } else {
             messageArgs.push('', '');
         }
-        let effectMessage = this.properties.effect;
+        const effect = this.properties.effect;
+        let effectMessage = typeof effect === 'function' ? undefined : effect;
         let effectArgs: MsgArg[] = [];
         let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
-        if(!effectMessage) {
+        if(typeof effect === 'function') {
+            [effectMessage, effectArgs] = effect(context);
+        } else if(!effectMessage) {
             const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message

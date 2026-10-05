@@ -41,7 +41,7 @@ The enum constants used throughout the examples below (`CardType`, `Players`, `L
 
 ### 3. Override the `setupCardAbilities` method.
 
-Persistent effects, actions, and triggered abilities should be defined in the `setupCardAbilities` method. Use the AbilityDsl import to get access to tools to help with  implementations. See below for more documentation.
+Persistent effects, actions, and triggered abilities should be defined in the `setupCardAbilities` method. Game actions and effects are named exports of `GameActions/GameActions.ts` and `effects.ts`; import the ones the card uses. Costs and limits come from `AbilityDsl`. See below for more documentation.
 
 ```typescript
 class CloudTheMind extends DrawCard {
@@ -538,6 +538,16 @@ this.action('Return court mask to hand')
         AbilityDsl.actions.returnToHand(),
         AbilityDsl.actions.dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
     );
+```
+
+Instead of numbered references, the message can be a template built with `msg` from `GameChat.ts`. Its values are the arguments, in order, and `{0}` is not the target: name everything the message shows.
+
+```typescript
+// Levy: "...that player must select one - give you 1 fate or 1 honor. If you have fewer cards in your hand than that player, draw 1 card."
+.effect((context) => {
+    const resource = context.select === 'Give your opponent 1 fate' ? 'fate' : 'honor';
+    return msg`take 1 ${resource} from ${context.player.opponent}${hasFewerCards(context) ? ' and draw a card' : ''}`;
+})
 ```
 
 ```typescript

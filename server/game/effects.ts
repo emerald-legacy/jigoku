@@ -360,3 +360,51 @@ const Effects = {
 };
 
 export default Effects;
+
+/** Each effect as a named export, for cards that import what they use. */
+export const {
+    addElementAsAttacker, addFlag, addFaction, loseFaction, addKeyword, addTrait, additionalTriggerCostForCard,
+    attachmentCardCondition, attachmentFactionRestriction, attachmentLimit, attachmentMyControlOnly,
+    attachmentOpponentControlOnly, attachmentRestrictTraitAmount, attachmentTraitRestriction,
+    attachmentUniqueRestriction, blank, calculatePrintedMilitarySkill, canPlayFromOutOfPlay,
+    registerToPlayFromOutOfPlay, canBeSeenWhenFacedown, canBeTriggeredByOpponent,
+    canOnlyBeDeclaredAsAttackerWithElement, canOnlyBeDeclaredAsAttackerWithCondition, cannotApplyLastingEffects,
+    cannotBeAttacked, cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender, cannotHaveConflictsDeclaredOfType,
+    cannotHaveOtherRestrictedAttachments, cannotParticipateAsAttacker, cannotParticipateAsDefender,
+    cannotReceiveDishonorToken, cannotReceiveHonorToken, cannotReceiveTaintedToken, cannotTriggerAbilities,
+    changeContributionFunction, changeType, contributeToConflict, canContributeWhileBowed,
+    canContributeGloryWhileBowed, customDetachedCard, customRefillProvince, delayedEffect, doesNotBow,
+    doesNotReady, entersPlayWithStatus, entersPlayForOpponent, fateCostToAttack, cardCostToAttackMilitary,
+    honorCostToDeclare, fateCostToRingToDeclareConflictAgainst, fateCostToTarget, gainAllAbilitiesDynamic,
+    gainExtraFateWhenPlayed, gainPlayAction, hideWhenFaceUp, honorStatusDoesNotAffectLeavePlay,
+    honorStatusDoesNotModifySkill, taintedStatusDoesNotCostHonor, honorStatusReverseModifySkill, immunity,
+    increaseLimitOnAbilities, increaseLimitOnPrintedAbilities, legendaryFate, loseAllNonKeywordAbilities,
+    loseKeyword, loseTrait, modifyBaseMilitarySkillMultiplier, modifyBasePoliticalSkillMultiplier,
+    modifyBaseProvinceStrength, modifyBothSkills, modifyGlory, modifyMilitarySkill, modifyMilitarySkillMultiplier,
+    modifyPoliticalSkill, modifyPoliticalSkillMultiplier, modifyProvinceStrength, modifyProvinceStrengthMultiplier,
+    modifyProvinceStrengthBonus, modifyRestrictedAttachmentAmount, mustBeChosen, mustBeDeclaredAsAttackerIfType,
+    mustBeDeclaredAsDefender, refillProvinceTo, setApparentFate, setBaseDash, setBaseMilitarySkill,
+    setBasePoliticalSkill, setBaseProvinceStrength, setDash, setGlory, setBaseGlory, setMilitarySkill,
+    setPoliticalSkill, setProvinceStrength, setProvinceStrengthBonus, provinceCannotHaveSkillIncreased,
+    switchBaseSkills, suppressEffects, takeControl, participatesFromHome, unlessActionCost, replacePrintedElement,
+    winDuel, winDuelTies, ignoreDuelSkill, addElement, cannotBidInDuels, cannotDeclareRing, considerRingAsClaimed,
+    additionalAction, additionalCardPlayed, additionalCharactersInConflict, additionalConflict,
+    additionalTriggerCost, additionalPlayCost, alternateFatePool, cannotDeclareConflictsOfType,
+    canPlayFromOpponents, limitHonorGainPerPhase, modifyHonorTransferGiven, modifyHonorTransferReceived,
+    cannotResolveRings, changePlayerSkillModifier, customDetachedPlayer, gainActionPhasePriority, increaseCost,
+    modifyCardsDrawnInDrawPhase, playerCannot, playerDelayedEffect, playerFateCostToTargetCard,
+    reduceNextPlayedCardCost, satisfyAffinity, setConflictDeclarationType, provideConflictDeclarationType,
+    forceConflictDeclarationType, setMaxConflicts, setConflictTotalSkill, showTopConflictCard, showTopDynastyCard,
+    eventsCannotBeCancelled, mustDeclareMaximumAttackers, restartDynastyPhase, strongholdCanBeAttacked,
+    defendersChosenFirstDuringConflict, costToDeclareAnyParticipants, consideredLessHonorable,
+    customFatePhaseFateRemoval, changeConflictSkillFunctionPlayer, limitLegalAttackers,
+    additionalActionAfterWindowCompleted, charactersCannot, cannotContribute, changeConflictSkillFunction,
+    modifyConflictElementsToResolve, restrictNumberOfDefenders, resolveConflictEarly, forceConflictUnopposed,
+    modifyUnopposedHonorLoss, additionalAttackedProvince, conflictIgnoreStatusTokens, modifyDuelSkill,
+    applyStatusTokensToDuel, duelIgnorePrintedSkill
+} = Effects;
+export {
+    cardCannot, copyCard, copyProvince, gainAbility, gainAllAbilities, switchAttachmentSkillModifiers,
+    attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier, mustBeDeclaredAsAttacker, canPlayFromOwn,
+    changePlayerGloryModifier, reduceCost, modifyDuelistSkill
+};

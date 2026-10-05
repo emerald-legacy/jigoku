@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
+import { bow, dishonor } from '../../GameActions/GameActions.js';
 
 class ForShame extends DrawCard {
     static id = 'for-shame';
@@ -19,8 +19,8 @@ class ForShame extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Dishonor this character': AbilityDsl.actions.dishonor((context) => ({ target: context.targets.character })),
-                'Bow this character': AbilityDsl.actions.bow((context) => ({ target: context.targets.character }))
+                'Dishonor this character': dishonor((context) => ({ target: context.targets.character })),
+                'Bow this character': bow((context) => ({ target: context.targets.character }))
             });
     }
 }

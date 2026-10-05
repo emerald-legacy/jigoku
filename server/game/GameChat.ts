@@ -23,6 +23,12 @@ export type MsgArg =
 
 export type MessageArgs = [string, MsgArg[]];
 
+/** A message written as a template: `msg\`take 1 ${resource} from ${player}\``. */
+export function msg(strings: TemplateStringsArray, ...args: MsgArg[]): MessageArgs {
+    const format = strings.slice(1).reduce((text, part, index) => `${text}{${index}}${part}`, strings[0]);
+    return [format, args];
+}
+
 type StoredMessage = MessageText | { alert: { type: string; message: MessageText } };
 
 export class GameChat {

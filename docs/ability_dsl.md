@@ -15,6 +15,15 @@ import AbilityDsl from '../../abilitydsl';
 | `AbilityDsl.costs` | Cost functions |
 | `AbilityDsl.limit` | Limit constructors |
 
+Game actions and effects are also named exports, so a card can import what it uses instead of `AbilityDsl`:
+
+```typescript
+import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
+import { modifyMilitarySkill } from '../../effects.js';
+```
+
+Prefer the named imports in new code. Costs and limits stay under `AbilityDsl` (cost names such as `bow` and `dishonor` clash with the actions). The only effect and action sharing a name is `takeControl`; import one of them with `as`.
+
 ---
 
 ## Card Class Structure

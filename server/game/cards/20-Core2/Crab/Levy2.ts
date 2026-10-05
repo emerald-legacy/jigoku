@@ -1,6 +1,14 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { conditional, draw, noAction, takeFate, takeHonor } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
+
+/** Levy is still in hand when its message prints, and has left it when the draw resolves. */
+function hasFewerCards(context: AbilityContext): boolean {
+    const hand = context.player.hand.filter((card) => card !== context.source);
+    return hand.length < (context.player.opponent?.hand.length ?? 0);
+}
 
 export default class Levy2 extends DrawCard {
     static id = 'levy-2';
@@ -11,20 +19,18 @@ export default class Levy2 extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()
+                'Give your opponent 1 fate': takeFate(),
+                'Give your opponent 1 honor': takeHonor()
             })
-            .effect('take 1 {1} from {2}{3}', context => [
-                context.select === 'Give your opponent 1 fate' ? 'fate' : 'honor',
-                context.player.opponent ?? '',
-                context.player.hand.length <= (context.player.opponent?.hand.length ?? 0) ? ' and draw a card' : ''
-            ])
-            .gameAction(AbilityDsl.actions.conditional({
-                condition: (context) => context.player.hand.length < (context.player.opponent?.hand.length ?? 0),
-                trueGameAction: AbilityDsl.actions.draw(context => ({
-                    target: context.player
-                })),
-                falseGameAction: AbilityDsl.actions.noAction()
+            .effect((context) => {
+                const resource = context.select === 'Give your opponent 1 fate' ? 'fate' : 'honor';
+                const andDraw = hasFewerCards(context) ? ' and draw a card' : '';
+                return msg`take 1 ${resource} from ${context.player.opponent}${andDraw}`;
+            })
+            .gameAction(conditional({
+                condition: hasFewerCards,
+                trueGameAction: draw((context) => ({ target: context.player })),
+                falseGameAction: noAction()
             }));
     }
 }

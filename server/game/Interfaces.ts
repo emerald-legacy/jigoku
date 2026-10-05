@@ -19,6 +19,7 @@ import type { Players, TargetMode, CardType, Location, EventName, Phases } from 
 import type { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import type Player from './Player.js';
+import type { MessageArgs } from './GameChat.js';
 
 interface BaseTarget {
     activePromptTitle?: string;
@@ -172,7 +173,7 @@ interface AbilityProps<Context> {
     cannotBeMirrored?: boolean;
     printedAbility?: boolean;
     cannotTargetFirst?: boolean;
-    effect?: string;
+    effect?: string | OwnContextCallback<[context: Context], MessageArgs>;
     evenDuringDynasty?: boolean;
     effectArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
     gameAction?: NoInfer<DeclaredGameAction<Context> | DeclaredGameAction<Context>[]>;

@@ -30,6 +30,7 @@ import type {
     WhenType
 } from './Interfaces.js';
 import type { Event } from './Events/Event.js';
+import type { MessageArgs } from './GameChat.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import Ring from './Ring.js';
 import { ElementSymbol } from './ElementSymbol.js';
@@ -119,7 +120,7 @@ interface AbilityDraft {
     gameActions: GameAction[];
     handler?: (context: AbilityContext) => void;
     condition?: (context: AbilityContext) => boolean;
-    effect?: string;
+    effect?: string | ((context: AbilityContext) => MessageArgs);
     effectArgs?: (context: AbilityContext) => EffectArg;
     limit?: AbilityLimit;
     max?: AbilityLimit;
@@ -618,8 +619,14 @@ export class AbilityBuilder<
         return this;
     }
 
-    effect(message: string, args?: (context: BuilderContext<Base, TG, RG, CO, TK>) => EffectArg): this {
-        this.draft.effect = message;
+    /** A format whose `{0}` is the target, with its later arguments; or a `msg` template. */
+    effect(message: string, args?: (context: BuilderContext<Base, TG, RG, CO, TK>) => EffectArg): this;
+    effect(message: (context: BuilderContext<Base, TG, RG, CO, TK>) => MessageArgs): this;
+    effect(
+        message: string | ((context: BuilderContext<Base, TG, RG, CO, TK>) => MessageArgs),
+        args?: (context: BuilderContext<Base, TG, RG, CO, TK>) => EffectArg
+    ): this {
+        this.draft.effect = typeof message === 'string' ? message : this.#checked(message, this.draft.specs);
         this.draft.effectArgs = args && this.#checked(args, this.draft.specs);
         return this;
     }

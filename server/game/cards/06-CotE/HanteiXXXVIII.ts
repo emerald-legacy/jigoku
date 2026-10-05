@@ -1,17 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
+import { delayedEffect } from '../../effects.js';
+import { bow, discardFromPlay } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class HanteiXXXVIII extends DrawCard {
     static id = 'hantei-xxxviii';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition: (context) => context.player.opponent && !!context.player.opponent.imperialFavor,
                 message: '{0} is discarded from play as its controller\'s opponent has the imperial favor',
                 messageArgs: (context) => [context.source],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+                gameAction: discardFromPlay()
             })
         });
 
@@ -19,7 +21,7 @@ class HanteiXXXVIII extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
 
         this.interrupt('Choose targets for opponent\'s ability')
             .when({
@@ -29,7 +31,7 @@ class HanteiXXXVIII extends DrawCard {
             .handler(context => {
                 context.event.context.choosingPlayerOverride = context.player;
             })
-            .effect('choose targets for {1}\'s {2} ability', context => [context.event.card, context.event.ability.title]);
+            .effect((context) => msg`choose targets for ${context.event.card}'s ${context.event.ability.title} ability`);
     }
 }
 
