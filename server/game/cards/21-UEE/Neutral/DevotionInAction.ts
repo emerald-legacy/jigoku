@@ -15,7 +15,6 @@ export default class DevotionInAction extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3
             }, AbilityDsl.actions.putIntoConflict((context) => ({
-                target: context.target,
                 status: context.target.hasTrait('yojimbo') ? 'honored' : 'ordinary'
             })));
     }

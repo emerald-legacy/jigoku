@@ -21,10 +21,7 @@ class Kikyo extends DrawCard {
                     }
                 },
                 printedAbility: false,
-                gameAction: AbilityDsl.actions.discardAtRandom(context => ({
-                    target: context.player.opponent,
-                    amount: 1
-                }))
+                gameAction: AbilityDsl.actions.discardAtRandom()
             })
         });
     }

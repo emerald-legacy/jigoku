@@ -11,15 +11,12 @@ export default class FallowLands extends ProvinceCard {
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.draw(context => ({
-                    amount: 1,
                     target: context.player
                 })),
                 AbilityDsl.actions.gainFate(context => ({
-                    amount: 1,
                     target: context.player
                 })),
                 AbilityDsl.actions.gainHonor(context => ({
-                    amount: 1,
                     target: context.player
                 }))
             ]))

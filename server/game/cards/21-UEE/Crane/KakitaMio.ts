@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Decks, Duration } from '../../../Constants.js';
+import { CardType, Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
 
@@ -25,7 +25,6 @@ export default class KakitaMio extends DrawCard {
                     card.isParticipating() &&
                     context.game.currentConflict?.getNumberOfParticipantsFor(card.controller) === 1
             }, AbilityDsl.actions.cardLastingEffect({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.addTrait('shadowlands')
             }));
 

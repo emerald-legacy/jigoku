@@ -22,16 +22,13 @@ export default class OtterFisherman extends DrawCard {
                 activePromptTitle: 'Choose an option for your opponent'
             }, {
                 'Opponent gains 1 fate': AbilityDsl.actions.gainFate((context) => ({
-                    target: context.source.controller,
-                    amount: 1
+                    target: context.source.controller
                 })),
                 'Opponent gains 1 honor': AbilityDsl.actions.gainHonor((context) => ({
-                    target: context.source.controller,
-                    amount: 1
+                    target: context.source.controller
                 })),
                 'Opponent draws 1 card': AbilityDsl.actions.draw((context) => ({
-                    target: context.source.controller,
-                    amount: 1
+                    target: context.source.controller
                 }))
             });
     }

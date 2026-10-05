@@ -14,6 +14,6 @@ export default class TattooedMan extends DrawCard {
                     context.player === event.context.player &&
                     event.context.ability.isCardAbility()
             })
-            .gameAction(AbilityDsl.actions.ready(context => ({ target: context.source })));
+            .gameAction(AbilityDsl.actions.ready());
     }
 }

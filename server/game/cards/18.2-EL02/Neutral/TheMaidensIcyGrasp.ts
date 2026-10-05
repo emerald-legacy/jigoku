@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
 
@@ -18,8 +18,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 cardCondition: (card) => charactersEntered.has(card)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)],
-                    duration: Duration.UntilEndOfConflict
+                    effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)]
                 })),
                 AbilityDsl.actions.onAffinity({
                     trait: 'water',

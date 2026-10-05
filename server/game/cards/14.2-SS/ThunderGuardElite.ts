@@ -8,9 +8,7 @@ class ThunderGuardElite extends DrawCard {
         this.action('Opponent discards a random card')
             .cost(AbilityDsl.costs.payHonor(1))
             .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.discardAtRandom(context => ({
-                target: context.player.opponent
-            })));
+            .gameAction(AbilityDsl.actions.discardAtRandom());
     }
 }
 

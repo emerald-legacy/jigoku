@@ -15,7 +15,6 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
                     context.event.conflict.winner === context.source.parentCharacter?.controller,
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.gainFate({
-                        amount: 1,
                         target: context.player
                     }),
                     AbilityDsl.actions.discardFromPlay({

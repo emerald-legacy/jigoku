@@ -1,4 +1,4 @@
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { giveHonorToTriggerCost } from '../../giveHonorToTriggerCost.js';
@@ -16,7 +16,6 @@ export default class BashfulConfidante extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.additionalTriggerCostForCard(() => [giveHonorToTriggerCost(context.player)])
             })))
             .effect('force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities', context => [context.player.opponent, context.player]);

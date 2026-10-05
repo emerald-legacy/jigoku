@@ -13,7 +13,6 @@ class KeeperOfSecretNames extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.abilities.actions.length > 0 && !card.isBroken
             }, AbilityDsl.actions.resolveAbility((context) => ({
-                target: context.target,
                 ability: context.target.abilities.actions[0],
                 ignoredRequirements: ['province'],
                 choosingPlayerOverride: context.choosingPlayerOverride

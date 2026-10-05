@@ -25,8 +25,7 @@ export default class IntoTheStorm extends DrawCard {
                 AbilityDsl.actions.conditional(context => ({
                     condition: context => context.player.isCharacterTraitInPlay('scout'),
                     trueGameAction: AbilityDsl.actions.gainFate({
-                        target: context.player,
-                        amount: 1
+                        target: context.player
                     }),
                     falseGameAction: AbilityDsl.actions.noAction()
                 }))

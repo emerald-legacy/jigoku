@@ -22,7 +22,7 @@ export default class CastOutTheShadow extends DrawCard {
                 player: Players.Opponent
             }, {
                 'Sacrifice this character': AbilityDsl.actions.sacrifice((context) => ({ target: context.targets.character })),
-                'Give opponent 2 honor': AbilityDsl.actions.takeHonor((context) => ({ target: context.player.opponent, amount: 2 }))
+                'Give opponent 2 honor': AbilityDsl.actions.takeHonor({ amount: 2 })
             });
     }
 

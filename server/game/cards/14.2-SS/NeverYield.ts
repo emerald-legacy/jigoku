@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Duration } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class NeverYield extends DrawCard {
     static id = 'never-yield';
@@ -11,7 +11,6 @@ class NeverYield extends DrawCard {
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
                 target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
                     AbilityDsl.effects.cardCannot({

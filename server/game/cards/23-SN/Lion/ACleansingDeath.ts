@@ -40,7 +40,6 @@ export default class ACleansingDeath extends DrawCard {
             }, AbilityDsl.actions.joint([
                 AbilityDsl.actions.putIntoPlay(),
                 AbilityDsl.actions.gainHonor(context => ({
-                    amount: 1,
                     target: context.player
                 }))
             ]))

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Duration, EventName } from '../../../Constants.js';
+import { EventName } from '../../../Constants.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,9 +15,7 @@ export default class UnderTheNewMoon extends DrawCard {
             .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context.event),
-                gameAction: AbilityDsl.actions.playerLastingEffect({
-                    duration: Duration.UntilEndOfConflict
-                }),
+                gameAction: AbilityDsl.actions.playerLastingEffect({}),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
                     if(displayMessage) {

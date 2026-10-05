@@ -23,8 +23,7 @@ export default class Levy2 extends DrawCard {
                 gameAction: AbilityDsl.actions.conditional({
                     condition: (context) => context.player.hand.length < (context.player.opponent?.hand.length ?? 0),
                     trueGameAction: AbilityDsl.actions.draw(context => ({
-                        target: context.player,
-                        amount: 1
+                        target: context.player
                     })),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })

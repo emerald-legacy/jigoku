@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Duration } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class SilentSkirmisher extends DrawCard {
     static id = 'silent-skirmisher';
@@ -12,11 +12,9 @@ class SilentSkirmisher extends DrawCard {
                 cardCondition: (card, context) => card !== context.source
             }))
             .condition(context => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
-                target: context.source,
+            .gameAction(AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
-            })))
+            }))
             .effect('give itself +2{1}', () => ['military']);
     }
 }

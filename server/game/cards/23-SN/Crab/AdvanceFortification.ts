@@ -16,8 +16,7 @@ export default class AdvanceFortification extends DrawCard {
                     effect: AbilityDsl.effects.modifyBothSkills(1)
                 })),
                 falseGameAction: AbilityDsl.actions.loseHonor(context => ({
-                    target: context.player.opponent,
-                    amount: 1
+                    target: context.player.opponent
                 }))
             }))
             .effect('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?

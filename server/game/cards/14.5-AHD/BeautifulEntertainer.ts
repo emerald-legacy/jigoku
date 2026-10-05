@@ -9,10 +9,9 @@ class BeautifulEntertainer extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source && context.player.opponent && context.player.isLessHonorable()
             })
-            .gameAction(AbilityDsl.actions.gainHonor(context => ({
-                target: context.player,
+            .gameAction(AbilityDsl.actions.gainHonor({
                 amount: 2
-            })));
+            }));
     }
 }
 

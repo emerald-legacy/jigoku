@@ -28,7 +28,6 @@ class Aranat extends DrawCard {
                 messageArgs: (context) => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
                 thenCondition: () => true,
                 gameAction: AbilityDsl.actions.placeFate((context) => ({
-                    target: context.source,
                     amount: context.player.getNumberOfOpponentsFacedownProvinces()
                 }))
             }));

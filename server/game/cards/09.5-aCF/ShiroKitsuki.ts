@@ -1,4 +1,4 @@
-import { ConflictType, Duration } from '../../Constants.js';
+import { ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,7 +13,6 @@ export default class ShiroKitsuki extends StrongholdCard {
             .cost(AbilityDsl.costs.nameCard())
             .gameAction(AbilityDsl.actions.playerLastingEffect((playerLastingEffectContext) => ({
                 targetController: playerLastingEffectContext.player,
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.delayedEffect({
                     when: {
                         onCardPlayed: (event, context) =>

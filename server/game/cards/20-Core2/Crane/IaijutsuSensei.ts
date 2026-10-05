@@ -1,4 +1,4 @@
-import { Duration, DuelType } from '../../../Constants.js';
+import { DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -22,8 +22,7 @@ export default class IaijutsuSensei extends DrawCard {
                 gameAction: (duel) =>
                     AbilityDsl.actions.cardLastingEffect({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => (duel.loser ?? []).includes(card))],
-                        duration: Duration.UntilEndOfConflict
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
                     })
             }));
     }

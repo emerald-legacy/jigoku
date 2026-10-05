@@ -17,7 +17,7 @@ class KaitoMai extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.removeFate({amount: 1}));
+            }, AbilityDsl.actions.removeFate());
     }
 }
 

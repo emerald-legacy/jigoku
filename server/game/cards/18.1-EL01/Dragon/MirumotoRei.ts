@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration, EffectName, Players } from '../../../Constants.js';
+import { CardType, EffectName, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AttachmentMilitarySkillModifierValue } from '../../../Effects/Library/attachmentMilitarySkillModifier.js';
 import type { AttachmentPoliticalSkillModifierValue } from '../../../Effects/Library/attachmentPoliticalSkillModifier.js';
@@ -45,8 +45,7 @@ export default class MirumotoRei extends DrawCard {
                             )
                             : 0
                     )
-                ],
-                duration: Duration.UntilEndOfConflict
+                ]
             })))
             .effect('give {1} a skill bonus equal to the total attachment skill bonus on {0} ({2}{3}/{4}{5})', (context) => {
                 const target = context.target;

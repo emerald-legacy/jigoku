@@ -1,4 +1,4 @@
-import { CardType, Duration, Players, ConflictType } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -35,7 +35,6 @@ export default class SupportingCast extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.bow()
             })), AbilityDsl.actions.cardLastingEffect({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.modifyMilitarySkill(3)
             }))
             .effect('give +3 military skill to {1} - {2} was just a distraction', (context) => [context.target, context.event.cardTargets])

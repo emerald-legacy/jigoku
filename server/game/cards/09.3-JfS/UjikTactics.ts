@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class UjikTactics extends DrawCard {
@@ -10,8 +9,7 @@ class UjikTactics extends DrawCard {
             .condition(() => this.game.isDuringConflict())
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),
-                effect: AbilityDsl.effects.modifyMilitarySkill(1),
-                duration: Duration.UntilEndOfConflict
+                effect: AbilityDsl.effects.modifyMilitarySkill(1)
             })))
             .effect('give all non-unique character they control +1{1}', () => (['military']));
     }

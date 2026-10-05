@@ -14,8 +14,7 @@ class RiverOfTheLastStand extends DrawCard {
                     amount: 2
                 })),
                 AbilityDsl.actions.draw(context => ({
-                    target: context.player.opponent,
-                    amount: 1
+                    target: context.player.opponent
                 }))
             ]));
     }

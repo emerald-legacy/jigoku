@@ -15,7 +15,6 @@ export function moveHoldingAction(holding: DrawCard) {
                 card.location !== context.source.location && card.location !== Location.StrongholdProvince
         })
         .gameAction(AbilityDsl.actions.moveCard((context) => ({
-            target: context.source,
             destination: context.target.location
         })));
 }

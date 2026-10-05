@@ -16,8 +16,7 @@ class MakeYourCase extends DrawCard {
                     duel.winner ? ' gains a fate' : ''
                 ],
                 gameAction: duel => AbilityDsl.actions.placeFate({
-                    target: duel.winner,
-                    amount: 1
+                    target: duel.winner
                 })
             }));
     }

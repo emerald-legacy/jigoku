@@ -9,7 +9,7 @@ class RootOutHeresy extends DrawCard {
     setupCardAbilities() {
         this.action('Discard a card at random from your opponent\'s hand')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
-            .gameAction(AbilityDsl.actions.discardAtRandom(context => ({ target: context.player.opponent })))
+            .gameAction(AbilityDsl.actions.discardAtRandom())
             .then((context) => ({
                 gameAction: AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose an attacked province',

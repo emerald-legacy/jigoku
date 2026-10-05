@@ -1,4 +1,4 @@
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -32,24 +32,21 @@ export default class EbbAndFlow extends DrawCard {
                         effectArgs: () => [context.targets.mine, context.targets.opponents],
                         gameAction: AbilityDsl.actions.joint([
                             AbilityDsl.actions.loseFate({
-                                target: context.player,
-                                amount: 1
+                                target: context.player
                             }),
                             AbilityDsl.actions.cardLastingEffect({
                                 target: context.targets.mine,
                                 effect: [
                                     AbilityDsl.effects.blank(),
                                     AbilityDsl.effects.gainAllAbilities(context.targets.opponents, true)
-                                ],
-                                duration: Duration.UntilEndOfConflict
+                                ]
                             }),
                             AbilityDsl.actions.cardLastingEffect({
                                 target: context.targets.opponents,
                                 effect: [
                                     AbilityDsl.effects.blank(),
                                     AbilityDsl.effects.gainAllAbilities(context.targets.mine, true)
-                                ],
-                                duration: Duration.UntilEndOfConflict
+                                ]
                             })
                         ])
                     })

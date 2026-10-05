@@ -1,4 +1,3 @@
-import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +9,6 @@ export default class WaitUntilItSings extends DrawCard {
             .condition(context => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait('commander')) ?? false)
             .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.additionalActionAfterWindowCompleted(1)
             })))
             .effect('take an action before conflict resolution')

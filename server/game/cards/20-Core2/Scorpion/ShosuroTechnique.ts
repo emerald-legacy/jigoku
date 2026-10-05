@@ -32,7 +32,6 @@ export default class ShosuroTechnique extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfConflict,
                     target: context.targets.shinobi,
                     effect: AbilityDsl.effects.setMilitarySkill(context.targets.enemy.militarySkill)
                 }))

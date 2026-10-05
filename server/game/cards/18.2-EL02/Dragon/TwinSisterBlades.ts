@@ -14,7 +14,6 @@ class TwinSisterBlades extends DrawCard {
                 effect: 'draw {1} card{2}',
                 effectArgs: (context) => this.getNumberOfCards(context) === 2 ? ['2', 's'] : ['a', ''],
                 gameAction: AbilityDsl.actions.draw((context) => ({
-                    target: context.player,
                     amount: this.getNumberOfCards(context)
                 }))
             })

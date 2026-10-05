@@ -20,7 +20,7 @@ export default class MotoZealot extends DrawCard {
                 player: Players.Opponent
             }, {
                 'Injure this character': AbilityDsl.actions.injure((context) => ({ target: context.targets.character })),
-                'Place 1 fate on opponent\'s character': AbilityDsl.actions.placeFate((context) => ({ target: context.source }))
+                'Place 1 fate on opponent\'s character': AbilityDsl.actions.placeFate()
             });
     }
 }

@@ -1,4 +1,3 @@
-import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,9 +7,7 @@ export default class MasterOfTheBlade extends DrawCard {
     public setupCardAbilities() {
         this.duelStrike('Don\'t bow during resolution', (duel, context) => duel.participants.includes(context.source))
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source,
                 condition: (context) => context.game.isDuringConflict(),
-                duration: Duration.UntilEndOfConflict,
                 effect: [
                     AbilityDsl.effects.doesNotBow(),
                     AbilityDsl.effects.cardCannot({

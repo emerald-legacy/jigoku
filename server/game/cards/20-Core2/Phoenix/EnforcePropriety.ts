@@ -26,7 +26,7 @@ export default class EnforcePropriety extends DrawCard {
                 activePromptTitle: 'Select one',
                 options: {
                     [`Give 1 fate to ${context.player.name}`]: {
-                        action: AbilityDsl.actions.takeFate({ amount: 1, target: context.player.opponent }),
+                        action: AbilityDsl.actions.takeFate({ target: context.player.opponent }),
                         message: '{0} gives 1 fate to {2} - the fortunes will be appeased, order is maintained'
                     },
                     'Let the effects be canceled': {

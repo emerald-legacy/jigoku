@@ -13,7 +13,7 @@ export default class CycleOfVengeance extends ProvinceCard {
             .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.placeFate({ amount: 1 }),
+                AbilityDsl.actions.placeFate(),
                 AbilityDsl.actions.honor()
             ]))
             .effect('honor and place a fate on {0}');

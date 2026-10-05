@@ -31,10 +31,7 @@ export default class AsakoShun extends DrawCard {
                     const conflict = context.game.currentConflict;
                     return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
                 },
-                gameAction: AbilityDsl.actions.gainHonor({
-                    target: context.player,
-                    amount: 1
-                }),
+                gameAction: AbilityDsl.actions.gainHonor(),
                 message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
                 messageArgs: () => [context.target, context.player]
             }));

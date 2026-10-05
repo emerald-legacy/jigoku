@@ -22,8 +22,7 @@ export default class GladeOfContemplation extends ProvinceCard {
                     amount: cardDifference(context)
                 })),
                 'Force opponent to discard cards': AbilityDsl.actions.chosenDiscard((context) => ({
-                    amount: cardDifference(context),
-                    target: context.player.opponent
+                    amount: cardDifference(context)
                 }))
             })
             .effect('{1}', (context) => context.select.toLowerCase());

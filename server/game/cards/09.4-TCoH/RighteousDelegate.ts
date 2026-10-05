@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
 
 class RighteousDelegate extends DrawCard {
     static id = 'righteous-delegate';
@@ -12,7 +11,7 @@ class RighteousDelegate extends DrawCard {
                 AbilityDsl.actions.cardLastingEffect((context) => {
                     const conflict = this.game.currentConflict;
                     if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(1), duration: Duration.UntilEndOfConflict };
+                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(1) };
                     }
                     return {
                         target: conflict
@@ -23,14 +22,13 @@ class RighteousDelegate extends DrawCard {
                                     .getCharacters(context.player.opponent)
                                     .filter((card) => !card.hasTrait('bushi'))
                             ),
-                        effect: AbilityDsl.effects.modifyBothSkills(1),
-                        duration: Duration.UntilEndOfConflict
+                        effect: AbilityDsl.effects.modifyBothSkills(1)
                     };
                 }),
                 AbilityDsl.actions.cardLastingEffect((context) => {
                     const conflict = this.game.currentConflict;
                     if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(-1), duration: Duration.UntilEndOfConflict };
+                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(-1) };
                     }
                     return {
                         target: conflict
@@ -41,8 +39,7 @@ class RighteousDelegate extends DrawCard {
                                     .getCharacters(context.player.opponent)
                                     .filter((card) => card.hasTrait('bushi'))
                             ),
-                        effect: AbilityDsl.effects.modifyBothSkills(-1),
-                        duration: Duration.UntilEndOfConflict
+                        effect: AbilityDsl.effects.modifyBothSkills(-1)
                     };
                 })
             ]))

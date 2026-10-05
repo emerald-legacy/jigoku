@@ -24,7 +24,7 @@ export default class KitsukiSano extends DrawCard {
         this.action('Draw 2 cards, discard 2 cards')
             .condition((context) =>
                 context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
-            .gameAction(AbilityDsl.actions.draw((context) => ({ target: context.player, amount: 2 })))
+            .gameAction(AbilityDsl.actions.draw({ amount: 2 }))
             .then(() => ({
                 gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
                     targets: false,

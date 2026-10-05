@@ -19,8 +19,7 @@ class KeenWarrior extends DrawCard {
                     target: context.player,
                     targets: false,
                     shuffle: false,
-                    bottom: true,
-                    amount: 1
+                    bottom: true
                 }))
             ]))
             .effect('draw 2 cards, then place a card on the bottom of their deck')

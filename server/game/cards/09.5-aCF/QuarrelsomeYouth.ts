@@ -13,7 +13,7 @@ class QuarrelsomeYouth extends DrawCard {
                     context.player.opponent &&
                     context.player.hand.length < context.player.opponent.hand.length
             })
-            .gameAction(AbilityDsl.actions.discardAtRandom({ amount: 1 }));
+            .gameAction(AbilityDsl.actions.discardAtRandom());
     }
 }
 

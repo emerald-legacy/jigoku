@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, Duration } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SeizeTheMind extends DrawCard {
@@ -18,8 +18,7 @@ class SeizeTheMind extends DrawCard {
                     amount: context.target?.getFate() ?? 0
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.takeControl(context.player),
-                    duration: Duration.UntilEndOfConflict
+                    effect: AbilityDsl.effects.takeControl(context.player)
                 }))
             ]))
             .effect('take control of {0}{1}{2}{3}', context => {

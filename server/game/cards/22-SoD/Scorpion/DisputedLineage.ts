@@ -28,10 +28,7 @@ export default class DisputedLineage extends DrawCard {
             .then(context => ({
                 thenCondition: () => context.player.imperialFavor !== '',
                 message: '{0} draws a card',
-                gameAction: AbilityDsl.actions.draw({
-                    target: context.player,
-                    amount: 1
-                })
+                gameAction: AbilityDsl.actions.draw()
             }));
     }
 

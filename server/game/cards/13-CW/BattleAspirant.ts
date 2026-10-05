@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, ConflictType, Duration, Players } from '../../Constants.js';
+import { CardType, ConflictType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BattleAspirant extends DrawCard {
@@ -15,7 +15,6 @@ class BattleAspirant extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => !card.hasKeyword('covert')
             }, AbilityDsl.actions.cardLastingEffect({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.mustBeDeclaredAsDefender()
             }))
             .effect('force {0} to declare as a defender this conflict');

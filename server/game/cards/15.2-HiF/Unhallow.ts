@@ -25,8 +25,7 @@ class Unhallow extends ProvinceAttachment {
                 type: 'defenders',
                 message: 'loses 1 honor',
                 cost: (player: Player) => AbilityDsl.actions.loseHonor({
-                    target: player,
-                    amount: 1
+                    target: player
                 })
             })
         });

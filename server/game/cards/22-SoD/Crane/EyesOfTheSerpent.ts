@@ -43,8 +43,8 @@ function eyesOfTheSerpentCost(): Cost<{ serpentCostPaid: 'honor' | 'fate' }> {
         },
         payEvent(context) {
             const action = context.costs.serpentCostPaid === 'honor'
-                ? context.game.actions.loseHonor({ amount: 1 })
-                : context.game.actions.loseFate({ amount: 1 });
+                ? context.game.actions.loseHonor()
+                : context.game.actions.loseFate();
             return [action.getEvent(context.player, context)];
         },
         promptsPlayer: true
@@ -65,8 +65,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                 AbilityDsl.actions.onAffinity({
                     trait: 'air',
                     gameAction: AbilityDsl.actions.gainHonor(context => ({
-                        target: context.player,
-                        amount: 1
+                        target: context.player
                     })),
                     effect: 'gain 1 honor'
                 })

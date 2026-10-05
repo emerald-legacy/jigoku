@@ -1,4 +1,4 @@
-import { CardType, Duration, PlayType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, PlayType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -19,7 +19,6 @@ export default class UtakuSumire extends DrawCard {
                     })
                 }),
                 AbilityDsl.actions.playerLastingEffect({
-                    duration: Duration.UntilEndOfConflict,
                     targetController: Players.Self,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {

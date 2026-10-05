@@ -22,8 +22,7 @@ class Stinger extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking()
             }, AbilityDsl.actions.attach((context) => ({
-                attachment: context.source,
-                target: context.target
+                attachment: context.source
             })))
             .location(Location.Hand);
     }

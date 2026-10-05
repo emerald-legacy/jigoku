@@ -17,38 +17,32 @@ export default class BenevolentLesserKami extends DrawCard {
         this.action('Gain an elemental trait')
             .condition(context => context.source.isParticipating())
             .select({ name: 'select' }, {
-                'Air': AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.source,
+                'Air': AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.addTrait('air')
-                })),
-                'Earth': AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.source,
+                }),
+                'Earth': AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.addTrait('earth')
-                })),
-                'Fire': AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.source,
+                }),
+                'Fire': AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.addTrait('fire')
-                })),
-                'Water': AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.source,
+                }),
+                'Water': AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.addTrait('water')
-                })),
-                'Void': AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.source,
+                }),
+                'Void': AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.addTrait('void')
-                }))
+                })
             })
             .effect('gain the {1} trait', context => [context.selects.select.choice]);
 
         this.action('Shuffle into deck')
-            .gameAction(AbilityDsl.actions.returnToDeck(context => ({
-                target: context.source,
+            .gameAction(AbilityDsl.actions.returnToDeck({
                 shuffle: true
-            })));
+            }));
     }
 }

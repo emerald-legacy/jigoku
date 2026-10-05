@@ -18,7 +18,6 @@ export default class SagenOfHoneyedWords extends DrawCard {
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source,
                 effect: AbilityDsl.effects.modifyBothSkills(skillBonus(context.target))
             })))
             .effect('get +{1}{2} and +{3}{4}', (context) => {

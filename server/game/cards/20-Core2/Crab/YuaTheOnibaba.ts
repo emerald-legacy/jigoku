@@ -1,4 +1,3 @@
-import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -41,13 +40,11 @@ export default class YuaTheOnibaba extends DrawCard {
                     gameActions: [
                         AbilityDsl.actions.cardLastingEffect({
                             target: targets.toBuff,
-                            effect: AbilityDsl.effects.modifyBothSkills(1),
-                            duration: Duration.UntilEndOfConflict
+                            effect: AbilityDsl.effects.modifyBothSkills(1)
                         }),
                         AbilityDsl.actions.cardLastingEffect({
                             target: targets.toNerf,
-                            effect: AbilityDsl.effects.modifyBothSkills(-1),
-                            duration: Duration.UntilEndOfConflict
+                            effect: AbilityDsl.effects.modifyBothSkills(-1)
                         })
                     ]
                 };

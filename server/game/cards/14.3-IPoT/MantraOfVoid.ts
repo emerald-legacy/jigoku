@@ -1,4 +1,4 @@
-import { CardType, Duration, Element } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -17,7 +17,6 @@ export default class MantraOfVoid extends DrawCard {
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.reduceCost({
                     amount: 1,
                     cardType: CardType.Attachment,

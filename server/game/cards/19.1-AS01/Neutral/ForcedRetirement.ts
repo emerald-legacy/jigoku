@@ -33,8 +33,7 @@ export default class ForcedRetirement extends DrawCard {
                             target: context.target
                         }),
                         AbilityDsl.actions.gainHonor({
-                            target: context.player,
-                            amount: 1
+                            target: context.player
                         })
                     ])
                 ]

@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
 
 class IssueAChallenge extends DrawCard {
     static id = 'issue-a-challenge';
@@ -22,8 +21,7 @@ class IssueAChallenge extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.restrictNumberOfDefenders(1),
-                duration: Duration.UntilEndOfConflict
+                effect: AbilityDsl.effects.restrictNumberOfDefenders(1)
             })))
             .effect('prevent {1} from declaring more than 1 defender', (context) => context.player.opponent ? [context.player.opponent] : []);
     }

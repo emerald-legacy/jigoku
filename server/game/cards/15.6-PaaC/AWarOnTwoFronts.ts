@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, Duration, ConflictType } from '../../Constants.js';
+import { Location, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AWarOnTwoFronts extends DrawCard {
@@ -17,7 +17,6 @@ class AWarOnTwoFronts extends DrawCard {
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal(),
                 AbilityDsl.actions.conflictLastingEffect(context => ({
-                    duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.additionalAttackedProvince(context.target)
                 }))
             ]))

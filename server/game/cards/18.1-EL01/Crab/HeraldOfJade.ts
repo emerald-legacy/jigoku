@@ -15,8 +15,7 @@ class HeraldOfJade extends DrawCard {
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.discardStatusToken(),
                 AbilityDsl.actions.gainHonor(context => ({
-                    target: context.player,
-                    amount: 1
+                    target: context.player
                 }))
             ]))
             .effect('discard {1}\'s {2} and gain 1 honor', context => [

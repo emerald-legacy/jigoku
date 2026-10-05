@@ -16,7 +16,6 @@ export default class ParanoidHososhi extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context)
             }, AbilityDsl.actions.removeFate((context) => ({
-                amount: 1,
                 recipient: context.player
             })))
             .effect('take 1 fate from {0} — evil begone')

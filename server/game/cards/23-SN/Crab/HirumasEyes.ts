@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Location, Players, Duration, CardType } from '../../../Constants.js';
+import { Location, Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -23,13 +23,11 @@ export default class HirumasEyes extends DrawCard {
             }, {
                 'Give +2': AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: this.getTargets(context.targets.provinceCard, context),
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2),
-                    duration: Duration.UntilEndOfConflict
+                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
                 })),
                 'Give -2': AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: this.getTargets(context.targets.provinceCard, context),
-                    effect: AbilityDsl.effects.modifyMilitarySkill(-2),
-                    duration: Duration.UntilEndOfConflict
+                    effect: AbilityDsl.effects.modifyMilitarySkill(-2)
                 }))
             })
             .effect('give {1} {2}2{3} until the end of the conflict', context => [

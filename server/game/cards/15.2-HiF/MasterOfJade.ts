@@ -10,7 +10,7 @@ class MasterOfJade extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(2))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.placeFate({amount: 1}));
+            }, AbilityDsl.actions.placeFate());
     }
 }
 

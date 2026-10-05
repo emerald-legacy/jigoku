@@ -49,14 +49,12 @@ export default class NegotiationTable extends DrawCard {
 
         AbilityDsl.actions
             .draw((ctx) => ({
-                target: ctx.player.opponent,
-                amount: 1
+                target: ctx.player.opponent
             }))
             .resolve(opponent, context);
         AbilityDsl.actions
             .draw((ctx) => ({
-                target: ctx.player,
-                amount: 1
+                target: ctx.player
             }))
             .resolve(context.player, context);
     }
@@ -100,14 +98,12 @@ export default class NegotiationTable extends DrawCard {
 
         AbilityDsl.actions
             .gainFate((ctx) => ({
-                target: ctx.player.opponent,
-                amount: 1
+                target: ctx.player.opponent
             }))
             .resolve(opponent, context);
         AbilityDsl.actions
             .gainFate((ctx) => ({
-                target: ctx.player,
-                amount: 1
+                target: ctx.player
             }))
             .resolve(context.player, context);
     }

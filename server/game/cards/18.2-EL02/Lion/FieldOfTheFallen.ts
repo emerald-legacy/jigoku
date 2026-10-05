@@ -13,8 +13,7 @@ class FieldOfTheFallen extends DrawCard {
                 const moreHonorable = context.player.isMoreHonorable();
                 const gameActions = [];
                 gameActions.push(AbilityDsl.actions.draw(context => ({
-                    target: context.player,
-                    amount: 1
+                    target: context.player
                 }))
                 );
                 if(moreHonorable) {

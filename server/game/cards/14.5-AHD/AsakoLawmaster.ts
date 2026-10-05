@@ -9,9 +9,7 @@ class AsakoLawmaster extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .gameAction(AbilityDsl.actions.gainHonor(context => ({
-                target: context.player
-            })));
+            .gameAction(AbilityDsl.actions.gainHonor());
     }
 }
 

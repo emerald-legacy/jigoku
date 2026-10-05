@@ -61,7 +61,6 @@ class ExposedCourtyard extends DrawCard {
                             };
                         }),
                         AbilityDsl.actions.cardLastingEffect((context) => ({
-                            duration: Duration.UntilEndOfConflict,
                             targetLocation: Location.Any,
                             canChangeZoneNTimes: 2,
                             effect: AbilityDsl.effects.delayedEffect({

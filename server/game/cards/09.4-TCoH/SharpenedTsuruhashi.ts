@@ -9,9 +9,7 @@ class SharpenedTsuruhashi extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source.parentCharacter
             })
-            .gameAction(AbilityDsl.actions.returnToHand(context => ({
-                target: context.source
-            })))
+            .gameAction(AbilityDsl.actions.returnToHand())
             .effect('return it to their hand');
     }
 }

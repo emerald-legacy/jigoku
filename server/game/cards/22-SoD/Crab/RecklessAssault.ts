@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import { Duration } from '../../../Constants.js';
 import { attacksAloneWithTrait } from '../../attacksAlone.js';
 
 export default class RecklessAssault extends DrawCard {
@@ -14,7 +13,6 @@ export default class RecklessAssault extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getCharacters(context),
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
             })))
             .effect('prevent characters with less than 3{1} from defending (this affects {2})', (context) => ['military', this.getCharacters(context)]);

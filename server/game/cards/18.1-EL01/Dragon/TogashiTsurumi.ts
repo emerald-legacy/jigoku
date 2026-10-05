@@ -21,8 +21,7 @@ export default class TogashiTsurumi extends DrawCard {
                 cardType: [CardType.Event, CardType.Attachment, CardType.Character]
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.draw((context) => ({
-                    target: context.player,
-                    amount: 1
+                    target: context.player
                 })),
                 AbilityDsl.actions.handler({
                     handler: (context) => {

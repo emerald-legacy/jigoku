@@ -23,8 +23,7 @@ export default class DevelopingMasterpiece extends DrawCard {
             .cost(AbilityDsl.costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
             .gameAction(AbilityDsl.actions.gainHonor((context) => ({
-                amount: capturedParent(context)?.getGlory() ?? 0,
-                target: context.player
+                amount: capturedParent(context)?.getGlory() ?? 0
             })))
             .effect('gain {1} honor', (context) => [capturedParent(context)?.getGlory() ?? 0])
             .then((context) => {

@@ -1,4 +1,4 @@
-import { CardType, Duration } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -29,8 +29,7 @@ export default class WisdomOfTheWind extends DrawCard {
                     trait: 'air',
                     gameAction: AbilityDsl.actions.cardLastingEffect({
                         target: context.target,
-                        effect: AbilityDsl.effects.modifyGlory(2),
-                        duration: Duration.UntilEndOfConflict
+                        effect: AbilityDsl.effects.modifyGlory(2)
                     }),
                     effect: 'give {0} +2 glory',
                     effectArgs: () => [context.target]

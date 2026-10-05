@@ -63,7 +63,7 @@ function disruptedSupplyLinesCost(): Cost<{ disruptedSupplyLinesCostFatePaid: bo
         payEvent(context) {
             const events: Event[] = [];
             if(context.costs.disruptedSupplyLinesCostFatePaid) {
-                const loseFateaction = context.game.actions.loseFate({ amount: 1, target: context.player });
+                const loseFateaction = context.game.actions.loseFate({ target: context.player });
                 events.push(loseFateaction.getEvent(context.player, context));
             }
 

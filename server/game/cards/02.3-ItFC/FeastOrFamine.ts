@@ -19,8 +19,7 @@ export default class FeastOrFamine extends ProvinceCard {
                 message: '{0} moves 1 fate from {1} to {2}',
                 messageArgs: (card) => [context.player, context.target, card],
                 gameAction: AbilityDsl.actions.placeFate({
-                    origin: context.target,
-                    amount: 1
+                    origin: context.target
                 })
             })))
             .effect('move 1 fate from {0} to a character they control');

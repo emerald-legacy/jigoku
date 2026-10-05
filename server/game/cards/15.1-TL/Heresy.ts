@@ -13,8 +13,7 @@ class Heresy extends DrawCard {
                 message: 'remove a fate from {0}',
                 messageArgs: duel => [duel.loser],
                 gameAction: duel => AbilityDsl.actions.removeFate({
-                    target: duel.loser,
-                    amount: 1
+                    target: duel.loser
                 })
             }));
     }

@@ -12,7 +12,6 @@ class UnveiledCorruption extends DrawCard {
                 return card.type === CardType.Province && !(card instanceof ProvinceCard && card.isBroken);
             }}))
             .gameAction(AbilityDsl.actions.chosenDiscard(context => ({
-                target: context.player.opponent,
                 amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - context.player.hand.filter((card) => card !== context.source).length)
             })));
     }

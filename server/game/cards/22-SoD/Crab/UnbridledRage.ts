@@ -31,8 +31,7 @@ export default class UnbridledRage extends DrawCard {
                 gameAction: (duel) =>
                     AbilityDsl.actions.cardLastingEffect({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => (duel.loser ?? []).includes(card))],
-                        duration: Duration.UntilEndOfConflict
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
                     })
             }));
     }

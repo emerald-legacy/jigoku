@@ -9,7 +9,6 @@ export default class MerchantOfDesires extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(1))
             .cost(AbilityDsl.costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))
             .gameAction(AbilityDsl.actions.draw((context) => ({
-                amount: 1,
                 target: context.costs.optionalOpponentLoseHonorPaid && context.player.opponent
                     ? [context.player, context.player.opponent]
                     : context.player

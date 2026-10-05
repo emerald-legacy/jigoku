@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration, Location } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ScoutsSteed extends DrawCard {
@@ -23,15 +23,13 @@ export default class ScoutsSteed extends DrawCard {
                         AbilityDsl.actions.ready({ target: character ?? [] }),
                         AbilityDsl.actions.cardLastingEffect({
                             target: character ?? [],
-                            effect: AbilityDsl.effects.mustBeDeclaredAsAttacker(),
-                            duration: Duration.UntilEndOfConflict
+                            effect: AbilityDsl.effects.mustBeDeclaredAsAttacker()
                         }),
-                        AbilityDsl.actions.cardLastingEffect(() => ({
+                        AbilityDsl.actions.cardLastingEffect({
                             target: province,
                             targetLocation: Location.Provinces,
-                            effect: AbilityDsl.effects.cardCannot('break'),
-                            duration: Duration.UntilEndOfConflict
-                        })),
+                            effect: AbilityDsl.effects.cardCannot('break')
+                        }),
                         AbilityDsl.actions.initiateConflict({
                             target: player,
                             forceProvinceTarget: province,

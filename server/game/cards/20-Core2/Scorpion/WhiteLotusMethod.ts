@@ -36,10 +36,9 @@ export default class WhiteLotusMethod extends DrawCard {
                     }),
                     AbilityDsl.actions.conditional({
                         condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
-                        trueGameAction: AbilityDsl.actions.draw(() => ({
-                            amount: 1,
+                        trueGameAction: AbilityDsl.actions.draw({
                             target: context.targets[RECIPIENT].controller
-                        })),
+                        }),
                         falseGameAction: AbilityDsl.actions.noAction()
                     })
                 ]

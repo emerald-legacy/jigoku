@@ -16,7 +16,6 @@ export default class ShosuroHiroyuki extends DrawCard {
             }, AbilityDsl.actions.conditional(({ target }) => ({
                 condition: () => target.isDishonored,
                 trueGameAction: AbilityDsl.actions.discardAtRandom({
-                    amount: 1,
                     target: target.controller
                 }),
                 falseGameAction: AbilityDsl.actions.dishonor({ target })

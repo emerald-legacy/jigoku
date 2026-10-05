@@ -17,7 +17,7 @@ export default class ScarletSabre extends DrawCard {
                         context.source.isParticipating() &&
                         event.conflict.winner === context.source.controller
                 },
-                gameAction: AbilityDsl.actions.loseFate((context) => ({ target: context.player.opponent }))
+                gameAction: AbilityDsl.actions.loseFate()
             })
         });
     }

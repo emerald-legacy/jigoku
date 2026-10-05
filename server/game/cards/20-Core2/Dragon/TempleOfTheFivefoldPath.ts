@@ -24,7 +24,6 @@ export default class TempleOfTheFivefoldPath extends StrongholdCard {
                 activePromptTitle: 'Choose a ring to gain fate',
                 ringCondition: (ring, context) => ring !== context.rings.donor
             }, AbilityDsl.actions.placeFateOnRing((context) => ({
-                target: context.rings.receiver,
                 origin: context.rings.donor
             })))
             .limit(sharedLimit);

@@ -11,7 +11,7 @@ export default class KotobukisBlessing extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.placeFate({ amount: 1 }),
+                AbilityDsl.actions.placeFate(),
                 AbilityDsl.actions.selectCards((context) => ({
                     mode: TargetMode.UpTo,
                     numCards: 1,

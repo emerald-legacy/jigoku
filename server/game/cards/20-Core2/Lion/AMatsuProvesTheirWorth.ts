@@ -34,9 +34,9 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                             },
                             gameAction: AbilityDsl.actions.multiple([
                                 AbilityDsl.actions.honor(),
-                                AbilityDsl.actions.placeFate({ amount: 1 }),
-                                AbilityDsl.actions.gainHonor({ target: context.source.controller, amount: 1 }),
-                                AbilityDsl.actions.draw({ target: context.source.controller, amount: 1 })
+                                AbilityDsl.actions.placeFate(),
+                                AbilityDsl.actions.gainHonor({ target: context.source.controller }),
+                                AbilityDsl.actions.draw({ target: context.source.controller })
                             ]),
                             message:
                                 '{0} is honored and receives 1 fate, and {1} gains 1 honor and draws 1 card due to {0} succeeding at {2}',

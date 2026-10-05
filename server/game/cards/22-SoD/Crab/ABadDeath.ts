@@ -21,12 +21,9 @@ export default class ABadDeath extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.dishonor())
-            .then((context) => ({
+            .then(() => ({
                 message: '{0} draws a card',
-                gameAction: AbilityDsl.actions.draw({
-                    target: context.player,
-                    amount: 1
-                })
+                gameAction: AbilityDsl.actions.draw()
             }))
             .cannotTargetFirst();
     }

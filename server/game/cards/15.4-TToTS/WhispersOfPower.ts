@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Players, CardType, Duration } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WhispersOfPower extends DrawCard {
@@ -14,7 +14,6 @@ class WhispersOfPower extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(
                     this.getPoliticalPowerChange(context)
                 )

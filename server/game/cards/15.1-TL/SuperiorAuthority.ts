@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
 
 class SuperiorAuthority extends DrawCard {
     static id = 'superior-authority';
@@ -9,7 +8,6 @@ class SuperiorAuthority extends DrawCard {
         this.action('Stop characters with 0 fate from contributing skill')
             .condition(() => this.game.isDuringConflict())
             .gameAction(AbilityDsl.actions.conflictLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.cannotContribute(() => {
                     return (card) => card.getFate() === 0 && card.checkRestrictions('', context);
                 })

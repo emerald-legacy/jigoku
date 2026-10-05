@@ -24,10 +24,9 @@ export default class DeployedGarrison extends DrawCard {
                     context.source.isParticipating() &&
                     this.conflictNearHolding(context, event.conflict)
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source,
+            .gameAction(AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.doesNotBow()
-            })))
+            }))
             .effect('not bow during the conflict resolution');
     }
 

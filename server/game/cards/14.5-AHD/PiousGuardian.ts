@@ -10,9 +10,7 @@ class PiousGuardian extends DrawCard {
             .when({
                 onPhaseEnded: (event, context) => event.phase === Phases.Conflict && context.player.getProvinces(a => a.isBroken).length < 2
             })
-            .gameAction(AbilityDsl.actions.gainHonor(context => ({
-                target: context.player
-            })));
+            .gameAction(AbilityDsl.actions.gainHonor());
     }
 }
 

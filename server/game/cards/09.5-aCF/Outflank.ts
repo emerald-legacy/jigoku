@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, CardType, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Outflank extends DrawCard {
@@ -15,7 +15,6 @@ class Outflank extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => !card.isUnique()
             }, AbilityDsl.actions.cardLastingEffect({
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
             }))
             .effect('prevent {0} from declaring as a defender this conflict')

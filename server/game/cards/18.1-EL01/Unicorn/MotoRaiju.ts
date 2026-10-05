@@ -13,7 +13,6 @@ export default class MotoRaiju extends DrawCard {
         this.action('Get a military skill bonus')
             .condition((context) => context.source.isParticipating())
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source,
                 effect: AbilityDsl.effects.modifyMilitarySkill(bonus(context))
             })))
             .effect('give itself +{1}{2} until the end of the conflict', (context) => [bonus(context), 'military']);

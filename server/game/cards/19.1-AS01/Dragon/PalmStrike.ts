@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const TARGET_MONK = 'myMonk';
@@ -38,8 +38,7 @@ export default class PalmStrike extends DrawCard {
                     },
                     falseGameAction: AbilityDsl.actions.noAction(),
                     trueGameAction: AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' }),
-                        duration: Duration.UntilEndOfConflict
+                        effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' })
                     })
                 })
             ]))

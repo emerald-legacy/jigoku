@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, ConflictType, Duration } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MarvelousBeings extends DrawCard {
@@ -15,7 +15,6 @@ export default class MarvelousBeings extends DrawCard {
             .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 target: context.player,
-                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
             })))
             .effect('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context.costs.moveToConflict), 'political'])

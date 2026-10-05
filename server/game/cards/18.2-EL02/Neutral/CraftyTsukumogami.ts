@@ -28,8 +28,7 @@ class CraftyTsukumogami extends RingAttachment {
                             },
                             printedAbility: false,
                             gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
-                                target: context.game.currentConflict?.attackingPlayer,
-                                amount: 1
+                                target: context.game.currentConflict?.attackingPlayer
                             }))
                         })
                     ]

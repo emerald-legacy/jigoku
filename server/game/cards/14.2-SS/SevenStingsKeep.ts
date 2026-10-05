@@ -1,4 +1,4 @@
-import { Duration, EventName } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -15,9 +15,7 @@ export default class SevenStingsKeep extends StrongholdCard {
             .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context.event),
-                gameAction: AbilityDsl.actions.playerLastingEffect({
-                    duration: Duration.UntilEndOfConflict
-                }),
+                gameAction: AbilityDsl.actions.playerLastingEffect({}),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
                     if(displayMessage) {

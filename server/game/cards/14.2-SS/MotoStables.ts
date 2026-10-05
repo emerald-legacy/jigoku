@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Duration } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class MotoStables extends DrawCard {
@@ -14,7 +14,6 @@ class MotoStables extends DrawCard {
                     event.card.controller === context.player
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                duration: Duration.UntilEndOfConflict,
                 target: context.event.card,
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
             })))

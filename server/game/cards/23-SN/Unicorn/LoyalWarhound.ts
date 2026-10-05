@@ -47,7 +47,7 @@ export default class LoyalWarhound extends DrawCard {
                             },
                             printedAbility: false,
                             effect: 'detach itself',
-                            gameAction: AbilityDsl.actions.detach((context) => ({ target: context.source }))
+                            gameAction: AbilityDsl.actions.detach()
                         }),
                         // Matched dynamically so the protection follows this card if it is reattached
                         AbilityDsl.effects.gainAbility(AbilityType.Persistent, {

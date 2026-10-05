@@ -35,12 +35,10 @@ export default class Retribution extends DrawCard {
             }, AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.cardLastingEffect({
-                        duration: Duration.UntilEndOfConflict,
                         effect: AbilityDsl.effects.mustBeDeclaredAsAttacker(),
                         target: context.target
                     }),
                     AbilityDsl.actions.cardLastingEffect({
-                        duration: Duration.UntilEndOfConflict,
                         effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker(),
                         target: context.player.cardsInPlay.filter(
                             (card) => card.getType() === CardType.Character && card !== context.target

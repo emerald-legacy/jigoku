@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Duration, type Element } from '../../Constants.js';
+import type { Element } from '../../Constants.js';
 
 class StudyTheNaturalWorld extends DrawCard {
     static id = 'study-the-natural-world';
@@ -11,7 +11,6 @@ class StudyTheNaturalWorld extends DrawCard {
             .condition((context) => context.player.anyCardsInPlay((card) => card.isAttacking() && card.hasTrait('scholar')))
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.ringLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfConflict,
                     target: context.game.currentConflict?.ring,
                     effect: AbilityDsl.effects.addElement(this.getElementsOfAttackedProvinces(context))
                 })),
