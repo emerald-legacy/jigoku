@@ -3,8 +3,9 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
-
+import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { PromptButton } from '../PlayerPromptState.js';
+import { waitingPromptTitle } from './TargetPrompt.js';
 
 interface AbilityTargetRingProperties {
     gameAction: GameAction[];
@@ -12,18 +13,6 @@ interface AbilityTargetRingProperties {
     optional?: boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-}
-
-interface RingTargetResults {
-    cancelled?: boolean;
-    payCostsFirst?: boolean;
-    delayTargeting?: AbilityTargetRing | null;
-    noCostsFirstButton?: boolean;
-}
-
-interface PromptButton {
-    text: string;
-    arg: string;
 }
 
 class AbilityTargetRing {
@@ -77,7 +66,7 @@ class AbilityTargetRing {
         return Object.values(context.game.rings).filter((ring) => this.ringCondition(ring, context));
     }
 
-    resolve(context: AbilityContext, targetResults: RingTargetResults): void {
+    resolve(context: AbilityContext, targetResults: TargetResults): void {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
@@ -87,20 +76,12 @@ class AbilityTargetRing {
             return;
         }
         const buttons: PromptButton[] = [];
-        let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
-            if(!targetResults.noCostsFirstButton) {
-                buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
-            }
+            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
             buttons.push({ text: 'Cancel', arg: 'cancel' });
-            if(context.ability.abilityType === 'action') {
-                waitingPromptTitle = 'Waiting for opponent to take an action or pass';
-            } else {
-                waitingPromptTitle = 'Waiting for opponent';
-            }
         }
         const promptProperties = {
-            waitingPromptTitle: waitingPromptTitle,
+            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
             context: context,
             buttons: buttons,
             onSelect: (_player: Player, ring: Ring) => {

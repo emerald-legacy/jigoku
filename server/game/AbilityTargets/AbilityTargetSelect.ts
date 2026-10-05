@@ -6,10 +6,10 @@ import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
 import type EffectSource from '../EffectSource.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
-import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
+import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import { waitingPromptTitle } from './TargetPrompt.js';
 
 type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
-
 
 interface AbilityTargetSelectProperties {
     choices: ChoicesInput | ((context: AbilityContext) => ChoicesInput);
@@ -19,13 +19,6 @@ interface AbilityTargetSelectProperties {
     source?: EffectSource | string;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-}
-
-interface SelectTargetResults {
-    cancelled?: boolean;
-    payCostsFirst?: boolean;
-    delayTargeting?: AbilityTargetSelect | null;
-    noCostsFirstButton?: boolean;
 }
 
 class AbilityTargetSelect {
@@ -101,7 +94,7 @@ class AbilityTargetSelect {
         return Object.keys(this.getChoices(context)).filter((key) => this.isChoiceLegal(key, context));
     }
 
-    resolve(context: AbilityContext, targetResults: SelectTargetResults): void {
+    resolve(context: AbilityContext, targetResults: TargetResults): void {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
@@ -127,9 +120,7 @@ class AbilityTargetSelect {
                 }
             }));
         if(player !== context.player.opponent && context.stage === Stage.PreTarget) {
-            if(!targetResults.noCostsFirstButton) {
-                options.push({ text: 'Pay costs first', handler: () => (targetResults.payCostsFirst = true) });
-            }
+            options.push({ text: 'Pay costs first', handler: () => (targetResults.payCostsFirst = true) });
             options.push({ text: 'Cancel', handler: () => (targetResults.cancelled = true) });
         }
         if(options.length === 1) {
@@ -139,16 +130,8 @@ class AbilityTargetSelect {
                 // a solo game has no opponent to choose
                 return;
             }
-            let waitingPromptTitle = '';
-            if(context.stage === Stage.PreTarget) {
-                if(context.ability.abilityType === 'action') {
-                    waitingPromptTitle = 'Waiting for opponent to take an action or pass';
-                } else {
-                    waitingPromptTitle = 'Waiting for opponent';
-                }
-            }
             context.game.promptWithHandlerMenu(player, {
-                waitingPromptTitle: waitingPromptTitle,
+                waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
                 activePromptTitle: promptTitle,
                 context: context,
                 source: this.properties.source || context.source,

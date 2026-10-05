@@ -47,6 +47,32 @@ describe('triggered ability window', function () {
                 expect(this.player1.player.selectedCards).toEqual([]);
             });
         });
+        describe('when a ring is claimed', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kudaka']
+                    }
+                });
+                this.kudaka = this.player1.findCardByName('kudaka');
+                this.noMoreActions();
+            });
+
+            it('titles the window by the claimed ring', function () {
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'air',
+                    attackers: [this.kudaka],
+                    defenders: []
+                });
+                this.noMoreActions();
+                this.player1.clickPrompt('Yes');
+                this.player1.clickPrompt('Don\'t Resolve');
+                expect(this.player1).toBeAbleToSelect(this.kudaka);
+                expect(this.player1.currentPrompt().menuTitle).toBe('Any reactions to to the air ring being claimed?');
+            });
+        });
         describe('when the cards its events name have left play', function () {
             beforeEach(function () {
                 // Shinjo Sora turns every facedown dynasty card into a hound token, and

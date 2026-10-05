@@ -2,11 +2,7 @@ import { v1 as uuid } from 'uuid';
 import type Player from '../Player.js';
 import { BaseStep } from './BaseStep.js';
 import type { MenuArg } from './Step.js';
-
-type PromptButton = { text?: string | number; arg?: string | number; command?: string; uuid?: string };
-type PromptControl =
-    | { type: string; source: unknown; targets: unknown; uuid?: string }
-    | { type: 'card-name'; command: string; method: string; name: string; uuid?: string };
+import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
 
 export type ActivePrompt = {
     buttons?: Array<PromptButton>;

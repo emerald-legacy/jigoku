@@ -70,7 +70,6 @@ export interface TargetResults {
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTarget | null;
-    noCostsFirstButton?: boolean;
     playCosts?: boolean;
     triggerCosts?: boolean;
     events?: Event[];

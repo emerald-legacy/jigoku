@@ -6,6 +6,7 @@ import { removeFate } from '../GameActions/GameActions.js';
 import BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import Ring from '../Ring.js';
+import { waitingPromptTitle } from '../AbilityTargets/TargetPrompt.js';
 
 const CANCELLED = 'CANCELLED';
 const STOP = 'STOP';
@@ -180,14 +181,9 @@ export class ReduceableFateCost implements Cost {
         if(minFate <= 0) {
             buttons.push({ text: 'Done', arg: STOP });
         }
-        const waitingPromptTitle =
-            context.ability.abilityType === 'action'
-                ? 'Waiting for opponent to take an action or pass'
-                : 'Waiting for opponent';
-
         context.game.promptForSelect(context.player, {
             activePromptTitle: `Choose a card to help pay the fate cost of ${currentCard.name}`,
-            waitingPromptTitle,
+            waitingPromptTitle: waitingPromptTitle(context),
             context,
             location: Location.PlayArea,
             controller: Players.Self,

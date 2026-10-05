@@ -4,10 +4,9 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
-
-type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
-
+import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { PromptButton } from '../PlayerPromptState.js';
+import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
 
 interface AbilityTargetCardProperties {
     gameAction: GameAction[];
@@ -15,18 +14,6 @@ interface AbilityTargetCardProperties {
     mode?: TargetMode;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     player?: ((context: AbilityContext) => Players) | Players;
-}
-
-interface CardTargetResults {
-    cancelled?: boolean;
-    payCostsFirst?: boolean;
-    delayTargeting?: AbilityTargetCard | null;
-    noCostsFirstButton?: boolean;
-}
-
-interface PromptButton {
-    text: string;
-    arg: string;
 }
 
 class AbilityTargetCard {
@@ -92,7 +79,7 @@ class AbilityTargetCard {
         return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
     }
 
-    resolve(context: AbilityContext, targetResults: CardTargetResults): void {
+    resolve(context: AbilityContext, targetResults: TargetResults): void {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
@@ -114,23 +101,15 @@ class AbilityTargetCard {
         const { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
 
         const buttons: PromptButton[] = [];
-        let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
-            if(!targetResults.noCostsFirstButton) {
-                buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
-            }
+            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
             buttons.push({ text: 'Cancel', arg: 'cancel' });
-            if(context.ability.abilityType === 'action') {
-                waitingPromptTitle = 'Waiting for opponent to take an action or pass';
-            } else {
-                waitingPromptTitle = 'Waiting for opponent';
-            }
         }
         const mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
             card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch('target', context))
         );
         const promptProperties = {
-            waitingPromptTitle: waitingPromptTitle,
+            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
             context: context,
             selector: this.selector,
             buttons: buttons,

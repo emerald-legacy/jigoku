@@ -5,10 +5,9 @@ import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
-
-type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
-
+import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { PromptButton } from '../PlayerPromptState.js';
+import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
 
 interface AbilityTargetTokenProperties {
     gameAction: GameAction[];
@@ -18,17 +17,6 @@ interface AbilityTargetTokenProperties {
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
-}
-
-interface TokenTargetResults {
-    cancelled?: boolean;
-    payCostsFirst?: boolean;
-    delayTargeting?: AbilityTargetToken | null;
-}
-
-interface PromptButton {
-    text: string;
-    arg: string;
 }
 
 class AbilityTargetToken {
@@ -104,7 +92,7 @@ class AbilityTargetToken {
         return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
     }
 
-    resolve(context: AbilityContext, targetResults: TokenTargetResults): void {
+    resolve(context: AbilityContext, targetResults: TargetResults): void {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
@@ -114,17 +102,11 @@ class AbilityTargetToken {
             return;
         }
         const buttons: PromptButton[] = [];
-        let waitingPromptTitle = '';
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
-            if(context.ability.abilityType === 'action') {
-                waitingPromptTitle = 'Waiting for opponent to take an action or pass';
-            } else {
-                waitingPromptTitle = 'Waiting for opponent';
-            }
         }
         const promptProperties = {
-            waitingPromptTitle: waitingPromptTitle,
+            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
             buttons: buttons,
             context: context,
             selector: this.selector,

@@ -1,11 +1,11 @@
 import { AbilityContext } from '../AbilityContext.js';
-import EffectSource from '../EffectSource.js';
+import type EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
+import { resolvePromptSource } from './PromptSource.js';
+import type { PromptButton } from '../PlayerPromptState.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type Ring from '../Ring.js';
-
-type SelectRingPromptButton = { text?: string; arg?: string };
 
 interface SelectRingPromptProperties {
     source?: EffectSource | string;
@@ -13,7 +13,7 @@ interface SelectRingPromptProperties {
     waitingPromptTitle?: string;
     activePromptTitle?: string;
     ordered?: boolean;
-    buttons?: SelectRingPromptButton[];
+    buttons?: PromptButton[];
     optional?: boolean;
     hideIfNoLegalTargets?: boolean;
     ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
@@ -21,6 +21,10 @@ interface SelectRingPromptProperties {
     onMenuCommand?: (player: Player, arg: string) => boolean | void;
     onCancel?: (player: Player) => boolean | void;
 }
+
+type DefaultedProperties = 'buttons' | 'ringCondition' | 'onSelect' | 'onMenuCommand' | 'onCancel' | 'optional' | 'hideIfNoLegalTargets';
+
+type ResolvedSelectRingPromptProperties = SelectRingPromptProperties & Required<Pick<SelectRingPromptProperties, DefaultedProperties>> & { source: EffectSource };
 
 /**
  * General purpose prompt that asks the user to select a ring.
@@ -45,7 +49,7 @@ interface SelectRingPromptProperties {
  */
 class SelectRingPrompt extends UiPrompt {
     choosingPlayer: Player;
-    properties: SelectRingPromptProperties;
+    properties: ResolvedSelectRingPromptProperties;
     context: AbilityContext;
     selectedRing: Ring | null;
 
@@ -53,26 +57,20 @@ class SelectRingPrompt extends UiPrompt {
         super(game);
 
         this.choosingPlayer = choosingPlayer;
-        if(typeof properties.source === 'string') {
-            properties.source = new EffectSource(game, properties.source);
-        } else if(properties.context && properties.context.source) {
-            properties.source = properties.context.source;
-        }
-        if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
-        } else if(!properties.source) {
-            properties.source = new EffectSource(game);
-        }
-
-        this.properties = properties;
-        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        properties.buttons ??= [];
-        properties.ringCondition ??= () => true;
-        properties.onSelect ??= () => true;
-        properties.onMenuCommand ??= () => true;
-        properties.onCancel ??= () => true;
-        properties.optional ??= false;
-        properties.hideIfNoLegalTargets ??= false;
+        const { source, waitingPromptTitle } = resolvePromptSource(game, properties);
+        this.properties = {
+            ...properties,
+            source,
+            waitingPromptTitle,
+            buttons: properties.buttons ?? [],
+            ringCondition: properties.ringCondition ?? (() => true),
+            onSelect: properties.onSelect ?? (() => true),
+            onMenuCommand: properties.onMenuCommand ?? (() => true),
+            onCancel: properties.onCancel ?? (() => true),
+            optional: properties.optional ?? false,
+            hideIfNoLegalTargets: properties.hideIfNoLegalTargets ?? false
+        };
+        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: source });
         this.selectedRing = null;
     }
 
@@ -98,18 +96,18 @@ class SelectRingPrompt extends UiPrompt {
 
     getSelectableRings(): Ring[] {
         const selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
-            return (this.properties.ringCondition ?? (() => true))(ring, this.context);
+            return this.properties.ringCondition(ring, this.context);
         });
 
         return selectableRings;
     }
 
     activePrompt() {
-        const buttons = [...(this.properties.buttons ?? [])];
+        const buttons = [...this.properties.buttons];
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
         }
-        if(this.game.manualMode && !buttons.some((button: SelectRingPromptButton) => button.arg === 'cancel')) {
+        if(this.game.manualMode && !buttons.some((button: PromptButton) => button.arg === 'cancel')) {
             buttons.push({ text: 'Cancel Prompt', arg: 'cancel' });
         }
         return {
@@ -119,7 +117,7 @@ class SelectRingPrompt extends UiPrompt {
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.defaultActivePromptTitle(),
             buttons: buttons,
-            promptTitle: typeof this.properties.source === 'string' ? undefined : this.properties.source?.name
+            promptTitle: this.properties.source.name
         };
     }
 
@@ -136,11 +134,11 @@ class SelectRingPrompt extends UiPrompt {
             return false;
         }
 
-        if(!(this.properties.ringCondition ?? (() => true))(ring, this.context)) {
+        if(!this.properties.ringCondition(ring, this.context)) {
             return true;
         }
 
-        if((this.properties.onSelect ?? (() => true))(player, ring)) {
+        if(this.properties.onSelect(player, ring)) {
             this.complete();
         }
 
@@ -149,10 +147,10 @@ class SelectRingPrompt extends UiPrompt {
 
     menuCommand(player: Player, arg: string): boolean {
         if(arg === 'cancel') {
-            (this.properties.onCancel ?? (() => true))(player);
+            this.properties.onCancel(player);
             this.complete();
             return true;
-        } else if((this.properties.onMenuCommand ?? (() => true))(player, arg)) {
+        } else if(this.properties.onMenuCommand(player, arg)) {
             this.complete();
             return true;
         }

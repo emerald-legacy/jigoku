@@ -1,13 +1,13 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { Event } from '../Events/Event.js';
-import EffectSource from '../EffectSource.js';
+import type EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
+import { resolvePromptSource } from './PromptSource.js';
+import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
 import type { GameObject } from '../GameObject.js';
-
-type HandlerMenuButton = { text: string | number | undefined; arg: string | number; card?: BaseCard; disabled?: boolean };
 
 type Choice = string | number | undefined;
 
@@ -29,9 +29,11 @@ export interface HandlerMenuPromptProperties<T extends BaseCard = BaseCard, C ex
     cards?: T[];
     cardCondition?: (card: T, context: AbilityContext) => boolean;
     cardHandler?: (card: T) => void;
-    controls?: Array<{ type: string; source: unknown; targets: unknown[] }>;
+    controls?: PromptControl[];
     target?: GameObject | GameObject[];
 }
+
+type ResolvedHandlerMenuPromptProperties<T extends BaseCard, C extends Choice> = HandlerMenuPromptProperties<T, C> & { source: EffectSource; choices: C[] };
 
 /**
  * General purpose menu prompt.
@@ -51,7 +53,7 @@ export interface HandlerMenuPromptProperties<T extends BaseCard = BaseCard, C ex
  */
 class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice> extends UiPrompt {
     player: Player;
-    properties: HandlerMenuPromptProperties<T, C>;
+    properties: ResolvedHandlerMenuPromptProperties<T, C>;
     cardCondition: (card: T, context: AbilityContext) => boolean;
     context: AbilityContext;
     source: EffectSource;
@@ -59,26 +61,14 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
     constructor(game: Game, player: Player, properties: HandlerMenuPromptProperties<T, C>) {
         super(game);
         this.player = player;
-        let source = typeof properties.source === 'string' ? undefined : properties.source;
-        if(typeof properties.source === 'string') {
-            source = new EffectSource(game, properties.source);
-        } else if(properties.context && properties.context.source) {
-            source = properties.context.source;
-        }
-        if(source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + source.name;
-        } else if(!source) {
-            source = new EffectSource(game);
-        }
-        properties.source = source;
-        this.source = source;
-        this.properties = properties;
         if(properties.options && properties.choices?.length) {
             throw new Error('a handler menu takes options or choices, not both');
         }
-        this.properties.choices = properties.choices || [];
+        const { source, waitingPromptTitle } = resolvePromptSource(game, properties);
+        this.source = source;
+        this.properties = { ...properties, source, waitingPromptTitle, choices: properties.choices || [] };
         this.cardCondition = properties.cardCondition || (() => true);
-        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source });
+        this.context = properties.context || new AbilityContext({ game: game, player: player, source: source });
     }
 
     activeCondition(player: Player): boolean {
@@ -86,7 +76,7 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
     }
 
     activePrompt() {
-        let buttons: HandlerMenuButton[] = [];
+        let buttons: PromptButton[] = [];
         if(this.properties.cards) {
             const cardQuantities: Record<string, number> = {};
             this.properties.cards.forEach((card) => {
@@ -113,7 +103,7 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
                 return { text: text, arg: card.id, card: card, disabled: !this.cardCondition(card, this.context) };
             });
         }
-        const labels: Choice[] = this.properties.options ? this.properties.options.map((option) => option.text) : this.properties.choices ?? [];
+        const labels: Choice[] = this.properties.options ? this.properties.options.map((option) => option.text) : this.properties.choices;
         buttons = buttons.concat(labels.map((text, index) => ({ text, arg: index })));
         if(this.game.manualMode && labels.every((label) => label !== 'Cancel')) {
             buttons = buttons.concat({ text: 'Cancel Prompt', arg: 'cancel' });
@@ -126,7 +116,7 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
         };
     }
 
-    getAdditionalPromptControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
+    getAdditionalPromptControls(): PromptControl[] {
         // a source that is not a card has no type
         const sourceType: string = this.context.source.type;
         if(sourceType === '') {
@@ -171,7 +161,7 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
         }
 
         if(this.properties.choiceHandler) {
-            this.properties.choiceHandler((this.properties.choices ?? [])[arg]);
+            this.properties.choiceHandler(this.properties.choices[arg]);
             this.complete();
             return true;
         }

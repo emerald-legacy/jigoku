@@ -1,8 +1,10 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { Event } from '../Events/Event.js';
 import CardSelector, { type CardSelectorProperties, defaultMode, isMultiCardMode, type MultiCardMode, type SingleCardMode } from '../CardSelector.js';
-import EffectSource from '../EffectSource.js';
+import type EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
+import { resolvePromptSource } from './PromptSource.js';
+import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
@@ -10,16 +12,11 @@ import type { GameAction } from '../GameActions/GameAction.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
-interface PromptButton {
-    text: string;
-    arg: string;
-}
-
 interface PromptOptions {
     source?: EffectSource | string;
     context?: AbilityContext;
     buttons?: PromptButton[];
-    controls?: Array<{ type: string; source: unknown; targets: unknown[] }>;
+    controls?: PromptControl[];
     selectCard?: boolean;
     ordered?: boolean;
     hideIfNoLegalTargets?: boolean;
@@ -80,6 +77,10 @@ interface ErasedProperties extends PromptOptions, CardSelectorProperties {
     onSelect?: (player: Player, cards: BaseCard | BaseCard[]) => boolean | void;
     onCardToggle?: (player: Player, card: BaseCard) => void;
 }
+
+type DefaultedProperties = 'buttons' | 'controls' | 'selectCard' | 'cardCondition' | 'onSelect' | 'onMenuCommand' | 'onCancel' | 'hideIfNoLegalTargets';
+
+type ResolvedProperties = ErasedProperties & Required<Pick<ErasedProperties, DefaultedProperties>> & { source: EffectSource };
 
 function isCardsChoice<K extends CardTypes>(properties: SingleCardChoice<K> | OptionalCardChoice<K> | CardsChoice<K>): properties is CardsChoice<K> {
     return isMultiCardMode(properties.mode ?? defaultMode(properties));
@@ -178,7 +179,7 @@ function single(selected: BaseCard | BaseCard[]): BaseCard {
  */
 class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
     choosingPlayer: Player;
-    properties: ErasedProperties;
+    properties: ResolvedProperties;
     context: AbilityContext;
     hideIfNoLegalTargets: boolean;
     selector: BaseCardSelector;
@@ -192,36 +193,29 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
         const properties = erase(typedProperties);
 
         this.choosingPlayer = choosingPlayer;
-        if(typeof properties.source === 'string') {
-            properties.source = new EffectSource(game, properties.source);
-        } else if(properties.context && properties.context.source) {
-            properties.source = properties.context.source;
-        }
-        if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
-        }
-        if(!properties.source) {
-            properties.source = new EffectSource(game);
-        }
-
-        this.properties = properties;
-        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        properties.buttons ??= [];
-        properties.controls ??= this.getDefaultControls();
-        properties.selectCard ??= true;
-        properties.cardCondition ??= () => true;
-        properties.onSelect ??= () => true;
-        properties.onMenuCommand ??= () => true;
-        properties.onCancel ??= () => true;
-        properties.hideIfNoLegalTargets ??= false;
+        const { source, waitingPromptTitle } = resolvePromptSource(game, properties);
+        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: source });
+        this.properties = {
+            ...properties,
+            source,
+            waitingPromptTitle,
+            buttons: properties.buttons ?? [],
+            controls: properties.controls ?? this.getDefaultControls(),
+            selectCard: properties.selectCard ?? true,
+            cardCondition: properties.cardCondition ?? (() => true),
+            onSelect: properties.onSelect ?? (() => true),
+            onMenuCommand: properties.onMenuCommand ?? (() => true),
+            onCancel: properties.onCancel ?? (() => true),
+            hideIfNoLegalTargets: properties.hideIfNoLegalTargets ?? false
+        };
         if(properties.gameAction) {
             const gameActions = Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction];
             this.properties.gameAction = gameActions;
-            const cardCondition = this.properties.cardCondition ?? (() => true);
+            const cardCondition = this.properties.cardCondition;
             this.properties.cardCondition = (card: BaseCard, context: AbilityContext) =>
                 cardCondition(card, context) && gameActions.some((gameAction: GameAction) => gameAction.canAffect(card, context));
         }
-        this.hideIfNoLegalTargets = properties.hideIfNoLegalTargets ?? false;
+        this.hideIfNoLegalTargets = this.properties.hideIfNoLegalTargets;
         this.selector = properties.selector || CardSelector.for(this.properties);
         this.selectedCards = [];
         this.onlyMustSelectMayBeChosen = false;
@@ -240,7 +234,7 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
         this.choosingPlayer.setSelectedCards(this.selectedCards);
     }
 
-    getDefaultControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
+    getDefaultControls(): PromptControl[] {
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
         const targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
         const eventCard = Event.promptCardOf('event' in this.context ? this.context.event : undefined);
@@ -276,10 +270,10 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons = this.properties.buttons ?? [];
+        let buttons = this.properties.buttons;
         if(!this.selector.automaticFireOnSelect(this.context) && this.selector.hasEnoughSelected(this.selectedCards, this.context) || this.selector.optional) {
             if(buttons.every((button: PromptButton) => button.arg !== 'done')) {
-                buttons = [{ text: 'Done', arg: 'done' }].concat(buttons);
+                buttons = [{ text: 'Done', arg: 'done' }, ...buttons];
             }
         }
         if(this.game.manualMode && buttons.every((button: PromptButton) => button.arg !== 'cancel')) {
@@ -291,7 +285,7 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.selector.defaultActivePromptTitle(this.context),
             buttons: buttons,
-            promptTitle: typeof this.properties.source === 'string' ? undefined : this.properties.source?.name,
+            promptTitle: this.properties.source.name,
             controls: this.properties.controls
         };
     }
@@ -356,7 +350,7 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
 
     fireOnSelect(): boolean {
         const cardParam = this.selector.formatSelectParam(this.selectedCards);
-        if((this.properties.onSelect ?? (() => true))(this.choosingPlayer, cardParam)) {
+        if(this.properties.onSelect(this.choosingPlayer, cardParam)) {
             this.complete();
             return true;
         }
@@ -366,12 +360,12 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
 
     menuCommand(player: Player, arg: string): boolean {
         if(arg === 'cancel') {
-            (this.properties.onCancel ?? (() => true))(player);
+            this.properties.onCancel(player);
             this.complete();
             return true;
         } else if(arg === 'done' && this.selector.hasEnoughSelected(this.selectedCards, this.context)) {
             return this.fireOnSelect();
-        } else if((this.properties.onMenuCommand ?? (() => true))(player, arg)) {
+        } else if(this.properties.onMenuCommand(player, arg)) {
             this.complete();
             return true;
         }

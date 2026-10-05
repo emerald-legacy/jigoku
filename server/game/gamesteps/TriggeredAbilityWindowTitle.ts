@@ -1,54 +1,42 @@
-import { AbilityType } from '../Constants.js';
+import { AbilityType, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
-import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-// The payload fields each title reads; the event name guarantees them.
-const EventToTitleFunc: Record<string, (event: AnyEvent) => string> = {
-    onCardBowed(event) {
-        return `${event.card?.name} being bowed`;
-    },
-    onCardDishonored(event) {
-        return `${event.card?.name} being dishonored`;
-    },
-    onCardHonored(event) {
-        return `${event.card?.name} being honored`;
-    },
-    onCardLeavesPlay(event) {
-        return `${event.card?.name} leaving play`;
-    },
-    onCardPlayed(event) {
-        return `${event.card?.name} being played`;
-    },
-    onCharacterEntersPlay(event) {
-        return `${event.card?.name} entering play`;
-    },
-    onClaimRing(event) {
-        return `to the ${event.ring?.element} ring being claimed`;
-    },
-    onInitiateAbilityEffects(event) {
-        return `the effects of ${event.card?.name}`;
-    },
-    onMoveFate(event) {
+function eventTitle(event: Event): string | undefined {
+    if(event.is(EventName.OnCardBowed)) {
+        return `${event.card.name} being bowed`;
+    } else if(event.is(EventName.OnCardDishonored)) {
+        return `${event.card.name} being dishonored`;
+    } else if(event.is(EventName.OnCardHonored)) {
+        return `${event.card.name} being honored`;
+    } else if(event.is(EventName.OnCardLeavesPlay)) {
+        return `${event.card.name} leaving play`;
+    } else if(event.is(EventName.OnCardPlayed)) {
+        return `${event.card.name} being played`;
+    } else if(event.is(EventName.OnCharacterEntersPlay)) {
+        return `${event.card.name} entering play`;
+    } else if(event.is(EventName.OnClaimRing)) {
+        return `to the ${event.ring.element} ring being claimed`;
+    } else if(event.is(EventName.OnInitiateAbilityEffects)) {
+        return `the effects of ${event.card.name}`;
+    } else if(event.is(EventName.OnMoveFate)) {
         return `Fate being moved from ${event.origin ? event.origin.name : event.card ? event.card.name : 'somewhere'}`;
-    },
-    onPhaseEnded(event) {
+    } else if(event.is(EventName.OnPhaseEnded)) {
         return `${event.phase} phase ending`;
-    },
-    onPhaseStarted(event) {
+    } else if(event.is(EventName.OnPhaseStarted)) {
         return `${event.phase} phase starting`;
-    },
-    onReturnRing(event) {
-        return `returning the ${event.ring?.element} ring`;
+    } else if(event.is(EventName.OnReturnRing)) {
+        return `returning the ${event.ring.element} ring`;
     }
-};
+    return undefined;
+}
 
-const AbilityTypeToWord = new Map([
-    ['cancelinterrupt', 'interrupt'],
-    ['interrupt', 'interrupt'],
-    ['reaction', 'reaction'],
-    ['forcedreaction', 'forced reaction'],
-    ['forcedinterrupt', 'forced interrupt'],
-    ['duelreaction', 'reaction']
+const AbilityTypeToWord = new Map<AbilityType, string>([
+    [AbilityType.WouldInterrupt, 'interrupt'],
+    [AbilityType.Interrupt, 'interrupt'],
+    [AbilityType.Reaction, 'reaction'],
+    [AbilityType.ForcedReaction, 'forced reaction'],
+    [AbilityType.ForcedInterrupt, 'forced interrupt'],
+    [AbilityType.DuelReaction, 'reaction']
 ]);
 
 function FormatTitles(titles: string[]) {
@@ -63,16 +51,10 @@ function FormatTitles(titles: string[]) {
 }
 
 export const TriggeredAbilityWindowTitle = {
-    getTitle(abilityType: string, events: Event[]) {
+    getTitle(abilityType: AbilityType, events: Event[]) {
         const abilityWord = AbilityTypeToWord.get(abilityType) ?? abilityType;
         const titles: string[] = events
-            .map((event) => {
-                const func = EventToTitleFunc[event.name];
-                if(func) {
-                    return func(event);
-                }
-                return '';
-            })
+            .map((event) => eventTitle(event) ?? '')
             .filter(Boolean);
 
         if(abilityType === AbilityType.ForcedReaction || abilityType === AbilityType.ForcedInterrupt) {
@@ -92,10 +74,6 @@ export const TriggeredAbilityWindowTitle = {
         if(Array.isArray(event)) {
             return undefined;
         }
-        const func = EventToTitleFunc[event.name];
-        if(func) {
-            return func(event);
-        }
-        return event.name;
+        return eventTitle(event) ?? event.name;
     }
 };

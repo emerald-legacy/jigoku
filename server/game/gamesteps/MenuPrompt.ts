@@ -4,13 +4,11 @@ import type Game from '../Game.js';
 
 type MenuContext = object;
 
-type MenuPromptButton = { text?: string; arg?: string; method?: string; timer?: boolean; timerCancel?: boolean };
-
 interface MenuPromptProperties {
     source?: { name: string } | string;
     waitingPromptTitle?: string;
     promptTitle?: string;
-    activePrompt: Omit<ActivePrompt, 'buttons'> & { buttons?: MenuPromptButton[] };
+    activePrompt: ActivePrompt;
     context?: unknown;
 }
 
