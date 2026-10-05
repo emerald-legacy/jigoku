@@ -1,6 +1,7 @@
 import { CardType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class WingsOfThePhoenix extends DrawCard {
     static id = 'wings-of-the-phoenix';
@@ -9,7 +10,7 @@ export default class WingsOfThePhoenix extends DrawCard {
         this.action('Move a character')
             .condition((context) =>
                 context.game.isDuringConflict() &&
-                context.player.cardsInPlay.some((card) => card.hasTrait('shugenja')))
+                controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

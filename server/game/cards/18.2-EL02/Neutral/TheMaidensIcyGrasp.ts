@@ -1,17 +1,13 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration, EventName } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
+import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
 
 export default class TheMaidensIcyGrasp extends DrawCard {
     static id = 'the-maiden-s-icy-grasp';
 
-    private charactersPlayedThisConflict = new WeakSet<DrawCard>();
-
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictStarted, EventName.OnCharacterEntersPlay]);
-
+        const charactersEntered = new CharactersEnteredThisConflict(this.game);
         this.action('Remove a character from play')
             .condition((context) =>
                 context.player.cardsInPlay.some(
@@ -19,7 +15,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 ))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => this.charactersPlayedThisConflict.has(card)
+                cardCondition: (card) => charactersEntered.has(card)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
                     effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)],
@@ -31,13 +27,5 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 })
             ]))
             .effect('prevent {0} from contributing to resolution of this conflict');
-    }
-
-    public onConflictStarted() {
-        this.charactersPlayedThisConflict = new WeakSet();
-    }
-
-    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
-        this.charactersPlayedThisConflict.add(event.card);
     }
 }

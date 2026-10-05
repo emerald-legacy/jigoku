@@ -1,5 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { attacksAloneWithTrait } from '../../attacksAlone.js';
 
 export default class AMatsuProvesTheirWorth extends DrawCard {
     static id = 'a-matsu-proves-their-worth';
@@ -7,17 +8,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prove yourself worthy of a Matsu name')
             .when({
-                onConflictDeclared: (event, context) => {
-                    const conflict = event.conflict;
-                    return (
-                        context.player === conflict.attackingPlayer &&
-                        conflict.getNumberOfParticipantsFor(context.player) === 1 &&
-                        conflict.getParticipants(
-                            (participant) =>
-                                participant.hasTrait('bushi') && participant.controller === context.player
-                        ).length === 1
-                    );
-                }
+                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'bushi')
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => {
                 const target = context.game.requireConflict().getParticipants(

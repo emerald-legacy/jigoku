@@ -1,6 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { controlsShugenja } from '../controlsShugenja.js';
 
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
@@ -9,7 +10,7 @@ class WalkingTheWay extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            match: (player) => player.cardsInPlay.some((card) => card.hasTrait('shugenja')),
+            match: (player) => controlsShugenja(player),
             effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
         });
 

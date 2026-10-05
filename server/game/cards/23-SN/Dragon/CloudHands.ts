@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
 
 export default class CloudHands extends DrawCard {
     static id = 'cloud-hands';
@@ -23,24 +24,10 @@ export default class CloudHands extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(context => {
-                    const effects = [];
-                    const oppCharacter = context.targets.oppCharacter;
-                    if(oppCharacter.hasDash('military')) {
-                        effects.push(AbilityDsl.effects.setBaseDash('military'));
-                    } else {
-                        effects.push(AbilityDsl.effects.setBaseMilitarySkill(oppCharacter.getBaseMilitarySkill()));
-                    }
-                    if(oppCharacter.hasDash('political')) {
-                        effects.push(AbilityDsl.effects.setBaseDash('political'));
-                    } else {
-                        effects.push(AbilityDsl.effects.setBasePoliticalSkill(oppCharacter.getBasePoliticalSkill()));
-                    }
-                    return {
-                        target: context.targets.myCharacter,
-                        effect: effects
-                    };
-                }),
+                AbilityDsl.actions.cardLastingEffect(context => ({
+                    target: context.targets.myCharacter,
+                    effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })
+                })),
                 AbilityDsl.actions.honor(context => ({
                     target: context.targets.myCharacter
                 }))

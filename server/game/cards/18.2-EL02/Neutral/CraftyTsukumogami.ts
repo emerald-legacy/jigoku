@@ -1,12 +1,11 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type BaseCard from '../../../BaseCard.js';
-import DrawCard from '../../../DrawCard.js';
+import { RingAttachment } from '../../RingAttachment.js';
 import type Ring from '../../../Ring.js';
 import { CardType, AbilityType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameModes } from '../../../../GameModes.js';
 
-class CraftyTsukumogami extends DrawCard {
+class CraftyTsukumogami extends RingAttachment {
     static id = 'crafty-tsukumogami';
 
     setupCardAbilities() {
@@ -60,16 +59,6 @@ class CraftyTsukumogami extends DrawCard {
             }
         }
         return true;
-    }
-
-    canAttach(ring: Ring) {
-        return ring && ring.type === 'ring' && this.getType() === CardType.Attachment;
-    }
-    canPlayOn(source: BaseCard) {
-        return source && source.isRing() && this.getType() === CardType.Attachment;
-    }
-    mustAttachToRing() {
-        return this.getType() === CardType.Attachment;
     }
 }
 

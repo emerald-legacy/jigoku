@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 
 export default class HidaMarauder extends DrawCard {
     static id = 'hida-marauder';
@@ -14,24 +14,15 @@ export default class HidaMarauder extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const count = context.game.currentConflict?.getCharacters(context.player).length ?? 0;
-                const cards =
-                    context.player.opponent && count > 0
-                        ? shuffle(context.player.opponent.hand).slice(0, count)
-                        : [context.source];
+                const cards = context.player.opponent && count > 0 ? randomHandCards(context.player.opponent, count) : [context.source];
                 return {
                     gameActions: [
                         AbilityDsl.actions.reveal({
-                            target: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                            target: cards,
                             chatMessage: true,
                             player: context.player.opponent
                         }),
-                        AbilityDsl.actions.cardMenu((context) => ({
-                            cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                            targets: true,
-                            message: '{0} chooses {1} to be discarded',
-                            messageArgs: (card) => [context.player, card],
-                            gameAction: AbilityDsl.actions.discardCard()
-                        }))
+                        chooseCardToDiscard(cards)
                     ]
                 };
             }))

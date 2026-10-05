@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, Players, PlayType, TargetMode, Decks } from '../../Constants.js';
+import { TargetMode, Decks } from '../../Constants.js';
+import { playableFromUnderneath } from '../cardsUnderneath.js';
 
 class DaidojiUji2 extends DrawCard {
     static id = 'daidoji-uji-2';
@@ -38,18 +39,7 @@ class DaidojiUji2 extends DrawCard {
 
         this.persistentEffect({
             condition: context => context.source.isHonored,
-            location: Location.PlayArea,
-            targetLocation: this.uuid,
-            targetController: Players.Self,
-            match: (card) => {
-                return card.location === this.uuid;
-            },
-            effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay((player) => {
-                    return player === this.controller;
-                }, PlayType.PlayFromHand),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
-            ]
+            ...playableFromUnderneath(this)
         });
     }
 }

@@ -1,19 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { defendingAtKaiuWall } from '../kaiuWall.js';
 
 class RiverOfTheLastStand extends DrawCard {
     static id = 'river-of-the-last-stand';
 
     setupCardAbilities() {
         this.action('Make opponent discard two cards and draw a card')
-            .condition(context => {
-                if(context.player.isDefendingPlayer() && context.game.currentConflict) {
-                    const cards = context.game.currentConflict.getConflictProvinces().map(a => context.player.getDynastyCardsInProvince(a.location));
-                    return cards.some(c => c.some(card => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall')));
-                }
-                return false;
-            })
+            .condition(context => defendingAtKaiuWall(context.player, context.game.currentConflict))
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.discardAtRandom(context => ({
                     target: context.player.opponent,

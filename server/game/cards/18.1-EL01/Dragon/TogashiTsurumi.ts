@@ -1,28 +1,17 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players, PlayType } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { countCardsUnderneath, playableFromUnderneath } from '../../cardsUnderneath.js';
 
 export default class TogashiTsurumi extends DrawCard {
     static id = 'togashi-tsurumi';
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills(() => this.getSkillBonus())
+            effect: AbilityDsl.effects.modifyBothSkills(() => countCardsUnderneath(this))
         });
 
-        this.persistentEffect({
-            location: Location.PlayArea,
-            targetLocation: this.uuid,
-            targetController: Players.Self,
-            match: (card) => card.location === this.uuid && card.hasTrait('kiho'),
-            effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player) => player === this.controller,
-                    PlayType.PlayFromHand
-                ),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
-            ]
-        });
+        this.persistentEffect(playableFromUnderneath(this, (card) => card.hasTrait('kiho')));
 
         this.action('Place a card underneath self')
             .target({
@@ -53,12 +42,5 @@ export default class TogashiTsurumi extends DrawCard {
                 })
             ]))
             .effect('place a card from their hand beneath {1} and draw a card', (context) => [context.source]);
-    }
-
-    private getSkillBonus() {
-        return this.game.allCards.reduce(
-            (total, card) => (card.controller === this.controller && card.location === this.uuid ? total + 1 : total),
-            0
-        );
     }
 }

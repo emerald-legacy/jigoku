@@ -1,19 +1,7 @@
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Cost } from '../../../costs/Cost.js';
-
-function captureLocationCost(): Cost<{ captureLocationCost: Location }> {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context) {
-            context.costs.captureLocationCost = context.source.location;
-        },
-        pay() { }
-    };
-}
+import { captureCost } from '../../captureCost.js';
 
 export default class RoadToShakyakuMura extends DrawCard {
     static id = 'road-to-shakyaku-mura';
@@ -31,7 +19,7 @@ export default class RoadToShakyakuMura extends DrawCard {
                     );
                 }
             })
-            .cost(captureLocationCost())
+            .cost(captureCost('captureLocationCost', (context) => context.source.location))
             .cost(AbilityDsl.costs.sacrificeSelf())
             .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([

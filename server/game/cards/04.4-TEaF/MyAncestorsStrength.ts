@@ -1,6 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
+import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
 class MyAncestorsStrength extends DrawCard {
     static id = 'my-ancestor-s-strength';
@@ -21,24 +22,10 @@ class MyAncestorsStrength extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardLastingEffect(context => {
-                const effects = [];
-                const ancestor = context.targets.ancestor;
-                if(ancestor.hasDash('military')) {
-                    effects.push(AbilityDsl.effects.setBaseDash('military'));
-                } else {
-                    effects.push(AbilityDsl.effects.setBaseMilitarySkill(ancestor.militarySkill));
-                }
-                if(ancestor.hasDash('political')) {
-                    effects.push(AbilityDsl.effects.setBaseDash('political'));
-                } else {
-                    effects.push(AbilityDsl.effects.setBasePoliticalSkill(ancestor.politicalSkill));
-                }
-                return {
-                    target: context.targets.shugenja,
-                    effect: effects
-                };
-            }))
+            }, AbilityDsl.actions.cardLastingEffect(context => ({
+                target: context.targets.shugenja,
+                effect: copyBaseSkillEffects(context.targets.ancestor)
+            })))
             .effect('set {1}\'s base skills to those of {2}', context => [context.targets.shugenja, context.targets.ancestor]);
     }
 }

@@ -2,8 +2,8 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element, EventName } from '../../Constants.js';
+import { isOwnRingEffect } from '../effectSource.js';
 
-import Ring from '../../Ring.js';
 const elementKey = 'isawa-tsuke-fire';
 
 class IsawaTsuke extends DrawCard {
@@ -12,18 +12,10 @@ class IsawaTsuke extends DrawCard {
     setupCardAbilities() {
         this.reaction('Fire ring same cost characters')
             .when({
-                onCardDishonored: (event, context) => {
-                    const dishonoredByYourEffect = context.player === event.context?.player;
-                    const dishonoredByRingEffect = event.context?.source instanceof Ring;
-                    const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
-                    return dishonoredByYourEffect && dishonoredByRingEffect && currentlyFire;
-                },
-                onCardHonored: (event, context) => {
-                    const honoredByYourEffect = context.player === event.context?.player;
-                    const honoredByRingEffect = event.context?.source instanceof Ring;
-                    const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
-                    return honoredByYourEffect && honoredByRingEffect && currentlyFire;
-                }
+                onCardDishonored: (event, context) =>
+                    isOwnRingEffect(context.player, event.context) && this.getCurrentElementSymbol(elementKey) === Element.Fire,
+                onCardHonored: (event, context) =>
+                    isOwnRingEffect(context.player, event.context) && this.getCurrentElementSymbol(elementKey) === Element.Fire
             })
             .gameAction(AbilityDsl.actions.conditional((context) => ({
                 condition: context.event.name === EventName.OnCardDishonored,

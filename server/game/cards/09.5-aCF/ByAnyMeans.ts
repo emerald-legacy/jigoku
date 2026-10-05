@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
 class ByAnyMeans extends DrawCard {
     static id = 'by-any-means';
@@ -22,19 +23,10 @@ class ByAnyMeans extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(context => {
-                const effects = [];
-                const oppCharacter = context.targets.oppCharacter;
-                if(oppCharacter.hasDash('military')) {
-                    effects.push(AbilityDsl.effects.setBaseDash('military'));
-                } else {
-                    effects.push(AbilityDsl.effects.setBaseMilitarySkill(oppCharacter.militarySkill));
-                }
-                return {
-                    target: context.targets.myCharacter,
-                    effect: effects
-                };
-            }))
+            }, AbilityDsl.actions.cardLastingEffect(context => ({
+                target: context.targets.myCharacter,
+                effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: ['military'] })
+            })))
             .effect('set {1}\'s base military skill to equal {2}\'s current military skill', context => [context.targets.myCharacter, context.targets.oppCharacter]);
     }
 }

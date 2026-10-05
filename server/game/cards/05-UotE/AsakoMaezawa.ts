@@ -1,16 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { hasMoreParticipatingGlory } from '../participatingGlory.js';
 
 class AsakoMaezawa extends DrawCard {
     static id = 'asako-maezawa';
 
     setupCardAbilities() {
         this.action('Double a character\'s base political skill')
-            .condition((context) => context.source.isParticipating() && !!context.player.opponent && (
-                context.player.cardsInPlay.reduce((myTotal, card) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
-                context.player.opponent.cardsInPlay.reduce((oppTotal, card) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
-            ))
+            .condition((context) => context.source.isParticipating() && hasMoreParticipatingGlory(context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
-import { createSummonedCopy, summonEffectArgs } from '../summonCreature.js';
+import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
 
 const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature: DrawCard | undefined; accursedSummoningCost: number | null }> {
     return {
@@ -104,7 +104,7 @@ class AccursedSummoning extends DrawCard {
             .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .effect('summon a{2} {1} from the depths of the Shadowlands!', (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
+            .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
     }
 
     isTemptationsMaho() {

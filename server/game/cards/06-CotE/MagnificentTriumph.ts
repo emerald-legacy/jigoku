@@ -1,23 +1,19 @@
-import { CardType, EventName, Players } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
+import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
 export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
 
-    private duelWinnersThisConflict = new Set<BaseCard>();
-
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
+        const duelWinners = DuelsThisConflict.winners(this.game);
         this.action('Give a character +2/+2')
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => this.duelWinnersThisConflict.has(card)
+                cardCondition: (card) => duelWinners.has(card)
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: [
                     AbilityDsl.effects.modifyBothSkills(2),
@@ -29,15 +25,5 @@ export default class MagnificentTriumph extends DrawCard {
                 ]
             })))
             .effect('give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent\'s events', () => ['military', 'political']);
-    }
-
-    public onConflictFinished() {
-        this.duelWinnersThisConflict.clear();
-    }
-
-    public afterDuel(event: EventPayload<EventName.AfterDuel>) {
-        for(const winner of event.duel.winner ?? []) {
-            this.duelWinnersThisConflict.add(winner);
-        }
     }
 }

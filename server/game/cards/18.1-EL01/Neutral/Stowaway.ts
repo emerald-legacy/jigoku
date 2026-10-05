@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Location, TargetMode } from '../../../Constants.js';
+import { countCardsUnderneath } from '../../cardsUnderneath.js';
 
 class Stowaway extends DrawCard {
     static id = 'stowaway';
@@ -22,13 +23,8 @@ class Stowaway extends DrawCard {
             .effect('place {0} beneath {1}', context => [context.source]);
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyMilitarySkill((card) => this.getSkillBonus(card))
+            effect: AbilityDsl.effects.modifyMilitarySkill(() => Math.floor(countCardsUnderneath(this) / 2))
         });
-    }
-
-    getSkillBonus(card: DrawCard) {
-        const cardsUnder = card.game.allCards.filter((card) => card.controller === this.controller && card.location === this.uuid).length;
-        return Math.floor(cardsUnder / 2);
     }
 }
 

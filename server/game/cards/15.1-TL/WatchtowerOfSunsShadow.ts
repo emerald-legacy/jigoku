@@ -1,22 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
+import { Players } from '../../Constants.js';
+import { defendingAtKaiuWall } from '../kaiuWall.js';
 
 class WatchtowerOfSunsShadow extends DrawCard {
     static id = 'watchtower-of-sun-s-shadow';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => {
-                if(!context.player.isDefendingPlayer()) {
-                    return false;
-                }
-                let cardsInProvinces: DrawCard[] = [];
-                context.game.currentConflict?.getConflictProvinces().forEach(p => {
-                    cardsInProvinces = cardsInProvinces.concat(context.player.getDynastyCardsInProvince(p.location));
-                });
-                return cardsInProvinces.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
-            },
+            condition: context => defendingAtKaiuWall(context.player, context.game.currentConflict),
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),
             effect: AbilityDsl.effects.modifyBothSkills((card) => -card.getFate())

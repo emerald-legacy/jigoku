@@ -1,6 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, TargetMode, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
+import { opponentMayResolveAgain } from '../resolveAgain.js';
 
 class HandToHand extends DrawCard {
     static id = 'hand-to-hand';
@@ -13,26 +14,7 @@ class HandToHand extends DrawCard {
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
             }, AbilityDsl.actions.discardFromPlay())
             .effect('discard {0} from play')
-            .then((ctx) => {
-                return {
-                    target: {
-                        player: ctx.player.opponent ? Players.Opponent : Players.Self,
-                        mode: TargetMode.Select,
-                        activePromptTitle: 'Resolve Hand to Hand\'s ability again?',
-                        choices: {
-                            'Yes': AbilityDsl.actions.resolveAbility({
-                                ability: ctx.ability,
-                                player: ctx.player.opponent ?? ctx.player,
-                                subResolution: true,
-                                choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
-                            }),
-                            'No': () => true
-                        }
-                    },
-                    message: '{3} chooses {4}to resolve {1}\'s ability again',
-                    messageArgs: (thenContext) => [ctx.player.opponent ?? ctx.player, thenContext.select === 'No' ? 'not ' : '']
-                };
-            });
+            .then((context) => opponentMayResolveAgain(context, 'Resolve Hand to Hand\'s ability again?'));
     }
 }
 

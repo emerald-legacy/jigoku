@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetMode, CardType, Element } from '../../Constants.js';
+import { countTargetable } from '../countTargetable.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
 
@@ -33,15 +34,7 @@ class IsawaTsuke2 extends DrawCard {
     }
 
     private getNumberOfLegalTargets(context: AbilityContext) {
-        const cards = context.game.requireConflict().getParticipants((card) => card.allowGameAction('removeFate'));
-        const selectedCards: DrawCard[] = [];
-        cards.forEach((card) => {
-            if(card.canBeTargeted(context, selectedCards)) {
-                selectedCards.push(card);
-            }
-        });
-
-        return selectedCards.length;
+        return countTargetable(context.game.requireConflict().getParticipants((card) => card.allowGameAction('removeFate')), context);
     }
 
     getPrintedElementSymbols() {

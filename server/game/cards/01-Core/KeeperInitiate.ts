@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { claimsRoleElement } from '../claimedRings.js';
 
 class KeeperInitiate extends DrawCard {
     static id = 'keeper-initiate';
@@ -8,8 +9,7 @@ class KeeperInitiate extends DrawCard {
     setupCardAbilities() {
         this.reaction('Put this into play')
             .when({
-                onClaimRing: (event, context) => event.player === context.player && !!context.player.role &&
-                                                 (event.conflict && event.conflict.elements.some(element => context.player.role?.hasTrait(element)) || context.player.role.hasTrait(event.ring.element))
+                onClaimRing: (event, context) => event.player === context.player && claimsRoleElement(context.player, event)
             })
             .gameAction(AbilityDsl.actions.putIntoPlay())
             .then(() => ({

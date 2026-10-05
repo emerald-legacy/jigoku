@@ -1,14 +1,13 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import Soldier from '../../Soldier.js';
-import { attachTopConflictCardAsSoldier } from '../../attachTopConflictCardAsSoldier.js';
+import { attachTopConflictCardAsSoldier, soldierAttachCheck } from '../../attachTopConflictCardAsSoldier.js';
 
 class NobleVanguard extends DrawCard {
     static id = 'noble-vanguard';
 
     setupCardAbilities() {
-        const DummyAttachment = new Soldier(this);
+        const canAttachSoldier = soldierAttachCheck(this.owner);
 
         this.reaction('Attach a follower to a character')
             .when({
@@ -19,7 +18,7 @@ class NobleVanguard extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context)
+                cardCondition: (card, context) => canAttachSoldier(card, context)
             }, AbilityDsl.actions.handler({
                 handler: (context) => attachTopConflictCardAsSoldier(context, context.target)
             }))

@@ -1,28 +1,14 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-
-function captureOriginalProvince(): Cost<{ originalProvince: ProvinceCard }> {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context: AbilityContext) {
-            context.costs.originalProvince = context.game.requireConflict().conflictProvince;
-        },
-        pay() { }
-    };
-}
+import { captureCost } from '../../captureCost.js';
 
 export default class AllDistancesAreOne extends DrawCard {
     static id = 'all-distances-are-one';
 
     setupCardAbilities() {
         this.action('Move conflict to a different province')
-            .cost(captureOriginalProvince())
+            .cost(captureCost('originalProvince', (context) => context.game.requireConflict().conflictProvince ?? undefined))
             .condition((context) =>
                 !!(context.game.currentConflict
                     ?.getConflictProvinces()

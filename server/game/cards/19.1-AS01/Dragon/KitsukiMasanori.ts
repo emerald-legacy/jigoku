@@ -3,6 +3,7 @@ import { CardType, Decks, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import { attachSearchedCard } from '../../attachSearchedCard.js';
 
 const selectAttachmentPrompt = 'Select an attachment';
 
@@ -51,24 +52,8 @@ export default class KitsukiMasanori extends DrawCard {
                                 deck: Decks.ConflictDeck,
                                 reveal: true,
                                 cardCondition: (card, context) => isSearchableCard(card, context),
-                                selectedCardsHandler: (context, event, cards) => {
-                                    const card = cards[0];
-                                    if(!card) {
-                                        return;
-                                    }
-
-                                    context.game.addMessage(
-                                        '{0} takes {1} and attaches it to {2}',
-                                        event.player,
-                                        card,
-                                        context.source
-                                    );
-                                    context.game.queueSimpleStep(() =>
-                                        AbilityDsl.actions
-                                            .attach({ target: context.source, attachment: card })
-                                            .resolve(undefined, context)
-                                    );
-                                }
+                                selectedCardsHandler: (context, event, [card]) =>
+                                    attachSearchedCard(context, context.source, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.source])
                             }),
                             message: '{0} searches their conflict deck'
                         }

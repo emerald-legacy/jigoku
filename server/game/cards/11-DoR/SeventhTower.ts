@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { defendingAtKaiuWall } from '../kaiuWall.js';
 
 class SeventhTower extends DrawCard {
     static id = 'seventh-tower';
@@ -8,13 +8,7 @@ class SeventhTower extends DrawCard {
     setupCardAbilities() {
         this.reaction('Resolve the ring effect')
             .when({
-                afterConflict: (event, context) => {
-                    if(context.player.isDefendingPlayer() && event.conflict.winner === context.player) {
-                        const cards = event.conflict.getConflictProvinces().map(a => context.player.getDynastyCardsInProvince(a.location));
-                        return cards.some(c => c.some(card => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall')));
-                    }
-                    return false;
-                }
+                afterConflict: (event, context) => event.conflict.winner === context.player && defendingAtKaiuWall(context.player, event.conflict)
             })
             .gameAction(AbilityDsl.actions.resolveConflictRing());
     }

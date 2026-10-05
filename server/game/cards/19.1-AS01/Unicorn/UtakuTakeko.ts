@@ -3,6 +3,7 @@ import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromH
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { article } from '../../article.js';
 
 export default class UtakuTakeko extends DrawCard {
     static id = 'utaku-takeko';
@@ -54,16 +55,6 @@ export default class UtakuTakeko extends DrawCard {
         if(card.hasTrait('army')) {
             return 'in the';
         }
-
-        switch(card.name[0]) {
-            case 'A':
-            case 'E':
-            case 'I':
-            case 'O':
-            case 'U':
-                return 'an';
-            default:
-                return 'a';
-        }
+        return article(card.name);
     }
 }

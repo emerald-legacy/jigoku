@@ -4,6 +4,7 @@ import type { Event } from '../../../Events/Event.js';
 import { CardType, Players, TargetMode, EventName, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { resolveAbilityAgain } from '../../resolveAgain.js';
 
 export default class ALegionOfOne extends DrawCard {
     static id = 'a-legion-of-one';
@@ -53,11 +54,7 @@ export default class ALegionOfOne extends DrawCard {
                     then: {
                         thenCondition: (event: Event & { origin?: BaseCard }) =>
                             event.origin === context.target && !event.cancelled && event.name === EventName.OnMoveFate,
-                        gameAction: AbilityDsl.actions.resolveAbility({
-                            ability: context.ability,
-                            subResolution: true,
-                            choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
-                        })
+                        gameAction: resolveAbilityAgain(context)
                     }
                 };
             });

@@ -1,6 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { ConflictType } from '../../Constants.js';
+import { countClaimedRings } from '../claimedRings.js';
 
 class KitsuWarrior extends DrawCard {
     static id = 'kitsu-warrior';
@@ -8,19 +9,10 @@ class KitsuWarrior extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.modifyMilitarySkill(() => this.twiceMilClaimedRings()),
-                AbilityDsl.effects.modifyPoliticalSkill(() => this.twicePolClaimedRings())
+                AbilityDsl.effects.modifyMilitarySkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Military))),
+                AbilityDsl.effects.modifyPoliticalSkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Political)))
             ]
         });
-    }
-
-    twiceMilClaimedRings() {
-        const milclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType(ConflictType.Military));
-        return 2 * milclaimedRings.length;
-    }
-    twicePolClaimedRings() {
-        const polclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType(ConflictType.Political));
-        return 2 * polclaimedRings.length;
     }
 }
 

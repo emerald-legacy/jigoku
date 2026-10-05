@@ -1,24 +1,19 @@
 import CardAbility from '../../CardAbility.js';
 import { CardType, EventName } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
+import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
 export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';
 
-    private duelLosersThisConflict = new Set<BaseCard>();
-
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel, EventName.OnCharacterEntersPlay]);
-
+        const duelLosers = DuelsThisConflict.losers(this.game, { forgetOnEnterPlay: true });
         this.action('Bow a character who lost a duel')
             .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => this.duelLosersThisConflict.has(card)
+                cardCondition: (card) => duelLosers.has(card)
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.bow(),
                 AbilityDsl.actions.menuPrompt((context) => ({
@@ -50,19 +45,5 @@ export default class StoriedDefeat extends DrawCard {
                     ])
                 }))
             ]));
-    }
-
-    public onConflictFinished() {
-        this.duelLosersThisConflict.clear();
-    }
-
-    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
-        this.duelLosersThisConflict.delete(event.card);
-    }
-
-    public afterDuel(event: EventPayload<EventName.AfterDuel>) {
-        for(const loser of event.duel.loser ?? []) {
-            this.duelLosersThisConflict.add(loser);
-        }
     }
 }

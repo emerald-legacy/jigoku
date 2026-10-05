@@ -1,14 +1,13 @@
 import { CardType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import Soldier from '../../Soldier.js';
-import { attachTopConflictCardAsSoldier } from '../../attachTopConflictCardAsSoldier.js';
+import { attachTopConflictCardAsSoldier, soldierAttachCheck } from '../../attachTopConflictCardAsSoldier.js';
 
 export default class Pride extends StrongholdCard {
     static id = 'pride';
 
     setupCardAbilities() {
-        const DummyAttachment = Soldier.createDummy(this.controller);
+        const canAttachSoldier = soldierAttachCheck(this.controller);
 
         this.action('Give a character a +1/+1 attachment')
             .cost(AbilityDsl.costs.bowSelf())
@@ -18,7 +17,7 @@ export default class Pride extends StrongholdCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.attachments.filter((a) => a.hasTrait('follower')).length === 0 &&
-                    context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context)
+                    canAttachSoldier(card, context)
             }, AbilityDsl.actions.handler({
                 handler: (context) => attachTopConflictCardAsSoldier(context, context.target)
             }))

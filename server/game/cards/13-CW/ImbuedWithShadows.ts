@@ -3,6 +3,7 @@ import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetMode, CardType } from '../../Constants.js';
+import { countTargetable } from '../countTargetable.js';
 
 class ImbuedWithShadows extends DrawCard {
     static id = 'imbued-with-shadows';
@@ -35,15 +36,7 @@ class ImbuedWithShadows extends DrawCard {
     }
 
     private getNumberOfLegalTargets(context: AbilityContext) {
-        const cards = context.game.findAnyCardsInPlay((card) => card.isHonored || card.isDishonored);
-        const selectedCards: BaseCard[] = [];
-        cards.forEach((card) => {
-            if(card.canBeTargeted(context, selectedCards)) {
-                selectedCards.push(card);
-            }
-        });
-
-        return selectedCards.length;
+        return countTargetable(context.game.findAnyCardsInPlay((card) => card.isHonored || card.isDishonored), context);
     }
 }
 

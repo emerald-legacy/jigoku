@@ -1,14 +1,14 @@
 import { CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class WisdomOfTheWind extends DrawCard {
     static id = 'wisdom-of-the-wind';
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .condition((context) =>
-                context.player.cardsInPlay.some((card) => card.hasTrait('shugenja')))
+            .condition((context) => controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

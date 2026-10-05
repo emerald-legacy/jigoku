@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
 import type Player from '../../Player.js';
+import { hasClaimedRing } from '../claimedRings.js';
 
 const elementKeys = {
     air: 'hallowed-ground-air',
@@ -29,7 +30,7 @@ class HenshinDisciple extends DrawCard {
 
     private hasClaimedOrIsContesting(key: string, player: Player) {
         const element = this.getCurrentElementSymbol(key);
-        return this.game.rings[element].isConsideredClaimed(player) ||
+        return hasClaimedRing(this, key, player) ||
             !!(this.game.isDuringConflict(element) && this.game.currentConflict?.ring?.isContested());
     }
 

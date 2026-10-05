@@ -1,13 +1,14 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
+import { controlsShugenja } from '../controlsShugenja.js';
 
 class SupernaturalStorm extends DrawCard {
     static id = 'supernatural-storm';
 
     setupCardAbilities() {
         this.action('Increase the skill of one character')
-            .condition(() => this.controller.cardsInPlay.some(card => card.hasTrait('shugenja')))
+            .condition(() => controlsShugenja(this.controller))
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()

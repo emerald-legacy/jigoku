@@ -1,10 +1,8 @@
-import type BaseCard from '../../BaseCard.js';
-import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../DrawCard.js';
 import Ring from '../../Ring.js';
+import { RingAttachment } from '../RingAttachment.js';
 
-class GreaterUnderstanding extends DrawCard {
+class GreaterUnderstanding extends RingAttachment {
     static id = 'greater-understanding';
 
     setupCardAbilities() {
@@ -14,15 +12,6 @@ class GreaterUnderstanding extends DrawCard {
                 onPlaceFateOnUnclaimedRings: () => this.parent instanceof Ring && this.parent.isUnclaimed()
             })
             .gameAction(AbilityDsl.actions.resolveRingEffect(context => ({ target: context.source.parent ?? [] })));
-    }
-    canAttach(ring: BaseCard | Ring) {
-        return ring && ring.type === 'ring';
-    }
-    canPlayOn(source: BaseCard | Ring) {
-        return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
-    }
-    mustAttachToRing() {
-        return true;
     }
 }
 

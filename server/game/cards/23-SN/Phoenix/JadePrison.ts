@@ -2,6 +2,7 @@ import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class JadePrison extends DrawCard {
     static id = 'jade-prison';
@@ -24,7 +25,7 @@ export default class JadePrison extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.isCharacterTraitInPlay('shugenja')) {
+        if(!controlsShugenja(context.player)) {
             return false;
         }
 

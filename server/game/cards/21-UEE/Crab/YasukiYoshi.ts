@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { attachSearchedCard } from '../../attachSearchedCard.js';
 
 export default class YasukiYoshi extends DrawCard {
     static id = 'yasuki-yoshi';
@@ -12,16 +13,8 @@ export default class YasukiYoshi extends DrawCard {
                 activePromptTitle: 'Choose a Writ of Survey',
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Survey',
-                selectedCardsHandler: (context, _, [card]) => {
-                    if(!card) {
-                        return;
-                    }
-
-                    context.game.addMessage('{0} receives their {1}', context.source, card);
-                    context.game.queueSimpleStep(() =>
-                        AbilityDsl.actions.attach({ target: context.source, attachment: card }).resolve(undefined, context)
-                    );
-                }
+                selectedCardsHandler: (context, _, [card]) =>
+                    attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])
             }));
 
         this.reaction('Cause honor loss to the conflict loser')

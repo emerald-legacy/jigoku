@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { Duration } from '../../../Constants.js';
+import { attacksAloneWithTrait } from '../../attacksAlone.js';
 
 export default class RecklessAssault extends DrawCard {
     static id = 'reckless-assault';
@@ -9,12 +10,7 @@ export default class RecklessAssault extends DrawCard {
     setupCardAbilities() {
         this.reaction('Force defenders')
             .when({
-                onConflictDeclared: (event, context) =>
-                    event.conflict.getNumberOfParticipantsFor(context.player) === 1 &&
-                    event.conflict.getParticipants(
-                        participant => participant.hasTrait('berserker') && participant.controller === context.player
-                    ).length === 1 &&
-                    context.player === event.conflict.attackingPlayer
+                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'berserker')
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getCharacters(context),

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
-import Ring from '../../Ring.js';
+import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 
 class RighteousSamurai extends DrawCard {
     static id = 'righteous-samurai';
@@ -9,28 +9,10 @@ class RighteousSamurai extends DrawCard {
     setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
-                onModifyHonor: (event, context) => {
-                    if(event.context === undefined) {
-                        return false;
-                    }
-                    const honorLoss = event.amount < 0;
-                    const viaOpponentsEffect = (context.player.opponent === event.context.player);
-                    const viaRingEffect = event.context.source instanceof Ring;
-                    const viaCardEffect = event.context.ability.isCardAbility();
-                    const honorLossBelongsToController = event.player === context.player;
-                    return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
-                },
-                onTransferHonor: (event, context) => {
-                    if(event.context === undefined) {
-                        return false;
-                    }
-                    const honorLoss = event.amount > 0;
-                    const viaOpponentsEffect = (context.player.opponent === event.context.player);
-                    const viaRingEffect = event.context.source instanceof Ring;
-                    const viaCardEffect = event.context.ability.isCardAbility();
-                    const honorLossBelongsToController = event.player === context.player;
-                    return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
-                }
+                onModifyHonor: (event, context) =>
+                    event.amount < 0 && event.player === context.player && isOpponentsRingOrCardEffect(context.player, event.context),
+                onTransferHonor: (event, context) =>
+                    event.amount > 0 && event.player === context.player && isOpponentsRingOrCardEffect(context.player, event.context)
             })
             .target({
                 cardType: CardType.Character

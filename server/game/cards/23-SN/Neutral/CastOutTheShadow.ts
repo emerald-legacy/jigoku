@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class CastOutTheShadow extends DrawCard {
     static id = 'cast-out-the-shadow';
@@ -26,7 +27,7 @@ export default class CastOutTheShadow extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.isCharacterTraitInPlay('shugenja')) {
+        if(!controlsShugenja(context.player)) {
             return false;
         }
 

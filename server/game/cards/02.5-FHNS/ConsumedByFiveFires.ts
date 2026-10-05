@@ -3,6 +3,7 @@ import { CardType, EventName, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import type { HandlerMenuOption } from '../../gamesteps/HandlerMenuPrompt.js';
+import { controlsShugenja } from '../controlsShugenja.js';
 
 class ConsumedByFiveFires extends DrawCard {
     static id = 'consumed-by-five-fires';
@@ -10,7 +11,7 @@ class ConsumedByFiveFires extends DrawCard {
     setupCardAbilities() {
         this.action('Remove up to 5 fate from characters')
             .condition((context) =>
-                context.player.cardsInPlay.some((card) => card.hasTrait('shugenja')) &&
+                controlsShugenja(context.player) &&
                 !!context.player.opponent &&
                 context.player.opponent.cardsInPlay.some((card) => card.allowGameAction('removeFate', context)))
             .handler((context) => this.chooseCard(context, {}, []))

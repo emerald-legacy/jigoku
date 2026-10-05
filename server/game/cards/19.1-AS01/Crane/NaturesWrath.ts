@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, ConflictType, EventName, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
+import { resolveAbilityAgain } from '../../resolveAgain.js';
 
 const TARGET_CHARACTER = 'character';
 
@@ -54,11 +55,7 @@ export default class NaturesWrath extends DrawCard {
                         },
                         then: {
                             thenCondition: (event: Event) => !event.cancelled && event.name === EventName.OnCardDishonored,
-                            gameAction: AbilityDsl.actions.resolveAbility({
-                                ability: context.ability,
-                                subResolution: true,
-                                choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
-                            })
+                            gameAction: resolveAbilityAgain(context)
                         }
                     };
                 }

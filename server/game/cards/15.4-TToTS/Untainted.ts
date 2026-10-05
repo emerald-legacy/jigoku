@@ -1,11 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location } from '../../Constants.js';
-import type BaseCard from '../../BaseCard.js';
-import type Ring from '../../Ring.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
+import { Location } from '../../Constants.js';
+import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
-class Untainted extends DrawCard {
+class Untainted extends ProvinceAttachment {
     static id = 'untainted';
 
     setupCardAbilities() {
@@ -34,18 +32,6 @@ class Untainted extends DrawCard {
                 const card = context.token[0].card;
                 return card ? [context.token, card] : [];
             });
-    }
-
-    canPlayOn(source: BaseCard | Ring) {
-        return source instanceof ProvinceCard && !source.isBroken && this.getType() === CardType.Attachment;
-    }
-
-    canAttach(parent: BaseCard | Ring) {
-        if(parent instanceof ProvinceCard && parent.isBroken) {
-            return false;
-        }
-
-        return parent instanceof ProvinceCard && this.getType() === CardType.Attachment;
     }
 }
 

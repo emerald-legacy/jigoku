@@ -2,7 +2,7 @@ import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 
 export default class IsawaHaruyo extends DrawCard {
     static id = 'isawa-haruyo';
@@ -22,19 +22,13 @@ export default class IsawaHaruyo extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
                     const cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
-                    const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber);
+                    const cards = randomHandCards(context.player.opponent, cardNumber);
                     return {
                         gameActions: [
                             AbilityDsl.actions.lookAt(() => ({
-                                target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
+                                target: cards
                             })),
-                            AbilityDsl.actions.cardMenu((context) => ({
-                                cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                                targets: true,
-                                message: '{0} chooses {1} to be discarded',
-                                messageArgs: (card) => [context.player, card],
-                                gameAction: AbilityDsl.actions.discardCard()
-                            }))
+                            chooseCardToDiscard(cards)
                         ]
                     };
                 })

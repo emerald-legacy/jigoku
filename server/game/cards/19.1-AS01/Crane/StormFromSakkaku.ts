@@ -1,10 +1,9 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
+import { EventName, AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import { moveHoldingAction, otherHoldingsInSameProvince } from '../../moveHolding.js';
 
 export default class StormFromSakkaku extends DrawCard {
     static id = 'storm-from-sakkaku';
@@ -14,40 +13,18 @@ export default class StormFromSakkaku extends DrawCard {
             { [`${EventName.OnResolveRingElement}:${AbilityType.WouldInterrupt}`]: 'cancelRingEffect' }
         ]);
 
-        this.action('Move holding to another province')
-            .target({
-                location: Location.Provinces,
-                cardType: CardType.Province,
-                controller: Players.Self,
-                cardCondition: (card, context) =>
-                    card.location !== context.source.location && card.location !== Location.StrongholdProvince
-            })
-            .gameAction(AbilityDsl.actions.moveCard((context) => ({
-                target: context.source,
-                destination: context.target.location
-            })))
+        moveHoldingAction(this)
             .then(() => ({
                 gameAction: AbilityDsl.actions.discardCard((context) => ({
-                    target: this.otherHoldingsInSameProvince(context)
+                    target: otherHoldingsInSameProvince(context)
                 })),
                 message: 'The {1} {3}',
                 messageArgs: (context) => [
-                    this.otherHoldingsInSameProvince(context).length > 0
+                    otherHoldingsInSameProvince(context).length > 0
                         ? 'is angry and discards the holdings that they find in the province'
                         : 'calms down'
                 ]
             }));
-    }
-
-    private otherHoldingsInSameProvince(context: AbilityContext): BaseCard[] {
-        return context.game.allCards.filter(
-            (card) =>
-                card.location === context.source.location &&
-                card.controller === context.source.controller &&
-                card.type === CardType.Holding &&
-                !card.facedown &&
-                card !== context.source
-        );
     }
 
     public cancelRingEffect(event: Event) {

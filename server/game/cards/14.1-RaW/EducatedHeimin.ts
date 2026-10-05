@@ -1,10 +1,8 @@
-import BaseCard from '../../BaseCard.js';
-import DrawCard from '../../DrawCard.js';
-import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location } from '../../Constants.js';
+import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
-class EducatedHeimin extends DrawCard {
+class EducatedHeimin extends ProvinceAttachment {
     static id = 'educated-heimin';
 
     setupCardAbilities() {
@@ -35,24 +33,8 @@ class EducatedHeimin extends DrawCard {
         });
     }
 
-    canPlayOn(source: BaseCard | Ring) {
-        return source instanceof BaseCard && source.isProvinceCard() && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
-    }
-
-    canAttach(parent?: BaseCard | Ring) {
-        if(!(parent instanceof BaseCard)) {
-            return false;
-        }
-
-        if(parent.isProvinceCard() && parent.isBroken) {
-            return false;
-        }
-
-        if(parent.controller !== this.controller) {
-            return false;
-        }
-
-        return parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
+    protected controllerProvinceOnly(): boolean {
+        return true;
     }
 }
 

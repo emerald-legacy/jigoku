@@ -1,10 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import { CardType, Location, Players } from '../../../Constants.js';
-import DrawCard from '../../../DrawCard.js';
+import { Location, Players } from '../../../Constants.js';
 import Ring from '../../../Ring.js';
+import { RingAttachment } from '../../RingAttachment.js';
 
-export default class GreaterUnderstanding2 extends DrawCard {
+export default class GreaterUnderstanding2 extends RingAttachment {
     static id = 'greater-understanding-2';
 
     setupCardAbilities() {
@@ -32,17 +31,5 @@ export default class GreaterUnderstanding2 extends DrawCard {
                     messageArgs: (ring, player) => [player, context.source, ring]
                 })
             }));
-    }
-
-    canAttach(ring: BaseCard | Ring) {
-        return ring?.type === 'ring';
-    }
-
-    canPlayOn(source: BaseCard | Ring) {
-        return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
-    }
-
-    mustAttachToRing() {
-        return true;
     }
 }

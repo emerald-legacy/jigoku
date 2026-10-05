@@ -1,12 +1,11 @@
 import { readdir, stat } from 'node:fs/promises';
-import { join, sep } from 'node:path';
-import path from 'node:path';
+import { dirname, join, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { logger } from '../../logger.js';
 import BaseCard from '../BaseCard.js';
 import type { CardClass } from '../types/CardClass.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function allJsFiles(dir: string): Promise<string[]> {
     const files: string[] = [];
@@ -42,7 +41,7 @@ async function loadAllCards(): Promise<Map<string, CardClass>> {
             const mod = await import(pathToFileURL(filepath).href);
             const card: unknown = 'default' in mod ? mod.default : mod;
             if(!isCardClass(card)) {
-                logger.warn(`Card at ${filepath} has no id, skipping`);
+                logger.warn(`Card at ${filepath} is not a card class, skipping`);
                 skipped++;
                 continue;
             }

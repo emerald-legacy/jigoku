@@ -6,8 +6,6 @@ export default class LessonsFromEarth extends ProvinceAttachment {
     static id = 'lessons-from-earth';
 
     setupCardAbilities() {
-        super.setupCardAbilities();
-
         this.forcedReaction('Winner draws, loser discards')
             .when({
                 afterConflict: (event, context) => {

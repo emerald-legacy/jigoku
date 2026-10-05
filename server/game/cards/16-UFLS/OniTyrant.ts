@@ -2,7 +2,7 @@ import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
-import { createSummonedCopy, summonEffectArgs } from '../summonCreature.js';
+import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
 
 const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | undefined }> {
     return {
@@ -55,7 +55,7 @@ class OniTyrant extends DrawCard {
             .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .effect('summon a{2} {1} from the depths of the Shadowlands!', (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
+            .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
     }
 }
 

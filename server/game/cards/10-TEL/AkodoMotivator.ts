@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import Ring from '../../Ring.js';
+import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 
 class AkodoMotivator extends DrawCard {
     static id = 'akodo-motivator';
@@ -8,20 +8,8 @@ class AkodoMotivator extends DrawCard {
     setupCardAbilities() {
         this.reaction('Opponent discards an equal number of cards at random')
             .when({
-                onCardsDiscardedFromHand: (event, context) => {
-                    if(!event.context) {
-                        return false;
-                    }
-                    const discardedFromOwnHand = event.player === context.player;
-                    const discardedByOpponentsEffect = event.player.opponent === event.context.player;
-                    const discardedByRingEffect = event.context.source instanceof Ring;
-                    const discardedByCardEffect = event.context.ability.isCardAbility();
-                    return (
-                        discardedFromOwnHand &&
-                        discardedByOpponentsEffect &&
-                        (discardedByRingEffect || discardedByCardEffect)
-                    );
-                }
+                onCardsDiscardedFromHand: (event, context) =>
+                    event.player === context.player && isOpponentsRingOrCardEffect(event.player, event.context)
             })
             .gameAction(AbilityDsl.actions.discardAtRandom((context) => ({
                 amount: context.event.amount

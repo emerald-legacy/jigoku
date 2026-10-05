@@ -1,6 +1,7 @@
 import { CardType, Players, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { attachSearchedCard } from '../../attachSearchedCard.js';
 
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
@@ -20,24 +21,12 @@ export default class KaiuNoIshiTauro extends DrawCard {
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
                 shuffle: true,
                 reveal: true,
-                selectedCardsHandler: (context, event, cards) => {
-                    const card = cards[0];
+                selectedCardsHandler: (context, event, [card]) => {
                     if(!card) {
                         context.game.addMessage('{0} takes nothing', context.player);
                         return;
                     }
-
-                    context.game.addMessage(
-                        '{0} takes {1} and attaches it to {2}',
-                        event.player,
-                        card,
-                        context.target
-                    );
-                    context.game.queueSimpleStep(() =>
-                        AbilityDsl.actions
-                            .attach({ target: context.target, attachment: card })
-                            .resolve(undefined, context)
-                    );
+                    attachSearchedCard(context, context.target, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.target]);
                 }
             })))
             .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnRing ?? []).length);

@@ -1,24 +1,13 @@
-import { Location, PlayType, Players } from '../../../Constants.js';
+import { Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
 
     public setupCardAbilities() {
-        this.persistentEffect({
-            location: Location.PlayArea,
-            targetLocation: this.uuid,
-            targetController: Players.Self,
-            match: (card) => card.location === this.uuid,
-            effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player) => player === this.controller,
-                    PlayType.PlayFromHand
-                ),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
-            ]
-        });
+        this.persistentEffect(playableFromUnderneath(this));
 
         this.reaction('Look at your opponent\'s conflict deck')
             .when({

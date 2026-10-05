@@ -1,24 +1,13 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players, PlayType } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
 export default class DisloyalOathkeeper extends DrawCard {
     static id = 'disloyal-oathkeeper';
 
     public setupCardAbilities() {
-        this.persistentEffect({
-            location: Location.PlayArea,
-            targetLocation: this.uuid,
-            targetController: Players.Self,
-            match: (card) => card.location === this.uuid,
-            effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player) => player === this.controller,
-                    PlayType.PlayFromHand
-                ),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
-            ]
-        });
+        this.persistentEffect(playableFromUnderneath(this));
 
         this.reaction('Put card under this')
             .when({
