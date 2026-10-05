@@ -26,7 +26,7 @@ export default class CollapsibleTunnels extends DrawCard {
         this.action('Bow a character')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition((context) => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking() && card.getBaseMilitarySkill() <= 2
             }, AbilityDsl.actions.bow());

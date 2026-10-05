@@ -7,7 +7,7 @@ export default class DeedsNotWords extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +2 mil')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()

@@ -7,7 +7,7 @@ export default class StarryRespite extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action('Honor a character')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

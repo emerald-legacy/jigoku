@@ -21,7 +21,7 @@ export default class ChildOfSaltlessWater extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isConflictProvince()

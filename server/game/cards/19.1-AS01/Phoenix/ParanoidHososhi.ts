@@ -11,7 +11,7 @@ export default class ParanoidHososhi extends DrawCard {
 
         this.action('Steal fate from a character')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context)

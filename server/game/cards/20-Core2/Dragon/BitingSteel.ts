@@ -28,7 +28,7 @@ export default class BitingSteel extends DrawCard {
         this.duelChallenge('Add a Weapon to your duel stats', (duel, context) =>
             (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
                 !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter))
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) =>
                     !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0
@@ -46,7 +46,7 @@ export default class BitingSteel extends DrawCard {
             .condition((context) =>
                 !!context.source.parentCharacter?.isParticipating(ConflictType.Military) &&
                 context.player.hasAffinity('fire', context))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)

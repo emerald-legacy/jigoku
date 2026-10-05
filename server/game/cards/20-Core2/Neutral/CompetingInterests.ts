@@ -9,7 +9,7 @@ export default class CompetingInterests extends DrawCard {
     setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => this.hasEnoughUniques(context))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isUnique() && card.isParticipating()

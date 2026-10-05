@@ -17,7 +17,7 @@ export default class GoldenPlains extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, AbilityDsl.actions.moveConflict());

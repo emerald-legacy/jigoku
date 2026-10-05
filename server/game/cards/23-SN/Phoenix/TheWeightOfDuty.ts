@@ -17,7 +17,7 @@ export default class TheWeightOfDuty extends DrawCard {
                         this.isOwnShugenjaInPlay(card, context)
                     )
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Self,

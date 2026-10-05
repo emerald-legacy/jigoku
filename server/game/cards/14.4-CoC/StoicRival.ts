@@ -8,7 +8,7 @@ export default class StoicRival extends DrawCard {
     setupCardAbilities() {
         this.action('Dishonor a participating character with fewer attachments')
             .condition((context) => context.source.attachments.length > 0 && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.attachments.length < context.source.attachments.length

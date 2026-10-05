@@ -7,7 +7,7 @@ export default class BurnishedReputation extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor a participating character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.honor());

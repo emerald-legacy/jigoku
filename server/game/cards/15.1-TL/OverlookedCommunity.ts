@@ -8,7 +8,7 @@ class OverlookedCommunity extends DrawCard {
     setupCardAbilities() {
         this.action('Discard a status token')
             .cost(AbilityDsl.costs.returnRings(1))
-            .tokenTarget('target', {
+            .tokenTarget({
                 cardType: CardType.Character,
                 location: Location.PlayArea
             }, AbilityDsl.actions.discardStatusToken());

@@ -9,7 +9,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
     setupCardAbilities() {
         this.action('Dishonor or move home a character')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card !== context.source &&

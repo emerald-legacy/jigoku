@@ -6,7 +6,7 @@ class MasterWhisperer extends DrawCard {
 
     setupCardAbilities() {
         this.action('Select a player to discard 3 cards and draw 3 cards')
-            .select('target', {
+            .select({
                 targets: true
             }, {
                 [this.owner.name]: AbilityDsl.actions.multiple([

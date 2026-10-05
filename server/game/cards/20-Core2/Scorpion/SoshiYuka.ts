@@ -7,7 +7,7 @@ export default class SoshiYuka extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.Exactly,
                 numCards: 2,
                 cardType: CardType.Character,

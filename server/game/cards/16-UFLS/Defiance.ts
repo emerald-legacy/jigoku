@@ -9,7 +9,7 @@ class Defiance extends DrawCard {
         this.action('Give a character a skill bonus')
             .condition(context => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.modifyBothSkills(context.player.opponent?.showBid ?? 0)

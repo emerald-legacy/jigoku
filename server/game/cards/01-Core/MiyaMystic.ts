@@ -8,7 +8,7 @@ class MiyaMystic extends DrawCard {
     setupCardAbilities() {
         this.action('Sacrifice to discard an attachment')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay())
             .phase(Phases.Conflict);

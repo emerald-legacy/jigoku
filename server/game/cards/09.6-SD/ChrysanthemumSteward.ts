@@ -8,7 +8,7 @@ class ChrysanthemumSteward extends DrawCard {
     setupCardAbilities() {
         this.action('put a conflict card on top')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent
             })

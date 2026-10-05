@@ -8,7 +8,7 @@ class BayushiKachiko extends DrawCard {
     setupCardAbilities() {
         this.action('Send a character home')
             .condition(context => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating()
             }, AbilityDsl.actions.sequential([

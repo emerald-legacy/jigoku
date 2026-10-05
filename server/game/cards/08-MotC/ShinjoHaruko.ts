@@ -8,7 +8,7 @@ class ShinjoHaruko extends DrawCard {
     setupCardAbilities() {
         this.action('Move a honored character into the conflict')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isHonored

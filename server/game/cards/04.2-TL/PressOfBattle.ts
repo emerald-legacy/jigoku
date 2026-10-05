@@ -10,7 +10,7 @@ class PressOfBattle extends DrawCard {
             .condition(context => this.game.isDuringConflict(ConflictType.Military) &&
                                  !!this.game.currentConflict &&
                                  this.game.currentConflict.hasMoreParticipants(context.player))
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.isUnique()

@@ -10,7 +10,7 @@ class HeroOfThreeTrees extends DrawCard {
             .condition(context => !!(context.source.isParticipating()
                 && context.player.opponent
                 && context.player.hand.length < context.player.opponent.hand.length))
-            .select('target', {}, {
+            .select({}, {
                 'Gain 1 honor': AbilityDsl.actions.gainHonor(),
                 'Lower attacked province\'s strength by 1': AbilityDsl.actions.selectCard(context => ({
                     activePromptTitle: 'Choose an attacked province',

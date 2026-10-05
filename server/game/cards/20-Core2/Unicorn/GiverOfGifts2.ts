@@ -7,7 +7,7 @@ export default class GiverOfGifts2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move an attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self
             }, AbilityDsl.actions.selectCard((context) => ({

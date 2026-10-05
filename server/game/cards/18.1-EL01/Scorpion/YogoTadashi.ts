@@ -12,7 +12,7 @@ class YogoTadashi extends DrawCard {
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onMoveToConflict: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any
             }, AbilityDsl.actions.cardLastingEffect(context => ({

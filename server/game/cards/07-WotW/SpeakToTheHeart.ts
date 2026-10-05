@@ -8,7 +8,7 @@ class SpeakToTheHeart extends DrawCard {
     setupCardAbilities() {
         this.action('give +1 political to a character for each faceup province')
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardCondition: (card) => card.isFaction('unicorn')
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))

@@ -10,7 +10,7 @@ class SavvyPolitician extends DrawCard {
             .when({
                 onCardHonored: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.honor());
     }

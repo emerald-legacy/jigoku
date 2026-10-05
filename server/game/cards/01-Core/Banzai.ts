@@ -8,7 +8,7 @@ class Banzai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase a character\'s military skill')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

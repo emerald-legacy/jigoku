@@ -8,7 +8,7 @@ class DaidojiStrategist extends DrawCard {
     setupCardAbilities() {
         this.action('Move an honored character home')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isHonored

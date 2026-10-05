@@ -10,7 +10,7 @@ export default class TheWayOfPeace extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpTo,
                 numCards: 3,
                 cardType: CardType.Character,

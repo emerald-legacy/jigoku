@@ -7,7 +7,7 @@ export default class MapmakerApprentice extends DrawCard {
 
     setupCardAbilities() {
         this.action('Map a province')
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Any

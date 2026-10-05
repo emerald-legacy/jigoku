@@ -7,7 +7,7 @@ class MediumOfTheLivingSoul extends DrawCard {
 
     setupCardAbilities() {
         this.action('Grant an ability to resolve ring effects')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()

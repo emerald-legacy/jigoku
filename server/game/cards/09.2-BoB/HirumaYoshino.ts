@@ -8,7 +8,7 @@ class HirumaYoshino extends DrawCard {
     setupCardAbilities() {
         this.action('Contribute printed military skill')
             .condition(context => context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 cardCondition: card => card.isInConflictProvince() &&

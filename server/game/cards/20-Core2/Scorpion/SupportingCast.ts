@@ -15,7 +15,7 @@ export default class SupportingCast extends DrawCard {
                     );
                 }
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to give +3 military skill',
                 cardType: CardType.Character,
                 controller: Players.Self,

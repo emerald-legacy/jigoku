@@ -7,7 +7,7 @@ class ReserveTents extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character to the conflict')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 player: Players.Self

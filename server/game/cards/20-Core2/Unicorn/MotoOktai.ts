@@ -23,7 +23,7 @@ export default class MotoOktai extends DrawCard {
 
         this.action('Discard a character from play')
             .condition((context) => context.source.isParticipatingFor(context.player))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.discardFromPlay())

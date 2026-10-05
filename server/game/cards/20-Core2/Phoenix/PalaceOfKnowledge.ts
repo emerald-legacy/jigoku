@@ -12,7 +12,7 @@ export default class PalaceOfKnowledge extends StrongholdCard {
             })
             .cost(AbilityDsl.costs.bowSelf())
             .cost(AbilityDsl.costs.discardCard())
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
                     ring !== context.event.ring && ring.isUnclaimed()

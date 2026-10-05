@@ -24,7 +24,7 @@ export default class WithstandTheDarkness extends DrawCard {
                     return this.currentTargets.size > 0;
                 }
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to receive a fate',
                 cardType: CardType.Character,
                 controller: Players.Self,

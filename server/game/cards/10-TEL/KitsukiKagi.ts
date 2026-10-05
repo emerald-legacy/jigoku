@@ -10,11 +10,13 @@ class KitsukiKagi extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target('first', {
+            .target({
+                name: 'first',
                 activePromptTitle: 'Choose up to 3 cards',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile]
             }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }))
-            .target('second', {
+            .target({
+                name: 'second',
                 activePromptTitle: 'Choose a card',
                 dependsOn: 'first',
                 optional: true,
@@ -24,7 +26,8 @@ class KitsukiKagi extends DrawCard {
                         card.location === context.targets.first.location &&
                         card !== context.targets.first
             }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }))
-            .target('third', {
+            .target({
+                name: 'third',
                 activePromptTitle: 'Choose a card',
                 dependsOn: 'first',
                 optional: true,

@@ -12,7 +12,7 @@ export default class ShamefulDisplay extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Dishonor/Honor two characters')
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.Exactly,
                 numCards: 2,
                 cardType: CardType.Character,

@@ -11,11 +11,13 @@ class KamiOfAncientWisdom extends DrawCard {
                 onMoveFate: (event, context) => context.game.currentPhase !== Phases.Fate &&
                     event.origin && event.origin.type === CardType.Character && (event.fate ?? 0) > 0
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 controller: Players.Any,
                 cardType: CardType.Character
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character'
             }, {
                 'Place 1 Fate': AbilityDsl.actions.placeFate(context => ({ target: context.targets.character })),

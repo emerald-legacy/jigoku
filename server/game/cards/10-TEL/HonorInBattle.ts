@@ -8,7 +8,7 @@ class HonorInBattle extends DrawCard {
     setupCardAbilities() {
         this.action('Honor a character')
             .condition((context) => context.player.getClaimedRings().some((ring) => ring.isConflictType(ConflictType.Military)))
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.honor());
     }

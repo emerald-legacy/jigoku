@@ -16,7 +16,7 @@ export default class AbandoningHonor extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDishonored
             }, AbilityDsl.actions.discardFromPlay());

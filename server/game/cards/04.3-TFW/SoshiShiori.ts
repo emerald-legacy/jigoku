@@ -9,7 +9,7 @@ class SoshiShiori extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player
             })
-            .select('target', {
+            .select({
                 activePromptTitle: 'Choose a player to lose 1 honor',
                 targets: true
             }, {

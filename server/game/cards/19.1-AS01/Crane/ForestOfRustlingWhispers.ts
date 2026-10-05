@@ -7,7 +7,7 @@ export default class ForestOfRustlingWhispers extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

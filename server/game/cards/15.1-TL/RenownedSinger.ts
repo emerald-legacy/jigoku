@@ -10,7 +10,7 @@ export default class RenownedSinger extends DrawCard {
             .condition((context) =>
                 context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2 &&
                 context.player.opponent !== undefined)
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.Exactly,
                 activePromptTitle: 'Choose two conflict cards',
                 numCards: 2,

@@ -15,7 +15,7 @@ export default class InfernoGuardInvoker extends DrawCard {
 
         this.action('honor this character')
             .condition((context) => context.game.isDuringConflict('military'))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()

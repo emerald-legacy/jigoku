@@ -10,7 +10,7 @@ export default class BreezeOfDawnLodge extends StrongholdCard {
     setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => !card.bowed

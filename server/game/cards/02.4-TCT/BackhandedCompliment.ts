@@ -6,7 +6,7 @@ class BackhandedCompliment extends DrawCard {
 
     setupCardAbilities() {
         this.action('Select a player to lose an honor and draw a card')
-            .select('target', {
+            .select({
                 targets: true
             }, {
                 [this.owner.name]: AbilityDsl.actions.multiple([

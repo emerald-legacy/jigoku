@@ -10,7 +10,7 @@ class Overrun extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => event.card.owner !== context.player
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Opponent,

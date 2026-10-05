@@ -51,7 +51,7 @@ class AnAgreeableArrangement extends DrawCard {
     setupCardAbilities() {
         this.action('Bow a non-champion')
             .cost(agreeableCost())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.hasTrait('champion'),

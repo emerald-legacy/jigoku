@@ -11,7 +11,8 @@ export default class PalmStrike extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .target(TARGET_MONK, {
+            .target({
+                name: TARGET_MONK,
                 activePromptTitle: 'Choose a bare-handed monk',
                 cardType: CardType.Character,
                 controller: Players.Self,
@@ -20,7 +21,8 @@ export default class PalmStrike extends DrawCard {
                         monkCharacter.hasTrait('monk') &&
                         this.cardHasNoWeapons(monkCharacter)
             })
-            .target(TARGET_TO_BOW, {
+            .target({
+                name: TARGET_TO_BOW,
                 dependsOn: TARGET_MONK,
                 activePromptTitle: 'Choose a character to bow',
                 cardType: CardType.Character,

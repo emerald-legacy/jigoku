@@ -10,7 +10,7 @@ class Outflank extends DrawCard {
             .when({
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()
             })
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: card => !card.isUnique()

@@ -18,7 +18,7 @@ export default class CornerThePrey extends DrawCard {
                     (card.isParticipating() || !!card.parentCharacter?.isParticipating())
             }))
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context, context.costs.sacrifice)

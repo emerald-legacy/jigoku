@@ -11,7 +11,7 @@ class TravelingPhilosopher extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 cardType: CardType.Province,
                 location: Location.Provinces,

@@ -9,7 +9,7 @@ class CloakOfNight extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a participating character +3 glory')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.multiple([

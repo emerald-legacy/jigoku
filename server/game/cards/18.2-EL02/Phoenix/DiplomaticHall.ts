@@ -8,7 +8,7 @@ class DiplomaticHall extends DrawCard {
     setupCardAbilities() {
         this.action('Select a player to draw a card')
             .condition(context => context.game.isDuringConflict(ConflictType.Political))
-            .select('target', {
+            .select({
                 targets: true
             }, {
                 [this.owner.name]: AbilityDsl.actions.draw({ target: this.owner }),

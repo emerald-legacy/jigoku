@@ -17,7 +17,7 @@ export default class SpellScroll extends DrawCard {
 
         this.action('Put a card into your hand')
             .condition((context) => !!context.source.parentCharacter)
-            .target('target', {
+            .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card, context) =>

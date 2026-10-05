@@ -7,7 +7,7 @@ export default class LostDeedsTemple extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Discard an attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => !!card.parentCharacter?.isParticipating()
             }, AbilityDsl.actions.discardFromPlay());

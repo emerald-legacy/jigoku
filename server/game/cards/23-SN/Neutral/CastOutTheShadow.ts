@@ -9,12 +9,14 @@ export default class CastOutTheShadow extends DrawCard {
     setupCardAbilities() {
         this.action('Sacrifice a character or take 2 honor')
             .condition(context => context.game.isDuringConflict())
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating() && (card.isTainted || card.hasSomeTrait('corrupt', 'shadowlands'))
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

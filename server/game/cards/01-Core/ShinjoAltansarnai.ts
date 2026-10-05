@@ -10,7 +10,7 @@ class ShinjoAltansarnai extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => event.conflict?.conflictType === ConflictType.Military && context.source.isAttacking()
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,

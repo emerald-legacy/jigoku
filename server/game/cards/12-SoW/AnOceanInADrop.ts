@@ -11,7 +11,7 @@ class AnOceanInADrop extends DrawCard {
         this.action('Place hand on bottom of deck and draw cards')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
-            .select('target', {
+            .select({
                 targets: true
             }, {
                 [this.owner.name]: AbilityDsl.actions.sequential(this.getGameActions(this.owner)),

@@ -49,7 +49,7 @@ describe('Bake Kujira', function () {
 
             this.fumiki.declareAbilities(() => {
                 this.fumiki.action('Discard a character')
-                    .target('target', {}, discardFromPlay());
+                    .target({}, discardFromPlay());
             });
 
             this.noMoreActions();

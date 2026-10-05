@@ -8,7 +8,7 @@ class KanjoDistrict extends DrawCard {
     setupCardAbilities() {
         this.action('Bow and send home a participating character')
             .cost(AbilityDsl.costs.discardImperialFavor())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())

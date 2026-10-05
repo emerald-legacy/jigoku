@@ -8,7 +8,7 @@ export default class DisputedLineage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Choose a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => ({

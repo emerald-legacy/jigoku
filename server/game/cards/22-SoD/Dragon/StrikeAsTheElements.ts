@@ -7,14 +7,16 @@ export default class StrikeAsTheElements extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase a character\'s military skill')
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')
             }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
             }))
-            .ringTarget('ring', {
+            .ringTarget({
+                name: 'ring',
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
             }, AbilityDsl.actions.claimRing({ takeFate: true, type: ConflictType.Military }))

@@ -8,7 +8,7 @@ class APerfectCut extends DrawCard {
     setupCardAbilities() {
         this.action('Increase a character\'s military skill')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi')

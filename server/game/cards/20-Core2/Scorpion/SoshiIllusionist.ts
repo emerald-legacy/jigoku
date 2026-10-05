@@ -8,7 +8,7 @@ export default class SoshiIllusionist extends DrawCard {
     setupCardAbilities() {
         this.action('Discard status from character')
             .cost(AbilityDsl.costs.payFate(1))
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.selectToken((context) => ({
                 card: context.target,

@@ -10,7 +10,7 @@ class HeraldOfJade extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .tokenTarget('target', {
+            .tokenTarget({
                 location: Location.Any
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.discardStatusToken(),

@@ -10,11 +10,13 @@ class TogashiDreamer extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('kiho') && context.source.isParticipating()
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens && card.isParticipating()
             })
-            .ringTarget('ring', {
+            .ringTarget({
+                name: 'ring',
                 dependsOn: 'character',
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
                 ringCondition: ring => ring.isUnclaimed()

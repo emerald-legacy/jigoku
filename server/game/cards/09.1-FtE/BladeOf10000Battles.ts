@@ -17,7 +17,7 @@ class BladeOf10000Battles extends DrawCard {
                                                     event.conflict.winner === context.source.parentCharacter.controller &&
                                                     context.player.isMoreHonorable()
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a card from your conflict discard pile to add to your hand',
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self

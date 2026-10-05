@@ -10,7 +10,7 @@ class KakitaRyoku extends DrawCard {
             .when({
                 onPhaseStarted: (event, context) => event.phase !== Phases.Setup && context.player.imperialFavor !== ''
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any
             }, AbilityDsl.actions.honor());

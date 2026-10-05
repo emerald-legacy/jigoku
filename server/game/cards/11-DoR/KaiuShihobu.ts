@@ -39,14 +39,16 @@ export default class KaiuShihobu extends DrawCard {
 
         this.action('Put a holding in a province')
             .condition((context) => context.game.gameMode !== GameModes.Skirmish)
-            .target('first', {
+            .target({
+                name: 'first',
                 activePromptTitle: 'Choose a holding',
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.UnderneathStronghold,
                 cardCondition: (card, context) => !!context.player.stronghold && context.player.stronghold.childCards.includes(card)
             })
-            .target('second', {
+            .target({
+                name: 'second',
                 activePromptTitle: 'Choose an unbroken province',
                 dependsOn: 'first',
                 cardType: CardType.Province,

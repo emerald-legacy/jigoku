@@ -8,7 +8,7 @@ class Charge extends DrawCard {
     setupCardAbilities() {
         this.action('Put a character into play from a province')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self

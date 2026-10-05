@@ -13,14 +13,16 @@ class FearlessSkirmisher extends DrawCard {
                     context.source.isParticipating() &&
                     event.conflict.conflictType === ConflictType.Military
             })
-            .tokenTarget('token', {
+            .tokenTarget({
+                name: 'token',
                 activePromptTitle: 'Choose a dishonored token',
                 location: Location.Any,
                 tokenCondition: (token) => {
                     return token.grantedStatus === CharacterStatus.Dishonored;
                 }
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 activePromptTitle: 'Choose a character to receive the token',
                 dependsOn: 'token',
                 cardType: CardType.Character

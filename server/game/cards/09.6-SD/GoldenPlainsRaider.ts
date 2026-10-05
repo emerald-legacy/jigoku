@@ -13,7 +13,7 @@ export default class GoldenPlainsRaider extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isFaceup() && card.type !== CardType.Province

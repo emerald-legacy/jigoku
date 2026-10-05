@@ -11,7 +11,7 @@ class KitsuMotso extends DrawCard {
                 !!(context.source.isParticipating() &&
                 context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
             }, AbilityDsl.actions.moveToConflict());

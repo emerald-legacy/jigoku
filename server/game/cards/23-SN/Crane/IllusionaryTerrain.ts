@@ -23,7 +23,7 @@ export default class IllusionaryTerrain extends DrawCard {
             .when({
                 onConflictDeclaredBeforeProvinceReveal: () => true
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: (context) => {

@@ -7,7 +7,7 @@ class TheRecedingTide extends DrawCard {
 
     setupCardAbilities() {
         this.action('Return a character to a province')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: Location.PlayArea,
                 cardCondition: (card, context) => !card.hasTrait('mythic') && card.owner === context.player

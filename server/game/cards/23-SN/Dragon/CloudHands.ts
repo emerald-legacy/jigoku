@@ -8,13 +8,15 @@ export default class CloudHands extends DrawCard {
     setupCardAbilities() {
         this.action('Change base skill to match another character\'s')
             .condition(context => context.game.isDuringConflict())
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 activePromptTitle: 'Choose a monk character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             })
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 dependsOn: 'myCharacter',
                 activePromptTitle: 'Choose an opponent\'s character',
                 cardType: CardType.Character,

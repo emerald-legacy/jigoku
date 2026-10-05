@@ -10,7 +10,7 @@ export default class Brushfires extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.removeFate({ amount: 2 }));

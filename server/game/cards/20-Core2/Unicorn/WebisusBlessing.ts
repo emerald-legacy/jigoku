@@ -6,10 +6,12 @@ export default class WebisusBlessing extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard status tokens')
-            .tokenTarget('first', {
+            .tokenTarget({
+                name: 'first',
                 activePromptTitle: 'Choose a status token'
             }, AbilityDsl.actions.discardStatusToken())
-            .tokenTarget('second', {
+            .tokenTarget({
+                name: 'second',
                 activePromptTitle: 'Choose a status token',
                 dependsOn: 'first',
                 optional: true,

@@ -10,7 +10,7 @@ export default class DaidojiSaboteur extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.cannotTriggerAbilities(),

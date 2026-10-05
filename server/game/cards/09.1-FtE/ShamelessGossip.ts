@@ -8,13 +8,15 @@ class ShamelessGossip extends DrawCard {
     setupCardAbilities() {
         this.action('Move a status token')
             .condition(context => context.source.isParticipating())
-            .target('first', {
+            .target({
+                name: 'first',
                 activePromptTitle: 'Choose a Character to move a status token from',
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isHonored || card.isDishonored || card.isTainted
             })
-            .target('second', {
+            .target({
+                name: 'second',
                 activePromptTitle: 'Choose a Character to move the status token to',
                 dependsOn: 'first',
                 cardType: CardType.Character,

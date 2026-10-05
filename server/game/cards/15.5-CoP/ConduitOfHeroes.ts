@@ -46,7 +46,7 @@ class ConduitOfHeroes extends DrawCard {
         this.action('Give a character +3/+1/+1')
             .cost(conduitOfHeroesCost())
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card !== context.source

@@ -8,7 +8,7 @@ export default class KaiuScout extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at cards in a province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: card => card.controller.getDynastyCardsInProvince(card.location).filter(a => a.isFacedown()).length > 0

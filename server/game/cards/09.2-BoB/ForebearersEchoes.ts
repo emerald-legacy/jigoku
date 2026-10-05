@@ -8,7 +8,7 @@ class ForebearersEchoes extends DrawCard {
     setupCardAbilities() {
         this.action('Put a character into play')
             .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,

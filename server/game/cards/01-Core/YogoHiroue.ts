@@ -8,7 +8,7 @@ class YogoHiroue extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character into the conflict')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.moveToConflict(),

@@ -16,7 +16,7 @@ class MasterOfManyLifetimes extends DrawCard {
                     );
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,

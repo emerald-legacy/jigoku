@@ -10,7 +10,7 @@ class ImbuedWithShadows extends DrawCard {
     setupCardAbilities() {
         this.action('Lose honor to discard status tokens')
             .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => context.costs.variableHonorCost || this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character

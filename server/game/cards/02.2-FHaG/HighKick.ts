@@ -12,7 +12,7 @@ class HighKick extends DrawCard {
                 cardCondition: card => card.hasTrait('monk') && card.isParticipating()
             }))
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()

@@ -21,7 +21,7 @@ export default class Retribution extends DrawCard {
                     brokenProvinceCountForPlayer(context.player) >=
                         brokenProvinceCountForPlayer(context.player.opponent)
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>

@@ -11,7 +11,7 @@ export default class SolemnScholar extends DrawCard {
     setupCardAbilities() {
         this.action('Bow an attacking character')
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.bow());

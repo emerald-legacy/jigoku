@@ -7,7 +7,7 @@ class SwellOfSeafoam extends DrawCard {
 
     setupCardAbilities() {
         this.action('Prevent bowing after conflict')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')

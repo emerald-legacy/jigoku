@@ -7,7 +7,7 @@ export default class KayoTheShrinetender extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a Temple')
-            .target('target', {
+            .target({
                 cardCondition: card => card.hasTrait('temple') && !card.facedown,
                 controller: Players.Self,
                 location: [Location.Provinces, Location.PlayArea]

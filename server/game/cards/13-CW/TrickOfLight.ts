@@ -7,7 +7,7 @@ class TrickOfTheLight extends DrawCard {
 
     setupCardAbilities() {
         this.action('blanks printed text for conflict')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect(() => ({

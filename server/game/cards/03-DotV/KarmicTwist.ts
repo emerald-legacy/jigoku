@@ -7,7 +7,7 @@ class KarmicTwist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move fate from a non-unique character')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a donor character',
                 cardType: CardType.Character,
                 cardCondition: card => !card.isUnique() && card.getFate() > 0

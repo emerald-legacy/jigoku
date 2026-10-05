@@ -76,7 +76,7 @@ export default class Maelstrom extends ProvinceCard {
     setupCardAbilities() {
         this.action('Move a character into the conflict')
             .cost(maelstromCost())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>

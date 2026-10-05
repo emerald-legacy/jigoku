@@ -12,7 +12,7 @@ export default class EndlessRanks extends BaseOni {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile

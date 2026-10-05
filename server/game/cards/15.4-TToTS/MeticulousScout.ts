@@ -8,7 +8,7 @@ class MeticulousScout extends DrawCard {
     setupCardAbilities() {
         this.action('Blank and reveal a province')
             .condition(context => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2)
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Opponent

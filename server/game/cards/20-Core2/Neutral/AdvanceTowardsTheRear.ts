@@ -9,7 +9,7 @@ export default class AdvanceTowardsTheRear extends DrawCard {
         this.action('Move a character home')
             .cost(AbilityDsl.costs.payHonor(1))
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sendHome());

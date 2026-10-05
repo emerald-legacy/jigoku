@@ -7,7 +7,7 @@ class CripplingTaxes extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard all cards in a province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
             })

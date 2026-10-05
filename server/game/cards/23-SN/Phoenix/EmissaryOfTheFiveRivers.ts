@@ -10,14 +10,14 @@ export default class EmissaryOfTheFiveRivers extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('spirit')
             }, AbilityDsl.actions.honor());
 
         this.action('Ready a spirit')
             .cost(AbilityDsl.costs.discardCard())
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('spirit')

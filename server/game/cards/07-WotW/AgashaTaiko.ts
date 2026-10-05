@@ -10,7 +10,7 @@ class AgashaTaiko extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: card => card.location !== Location.StrongholdProvince

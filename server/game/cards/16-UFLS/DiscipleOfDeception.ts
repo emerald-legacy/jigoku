@@ -14,11 +14,13 @@ export default class DiscipleOfDeception extends DrawCard {
 
         this.action('Treat a status token as a different token')
             .condition((context) => context.game.isDuringConflict())
-            .tokenTarget('first', {
+            .tokenTarget({
+                name: 'first',
                 activePromptTitle: 'Choose the status token to copy',
                 cardType: CardType.Character
             })
-            .tokenTarget('second', {
+            .tokenTarget({
+                name: 'second',
                 dependsOn: 'first',
                 activePromptTitle: 'Choose the status token to overwrite',
                 cardType: CardType.Character,

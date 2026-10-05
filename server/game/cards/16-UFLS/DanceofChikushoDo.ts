@@ -9,7 +9,7 @@ class DanceOfChikushoDo extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put cards into provinces')
-            .select('target', {
+            .select({
                 targets: true,
                 activePromptTitle: 'Choose any number of players'
             }, {

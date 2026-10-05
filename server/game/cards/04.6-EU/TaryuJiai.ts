@@ -8,13 +8,15 @@ export default class TaryuJiai extends DrawCard {
     setupCardAbilities() {
         this.action('Initiate a glory duel between two shugenja')
             .condition(() => this.game.isDuringConflict())
-            .target('myShugenja', {
+            .target({
+                name: 'myShugenja',
                 activePromptTitle: 'Choose a friendly shugenja',
                 controller: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             })
-            .target('oppShugenja', {
+            .target({
+                name: 'oppShugenja',
                 dependsOn: 'myShugenja',
                 activePromptTitle: 'Choose an opposing shugenja',
                 controller: Players.Opponent,

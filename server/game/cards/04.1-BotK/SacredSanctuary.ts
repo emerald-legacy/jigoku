@@ -10,7 +10,7 @@ export default class SacredSanctuary extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('monk')

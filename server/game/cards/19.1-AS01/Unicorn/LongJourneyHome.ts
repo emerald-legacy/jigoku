@@ -17,7 +17,7 @@ export default class LongJourneyHome extends DrawCard {
                 onSendHome: (event, context) => this.affectedOpponentsCharacter(event, context),
                 onReturnHome: (event, context) => this.affectedOpponentsCharacter(event, context)
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card === context.event.card
             }, AbilityDsl.actions.multiple([

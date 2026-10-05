@@ -11,7 +11,7 @@ class HidaTomonatsu extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isAttacking() && !card.isUnique()

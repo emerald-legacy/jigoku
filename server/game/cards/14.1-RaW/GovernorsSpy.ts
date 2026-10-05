@@ -11,7 +11,7 @@ class GovernorsSpy extends DrawCard {
     setupCardAbilities() {
         this.action('Flip a player\'s dynasty cards facedown and rearrange them')
             .condition((context) => context.source.isParticipating())
-            .select('target', {
+            .select({
                 targets: true
             }, {
                 [this.owner.name]: AbilityDsl.actions.handler({

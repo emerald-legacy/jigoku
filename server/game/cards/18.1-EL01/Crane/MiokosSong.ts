@@ -24,7 +24,7 @@ export default class MiokosSong extends StrongholdCard {
             })
             .cost(AbilityDsl.costs.bowSelf())
             .cost(AbilityDsl.costs.dishonor({ cardCondition: (card, context) => card === context.event.card }))
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: CardType.Province

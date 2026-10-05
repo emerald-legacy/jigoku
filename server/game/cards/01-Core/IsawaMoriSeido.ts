@@ -8,7 +8,7 @@ export default class IsawaMoriSeido extends StrongholdCard {
     setupCardAbilities() {
         this.action('Bow this stronghold')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,

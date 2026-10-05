@@ -8,7 +8,7 @@ class FearlessSailor extends DrawCard {
     setupCardAbilities() {
         this.action('Move a fate from a character to a ring')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens && card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

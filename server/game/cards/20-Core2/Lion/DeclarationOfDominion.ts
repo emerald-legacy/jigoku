@@ -10,7 +10,8 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
 
         this.action('Gives Pride to chosen characters')
             .condition((context) => !!context.source.parentProvince?.isConflictProvince())
-            .targetCards('myCard', {
+            .targetCards({
+                name: 'myCard',
                 activePromptTitle: 'Choose a character on your side',
                 mode: TargetMode.UpTo,
                 numCards: 1,
@@ -21,7 +22,8 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
             }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.addKeyword('pride')
             }))
-            .targetCards('opponentsCard', {
+            .targetCards({
+                name: 'opponentsCard',
                 activePromptTitle: 'Choose a character on the enemy side',
                 mode: TargetMode.UpTo,
                 numCards: 1,

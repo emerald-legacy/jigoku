@@ -31,7 +31,7 @@ export default class DayOfBrotherHorse extends DrawCard {
                     context.player === event.conflict.attackingPlayer &&
                     context.player.cardsInPlay.some((card) => !card.bowed)
             })
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: () => true
             })
             .gameAction(AbilityDsl.actions.sequentialContext((context) => ({

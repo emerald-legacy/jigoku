@@ -10,7 +10,7 @@ class SaadiyahAlMozedu extends DrawCard {
             .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => !card.isBroken && !card.isConflictProvince()

@@ -16,7 +16,7 @@ export default class NightingaleTattoo extends DrawCard {
         });
 
         this.action('Pick two cards in your discard pile')
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.Exactly,
                 activePromptTitle: 'Choose two conflict cards',
                 numCards: 2,

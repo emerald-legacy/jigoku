@@ -21,7 +21,8 @@ export default class AncientStoneGuardian extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .target('firstCharacter', {
+            .target({
+                name: 'firstCharacter',
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 optional: true,
@@ -32,7 +33,8 @@ export default class AncientStoneGuardian extends DrawCard {
             }, AbilityDsl.actions.sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.firstCharacter)
             ))
-            .target('secondCharacter', {
+            .target({
+                name: 'secondCharacter',
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 optional: true,

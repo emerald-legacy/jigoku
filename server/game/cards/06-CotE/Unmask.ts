@@ -8,7 +8,7 @@ class Unmask extends DrawCard {
     setupCardAbilities() {
         this.action('Discard a character\'s status token and set skills to printed value')
             .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()

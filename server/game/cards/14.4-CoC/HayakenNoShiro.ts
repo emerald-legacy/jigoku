@@ -8,7 +8,7 @@ export default class HayakenNoShiro extends StrongholdCard {
     setupCardAbilities() {
         this.action('Ready a character')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.costLessThan(3)
             }, AbilityDsl.actions.ready());

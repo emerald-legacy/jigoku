@@ -14,7 +14,7 @@ export default class FieldsOfRollingThunder extends DrawCard {
             .gameAction(AbilityDsl.actions.discardFromPlay());
 
         this.action('Honor a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn')
             }, AbilityDsl.actions.multiple([

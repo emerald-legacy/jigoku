@@ -8,7 +8,7 @@ export default class CavalryReserves extends DrawCard {
     setupCardAbilities() {
         this.action('Put Cavalry into play from your discard')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',
                 cardStat: (card) => card.getCost() ?? 0,

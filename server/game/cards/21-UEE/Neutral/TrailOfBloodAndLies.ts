@@ -20,7 +20,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                     );
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent

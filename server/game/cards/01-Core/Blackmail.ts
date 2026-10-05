@@ -9,7 +9,7 @@ class Blackmail extends DrawCard {
     setupCardAbilities() {
         this.action('Take control of a character')
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)

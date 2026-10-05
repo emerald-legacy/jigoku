@@ -10,7 +10,7 @@ class VoidFist extends DrawCard {
             .condition(context =>
                 !!this.game.currentConflict &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 2)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard) =>

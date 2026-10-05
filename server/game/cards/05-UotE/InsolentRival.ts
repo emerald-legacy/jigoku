@@ -13,7 +13,7 @@ class InsolentRival extends DrawCard {
 
         this.action('Challenge a participating character to a Military duel: dishonor the loser of the duel')
             .condition(() => this.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

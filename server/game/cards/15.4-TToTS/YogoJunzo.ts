@@ -20,7 +20,7 @@ class YogoJunzo extends DrawCard {
         });
 
         this.action('Return any amount of fate from a character you control')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.menuPrompt((context) => ({

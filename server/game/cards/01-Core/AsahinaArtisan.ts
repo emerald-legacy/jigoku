@@ -9,7 +9,7 @@ class AsahinaArtisan extends DrawCard {
         this.action('Give a character +0/+3')
             .cost(AbilityDsl.costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source && card.isFaction('crane')
             }, AbilityDsl.actions.cardLastingEffect({

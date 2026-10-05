@@ -12,7 +12,7 @@ export default class HeartOfTheInferno extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 ))
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: [CardType.Character, CardType.Attachment],
                 // On the enemy side: a participating character, or an attachment on one.

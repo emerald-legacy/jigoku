@@ -11,7 +11,7 @@ class Reconnaissance extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.Exactly,
                 numCards: 3,
                 activePromptTitle: 'Choose 3 provinces',

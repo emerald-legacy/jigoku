@@ -11,7 +11,7 @@ class BeingAndBecoming extends DrawCard {
 
         this.action('Move each fate from an unclaimed ring to attached character')
             .cost(AbilityDsl.costs.bowParent())
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring) => ring.isUnclaimed() && ring.fate > 0
             }, AbilityDsl.actions.placeFate((context) => ({

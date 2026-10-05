@@ -8,7 +8,7 @@ export default class LoyalAttendant extends DrawCard {
 
     public setupCardAbilities() {
         this.conflictAction('Discard a card')
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.attachments.filter(a => a.controller === context.player).length > 0

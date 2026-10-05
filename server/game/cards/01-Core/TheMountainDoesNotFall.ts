@@ -7,7 +7,7 @@ class TheMountainDoesNotFall extends DrawCard {
 
     setupCardAbilities() {
         this.action('Choose a character to not bow when defending')
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,

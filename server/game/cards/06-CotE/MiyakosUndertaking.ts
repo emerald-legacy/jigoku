@@ -8,13 +8,15 @@ export default class MiyakosUndertaking extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make a character a copy')
-            .target('cardToCopy', {
+            .target({
+                name: 'cardToCopy',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 location: Location.DynastyDiscardPile,
                 cardCondition: (card) => !card.isUnique()
             })
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 dependsOn: 'cardToCopy',
                 cardType: CardType.Character,
                 controller: Players.Self,

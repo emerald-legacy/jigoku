@@ -13,7 +13,7 @@ class ExpertBartering extends DrawCard {
 
                 return !context.ability.hasLegalTargets(contextCopy);
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card !== context.source,
                 controller: context => (context.costs.optionalFateCost === undefined || context.costs.optionalFateCost > 0) ? Players.Any : Players.Self

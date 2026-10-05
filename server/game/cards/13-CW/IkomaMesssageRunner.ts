@@ -8,7 +8,8 @@ class IkomaMessageRunner extends DrawCard {
 
     setupCardAbilities() {
         this.action('Flip a card faceup')
-            .targetCards('myCard', {
+            .targetCards({
+                name: 'myCard',
                 activePromptTitle: 'Choose a facedown card in your provinces',
                 location: Location.Provinces,
                 mode: TargetMode.UpTo,
@@ -17,7 +18,8 @@ class IkomaMessageRunner extends DrawCard {
                 controller: Players.Self,
                 cardCondition: card => card.isDynasty && card.isFacedown()
             }, AbilityDsl.actions.flipDynasty())
-            .targetCards('opponentsCard', {
+            .targetCards({
+                name: 'opponentsCard',
                 activePromptTitle: 'Choose a facedown card in opponents provinces',
                 location: Location.Provinces,
                 controller: Players.Opponent,

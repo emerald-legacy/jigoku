@@ -10,7 +10,7 @@ export default class IkomaMasterHunter extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
             })
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

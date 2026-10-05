@@ -13,7 +13,7 @@ class AsakoTsuki extends DrawCard {
             .when({
                 onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('scholar')
             }, AbilityDsl.actions.honor());

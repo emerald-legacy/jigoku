@@ -25,7 +25,7 @@ export default class AgashaJianyu extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Empower a character with the combined strength of the elements')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect((context) => {

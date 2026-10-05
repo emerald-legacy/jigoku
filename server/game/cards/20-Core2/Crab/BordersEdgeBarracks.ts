@@ -8,7 +8,7 @@ export default class BordersEdgeBarracks extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character to the conflict')
             .condition((context) => context.player.isDefendingPlayer())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.moveToConflict())

@@ -31,7 +31,7 @@ export default class ACleansingDeath extends DrawCard {
                     return hasValidCharacters;
                 }
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => (card.printedCost ?? 0) <=
                     (context.costs.sacrificeStateWhenChosen?.printedCost || 10),

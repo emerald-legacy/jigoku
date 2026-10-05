@@ -13,7 +13,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         this.action('Move holding to another province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Self,

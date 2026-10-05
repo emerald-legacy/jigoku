@@ -7,7 +7,7 @@ class ShosuroBotanist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Return attachment to owners hand')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 cardCondition: card => !card.hasTrait('weapon')

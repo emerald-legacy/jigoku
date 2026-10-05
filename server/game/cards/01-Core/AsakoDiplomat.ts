@@ -11,7 +11,7 @@ export default class AsakoDiplomat extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',
                 cardType: CardType.Character
             }, AbilityDsl.actions.chooseAction({

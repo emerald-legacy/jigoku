@@ -9,7 +9,7 @@ class HirumaSignaller extends DrawCard {
         this.action('Sacrifice this card to ready and move a character to the conflict')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => context.source.isDefending())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.multiple([

@@ -13,7 +13,7 @@ class ShiotomeEncampment extends DrawCard {
                         ring.isConsideredClaimed(context.player) &&
                         ring.isConflictType(ConflictType.Military)
                 ))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('cavalry')
             }, AbilityDsl.actions.ready());

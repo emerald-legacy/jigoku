@@ -9,7 +9,7 @@ export default class ItinerantPhilosopher extends DrawCard {
         this.action('Bow a character')
             .cost(AbilityDsl.costs.discardImperialFavor())
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0

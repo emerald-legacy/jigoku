@@ -9,7 +9,7 @@ export default class HonorsReward extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('give target character +3 glory')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()

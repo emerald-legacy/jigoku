@@ -9,7 +9,7 @@ export default class WisdomOfTheWind extends DrawCard {
         this.action('Honor or dishonor a character')
             .condition((context) =>
                 context.player.cardsInPlay.some((card) => card.hasTrait('shugenja')))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.sequential([

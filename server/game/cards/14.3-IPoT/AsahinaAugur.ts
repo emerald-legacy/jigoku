@@ -13,7 +13,7 @@ class AsahinaAugur extends DrawCard {
         });
 
         this.action('Discard a card in a province')
-            .target('target', {
+            .target({
                 cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 controller: Players.Self

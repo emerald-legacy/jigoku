@@ -8,7 +8,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
     setupCardAbilities() {
         this.action('Return rings to fetch an attachment')
             .cost(AbilityDsl.costs.returnRings())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.deckSearch(context => ({

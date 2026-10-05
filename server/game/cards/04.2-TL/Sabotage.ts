@@ -8,7 +8,7 @@ class Sabotage extends DrawCard {
     setupCardAbilities() {
         this.action('Discard a card in a province')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]

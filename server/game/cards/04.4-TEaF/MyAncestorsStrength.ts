@@ -7,13 +7,15 @@ class MyAncestorsStrength extends DrawCard {
 
     setupCardAbilities() {
         this.action('Modify base military and political skills')
-            .target('shugenja', {
+            .target({
+                name: 'shugenja',
                 activePromptTitle: 'Choose a shugenja character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('shugenja') && card.isParticipating()
             })
-            .target('ancestor', {
+            .target({
+                name: 'ancestor',
                 dependsOn: 'shugenja',
                 activePromptTitle: 'Choose a character to copy from',
                 cardType: CardType.Character,

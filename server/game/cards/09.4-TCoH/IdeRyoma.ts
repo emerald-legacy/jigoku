@@ -8,12 +8,14 @@ class IdeRyoma extends DrawCard {
     setupCardAbilities() {
         this.action('Choose one character to bow and one to ready')
             .condition((context) => context.source.isParticipating())
-            .target('unicorn', {
+            .target({
+                name: 'unicorn',
                 activePromptTitle: 'Choose a unicorn character',
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('unicorn')
             })
-            .target('nonunicorn', {
+            .target({
+                name: 'nonunicorn',
                 activePromptTitle: 'Choose a non-unicorn character',
                 dependsOn: 'unicorn',
                 cardType: CardType.Character,

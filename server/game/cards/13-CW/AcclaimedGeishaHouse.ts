@@ -8,7 +8,7 @@ class AcclaimedGeishaHouse extends DrawCard {
     setupCardAbilities() {
         this.action('Switch the contested ring')
             .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: card => card.isParticipating() }))
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
             }, AbilityDsl.actions.switchConflictElement())

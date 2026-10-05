@@ -19,12 +19,14 @@ export default class IchigoKun extends DrawCard {
         });
 
         this.action('Modify military skill and glory')
-            .target('otherCharacter', {
+            .target({
+                name: 'otherCharacter',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             })
-            .selectFrom('select', {
+            .selectFrom({
+                name: 'select',
                 dependsOn: 'otherCharacter'
             }, (context) => ({
                 [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),

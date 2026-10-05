@@ -14,7 +14,7 @@ export default class MagnificentTriumph extends DrawCard {
         new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
         this.action('Give a character +2/+2')
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => this.duelWinnersThisConflict.has(card)

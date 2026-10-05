@@ -7,7 +7,7 @@ class Ambush extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put characters from you hand or provinces into play')
-            .targetCards('target', {
+            .targetCards({
                 activePromptTitle: 'Choose up to two characters',
                 numCards: 2,
                 mode: TargetMode.MaxStat,

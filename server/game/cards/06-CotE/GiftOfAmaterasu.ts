@@ -10,7 +10,7 @@ class GiftofAmaterasu extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && (event.conflict.skillDifference ?? 0) >= 5
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self

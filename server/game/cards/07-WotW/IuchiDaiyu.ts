@@ -8,7 +8,7 @@ class IuchiDaiyu extends DrawCard {
     setupCardAbilities() {
         this.action('+1 military for each faceup province')
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
 
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: AbilityDsl.effects.modifyMilitarySkill(

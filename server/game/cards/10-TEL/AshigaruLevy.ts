@@ -10,7 +10,7 @@ class AshigaruLevy extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.DynastyDiscardPile],
                 cardCondition: (card, context) => card.owner === context.player && card.id === 'ashigaru-levy'

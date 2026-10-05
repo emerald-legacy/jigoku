@@ -12,7 +12,7 @@ export default class ShamblingServant extends BaseOni {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

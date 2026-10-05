@@ -25,7 +25,7 @@ export default class BayushisSaboteurs extends DrawCard {
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onMoveToConflict: (event, context) => event.card === context.source
             })
-            .select('target', {
+            .select({
                 player: (context) =>
                     context.player !== context.game.currentConflict?.defendingPlayer ? Players.Opponent : Players.Self
             }, {

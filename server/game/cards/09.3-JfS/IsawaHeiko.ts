@@ -13,7 +13,7 @@ class IsawaHeiko extends DrawCard {
                         event.player === context.player;
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => !card.hasDash()
             }, AbilityDsl.actions.cardLastingEffect({

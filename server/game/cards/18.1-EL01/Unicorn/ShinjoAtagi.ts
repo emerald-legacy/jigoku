@@ -8,7 +8,7 @@ export default class ShinjoAtagi extends DrawCard {
     setupCardAbilities() {
         this.action('Set a participating character\'s skills')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()

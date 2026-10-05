@@ -13,7 +13,7 @@ export default class HenshinSeeker extends DrawCard {
             .when({
                 onClaimRing: (event) => claimsRingOf(this, RING_CLAIM, event)
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasSomeTrait('scholar', 'monk')
             }, AbilityDsl.actions.ready());

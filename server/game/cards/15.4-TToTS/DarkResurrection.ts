@@ -8,7 +8,7 @@ class DarkResurrection extends DrawCard {
     setupCardAbilities() {
         this.action('Put characters into play from your discard')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .targetCards('target', {
+            .targetCards({
                 activePromptTitle: 'Choose up to three characters',
                 numCards: 3,
                 mode: TargetMode.UpTo,

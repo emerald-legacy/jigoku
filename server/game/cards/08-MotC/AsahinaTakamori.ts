@@ -10,7 +10,7 @@ class AsahinaTakamori extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.type === CardType.Character && event.card.isFaction('crane')
             })
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.costLessThan((context.event.card.getCost() ?? 0) + 1)

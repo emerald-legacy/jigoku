@@ -11,7 +11,7 @@ class InDefenseOfRokugan extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.cardLastingEffect({

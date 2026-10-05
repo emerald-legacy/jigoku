@@ -8,7 +8,7 @@ class KaradaDistrict extends DrawCard {
     setupCardAbilities() {
         this.action('Take control of an attachment')
             .cost(AbilityDsl.costs.giveFateToOpponent(1))
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => Boolean(card.parentCharacter && card.parentCharacter.controller === context.player.opponent)
             })

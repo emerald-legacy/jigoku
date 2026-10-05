@@ -9,7 +9,7 @@ class SoshisMemory extends DrawCard {
     setupCardAbilities() {
         this.action('Put a card into a player\'s hand')
             .condition(context => context.source.controller.isTraitInPlay('shugenja'))
-            .select('target', {
+            .select({
                 targets: true,
                 activePromptTitle: 'Choose a player'
             }, {

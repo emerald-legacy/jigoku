@@ -7,7 +7,7 @@ export default class HoneypotVillage extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Move a character in')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.bowed

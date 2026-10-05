@@ -10,7 +10,7 @@ class IkomaIkehata extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() && event.conflict.conflictType === ConflictType.Political
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character,
                 controller: Players.Self

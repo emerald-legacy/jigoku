@@ -26,7 +26,7 @@ export default class ForeignCustoms extends DrawCard {
                         card.isFaction('unicorn') ||
                         card.attachments.some((a) => a.isFaction('unicorn'))
                 ))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin'))
             }, AbilityDsl.actions.ready());

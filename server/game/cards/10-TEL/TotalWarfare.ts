@@ -13,7 +13,7 @@ export default class TotalWarfare extends BattlefieldAttachment {
                 afterConflict: (event, context) =>
                     event.conflict.loser && context.source.parentProvince?.isConflictProvince()
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 player: (context) =>
                     context.player === this.game.currentConflict?.loser ? Players.Self : Players.Opponent,

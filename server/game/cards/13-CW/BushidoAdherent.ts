@@ -8,7 +8,7 @@ class BushidoAdherent extends DrawCard {
     setupCardAbilities() {
         this.action('Honor a character')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.honor())

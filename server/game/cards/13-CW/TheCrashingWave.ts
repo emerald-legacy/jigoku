@@ -10,7 +10,7 @@ class TheCrashingWave extends DrawCard {
             .when({
                 onTheCrashingWave: (event, context) => event.conflict.defendingPlayer === context.player
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, AbilityDsl.actions.moveConflict());

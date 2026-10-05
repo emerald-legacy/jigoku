@@ -8,7 +8,7 @@ class Resourcefulness extends DrawCard {
     setupCardAbilities() {
         this.action('Honor a character')
             .cost(AbilityDsl.costs.dishonor())
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
             }, AbilityDsl.actions.honor());

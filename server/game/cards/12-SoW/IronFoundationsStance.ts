@@ -7,7 +7,7 @@ class IronFoundationsStance extends DrawCard {
 
     setupCardAbilities() {
         this.action('Prevent opponent\'s bow and send home effects')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')

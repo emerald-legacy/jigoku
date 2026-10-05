@@ -9,7 +9,7 @@ export default class KyudenKakita extends StrongholdCard {
         this.reaction('Honor a Character')
             .when({ onDuelFinished: () => true })
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => context.event.duel.isInvolved(card)

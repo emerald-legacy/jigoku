@@ -8,7 +8,7 @@ export default class TwoHands extends DrawCard {
 
     setupCardAbilities() {
         this.duelChallenge('Add a character to the duel', (duel, context) => duel.challengingPlayer === context.player)
-            .target('target', {
+            .target({
                 controller: Players.Opponent
             }, AbilityDsl.actions.duelAddParticipant((context) => ({
                 duel: context.event.duel
@@ -23,7 +23,7 @@ export default class TwoHands extends DrawCard {
                 ) &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent) >
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player))
-            .targetCards('target', {
+            .targetCards({
                 activePromptTitle: 'Choose two characters',
                 mode: TargetMode.Exactly,
                 numCards: 2,

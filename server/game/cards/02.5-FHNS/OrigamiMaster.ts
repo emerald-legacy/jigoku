@@ -8,7 +8,7 @@ class OrigamiMaster extends DrawCard {
     setupCardAbilities() {
         this.action('Move an honor token')
             .condition(context => context.source.isHonored)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source

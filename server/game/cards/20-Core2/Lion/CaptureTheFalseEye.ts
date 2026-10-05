@@ -8,7 +8,7 @@ export default class CaptureTheFalseEye extends DrawCard {
     setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&

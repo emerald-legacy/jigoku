@@ -12,7 +12,7 @@ class ShinjoSaddle extends DrawCard {
         });
 
         this.action('Move to another character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('cavalry')

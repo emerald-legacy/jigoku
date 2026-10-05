@@ -8,7 +8,7 @@ class FromTheShadows extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put a shinobi character into the conflict from hand or a province, dishonored')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,

@@ -11,7 +11,7 @@ export default class BashfulConfidante extends DrawCard {
             .when({
                 onConflictStarted: (_, context) => context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()

@@ -8,7 +8,7 @@ class RaiseTheAlarm extends DrawCard {
     setupCardAbilities() {
         this.action('Flip a dynasty card')
             .condition(context => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isInConflictProvince() && card.isFacedown()

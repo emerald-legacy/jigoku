@@ -7,7 +7,7 @@ export default class LordsAscendancy extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Place a fate on a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.placeFate((context) => ({

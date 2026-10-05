@@ -14,14 +14,16 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 onPhaseEnded: (event, context) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .target(MY_PROVINCE, {
+            .target({
+                name: MY_PROVINCE,
                 controller: Players.Self,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) =>
                     card.facedown && card.location !== Location.StrongholdProvince
             })
-            .target(OPP_PROVINCE, {
+            .target({
+                name: OPP_PROVINCE,
                 dependsOn: MY_PROVINCE,
                 controller: Players.Opponent,
                 cardType: CardType.Province,

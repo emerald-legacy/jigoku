@@ -11,7 +11,7 @@ export default class ALegionOfOne extends DrawCard {
     setupCardAbilities() {
         this.action('Give a solitary character +3/+0')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>

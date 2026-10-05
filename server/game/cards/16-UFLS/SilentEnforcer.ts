@@ -10,12 +10,14 @@ class SilentEnforcer extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player && context.source.isParticipating()
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.costLessThan(4)
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {

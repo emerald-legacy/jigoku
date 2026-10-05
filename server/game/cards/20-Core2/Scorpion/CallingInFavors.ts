@@ -8,7 +8,7 @@ export default class CallingInFavors extends DrawCard {
     setupCardAbilities() {
         this.action('Take control of an attachment')
             .cost(AbilityDsl.costs.dishonor())
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Opponent
             })

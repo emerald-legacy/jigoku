@@ -10,7 +10,7 @@ class TheWesternWind extends DrawCard {
             .condition(context => !!context.player.opponent &&
                 context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince) > 0 &&
                 context.player.dynastyDeck.length > 0)
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,

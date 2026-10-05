@@ -10,7 +10,7 @@ class MotoAriq extends DrawCard {
             .condition(context => !!(context.source.isParticipating()
                 && context.player.opponent
                 && context.player.opponent.isMoreHonorable()))
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 cardCondition: card => !card.bowed,
                 cardType: CardType.Character,

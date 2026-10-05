@@ -8,7 +8,7 @@ class CycleOfRebirth extends DrawCard {
 
     setupCardAbilities() {
         this.action('Shuffle this and target into deck')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Any,
                 cardCondition: card => card.type !== CardType.Province && card.type !== CardType.Stronghold

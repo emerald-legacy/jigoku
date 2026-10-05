@@ -7,7 +7,7 @@ class CommuneWithTheSpirits extends DrawCard {
 
     setupCardAbilities() {
         this.action('Claim a ring')
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
             }, AbilityDsl.actions.sequential([

@@ -7,14 +7,16 @@ export default class LightningAscends extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase a monk\'s military skill and remove traits from an opponent')
-            .target('monk', {
+            .target({
+                name: 'monk',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             }, AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
             }))
-            .target('enemy', {
+            .target({
+                name: 'enemy',
                 activePromptTitle: 'Choose a character to lose all traits',
                 dependsOn: 'monk',
                 cardType: CardType.Character,

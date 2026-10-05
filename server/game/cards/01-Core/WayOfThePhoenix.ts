@@ -8,7 +8,7 @@ export default class WayOfThePhoenix extends DrawCard {
     public setupCardAbilities() {
         this.action('Prevent an opponent contesting a ring')
             .condition((context) => context.player.opponent !== undefined)
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: () => true
             })
             .gameAction(AbilityDsl.actions.ringLastingEffect((context) => ({

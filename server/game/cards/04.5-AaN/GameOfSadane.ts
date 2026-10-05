@@ -7,12 +7,14 @@ class GameOfSadane extends DrawCard {
 
     setupCardAbilities() {
         this.action('Initiate a political duel')
-            .target('challenger', {
+            .target({
+                name: 'challenger',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()
             })
-            .target('duelTarget', {
+            .target({
+                name: 'duelTarget',
                 dependsOn: 'challenger',
                 cardType: CardType.Character,
                 controller: Players.Opponent,

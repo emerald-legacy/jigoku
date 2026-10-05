@@ -13,16 +13,19 @@ export default class TogashiNaname extends DrawCard {
 
         this.action('Remove fate or resolve a ring')
             .condition((context) => context.source.isParticipating())
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating() && card.fate > 0
             })
-            .ringTarget('ring', {
+            .ringTarget({
+                name: 'ring',
                 dependsOn: 'character',
                 ringCondition: (ring) => ring.isUnclaimed()
             })
-            .selectFrom('select', {
+            .selectFrom({
+                name: 'select',
                 dependsOn: 'ring',
                 player: Players.Opponent
             }, (context) => ({

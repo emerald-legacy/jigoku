@@ -21,7 +21,7 @@ export default class DaidojiNakatama extends DrawCard {
         });
 
         this.action('Ready and dishonor a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card !== context.source && card.costLessThan(4) && card.bowed

@@ -10,7 +10,7 @@ class MasterOfGiseiToshi extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
             })
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: () => true
             })
             .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({

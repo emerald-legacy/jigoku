@@ -23,7 +23,7 @@ export default class ShaperOfStone extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,

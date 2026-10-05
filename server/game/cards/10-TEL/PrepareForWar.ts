@@ -8,7 +8,7 @@ class PrepareForWar extends DrawCard {
 
     setupCardAbilities() {
         this.action('Remove honor token and any attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([

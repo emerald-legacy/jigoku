@@ -17,7 +17,7 @@ export default class KakitasFirstKata extends DrawCard {
 
         this.action('Prevent opponent\'s bow and move effects')
             .condition((context) => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('duelist') || card.isFaction('crane')

@@ -10,12 +10,14 @@ export default class LastJudgmentPlains extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action('Move fate between two of your characters')
-            .target(DONOR, {
+            .target({
+                name: DONOR,
                 activePromptTitle: 'Choose a donor character',
                 cardType: CardType.Character,
                 controller: Players.Self
             })
-            .target(RECIPIENT, {
+            .target({
+                name: RECIPIENT,
                 dependsOn: DONOR,
                 activePromptTitle: 'Choose a recipient character',
                 cardType: CardType.Character,

@@ -13,7 +13,7 @@ export default class KinutanukiYoite extends DrawCard {
                     context.source.isParticipating() &&
                     event.card.hasEveryTrait('fire', 'spell')
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,

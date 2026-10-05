@@ -8,7 +8,7 @@ export default class HeirOfTheSerpent extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.multiple([

@@ -8,7 +8,7 @@ export default class ShinjoArcher extends DrawCard {
     public setupCardAbilities() {
         this.action('Move and give -2/-2')
             .cost(AbilityDsl.costs.switchLocation())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

@@ -10,10 +10,12 @@ class CriminalContacts extends DrawCard {
         this.action('Discard a fate from a character')
             .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
             .condition(context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character
             }, AbilityDsl.actions.removeFate())
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 optional: true,

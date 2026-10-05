@@ -7,7 +7,7 @@ export default class RejuvenatingVapors extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     context.player.hasAffinity('water', context) || card.hasTrait('shugenja')

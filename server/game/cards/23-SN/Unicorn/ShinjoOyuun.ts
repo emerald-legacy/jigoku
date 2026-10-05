@@ -7,7 +7,7 @@ export default class ShinjoOyuun extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Move a character into the conflict')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => {

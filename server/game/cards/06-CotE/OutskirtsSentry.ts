@@ -10,7 +10,7 @@ class OutskirtsSentry extends DrawCard {
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.honor());

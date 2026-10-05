@@ -7,7 +7,7 @@ export default class OneWithTheSea extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character you control to the conflict')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.moveToConflict());
@@ -16,7 +16,7 @@ export default class OneWithTheSea extends DrawCard {
             .cost(AbilityDsl.costs.payFate(1))
             .condition((context) =>
                 context.game.isDuringConflict() && context.game.rings[Element.Water].isConsideredClaimed(context.player))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any
             }, AbilityDsl.actions.moveToConflict())

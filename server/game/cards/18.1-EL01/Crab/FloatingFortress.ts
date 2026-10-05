@@ -9,7 +9,7 @@ export default class FloatingFortress extends DrawCard {
         this.action('Become another holding')
             .cost(AbilityDsl.costs.payFate(1))
             .condition((context) => context.player.isDefendingPlayer())
-            .target('target', {
+            .target({
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.DynastyDiscardPile

@@ -10,7 +10,7 @@ class HigashiKazeCompany extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.getFate() === 0 && card.isParticipating() && card !== context.source

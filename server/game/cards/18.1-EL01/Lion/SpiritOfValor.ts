@@ -20,7 +20,7 @@ export default class SpiritOfValor extends DrawCard {
         this.action('Gain abilities from a character in your discard pile')
             .cost(captureParentCost())
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,

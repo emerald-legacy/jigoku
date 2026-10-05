@@ -8,12 +8,14 @@ class AlluringPatron extends DrawCard {
     setupCardAbilities() {
         this.action('Move or dishonor a character')
             .condition(context => context.source.isParticipating())
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

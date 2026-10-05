@@ -8,7 +8,7 @@ class MagnificentLighthouse extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at top 3 cards')
-            .selectIf('target', {
+            .selectIf({
                 activePromptTitle: 'Choose which deck to look at:'
             }, {
                 'Dynasty Deck': (context) => !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,

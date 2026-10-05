@@ -10,7 +10,7 @@ export default class RightsOfTheChallenged extends DrawCard {
             .when({
                 onConflictStarted: (_, context) => context.player.isDefendingPlayer()
             })
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose a ring to use instead',
                 player: Players.Opponent,
                 ringCondition: (ring) => ring.isUnclaimed() && !ring.isRemovedFromGame()

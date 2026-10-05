@@ -9,7 +9,7 @@ class CaptivatingStory extends DrawCard {
     setupCardAbilities() {
         this.action('Give a character +X pol')
             .condition(context => (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && (context.player.getNumberOfFaceupProvinces() > 0 || card.allowGameAction('removeFate', context))

@@ -8,7 +8,7 @@ class AtAnyCost extends DrawCard {
     setupCardAbilities() {
         this.action('Place a fate on a character')
             .cost(AbilityDsl.costs.payHonor(3))
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.placeFate({ amount: 2 }));
     }

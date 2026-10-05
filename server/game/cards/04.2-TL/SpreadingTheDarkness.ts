@@ -8,7 +8,7 @@ class SpreadingTheDarkness extends DrawCard {
     setupCardAbilities() {
         this.action('Give a character +4/+0')
             .cost(AbilityDsl.costs.payHonor(2))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()

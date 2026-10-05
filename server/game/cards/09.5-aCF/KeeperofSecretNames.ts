@@ -8,7 +8,7 @@ class KeeperOfSecretNames extends DrawCard {
     setupCardAbilities() {
         this.action('Resolve the ability on a province')
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.abilities.actions.length > 0 && !card.isBroken

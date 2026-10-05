@@ -7,7 +7,7 @@ export default class AFateWorseThanDeath2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow, move home, dishonor, remove a fate and blank a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor(), AbilityDsl.actions.removeFate(), AbilityDsl.actions.sendHome(), AbilityDsl.actions.cardLastingEffect({

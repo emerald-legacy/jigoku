@@ -10,12 +10,14 @@ export default class CloudStepValley extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Switch the location of two characters')
-            .target(STARTED_IN_CONFLICT, {
+            .target({
+                name: STARTED_IN_CONFLICT,
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => AbilityDsl.actions.sendHome().canAffect(card, context)
             })
-            .target(STARTED_AT_HOME, {
+            .target({
+                name: STARTED_AT_HOME,
                 dependsOn: STARTED_IN_CONFLICT,
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,

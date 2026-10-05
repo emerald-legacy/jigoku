@@ -10,7 +10,7 @@ export default class TillTheLastOneFalls extends DrawCard {
         this.action('Give a character a skill bonus')
             .condition((context) =>
                 !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()

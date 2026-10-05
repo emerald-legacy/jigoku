@@ -10,7 +10,7 @@ export default class RagingBattleground extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique() && card.getFate() < 1
             }, AbilityDsl.actions.discardFromPlay());

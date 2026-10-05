@@ -10,7 +10,7 @@ class ReturnFromShadows extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictUnopposed
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card, context) => Boolean(context.game.currentConflict && context.game.currentConflict.loser && card.controller === context.game.currentConflict.loser)

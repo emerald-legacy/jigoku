@@ -9,7 +9,7 @@ class AgashaShunsen extends DrawCard {
         this.action('Return rings to fetch an attachment')
             .cost(AbilityDsl.costs.returnRings())
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.cardMenu(context => ({

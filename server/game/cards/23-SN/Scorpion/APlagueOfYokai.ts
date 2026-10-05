@@ -21,7 +21,7 @@ export default class APlagueOfYokai extends DrawCard {
                 cardCondition: card => card.isParticipating() && card.hasTrait('shinobi')
             }))
             .condition(context => context.game.isDuringConflict() && this.getCopiesInDeck(context).length > 0)
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => !!context.player.opponent &&

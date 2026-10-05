@@ -11,7 +11,7 @@ class Truthseeker extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .selectIf('target', {
+            .selectIf({
                 targets: true,
                 activePromptTitle: 'Choose which deck to look at:'
             }, {

@@ -14,7 +14,7 @@ export default class ABadDeath extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait('berserker') ? 2 : 1,
                 cardType: CardType.Character,

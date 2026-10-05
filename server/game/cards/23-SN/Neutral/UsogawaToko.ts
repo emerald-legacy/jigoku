@@ -7,7 +7,7 @@ export default class UsogawaToko extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Give a participating character -3 glory')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

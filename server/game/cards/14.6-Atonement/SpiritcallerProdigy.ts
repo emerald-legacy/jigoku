@@ -8,7 +8,7 @@ class SpiritcallerProdigy extends DrawCard {
     setupCardAbilities() {
         this.action('Resurrect a character')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: [Location.DynastyDiscardPile],
                 cardType: CardType.Character,

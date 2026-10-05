@@ -8,7 +8,7 @@ class ExiledGuardian extends DrawCard {
     setupCardAbilities() {
         this.action('Discard a status token off a character or province')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .tokenTarget('target', {
+            .tokenTarget({
                 cardType: [CardType.Character, CardType.Province],
                 location: Location.Any
             }, AbilityDsl.actions.discardStatusToken())

@@ -9,7 +9,7 @@ export default class AdeptOfTheWaves extends DrawCard {
 
     setupCardAbilities() {
         this.action('Grant Covert to a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect(() => {
                 const element = this.getCurrentElementSymbol(COVERT_ELEMENT);

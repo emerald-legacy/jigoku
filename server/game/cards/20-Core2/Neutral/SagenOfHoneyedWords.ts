@@ -12,7 +12,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
     public setupCardAbilities() {
         this.action('Gain a skill bonus based on your company')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source

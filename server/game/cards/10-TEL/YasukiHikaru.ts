@@ -8,7 +8,7 @@ class YasukiHikaru extends DrawCard {
     setupCardAbilities() {
         this.action('Send home character')
             .condition((context) => context.source.isDefending())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.getMilitarySkill() > context.source.getMilitarySkill()
             }, AbilityDsl.actions.sendHome());

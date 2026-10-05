@@ -9,11 +9,13 @@ class CalledToWar extends DrawCard {
     setupCardAbilities() {
         this.action('Place a fate on a bushi')
             .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('bushi')
             }, AbilityDsl.actions.placeFate())
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 optional: true,

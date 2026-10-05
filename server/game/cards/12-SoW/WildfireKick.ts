@@ -10,7 +10,7 @@ class WildfireKick extends DrawCard {
             .condition(context =>
                 !!this.game.currentConflict &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3)
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')

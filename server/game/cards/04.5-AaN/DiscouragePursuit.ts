@@ -8,7 +8,7 @@ class DiscouragePursuit extends DrawCard {
     setupCardAbilities() {
         this.action('Give -4 military to a participating character')
             .cost(AbilityDsl.costs.dishonor({ cardCondition: card => card.hasTrait('shinobi') }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

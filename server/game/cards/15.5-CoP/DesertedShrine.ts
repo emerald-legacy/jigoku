@@ -10,7 +10,7 @@ export default class DesertedShrine extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .selectFrom('target', {
+            .selectFrom({
                 targets: true,
                 activePromptTitle: 'Choose a deck'
             }, (context) => {

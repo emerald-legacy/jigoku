@@ -22,7 +22,7 @@ export default class UtakuStableMaster extends DrawCard {
     setupCardAbilities() {
         this.action('Bow participating character with lower glory than participating cavalry.')
             .condition((context) => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&

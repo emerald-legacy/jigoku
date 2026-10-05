@@ -37,7 +37,7 @@ export default class MirumotoRikitaro extends DrawCard {
             .effect('reduce the cost of their next attachment by 1');
 
         this.conflictAction('Discard an attachment')
-            .target('target', {
+            .target({
                 cardCondition: (card, context) => !!(card.hasSomeTrait('item', 'weapon', 'armor') && card.parentCharacter && context.player.opponent && card.parentCharacter.isParticipatingFor(context.player.opponent)),
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay())

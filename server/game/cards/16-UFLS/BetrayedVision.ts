@@ -9,13 +9,15 @@ export default class BetrayedVision extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make a character a copy')
-            .target('cardToCopy', {
+            .target({
+                name: 'cardToCopy',
                 activePromptTitle: 'Choose a character to copy',
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => !card.isUnique()
             })
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 dependsOn: 'cardToCopy',
                 activePromptTitle: 'Choose a character to turn into the copy',
                 cardType: CardType.Character,

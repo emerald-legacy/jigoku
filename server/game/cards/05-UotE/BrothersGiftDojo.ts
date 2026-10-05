@@ -8,7 +8,7 @@ export default class BrothersGiftDojo extends ProvinceCard {
     setupCardAbilities() {
         this.action('Move a character home')
             .cost(AbilityDsl.costs.payHonor(1))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()

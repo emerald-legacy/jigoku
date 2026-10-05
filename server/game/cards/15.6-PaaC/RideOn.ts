@@ -7,12 +7,14 @@ class RideOn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('cavalry')
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character'
             }, {
                 'Move to conflict': AbilityDsl.actions.moveToConflict(context => ({ target: context.targets.character })),

@@ -7,7 +7,7 @@ class KaiuInventor extends DrawCard {
 
     setupCardAbilities() {
         this.action('Add an additional ability use to a holding')
-            .target('target', {
+            .target({
                 cardType: CardType.Holding,
                 location: Location.Provinces,
                 controller: Players.Self,

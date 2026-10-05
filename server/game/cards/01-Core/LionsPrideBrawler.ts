@@ -8,7 +8,7 @@ class LionsPrideBrawler extends DrawCard {
     setupCardAbilities() {
         this.action('Bow a character')
             .condition(context => context.source.isAttacking())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
             }, AbilityDsl.actions.bow());

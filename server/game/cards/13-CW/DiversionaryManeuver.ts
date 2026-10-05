@@ -8,7 +8,7 @@ class DiversionaryManeuver extends DrawCard {
     setupCardAbilities() {
         this.action('Move the conflict to another province')
             .condition(context => context.game.isDuringConflict(ConflictType.Military) && context.player.isAttackingPlayer())
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)

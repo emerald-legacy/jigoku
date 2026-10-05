@@ -13,13 +13,15 @@ class FalseLoyalties extends DrawCard {
                     context.player.opponent.isMoreHonorable();
                 }
             })
-            .target('characterInConflict', {
+            .target({
+                name: 'characterInConflict',
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
             })
-            .target('characterAtHome', {
+            .target({
+                name: 'characterAtHome',
                 dependsOn: 'characterInConflict',
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,

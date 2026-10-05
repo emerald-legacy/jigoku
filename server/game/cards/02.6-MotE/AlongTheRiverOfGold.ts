@@ -9,7 +9,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('switch a character\'s base skills')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash()
             }, AbilityDsl.actions.cardLastingEffect({

@@ -7,7 +7,7 @@ export default class ForcedRetirement extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Remove negative status tokens from a character, and discard it from play')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()

@@ -18,7 +18,7 @@ export default class LaughingThunder extends DrawCard {
         });
 
         this.action('Attach a kiho to this character')
-            .target('target', {
+            .target({
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.Hand,

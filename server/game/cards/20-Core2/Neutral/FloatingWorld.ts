@@ -7,7 +7,7 @@ export default class FloatingWorld extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action('Dishonor a character')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

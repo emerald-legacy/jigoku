@@ -10,7 +10,7 @@ class Leniency extends DrawCard {
             .when({
                 onResolveRingElement: (event, context) => event.player === context.player
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,

@@ -14,7 +14,7 @@ export default class ShosuroMiyako extends DrawCard {
                     event.card.type === CardType.Character &&
                     context.player.opponent !== undefined
             })
-            .select('target', {
+            .select({
                 player: Players.Opponent
             }, {
                 'Discard at random': AbilityDsl.actions.discardAtRandom(),

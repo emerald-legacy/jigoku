@@ -8,7 +8,7 @@ export default class HouseOfLeaves extends StrongholdCard {
     setupCardAbilities() {
         this.action('Bow this stronghold')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating(),
                 controller: Players.Self

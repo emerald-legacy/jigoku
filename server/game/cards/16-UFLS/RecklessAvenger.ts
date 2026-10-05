@@ -9,7 +9,8 @@ class RecklessAvenger extends DrawCard {
     setupCardAbilities() {
         this.action('Ready and honor characters')
             .condition(context => context.player.cardsInPlay.some((a) => a.bowed) && !!context.player.opponent || !!context.player.opponent?.cardsInPlay.some((a) => a.bowed))
-            .target('firstCharacter', {
+            .target({
+                name: 'firstCharacter',
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 optional: true,
@@ -17,7 +18,8 @@ class RecklessAvenger extends DrawCard {
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                 player: context => context.player.firstPlayer ? Players.Self : Players.Opponent
             }, AbilityDsl.actions.ready())
-            .target('secondCharacter', {
+            .target({
+                name: 'secondCharacter',
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 optional: true,

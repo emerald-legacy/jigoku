@@ -7,7 +7,7 @@ export default class ApprenticeEarthcaller extends DrawCard {
 
     setupCardAbilities() {
         this.action('Set skill values to printed values')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking() && card.attachments.length === 0
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

@@ -18,7 +18,7 @@ export default class KakitaTechnique extends DrawCard {
             }));
 
         this.action('Give character +1/+1')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('duelist'))

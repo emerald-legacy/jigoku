@@ -13,7 +13,7 @@ export default class KaitoYoshiaki extends DrawCard {
     setupCardAbilities() {
         this.action('Punish the wicked')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card !== context.source &&

@@ -10,7 +10,7 @@ class BattleAspirant extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && this.game.isDuringConflict(ConflictType.Military)
             })
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: card => !card.hasKeyword('covert')

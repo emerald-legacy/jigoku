@@ -17,7 +17,7 @@ class ShibaPureheart extends DrawCard {
                     return false;
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.honor());
     }

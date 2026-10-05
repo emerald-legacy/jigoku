@@ -11,7 +11,7 @@ export default class MantraOfWater extends DrawCard {
                 onConflictDeclared: (event, context) =>
                     !!event.ring && event.ring.hasElement(Element.Water) && event.conflict.attackingPlayer === context.player.opponent
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))

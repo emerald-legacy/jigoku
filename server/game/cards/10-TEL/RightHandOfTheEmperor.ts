@@ -12,7 +12,7 @@ class RightHandOfTheEmperor extends DrawCard {
             effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
         this.action('Ready characters')
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',
                 cardStat: (card) => card.getCost() ?? 0,

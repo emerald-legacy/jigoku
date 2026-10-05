@@ -30,7 +30,7 @@ export default class OurDuty extends DrawCard {
                 cardCondition: (card) => card.isDefending()
             }))
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.sendHome());

@@ -11,7 +11,7 @@ class KyofukisHammer extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                     event.conflict.winner === context.source.parentCharacter.controller
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]
             }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile }))

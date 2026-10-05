@@ -15,7 +15,7 @@ export default class ShowMeYourStance extends DrawCard {
             .effect('have status tokens count when resolving this duel');
 
         this.action('Send a character home')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isAttacking() &&

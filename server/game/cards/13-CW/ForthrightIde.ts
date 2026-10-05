@@ -8,7 +8,7 @@ class ForthrightIde extends DrawCard {
     setupCardAbilities() {
         this.action('Ready a character')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(4) && card.bowed
             }, AbilityDsl.actions.sequential([

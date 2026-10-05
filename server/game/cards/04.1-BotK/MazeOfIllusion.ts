@@ -11,7 +11,7 @@ export default class MazeOfIllusion extends DrawCard {
     public setupCardAbilities() {
         this.action('Dishonor and bow a character if your opponent can\'t guess your dial')
             .condition((context) => context.player.opponent !== undefined)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

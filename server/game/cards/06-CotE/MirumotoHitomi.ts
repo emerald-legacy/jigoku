@@ -8,7 +8,7 @@ export default class MirumotoHitomi extends DrawCard {
     setupCardAbilities() {
         this.action('Initiate a military duel')
             .condition((context) => context.source.isParticipating())
-            .targetCards('target', {
+            .targetCards({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),

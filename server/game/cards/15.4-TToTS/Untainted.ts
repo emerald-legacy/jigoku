@@ -14,7 +14,7 @@ class Untainted extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.player &&
                     !!context.source.parentProvince?.isConflictProvince()
             })
-            .tokenTarget('target', {
+            .tokenTarget({
                 activePromptTitle: 'Choose a status token',
                 location: Location.Any,
                 tokenCondition: (token, context) => {

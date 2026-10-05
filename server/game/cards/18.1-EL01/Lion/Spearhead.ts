@@ -14,7 +14,7 @@ class Spearhead extends DrawCard {
                     card.parentCharacter.controller === context.player && card.parentCharacter.isParticipating()
             }))
             .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,

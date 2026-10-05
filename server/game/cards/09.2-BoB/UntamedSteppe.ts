@@ -7,7 +7,7 @@ export default class UntamedSteppe extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Turn another unbroken province facedown')
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 controller: Players.Any,
                 location: Location.Provinces,

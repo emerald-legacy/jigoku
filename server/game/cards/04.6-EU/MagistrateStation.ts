@@ -7,7 +7,7 @@ export default class MagistrateStation extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Ready an honored character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored
             }, AbilityDsl.actions.ready())

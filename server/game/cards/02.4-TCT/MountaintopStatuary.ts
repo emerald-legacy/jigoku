@@ -15,7 +15,7 @@ class MountaintopStatuary extends DrawCard {
         this.action('Send a 2 or lower cost character home')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => context.source.isInConflictProvince())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking() && card.costLessThan(3)
             }, AbilityDsl.actions.sendHome());

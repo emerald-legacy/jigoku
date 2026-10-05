@@ -17,7 +17,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 ))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => this.charactersPlayedThisConflict.has(card)
             }, AbilityDsl.actions.sequential([

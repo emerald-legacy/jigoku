@@ -7,14 +7,16 @@ export default class HirumaHajime extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a card in a province')
-            .target('cardInProvince', {
+            .target({
+                name: 'cardInProvince',
                 location: [Location.Provinces, Location.PlayArea],
                 cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding],
                 cardCondition: card =>
                     Boolean((card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
                             (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province))
             })
-            .target('province', {
+            .target({
+                name: 'province',
                 dependsOn: 'cardInProvince',
                 location: [Location.Provinces],
                 cardType: CardType.Province,

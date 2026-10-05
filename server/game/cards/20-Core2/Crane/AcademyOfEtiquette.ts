@@ -10,7 +10,7 @@ export default class AcademyOfEtiquette extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase === Phases.Fate
             })
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards',

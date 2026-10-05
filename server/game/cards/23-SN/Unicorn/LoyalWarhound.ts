@@ -20,7 +20,7 @@ export default class LoyalWarhound extends DrawCard {
 
         this.action('Attach this to a character')
             .condition(context => context.source.type === CardType.Character)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>

@@ -9,7 +9,7 @@ export default class MountainsAnvilCastle extends StrongholdCard {
         this.action('Give a character with attachments bonus skill')
             .cost(AbilityDsl.costs.bowSelf())
             .condition(() => Boolean(this.game.currentConflict))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

@@ -20,7 +20,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('spirit')
             }))
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: (ring) => ring.isUnclaimed()
             }, AbilityDsl.actions.claimRing({
@@ -32,7 +32,7 @@ export default class TheEmptyCity extends ProvinceCard {
             .canTriggerOutsideConflict();
 
         this.action('Put a Spirit character into play')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],

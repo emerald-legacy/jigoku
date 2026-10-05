@@ -8,7 +8,7 @@ class ParalyzingDelicacy extends DrawCard {
 
     setupCardAbilities() {
         this.action('-X military equal to facedown provinces')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect(context => ({

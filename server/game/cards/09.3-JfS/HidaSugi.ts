@@ -10,7 +10,7 @@ class HidaSugi extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target('target', {
+            .target({
                 location: Location.DynastyDiscardPile
             }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDeck, bottom: true}))
             .effect('move {0} to bottom of {1}\'s dynasty deck', context => [context.target.controller]);

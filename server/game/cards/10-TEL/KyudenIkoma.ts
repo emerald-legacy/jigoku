@@ -14,7 +14,7 @@ export default class KyudenIkoma extends StrongholdCard {
                     event.conflict.getAttackers().length !== 0
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.hasTrait('champion'),
                 activePromptTitle: 'Bow a non-champion'

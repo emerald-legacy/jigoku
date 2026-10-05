@@ -7,13 +7,15 @@ export default class SupplyOfficer extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Switch 2 characters you control', { evenFromHome: true })
-            .target('characterInConflict', {
+            .target({
+                name: 'characterInConflict',
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()
             })
-            .target('characterAtHome', {
+            .target({
+                name: 'characterAtHome',
                 dependsOn: 'characterInConflict',
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,

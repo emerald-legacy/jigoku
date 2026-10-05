@@ -8,7 +8,7 @@ export default class CampfireCounsel extends DrawCard {
     setupCardAbilities() {
         this.action('Ready a character')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => (card.printedCost ?? 0) <= 3

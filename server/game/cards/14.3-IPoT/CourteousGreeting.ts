@@ -8,12 +8,14 @@ export default class CourteousGreeting extends ProvinceCard {
     static id = 'courteous-greeting';
     setupCardAbilities() {
         this.action('Bow a character from each side')
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow())
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

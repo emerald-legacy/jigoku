@@ -7,7 +7,7 @@ class IuchiRimei extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move an attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
                 cardCondition: card => Boolean(card.costLessThan(2) && card.parentCharacter)

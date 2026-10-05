@@ -7,7 +7,7 @@ export default class SmugglersCove extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Moves a character to or from a conflict at this province')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.conditional({

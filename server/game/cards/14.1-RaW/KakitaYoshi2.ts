@@ -13,7 +13,7 @@ class KakitaYoshi2 extends DrawCard {
                     context.source.isAttacking() &&
                     event.conflict.conflictType === ConflictType.Political
             })
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.player.getNumberOfFaceupProvinces(),
                 cardType: CardType.Character

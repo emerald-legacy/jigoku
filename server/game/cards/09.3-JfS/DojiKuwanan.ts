@@ -23,7 +23,7 @@ class DojiKuwanan extends DrawCard {
         this.action('Bow a participating character with lower military skill')
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating()

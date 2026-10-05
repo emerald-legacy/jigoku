@@ -8,7 +8,7 @@ class PreeminentDecree extends DrawCard {
     setupCardAbilities() {
         this.action('Give all participating characters a political penalty')
             .condition(context => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => {

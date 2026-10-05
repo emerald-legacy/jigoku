@@ -9,7 +9,7 @@ export default class ToSowTheEarth extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Play a peasant from the discard pile')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
@@ -32,7 +32,7 @@ export default class ToSowTheEarth extends DrawCard {
             .cost(AbilityDsl.costs.bow({
                 cardCondition: (card) => card.hasTrait('peasant')
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Any,

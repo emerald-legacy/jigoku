@@ -8,7 +8,7 @@ class VisitingAdvisor extends DrawCard {
     setupCardAbilities() {
         this.action('Send this and up to 1 other character home')
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 cardType: CardType.Character,
                 optional: true,

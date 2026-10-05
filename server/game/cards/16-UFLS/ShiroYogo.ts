@@ -8,7 +8,7 @@ export default class ShiroYogo extends StrongholdCard {
     setupCardAbilities() {
         this.action('Prevent a character from triggering abilities')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDishonored
             }, AbilityDsl.actions.cardLastingEffect({

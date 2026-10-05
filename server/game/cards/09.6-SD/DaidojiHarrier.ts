@@ -12,7 +12,7 @@ class DaidojiHarrier extends DrawCard {
                                                     event.conflict.winner === context.source.controller &&
                                                     context.player.opponent && event.conflict.conflictType === ConflictType.Military
             })
-            .targetCards('target', {
+            .targetCards({
                 activePromptTitle: 'Choose two cards to reveal',
                 player: Players.Opponent,
                 numCards: 2,

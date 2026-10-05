@@ -9,7 +9,7 @@ class JadeStrike extends DrawCard {
 
     setupCardAbilities() {
         this.action('Set a characters base skills to 0/0')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens && card.isParticipating()
             }, AbilityDsl.actions.multiple([

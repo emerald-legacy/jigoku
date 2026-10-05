@@ -10,12 +10,14 @@ export default class ForDeathAndGlory extends DrawCard {
     setupCardAbilities() {
         this.action('Increase a character\'s military skill')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .target(CHARACTER, {
+            .target({
+                name: CHARACTER,
                 controller: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: CHARACTER
             }, {
                 'Gain +2 skill': AbilityDsl.actions.cardLastingEffect((context) => ({

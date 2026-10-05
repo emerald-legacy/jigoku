@@ -9,7 +9,7 @@ export default class HighHouseOfLight extends StrongholdCard {
         this.action('Give a character with attachments bonus skill')
             .cost(AbilityDsl.costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')

@@ -7,12 +7,14 @@ export default class KikuMatsuri extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Honor a character home from each side')
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.honor())
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

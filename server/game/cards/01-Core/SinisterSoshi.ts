@@ -7,7 +7,7 @@ class SinisterSoshi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character -2/-2')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(-2) }))

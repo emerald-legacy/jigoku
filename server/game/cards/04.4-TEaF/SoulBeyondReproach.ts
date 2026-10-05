@@ -7,7 +7,7 @@ class SoulBeyondReproach extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor a character, then honor it again')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([

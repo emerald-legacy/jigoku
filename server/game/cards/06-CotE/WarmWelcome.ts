@@ -8,7 +8,7 @@ class WarmWelcome extends DrawCard {
     setupCardAbilities() {
         this.action('Play a conflict card from discard')
             .condition(context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid))
-            .target('target', {
+            .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([

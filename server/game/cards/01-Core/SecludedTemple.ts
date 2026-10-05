@@ -11,7 +11,7 @@ class SecludedTemple extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === Phases.Conflict && context.player.opponent &&
                                                     context.player.cardsInPlay.length < context.player.opponent.cardsInPlay.length
             })
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to remove a fate from',
                 controller: Players.Opponent

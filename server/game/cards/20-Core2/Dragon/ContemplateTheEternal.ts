@@ -8,7 +8,7 @@ export default class ContemplateTheEternal extends DrawCard {
     public setupCardAbilities() {
         this.action('Return rings to put fate on character')
             .cost(AbilityDsl.costs.returnRings())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) =>

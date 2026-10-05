@@ -11,14 +11,14 @@ export default class ToGovernTheLand extends DrawCard {
     public setupCardAbilities() {
         this.action('Send home and bow based on bushi\'s power')
             .condition((context) => this.conditionToTrigger(ConflictType.Political, context))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context)
             }, this.gameAction());
 
         this.action('Send home and bow based on courtier\'s power')
             .condition((context) => this.conditionToTrigger(ConflictType.Military, context))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => this.conditionToTarget(ConflictType.Military, card, context)
             }, this.gameAction());

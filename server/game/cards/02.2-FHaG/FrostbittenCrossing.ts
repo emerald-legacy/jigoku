@@ -7,7 +7,7 @@ export default class FrostbittenCrossing extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Discard all attachments from a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
             })

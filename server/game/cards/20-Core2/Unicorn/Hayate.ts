@@ -20,12 +20,14 @@ export default class Hayate extends DrawCard {
         });
 
         this.action('Move this and another character to the conflict')
-            .target('self', {
+            .target({
+                name: 'self',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card === context.source
             }, AbilityDsl.actions.moveToConflict())
-            .target('optional', {
+            .target({
+                name: 'optional',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source,

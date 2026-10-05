@@ -11,12 +11,14 @@ export default class AsakoKousuke extends DrawCard {
 
     setupCardAbilities() {
         this.action('Treat the status token on a character as if it was another status token')
-            .tokenTarget(ORIGINL_TOKEN, {
+            .tokenTarget({
+                name: ORIGINL_TOKEN,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.getGlory() <= context.source.getGlory()
             })
-            .selectFrom(SELECTION, {
+            .selectFrom({
+                name: SELECTION,
                 dependsOn: ORIGINL_TOKEN
             }, (context) => {
                 const targetToken = context.tokens[ORIGINL_TOKEN][0];

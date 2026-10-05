@@ -15,12 +15,14 @@ export default class WhiteLotusMethod extends DrawCard {
     setupCardAbilities() {
         this.action('Move a status token')
             .condition((context) => context.player.cardsInPlay.some((card) => card.hasTrait('courtier')))
-            .tokenTarget(TOKEN, {
+            .tokenTarget({
+                name: TOKEN,
                 activePromptTitle: 'Choose the status token to move',
                 cardType: CardType.Character,
                 tokenCondition: (token) => token.grantedStatus === CharacterStatus.Dishonored
             })
-            .target(RECIPIENT, {
+            .target({
+                name: RECIPIENT,
                 activePromptTitle: 'Choose a Character to receive the token',
                 dependsOn: TOKEN,
                 cardType: CardType.Character,

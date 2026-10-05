@@ -12,7 +12,7 @@ class AkodoMakoto extends DrawCard {
                     return event.conflict.winner === context.source.controller && context.source.isParticipating();
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => {

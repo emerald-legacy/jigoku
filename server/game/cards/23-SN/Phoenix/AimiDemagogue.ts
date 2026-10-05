@@ -8,7 +8,7 @@ export default class AimiDemagogue extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Give pride')
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()

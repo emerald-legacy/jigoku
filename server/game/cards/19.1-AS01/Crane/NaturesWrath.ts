@@ -26,12 +26,13 @@ export default class NaturesWrath extends DrawCard {
                 context.game.isDuringConflict(ConflictType.Military) &&
                 context.player.anyCardsInPlay((card) => card.isParticipating())
             )
-            .target(TARGET_CHARACTER, {
+            .target({
+                name: TARGET_CHARACTER,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             })
-            .select('select', { dependsOn: TARGET_CHARACTER, player: Players.Opponent }, {
+            .select({ name: 'select', dependsOn: TARGET_CHARACTER, player: Players.Opponent }, {
                 'Dishonor this character': AbilityDsl.actions.dishonor((context) => ({
                     target: context.targets[TARGET_CHARACTER]
                 })),

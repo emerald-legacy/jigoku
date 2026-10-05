@@ -8,11 +8,13 @@ export default class InLadyDojisService extends DrawCard {
     setupCardAbilities() {
         this.action('Pacify a character')
             .cost(AbilityDsl.costs.bow({ cardType: CardType.Character }))
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Any
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character'
             }, {
                 'Prevent Attacking': AbilityDsl.actions.cardLastingEffect((context) => ({

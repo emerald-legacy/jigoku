@@ -14,7 +14,7 @@ class IsawaTsuke2 extends DrawCard {
             .condition((context) =>
                 context.game.isDuringConflict() &&
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context.costs.variableHonorCost) {

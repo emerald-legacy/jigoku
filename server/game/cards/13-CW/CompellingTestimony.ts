@@ -8,7 +8,7 @@ class CompellingTestimony extends DrawCard {
     setupCardAbilities() {
         this.action('Give a character -4 political')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

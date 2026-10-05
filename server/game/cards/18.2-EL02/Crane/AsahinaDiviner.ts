@@ -7,7 +7,7 @@ class AsahinaDiviner extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a participating character +3 glory')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             }, AbilityDsl.actions.cardLastingEffect({

@@ -19,7 +19,7 @@ class ShosuroMiyako2 extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique()

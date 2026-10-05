@@ -17,7 +17,7 @@ export default class BrokenBlades extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('berserker')
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

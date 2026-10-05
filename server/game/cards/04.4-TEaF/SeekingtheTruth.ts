@@ -17,7 +17,7 @@ export default class SeekingtheTruth extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }, AbilityDsl.actions.sendHome());

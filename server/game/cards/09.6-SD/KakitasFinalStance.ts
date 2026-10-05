@@ -13,7 +13,7 @@ export default class KakitasFinalStance extends DrawCard {
         new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
         this.action('Character cannot be bowed and doesn\'t bow during resolution')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

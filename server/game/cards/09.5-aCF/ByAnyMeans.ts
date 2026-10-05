@@ -8,13 +8,15 @@ class ByAnyMeans extends DrawCard {
     setupCardAbilities() {
         this.action('Change base skill to match another character\'s')
             .condition(context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 activePromptTitle: 'Choose a bushi character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
             })
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 dependsOn: 'myCharacter',
                 activePromptTitle: 'Choose an opponent\'s character',
                 cardType: CardType.Character,

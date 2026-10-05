@@ -16,7 +16,7 @@ class AkodoMastermind extends DrawCard {
                 cardCondition: card => card.hasTrait('tactic')
             }))
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.getGlory() <= this.getGloryCheck(context.player, context.costs.removeFromGame)
             }, AbilityDsl.actions.bow())

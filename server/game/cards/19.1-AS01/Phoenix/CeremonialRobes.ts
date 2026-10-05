@@ -24,7 +24,7 @@ export default class CeremonialRobes extends DrawCard {
         });
 
         this.action('Place a card from your deck faceup on a province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince,

@@ -8,11 +8,13 @@ class SoshiAoi extends DrawCard {
     setupCardAbilities() {
         this.action('Give a character +1/+0 and the Bushi trait or +0/+1 and the Courtier trait')
             .cost(AbilityDsl.costs.payHonor(1))
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character'
             }, {
                 'Give +1/+0 and the Bushi trait': AbilityDsl.actions.cardLastingEffect((context) => ({

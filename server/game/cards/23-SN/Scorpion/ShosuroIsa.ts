@@ -14,7 +14,7 @@ export default class ShosuroIsa extends DrawCard {
         new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
 
         this.action('Manifest a shadow')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,

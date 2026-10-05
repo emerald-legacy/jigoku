@@ -8,7 +8,7 @@ export default class ShosuroActor extends DrawCard {
     setupCardAbilities() {
         this.action('Choose a character to copy')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 player: Players.Self,
                 cardType: CardType.Character,
                 controller: Players.Opponent,

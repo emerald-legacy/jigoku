@@ -10,7 +10,7 @@ class ApprenticeEngineer extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.DynastyDiscardPile

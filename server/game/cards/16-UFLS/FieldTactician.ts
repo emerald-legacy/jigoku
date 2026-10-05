@@ -10,7 +10,7 @@ class FieldTactician extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card.hasTrait('tactic') && event.player === context.player
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a conflict card',
                 location: Location.ConflictDiscardPile,
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],

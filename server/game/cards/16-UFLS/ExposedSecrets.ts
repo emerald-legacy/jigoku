@@ -8,7 +8,7 @@ class ExposedSecrets extends DrawCard {
     setupCardAbilities() {
         this.action('Bow attacking character')
             .condition(context => context.game.isDuringConflict(ConflictType.Political))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.getPoliticalSkill() <= card.controller.showBid
             }, AbilityDsl.actions.bow());

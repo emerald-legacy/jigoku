@@ -13,12 +13,14 @@ export default class ImperialAdjutant extends DrawCard {
         this.action('Move or dishonor a character')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

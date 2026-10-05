@@ -9,7 +9,7 @@ export default class ReligiousConclave extends DrawCard {
         this.action('Prevent an opponent contesting a ring')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition((context) => context.player.opponent !== undefined)
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: () => true
             })
             .gameAction(AbilityDsl.actions.ringLastingEffect((context) => ({

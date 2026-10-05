@@ -7,7 +7,7 @@ class DisplayOfLoyalty extends DrawCard {
 
     setupCardAbilities() {
         this.action('Dishonor a character')
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {

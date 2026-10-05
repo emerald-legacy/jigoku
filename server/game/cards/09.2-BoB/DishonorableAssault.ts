@@ -9,7 +9,7 @@ export default class DishonorableAssault extends ProvinceCard {
     setupCardAbilities() {
         this.action('Discard cards to dishonor attackers')
             .cost(AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => context.costs.discardCardsUpToVariableX?.length ?? this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character,

@@ -10,7 +10,7 @@ class StrategicWeakpoint extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
             })
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to discard',
                 controller: Players.Opponent,

@@ -7,7 +7,7 @@ class DaidojiNerishma extends DrawCard {
 
     setupCardAbilities() {
         this.action('Flip a card faceup')
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 location: Location.Provinces,
                 cardCondition: card => card.isDynasty && card.isFacedown()

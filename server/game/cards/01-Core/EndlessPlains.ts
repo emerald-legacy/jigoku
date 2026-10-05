@@ -11,7 +11,7 @@ export default class EndlessPlains extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .cost(AbilityDsl.costs.breakSelf())
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to discard',
                 controller: Players.Opponent,

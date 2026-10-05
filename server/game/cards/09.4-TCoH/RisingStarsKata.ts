@@ -14,7 +14,7 @@ export default class RisingStarsKata extends DrawCard {
         new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.AfterDuel]);
 
         this.action('Give a participating unique character +3 military skill')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isUnique() && card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

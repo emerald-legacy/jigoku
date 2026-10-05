@@ -7,12 +7,14 @@ export default class EbbAndFlow extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Switch a character\'s skills')
-            .target('mine', {
+            .target({
+                name: 'mine',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating() && card.hasTrait('shugenja')
             }, AbilityDsl.actions.noAction())
-            .target('opponents', {
+            .target({
+                name: 'opponents',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating() && !card.hasDash()

@@ -6,7 +6,7 @@ class KaiuForges extends DrawCard {
 
     setupCardAbilities() {
         this.action('Choose a province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardType: CardType.Province

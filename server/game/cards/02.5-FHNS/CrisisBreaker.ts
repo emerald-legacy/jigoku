@@ -14,7 +14,7 @@ class CrisisBreaker extends DrawCard {
                 }
                 return false;
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('berserker')

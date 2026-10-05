@@ -10,14 +10,16 @@ class FuSuiDisciple extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .selectIf('player', {
+            .selectIf({
+                name: 'player',
                 activePromptTitle: 'Choose a player',
                 targets: true
             }, {
                 [this.owner.name]: () => hasClaimedRing(this, elementSymbol.key, this.owner),
                 [this.owner.opponent && this.owner.opponent.name || 'NA']: () => this.owner.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, this.owner.opponent)
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 dependsOn: 'player',
                 player: context => context.selects.player.choice === context.player.name ? Players.Self : Players.Opponent,
                 activePromptTitle: 'Choose a character to be honored or dishonored',
@@ -27,7 +29,8 @@ class FuSuiDisciple extends DrawCard {
                     return !card.isHonored && !card.isDishonored && card.controller === player;
                 }
             })
-            .select('effect', {
+            .select({
+                name: 'effect',
                 dependsOn: 'character'
             }, {
                 'Honor this character': AbilityDsl.actions.honor(context => ({ target: context.targets.character })),

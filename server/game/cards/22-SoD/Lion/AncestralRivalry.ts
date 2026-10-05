@@ -7,12 +7,14 @@ export default class AncestralRivalry extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +3/+3 or claim favor')
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

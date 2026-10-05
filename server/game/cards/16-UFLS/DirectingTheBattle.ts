@@ -8,11 +8,13 @@ class DirectingTheBattle extends DrawCard {
     setupCardAbilities() {
         this.action('Direct the Battle')
             .condition(context => context.game.isDuringConflict())
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Any
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {

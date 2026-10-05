@@ -8,13 +8,15 @@ class HigesSermon extends DrawCard {
     setupCardAbilities() {
         this.action('Bow characters')
             .condition(context => context.player.cardsInPlay.some(a => !a.bowed) && context.player.opponent !== undefined && context.player.opponent.cardsInPlay.some(a => !a.bowed))
-            .target('firstCharacter', {
+            .target({
+                name: 'firstCharacter',
                 activePromptTitle: 'Choose a character to bow',
                 cardType: CardType.Character,
                 controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
                 player: context => context.player.firstPlayer ? Players.Self : Players.Opponent
             }, AbilityDsl.actions.bow())
-            .target('secondCharacter', {
+            .target({
+                name: 'secondCharacter',
                 activePromptTitle: 'Choose a character to bow',
                 cardType: CardType.Character,
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,

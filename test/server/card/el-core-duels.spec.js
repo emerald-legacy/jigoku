@@ -21,7 +21,7 @@ describe('Emerald Core Duels', function() {
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
                 this.duelEffect.declareAbilities(() => {
                     this.duelEffect.duelChallenge('Honor this character')
-                        .target('target', {
+                        .target({
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
@@ -110,7 +110,7 @@ describe('Emerald Core Duels', function() {
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
                 this.duelEffect.declareAbilities(() => {
                     this.duelEffect.duelFocus('Honor this character')
-                        .target('target', {
+                        .target({
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
@@ -241,7 +241,7 @@ describe('Emerald Core Duels', function() {
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
                 this.duelEffect.declareAbilities(() => {
                     this.duelEffect.duelStrike('Honor this character')
-                        .target('target', {
+                        .target({
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
@@ -340,7 +340,7 @@ describe('Emerald Core Duels', function() {
                 this.duelEffect = this.player1.findCardByName('a-fate-worse-than-death');
                 this.duelEffect.declareAbilities(() => {
                     this.duelEffect.duelChallenge('Honor this character')
-                        .target('target', {
+                        .target({
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)

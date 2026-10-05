@@ -8,7 +8,8 @@ class DiplomaticGiftGiver extends DrawCard {
     setupCardAbilities() {
         this.action('Put fate on characters')
             .condition(context => !!(context.source.isParticipating() && context.player.opponent && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context) && AbilityDsl.actions.loseFate().canAffect(context.player, context)))
-            .target('firstCharacter', {
+            .target({
+                name: 'firstCharacter',
                 activePromptTitle: 'Choose a character to receive the gift of fate',
                 cardType: CardType.Character,
                 controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
@@ -16,7 +17,8 @@ class DiplomaticGiftGiver extends DrawCard {
             }, AbilityDsl.actions.placeFate(context => ({
                 origin: context.player.firstPlayer ? context.player : context.player.opponent
             })))
-            .target('secondCharacter', {
+            .target({
+                name: 'secondCharacter',
                 activePromptTitle: 'Choose a character to receive the gift of fate',
                 cardType: CardType.Character,
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,

@@ -13,7 +13,7 @@ export default class TogashiKazue extends DrawCard {
                 !!(context.source.type === CardType.Attachment &&
                 context.source.parentCharacter &&
                 context.source.parentCharacter.isParticipating()))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source.parentCharacter
             }, AbilityDsl.actions.removeFate((context) => ({

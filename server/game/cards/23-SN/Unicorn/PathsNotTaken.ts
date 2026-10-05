@@ -11,7 +11,7 @@ export default class PathsNotTaken extends DrawCard {
             .when({
                 onConflictStarted: (event, context) => event.conflict.defendingPlayer === context.player
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !!context.player.opponent &&

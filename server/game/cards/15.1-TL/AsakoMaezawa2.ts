@@ -13,7 +13,7 @@ export default class AsakoMaezawa2 extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() === 0
             }, AbilityDsl.actions.sequential([

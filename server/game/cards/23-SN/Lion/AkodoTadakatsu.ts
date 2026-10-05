@@ -18,7 +18,7 @@ export default class AkodoTadakatsu extends DrawCard {
                         (cause.source instanceof Ring || cause.ability.isCardAbility());
                 }
             })
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
             }, AbilityDsl.actions.injure());
@@ -27,13 +27,15 @@ export default class AkodoTadakatsu extends DrawCard {
             .when({
                 onConflictStarted: (event, context) => context.source.isAttacking()
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
                 cardCondition: card => card.isDefending()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

@@ -8,7 +8,7 @@ export default class NorthernWallSensei extends DrawCard {
     setupCardAbilities() {
         this.action('Grant immunity to events')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0

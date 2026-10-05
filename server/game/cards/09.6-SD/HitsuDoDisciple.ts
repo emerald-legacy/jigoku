@@ -10,7 +10,7 @@ class HitsuDoDisciple extends DrawCard {
             .condition(context => context.game.isDuringConflict(ConflictType.Military) &&
                 context.source.isParticipating() &&
                 (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 3)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             }, AbilityDsl.actions.dishonor());

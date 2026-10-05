@@ -6,7 +6,7 @@ export default class BackhandedCompliment2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Select a player to lose an honor and draw a card')
-            .select('target', {
+            .select({
                 targets: true
             }, Object.fromEntries(
                 this.game

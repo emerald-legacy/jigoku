@@ -11,7 +11,7 @@ class YoungRumormonger extends DrawCard {
                 onCardHonored: (event) => event.card.type === CardType.Character,
                 onCardDishonored: (event) => event.card.type === CardType.Character
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card !== context.event.card && card.controller === context.event.card.controller

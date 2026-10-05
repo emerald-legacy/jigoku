@@ -9,7 +9,7 @@ class BayushiAramoro extends DrawCard {
         this.action('Give a character -2/-0')
             .cost(AbilityDsl.costs.dishonorSelf())
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

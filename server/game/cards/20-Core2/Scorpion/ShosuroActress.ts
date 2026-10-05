@@ -8,7 +8,7 @@ export default class ShosuroActress extends DrawCard {
     setupCardAbilities() {
         this.action('Put an opponent\'s character into play')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 controller: Players.Opponent,

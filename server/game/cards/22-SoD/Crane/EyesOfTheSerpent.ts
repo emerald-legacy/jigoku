@@ -57,7 +57,7 @@ export default class EyesOfTheSerpent extends DrawCard {
     setupCardAbilities() {
         this.action('Taint a character')
             .cost(eyesOfTheSerpentCost())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
             }, AbilityDsl.actions.multiple([

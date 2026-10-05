@@ -14,10 +14,12 @@ class RoadsideInn extends DrawCard {
             .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
                 return (context.player.opponent?.fate ?? 0) > 0;
             }))
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character
             }, AbilityDsl.actions.placeFate(context => ({ origin: context.player })))
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 optional: true,

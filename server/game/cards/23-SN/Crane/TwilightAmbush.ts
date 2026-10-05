@@ -11,7 +11,7 @@ export default class TwilightAmbush extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
             }, AbilityDsl.actions.injure())

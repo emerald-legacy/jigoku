@@ -11,7 +11,7 @@ export default class MantraOfVoid extends DrawCard {
                 onConflictDeclared: (event, context) =>
                     event.ring !== undefined && event.ring.hasElement(Element.Void) && event.conflict.attackingPlayer === context.player.opponent
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))

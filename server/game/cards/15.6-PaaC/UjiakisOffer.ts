@@ -8,7 +8,7 @@ class UjiakisOffer extends DrawCard {
     setupCardAbilities() {
         this.action('Place a fate on a participating character, bow it, move it home, and dishonor it')
             .condition(context => context.game.isDuringConflict(ConflictType.Political))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some((myCard) => (
                     myCard !== card && myCard.isParticipating() && (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)))

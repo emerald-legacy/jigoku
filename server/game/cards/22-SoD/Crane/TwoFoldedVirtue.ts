@@ -7,7 +7,7 @@ export default class TwoFoldedVirtue extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase a character\'s military skill')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('scout'))

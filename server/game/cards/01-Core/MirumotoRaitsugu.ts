@@ -8,7 +8,7 @@ export default class MirumotoRaitsugu extends DrawCard {
     setupCardAbilities() {
         this.action('Duel an opposing character')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

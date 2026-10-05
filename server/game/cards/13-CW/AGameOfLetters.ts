@@ -8,12 +8,14 @@ class AGameOfLetters extends DrawCard {
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
-            .tokenTarget('token', {
+            .tokenTarget({
+                name: 'token',
                 activePromptTitle: 'Choose a token',
                 cardType: CardType.Character,
                 tokenCondition: token => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 activePromptTitle: 'Choose a character',
                 dependsOn: 'token',
                 cardType: CardType.Character,

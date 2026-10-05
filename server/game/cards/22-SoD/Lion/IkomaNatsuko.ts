@@ -9,7 +9,7 @@ export default class IkomaNatsuko extends DrawCard {
         this.action('Bow and send home a participating character')
             .cost(AbilityDsl.costs.discardImperialFavor())
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()

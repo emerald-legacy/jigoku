@@ -15,13 +15,15 @@ class YasukiFuzake extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .target('first', {
+            .target({
+                name: 'first',
                 optional: true,
                 cardType: CardType.Character
             }, AbilityDsl.actions.discardStatusToken(context => ({
                 target: statusTokensOf(context.targets.first)
             })))
-            .target('second', {
+            .target({
+                name: 'second',
                 dependsOn: 'first',
                 cardType: CardType.Character,
                 optional: true,

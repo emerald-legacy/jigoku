@@ -17,7 +17,7 @@ class HonedNodachi extends DrawCard {
                                                    event.conflict.conflictType === ConflictType.Military
             })
             .cost(AbilityDsl.costs.removeFateFromParent())
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,

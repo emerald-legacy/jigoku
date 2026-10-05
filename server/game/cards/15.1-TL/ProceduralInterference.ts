@@ -7,13 +7,15 @@ class ProceduralInterference extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard all cards in a province or gain 2 honor')
-            .target('province', {
+            .target({
+                name: 'province',
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: CardType.Province,
                 cardCondition: card => card.controller.getDynastyCardsInProvince(card.location).length > 0
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'province',
                 player: Players.Opponent
             }, {

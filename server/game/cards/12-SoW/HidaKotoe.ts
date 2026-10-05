@@ -10,7 +10,7 @@ class HidaKotoe extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay());
     }

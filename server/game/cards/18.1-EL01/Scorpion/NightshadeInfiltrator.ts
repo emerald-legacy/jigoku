@@ -9,7 +9,7 @@ class NightshadeInfiltrator extends DrawCard {
         this.action('Give a character -3/-3')
             .cost(AbilityDsl.costs.dishonorSelf())
             .condition(context => context.source.isParticipating())
-            .target('target', {
+            .target({
                 player: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()

@@ -16,7 +16,7 @@ class KaitoTempleProtector extends DrawCard {
 
         this.action('Change base skills to match another character\'s')
             .condition(context => context.source.isDefending())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             }, AbilityDsl.actions.cardLastingEffect((context) => {

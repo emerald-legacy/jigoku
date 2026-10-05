@@ -9,7 +9,7 @@ export default class DrivenByCourage extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('give target character +2/+2')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()

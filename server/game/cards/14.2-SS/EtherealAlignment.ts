@@ -10,7 +10,7 @@ class EtherealAlignment extends DrawCard {
             .when({
                 onPhaseEnded: event => event.phase === Phases.Conflict
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card, context) => {

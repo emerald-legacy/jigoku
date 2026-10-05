@@ -13,7 +13,7 @@ export default class AsahinaTakako extends DrawCard {
         });
 
         this.action('Discard a card or switch with another card')
-            .target('target', {
+            .target({
                 cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 controller: Players.Self

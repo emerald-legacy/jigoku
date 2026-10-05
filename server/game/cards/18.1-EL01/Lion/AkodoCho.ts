@@ -13,13 +13,15 @@ export default class AkodoCho extends DrawCard {
             .condition((context) =>
                 context.source.isParticipating() &&
                 context.source.attachments.some((attachment) => attachment.hasTrait('follower')))
-            .target(CHARACTER, {
+            .target({
+                name: CHARACTER,
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     card.isParticipating() && context.game.actions.bow().canAffect(card, context)
             })
-            .select(SELECT, {
+            .select({
+                name: SELECT,
                 dependsOn: CHARACTER,
                 player: (context) =>
                     context.targets[CHARACTER].controller === context.player ? Players.Self : Players.Opponent

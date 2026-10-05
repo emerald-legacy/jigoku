@@ -16,7 +16,7 @@ export default class SoshiShadowshaper extends DrawCard {
 
         this.action('Return a character to owner\'s hand')
             .cost(AbilityDsl.costs.payHonor(1))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card)
             }, AbilityDsl.actions.returnToHand())

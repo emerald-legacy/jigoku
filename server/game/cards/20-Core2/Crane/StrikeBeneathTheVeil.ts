@@ -11,7 +11,7 @@ export default class StrikeBeneathTheVeil extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a military penalty to a participating character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

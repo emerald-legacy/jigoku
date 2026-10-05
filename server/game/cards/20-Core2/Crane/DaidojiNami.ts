@@ -12,7 +12,7 @@ export default class DaidojiNami extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }))
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

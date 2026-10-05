@@ -12,7 +12,7 @@ class OniMask extends DrawCard {
 
         this.action('Blank participating character')
             .cost(AbilityDsl.costs.removeFateFromParent())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.blank() }))

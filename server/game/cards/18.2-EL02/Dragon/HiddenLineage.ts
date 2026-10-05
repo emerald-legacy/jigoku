@@ -7,7 +7,7 @@ class HiddenLineage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move an attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player

@@ -8,7 +8,7 @@ class MotoNergui extends DrawCard {
     setupCardAbilities() {
         this.action('Move highest glory character home')
             .condition(context => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     const participants = (context.game.currentConflict?.getParticipants() ?? []);

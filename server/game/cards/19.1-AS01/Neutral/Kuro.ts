@@ -15,7 +15,7 @@ export default class Kuro extends DrawCard {
     public setupCardAbilities() {
         this.action('Play opponent discarded attachment')
             .condition((context) => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
                 cardType: CardType.Attachment,

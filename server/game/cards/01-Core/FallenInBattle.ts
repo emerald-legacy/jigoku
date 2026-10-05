@@ -11,7 +11,7 @@ class FallenInBattle extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military &&
                                                    (event.conflict.skillDifference ?? 0) >= 5
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.discardFromPlay())

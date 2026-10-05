@@ -7,7 +7,7 @@ export default class LayOfTheLand extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal a province and discard status tokens')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose an unbroken province',
                 cardType: CardType.Province,
                 controller: Players.Any,

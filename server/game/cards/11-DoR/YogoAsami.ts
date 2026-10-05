@@ -17,7 +17,7 @@ class YogoAsami extends DrawCard {
         this.action('Give a character -2/-0')
             .cost(AbilityDsl.costs.bowSelf())
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()

@@ -10,7 +10,7 @@ class TryAgainTomorrow extends DrawCard {
             .condition((context) =>
                 context.player.anyCardsInPlay((card) => card.isParticipating() &&
                 card.hasTrait('courtier') && card.isHonored))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.sendHome())

@@ -8,7 +8,7 @@ class PeasantsAdvice extends DrawCard {
     setupCardAbilities() {
         this.action('look at a province and return its dynasty card to deck')
             .cost(AbilityDsl.costs.dishonor())
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, AbilityDsl.actions.sequential([

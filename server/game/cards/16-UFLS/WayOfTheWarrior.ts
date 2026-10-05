@@ -7,7 +7,7 @@ class WayOfTheWarrior extends DrawCard {
 
     setupCardAbilities() {
         this.action('Let a bushi embrace the way of the warrior')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi')

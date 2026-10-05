@@ -11,7 +11,7 @@ export default class HidaRegular extends DrawCard {
                 onCardLeavesPlay: ({ card }, context) =>
                     card === context.source && card.location === Location.PlayArea && card.isParticipating()
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill()

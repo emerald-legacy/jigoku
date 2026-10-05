@@ -8,7 +8,7 @@ export default class KakitaKaezin extends DrawCard {
     setupCardAbilities() {
         this.action('Duel an opposing character')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to duel with Kaezin',
                 controller: Players.Opponent,

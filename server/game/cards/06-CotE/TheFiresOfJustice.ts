@@ -10,13 +10,15 @@ class TheFiresOfJustice extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military
             })
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character'
             }, {
                 'Remove all fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character, amount: context.targets.character.getFate() })),

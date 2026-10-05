@@ -15,7 +15,8 @@ export default class TributeToANewDawn extends DrawCard {
                 context.player.anyCardsInPlay((card) => card.type === CardType.Attachment) &&
                 (!context.player.opponent ||
                     context.player.opponent.anyCardsInPlay((card) => card.type === CardType.Attachment)))
-            .targetCards(FIRST, {
+            .targetCards({
+                name: FIRST,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
                 cardType: CardType.Attachment,
                 mode: TargetMode.UpTo,
@@ -23,7 +24,8 @@ export default class TributeToANewDawn extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent)
             }, AbilityDsl.actions.bow())
-            .targetCards(SECOND, {
+            .targetCards({
+                name: SECOND,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
                 cardType: CardType.Attachment,
                 mode: TargetMode.UpTo,

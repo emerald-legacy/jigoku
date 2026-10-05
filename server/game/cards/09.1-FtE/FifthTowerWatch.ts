@@ -10,7 +10,7 @@ class FifthTowerWatch extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card.controller === context.player && event.card.location === Location.PlayArea
             })
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,

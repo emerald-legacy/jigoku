@@ -8,7 +8,7 @@ class ProveYourSkill extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a status token off a character')
-            .tokenTarget('target', {
+            .tokenTarget({
                 cardType: CardType.Character
             }, AbilityDsl.actions.discardStatusToken())
             .effect('discard {1}\'s {2}', context => [context.token[0].card, context.token]);

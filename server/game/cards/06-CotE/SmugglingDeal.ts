@@ -8,7 +8,7 @@ class SmugglingDeal extends DrawCard {
     setupCardAbilities() {
         this.action('Increase an ability\'s limit')
             .cost(AbilityDsl.costs.giveHonorToOpponent())
-            .abilityTarget('target', {
+            .abilityTarget({
                 activePromptTitle: 'Select an ability to increase limits on',
                 cardType: CardType.Character,
                 controller: Players.Self

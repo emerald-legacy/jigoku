@@ -7,12 +7,14 @@ class DeceptiveOffer extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase a character\'s military and political skill or take an honor from your opponent')
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

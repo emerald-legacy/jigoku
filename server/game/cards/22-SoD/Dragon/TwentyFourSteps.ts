@@ -8,7 +8,7 @@ export default class TwentyFourSteps extends DrawCard {
     public setupCardAbilities() {
         this.action('Ready a character and move it to the conflict')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi') && card.attachments.length >= 2
@@ -20,7 +20,7 @@ export default class TwentyFourSteps extends DrawCard {
 
         this.action('Move two monks to the conflict')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,

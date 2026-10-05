@@ -16,7 +16,7 @@ class NobleVanguard extends DrawCard {
                     return event.card === context.source && context.player.conflictDeck.length > 0;
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context)

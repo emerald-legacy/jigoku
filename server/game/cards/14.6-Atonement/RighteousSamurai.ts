@@ -32,7 +32,7 @@ class RighteousSamurai extends DrawCard {
                     return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
                 }
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.honor());
     }

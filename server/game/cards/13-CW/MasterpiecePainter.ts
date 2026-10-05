@@ -8,7 +8,7 @@ class MasterpiecePainter extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal and may play top conflict card')
-            .select('target', {
+            .select({
                 targets: true,
                 activePromptTitle: 'Choose any number of players'
             }, {

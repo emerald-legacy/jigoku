@@ -16,13 +16,15 @@ export default class InsufferableScallywag extends DrawCard {
         this.action('Dishonor or send a character home')
             .cost(AbilityDsl.costs.removeFateFromSelf())
             .condition((context) => context.source.isParticipating())
-            .target(CHARACTER, {
+            .target({
+                name: CHARACTER,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) =>
                     card.glory > context.source.glory && card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: CHARACTER,
                 player: Players.Opponent
             }, {

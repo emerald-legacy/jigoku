@@ -13,7 +13,7 @@ class DiscerningYoriki extends DrawCard {
                 onLookAtCards: (event, context) =>
                     event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
             }, AbilityDsl.actions.honor())

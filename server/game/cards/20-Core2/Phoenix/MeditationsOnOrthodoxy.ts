@@ -16,7 +16,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,

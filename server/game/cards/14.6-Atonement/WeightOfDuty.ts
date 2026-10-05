@@ -17,7 +17,7 @@ export default class WeightOfDuty extends ProvinceCard {
                     card.isParticipating() && this.hasValidTarget(card, context)
             }))
             .condition((context) => context.player.opponent !== undefined)
-            .target('target', {
+            .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>

@@ -8,7 +8,7 @@ export default class Levy2 extends DrawCard {
     public setupCardAbilities() {
         this.action('Take an honor or a fate from your opponent')
             .condition((context) => context.player.opponent !== undefined)
-            .select('target', {
+            .select({
                 player: Players.Opponent
             }, {
                 'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),

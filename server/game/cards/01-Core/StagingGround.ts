@@ -7,7 +7,7 @@ class StagingGround extends DrawCard {
 
     setupCardAbilities() {
         this.action('Flip up to 2 dynasty cards')
-            .targetCards('target', {
+            .targetCards({
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards',

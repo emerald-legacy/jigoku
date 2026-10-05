@@ -7,7 +7,7 @@ export default class HidaHonoka extends DrawCard {
 
     setupCardAbilities() {
         this.action('Restore a province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isBroken

@@ -25,7 +25,7 @@ export default class TogashiTsurumi extends DrawCard {
         });
 
         this.action('Place a card underneath self')
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a card',
                 location: Location.Hand,
                 controller: Players.Self,

@@ -16,12 +16,14 @@ export default class Kinki extends DrawCard {
                 !!(context.game.isDuringConflict(ConflictType.Military) &&
                 context.source.parentCharacter &&
                 context.source.parentCharacter.isParticipating()))
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

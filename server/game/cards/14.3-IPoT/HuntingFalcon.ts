@@ -10,7 +10,7 @@ class HuntingFalcon extends DrawCard {
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isFacedown()

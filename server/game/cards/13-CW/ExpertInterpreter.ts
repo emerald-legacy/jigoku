@@ -12,7 +12,8 @@ class ExpertInterpreter extends DrawCard {
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
             .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
-            .ringTarget('myRing', {
+            .ringTarget({
+                name: 'myRing',
                 ringCondition: () => true
             }, AbilityDsl.actions.ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
@@ -23,7 +24,8 @@ class ExpertInterpreter extends DrawCard {
                     restricts: 'characters'
                 })
             })))
-            .ringTarget('oppRing', {
+            .ringTarget({
+                name: 'oppRing',
                 player: Players.Opponent,
                 optional: true,
                 hideIfNoLegalTargets: true,

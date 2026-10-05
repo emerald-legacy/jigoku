@@ -13,7 +13,7 @@ export default class Pride extends StrongholdCard {
         this.action('Give a character a +1/+1 attachment')
             .cost(AbilityDsl.costs.bowSelf())
             .condition((context) => context.player.conflictDeck.length > 0)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>

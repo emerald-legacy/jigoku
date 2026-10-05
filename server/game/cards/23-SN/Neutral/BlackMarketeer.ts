@@ -7,7 +7,7 @@ export default class BlackMarketeer extends DrawCard {
 
     setupCardAbilities() {
         this.action('Play an attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
                 location: Location.ConflictDiscardPile

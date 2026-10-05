@@ -8,7 +8,7 @@ class MasterOfJade extends DrawCard {
     setupCardAbilities() {
         this.action('Lose 2 honor to put a fate on a character')
             .cost(AbilityDsl.costs.payHonor(2))
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.placeFate({amount: 1}));
     }

@@ -7,7 +7,7 @@ export default class BorderFortress extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Reveal a province')
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isFacedown()

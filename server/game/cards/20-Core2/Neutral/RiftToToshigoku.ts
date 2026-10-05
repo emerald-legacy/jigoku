@@ -21,7 +21,7 @@ export default class RiftToToshigoku extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .cost(AbilityDsl.costs.breakSelf())
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to discard',
                 player: Players.Opponent,
                 controller: Players.Opponent,

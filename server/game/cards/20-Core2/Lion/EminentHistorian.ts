@@ -12,7 +12,7 @@ export default class EminentHistorian extends DrawCard {
 
         this.action('Honor a character')
             .condition((context) => !context.player.opponent?.isMoreHonorable())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()

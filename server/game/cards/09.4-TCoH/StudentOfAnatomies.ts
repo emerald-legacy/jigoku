@@ -10,7 +10,7 @@ class StudentOfAnatomies extends DrawCard {
             .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,

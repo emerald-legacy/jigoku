@@ -34,7 +34,7 @@ export default class SanctifiedEarth extends DrawCard {
                 onDefendersDeclared: trigger.onDefendersDeclared.when,
                 onMoveToConflict: trigger.onMoveToConflict.when
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 player: Players.Self,
                 cardCondition: (card, context) => Object.entries(trigger).find(([name]) => name === context.event.name)?.[1].cardCondition(card, context) ?? false

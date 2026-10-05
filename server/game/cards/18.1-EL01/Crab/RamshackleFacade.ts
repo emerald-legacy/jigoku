@@ -10,7 +10,7 @@ class RamshackleFacade extends DrawCard {
             .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Holding
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isAttacking() && card.costLessThan(4)

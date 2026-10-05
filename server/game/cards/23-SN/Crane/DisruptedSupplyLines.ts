@@ -88,7 +88,7 @@ export default class DisruptedSupplyLines extends DrawCard {
                 )
             })
             .cost(disruptedSupplyLinesCost())
-            .select('target', {
+            .select({
                 player: Players.Opponent
             }, {
                 'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),

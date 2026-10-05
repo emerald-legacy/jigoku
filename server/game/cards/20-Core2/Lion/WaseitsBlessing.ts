@@ -7,11 +7,13 @@ export default class WaseitsBlessing extends DrawCard {
 
     setupCardAbilities() {
         this.action('Send a character home from each side')
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }, AbilityDsl.actions.sendHome())
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 dependsOn: 'myCharacter',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()

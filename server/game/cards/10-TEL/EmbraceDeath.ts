@@ -17,7 +17,7 @@ class EmbraceDeath extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.isAttacking()
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
             })

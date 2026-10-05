@@ -10,7 +10,7 @@ class LostPapers extends DrawCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {

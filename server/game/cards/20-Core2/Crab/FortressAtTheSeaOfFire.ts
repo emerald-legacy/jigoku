@@ -9,7 +9,7 @@ export default class FortressAtTheSeaOfFire extends StrongholdCard {
         this.reaction('Bow a character')
             .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => !card.isParticipating()
             }, AbilityDsl.actions.bow(), AbilityDsl.actions.ready());

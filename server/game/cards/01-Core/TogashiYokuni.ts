@@ -7,7 +7,7 @@ class TogashiYokuni extends DrawCard {
 
     setupCardAbilities() {
         this.action('Copy another character\'s ability')
-            .abilityTarget('target', {
+            .abilityTarget({
                 activePromptTitle: 'Select a character to copy from',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source,

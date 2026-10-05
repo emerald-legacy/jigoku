@@ -8,7 +8,7 @@ export default class UsogawaChidori extends DrawCard {
     setupCardAbilities() {
         this.action('Blank a character')
             .cost(AbilityDsl.costs.giveFateToOpponent())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.isParticipating()

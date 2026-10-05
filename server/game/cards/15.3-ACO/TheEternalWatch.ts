@@ -7,11 +7,13 @@ export default class TheEternalWatch extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Bow a character or take an honor from your opponent')
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.allowGameAction('bow', context)
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {

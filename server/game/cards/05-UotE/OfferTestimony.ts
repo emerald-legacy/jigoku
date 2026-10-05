@@ -8,12 +8,14 @@ class OfferTestimony extends DrawCard {
     setupCardAbilities() {
         this.action('Both players reveal a card')
             .condition(context => !!(context.player.opponent && context.game.isDuringConflict(ConflictType.Political)))
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('bow', context)
             })
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,

@@ -11,7 +11,7 @@ class AllAndNothing extends DrawCard {
                 onResolveRingElement: (event, context) =>
                     event.ring.element === Element.Void && event.player === context.player
             })
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: (ring, context) => {
                     const event = context.event;
                     return event.physicalRing ? ring !== event.physicalRing : ring.element !== Element.Void;

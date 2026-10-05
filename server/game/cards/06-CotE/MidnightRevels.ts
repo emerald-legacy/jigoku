@@ -10,7 +10,7 @@ export default class MidnightRevels extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     const charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardType.Character);

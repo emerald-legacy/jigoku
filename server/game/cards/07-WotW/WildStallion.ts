@@ -8,7 +8,7 @@ class WildStallion extends DrawCard {
     setupCardAbilities() {
         this.action('Move this and another character to the conflict')
             .condition(context => !!(context.game.currentConflict && !context.source.isParticipating()))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source,

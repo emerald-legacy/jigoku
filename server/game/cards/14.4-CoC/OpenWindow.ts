@@ -7,7 +7,7 @@ class OpenWindow extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a Shinobi into the conflict')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('shinobi')

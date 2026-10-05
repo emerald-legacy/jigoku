@@ -25,7 +25,7 @@ class UtakuRumaru extends DrawCard {
             .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source

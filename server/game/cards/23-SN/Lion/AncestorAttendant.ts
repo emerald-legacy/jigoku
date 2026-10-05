@@ -7,7 +7,7 @@ export default class AncestorAttendant extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Dishonor a character')
-            .target('target', {
+            .target({
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     (card.printedCost ?? 0) > 0 &&

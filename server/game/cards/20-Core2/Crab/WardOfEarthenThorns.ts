@@ -21,7 +21,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
                 context.game.currentConflict
                     ?.getConflictProvinces()
                     .some((province) => context.source.parent === province) ?? false)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, AbilityDsl.actions.removeFate());

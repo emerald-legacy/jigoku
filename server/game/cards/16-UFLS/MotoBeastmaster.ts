@@ -10,7 +10,7 @@ class MotoBeastmaster extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,

@@ -8,13 +8,15 @@ class JoinTheFray extends DrawCard {
     setupCardAbilities() {
         this.action('Put a character into play from a province')
             .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('cavalry')
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 targets: true,
                 activePromptTitle: 'Which side should this character be on?'

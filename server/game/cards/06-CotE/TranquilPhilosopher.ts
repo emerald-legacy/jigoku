@@ -6,7 +6,7 @@ class TranquilPhilosopher extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move fate on rings')
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring) => ring.isUnclaimed()
             }, AbilityDsl.actions.sequential([

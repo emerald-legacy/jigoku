@@ -7,7 +7,7 @@ export default class LetGo extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard an attachment')
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay());
     }

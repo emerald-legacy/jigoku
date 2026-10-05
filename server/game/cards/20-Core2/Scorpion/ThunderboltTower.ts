@@ -8,7 +8,7 @@ export default class ThunderboltTower extends StrongholdCard {
     setupCardAbilities() {
         this.action('Give a character -2/-2')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

@@ -10,7 +10,7 @@ export default class MasterAtArms extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a weapon attachment from your conflict discard pile',
                 cardCondition: (card) => card.hasTrait('weapon'),
                 location: [Location.ConflictDiscardPile],

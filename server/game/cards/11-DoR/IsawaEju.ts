@@ -11,7 +11,7 @@ class IsawaEju extends DrawCard {
     setupCardAbilities() {
         this.action('Discard all cards in a province and refill it faceup')
             .condition(context => hasClaimedRing(this, elementSymbol.key, context.player))
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
             })

@@ -9,7 +9,7 @@ export default class BlatantSwindler extends DrawCard {
         this.action('Move home a character')
             .cost(AbilityDsl.costs.giveHonorToOpponent(1))
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
-            .target('target', {
+            .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,

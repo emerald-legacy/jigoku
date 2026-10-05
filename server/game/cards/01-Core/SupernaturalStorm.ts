@@ -8,7 +8,7 @@ class SupernaturalStorm extends DrawCard {
     setupCardAbilities() {
         this.action('Increase the skill of one character')
             .condition(() => this.controller.cardsInPlay.some(card => card.hasTrait('shugenja')))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

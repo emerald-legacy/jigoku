@@ -8,7 +8,7 @@ class FightOn extends DrawCard {
     setupCardAbilities() {
         this.action('Ready character and move to conflict')
             .condition(context => context.player.isDefendingPlayer())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.bowed

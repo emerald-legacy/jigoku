@@ -11,13 +11,15 @@ class ChancellorsAide extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
             .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
-            .select('myPlayer', {
+            .select({
+                name: 'myPlayer',
                 targets: true
             }, {
                 [this.owner.name]: AbilityDsl.actions.chosenDiscard({ target: this.owner }),
                 [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.chosenDiscard({ target: this.owner.opponent })
             })
-            .select('oppPlayer', {
+            .select({
+                name: 'oppPlayer',
                 targets: true,
                 player: Players.Opponent,
                 condition: context => !!context.costs.optionalHonorTransferFromOpponentCostPaid

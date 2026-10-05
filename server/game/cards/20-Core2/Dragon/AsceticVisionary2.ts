@@ -9,7 +9,7 @@ export default class AsceticVisionary2 extends DrawCard {
         this.action('Ready a character')
             .cost(AbilityDsl.costs.payFateToRing(1))
             .condition((context) => context.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('monk')
             }, AbilityDsl.actions.ready());

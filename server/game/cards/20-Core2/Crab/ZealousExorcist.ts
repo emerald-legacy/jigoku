@@ -14,7 +14,7 @@ export default class ZealousExorcist extends DrawCard {
 
         this.action('Remove a character from play')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => this.charactersPlayedThisConflict.has(card)
             }, AbilityDsl.actions.removeFromGame());

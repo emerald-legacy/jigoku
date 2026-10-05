@@ -11,7 +11,7 @@ class OurFoeDoesNotWait extends DrawCard {
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
 
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,

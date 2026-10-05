@@ -7,7 +7,7 @@ class RecalledDefenses extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a card to your stronghold')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source

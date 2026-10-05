@@ -8,7 +8,7 @@ export default class CorneringManeuver extends DrawCard {
     setupCardAbilities() {
         this.action('Give a character +2 mil')
             .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipatingFor(context.player)
             }, AbilityDsl.actions.cardLastingEffect({

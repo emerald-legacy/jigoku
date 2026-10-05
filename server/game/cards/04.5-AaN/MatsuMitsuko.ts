@@ -8,7 +8,7 @@ class MatsuMitsuko extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character to the conflict')
             .condition(context => !!(this.game.isDuringConflict(ConflictType.Military) && context.player.opponent && context.player.isMoreHonorable()))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.moveToConflict());

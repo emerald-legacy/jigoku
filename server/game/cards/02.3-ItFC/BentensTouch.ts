@@ -11,7 +11,7 @@ class BentensTouch extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('phoenix') && card.hasTrait('shugenja')
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self,

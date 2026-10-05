@@ -7,7 +7,7 @@ class UnyieldingSensei extends DrawCard {
 
     setupCardAbilities() {
         this.action('Choose a province')
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,

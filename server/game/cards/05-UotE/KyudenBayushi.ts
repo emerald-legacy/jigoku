@@ -8,7 +8,7 @@ export default class KyudenBayushi extends StrongholdCard {
     setupCardAbilities() {
         this.action('Ready a dishonored character')
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isDishonored

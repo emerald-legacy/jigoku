@@ -12,7 +12,7 @@ export default class ScoutsSteed extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player

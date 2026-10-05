@@ -7,7 +7,7 @@ export default class JadeColoredRocks extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action('Make your opponent lose a resource')
-            .select('target', {
+            .select({
                 player: Players.Self,
                 activePromptTitle: 'Choose an option'
             }, {

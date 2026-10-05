@@ -10,12 +10,14 @@ class VoidWielder extends DrawCard {
     setupCardAbilities() {
         this.action('Wield the power of the void')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .target('character', {
+            .target({
+                name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && AbilityDsl.actions.sendHome().canAffect(card, context)
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character',
                 player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {

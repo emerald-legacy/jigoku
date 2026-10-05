@@ -10,7 +10,7 @@ export default class OfferingsToTheKami extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose a ring to claim and resolve',
                 player: Players.Self,
                 ringCondition: (ring) => ring.isUnclaimed()

@@ -7,7 +7,7 @@ class InSearchOfSelf extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow attacking character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.costLessThan(context.player.getNumberOfFacedownProvinces() + 1)
             }, AbilityDsl.actions.bow());

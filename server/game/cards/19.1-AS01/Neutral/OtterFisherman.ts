@@ -17,7 +17,7 @@ export default class OtterFisherman extends DrawCard {
             .when({
                 onClaimRing: (event, context) => event.player === context.player && claimsRingOf(this, ELEMENT_KEY, event)
             })
-            .select('target', {
+            .select({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose an option for your opponent'
             }, {

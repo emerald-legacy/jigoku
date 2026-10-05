@@ -10,7 +10,7 @@ export default class SharingShinseisWisdom extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any
             }, AbilityDsl.actions.selectCard((context) => ({

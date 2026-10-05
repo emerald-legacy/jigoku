@@ -27,7 +27,7 @@ export default class DaidojiOta extends DrawCard {
 
         this.action('Have opponent discard a card or show you their hand')
             .condition((context) => context.source.isParticipating())
-            .select('target', {
+            .select({
                 player: Players.Opponent
             }, {
                 'Discard an event': AbilityDsl.actions.chosenDiscard({

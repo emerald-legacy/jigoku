@@ -10,7 +10,7 @@ export default class ShrineOfVengeance extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.facedown

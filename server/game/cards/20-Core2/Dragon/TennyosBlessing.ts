@@ -7,7 +7,7 @@ export default class TennyosBlessing extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Look at your dynasty deck')
-            .target('target', {
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,

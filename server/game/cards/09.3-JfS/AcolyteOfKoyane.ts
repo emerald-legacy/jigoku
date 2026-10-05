@@ -8,12 +8,14 @@ class AcolyteOfKoyane extends DrawCard {
     setupCardAbilities() {
         this.action('Gain or lose pride')
             .condition(context => context.game.isDuringConflict(ConflictType.Political))
-            .target('character', {
+            .target({
+                name: 'character',
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'character'
             }, {
                 'Gain Pride': AbilityDsl.actions.cardLastingEffect(context => ({

@@ -16,14 +16,16 @@ export default class HonoredVeterans extends DrawCard {
 
         this.action('Honor characters')
             .condition(() => this.canBePlayed())
-            .target('myCharacter', {
+            .target({
+                name: 'myCharacter',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
             }, AbilityDsl.actions.honor())
-            .target('oppCharacter', {
+            .target({
+                name: 'oppCharacter',
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,

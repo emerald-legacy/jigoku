@@ -19,7 +19,7 @@ class MakeAnOpening extends DrawCard {
                     !!opponent.showBid &&
                     context.player.showBid !== opponent.showBid;
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) =>

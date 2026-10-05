@@ -7,7 +7,7 @@ export default class KotobukisBlessing extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place a fate on a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([

@@ -20,7 +20,7 @@ export default class PromisingHohei extends DrawCard {
             .when({
                 onCardAttached: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 controller: Players.Self,
                 cardCondition: (card) => card.name !== 'Promising Hohei' && card.hasTrait('follower')
             }, AbilityDsl.actions.returnToHand());

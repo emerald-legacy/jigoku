@@ -11,7 +11,7 @@ class IsawaMasahiro extends DrawCard {
         this.action('Bow to discard an enemy character')
             .cost(AbilityDsl.costs.bowSelf())
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(3) && card.isParticipating()
             }, AbilityDsl.actions.discardFromPlay());

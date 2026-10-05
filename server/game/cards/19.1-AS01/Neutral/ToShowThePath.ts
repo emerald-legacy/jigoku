@@ -11,7 +11,7 @@ export default class ToShowThePath extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.hasTrait('monk') || card.hasTrait('shugenja')
                 ))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => !card.hasTrait('monk') && !card.hasTrait('shugenja')

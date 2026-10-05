@@ -12,7 +12,7 @@ class FinalWhisper extends DrawCard {
                 onStatusTokenGained: (event, context) =>
                     event.card.type === CardType.Character && event.card.controller === context.player.opponent
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,

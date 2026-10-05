@@ -8,7 +8,7 @@ class WayOfTheLion extends DrawCard {
     setupCardAbilities() {
         this.action('Double the base mil of a character')
             .condition(() => this.game.isDuringConflict())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('lion') && card.getBaseMilitarySkill() > 0
             }, AbilityDsl.actions.cardLastingEffect({

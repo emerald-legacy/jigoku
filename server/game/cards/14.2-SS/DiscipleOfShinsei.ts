@@ -10,7 +10,7 @@ class DiscipleOfShinsei extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay());
     }

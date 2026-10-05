@@ -8,7 +8,7 @@ class DojiChallenger extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character into the conflict')
             .condition(context => context.source.isAttacking())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
             }, AbilityDsl.actions.moveToConflict());

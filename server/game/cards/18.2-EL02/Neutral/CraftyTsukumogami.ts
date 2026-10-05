@@ -11,7 +11,7 @@ class CraftyTsukumogami extends DrawCard {
 
     setupCardAbilities() {
         this.action('Attach to a ring')
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose a ring to attach to',
                 ringCondition: (ring, context) => this.checkRingCondition(ring, context)
             }, AbilityDsl.actions.sequential([

@@ -15,7 +15,7 @@ export default class AppealingToTheFortunes extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.Provinces, Location.Hand]

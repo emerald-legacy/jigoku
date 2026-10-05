@@ -8,7 +8,7 @@ class BayushiShoju extends DrawCard {
     setupCardAbilities() {
         this.action('Give a character -0/-1')
             .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()

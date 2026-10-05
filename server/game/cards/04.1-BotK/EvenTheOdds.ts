@@ -11,7 +11,7 @@ class EvenTheOdds extends DrawCard {
                 !!this.game.currentConflict &&
                 !!context.player.opponent &&
                 this.game.currentConflict.hasMoreParticipants(context.player.opponent))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.moveToConflict(), AbilityDsl.actions.honor((context) => ({ target: context.target?.hasTrait('commander') ? context.target : [] })));

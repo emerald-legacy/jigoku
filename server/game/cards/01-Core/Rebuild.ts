@@ -11,7 +11,7 @@ class Rebuild extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: card => !!card.controller.getProvinceCardInProvince(card.location) && !card.controller.getProvinceCardInProvince(card.location)?.isBroken
             }))
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a holding to put into the province',
                 cardType: CardType.Holding,
                 location: Location.DynastyDiscardPile,

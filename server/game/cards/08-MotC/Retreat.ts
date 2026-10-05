@@ -8,7 +8,7 @@ class Retreat extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character home')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sendHome());

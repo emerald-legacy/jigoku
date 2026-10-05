@@ -7,7 +7,7 @@ export default class DeadEyesSensei extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Ready a character and give them Berserker')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.multiple([

@@ -15,7 +15,7 @@ export default class StormFromSakkaku extends DrawCard {
         ]);
 
         this.action('Move holding to another province')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Self,

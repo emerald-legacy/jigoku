@@ -12,7 +12,7 @@ export default class NitenAdept extends DrawCard {
                 cardCondition: (card, context) => card.parentCharacter === context.source
             }))
             .condition((context) => context.source.attachments.length > 0 && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length === 0
             }, AbilityDsl.actions.bow());

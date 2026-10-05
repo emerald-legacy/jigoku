@@ -15,7 +15,7 @@ export default class ChainOfCommand extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique()
             }))
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a unique character',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isUnique()

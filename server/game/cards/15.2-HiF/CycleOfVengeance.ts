@@ -10,7 +10,7 @@ export default class CycleOfVengeance extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.multiple([
                 AbilityDsl.actions.placeFate({ amount: 1 }),

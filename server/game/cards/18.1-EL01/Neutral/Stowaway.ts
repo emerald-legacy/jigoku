@@ -12,7 +12,7 @@ class Stowaway extends DrawCard {
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onCharacterEntersPlay: (event, context) => event.card === context.source && context.source.isParticipating()
             })
-            .targetCards('target', {
+            .targetCards({
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 mode: TargetMode.UpTo,
                 numCards: 2,

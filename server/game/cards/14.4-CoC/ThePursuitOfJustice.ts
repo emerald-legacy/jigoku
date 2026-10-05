@@ -9,7 +9,7 @@ export default class ThePursuitOfJustice extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.ready())

@@ -11,7 +11,7 @@ class OpiumWastrel extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

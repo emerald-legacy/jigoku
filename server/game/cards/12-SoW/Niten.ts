@@ -15,7 +15,7 @@ class Niten extends DrawCard {
             .cost(captureParentCost())
             .cost(AbilityDsl.costs.returnSelfToHand())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 location: Location.Hand,

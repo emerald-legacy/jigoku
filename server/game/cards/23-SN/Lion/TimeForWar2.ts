@@ -12,7 +12,7 @@ export default class TimeForWar2 extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi')

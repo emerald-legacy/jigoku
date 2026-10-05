@@ -8,7 +8,7 @@ class InvocationOfAsh extends DrawCard {
     setupCardAbilities() {
         this.action('Move to another character')
             .cost(AbilityDsl.costs.payHonor(1))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.sequential([

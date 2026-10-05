@@ -8,7 +8,8 @@ class RampartsOfStone extends DrawCard {
     setupCardAbilities() {
         this.action('Attacker bows participating characters or discards three cards from hand')
             .condition(context => context.game.isDuringConflict())
-            .select('select', {
+            .select({
+                name: 'select',
                 player: (context) => {
                     if(context.player.isAttackingPlayer()) {
                         return Players.Self;

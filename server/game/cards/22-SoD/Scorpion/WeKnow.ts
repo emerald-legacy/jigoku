@@ -13,14 +13,16 @@ export default class WeKnow extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('courtier')
             }))
-            .tokenTarget('token', {
+            .tokenTarget({
+                name: 'token',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 tokenCondition: token => {
                     return token.grantedStatus === CharacterStatus.Honored;
                 }
             })
-            .selectFrom('select', {
+            .selectFrom({
+                name: 'select',
                 dependsOn: 'token',
                 player: Players.Opponent
             }, (context) => {

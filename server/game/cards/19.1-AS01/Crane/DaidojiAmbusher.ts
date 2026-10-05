@@ -14,7 +14,7 @@ export default class DaidojiAmbusher extends DrawCard {
     public setupCardAbilities() {
         this.action('Give someone -2 military')
             .condition((context) => context.game.isDuringConflict('military') && context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.sequential([

@@ -149,6 +149,12 @@ export function createDraft(title: string, holdsBase: (context: AbilityContext) 
     return { title, holdsBase, targets: {}, specs: [], costs: [], gameActions: [] };
 }
 
+/** A target's name in `context.targets` (or `context.selects`); 'target' is also `context.target` and `{0}` in the effect message. */
+type Named<Name extends string> = { name?: Name };
+
+/** A target given no name is named 'target'. */
+type TargetName<Name> = [Name] extends [never] ? 'target' : Name;
+
 interface CardChoiceProps<EarlierContext, K, D> {
     cardType?: K;
     location?: Location | Location[];
@@ -323,21 +329,21 @@ export class AbilityBuilder<
     }
 
     target<
-        const Name extends string,
+        const Name extends string = never,
         const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never,
         const O extends boolean = false
     >(
-        name: Name,
-        props: CardTargetProps<
-            CandidateContext<Base, TG, RG, CO, TK, D, Name, CardOfType<K>>,
+        props: Named<Name> & CardTargetProps<
+            CandidateContext<Base, TG, RG, CO, TK, D, TargetName<NoInfer<Name>>, CardOfType<K>>,
             EarlierContext<Base, TG, RG, CO, TK, D>,
             K,
             D,
             O
         >,
-        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D & keyof TG, Name, ChosenCard<K, O>>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>[]
-    ): AbilityBuilder<Base, TG & { [P in Name]: ChosenCard<K, O> }, RG, CO, TK, SL> {
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D & keyof TG, TargetName<Name>, ChosenCard<K, O>>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>[]
+    ): AbilityBuilder<Base, TG & { [P in TargetName<Name>]: ChosenCard<K, O> }, RG, CO, TK, SL> {
+        const name = props.name ?? 'target';
         const holdsCard = holdsCardOf<K>(props.cardType);
         const skipped = (value: unknown) => props.optional === true && (value === undefined || (Array.isArray(value) && value.length === 0));
         // its own callbacks see the candidate card, later ones what was chosen
@@ -358,19 +364,19 @@ export class AbilityBuilder<
 
     /** Several cards at once, by `mode`. Its callbacks see one candidate at a time; later ones, every card chosen. */
     targetCards<
-        const Name extends string,
+        const Name extends string = never,
         const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never
     >(
-        name: Name,
-        props: CardsTargetProps<
-            CandidateContext<Base, TG, RG, CO, TK, D, Name, CardOfType<K>>,
+        props: Named<Name> & CardsTargetProps<
+            CandidateContext<Base, TG, RG, CO, TK, D, TargetName<NoInfer<Name>>, CardOfType<K>>,
             EarlierContext<Base, TG, RG, CO, TK, D>,
             K,
             D
         >,
-        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D & keyof TG, Name, CardOfType<K> | CardOfType<K>[]>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>[]
-    ): AbilityBuilder<Base, TG & { [P in Name]: CardOfType<K>[] }, RG, CO, TK, SL> {
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D & keyof TG, TargetName<Name>, CardOfType<K> | CardOfType<K>[]>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>[]
+    ): AbilityBuilder<Base, TG & { [P in TargetName<Name>]: CardOfType<K>[] }, RG, CO, TK, SL> {
+        const name = props.name ?? 'target';
         const holdsCard = holdsCardOf<K>(props.cardType);
         const candidate: TargetSpec = { bag: 'targets', name, holds: holdsCard };
         const own: TargetSpec = { bag: 'targets', name, holds: (value) => Array.isArray(value) && value.every(holdsCard) };
@@ -424,15 +430,15 @@ export class AbilityBuilder<
 
     /** The status tokens on a chosen card. Its own conditions run before it is set. */
     tokenTarget<
-        const Name extends string,
+        const Name extends string = never,
         const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never,
         const O extends boolean = false
     >(
-        name: Name,
-        props: TokenTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, K, D, O>,
-        ...gameActions: NoInfer<BuilderAction<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Visible<TK, D & keyof TK, Name, StatusToken[]>>>[]
-    ): AbilityBuilder<Base, TG, RG, CO, TK & { [P in Name]: ChosenTokens<O> }, SL> {
+        props: Named<Name> & TokenTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, K, D, O>,
+        ...gameActions: NoInfer<BuilderAction<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Visible<TK, D & keyof TK, TargetName<Name>, StatusToken[]>>>[]
+    ): AbilityBuilder<Base, TG, RG, CO, TK & { [P in TargetName<Name>]: ChosenTokens<O> }, SL> {
+        const name = props.name ?? 'target';
         const holdsCard = holdsCardOf<K>(props.cardType);
         const own: TargetSpec = { bag: 'tokens', name, holds: (value) => holdsTokens(value) || (props.optional === true && value === undefined) };
         const [earlier, others] = this.#earlier(props.dependsOn);
@@ -460,12 +466,11 @@ export class AbilityBuilder<
 
     /** A triggered ability printed on a chosen card, in `context.targetAbility`. */
     abilityTarget<
-        const Name extends string,
+        const Name extends string = never,
         const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never
     >(
-        name: Name,
-        props: AbilityTargetProps<
+        props: Named<Name> & AbilityTargetProps<
             EarlierContext<Base & { targetAbility: CardAbility }, TG, RG, CO, TK, D>,
             EarlierContext<Base, TG, RG, CO, TK, D>,
             K,
@@ -473,6 +478,7 @@ export class AbilityBuilder<
         >,
         ...gameActions: NoInfer<BuilderAction<Base & { targetAbility: CardAbility }, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>[]
     ): AbilityBuilder<Base & { targetAbility: CardAbility }, TG, RG, CO, TK, SL> {
+        const name = props.name ?? 'target';
         const holdsCard = holdsCardOf<K>(props.cardType);
         const own: TargetSpec = { bag: 'targetAbility', name: 'targetAbility', holds: holdsAbility };
         const [earlier, others] = this.#earlier(props.dependsOn);
@@ -508,11 +514,11 @@ export class AbilityBuilder<
     }
 
     /** `ringCondition` gets the candidate as an argument: the engine's ring prompt doesn't set it on the context. */
-    ringTarget<const Name extends string, D extends Dependency<TG, RG, TK, SL> = never, const O extends boolean = false>(
-        name: Name,
-        props: RingTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D, O>,
-        ...gameActions: NoInfer<BuilderAction<Base, Earlier<TG, D & keyof TG>, Visible<RG, D & keyof RG, Name, Ring>, CO, Earlier<TK, D & keyof TK>>>[]
-    ): AbilityBuilder<Base, TG, RG & { [P in Name]: true extends O ? Ring | undefined : Ring }, CO, TK, SL> {
+    ringTarget<const Name extends string = never, D extends Dependency<TG, RG, TK, SL> = never, const O extends boolean = false>(
+        props: Named<Name> & RingTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D, O>,
+        ...gameActions: NoInfer<BuilderAction<Base, Earlier<TG, D & keyof TG>, Visible<RG, D & keyof RG, TargetName<Name>, Ring>, CO, Earlier<TK, D & keyof TK>>>[]
+    ): AbilityBuilder<Base, TG, RG & { [P in TargetName<Name>]: true extends O ? Ring | undefined : Ring }, CO, TK, SL> {
+        const name = props.name ?? 'target';
         const own: TargetSpec = { bag: 'rings', name, holds: (value) => holdsRing(value) || (props.optional === true && value === undefined) };
         const [required, others] = this.#earlier(props.dependsOn);
         const optional = others.concat(own);
@@ -536,21 +542,21 @@ export class AbilityBuilder<
     }
 
     /** The choice lands in `context.selects`, not in `targets`. */
-    select<const Name extends string, D extends Dependency<TG, RG, TK, SL> = never>(
-        name: Name,
-        props: SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
+    select<const Name extends string = never, D extends Dependency<TG, RG, TK, SL> = never>(
+        props: Named<Name> & SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
         choices: NoInfer<Record<string, BuilderAction<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>>
-    ): AbilityBuilder<Base, TG, RG, CO, TK, SL | Name> {
+    ): AbilityBuilder<Base, TG, RG, CO, TK, SL | TargetName<Name>> {
+        const name = props.name ?? 'target';
         this.#select(name, props, this.#actionChoices(choices));
         return new AbilityBuilder(this.draft);
     }
 
     /** Choices that only need to be available; the handler reads which one was picked from `context.select`. */
-    selectIf<const Name extends string, D extends Dependency<TG, RG, TK, SL> = never>(
-        name: Name,
-        props: SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
+    selectIf<const Name extends string = never, D extends Dependency<TG, RG, TK, SL> = never>(
+        props: Named<Name> & SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
         conditions: Record<string, (context: EarlierContext<Base, TG, RG, CO, TK, D>) => boolean>
-    ): AbilityBuilder<Base, TG, RG, CO, TK, SL | Name> {
+    ): AbilityBuilder<Base, TG, RG, CO, TK, SL | TargetName<Name>> {
+        const name = props.name ?? 'target';
         const [required, optional] = this.#earlier(props.dependsOn);
         const checked: Record<string, (context: AbilityContext) => boolean> = {};
         for(const [label, condition] of Object.entries(conditions)) {
@@ -561,11 +567,11 @@ export class AbilityBuilder<
     }
 
     /** Choices that depend on the context, such as a label naming an earlier target. */
-    selectFrom<const Name extends string, D extends Dependency<TG, RG, TK, SL> = never>(
-        name: Name,
-        props: SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
+    selectFrom<const Name extends string = never, D extends Dependency<TG, RG, TK, SL> = never>(
+        props: Named<Name> & SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
         choices: (context: EarlierContext<Base, TG, RG, CO, TK, D>) => Record<string, BuilderAction<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>
-    ): AbilityBuilder<Base, TG, RG, CO, TK, SL | Name> {
+    ): AbilityBuilder<Base, TG, RG, CO, TK, SL | TargetName<Name>> {
+        const name = props.name ?? 'target';
         const [required, optional] = this.#earlier(props.dependsOn);
         const checked = this.#checked(choices, required, optional);
         this.#select(name, props, (context: AbilityContext) => this.#actionChoices(checked(context)));

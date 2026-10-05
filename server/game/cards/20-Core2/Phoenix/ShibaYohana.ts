@@ -29,7 +29,7 @@ export default class ShibaYohana extends DrawCard {
 
         this.action('Move a character into the conflict')
             .condition((context) => context.source.isParticipating())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored || card.isDishonored
             }, AbilityDsl.actions.moveToConflict());

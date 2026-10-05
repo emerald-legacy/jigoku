@@ -12,7 +12,7 @@ class Deathseeker extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player && context.source.isAttacking()
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, innerContext) => (card.getFate() > 0 ? card.allowGameAction('removeFate', innerContext) : card.allowGameAction('discardFromPlay', innerContext))

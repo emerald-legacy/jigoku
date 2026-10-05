@@ -11,7 +11,7 @@ class HidaBackbreaker extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
                                                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Opponent,

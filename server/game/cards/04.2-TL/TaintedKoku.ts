@@ -10,7 +10,7 @@ class TaintedKoku extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => Boolean(context.source.parentCharacter && card.controller === context.source.parentCharacter.controller && card !== context.source.parentCharacter)
             }, AbilityDsl.actions.attach((context) => ({ attachment: context.source })));

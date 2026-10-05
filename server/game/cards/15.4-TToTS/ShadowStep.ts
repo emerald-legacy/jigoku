@@ -7,7 +7,7 @@ class ShadowStep extends DrawCard {
 
     setupCardAbilities() {
         this.action('Remove a character from the game and put it into play')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => !card.hasTrait('mythic'),
                 controller: Players.Self

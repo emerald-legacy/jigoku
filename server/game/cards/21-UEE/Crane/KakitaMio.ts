@@ -26,7 +26,7 @@ export default class KakitaMio extends DrawCard {
 
         this.action('Give Corrupt to a character')
             .condition((context) => context.game.currentConflict !== null)
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&

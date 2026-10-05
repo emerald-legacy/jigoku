@@ -10,7 +10,7 @@ export default class BustlingAcademy extends DrawCard {
             .condition((context) =>
                 context.player.cardsInPlay.some((card) => card.hasTrait('scholar')) &&
                 context.player.opponent !== undefined)
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]
             }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile }))

@@ -10,12 +10,14 @@ class DojiDiplomat extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .target('myProvince', {
+            .target({
+                name: 'myProvince',
                 cardType: CardType.Province,
                 controller: Players.Opponent,
                 location: Location.Provinces
             }, AbilityDsl.actions.reveal())
-            .target('oppProvince', {
+            .target({
+                name: 'oppProvince',
                 player: Players.Opponent,
                 controller: Players.Self,
                 cardType: CardType.Province,

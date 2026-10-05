@@ -10,7 +10,7 @@ class BenevolentHost extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,

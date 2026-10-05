@@ -10,7 +10,7 @@ class IsawaUona extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('air') && this.game.isDuringConflict()
             })
-            .target('target', {
+            .target({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Any,

@@ -8,12 +8,14 @@ class IdeTadaji extends DrawCard {
     setupCardAbilities() {
         this.action('Move characters into conflict')
             .condition(context => context.source.isParticipating())
-            .target('myChar', {
+            .target({
+                name: 'myChar',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => !card.bowed && card.costLessThan(3)
             }, AbilityDsl.actions.moveToConflict())
-            .target('oppChar', {
+            .target({
+                name: 'oppChar',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.bowed && card.costLessThan(3)

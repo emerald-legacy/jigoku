@@ -16,7 +16,7 @@ class HanteiXXXVIII extends DrawCard {
         });
 
         this.action('Bow a character')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow());

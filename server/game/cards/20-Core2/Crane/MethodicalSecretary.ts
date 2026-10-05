@@ -10,7 +10,7 @@ export default class MethodicalSecretary extends DrawCard {
             .when({
                 onGloryCount: () => true
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.ready());
     }

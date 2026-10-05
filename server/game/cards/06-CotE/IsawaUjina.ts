@@ -13,7 +13,7 @@ class IsawaUjina extends DrawCard {
             .when({
                 onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() === 0
             }, AbilityDsl.actions.removeFromGame())

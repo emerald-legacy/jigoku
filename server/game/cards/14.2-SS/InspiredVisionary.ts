@@ -11,7 +11,7 @@ class InspiredVisionary extends DrawCard {
                 onPhaseStarted: event => event.phase === Phases.Fate
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.returnToDeck((context) => ({

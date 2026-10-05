@@ -7,7 +7,7 @@ class Outwit extends DrawCard {
 
     setupCardAbilities() {
         this.action('Send a character home.')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => context.player.cardsInPlay.some((myCard) => (

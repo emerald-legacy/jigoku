@@ -21,7 +21,7 @@ export default class ShinjoIsamu extends DrawCard {
                 onSendHome: isamuWentHome,
                 onReturnHome: isamuWentHome
             })
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
                     context.game.requireConflict()

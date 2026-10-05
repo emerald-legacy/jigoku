@@ -8,7 +8,7 @@ class HandToHand extends DrawCard {
     setupCardAbilities() {
         this.action('Discard an attachment')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
             }, AbilityDsl.actions.discardFromPlay())

@@ -7,7 +7,7 @@ class JadeMasterpiece extends DrawCard {
     setupCardAbilities() {
         this.action('Move a fate to an unclaimed ring')
             .cost(AbilityDsl.costs.bowSelf())
-            .ringTarget('target', {
+            .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: ring => ring.isUnclaimed() && ring.fate > 0
             }, AbilityDsl.actions.selectRing(context => ({

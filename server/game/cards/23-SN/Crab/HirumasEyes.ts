@@ -10,12 +10,14 @@ export default class HirumasEyes extends DrawCard {
     setupCardAbilities() {
         this.action('Give skill bonus or penalty')
             .condition(context => context.game.isDuringConflict())
-            .target('provinceCard', {
+            .target({
+                name: 'provinceCard',
                 location: Location.Provinces,
                 cardType: CardType.Character,
                 cardCondition: card => card.isInConflictProvince() && card.isFaceup() && card.getTraits().size > 0
             })
-            .select('select', {
+            .select({
+                name: 'select',
                 dependsOn: 'provinceCard',
                 player: Players.Self
             }, {

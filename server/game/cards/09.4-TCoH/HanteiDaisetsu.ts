@@ -8,7 +8,7 @@ class HanteiDaisetsu extends DrawCard {
     setupCardAbilities() {
         this.action('Blank a participating character')
             .condition((context) => context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Political))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect({

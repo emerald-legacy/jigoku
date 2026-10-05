@@ -8,7 +8,7 @@ class VanguardWarrior extends DrawCard {
     setupCardAbilities() {
         this.action('Sacrifice to put fate on one character')
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.placeFate());
     }

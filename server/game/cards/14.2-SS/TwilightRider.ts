@@ -10,7 +10,7 @@ class TwilightRider extends DrawCard {
             .when({
                 onMoveToConflict: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.ready());
     }

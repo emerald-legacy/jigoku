@@ -7,7 +7,7 @@ export default class ObsidianCaves extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action('Attacker moves a character home')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: (context) => (context.player.isAttackingPlayer() ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.isAttackingPlayer() ? Players.Self : Players.Opponent),

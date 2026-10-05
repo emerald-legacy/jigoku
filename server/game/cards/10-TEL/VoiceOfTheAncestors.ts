@@ -18,7 +18,7 @@ class VoiceOfTheAncestors extends DrawCard {
         });
 
         this.action('Attach a character as a Spirit')
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>

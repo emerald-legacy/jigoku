@@ -10,7 +10,7 @@ class SecludedShrine extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: () => true
             }, AbilityDsl.actions.ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,

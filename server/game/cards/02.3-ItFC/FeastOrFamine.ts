@@ -10,7 +10,7 @@ export default class FeastOrFamine extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
             }, AbilityDsl.actions.selectCard((context) => ({

@@ -11,7 +11,7 @@ class NobleSacrifice extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isHonored
             }))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
             }, AbilityDsl.actions.discardFromPlay());

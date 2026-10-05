@@ -16,13 +16,15 @@ export default class ShosuroTechnique extends DrawCard {
 
         this.action('Set shinobi\'s skills to that of an enemy')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .target('shinobi', {
+            .target({
+                name: 'shinobi',
                 activePromptTitle: 'Choose a Shinobi you control',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('shinobi') && card.isParticipating()
             })
-            .target('enemy', {
+            .target({
+                name: 'enemy',
                 dependsOn: 'shinobi',
                 controller: Players.Opponent,
                 cardType: CardType.Character,

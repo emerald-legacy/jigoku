@@ -7,7 +7,7 @@ export default class ManipulativeScout extends DrawCard {
 
     setupCardAbilities() {
         this.action('Flip a card in a province')
-            .target('target', {
+            .target({
                 controller: Players.Any,
                 location: Location.Provinces,
                 cardCondition: card => card.isDynasty

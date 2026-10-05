@@ -10,7 +10,7 @@ export default class ShibaBodyguard extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.hasTrait('bushi')
             }, AbilityDsl.actions.placeFate((context) => ({

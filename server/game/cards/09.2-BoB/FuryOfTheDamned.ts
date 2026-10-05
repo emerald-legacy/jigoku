@@ -7,7 +7,7 @@ class FuryOfTheDamned extends DrawCard {
 
     setupCardAbilities() {
         this.action('Double the base military skill')
-            .targetCards('target', {
+            .targetCards({
                 activePromptTitle: 'Choose bushi characters',
                 mode: TargetMode.Unlimited,
                 cardType: CardType.Character,

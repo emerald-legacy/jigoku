@@ -9,7 +9,7 @@ export default class DevotionInAction extends DrawCard {
         this.action('Put a character into play')
             .condition((context) =>
                 !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,

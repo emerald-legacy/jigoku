@@ -11,7 +11,7 @@ class TheSpearRushesForth extends DrawCard {
                 cardCondition: card => card.isHonored && card.isDrawCard() && card.isParticipating()
             }))
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()

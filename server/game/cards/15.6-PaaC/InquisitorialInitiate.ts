@@ -13,7 +13,7 @@ export default class InquisitorialInitiate extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             })
-            .targetCards('target', {
+            .targetCards({
                 activePromptTitle: 'Choose cards to reveal',
                 player: Players.Opponent,
                 numCardsFunc: (context) =>

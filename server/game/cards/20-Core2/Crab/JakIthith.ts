@@ -22,13 +22,15 @@ export default class JakIthith extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .target(ATTACHMENT, {
+            .target({
+                name: ATTACHMENT,
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
                 cardCondition: (card) =>
                     Boolean(card.parentCharacter?.isParticipating())
             })
-            .target(RECEIVER, {
+            .target({
+                name: RECEIVER,
                 dependsOn: ATTACHMENT,
                 cardType: CardType.Character,
                 controller: Players.Self,

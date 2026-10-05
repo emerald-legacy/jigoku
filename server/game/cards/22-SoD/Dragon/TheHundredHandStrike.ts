@@ -17,12 +17,14 @@ export default class TheHundredHandStrike extends DrawCard {
     setupCardAbilities() {
         this.action('Give a skill penalty to a participating character')
             .condition((context) => context.game.isDuringConflict())
-            .target('puncher', {
+            .target({
+                name: 'puncher',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             })
-            .target('punchee', {
+            .target({
+                name: 'punchee',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

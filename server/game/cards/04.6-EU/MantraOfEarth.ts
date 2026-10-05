@@ -11,7 +11,7 @@ export default class MantraOfEarth extends DrawCard {
                 onConflictDeclared: (event, context) =>
                     event.ring?.hasElement(Element.Earth) && event.conflict.attackingPlayer === context.player.opponent
             })
-            .target('target', {
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))

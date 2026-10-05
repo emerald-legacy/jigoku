@@ -6,7 +6,7 @@ class BorderlandsFortifications extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch this card with another')
-            .target('target', {
+            .target({
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isDynasty && card !== context.source

@@ -16,7 +16,7 @@ export default class DarbukaOfBanishment extends DrawCard {
 
         this.action('Return a ring to the unclaimed pool')
             .cost(AbilityDsl.costs.payHonor(1))
-            .ringTarget('target', {
+            .ringTarget({
                 ringCondition: (ring) => ring.isClaimed()
             }, AbilityDsl.actions.returnRing());
     }
