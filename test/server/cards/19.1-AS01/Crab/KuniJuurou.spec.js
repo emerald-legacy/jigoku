@@ -31,7 +31,7 @@ describe('Kuni Juurou', function () {
             });
 
             it('Loses honor normally due to effects', function () {
-                let player1StartingHonor = this.player1.honor;
+                const player1StartingHonor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
@@ -268,7 +268,7 @@ describe('Kuni Juurou', function () {
                 expect(this.borderlands.isTainted).toBe(true);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted.'
+                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted'
                 );
             });
 
@@ -292,7 +292,7 @@ describe('Kuni Juurou', function () {
                 this.player1.clickCard(this.borderlands);
                 expect(this.borderlands.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted.'
+                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted'
                 );
             });
         });

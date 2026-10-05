@@ -1,5 +1,6 @@
 import { WsSocket } from '../../server/gamenode/WsSocket.js';
 import { PROTOCOL_VERSION } from '../../server/gamenode/LobbyProtocol.js';
+import { callMethod } from '../helpers/methodaccess.js';
 
 type WsSpy = jasmine.SpyObj<{ send: (data: string) => void }> & { readyState: number };
 
@@ -19,20 +20,17 @@ type WsSocketCtx = {
     parseMsg?: (msg: string) => unknown;
 };
 
-const proto = (WsSocket as unknown as { prototype: Record<string, (...args: unknown[]) => unknown> }).prototype;
-
-function call<T = unknown>(method: string, ctx: unknown, ...args: unknown[]): T {
-    return proto[method].apply(ctx, args) as T;
+function call(method: string, ctx: WsSocketCtx, ...args: unknown[]): unknown {
+    return callMethod(ctx, method, ...args);
 }
 
 function makeWs(open = true): WsSpy {
-    const ws = jasmine.createSpyObj<{ send: (data: string) => void }>('ws', ['send']) as WsSpy;
-    ws.readyState = open ? 1 : 3;
-    return ws;
+    return Object.assign(jasmine.createSpyObj<{ send: (data: string) => void }>('ws', ['send']), { readyState: open ? 1 : 3 });
 }
 
 function makeCtx(overrides: Partial<WsSocketCtx> = {}): WsSocketCtx {
-    const ctx = Object.create(proto) as WsSocketCtx;
+    // built on the prototype: the real constructor connects to the lobby and starts a heartbeat
+    const ctx: WsSocketCtx = Object.create(WsSocket.prototype);
     Object.assign(ctx, {
         ws: null,
         running: true,
@@ -87,9 +85,8 @@ describe('WsSocket.send', () => {
 describe('WsSocket.parseMsg', () => {
     it('returns the parsed message for valid envelopes', () => {
         const ctx = makeCtx();
-        const result = call('parseMsg', ctx, JSON.stringify({ command: 'CLOSEGAME', arg: { gameId: 'g1' } })) as { command: string };
-        expect(result).toBeDefined();
-        expect(result.command).toBe('CLOSEGAME');
+        const result = call('parseMsg', ctx, JSON.stringify({ command: 'CLOSEGAME', arg: { gameId: 'g1' } }));
+        expect(result).toEqual(jasmine.objectContaining({ command: 'CLOSEGAME' }));
     });
 
     it('returns undefined for malformed JSON', () => {
@@ -131,9 +128,23 @@ describe('WsSocket.onMessage', () => {
 
     it('STARTGAME emits onStartGame with the pendingGame payload', () => {
         const { ctx } = withSendSpy();
-        const pendingGame = { id: 'g1', players: {}, spectators: {} };
+        const pendingGame = {
+            id: 'g1',
+            name: 'Game',
+            owner: 'alice',
+            allowSpectators: true,
+            players: { alice: { id: 'p1', name: 'alice', user: { username: 'alice' } } },
+            spectators: {}
+        };
         call('onMessage', ctx, JSON.stringify({ command: 'STARTGAME', arg: pendingGame }));
         expect(ctx.emit).toHaveBeenCalledWith('onStartGame', jasmine.objectContaining({ id: 'g1' }));
+    });
+
+    it('drops STARTGAME when a player has no user', () => {
+        const { ctx } = withSendSpy();
+        const pendingGame = { id: 'g1', name: 'Game', owner: 'alice', allowSpectators: true, players: { alice: { id: 'p1', name: 'alice' } }, spectators: {} };
+        call('onMessage', ctx, JSON.stringify({ command: 'STARTGAME', arg: pendingGame }));
+        expect(ctx.emit).not.toHaveBeenCalled();
     });
 
     it('SPECTATOR emits onSpectator with game and user', () => {
@@ -158,7 +169,7 @@ describe('WsSocket.onMessage', () => {
 
     it('CARDDATA emits onCardData with arg', () => {
         const { ctx } = withSendSpy();
-        const cardData = { someCard: { id: 'x' } };
+        const cardData = { titleCardData: {}, shortCardData: [{ id: 'x', name: 'X' }] };
         call('onMessage', ctx, JSON.stringify({ command: 'CARDDATA', arg: cardData }));
         expect(ctx.emit).toHaveBeenCalledWith('onCardData', jasmine.objectContaining(cardData));
     });

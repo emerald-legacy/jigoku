@@ -91,5 +91,37 @@ describe('Tribute to a New Dawn', function () {
                 'player2 plays Tribute to a New Dawn to remove Compass, Fan of Command, Guard Duty, Magnificent Kimono and Pacifism from the game'
             );
         });
+
+        it('does not bow the kept attachments', function () {
+            this.player2.clickCard(this.tributeToANewDawn);
+            this.player1.clickCard(this.fineKatana);
+            this.player1.clickCard(this.ornateFan);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.cloudTheMind);
+            this.player2.clickCard(this.sato);
+            this.player2.clickPrompt('Done');
+
+            expect(this.fineKatana.bowed).toBe(false);
+            expect(this.ornateFan.bowed).toBe(false);
+            expect(this.cloudTheMind.bowed).toBe(false);
+            expect(this.sato.bowed).toBe(false);
+        });
+
+        it('allows keeping a bowed attachment', function () {
+            this.fineKatana.bowed = true;
+            this.sato.bowed = true;
+            this.player2.clickCard(this.tributeToANewDawn);
+            expect(this.player1).toBeAbleToSelect(this.fineKatana);
+            this.player1.clickCard(this.fineKatana);
+            this.player1.clickPrompt('Done');
+            expect(this.player2).toBeAbleToSelect(this.sato);
+            this.player2.clickCard(this.sato);
+            this.player2.clickPrompt('Done');
+
+            expect(this.fineKatana.location).toBe('play area');
+            expect(this.sato.location).toBe('play area');
+            expect(this.ornateFan.location).toBe('removed from game');
+            expect(this.cloudTheMind.location).toBe('removed from game');
+        });
     });
 });

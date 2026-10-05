@@ -30,8 +30,8 @@ describe('Truth is in the Killing', function () {
 
         describe('when winner is not Duelist', function () {
             it('returns fate from loser to their controller', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -65,8 +65,8 @@ describe('Truth is in the Killing', function () {
 
         describe('when winner is Duelist', function () {
             it('should discard the loser and return fate to its controller', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -98,8 +98,8 @@ describe('Truth is in the Killing', function () {
             });
 
             it('should discard the loser and return fate to its controller (self losing)', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -147,8 +147,8 @@ describe('Truth is in the Killing', function () {
             });
 
             it('multiple targets', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player1.moveCard(this.hands, 'hand');
 

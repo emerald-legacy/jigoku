@@ -5,16 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class LionsPrideBrawler extends DrawCard {
     static id = 'lion-s-pride-brawler';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Bow a character',
-            condition: context => context.source.isAttacking(),
-            target: {
+    setupCardAbilities() {
+        this.action('Bow a character')
+            .condition(context => context.source.isAttacking())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill(),
-                gameAction: ability.actions.bow()
-            }
-        });
+                cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
+            }, AbilityDsl.actions.bow());
     }
 }
 

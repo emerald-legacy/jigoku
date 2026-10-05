@@ -1,9 +1,9 @@
-import { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Decks, Duration, EventName } from '../../../Constants.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardType, Decks, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import { attachSearchedCard } from '../../attachSearchedCard.js';
 
 const selectAttachmentPrompt = 'Select an attachment';
 
@@ -23,18 +23,16 @@ export default class KitsukiMasanori extends DrawCard {
             effect: AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
         });
 
-        this.reaction({
-            title: 'Search for a Title or Technique',
-            when: { onCharacterEntersPlay: (event, context) => event.card === context.source },
-            effect: 'search for a Technique or Title',
-            gameAction: AbilityDsl.actions.sequential([
+        this.reaction('Search for a Title or Technique')
+            .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.chooseAction({
                     activePromptTitle: 'Select where to search',
                     options: {
                         'Search discard pile': {
                             action: AbilityDsl.actions.cardMenu((context) => ({
                                 activePromptTitle: selectAttachmentPrompt,
-                                cards: context.player.conflictDiscardPile.filter((card: BaseCard) =>
+                                cards: context.player.conflictDiscardPile.filter((card) =>
                                     isSearchableCard(card, context)
                                 ),
                                 subActionProperties: (card) => ({
@@ -54,24 +52,8 @@ export default class KitsukiMasanori extends DrawCard {
                                 deck: Decks.ConflictDeck,
                                 reveal: true,
                                 cardCondition: (card, context) => isSearchableCard(card, context),
-                                selectedCardsHandler: (context, event, cards) => {
-                                    const card = cards[0];
-                                    if(!card) {
-                                        return;
-                                    }
-
-                                    context.game.addMessage(
-                                        '{0} takes {1} and attaches it to {2}',
-                                        (event as GameEvent<EventName.OnDeckSearch>).player,
-                                        card,
-                                        context.source
-                                    );
-                                    context.game.queueSimpleStep(() =>
-                                        AbilityDsl.actions
-                                            .attach({ target: context.source, attachment: card })
-                                            .resolve(undefined, context)
-                                    );
-                                }
+                                selectedCardsHandler: (context, event, [card]) =>
+                                    attachSearchedCard(context, context.source, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.source])
                             }),
                             message: '{0} searches their conflict deck'
                         }
@@ -90,7 +72,7 @@ export default class KitsukiMasanori extends DrawCard {
                         })
                     };
                 })
-            ])
-        });
+            ]))
+            .effect('search for a Technique or Title');
     }
 }

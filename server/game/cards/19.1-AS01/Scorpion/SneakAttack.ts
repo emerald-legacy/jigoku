@@ -9,18 +9,12 @@ export default class SneakAttack extends DrawCard {
     private setAsideCards: DrawCard[] = [];
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'The attacker gets the first action opportunity',
-            cost: AbilityDsl.costs.payHonor(1),
-            when: {
+        this.reaction('The attacker gets the first action opportunity')
+            .when({
                 onConflictStarted: (event, context) => event.conflict.attackingPlayer === context.player
-            },
-            effect: 'give {1} the first action in this conflict{2}',
-            effectArgs: (context) => [
-                context.player,
-                (context.player.opponent?.hand.length ?? 0) > 0 ? ' and sets aside opponent\'s cards' : ''
-            ],
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .cost(AbilityDsl.costs.payHonor(1))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: (context) => {
                         const opponent = context.player.opponent;
@@ -29,10 +23,6 @@ export default class SneakAttack extends DrawCard {
                         }
 
                         this.setAsideCards = shuffle(opponent.hand).slice(0, 2);
-                        if(this.setAsideCards.length === 0) {
-                            return;
-                        }
-
                         this.game.addMessage('{0} sets aside {1}', opponent, this.setAsideCards);
                         for(const card of this.setAsideCards) {
                             opponent.moveCard(card, Location.RemovedFromGame);
@@ -63,7 +53,10 @@ export default class SneakAttack extends DrawCard {
                     targetController: context.player,
                     effect: AbilityDsl.effects.gainActionPhasePriority()
                 }))
-            ])
-        });
+            ]))
+            .effect('give {1} the first action in this conflict{2}', (context) => [
+                context.player,
+                (context.player.opponent?.hand.length ?? 0) > 0 ? ' and set aside opponent\'s cards' : ''
+            ]);
     }
 }

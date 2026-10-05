@@ -171,7 +171,7 @@ describe('BaseAbility', function () {
             this.card2.checkRestrictions.and.returnValue(true);
             this.card2.canBeTargeted.and.returnValue(true);
             this.card2.getType.and.returnValue('holding');
-            let game = { allCards: [this.card1, this.card2] };
+            const game = { allCards: [this.card1, this.card2] };
             this.context = { game: game, stage: Stage.Target, targets: {} };
             this.context.copy = () => this.context;
         });

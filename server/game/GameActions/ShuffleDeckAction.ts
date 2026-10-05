@@ -1,30 +1,28 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Location } from '../Constants.js';
 import type { EventName } from '../Constants.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface ShuffleDeckProperties extends PlayerActionProperties {
     deck: Location;
 }
 
-export class ShuffleDeckAction extends PlayerAction {
-    declare defaultProperties: ShuffleDeckProperties;
+export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ShuffleDeckProperties, EventName.Unnamed, C> {
+    name = 'shuffle';
 
-    name = 'refill';
-    effect = 'refill its province faceup';
-    constructor(propertyFactory: ShuffleDeckProperties | ((context: AbilityContext) => ShuffleDeckProperties)) {
-        super(propertyFactory);
+    protected effectMessage(context: C): MessageArgs {
+        return ['shuffle {0}\'s {1}', [this.getProperties(context).deck]];
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return [context.player];
     }
 
-    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        let { deck } = this.getProperties((event.context as AbilityContext), additionalProperties) as ShuffleDeckProperties;
-        const player = event.player as Player;
+    eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
+        const { deck } = this.getProperties(event.context, additionalProperties);
+        const player = event.player;
         if(deck === Location.ConflictDeck) {
             player.shuffleConflictDeck();
         } else if(deck === Location.DynastyDeck) {

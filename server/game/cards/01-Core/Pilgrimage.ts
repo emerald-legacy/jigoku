@@ -6,11 +6,9 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class Pilgrimage extends ProvinceCard {
     static id = 'pilgrimage';
 
-    private eventRegistrar?: EventRegistrar;
-
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
+        const eventRegistrar = new EventRegistrar(this.game, this);
+        eventRegistrar.register([
             {
                 [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
             }

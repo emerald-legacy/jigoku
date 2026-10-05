@@ -5,11 +5,9 @@ export default class IdeNegotiator extends DrawCard {
     static id = 'ide-negotiator';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Modify honor dial',
-            effect: 'modify their honor dial',
-            when: { onHonorDialsRevealed: () => true },
-            gameAction: AbilityDsl.actions.chooseAction((context) => ({
+        this.reaction('Modify honor dial')
+            .when({ onHonorDialsRevealed: () => true })
+            .gameAction(AbilityDsl.actions.chooseAction((context) => ({
                 options: {
                     'Increase bid by 1': {
                         action: AbilityDsl.actions.setHonorDial({
@@ -26,7 +24,7 @@ export default class IdeNegotiator extends DrawCard {
                         message: '{0} chooses to decrease their honor bid by 1'
                     }
                 }
-            }))
-        });
+            })))
+            .effect('modify their honor dial');
     }
 }

@@ -1,8 +1,5 @@
-import { Duration, EventName } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../Player.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,20 +7,15 @@ export default class SevenStingsKeep extends StrongholdCard {
     static id = 'seven-stings-keep';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Force defenders to assign first',
-            when: {
+        this.interrupt('Force defenders to assign first')
+            .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player
-            },
-            cost: [AbilityDsl.costs.bowSelf()],
-            effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent as Player],
-            gameAction: AbilityDsl.actions.menuPrompt((context) => ({
+            })
+            .cost(AbilityDsl.costs.bowSelf())
+            .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
-                choices: this.getChoices(context),
-                gameAction: AbilityDsl.actions.playerLastingEffect({
-                    duration: Duration.UntilEndOfConflict
-                }),
+                choices: this.getChoices(context.event),
+                gameAction: AbilityDsl.actions.playerLastingEffect({}),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
                     if(displayMessage) {
@@ -38,17 +30,12 @@ export default class SevenStingsKeep extends StrongholdCard {
                         effect: AbilityDsl.effects.defendersChosenFirstDuringConflict(amount)
                     };
                 }
-            }))
-        });
+            })))
+            .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
     }
 
-    getChoices(context: AbilityContext) {
-        const min = 1;
-        const max = ((context as TriggeredAbilityContext).event as GameEvent<EventName.OnConflictOpportunityAvailable>).attackerMatrix?.maximumNumberOfAttackers ?? 0;
-        const array = [];
-        for(let i = min; i <= max; i++) {
-            array.push(i.toString());
-        }
-        return array;
+    private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {
+        const max = event.attackerMatrix?.maximumNumberOfAttackers ?? 0;
+        return Array.from({ length: max }, (_, i) => (i + 1).toString());
     }
 }

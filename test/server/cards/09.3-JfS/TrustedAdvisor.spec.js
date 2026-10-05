@@ -20,7 +20,7 @@ describe('Trusted Advisor', function() {
             });
 
             it('should trigger when you gain fate during a conflict in which Trusted Advisor is participating', function() {
-                let handSize = this.player1.hand.length;
+                const handSize = this.player1.hand.length;
 
                 this.noMoreActions();
                 this.initiateConflict({

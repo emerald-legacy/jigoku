@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub-based unit test: partial fakes of game, card and context */
 import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
-import { AbilityType } from '../../../server/game/Constants.js';
+import { AbilityType, EventName } from '../../../server/game/Constants.js';
+import { Event } from '../../../server/game/Events/Event.js';
 
 interface TriggeredAbilityTestContext {
     gameSpy: any;
@@ -18,7 +20,8 @@ interface TriggeredAbilityTestContext {
 describe('TriggeredAbility', function () {
     beforeEach(function (this: TriggeredAbilityTestContext) {
         this.gameSpy = jasmine.createSpyObj('game', ['on', 'removeListener', 'registerAbility', 'getPlayers']);
-        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect']);
+        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect', 'isCard']);
+        this.cardSpy.isCard.and.returnValue(true);
         this.cardSpy.game = this.gameSpy;
         this.player = { name: 'player1', playableLocations: [], findPlayType: () => undefined };
         this.cardSpy.controller = this.player;
@@ -27,12 +30,12 @@ describe('TriggeredAbility', function () {
 
         this.properties = {
             when: {
-                onSomething: jasmine.createSpy('when condition')
+                [EventName.OnCardPlayed]: jasmine.createSpy('when condition')
             },
             handler: jasmine.createSpy('handler')
         };
 
-        this.properties.when.onSomething.and.returnValue(true);
+        this.properties.when[EventName.OnCardPlayed].and.returnValue(true);
 
         this.reaction = new TriggeredAbility(this.cardSpy, AbilityType.Reaction, this.properties);
         this.cardSpy.reactions = [this.reaction];
@@ -41,7 +44,7 @@ describe('TriggeredAbility', function () {
     describe('eventHandler()', function() {
         beforeEach(function(this: TriggeredAbilityTestContext) {
             this.executeEventHandler = (): void => {
-                this.event = { name: 'onSomething' };
+                this.event = new Event(EventName.OnCardPlayed, {});
                 this.window = jasmine.createSpyObj('window', ['addChoice']);
                 this.reaction.eventHandler(this.event, this.window);
                 this.context = this.reaction.createContext(this.player, this.event);
@@ -50,12 +53,12 @@ describe('TriggeredAbility', function () {
 
         it('should call the when handler with the appropriate arguments', function(this: TriggeredAbilityTestContext) {
             this.executeEventHandler();
-            expect(this.properties.when.onSomething).toHaveBeenCalledWith(this.event, this.context);
+            expect(this.properties.when[EventName.OnCardPlayed]).toHaveBeenCalledWith(this.event, this.context);
         });
 
         describe('when the when condition returns false', function() {
             beforeEach(function(this: TriggeredAbilityTestContext) {
-                this.properties.when.onSomething.and.returnValue(false);
+                this.properties.when[EventName.OnCardPlayed].and.returnValue(false);
                 this.executeEventHandler();
             });
 
@@ -70,7 +73,7 @@ describe('TriggeredAbility', function () {
                 this.spy1.and.returnValue('');
                 this.spy2 = spyOn(this.reaction, 'isInValidLocation');
                 this.spy2.and.returnValue(true);
-                this.properties.when.onSomething.and.returnValue(true);
+                this.properties.when[EventName.OnCardPlayed].and.returnValue(true);
                 this.executeEventHandler();
             });
 

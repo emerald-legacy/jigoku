@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 class KitsukiCounselor extends DrawCard {
     static id = 'kitsuki-counselor';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.composure({
-            effect: ability.effects.modifyBothSkills(1)
+            effect: AbilityDsl.effects.modifyBothSkills(1)
         });
     }
 }

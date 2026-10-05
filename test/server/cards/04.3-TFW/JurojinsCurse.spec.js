@@ -34,7 +34,7 @@ describe('Jurojin\'s Curse', function() {
                 this.player2.clickPrompt('Done');
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Jurōjin\'s Curse to resolve a second fate phase after this');
-                expect(this.getChatLogs(2)).toContain('Jurōjin\'s Curse takes hold!');
+                expect(this.getChatLogs(2)).toContain('Jurōjin\'s Curse takes hold');
                 this.player2.clickPrompt('Done');
                 expect(this.seekerOfKnowledge.fate).toBe(0);
                 expect(this.isawaKaede.location).toBe('dynasty discard pile');

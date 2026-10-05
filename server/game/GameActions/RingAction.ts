@@ -1,24 +1,30 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
 export type RingActionProperties = GameActionProperties;
 
-export class RingAction<P extends RingActionProperties = RingActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
+export type RingEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { ring: Ring };
+
+export class RingAction<
+    P extends RingActionProperties = RingActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends GameAction<P, N, C, D> {
     targetType = ['ring'];
 
-    defaultTargets(context: AbilityContext): Ring[] {
+    defaultTargets(context: C): Ring[] {
         return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
-    checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
-        return this.canAffect((event as { ring: Ring }).ring, (event.context as AbilityContext), additionalProperties);
+    checkEventCondition(event: RingEvent<N, C>, additionalProperties = {}): boolean {
+        return this.canAffect(event.ring, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: RingEvent<N, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
-        (event as { ring: Ring }).ring = ring;
+        event.ring = ring;
     }
 }

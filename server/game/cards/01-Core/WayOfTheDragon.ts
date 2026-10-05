@@ -4,14 +4,14 @@ import AbilityDsl from '../../abilitydsl.js';
 class WayOfTheDragon extends DrawCard {
     static id = 'way-of-the-dragon';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             limit: 1,
             myControl: true
         });
 
         this.whileAttached({
-            effect: ability.effects.increaseLimitOnAbilities()
+            effect: AbilityDsl.effects.increaseLimitOnAbilities()
         });
     }
 }

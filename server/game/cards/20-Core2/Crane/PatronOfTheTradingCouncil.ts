@@ -1,7 +1,6 @@
 import { Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 
 export default class PatronOfTheTradingCouncil extends DrawCard {
     static id = 'patron-of-the-trading-council';
@@ -9,16 +8,14 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                ((context.game.currentConflict as undefined | Conflict)?.getNumberOfParticipants((card) =>
+                (context.game.currentConflict?.getNumberOfParticipants((card) =>
                     card.hasTrait('mantis-clan')
                 ) ?? 0) > 0,
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
-        this.action({
-            title: 'Give each player a valuable good',
-            effect: 'give each player a valuable good',
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Give each player a valuable good')
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, 2),
                     message: '{0} reveals the top {1} from their conflict deck: {2}',
@@ -53,7 +50,7 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                     target: context.player.opponent || [],
                     deck: Location.ConflictDeck
                 }))
-            ])
-        });
+            ]))
+            .effect('give each player a valuable good');
     }
 }

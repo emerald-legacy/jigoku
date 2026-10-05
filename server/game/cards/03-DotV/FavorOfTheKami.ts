@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class FavorOfTheKami extends DrawCard {
     static id = 'favor-of-the-kami';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.modifyGlory(1)
+            effect: AbilityDsl.effects.modifyGlory(1)
         });
     }
 }

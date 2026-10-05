@@ -17,8 +17,8 @@ describe('Sagen of Honeyed Words', function () {
         });
 
         it('gets buffed by companion glory', function () {
-            let baseMil = this.sagenOfHoneyedWords.getMilitarySkill();
-            let basePol = this.sagenOfHoneyedWords.getPoliticalSkill();
+            const baseMil = this.sagenOfHoneyedWords.getMilitarySkill();
+            const basePol = this.sagenOfHoneyedWords.getPoliticalSkill();
 
             this.initiateConflict({
                 attackers: [this.sagenOfHoneyedWords, this.bayushiManipulator],
@@ -41,8 +41,8 @@ describe('Sagen of Honeyed Words', function () {
         });
 
         it('gets buffed by companion glory including glory bonuses', function () {
-            let baseMil = this.sagenOfHoneyedWords.getMilitarySkill();
-            let basePol = this.sagenOfHoneyedWords.getPoliticalSkill();
+            const baseMil = this.sagenOfHoneyedWords.getMilitarySkill();
+            const basePol = this.sagenOfHoneyedWords.getPoliticalSkill();
 
             this.initiateConflict({
                 attackers: [this.sagenOfHoneyedWords, this.bayushiManipulator],

@@ -1,21 +1,17 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class DojiFumiki extends DrawCard {
     static id = 'doji-fumiki';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Bow a dishonored character',
-            condition: (context: AbilityContext<this>) => context.source.isParticipating(),
-            target: {
+    setupCardAbilities() {
+        this.action('Bow a dishonored character')
+            .condition((context) => context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isDishonored && card.isParticipating(),
-                gameAction: ability.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isDishonored && card.isParticipating()
+            }, AbilityDsl.actions.bow());
     }
 }
 

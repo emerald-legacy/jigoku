@@ -5,9 +5,7 @@ export default class FertileFields extends ProvinceCard {
     static id = 'fertile-fields';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Draw a card',
-            gameAction: AbilityDsl.actions.draw()
-        });
+        this.action('Draw a card')
+            .gameAction(AbilityDsl.actions.draw());
     }
 }

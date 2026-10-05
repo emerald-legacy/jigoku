@@ -4,11 +4,11 @@ import AbilityDsl from '../../abilitydsl.js';
 class SealOfTheDragon extends DrawCard {
     static id = 'seal-of-the-dragon';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
             effect: [
-                ability.effects.addFaction('dragon'),
-                ability.effects.addTrait('monk')
+                AbilityDsl.effects.addFaction('dragon'),
+                AbilityDsl.effects.addTrait('monk')
             ]
         });
     }

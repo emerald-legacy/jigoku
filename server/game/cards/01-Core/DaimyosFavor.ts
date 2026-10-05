@@ -1,32 +1,28 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
 
 class DaimyosFavor extends DrawCard {
     static id = 'daimyo-s-favor';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.action({
-            title: 'Bow to reduce attachment cost',
-            cost: ability.costs.bowSelf(),
-            effect: 'reduce the cost of the next attachment they play on {1} by 1',
-            effectArgs: context => context.source.parentCharacter,
-            gameAction: ability.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
+        this.action('Bow to reduce attachment cost')
+            .cost(AbilityDsl.costs.bowSelf())
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
-                effect: ability.effects.reduceCost({
+                effect: AbilityDsl.effects.reduceCost({
                     amount: 1,
                     cardType: CardType.Attachment,
                     targetCondition: target => target === context.source.parentCharacter,
-                    limit: ability.limit.fixed(1)
+                    limit: AbilityDsl.limit.fixed(1)
                 })
-            }))
-        });
+            })))
+            .effect('reduce the cost of the next attachment they play on {1} by 1', context => context.source.parentCharacter);
     }
 }
 

@@ -4,20 +4,18 @@ import AbilityDsl from '../../abilitydsl.js';
 class WatchCommander extends DrawCard {
     static id = 'watch-commander';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             limit: 1,
             myControl: true
         });
 
-        this.reaction({
-            title: 'Force opponent to lose 1 honor',
-            limit: ability.limit.unlimitedPerConflict(),
-            when: {
+        this.reaction('Force opponent to lose 1 honor')
+            .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player.opponent && context.source.parentCharacter.isParticipating()
-            },
-            gameAction: ability.actions.loseHonor()
-        });
+            })
+            .gameAction(AbilityDsl.actions.loseHonor())
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }
 

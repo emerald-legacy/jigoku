@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Location, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 
 const elementKey = 'feral-ningyo-water';
 
@@ -9,13 +8,9 @@ class FeralNingyo extends DrawCard {
     static id = 'feral-ningyo';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put into play',
-            condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            location: [Location.Hand, Location.PlayArea],
-            effect: '{1}return {0} to the deck at the end of the conflict',
-            effectArgs: context => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''],
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Put into play')
+            .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.putIntoConflict(context => ({
                     target: context.source
                 })),
@@ -28,16 +23,17 @@ class FeralNingyo extends DrawCard {
                             onConflictFinished: () => true
                         },
                         message: '{0} returns to the deck and shuffles due to its delayed effect',
-                        messageArgs: (context: AbilityContext) => [context.source],
+                        messageArgs: (context) => [context.source],
                         gameAction: AbilityDsl.actions.returnToDeck({ shuffle: true })
                     })
                 }))
-            ])
-        });
+            ]))
+            .effect('{1}return {0} to the deck at the end of the conflict', context => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''])
+            .location([Location.Hand, Location.PlayArea]);
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

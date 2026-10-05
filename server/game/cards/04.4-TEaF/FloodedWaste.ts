@@ -6,16 +6,14 @@ export default class FloodedWaste extends ProvinceCard {
     static id = 'flooded-waste';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Bow each attacking character',
-            when: {
+        this.reaction('Bow each attacking character')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.bow(() => ({
+            })
+            .gameAction(AbilityDsl.actions.bow(() => ({
                 target: this.game.findAnyCardsInPlay(
                     (card) => card.getType() === CardType.Character && card.isAttacking()
                 )
-            }))
-        });
+            })));
     }
 }

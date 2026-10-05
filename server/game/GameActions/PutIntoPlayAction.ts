@@ -4,8 +4,8 @@ import { CardType, EventName, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent, Defaults } from './GameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
     status?: 'honored' | 'ordinary' | 'dishonored';
@@ -14,21 +14,26 @@ export interface PutIntoPlayProperties extends CardActionProperties {
     overrideLocation?: Location;
 }
 
-export class PutIntoPlayAction extends CardGameAction {
+export type PutIntoPlayDefaults = 'fate' | 'status' | 'controller';
+
+export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    PutIntoPlayProperties,
+    EventName.OnCharacterEntersPlay,
+    C,
+    PutIntoPlayDefaults
+> {
     name = 'putIntoPlay';
     eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';
     targetType = [CardType.Character];
     intoConflict: boolean;
-    defaultProperties: PutIntoPlayProperties = {
+    defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
         status: 'ordinary',
-        controller: Players.Self,
-        side: undefined,
-        overrideLocation: undefined
+        controller: Players.Self
     };
     constructor(
-        properties: ((context: AbilityContext) => PutIntoPlayProperties) | PutIntoPlayProperties,
+        properties: ((context: C) => PutIntoPlayProperties) | PutIntoPlayProperties,
         intoConflict = true
     ) {
         super(properties);
@@ -43,18 +48,17 @@ export class PutIntoPlayAction extends CardGameAction {
         return context.player;
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { target } = this.getProperties(context);
-        return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), [target]];
+    protected effectMessage(): MessageArgs {
+        return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
-    canAffect(card: DrawCard, context: AbilityContext): boolean {
-        let properties = this.getProperties(context) as PutIntoPlayProperties;
-        let contextCopy = context.copy({ source: card });
-        let player = this.getPutIntoPlayPlayer(contextCopy);
-        let targetSide = properties.side || this.getDefaultSide(contextCopy);
+    canAffect(card: DrawCard, context: C): boolean {
+        const properties = this.getProperties(context);
+        const contextCopy = context.copy({ source: card });
+        const player = this.getPutIntoPlayPlayer(contextCopy);
+        const targetSide = properties.side || this.getDefaultSide(contextCopy);
 
-        if(!context || !super.canAffect(card, context)) {
+        if(!super.canAffect(card, context)) {
             return false;
         } else if(!player || card.anotherUniqueInPlay(player)) {
             return false;
@@ -88,11 +92,11 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCharacterEntersPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { fate, status, controller, side, overrideLocation } = this.getProperties(
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+        const { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
-        ) as PutIntoPlayProperties;
+        );
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.fate = fate;
         event.status = status;
@@ -102,10 +106,10 @@ export class PutIntoPlayAction extends CardGameAction {
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCharacterEntersPlay>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        let player = this.getPutIntoPlayPlayer(context);
-        const card = event.card as DrawCard;
+    eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context;
+        const player = this.getPutIntoPlayPlayer(context);
+        const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         card.new = true;
         if(event.fate) {
@@ -117,7 +121,7 @@ export class PutIntoPlayAction extends CardGameAction {
             finalController = finalController.opponent;
         }
 
-        let targetSide = event.side;
+        const targetSide = event.side;
 
         if(event.status === 'honored') {
             card.honor();

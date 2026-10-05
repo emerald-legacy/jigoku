@@ -109,7 +109,7 @@ describe('Contemplative Wisdom', function() {
             this.player1.clickCard(this.alchemist);
             this.player1.clickRing('water');
 
-            let glory = this.alchemist.glory;
+            const glory = this.alchemist.glory;
 
             this.player2.pass();
             this.player1.clickCard(this.alchemist);
@@ -158,8 +158,8 @@ describe('Contemplative Wisdom', function() {
                 ring: 'air'
             });
 
-            let hand = this.player1.hand.length;
-            let fate = this.player1.fate;
+            const hand = this.player1.hand.length;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.envoy);
@@ -249,7 +249,7 @@ describe('Contemplative Wisdom', function() {
             this.player1.clickCard(this.alchemist);
             this.player1.clickRing('water');
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.noMoreActions();
             this.player1.clickPrompt('No');
@@ -278,8 +278,8 @@ describe('Contemplative Wisdom', function() {
             this.player1.clickCard(this.alchemist);
             this.player1.clickRing('water');
 
-            let hand = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.player2.pass();
             this.player1.clickCard(this.commonCause);

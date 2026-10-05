@@ -5,11 +5,9 @@ class AsakoTogama extends DrawCard {
     static id = 'asako-togama';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Switch a claimed ring with an unclaimed one',
-            effect: 'switch a claimed ring with an unclaimed one',
-            condition: context => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.joint([
+        this.action('Switch a claimed ring with an unclaimed one')
+            .condition(context => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.joint([
                 AbilityDsl.actions.selectRing(context => ({
                     activePromptTitle: 'Choose a ring to return',
                     ringCondition: ring => ring.claimedBy === context.player.name,
@@ -24,8 +22,8 @@ class AsakoTogama extends DrawCard {
                     messageArgs: ring => [context.player, ring],
                     gameAction: AbilityDsl.actions.takeRing({ takeFate: true })
                 }))
-            ])
-        });
+            ]))
+            .effect('switch a claimed ring with an unclaimed one');
     }
 }
 

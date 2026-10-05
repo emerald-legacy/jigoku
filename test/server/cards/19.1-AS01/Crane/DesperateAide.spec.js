@@ -42,8 +42,8 @@ describe('Desperate Aide', function () {
                 defenders: [this.aide]
             });
 
-            let hand = this.player2.hand.length;
-            let honor = this.player2.honor;
+            const hand = this.player2.hand.length;
+            const honor = this.player2.honor;
             this.player2.clickCard(this.aide);
             expect(this.player2.hand.length).toBe(hand + 1);
             expect(this.player2.honor).toBe(honor);
@@ -59,8 +59,8 @@ describe('Desperate Aide', function () {
                 type: 'political'
             });
 
-            let hand = this.player2.hand.length;
-            let honor = this.player2.honor;
+            const hand = this.player2.hand.length;
+            const honor = this.player2.honor;
             this.player2.clickCard(this.aide);
             expect(this.player2.hand.length).toBe(hand + 1);
             expect(this.player2.honor).toBe(honor + 1);
@@ -76,8 +76,8 @@ describe('Desperate Aide', function () {
                 type: 'military'
             });
 
-            let hand = this.player2.hand.length;
-            let honor = this.player2.honor;
+            const hand = this.player2.hand.length;
+            const honor = this.player2.honor;
             this.player2.clickCard(this.aide);
             expect(this.player2.hand.length).toBe(hand + 1);
             expect(this.player2.honor).toBe(honor + 1);

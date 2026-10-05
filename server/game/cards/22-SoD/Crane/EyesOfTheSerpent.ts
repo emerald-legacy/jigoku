@@ -1,104 +1,79 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Cost } from '../../../costs/Cost.js';
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { MsgArg } from '../../../GameChat.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
-const resourcesAvailable = (context: TriggeredAbilityContext) => {
-    let honorAvailable = false;
-    let fateAvailable = false;
-    if(context.game.actions.loseHonor().canAffect(context.player, context)) {
-        honorAvailable = true;
-    }
-
-    if(context.game.actions.loseFate().canAffect(context.player, context)) {
-        fateAvailable = true;
-    }
-
-    return { honorAvailable, fateAvailable };
-};
-
-const eyesOfTheSerpentCost = function () {
+function resourcesAvailable(context: AbilityContext) {
     return {
-        getCostMessage(context: TriggeredAbilityContext) {
-            return ['paying 1 {1}', context.costs.serpentCostPaid as MsgArg];
+        honorAvailable: context.game.actions.loseHonor().canAffect(context.player, context),
+        fateAvailable: context.game.actions.loseFate().canAffect(context.player, context)
+    };
+}
+
+function eyesOfTheSerpentCost(): Cost<{ serpentCostPaid: 'honor' | 'fate' }> {
+    return {
+        getCostMessage(context) {
+            return ['paying 1 {1}', context.costs.serpentCostPaid];
         },
-        getActionName(_context: TriggeredAbilityContext) {
+        getActionName(_context) {
             return 'eyesOfTheSerpentCost';
         },
-        canPay: function (context: TriggeredAbilityContext) {
+        canPay(context) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
             return honorAvailable || fateAvailable;
         },
-        resolve: function (context: TriggeredAbilityContext, _result: unknown) {
+        resolve(context) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
-            context.costs.merchantOfCuriositiesCostPaid = false;
             if(honorAvailable && fateAvailable) {
                 context.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Spend 1 honor or 1 fate?',
                     source: context.source,
-                    choices: ['Spend 1 honor', 'Spend 1 fate'],
-                    handlers: [
-                        () => context.costs.serpentCostPaid = 'honor',
-                        () => context.costs.serpentCostPaid = 'fate'
+                    options: [
+                        { text: 'Spend 1 honor', handler: () => context.costs.serpentCostPaid = 'honor' },
+                        { text: 'Spend 1 fate', handler: () => context.costs.serpentCostPaid = 'fate' }
                     ]
                 });
-            } else {
-                if(honorAvailable) {
-                    context.costs.serpentCostPaid = 'honor';
-                } else if(fateAvailable) {
-                    context.costs.serpentCostPaid = 'fate';
-                }
+            } else if(honorAvailable) {
+                context.costs.serpentCostPaid = 'honor';
+            } else if(fateAvailable) {
+                context.costs.serpentCostPaid = 'fate';
             }
         },
-        payEvent: function (context: TriggeredAbilityContext) {
-            const events = [];
-            if(context.costs.serpentCostPaid === 'honor') {
-                const action = context.game.actions.loseHonor({ amount: 1 });
-                events.push(action.getEvent(context.player, context));
-            } else {
-                const action = context.game.actions.loseFate({ amount: 1 });
-                events.push(action.getEvent(context.player, context));
-            }
-            return events;
+        payEvent(context) {
+            const action = context.costs.serpentCostPaid === 'honor'
+                ? context.game.actions.loseHonor()
+                : context.game.actions.loseFate();
+            return [action.getEvent(context.player, context)];
         },
         promptsPlayer: true
     };
-};
+}
 
 export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Taint a character',
-
-            cost: eyesOfTheSerpentCost(),
-            target: {
+        this.action('Taint a character')
+            .cost(eyesOfTheSerpentCost())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.isDishonored,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.taint(),
-                    AbilityDsl.actions.onAffinity((_context) => ({
-                        trait: 'air',
-                        gameAction: AbilityDsl.actions.gainHonor(context => ({
-                            target: context.player,
-                            amount: 1
-                        })),
-                        effect: 'gain 1 honor'
-                    }))
-                ])
-            },
-            effect: 'taint {1}',
-            effectArgs: (context) => [context.target ?? '']
-        });
+                cardCondition: (card) => card.isParticipating() && card.isDishonored
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.taint(),
+                AbilityDsl.actions.onAffinity({
+                    trait: 'air',
+                    gameAction: AbilityDsl.actions.gainHonor(context => ({
+                        target: context.player
+                    })),
+                    effect: 'gain 1 honor'
+                })
+            ]))
+            .effect('taint {1}', (context) => [context.target]);
     }
 
-    canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+    canPlay(context: AbilityContext, playType: string) {
+        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

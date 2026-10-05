@@ -109,8 +109,8 @@ describe('The Crashing Wave', function() {
             });
 
             it('should move the conflict', function() {
-                let rallyLocation = this.rally.location;
-                let gardenLocation = this.garden.location;
+                const rallyLocation = this.rally.location;
+                const gardenLocation = this.garden.location;
 
                 this.initiateConflict({
                     type: 'military',
@@ -268,7 +268,7 @@ describe('The Crashing Wave', function() {
             });
 
             it('should trigger after fate is taken from rings', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -298,7 +298,7 @@ describe('The Crashing Wave', function() {
             });
 
             it('should allow the conflict to continue even if your only attacker dies', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({

@@ -54,7 +54,7 @@ describe('Jade-Colored Rocks', function() {
         });
 
         it('should remove 1 fate', function() {
-            let initialFate = this.player1.fate;
+            const initialFate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.isawaTadaka],
@@ -69,7 +69,7 @@ describe('Jade-Colored Rocks', function() {
         });
 
         it('should remove 1 honor', function() {
-            let initialHonor = this.player1.honor;
+            const initialHonor = this.player1.honor;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.isawaTadaka],

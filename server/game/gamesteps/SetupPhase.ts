@@ -1,7 +1,6 @@
 import { GameModes } from '../../GameModes.js';
 import { Location } from '../Constants.js';
 import { randomItem } from '../utils/helpers.js';
-import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
@@ -63,13 +62,18 @@ export class SetupPhase extends Phase {
         this.game.promptWithHandlerMenu(firstPlayer, {
             activePromptTitle: 'You won the flip. Do you want to be:',
             source: 'Choose First Player',
-            choices: ['First Player', 'Second Player'],
-            handlers: [
-                () => {
-                    this.game.setFirstPlayer(firstPlayer);
+            options: [
+                {
+                    text: 'First Player',
+                    handler: () => {
+                        this.game.setFirstPlayer(firstPlayer);
+                    }
                 },
-                () => {
-                    this.game.setFirstPlayer(opponent);
+                {
+                    text: 'Second Player',
+                    handler: () => {
+                        this.game.setFirstPlayer(opponent);
+                    }
                 }
             ]
         });
@@ -117,7 +121,7 @@ export class SetupPhase extends Phase {
             }
         }
 
-        for(const card of this.game.allCards as BaseCard[]) {
+        for(const card of this.game.allCards) {
             card.applyAnyLocationPersistentEffects();
         }
     }

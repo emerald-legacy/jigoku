@@ -3,6 +3,7 @@ import { ConflictType, EffectName, Element } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 class Ring extends EffectSource {
     menu = [
@@ -32,9 +33,13 @@ class Ring extends EffectSource {
         this.element = element;
     }
 
+    override isRing(): this is Ring {
+        return true;
+    }
+
     isConsideredClaimed(player: Player | null = null): boolean {
         const check = (p: Player) =>
-            this.getEffects(EffectName.ConsiderRingAsClaimed).some((match: (player: Player) => boolean) => match(p)) ||
+            this.getEffects(EffectName.ConsiderRingAsClaimed).some((match) => match(p)) ||
             this.claimedBy === p.name;
         if(player) {
             return check(player);
@@ -48,7 +53,7 @@ class Ring extends EffectSource {
 
     canDeclare(player: Player): boolean {
         return (
-            !this.getEffects(EffectName.CannotDeclareRing).some((match: (player: Player) => boolean) => match(player)) &&
+            !this.getEffects(EffectName.CannotDeclareRing).some((match) => match(player)) &&
             !this.claimed &&
             !this.removedFromGame
         );
@@ -79,8 +84,8 @@ class Ring extends EffectSource {
     }
 
     getElements(): Element[] {
-        let elements: Element[] = this.getEffects(EffectName.AddElement).concat([this.element]);
-        if(this.game.isDuringConflict() && this.game.currentConflict) {
+        let elements: (Element | Element[])[] = this.getEffects(EffectName.AddElement).concat([this.element]);
+        if(this.game.currentConflict) {
             if(this.isContested()) {
                 elements = elements.concat(
                     ...this.game.currentConflict
@@ -98,10 +103,7 @@ class Ring extends EffectSource {
         return [...new Set(elements.flat())];
     }
 
-    hasElement(element: Element | 'none'): boolean {
-        if(element === 'none') {
-            return false;
-        }
+    hasElement(element: Element): boolean {
         return this.getElements().includes(element);
     }
 
@@ -148,14 +150,14 @@ class Ring extends EffectSource {
         this.removedFromGame = false;
     }
 
-    getState(activePlayer?: Player): Record<string, unknown> {
+    getState(activePlayer: StateViewer): Record<string, unknown> {
         let selectionState = {};
 
         if(activePlayer) {
             selectionState = activePlayer.getRingSelectionState(this);
         }
 
-        let state = {
+        const state = {
             claimed: this.claimed,
             claimedBy: this.claimedBy,
             conflictType: this.conflictType,
@@ -166,7 +168,7 @@ class Ring extends EffectSource {
             menu: this.getMenu(),
             removedFromGame: this.removedFromGame,
             attachments: this.attachments.length
-                ? this.attachments.map((attachment) => attachment.getSummary(activePlayer as Player, false))
+                ? this.attachments.map((attachment) => attachment.getSummary(activePlayer, false))
                 : this.attachments
         };
 

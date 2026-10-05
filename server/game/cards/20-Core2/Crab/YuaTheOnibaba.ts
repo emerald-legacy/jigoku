@@ -1,14 +1,16 @@
-import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
 
-function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict) {
-    const res = {
-        toBuff: [] as Array<DrawCard>,
-        toNerf: [] as Array<DrawCard>
+function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict | null) {
+    const res: { toBuff: DrawCard[]; toNerf: DrawCard[] } = {
+        toBuff: [],
+        toNerf: []
     };
+    if(!conflict) {
+        return res;
+    }
     for(const character of conflict.getAttackers()) {
         if(!character.hasTrait('bushi')) {
             res.toNerf.push(character);
@@ -30,28 +32,23 @@ export default class YuaTheOnibaba extends DrawCard {
     static id = 'yua-the-onibaba';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Weaken non-bushi, empower bushi',
-            condition: (context) => context.source.isParticipating(),
-            effect: 'give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+        this.action('Weaken non-bushi, empower bushi')
+            .condition((context) => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);
                 return {
                     gameActions: [
                         AbilityDsl.actions.cardLastingEffect({
                             target: targets.toBuff,
-                            effect: AbilityDsl.effects.modifyBothSkills(1),
-                            duration: Duration.UntilEndOfConflict
+                            effect: AbilityDsl.effects.modifyBothSkills(1)
                         }),
                         AbilityDsl.actions.cardLastingEffect({
                             target: targets.toNerf,
-                            effect: AbilityDsl.effects.modifyBothSkills(-1),
-                            duration: Duration.UntilEndOfConflict
+                            effect: AbilityDsl.effects.modifyBothSkills(-1)
                         })
                     ]
                 };
-            })
-        });
+            }))
+            .effect('give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}', () => ['military', 'political']);
     }
 }

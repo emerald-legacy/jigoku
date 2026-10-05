@@ -5,10 +5,8 @@ class BorderRider extends DrawCard {
     static id = 'border-rider';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready this character',
-            gameAction: AbilityDsl.actions.ready()
-        });
+        this.action('Ready this character')
+            .gameAction(AbilityDsl.actions.ready());
     }
 }
 

@@ -1,17 +1,19 @@
 import Socket from '../../server/Socket.js';
+import type { SocketLike } from '../../server/Socket.js';
 import jwt from 'jsonwebtoken';
 
 const TEST_SECRET = 'testsecret';
 
 function makeIoSocket() {
-    const sock = jasmine.createSpyObj('ioSocket', ['on', 'emit', 'join', 'leave', 'disconnect']);
-    sock.id = 'test-socket-id';
-    sock.request = { user: null };
-    return sock;
+    return {
+        ...jasmine.createSpyObj<SocketLike>('ioSocket', ['on', 'emit', 'join', 'leave', 'disconnect']),
+        id: 'test-socket-id',
+        request: { user: null }
+    };
 }
 
 function fireRegisteredEvent(ioSocket: ReturnType<typeof makeIoSocket>, eventName: string, ...args: unknown[]) {
-    const call = (ioSocket.on as jasmine.Spy).calls.allArgs().find((a: unknown[]) => a[0] === eventName);
+    const call = ioSocket.on.calls.allArgs().find((a: unknown[]) => a[0] === eventName);
     if(!call) { throw new Error(`No handler registered for '${eventName}'`); }
     call[1](...args);
 }
@@ -22,7 +24,7 @@ describe('Socket', () => {
 
     beforeEach(() => {
         ioSocket = makeIoSocket();
-        socket = new Socket(ioSocket as any);
+        socket = new Socket(ioSocket);
     });
 
     it('blocks game events for unauthenticated connections', () => {

@@ -1,4 +1,3 @@
-import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -12,18 +11,16 @@ export default class SereneIseZumi extends DrawCard {
         this.attachmentConditions({
             myControl: true
         });
-        this.action({
-            title: 'Move attached character home',
-            printedAbility: false,
-            condition: (context) =>
+        this.action('Move attached character home')
+            .condition((context) =>
                 !!(context.source.parentCharacter &&
                 context.game.isDuringConflict() &&
                 context.source.type === CardType.Attachment &&
-                context.source.parentCharacter.isParticipating()),
-            gameAction: AbilityDsl.actions.sendHome((context) => ({
-                target: context.source.parentCharacter
-            }))
-        });
+                context.source.parentCharacter.isParticipating()))
+            .gameAction(AbilityDsl.actions.sendHome((context) => ({
+                target: context.source.parentCharacter ?? []
+            })))
+            .notPrinted();
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
@@ -35,8 +32,8 @@ export default class SereneIseZumi extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                targetCondition: (target: BaseCard) => target.type === CardType.Character,
-                match: (card: BaseCard, source: BaseCard) => card === source
+                targetCondition: (target) => target.type === CardType.Character,
+                match: (card, source) => card === source
             })
         });
     }

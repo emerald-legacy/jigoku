@@ -12,29 +12,26 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
             effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
-        this.reaction({
-            title: 'Ready characters',
-            when: {
+        this.reaction('Ready characters')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
-            },
-            target: {
+            })
+            .targetCards({
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.ready()
-            },
-            then: (context) => ({
+                controller: Players.Any
+            }, AbilityDsl.actions.ready())
+            .then((context) => ({
                 gameAction: [
                     AbilityDsl.actions.moveCard({
-                        target: context?.source,
+                        target: context.source,
                         destination: Location.ConflictDeck,
                         bottom: true
                     })
                 ]
-            }),
-            max: AbilityDsl.limit.perConflictOpportunity(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perConflictOpportunity(1));
     }
 }

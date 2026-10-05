@@ -36,8 +36,8 @@ describe('Iuchi Shahai 2', function() {
         });
 
         it('should react to playing a meishodo card', function() {
-            let fate = this.shahai.fate;
-            let honor = this.player1.honor;
+            const fate = this.shahai.fate;
+            const honor = this.player1.honor;
             this.player1.playAttachment(this.talisman, this.challenger);
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.shahai);
@@ -49,7 +49,7 @@ describe('Iuchi Shahai 2', function() {
         });
 
         it('should react to playing a maho card', function() {
-            let fate = this.shahai.fate;
+            const fate = this.shahai.fate;
             this.player1.playAttachment(this.shadowSteed, this.challenger);
             this.player1.clickCard(this.challenger);
             this.player1.clickPrompt('1');

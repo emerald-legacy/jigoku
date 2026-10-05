@@ -11,15 +11,14 @@ class GameFlowWrapper {
     allPlayers: PlayerInteractionWrapper[];
 
     constructor() {
-        const gameRouter = jasmine.createSpyObj('gameRouter', ['gameWon', 'playerLeft', 'handleError']);
-        (gameRouter.handleError as jasmine.Spy).and.callFake((_game: Game, error: Error) => {
+        const gameRouter = jasmine.createSpyObj<GameRouter & { playerLeft: () => void }>('gameRouter', ['gameWon', 'playerLeft', 'handleError']);
+        gameRouter.handleError.and.callFake((_game: Game, error: Error) => {
             throw error;
         });
-        const details = {
+        const details: ConstructorParameters<typeof Game>[0] = {
             name: 'player1\'s game',
             id: '12345',
             owner: 'player1',
-            saveGameId: '12345',
             allowSpectators: false,
             spectatorSquelch: false,
             gameType: 'casual',
@@ -30,8 +29,8 @@ class GameFlowWrapper {
                 '222': { id: '222', user: Settings.getUserWithDefaultsSet({ username: 'player2' }) }
             },
             spectators: {}
-        } as ConstructorParameters<typeof Game>[0];
-        this.game = new Game(details, { router: gameRouter as GameRouter, cardLibrary });
+        };
+        this.game = new Game(details, { router: gameRouter, cardLibrary });
         this.game.started = true;
 
         const player1Obj = this.game.getPlayerByName('player1');
@@ -71,7 +70,7 @@ class GameFlowWrapper {
     }
 
     startGame(): void {
-        (this.game as { initialise: () => void }).initialise();
+        this.game.initialise();
     }
 
     selectStrongholdProvinces(strongholds: { player1?: string; player2?: string } = {}): void {
@@ -283,11 +282,10 @@ class GameFlowWrapper {
             if(Array.isArray(item)) {
                 return item.map((arrItem) => getChatString(arrItem)).join('');
             } else if(item instanceof Object) {
-                const obj = item as { name?: string; message?: unknown };
-                if(obj.name) {
-                    return obj.name;
-                } else if(obj.message) {
-                    return getChatString(obj.message);
+                if('name' in item && item.name) {
+                    return String(item.name);
+                } else if('message' in item && item.message) {
+                    return getChatString(item.message);
                 }
             }
             return String(item);

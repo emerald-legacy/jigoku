@@ -6,18 +6,14 @@ export default class HirumaHarrower extends DrawCard {
     static id = 'hiruma-harrower';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Gain military skill',
-            when: {
+        this.reaction('Gain military skill')
+            .when({
                 onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source,
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'give itself +2{1}',
-            effectArgs: ['military']
-        });
+            }))
+            .effect('give itself +2{1}', () => ['military'])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

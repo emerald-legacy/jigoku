@@ -16,7 +16,7 @@ describe('Kuni Purifier', function() {
         });
 
         it('should prompt you to discard a card if opponent passes', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.noMoreActions();
             this.player1.passConflict();
             expect(this.player2).toHavePrompt('Triggered abilities');

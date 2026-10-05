@@ -6,16 +6,14 @@ class VoiceOfHonor extends DrawCard {
     static id = 'voice-of-honor';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.player.opponent &&
                                                             context.player.getNumberOfCardsInPlay(card => card.isHonored) >
                                                             context.player.opponent.getNumberOfCardsInPlay(card => card.isHonored)
-            },
-            cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel())
+            .cannotBeMirrored();
     }
 }
 

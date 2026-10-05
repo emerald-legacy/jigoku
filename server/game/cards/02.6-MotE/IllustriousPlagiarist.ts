@@ -8,26 +8,21 @@ class IllustriousPlagiarist extends DrawCard {
     static id = 'illustrious-plagiarist';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Copy action abilty of opponent\'s top event',
-            condition: (context: AbilityContext) => !!context.player.opponent &&
-                context.player.opponent.conflictDiscardPile.some((card) => card.type === CardType.Event && card.abilities.actions.length > 0),
-            target: {
-                player: Players.Opponent,
+        this.action('Copy action ability of opponent\'s top event')
+            .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
-                cardCondition: (card, context: AbilityContext) => card.location === Location.ConflictDiscardPile &&
-                    card.type === CardType.Event &&
-                    card.controller === context.player.opponent &&
-                    card.abilities.actions.length > 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    duration: Duration.UntilEndOfPhase,
-                    target: context.source,
-                    effect: context.target?.abilities.actions.map((action: CardAction) => AbilityDsl.effects.gainAbility(AbilityType.Action, action)) ?? []
-                }))
-            },
-            effect: 'copy {0}\'s action abilities'
-        });
+                cardCondition: (card, context) => card === this.topmostEvent(context) && card.abilities.actions.length > 0
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                target: context.source,
+                effect: context.target?.abilities.actions.map((action: CardAction) => AbilityDsl.effects.gainAbility(AbilityType.Action, action)) ?? []
+            })))
+            .effect('copy {0}\'s action abilities');
+    }
+
+    private topmostEvent(context: AbilityContext): DrawCard | undefined {
+        return context.player.opponent?.conflictDiscardPile.find((card) => card.type === CardType.Event);
     }
 }
 

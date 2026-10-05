@@ -99,7 +99,7 @@ describe('Ikoma Tsanuri 2', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.negotiator);
             this.player1.clickCard(this.tsanuri);
@@ -120,7 +120,7 @@ describe('Ikoma Tsanuri 2', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.negotiator);
             this.player1.clickCard(this.tsanuri);
@@ -221,7 +221,7 @@ describe('Ikoma Tsanuri 2 with Forced Abilities', function() {
 
         it('should not prevent triggering forced reactions', function() {
             this.noMoreActions();
-            let fate = this.game.rings.water.fate;
+            const fate = this.game.rings.water.fate;
 
             this.initiateConflict({
                 attackers: [this.tsanuri],

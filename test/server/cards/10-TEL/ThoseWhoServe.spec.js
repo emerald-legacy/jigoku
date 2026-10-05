@@ -32,7 +32,7 @@ describe('Those Who Serve', function() {
         });
 
         it('should reduce own character cost by 1', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.thoseWhoServe);
             this.player2.pass();
             expect(this.player1.fate).toBe(fate - 1);
@@ -42,7 +42,7 @@ describe('Those Who Serve', function() {
         });
 
         it('should not reduce opponent\'s character costs', function() {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player1.clickCard(this.thoseWhoServe);
             this.player2.clickCard(this.birb);
             this.player2.clickPrompt('2');
@@ -50,7 +50,7 @@ describe('Those Who Serve', function() {
         });
 
         it('should reduce to a minimum of 1 (character costs 1)', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.thoseWhoServe);
             this.player2.pass();
             this.player1.clickCard(this.tacticiansApprentice);
@@ -59,7 +59,7 @@ describe('Those Who Serve', function() {
         });
 
         it('should reduce to a minimum of 1 (character costs 0, should still cost 0)', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.thoseWhoServe);
             this.player2.pass();
             this.player1.clickCard(this.eagerScout);
@@ -68,7 +68,7 @@ describe('Those Who Serve', function() {
         });
 
         it('should reduce to a minimum of 1 (stacking cost reductions)', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.thoseWhoServe);
             this.player2.pass();
             this.player1.clickCard(this.wielder);
@@ -77,7 +77,7 @@ describe('Those Who Serve', function() {
         });
 
         it('should reduce to a minimum of 1 (stacking cost reductions below 0)', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.thoseWhoServe);
             this.player2.pass();
             this.player1.clickCard(this.procurer1);

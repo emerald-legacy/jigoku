@@ -38,7 +38,7 @@ describe('Fields of Rolling Thunder', function () {
                 this.player1.clickCard(this.rider);
                 expect(this.rider.isHonored).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict.'
+                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict'
                 );
 
                 this.noMoreActions();
@@ -64,7 +64,7 @@ describe('Fields of Rolling Thunder', function () {
                 this.player1.clickCard(this.rider);
                 expect(this.rider.isHonored).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict.'
+                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict'
                 );
 
                 this.noMoreActions();

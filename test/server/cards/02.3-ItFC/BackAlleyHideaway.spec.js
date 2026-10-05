@@ -16,8 +16,8 @@ describe('Back-Alley Hideaway', function() {
                     if(flow.game.currentPhase === 'dynasty') {
                         break;
                     }
-                    let menuTitle = p.currentPrompt().menuTitle;
-                    let buttons = p.currentButtons;
+                    const menuTitle = p.currentPrompt().menuTitle;
+                    const buttons = p.currentButtons;
                     if(menuTitle === 'Choose an effect to resolve') {
                         p.clickPrompt('Don\'t resolve');
                         acted = true;

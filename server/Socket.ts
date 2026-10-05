@@ -1,22 +1,35 @@
 import { EventEmitter } from 'events';
 import { Socket as IOSocket } from 'socket.io';
 import jwt from 'jsonwebtoken';
+import { z } from 'zod';
 import { logger } from './logger.js';
 import { secret } from './env.js';
 
-interface RequestWithUser {
-    user: jwt.JwtPayload | null;
+/** The part of a verified JWT payload the game node relies on. */
+export const SocketUserSchema = z.looseObject({ username: z.string() });
+type SocketUser = z.infer<typeof SocketUserSchema>;
+
+declare module 'http' {
+    interface IncomingMessage {
+        /** Set by the game server's handshake once the token has been verified. */
+        user?: SocketUser | null;
+    }
+}
+
+/** The parts of a socket.io socket this wrapper uses. */
+export interface SocketLike extends Pick<IOSocket, 'id' | 'on' | 'join' | 'leave' | 'emit' | 'disconnect'> {
+    request: { user?: SocketUser | null };
 }
 
 class Socket extends EventEmitter {
-    socket: IOSocket;
-    user: jwt.JwtPayload | null;
+    socket: SocketLike;
+    user: SocketUser | null;
 
-    constructor(socket: IOSocket) {
+    constructor(socket: SocketLike) {
         super();
 
         this.socket = socket;
-        this.user = (socket.request as unknown as RequestWithUser).user;
+        this.user = socket.request.user ?? null;
 
         socket.on('error', this.onError.bind(this));
         socket.on('authenticate', this.onAuthenticate.bind(this));
@@ -28,7 +41,7 @@ class Socket extends EventEmitter {
     }
 
     // Commands
-    registerEvent(event: string, callback: (socket: Socket, ...args: never[]) => void): void {
+    registerEvent(event: string, callback: (socket: Socket, ...args: unknown[]) => void): void {
         this.socket.on(event, this.onSocketEvent.bind(this, callback));
     }
 
@@ -49,31 +62,32 @@ class Socket extends EventEmitter {
     }
 
     // Events
-    onSocketEvent(callback: (socket: Socket, ...args: never[]) => void, ...args: unknown[]): void {
+    onSocketEvent(callback: (socket: Socket, ...args: unknown[]) => void, ...args: unknown[]): void {
         if(!this.user) {
             return;
         }
 
         try {
-            callback(this, ...(args as never[]));
+            callback(this, ...args);
         } catch(err) {
             logger.error('Socket event handler error', { error: err, args });
         }
     }
 
     onAuthenticate(token: string): void {
-        jwt.verify(token, secret as string, { algorithms: ['HS256'] }, (err, user) => {
-            if(err || typeof user !== 'object' || user === null) {
+        jwt.verify(token, secret, { algorithms: ['HS256'] }, (err, user) => {
+            const parsed = SocketUserSchema.safeParse(user);
+            if(err || !parsed.success) {
                 logger.info(err);
                 return;
             }
 
-            const payload = user as jwt.JwtPayload;
+            const payload = parsed.data;
             if(this.user && this.user.username !== payload.username) {
                 this.socket.disconnect();
                 return;
             }
-            (this.socket.request as unknown as RequestWithUser).user = payload;
+            this.socket.request.user = payload;
             this.user = payload;
             this.emit('authenticate', this, payload);
         });

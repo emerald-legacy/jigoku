@@ -653,7 +653,7 @@ describe('Master Tactician - Edge Cases', function () {
             expect(this.player1.player.isTopConflictCardShown(this.player1.player)).toBe(true);
             expect(this.player1.player.isTopConflictCardShown(this.player2.player)).toBe(false);
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player1.clickCard(this.tactical);
             this.player1.clickCard(this.tactician);
@@ -740,6 +740,44 @@ describe('Master Tactician - Pillow Book', function () {
             expect(this.tactician.attachments).toContain(this.tactical);
 
             expect(this.getChatLogs(3)).not.toContain(
+                'player1 plays a card from their conflict deck due to the ability of Master Tactician (2 uses remaining)'
+            );
+        });
+
+        it('should use up a Master Tactician use for a card Pillow Book revealed in an earlier conflict', function () {
+            this.player1.clickCard(this.ambush);
+            this.player1.clickCard(this.province);
+            this.player2.pass();
+            this.player1.playAttachment(this.book, this.tactician);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.tactician],
+                defenders: [],
+                province: this.player2.findCardByName('shameful-display', 'province 2')
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.book);
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.tactical.location).toBe('conflict deck');
+
+            this.tactician.bowed = false;
+            this.noMoreActions();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'fire',
+                attackers: [this.tactician],
+                defenders: [],
+                province: this.player2.findCardByName('shameful-display', 'province 3')
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.tactical);
+            this.player1.clickCard(this.tactician);
+            expect(this.tactician.attachments).toContain(this.tactical);
+            expect(this.getChatLogs(3)).toContain(
                 'player1 plays a card from their conflict deck due to the ability of Master Tactician (2 uses remaining)'
             );
         });

@@ -1,32 +1,18 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import Game from '../../../Game.js';
-import type Player from '../../../Player.js';
+import { playerChoices } from '../../playerChoices.js';
 
 export default class BackhandedCompliment2 extends DrawCard {
     static id = 'backhanded-compliment-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Select a player to lose an honor and draw a card',
-            target: {
-                mode: TargetMode.Select,
-                targets: true,
-                choices: Object.fromEntries(
-                    (this.game as Game)
-                        .getPlayers()
-                        .map((target) => [
-                            target.name,
-                            AbilityDsl.actions.multiple([
-                                AbilityDsl.actions.loseHonor({ target }),
-                                AbilityDsl.actions.draw({ target })
-                            ])
-                        ])
-                )
-            },
-            effect: 'make {1} lose an honor and draw a card',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
-        });
+        this.action('Select a player to lose an honor and draw a card')
+            .selectFrom({
+                targets: true
+            }, (context) => playerChoices(context.player, (target) => AbilityDsl.actions.multiple([
+                AbilityDsl.actions.loseHonor({ target }),
+                AbilityDsl.actions.draw({ target })
+            ])))
+            .effect('make {1} lose an honor and draw a card', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
     }
 }

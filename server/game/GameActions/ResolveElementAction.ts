@@ -1,11 +1,11 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName } from '../Constants.js';
 import { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import Ring from '../Ring.js';
 import { RingEffects } from '../RingEffects.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export interface ResolveElementProperties extends RingActionProperties {
     physicalRing?: Ring;
@@ -13,15 +13,14 @@ export interface ResolveElementProperties extends RingActionProperties {
     enforceOrderedResolution?: boolean;
 }
 
-export class ResolveElementAction extends RingAction<ResolveElementProperties> {
+export class ResolveElementAction<C extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, C> {
     name = 'resolveElement';
     eventName = EventName.OnResolveRingElement;
     effect = 'resolve {0} effect';
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        const target = properties.target as Ring[];
-        const rings = target.flatMap((element) => {
+        const rings = targetList(properties.target).flatMap((element) => {
             if(typeof element === 'string') {
                 const ring = context.game.rings[element];
                 return ring ? [ring] : [];
@@ -57,8 +56,8 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnResolveRingElement>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        let { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
+    addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown>): void {
+        const { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.player = player || context.player;
         event.physicalRing = physicalRing;
@@ -66,8 +65,8 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
         event.effectivellyResolvedEffect = false;
     }
 
-    eventHandler(event: GameEvent<EventName.OnResolveRingElement>): void {
-        const context = event.context as AbilityContext;
+    eventHandler(event: ActionEvent<EventName.OnResolveRingElement, C>): void {
+        const context = event.context;
         const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
@@ -77,7 +76,7 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
         }
 
         context.game.resolveAbility(
-            RingEffects.contextFor(event.player as Player, (event.ring as Ring).element, event.optional, (resolved) => {
+            RingEffects.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
                 event.effectivellyResolvedEffect = resolved;
             })
         );

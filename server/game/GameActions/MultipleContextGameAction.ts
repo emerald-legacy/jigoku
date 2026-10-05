@@ -3,50 +3,49 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { EventName } from '../Constants.js';
 
 export interface MultipleContextActionProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class MultipleContextGameAction extends GameAction {
-    declare defaultProperties: MultipleContextActionProperties;
-
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { gameActions } = this.getProperties(context);
-        let legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
+export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleContextActionProperties, EventName, C> {
+    getEffectMessage(context: C): MessageArgs {
+        const { gameActions } = this.getProperties(context);
+        const legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
         let message = '{0}';
-        for(var i = 1; i < legalGameActions.length; i++) {
+        for(let i = 1; i < legalGameActions.length; i++) {
             message += i === legalGameActions.length - 1 ? ' and ' : ', ';
             message += '{' + i + '}';
         }
-        return [message, legalGameActions.map((action) => action.getEffectMessage(context))];
+        return [message, legalGameActions.map((action) => context.game.gameChat.nested(action.getEffectMessage(context)))];
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): MultipleContextActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as MultipleContextActionProperties;
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context, additionalProperties));
     }
 
-    allTargetsLegal(context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    allTargetsLegal(context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context, additionalProperties)) {
@@ -56,8 +55,8 @@ export class MultipleContextGameAction extends GameAction {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
-        let properties = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C) {
+        const properties = this.getProperties(context);
         return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

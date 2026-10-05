@@ -1,40 +1,35 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { Conflict } from '../Conflict.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { ResolveElementAction } from './ResolveElementAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent } from './GameAction.js';
 
-export class ResolveConflictRingAction extends RingAction {
+export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, C> {
     name = 'resolveRing';
     eventName = EventName.OnResolveConflictRing;
-    constructor(properties: ((context: AbilityContext) => RingActionProperties) | RingActionProperties) {
-        super(properties);
+
+    protected effectMessage(): MessageArgs {
+        return ['resolve {0}', []];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties: RingActionProperties = this.getProperties(context);
-        return ['resolve {0}', [properties.target]];
-    }
-
-    addPropertiesToEvent(event: GameEvent<EventName.OnResolveConflictRing>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
-        let conflict = context.game.currentConflict;
+        const conflict = context.game.currentConflict;
 
         event.conflict = conflict ?? undefined;
         event.player = context.player;
     }
 
-    eventHandler(event: GameEvent<EventName.OnResolveConflictRing>): void {
+    eventHandler(event: ActionEvent<EventName.OnResolveConflictRing, C>): void {
         if(event.name !== this.eventName) {
             return;
         }
 
-        const eventContext = event.context as AbilityContext;
+        const eventContext = event.context;
         const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
@@ -43,12 +38,15 @@ export class ResolveConflictRingAction extends RingAction {
             return;
         }
 
-        let elements = (event.ring as Ring).getElements();
-        let player = event.player as Player;
+        const elements = event.ring.getElements();
+        const player = event.player;
         if(elements.length === 1) {
             this.resolveRingEffects(player, elements);
         } else {
-            this.chooseElementsToResolve(player, elements, (event.conflict as Conflict).elementsToResolve);
+            if(!event.conflict) {
+                throw new Error('A ring with several elements can only be resolved during a conflict');
+            }
+            this.chooseElementsToResolve(player, elements, event.conflict.elementsToResolve);
         }
     }
 
@@ -69,7 +67,7 @@ export class ResolveConflictRingAction extends RingAction {
                 activePromptTitle + '\nChosen elements:'
             );
         }
-        let buttons = [];
+        const buttons = [];
 
         elements.map((element) =>
             buttons.push({ text: element.slice(0, 1).toUpperCase() + element.slice(1) + ' Ring', arg: element })
@@ -120,11 +118,8 @@ export class ResolveConflictRingAction extends RingAction {
     }
 
     resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
-        if(!Array.isArray(elements)) {
-            elements = [elements];
-        }
-        let rings = elements.map((element) => player.game.rings[element]);
-        let action = new ResolveElementAction({
+        const rings = elements.map((element) => player.game.rings[element]);
+        const action = new ResolveElementAction({
             target: rings,
             optional: optional,
             physicalRing: player.game.currentConflict?.ring

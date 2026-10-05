@@ -1,9 +1,7 @@
 import { Event } from './Events/Event.js';
-import type { EventPayload, GameEvent } from './Events/EventPayloads.js';
-import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
+import type { EventParams, EventPayload, GameEvent } from './Events/EventPayloads.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
-import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
 import { EventName } from './Constants.js';
 import { GameEventBus, type EventHandler } from './GameEventBus.js';
 import type Game from './Game.js';
@@ -13,21 +11,22 @@ export class GameEventManager {
 
     constructor(private readonly game: Game) {}
 
-    getEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
-        return new Event(eventName, params, handler);
+    getEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N> {
+        const payload: EventPayload<N> | undefined = params;
+        const event = Object.assign(new Event(eventName, {}), payload);
+        if(handler) {
+            event.replaceHandler(() => handler(event));
+        }
+        return event;
     }
 
-    raiseEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
+    raiseEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler: (event: GameEvent<N>) => void = () => true): GameEvent<N> {
         const event = this.getEvent(eventName, params, handler);
         this.openEventWindow([event]);
         return event;
     }
 
-    emitEvent(eventName: string, params: Record<string, unknown> = {}): void {
+    emitEvent<N extends EventName>(eventName: N, params?: EventParams<N>): void {
         const event = this.getEvent(eventName, params);
         this.emit(event.name, event);
     }
@@ -63,14 +62,5 @@ export class GameEventManager {
             return this.game.queueStep(new ThenEventWindow(this.game, events));
         }
         return this.openEventWindow(events);
-    }
-
-    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
-        this.raiseMultipleInitiateAbilityEvents([{ params: params, handler: handler }]);
-    }
-
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
-        const events = eventProps.map((event) => new InitiateCardAbilityEvent(event.params, event.handler));
-        this.game.queueStep(new InitiateAbilityEventWindow(this.game, events));
     }
 }

@@ -7,9 +7,8 @@ export default class TaoistAdept extends DrawCard {
     static id = 'taoist-adept';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: {
+        this.action('Initiate a military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: 'choose whether to place a fate on a ring',
                 gameAction: (duel) =>
@@ -28,7 +27,6 @@ export default class TaoistAdept extends DrawCard {
                             return true;
                         }
                     }))
-            }
-        });
+            }));
     }
 }

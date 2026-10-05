@@ -24,7 +24,7 @@ class SelectDefendersPrompt extends UiPrompt {
 
         this.player = player;
         this.conflict = conflict;
-        let mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
+        const mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
             card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === conflict.conflictType));
         for(const card of mustBeDeclared) {
             if(this.checkCardCondition(card) && !this.conflict.defenders.includes(card)) {

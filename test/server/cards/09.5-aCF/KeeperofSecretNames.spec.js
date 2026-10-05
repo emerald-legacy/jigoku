@@ -92,8 +92,8 @@ describe('Keeper of Secret Names', function() {
                     province: this.vassalFields
                 });
 
-                let p1fate = this.player1.fate;
-                let p2fate = this.player2.fate;
+                const p1fate = this.player1.fate;
+                const p2fate = this.player2.fate;
 
                 this.player1.clickCard(this.p1Keeper);
                 expect(this.player1).toBeAbleToSelect(this.vassalFields);
@@ -116,7 +116,7 @@ describe('Keeper of Secret Names', function() {
                     province: this.vassalFields
                 });
 
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player1.clickCard(this.p1Keeper);
                 expect(this.player1).toBeAbleToSelect(this.vassalFields);
@@ -139,7 +139,7 @@ describe('Keeper of Secret Names', function() {
                     province: this.vassalFields
                 });
 
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player1.clickCard(this.vassalFields);
                 expect(this.player2.fate).toBe(p2fate - 1);
@@ -179,7 +179,7 @@ describe('Keeper of Secret Names', function() {
                     defenders: [this.p2Keeper]
                 });
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 expect(this.game.currentConflict.defenders).toContain(this.p2Keeper);
                 this.player2.clickCard(this.p2Keeper);
@@ -197,7 +197,7 @@ describe('Keeper of Secret Names', function() {
                     defenders: [this.p2Keeper]
                 });
 
-                let fate = this.p1Keeper.fate;
+                const fate = this.p1Keeper.fate;
 
                 this.player2.clickCard(this.p2Keeper);
                 expect(this.player2).toBeAbleToSelect(this.meditationsOnTheTao);
@@ -242,8 +242,8 @@ describe('Keeper of Secret Names', function() {
                     province: this.frostbittenCrossing
                 });
 
-                let mil = this.brash.getMilitarySkill();
-                let pol = this.brash.getPoliticalSkill();
+                const mil = this.brash.getMilitarySkill();
+                const pol = this.brash.getPoliticalSkill();
 
                 this.player2.clickCard(this.p2Keeper);
                 expect(this.player2).toBeAbleToSelect(this.alongTheRiverOfGold);

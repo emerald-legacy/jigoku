@@ -1,16 +1,8 @@
-import { EffectName } from './Constants.js';
+import { CardType, EffectName } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
-import type { AbilityContext } from './AbilityContext.js';
-
-export interface CanHostAttachments {
-    attachments: DrawCard[];
-    removeAttachment(attachment: DrawCard): void;
-    allowAttachment(attachment: DrawCard): boolean;
-    checkForIllegalAttachments(): boolean;
-}
 
 export class AttachmentManager {
     attachments: DrawCard[] = [];
@@ -31,7 +23,7 @@ export class AttachmentManager {
     checkForIllegalAttachments(): boolean {
         const host = this.host;
         const game = host.game;
-        const context = (game.getFrameworkContext as (player?: Player | null) => AbilityContext)(host.controller);
+        const context = (game.getFrameworkContext)(host.controller);
         const illegalAttachments = new Set<DrawCard>(
             this.attachments.filter((attachment) => !host.allowAttachment(attachment) || !attachment.canAttach(host))
         );
@@ -84,8 +76,9 @@ export class AttachmentManager {
             game.promptForSelect(host.controller, {
                 activePromptTitle: 'Choose an attachment to discard',
                 waitingPromptTitle: 'Waiting for opponent to choose an attachment to discard',
-                cardCondition: (card: DrawCard) => card.parent?.uuid === host.uuid && card.isRestricted(),
-                onSelect: (player: Player, card: DrawCard) => {
+                cardType: CardType.Attachment,
+                cardCondition: (card) => card.parent?.uuid === host.uuid && card.isRestricted(),
+                onSelect: (player: Player, card) => {
                     game.addMessage(
                         '{0} discards {1} from {2} due to too many Restricted attachments',
                         player,

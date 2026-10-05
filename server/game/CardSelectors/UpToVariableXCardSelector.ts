@@ -26,7 +26,7 @@ class UpToVariableXCardSelector extends BaseCardSelector {
         return selectedCards.length > this.numCardsFunc(context);
     }
 
-    hasEnoughTargets(context: AbilityContext, choosingPlayer: Player): boolean {
+    hasEnoughTargets(context: AbilityContext, choosingPlayer?: Player): boolean {
         return this.numCardsFunc(context) > 0 && super.hasEnoughTargets(context, choosingPlayer);
     }
 }

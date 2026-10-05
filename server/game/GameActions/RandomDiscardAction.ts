@@ -1,51 +1,47 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/shuffle.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface RandomDiscardProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class RandomDiscardAction extends PlayerAction {
-    defaultProperties: RandomDiscardProperties = { amount: 1 };
+/** A discard event this action created: `addPropertiesToEvent` always sets its amount. */
+type RandomDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, C> & { amount: number };
+
+export class RandomDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount'> {
+    defaultProperties = { amount: 1 };
 
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
-    constructor(propertyFactory: RandomDiscardProperties | ((context: AbilityContext) => RandomDiscardProperties)) {
-        super(propertyFactory);
+    protected effectMessage(context: C): MessageArgs {
+        const { amount } = this.getProperties(context);
+        return ['make {0} discard {1} {2} at random', [amount, amount > 1 ? 'cards' : 'card']];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties: RandomDiscardProperties = this.getProperties(context);
-        return [
-            'make {0} discard {1} {2} at random',
-            [properties.target, properties.amount, (properties.amount ?? 0) > 1 ? 'cards' : 'card']
-        ];
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        return properties.amount > 0 && player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties: RandomDiscardProperties = this.getProperties(context, additionalProperties);
-        return (properties.amount ?? 0) > 0 && player.hand.length > 0 && super.canAffect(player, context);
-    }
-
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties) as RandomDiscardProperties;
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.discardedAtRandom = true;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
-        let player = event.player as Player;
-        let amount = Math.min(event.amount as number, player.hand.length);
+    eventHandler(event: RandomDiscardEvent<C>): void {
+        const player = event.player;
+        const amount = Math.min(event.amount, player.hand.length);
         if(amount === 0) {
             return;
         }
-        let cardsToDiscard = shuffle(player.hand).slice(0, amount) as typeof player.hand;
+        const cardsToDiscard = shuffle(player.hand).slice(0, amount);
         event.cards = cardsToDiscard;
         event.discardedCards = cardsToDiscard;
         player.game.addMessage('{0} discards {1} at random', player, cardsToDiscard);

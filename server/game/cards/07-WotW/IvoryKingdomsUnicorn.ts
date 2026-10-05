@@ -8,26 +8,22 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
 
     private attackingAtConflictResolution = false;
     private provinceBroken = false;
-    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
+        new EventRegistrar(this.game, this).register([
             EventName.AfterConflict,
             EventName.OnBreakProvince,
             EventName.OnConflictDeclared
         ]);
 
-        this.reaction({
-            title: 'Immediately declare a military conflict',
-            when: {
+        this.reaction('Immediately declare a military conflict')
+            .when({
                 onConflictFinished: () => this.provinceBroken && this.attackingAtConflictResolution
-            },
-            gameAction: AbilityDsl.actions.initiateConflict({
+            })
+            .gameAction(AbilityDsl.actions.initiateConflict({
                 canPass: false,
                 forcedDeclaredType: ConflictType.Military
-            })
-        });
+            }));
     }
 
     public afterConflict() {

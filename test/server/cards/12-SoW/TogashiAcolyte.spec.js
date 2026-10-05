@@ -87,8 +87,8 @@ describe('Togashi Acolyte', function () {
                     defenders: []
                 });
 
-                let mil = this.whisperer.getMilitarySkill();
-                let pol = this.whisperer.getPoliticalSkill();
+                const mil = this.whisperer.getMilitarySkill();
+                const pol = this.whisperer.getPoliticalSkill();
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);
@@ -114,8 +114,8 @@ describe('Togashi Acolyte', function () {
                     defenders: []
                 });
 
-                let mil = this.whisperer.getMilitarySkill();
-                let pol = this.whisperer.getPoliticalSkill();
+                const mil = this.whisperer.getMilitarySkill();
+                const pol = this.whisperer.getPoliticalSkill();
 
                 this.player2.clickCard(this.p2BHC);
                 this.player2.clickPrompt('player2');
@@ -137,7 +137,7 @@ describe('Togashi Acolyte', function () {
                     defenders: []
                 });
 
-                let pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.getPoliticalSkill();
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);

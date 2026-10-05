@@ -7,28 +7,25 @@ export default class FortifiedLumberCamp extends DrawCard {
     static id = 'fortified-lumber-camp';
 
     setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Discard all cards in and attached to a province ',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
+        this.action('Discard all cards in and attached to a province')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
-            },
-            gameAction: AbilityDsl.actions.multipleContext<ProvinceCard>((context) => ({
-                gameActions: context.target ? [
+            })
+            .gameAction(AbilityDsl.actions.multipleContext((context) => ({
+                gameActions: [
                     AbilityDsl.actions.moveCard({
                         destination: Location.DynastyDiscardPile,
-                        target: this.#cardsInProvince(context.target)
+                        target: this.cardsInProvince(context.target)
                     }),
                     AbilityDsl.actions.discardFromPlay({ target: context.target.attachments })
-                ] : []
-            })),
-            effect: 'discard {1}',
-            effectArgs: (context) => [context.target ? this.#cardsInProvince(context.target).concat(context.target.attachments) : []]
-        });
+                ]
+            })))
+            .effect('discard {1}', (context) => [this.cardsInProvince(context.target).concat(context.target.attachments)]);
     }
 
-    #cardsInProvince(targetProvince: ProvinceCard) {
+    private cardsInProvince(targetProvince: ProvinceCard) {
         return targetProvince.controller.getDynastyCardsInProvince(targetProvince.location);
     }
 }

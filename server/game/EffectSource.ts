@@ -1,34 +1,17 @@
 import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
-import type { AbilityContext } from './AbilityContext.js';
 import { GameObject } from './GameObject.js';
 import { Location, Duration } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type Effect from './Effects/Effect.js';
-import type { EffectFactory } from './Effects/EffectBuilder.js';
-import type { EffectMatch } from './Effects/Effect.js';
+import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
+import type { EffectProperties } from './Effects/Effect.js';
 
-interface EffectProperties {
-    duration?: Duration;
-    location?: Location;
-    effect?: EffectFactory | EffectFactory[];
-    match?: EffectMatch;
-    condition?: (context: AbilityContext) => boolean;
-}
+type EffectSourceProperties = EffectProperties<EffectTarget> & { effect?: EffectFactory | EffectFactory[] };
 
-type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
+type PropertyFactory = (dsl: AbilityDslType) => EffectSourceProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
-
-// State the effect engine reads off a source. Subclasses expose these in
-// incompatible forms (BaseCard.controller is a field, StatusToken.controller a
-// getter; persistentEffects is a getter on BaseCard but a field on StatusToken/
-// ElementSymbol), so they can't be hoisted as a single class member — effect
-// sites narrow to this type instead.
-export type SourceWithState = EffectSource & {
-    controller?: Player;
-    persistentEffects?: { ref?: Effect[] }[];
-};
 
 class EffectSource extends GameObject {
     constructor(game: Game, name = 'Framework effect') {
@@ -68,6 +51,18 @@ class EffectSource extends GameObject {
 
     public isTemptationsMaho() {
         return false;
+    }
+
+    // What the effect engine reads off a source. Subclasses hold these in incompatible forms
+    // (controller is a field on BaseCard but a getter on StatusToken), so they override methods.
+
+    /** The player whose effects these are; framework effects, rings and element symbols have none. */
+    public getEffectController(): Player | undefined {
+        return undefined;
+    }
+
+    public getPersistentEffectRecords(): readonly { ref?: Effect[] }[] {
+        return [];
     }
 
     public applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {
@@ -133,7 +128,7 @@ class EffectSource extends GameObject {
      * Adds a persistent/lasting/delayed effect to the effect engine
      * @param {Object} properties - properties for the effect - see Effects/Effect.js
      */
-    addEffectToEngine(properties: EffectProperties): Effect[] {
+    addEffectToEngine(properties: EffectSourceProperties): Effect[] {
         const { effect, ...rest } = properties;
         if(Array.isArray(effect)) {
             return effect.map((factory) => this.game.effectEngine.add(factory(this.game, this, rest)));

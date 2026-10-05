@@ -60,8 +60,8 @@ describe('Cast Out the Shadow', function () {
                 defenders: [this.mitsu, this.whisperer, this.hida]
             });
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
 

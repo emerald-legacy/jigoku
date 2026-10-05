@@ -2,7 +2,7 @@ import SelectCardPrompt from '../../../build/server/game/gamesteps/SelectCardPro
 
 describe('the SelectCardPrompt', function() {
     function createCardSpy(properties = {}) {
-        let card = jasmine.createSpyObj('card', ['allowGameAction', 'getType']);
+        const card = jasmine.createSpyObj('card', ['allowGameAction', 'getType']);
         card.getType.and.returnValue('character');
         card.allowGameAction.and.returnValue(true);
         Object.assign(card, properties);
@@ -11,7 +11,7 @@ describe('the SelectCardPrompt', function() {
 
     beforeEach(function() {
 
-        this.game = jasmine.createSpyObj('game', ['getPlayers', 'getCurrentAbilityContext', 'resetClocks']);
+        this.game = jasmine.createSpyObj('game', ['getPlayers', 'getCurrentAbilityContext']);
         this.game.getCurrentAbilityContext.and.returnValue({ source: 'framework', card: null, stage: 'framework' });
 
         this.player = jasmine.createSpyObj('player1', ['setPrompt', 'cancelPrompt', 'clearSelectableCards', 'clearSelectedCards', 'setSelectableCards', 'setSelectedCards', 'clearSelectableRings', 'startClock', 'stopClock', 'resetClock']);
@@ -90,7 +90,7 @@ describe('the SelectCardPrompt', function() {
                 beforeEach(function() {
                     this.properties.cardCondition.and.returnValue(true);
                     this.card.getType.and.returnValue('character');
-                    this.prompt.properties.cardType = ['event'];
+                    this.properties.cardType = ['event'];
                     this.prompt = new SelectCardPrompt(this.game, this.player, this.properties);
                 });
 

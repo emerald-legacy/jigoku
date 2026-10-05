@@ -73,6 +73,17 @@ describe('Roadside Inn', function() {
             expect(this.player2.fate).toBe(9);
         });
 
+        it('should name the opponent as the giver when they choose a character they do not control', function() {
+            this.noMoreActions();
+            this.player1.clickCard(this.inn);
+            this.player1.clickCard(this.matsuBerserker);
+            this.player2.clickPrompt('Yes');
+            this.player2.clickCard(this.ikomaProdigy);
+            expect(this.getChatLogs(1)).toContain('player1 uses Roadside Inn to place a fate from their pool on Matsu Berserker.  player2 gives player1 1 honor to place a fate from their pool on Ikoma Prodigy');
+            expect(this.ikomaProdigy.fate).toBe(1);
+            expect(this.player2.fate).toBe(9);
+        });
+
         it('should work with standard fate phase fate business', function() {
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');

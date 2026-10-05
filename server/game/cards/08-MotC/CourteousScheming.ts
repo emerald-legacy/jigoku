@@ -1,4 +1,4 @@
-import { DuelType, Duration } from '../../Constants.js';
+import { ConflictType, DuelType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -6,10 +6,9 @@ export default class CourteousScheming extends DrawCard {
     static id = 'courteous-scheming';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            condition: () => this.game.currentConflict !== null && this.game.currentConflict.conflictType === 'political',
-            initiateDuel: () => ({
+        this.action('Initiate a political duel')
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: 'allow {0} to declare an additional political conflict this phase',
@@ -19,11 +18,10 @@ export default class CourteousScheming extends DrawCard {
                         ? AbilityDsl.actions.playerLastingEffect({
                             targetController: duel.winnerController,
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.additionalConflict('political')
+                            effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
                         })
                         : AbilityDsl.actions.noAction()
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

@@ -34,7 +34,7 @@
             this.player1.clickCard(this.guardianKami);
             expect(this.guardianKami.hasKeyword('pride')).toBe(true);
             expect(this.demagogue.hasKeyword('pride')).toBe(false);
-            expect(this.getChatLogs(5)).toContain('player1 uses Aimi Demagogue to give Guardian Kami pride the end of the conflict');
+            expect(this.getChatLogs(5)).toContain('player1 uses Aimi Demagogue to give Guardian Kami pride until the end of the conflict');
         });
 
         it('if picking opponents character should give two prides', function () {
@@ -48,7 +48,7 @@
             this.player1.clickCard(this.wanderingRonin);
             expect(this.wanderingRonin.hasKeyword('pride')).toBe(true);
             expect(this.demagogue.hasKeyword('pride')).toBe(true);
-            expect(this.getChatLogs(5)).toContain('player1 uses Aimi Demagogue to give itself and Wandering Ronin pride the end of the conflict');
+            expect(this.getChatLogs(5)).toContain('player1 uses Aimi Demagogue to give itself and Wandering Ronin pride until the end of the conflict');
         });
     });
 });

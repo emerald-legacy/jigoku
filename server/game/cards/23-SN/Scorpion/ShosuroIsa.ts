@@ -2,32 +2,27 @@ import { EventName, Players, Duration, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import BaseCard from '../../../BaseCard.js';
-import { EventPayload } from '../../../Events/EventPayloads.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import type BaseCard from '../../../BaseCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class ShosuroIsa extends DrawCard {
     static id = 'shosuro-isa';
 
     private shadows: BaseCard[] = [];
-    private eventRegistrar?: EventRegistrar;
 
     setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
 
-        this.action({
-            title: 'Manifest a shadow',
-            target: {
+        this.action('Manifest a shadow')
+            .target({
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
-                cardCondition: (card) => !card.isUnique(),
-                gameAction: AbilityDsl.actions.putIntoPlay()
-            },
-            effect: 'manifest a shadow of {0}',
-            then: (context: AbilityContext) => ({
-                thenCondition: () => context.target?.location === Location.PlayArea,
+                cardCondition: (card) => !card.isUnique()
+            }, AbilityDsl.actions.putIntoPlay())
+            .effect('manifest a shadow of {0}')
+            .then((context) => ({
+                thenCondition: () => context.target.location === Location.PlayArea,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         target: context.target,
@@ -43,14 +38,11 @@ export default class ShosuroIsa extends DrawCard {
                     }),
                     AbilityDsl.actions.handler({
                         handler: () => {
-                            if(context.target) {
-                                this.shadows.push(context.target);
-                            }
+                            this.shadows.push(context.target);
                         }
                     })
                 ])
-            })
-        });
+            }));
     }
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {

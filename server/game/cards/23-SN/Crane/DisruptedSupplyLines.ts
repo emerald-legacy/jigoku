@@ -1,44 +1,38 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
-import { CardType, EventName, Location, Players, TargetMode } from '../../../Constants.js';
-import { Result } from '../../../costs/Cost.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { EventPayload } from '../../../Events/EventPayloads.js';
-import { MsgArg } from '../../../GameChat.js';
-import Player from '../../../Player.js';
-import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { Event } from '../../../Events/Event.js';
 
-const resourcesAvailable = (context: TriggeredAbilityContext) => {
-    let fateAvailable = false;
-    if(context.game.actions.loseFate().canAffect(context.player, context)) {
-        fateAvailable = true;
-    }
+const resourcesAvailable = (context: AbilityContext) => {
+    const fateAvailable = context.game.actions.loseFate().canAffect(context.player, context);
 
     const eligibleCharacters = context.player.cardsInPlay.filter(
-        (card: DrawCard) => card.getType() === CardType.Character &&
+        (card) => card.getType() === CardType.Character &&
             context.game.actions.dishonor().canAffect(card, context)
     );
-    const freeCharacters = eligibleCharacters.filter((card: DrawCard) => card.hasSomeTrait('scout', 'shinobi'));
+    const freeCharacters = eligibleCharacters.filter((card) => card.hasSomeTrait('scout', 'shinobi'));
 
     return { fateAvailable, eligibleCharacters, freeCharacters };
 };
 
-const disruptedSupplyLinesCost = function () {
+function disruptedSupplyLinesCost(): Cost<{ disruptedSupplyLinesCostFatePaid: boolean; disruptedSupplyLinesCostDishonoredCharacter: DrawCard | undefined }> {
     return {
-        getCostMessage(context: TriggeredAbilityContext) {
+        getCostMessage(context) {
             return ['dishonoring {1}{2}',
                 [context.costs.disruptedSupplyLinesCostDishonoredCharacter,
-                    context.costs.disruptedSupplyLinesCostFatePaid ? ' and paying 1 fate' : ''] as MsgArg
+                    context.costs.disruptedSupplyLinesCostFatePaid ? ' and paying 1 fate' : '']
             ];
         },
-        getActionName(_context: TriggeredAbilityContext) {
+        getActionName(_context) {
             return 'disruptedSupplyLinesCost';
         },
-        canPay: function (context: TriggeredAbilityContext) {
+        canPay(context) {
             const { fateAvailable, eligibleCharacters, freeCharacters } = resourcesAvailable(context);
             return freeCharacters.length > 0 || (fateAvailable && eligibleCharacters.length > 0);
         },
-        resolve: function (context: TriggeredAbilityContext, results: Result) {
+        resolve(context, results) {
             const { fateAvailable, eligibleCharacters, freeCharacters } = resourcesAvailable(context);
             context.costs.disruptedSupplyLinesCostFatePaid = false;
             context.costs.disruptedSupplyLinesCostDishonoredCharacter = undefined;
@@ -53,10 +47,10 @@ const disruptedSupplyLinesCost = function () {
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => cards.includes(card as DrawCard),
+                cardCondition: (card) => cards.includes(card),
                 context: context,
-                onSelect: (player: Player, card: BaseCard) => {
-                    context.costs.disruptedSupplyLinesCostFatePaid = !freeCharacters.includes(card as DrawCard);
+                onSelect: (_player, card) => {
+                    context.costs.disruptedSupplyLinesCostFatePaid = !freeCharacters.includes(card);
                     context.costs.disruptedSupplyLinesCostDishonoredCharacter = card;
                     return true;
                 },
@@ -66,50 +60,45 @@ const disruptedSupplyLinesCost = function () {
                 }
             });
         },
-        payEvent: function (context: TriggeredAbilityContext) {
-            const events = [];
+        payEvent(context) {
+            const events: Event[] = [];
             if(context.costs.disruptedSupplyLinesCostFatePaid) {
-                const loseFateaction = context.game.actions.loseFate({ amount: 1, target: context.player });
+                const loseFateaction = context.game.actions.loseFate({ target: context.player });
                 events.push(loseFateaction.getEvent(context.player, context));
             }
 
-            const dishonorAction = context.game.actions.dishonor({ target: context.costs.disruptedSupplyLinesCostDishonoredCharacter as BaseCard });
+            const dishonorAction = context.game.actions.dishonor({ target: context.costs.disruptedSupplyLinesCostDishonoredCharacter });
             events.push(dishonorAction.getEvent(context.costs.disruptedSupplyLinesCostDishonoredCharacter, context));
 
             return events;
         },
         promptsPlayer: true
     };
-};
+}
 
 export default class DisruptedSupplyLines extends DrawCard {
     static id = 'disrupted-supply-lines';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Remove attachment from game',
-            cost: disruptedSupplyLinesCost(),
-            when: {
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => (
+        this.interrupt('Remove attachment from game')
+            .when({
+                onCardAttached: (event, context) => (
                     !!event.parent && event.parent.getType() === CardType.Character &&
                     event.context?.player === context.player.opponent
                 )
-            },
-            target: {
-                player: Players.Opponent,
-                mode: TargetMode.Select,
-                choices: {
-                    'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                    'Remove attachment from the game': AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                        target: context.source,
-                        replacementGameAction: AbilityDsl.actions.removeFromGame((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card, location: Location.Any }))
-                    }))
-                }
-            },
-            effect: '{1}{2}{3}',
-            effectArgs: context => context.select === 'Give your opponent 1 fate' ?
+            })
+            .cost(disruptedSupplyLinesCost())
+            .select({
+                player: Players.Opponent
+            }, {
+                'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
+                'Remove attachment from the game': AbilityDsl.actions.cancel((context) => ({
+                    target: context.source,
+                    replacementGameAction: AbilityDsl.actions.removeFromGame({ target: context.event.card, location: Location.Any })
+                }))
+            })
+            .effect('{1}{2}{3}', context => context.select === 'Give your opponent 1 fate' ?
                 ['take 1 fate from ', context.player.opponent, ''] :
-                ['remove ', context.event.card, ' from the game']
-        });
+                ['remove ', context.event.card, ' from the game']);
     }
 }

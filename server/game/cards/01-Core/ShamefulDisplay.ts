@@ -1,112 +1,63 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import type DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import { TargetMode } from '../../Constants.js';
+import { CardType, TargetMode } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+
+const STATUSES = ['Honor', 'Dishonor'] as const;
+type Status = typeof STATUSES[number];
 
 export default class ShamefulDisplay extends ProvinceCard {
     static id = 'shameful-display';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Dishonor/Honor two characters',
-            target: {
+        this.action('Dishonor/Honor two characters')
+            .targetCards({
                 mode: TargetMode.Exactly,
                 numCards: 2,
+                cardType: CardType.Character,
                 activePromptTitle: 'Select two characters',
-                cardCondition: card => card.isParticipating(),
-                gameAction: [AbilityDsl.actions.honor(), AbilityDsl.actions.dishonor()]
-            },
-            effect: 'change the personal honor of {0}',
-            handler: (context: AbilityContext) => {
-                if(!context.target) {
-                    return;
-                }
-                const targets = context.getCards<DrawCard>('target');
-                if(targets.every((card: DrawCard) => !card.allowGameAction('honor', context))) {
-                    this.game.promptForSelect(context.player, {
-                        activePromptTitle: 'Choose a character to dishonor',
-                        context: context,
-                        gameAction: AbilityDsl.actions.dishonor(),
-                        cardCondition: (card: DrawCard) => targets.includes(card),
-                        onSelect: (_player: Player, card: DrawCard) => {
-                            this.resolveShamefulDisplay(
-                                context,
-                                targets.find((c: DrawCard) => c !== card),
-                                card
-                            );
-                            return true;
-                        }
-                    });
-                } else if(targets.every((card: DrawCard) => !card.allowGameAction('dishonor', context))) {
-                    this.game.promptForSelect(context.player, {
-                        activePromptTitle: 'Choose a character to honor',
-                        context: context,
-                        gameAction: AbilityDsl.actions.honor(),
-                        cardCondition: (card: DrawCard) => targets.includes(card),
-                        onSelect: (_player: Player, card: DrawCard) => {
-                            this.resolveShamefulDisplay(
-                                context,
-                                card,
-                                targets.find((c: DrawCard) => c !== card)
-                            );
-                            return true;
-                        }
-                    });
-                } else {
-                    this.promptToChooseHonorOrDishonor(targets, context);
-                }
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.honor(), AbilityDsl.actions.dishonor())
+            .handler((context) => this.chooseStatus(context, context.targets.target))
+            .effect('change the personal honor of {0}');
     }
 
-    promptToChooseHonorOrDishonor(cards: DrawCard[], context: AbilityContext) {
-        let choices = ['Honor', 'Dishonor'];
-        let handlers = choices.map((choice) => {
-            return () => this.chooseCharacter(choice, cards, context);
-        });
-        this.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: 'Choose a character to:',
-            context: context,
-            choices: choices,
-            handlers: handlers
-        });
-    }
-
-    chooseCharacter(choice: string, cards: DrawCard[], context: AbilityContext) {
-        let promptTitle = 'Choose a character to dishonor';
-        let condition = (card: DrawCard) => cards.includes(card) && card.allowGameAction('dishonor', context);
-        if(choice === 'Honor') {
-            promptTitle = 'Choose a character to honor';
-            condition = (card: DrawCard) => cards.includes(card) && card.allowGameAction('honor', context);
+    private chooseStatus(context: AbilityContext, pair: readonly BaseCard[]) {
+        const statuses = STATUSES.filter((status) => pair.some((card) => canApply(status, card, context)));
+        if(statuses.length === 1) {
+            this.chooseCharacter(statuses[0], context, pair, false);
+            return;
         }
-        this.game.promptForSelect(context.player, {
-            activePromptTitle: promptTitle,
-            context: context,
-            cardCondition: condition,
-            buttons: [{ text: 'Back', arg: 'back' }],
-            onSelect: (_player: Player, card: DrawCard) => {
-                let otherCard = cards.find((c) => c !== card);
-                if(choice === 'Honor') {
-                    this.resolveShamefulDisplay(context, card, otherCard);
-                } else {
-                    this.resolveShamefulDisplay(context, otherCard, card);
-                }
+        context.game.promptWithHandlerMenu(context.player, {
+            activePromptTitle: 'Choose a character to:',
+            context,
+            options: statuses.map((status) => ({ text: status, handler: () => this.chooseCharacter(status, context, pair, true) }))
+        });
+    }
+
+    private chooseCharacter(status: Status, context: AbilityContext, pair: readonly BaseCard[], canGoBack: boolean) {
+        context.game.promptForSelect(context.player, {
+            activePromptTitle: `Choose a character to ${status.toLowerCase()}`,
+            context,
+            cardCondition: (card) => pair.includes(card) && canApply(status, card, context),
+            buttons: canGoBack ? [{ text: 'Back', arg: 'back' }] : [],
+            onSelect: (_player, chosen) => {
+                const other = pair.find((card) => card !== chosen);
+                const [honored, dishonored] = status === 'Honor' ? [chosen, other] : [other, chosen];
+                context.game.addMessage('{0} chooses to honor {1} and dishonor {2}', context.player, honored, dishonored);
+                context.game.applyGameAction(context, { honor: honored, dishonor: dishonored });
                 return true;
             },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'back') {
-                    this.promptToChooseHonorOrDishonor(cards, context);
-                    return true;
-                }
-                return false;
+            onMenuCommand: () => {
+                this.chooseStatus(context, pair);
+                return true;
             }
         });
     }
+}
 
-    resolveShamefulDisplay(context: AbilityContext, cardToHonor: BaseCard | undefined, cardToDishonor: BaseCard | undefined) {
-        this.game.applyGameAction(context, { honor: cardToHonor, dishonor: cardToDishonor });
-    }
+function canApply(status: Status, card: BaseCard, context: AbilityContext) {
+    const action = status === 'Honor' ? AbilityDsl.actions.honor() : AbilityDsl.actions.dishonor();
+    return action.canAffect(card, context);
 }

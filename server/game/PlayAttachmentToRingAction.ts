@@ -4,7 +4,6 @@ import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
-import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 
@@ -13,8 +12,8 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
 
     constructor(card: DrawCard) {
         super(card, [payTargetDependentFateCost('target')], {
-            gameAction: attachToRing((context) => ({ attachment: context.source })),
-            ringCondition: (ring: Ring, context: TriggeredAbilityContext<DrawCard>) => context.source.canPlayOn(ring),
+            gameAction: attachToRing((context: AbilityContext<DrawCard>) => ({ attachment: context.source })),
+            ringCondition: (ring: Ring) => card.canPlayOn(ring),
             mode: TargetMode.Ring
         });
     }
@@ -63,6 +62,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: context.onPlayCardSource,
+            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
             playType: PlayType.PlayFromHand
         });
         context.game.openEventWindow([

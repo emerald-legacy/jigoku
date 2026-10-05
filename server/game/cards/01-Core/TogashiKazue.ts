@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -9,27 +8,18 @@ export default class TogashiKazue extends DrawCard {
 
     setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
-        this.action({
-            title: 'Steal a fate',
-            condition: (context) =>
+        this.action('Steal a fate')
+            .condition((context) =>
                 !!(context.source.type === CardType.Attachment &&
                 context.source.parentCharacter &&
-                context.source.parentCharacter.isParticipating()),
-            printedAbility: false,
-            target: {
+                context.source.parentCharacter.isParticipating()))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source.parentCharacter,
-                gameAction: AbilityDsl.actions.removeFate((context: AbilityContext<this>) => ({
-                    recipient: context.source.parentCharacter ?? undefined
-                }))
-            },
-            effect: 'steal a fate from {0} and place it on {1}',
-            effectArgs: (context) => context.source.parentCharacter ?? ''
-        });
-    }
-
-    leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source.parentCharacter
+            }, AbilityDsl.actions.removeFate((context) => ({
+                recipient: context.source.parentCharacter ?? undefined
+            })))
+            .effect('steal a fate from {0} and place it on {1}', (context) => context.source.parentCharacter ?? '')
+            .notPrinted();
     }
 }

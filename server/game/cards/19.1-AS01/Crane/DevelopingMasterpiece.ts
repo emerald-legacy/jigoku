@@ -1,21 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
-
-function captureParentCost(): Cost {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context: AbilityContext) {
-            context.costs.captureParentCost = (context.source as DrawCard).parentCharacter;
-        },
-        pay() {}
-    };
-}
+import { captureParentCost, capturedParent } from '../../captureParentCost.js';
 
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
@@ -30,25 +18,19 @@ export default class DevelopingMasterpiece extends DrawCard {
             effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
-        this.action({
-            title: 'Gain honor',
-            phase: Phases.Fate,
-            condition: (context) => !!context.source.parentCharacter,
-            cost: [captureParentCost(), AbilityDsl.costs.removeSelfFromGame()],
-            gameAction: AbilityDsl.actions.gainHonor((context) => ({
-                amount: this.getHonorGain(context),
-                target: context.player
-            })),
-            effect: 'gain {1} honor',
-            effectArgs: (context: AbilityContext) => [this.getHonorGain(context)],
-            then: (context) => {
-                const haiku = randomHaiku();
-                if(haiku && context) {
-                    haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
-                    context.game.addMessage('>>>> Matsuo Bashō <<<<');
-                }
-            }
-        });
+        this.action('Gain honor')
+            .cost(captureParentCost())
+            .cost(AbilityDsl.costs.removeSelfFromGame())
+            .condition((context) => !!context.source.parentCharacter)
+            .gameAction(AbilityDsl.actions.gainHonor((context) => ({
+                amount: capturedParent(context)?.getGlory() ?? 0
+            })))
+            .effect('gain {1} honor', (context) => [capturedParent(context)?.getGlory() ?? 0])
+            .then((context) => {
+                randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
+                context.game.addMessage('>>>> Matsuo Bashō <<<<');
+            })
+            .phase(Phases.Fate);
     }
 
     public canAttach(card: BaseCard): boolean {
@@ -62,12 +44,6 @@ export default class DevelopingMasterpiece extends DrawCard {
 
     public canPlay(context: AbilityContext, playType: string): boolean {
         return context.game.currentPhase === Phases.Draw && super.canPlay(context, playType);
-    }
-
-    private getHonorGain(context: AbilityContext): number {
-        return context.costs.captureParentCost
-            ? (context.costs.captureParentCost as DrawCard).getGlory()
-            : ((context.source as DrawCard).parentCharacter?.getGlory() ?? 0);
     }
 }
 

@@ -1,40 +1,35 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface SetDialProperties extends PlayerActionProperties {
     value: number;
 }
 
-export class SetDialAction extends PlayerAction<SetDialProperties, EventName.OnSetHonorDial> {
-    defaultProperties: SetDialProperties = { value: 0 };
+export class SetDialAction<C extends AbilityContext = AbilityContext> extends PlayerAction<SetDialProperties, EventName.OnSetHonorDial, C, 'value'> {
+    defaultProperties = { value: 0 };
 
     name = 'setDial';
     eventName = EventName.OnSetHonorDial;
-    constructor(propertyFactory: SetDialProperties | ((context: AbilityContext) => SetDialProperties)) {
-        super(propertyFactory);
+    protected effectMessage(context: C): MessageArgs {
+        return ['set {0}\'s dial to {1}', [this.getProperties(context).value]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as SetDialProperties;
-        return ['set {0}\'s dial to {1}', [properties.target, properties.value]];
-    }
-
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as SetDialProperties;
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.value > 0 && properties.value < 6 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnSetHonorDial>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { value } = this.getProperties(context, additionalProperties) as SetDialProperties;
+    addPropertiesToEvent(event: ActionEvent<EventName.OnSetHonorDial, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+        const { value } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.value = value;
     }
 
-    eventHandler(event: GameEvent<EventName.OnSetHonorDial>): void {
+    eventHandler(event: ActionEvent<EventName.OnSetHonorDial, C>): void {
         event.player.setShowBid(event.value);
     }
 }

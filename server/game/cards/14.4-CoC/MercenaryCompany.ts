@@ -1,51 +1,53 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, EventName } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type Player from '../../Player.js';
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
 
     setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Give control of this character',
-            when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
+        this.forcedReaction('Give control of this character')
+            .when({
+                afterConflict: (event, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
                     && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context)
                     && AbilityDsl.actions.placeFate().canAffect(context.source, context)
-            },
-            gameAction: AbilityDsl.actions.handler({
+            })
+            .gameAction(AbilityDsl.actions.handler({
                 handler: context => {
                     const opponent = context.player.opponent;
-                    if(!opponent) {
+                    const source = context.source;
+                    if(!opponent || !source.isDrawCard()) {
                         return;
                     }
                     context.game.promptWithHandlerMenu(opponent, {
                         activePromptTitle: 'Place a fate on Mercenary Company to take control of it?',
                         source: context.source,
-                        choices: ['Yes', 'No'],
-                        handlers: [
-                            () => {
-                                opponent.modifyFate(-1);
-                                (context.source as DrawCard).modifyFate(1);
-                                context.source.lastingEffect(() => ({
-                                    duration: Duration.Custom,
-                                    effect: AbilityDsl.effects.takeControl(opponent)
-                                }));
-                                this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                        options: [
+                            {
+                                text: 'Yes',
+                                handler: () => {
+                                    AbilityDsl.actions.placeFate({ origin: opponent }).resolve(source, context);
+                                    context.game.queueSimpleStep(() => {
+                                        context.source.lastingEffect(() => ({
+                                            duration: Duration.Custom,
+                                            effect: AbilityDsl.effects.takeControl(opponent)
+                                        }));
+                                        this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                                    });
+                                }
                             },
-                            () => {
-                                this.game.addMessage('{0} chooses not to hire {1}', opponent, context.source);
+                            {
+                                text: 'No',
+                                handler: () => {
+                                    this.game.addMessage('{0} chooses not to hire {1}', opponent, context.source);
+                                }
                             }
                         ]
                     });
                 }
-            }),
-            effect: 'let {1} hire their services',
-            effectArgs: context => [context.player.opponent as Player],
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            }))
+            .effect('let {1} hire their services', context => [context.player.opponent])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
 }

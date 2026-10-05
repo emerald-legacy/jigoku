@@ -27,8 +27,8 @@ describe('Advance Fortification', function () {
                 defenders: [this.borderlandsDefender],
                 province: this.sd1
             });
-            let mil = this.borderlandsDefender.getMilitarySkill();
-            let pol = this.borderlandsDefender.getPoliticalSkill();
+            const mil = this.borderlandsDefender.getMilitarySkill();
+            const pol = this.borderlandsDefender.getPoliticalSkill();
             this.player2.clickCard(this.fort);
             expect(this.borderlandsDefender.getMilitarySkill()).toBe(mil + 1);
             expect(this.borderlandsDefender.getPoliticalSkill()).toBe(pol + 1);
@@ -42,8 +42,8 @@ describe('Advance Fortification', function () {
                 defenders: [this.borderlandsDefender],
                 province: this.sd2
             });
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
             this.player2.clickCard(this.fort);
 
             expect(this.player1.honor).toBe(honor - 1);

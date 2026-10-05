@@ -98,8 +98,8 @@ describe('Prayers on the Eve of Battle', function () {
             });
 
             it('happy path', function () {
-                let fate = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({

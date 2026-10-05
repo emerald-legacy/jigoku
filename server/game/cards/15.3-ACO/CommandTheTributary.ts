@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, AbilityType } from '../../Constants.js';
 
@@ -13,9 +12,8 @@ class CommandTheTributary extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card, context) => card !== context.source,
-                    gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({
-                        origin: context.source as DrawCard,
-                        amount: 1
+                    gameAction: AbilityDsl.actions.placeFate((context) => ({
+                        origin: context.source.isDrawCard() ? context.source : undefined
                     }))
                 }
             })

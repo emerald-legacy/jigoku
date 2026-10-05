@@ -6,25 +6,25 @@ import { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type { TriggerChoice } from '../TriggeredAbility.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
-import type CardAbility from '../CardAbility.js';
 import type Ring from '../Ring.js';
+import type { HandlerMenuOption } from './HandlerMenuPrompt.js';
 import type EffectSource from '../EffectSource.js';
-import type AbilityResolver from './AbilityResolver.js';
 
-function promptCardFor(context: TriggeredAbilityContext): BaseCard | undefined {
+function promptCardFor(context: TriggerChoice): BaseCard | undefined {
     return Event.promptCardOf(context.event);
 }
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
-    choices: TriggeredAbilityContext[];
+    choices: TriggerChoice[];
     events: Event[];
     eventWindow: EventWindow;
     eventsToExclude: Event[];
     abilityType: AbilityType;
-    currentPlayer: Player;
-    resolvedAbilities: Array<{ ability: TriggeredAbility; event: Event }>;
+    // unset while a window opens during setup, before the first player is chosen
+    currentPlayer: Player | undefined;
+    resolvedAbilities: Array<{ ability: TriggeredAbility; event: Event | Event[] }>;
     complete?: boolean;
 
     constructor(game: Game, abilityType: AbilityType, window: EventWindow, eventsToExclude: Event[] = []) {
@@ -34,8 +34,16 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         this.eventWindow = window;
         this.eventsToExclude = eventsToExclude;
         this.abilityType = abilityType;
-        this.currentPlayer = this.game.getFirstPlayer() as Player;
+        this.currentPlayer = this.game.getFirstPlayer();
         this.resolvedAbilities = [];
+    }
+
+    /** Prompting needs a player, and a window only prompts once the first player is chosen. */
+    protected requireCurrentPlayer(): Player {
+        if(!this.currentPlayer) {
+            throw new Error('A triggered ability window cannot prompt before the first player is chosen');
+        }
+        return this.currentPlayer;
     }
 
     continue() {
@@ -52,8 +60,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return false;
     }
 
-    addChoice(context: TriggeredAbilityContext) {
-        if(!context.event.cancelled && !this.hasAbilityBeenTriggered(context) && context.ability && !context.ability.isKeywordAbility()) {
+    addChoice(context: TriggerChoice) {
+        if(!(context.event instanceof Event && context.event.cancelled) && !this.hasAbilityBeenTriggered(context) && context.ability && !context.ability.isKeywordAbility()) {
             this.choices.push(context);
         }
     }
@@ -62,7 +70,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         if(this.choices.length === 0) {
             return true;
         }
-        if(this.choices.length === 1 || !this.currentPlayer.optionSettings.orderForcedAbilities) {
+        if(this.choices.length === 1 || !this.requireCurrentPlayer().optionSettings.orderForcedAbilities) {
             this.resolveAbility(this.choices[0]);
             return false;
         }
@@ -78,8 +86,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return false;
     }
 
-    promptBetweenSources(choices: TriggeredAbilityContext[]) {
-        this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
+    promptBetweenSources(choices: TriggerChoice[]) {
+        this.game.promptForSelect(this.requireCurrentPlayer(), Object.assign({}, this.getPromptForSelectProperties(), {
             cardCondition: (card: BaseCard) => choices.some(context => context.source === card),
             onSelect: (_player: Player, card: BaseCard) => {
                 this.promptBetweenAbilities(choices.filter(context => context.source === card));
@@ -102,14 +110,15 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     getPromptControls() {
-        let map = new Map<BaseCard | Ring | EffectSource, BaseCard[]>();
+        const map = new Map<BaseCard | Ring | EffectSource, BaseCard[]>();
         for(const event of this.events) {
             if(event.context && event.context.source) {
                 let targets = map.get(event.context.source) || [];
                 const eventCard = Event.promptCardOf(event);
-                const innerCard = Event.promptCardOf((event.context as TriggeredAbilityContext).event);
-                if(event.context.target) {
-                    targets = targets.concat(event.context.target);
+                const innerCard = Event.promptCardOf('event' in event.context ? event.context.event : undefined);
+                const target = event.context.messageTarget();
+                if(target) {
+                    targets = targets.concat(target);
                 } else if(eventCard && eventCard !== event.context.source) {
                     targets = targets.concat(eventCard);
                 } else if(innerCard) {
@@ -123,32 +132,33 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return [...map.entries()].map(([source, targets]) => ({
             type: 'targeting',
             source: source.getShortSummary(),
-            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.currentPlayer))
+            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.requireCurrentPlayer()))
         }));
     }
 
-    promptBetweenAbilities(choices: TriggeredAbilityContext[], addBackButton = true) {
-        let menuChoices = [...new Set(choices.map(context => (context.ability as CardAbility).title))];
+    promptBetweenAbilities(choices: TriggerChoice[], addBackButton = true) {
+        const menuChoices = [...new Set(choices.map(context => context.ability.title))];
         if(menuChoices.length === 1) {
             // this card has only one ability which can be triggered
             this.promptBetweenEventCards(choices, addBackButton);
             return;
         }
         // This card has multiple abilities which can be used in this window - prompt the player to pick one
-        let handlers = menuChoices.map(title => (() => this.promptBetweenEventCards(choices.filter(context => (context.ability as CardAbility).title === title))));
+        const options: HandlerMenuOption[] = menuChoices.map(title => ({
+            text: title,
+            handler: () => this.promptBetweenEventCards(choices.filter(context => context.ability.title === title))
+        }));
         if(addBackButton) {
-            menuChoices.push('Back');
-            handlers.push(() => this.promptBetweenSources(this.choices));
+            options.push({ text: 'Back', handler: () => this.promptBetweenSources(this.choices) });
         }
-        this.game.promptWithHandlerMenu(this.currentPlayer, Object.assign({}, this.getPromptProperties(), {
+        this.game.promptWithHandlerMenu(this.requireCurrentPlayer(), Object.assign({}, this.getPromptProperties(), {
             activePromptTitle: 'Which ability would you like to use?',
-            choices: menuChoices,
-            handlers: handlers
+            options
         }));
     }
 
-    promptBetweenEventCards(choices: TriggeredAbilityContext[], addBackButton = true) {
-        if((choices[0].ability as TriggeredAbility).collectiveTrigger) {
+    promptBetweenEventCards(choices: TriggerChoice[], addBackButton = true) {
+        if(choices[0].ability.collectiveTrigger) {
             // This ability only triggers once for all events in this window
             this.resolveAbility(choices[0]);
             return;
@@ -161,7 +171,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             return;
         }
         // Several cards could be affected by this ability - prompt the player to choose which they want to affect
-        this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
+        this.game.promptForSelect(this.requireCurrentPlayer(), Object.assign({}, this.getPromptForSelectProperties(), {
             activePromptTitle: 'Select a card to affect',
             cardCondition: (card: BaseCard) => choices.some(context => promptCardFor(context) === card),
             buttons: addBackButton ? [{ text: 'Back', arg: 'back' }] : [],
@@ -179,7 +189,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         }));
     }
 
-    promptBetweenEvents(choices: TriggeredAbilityContext[], addBackButton = true) {
+    promptBetweenEvents(choices: TriggerChoice[], addBackButton = true) {
         // Get unique choices by event
         const seenEvents = new Set();
         choices = choices.filter(context => {
@@ -195,35 +205,34 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             return;
         }
         // Several events affect this card and the chosen ability can respond to more than one of them - prompt player to pick one
-        let menuChoices = choices.map(context => TriggeredAbilityWindowTitle.getAction(context.event));
-        let handlers = choices.map(context => (() => this.resolveAbility(context)));
+        const options: HandlerMenuOption[] = choices.map(context => ({
+            text: TriggeredAbilityWindowTitle.getAction(context.event),
+            handler: () => this.resolveAbility(context)
+        }));
         if(addBackButton) {
-            menuChoices.push('Back');
-            handlers.push(() => this.promptBetweenSources(this.choices));
+            options.push({ text: 'Back', handler: () => this.promptBetweenSources(this.choices) });
         }
-        this.game.promptWithHandlerMenu(this.currentPlayer, Object.assign({}, this.getPromptProperties(), {
+        this.game.promptWithHandlerMenu(this.requireCurrentPlayer(), Object.assign({}, this.getPromptProperties(), {
             activePromptTitle: 'Choose an event to respond to',
-            choices: menuChoices,
-            handlers: handlers
+            options
         }));
     }
 
-    resolveAbility(context: TriggeredAbilityContext) {
-        let resolver = this.game.resolveAbility(context);
+    resolveAbility(context: TriggerChoice) {
+        const resolver = this.game.resolveAbility(context);
         this.game.queueSimpleStep(() => {
             if(resolver.passPriority) {
-                this.postResolutionUpdate(resolver);
+                this.postResolutionUpdate(context);
             }
         });
     }
 
-    postResolutionUpdate(resolver: AbilityResolver) {
-        const context = resolver.context as TriggeredAbilityContext;
-        this.resolvedAbilities.push({ ability: context.ability as TriggeredAbility, event: context.event });
+    postResolutionUpdate(context: TriggerChoice) {
+        this.resolvedAbilities.push({ ability: context.ability, event: context.event });
     }
 
-    hasAbilityBeenTriggered(context: TriggeredAbilityContext): boolean {
-        return this.resolvedAbilities.some(resolved => resolved.ability === context.ability && ((context.ability as TriggeredAbility).collectiveTrigger || resolved.event === context.event));
+    hasAbilityBeenTriggered(context: TriggerChoice): boolean {
+        return this.resolvedAbilities.some(resolved => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));
     }
 
     emitEvents() {

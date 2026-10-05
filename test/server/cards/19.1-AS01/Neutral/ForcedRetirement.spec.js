@@ -46,14 +46,14 @@ describe('Forced Retirement', function () {
         });
 
         it('returns the fate from the character', function () {
-            let p1FateBefore = this.player1.fate;
+            const p1FateBefore = this.player1.fate;
             this.player1.clickCard(this.forcedRetirement);
             this.player1.clickCard(this.hotaru);
             expect(this.player1.fate).toBe(p1FateBefore + 2);
         });
 
         it('discards all character status, then discard it', function () {
-            let p1HonorBefore = this.player1.honor;
+            const p1HonorBefore = this.player1.honor;
             this.player1.clickCard(this.forcedRetirement);
             this.player1.clickCard(this.hotaru);
             expect(this.player1.honor).toBe(p1HonorBefore + 1);
@@ -63,7 +63,7 @@ describe('Forced Retirement', function () {
             this.player1.clickCard(this.forcedRetirement);
             this.player1.clickCard(this.hotaru);
             expect(this.getChatLogs(1)).toContain(
-                'player1 plays Forced Retirement to expiate Doji Hotaru\'s misdeeds by retiring them to the nearest monatery, recovering their 2 fate. Let them contemplate their sins.'
+                'player1 plays Forced Retirement to expiate Doji Hotaru\'s misdeeds by retiring them to the nearest monastery, recovering their 2 fate. Let them contemplate their sins'
             );
         });
     });

@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub-based unit test: partial fakes of game, card and context */
 import { CardAction } from '../../../server/game/CardAction.js';
+import { Location } from '../../../server/game/Constants.js';
 
 interface CardActionTestContext {
     gameSpy: any;
@@ -65,9 +67,9 @@ describe('CardAction', function () {
 
         describe('location', function() {
             it('should use the location sent via properties', function(this: CardActionTestContext) {
-                this.properties.location = ['foo'];
+                this.properties.location = [Location.Hand];
                 this.action = new CardAction(this.cardSpy, this.properties);
-                expect(this.action.location as string[]).toContain('foo');
+                expect([this.action.location].flat()).toContain(Location.Hand);
             });
         });
 

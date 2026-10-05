@@ -41,7 +41,7 @@ describe('Kitsuki Jusai', function() {
             });
 
             it('should move 1 fate from opponent\'s pool to chosen ring', function() {
-                let airFate = this.game.rings.air.fate;
+                const airFate = this.game.rings.air.fate;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.clickCard(this.kitsukiJusai);

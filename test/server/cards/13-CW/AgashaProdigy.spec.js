@@ -102,6 +102,20 @@ describe('Agasha Prodigy', function () {
             );
         });
 
+        it('should not discard the opponent\'s top card if they give the honor but choose no character', function () {
+            this.player1.moveCard(this.katana, 'conflict deck');
+            this.player2.moveCard(this.katana2, 'conflict deck');
+
+            this.player1.clickCard(this.agashaProdigy);
+            this.player1.clickCard(this.agashaProdigy);
+            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose a character');
+            this.player2.clickPrompt('Done');
+
+            expect(this.agashaProdigy.attachments).toContain(this.katana);
+            expect(this.katana2.location).toBe('conflict deck');
+        });
+
         it('should fail to attach if the top card cannot legally attach', function () {
             this.player1.moveCard(this.missive, 'conflict deck');
             this.player2.moveCard(this.fury, 'conflict deck');

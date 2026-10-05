@@ -1,9 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Conflict } from '../../../Conflict.js';
 import { CardType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DeployedGarrison extends DrawCard {
@@ -17,30 +16,23 @@ export default class DeployedGarrison extends DrawCard {
             })
         });
 
-        this.reaction({
-            title: 'Does not bow at the end of the conflict',
-            when: {
+        this.reaction('Does not bow at the end of the conflict')
+            .when({
                 afterConflict: (event, context) =>
                     context.player.isDefendingPlayer() &&
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
-                    this.#conflictNearHolding(context)
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source,
+                    this.conflictNearHolding(context, event.conflict)
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect({
                 effect: AbilityDsl.effects.doesNotBow()
-            })),
-            effect: 'not bow during the conflict resolution'
-        });
+            }))
+            .effect('not bow during the conflict resolution');
     }
 
-    #conflictNearHolding(context: AbilityContext) {
-        if(!context.player.isDefendingPlayer()) {
-            return false;
-        }
-
-        const attackedProvinces = (context.game.currentConflict as Conflict).getConflictProvinces();
-        const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province: ProvinceCard) => {
+    private conflictNearHolding(context: AbilityContext, conflict: Conflict) {
+        const attackedProvinces = conflict.getConflictProvinces();
+        const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province) => {
             for(const attackedProvince of attackedProvinces) {
                 if(
                     attackedProvince === province ||
@@ -53,7 +45,7 @@ export default class DeployedGarrison extends DrawCard {
         });
 
         for(const province of nearbyProvinces) {
-            for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
+            for(const card of context.player.getDynastyCardsInProvince(province.location)) {
                 if(card.isFaceup() && card.type === CardType.Holding) {
                     return true;
                 }

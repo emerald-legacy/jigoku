@@ -1,27 +1,21 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class ThereAreNoSecrets extends DrawCard {
     static id = 'there-are-no-secrets';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Gain 1 fate',
-            when: {
+        this.wouldInterrupt('Gain 1 fate')
+            .when({
                 onMoveFate: (event, context) =>
-                    context.source.parentCharacter && event.origin === context.source.parentCharacter && event.fate > 0
-            },
-            gameAction: AbilityDsl.actions.gainFate((context) => ({ target: context.player }))
-        });
+                    context.source.parentCharacter && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0
+            })
+            .gameAction(AbilityDsl.actions.gainFate());
     }
 
-    canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+    canPlay(context: AbilityContext, playType: string) {
+        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

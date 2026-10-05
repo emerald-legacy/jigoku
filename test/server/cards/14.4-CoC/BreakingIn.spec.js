@@ -54,7 +54,7 @@ describe('Breaking In', function() {
         });
 
         it('should do nothing if \'Select nothing\' is chosen', function() {
-            let dynastyDeckSize = this.player2.dynastyDeck.length;
+            const dynastyDeckSize = this.player2.dynastyDeck.length;
             this.noMoreActions();
             this.player1.clickCard(this.brashSamurai);
             this.player1.clickRing('fire');

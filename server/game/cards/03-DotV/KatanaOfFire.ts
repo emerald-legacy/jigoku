@@ -1,9 +1,11 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Element } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { controlsShugenja } from '../controlsShugenja.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'katana-of-fire-fire';
+const elementSymbol = { key: 'katana-of-fire-fire', element: Element.Fire };
 
 class KatanaOfFire extends DrawCard {
     static id = 'katana-of-fire';
@@ -15,7 +17,7 @@ class KatanaOfFire extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
+        if(!controlsShugenja(context.player)) {
             return false;
         }
 
@@ -24,25 +26,19 @@ class KatanaOfFire extends DrawCard {
 
     // Helper methods for clarity - TODO: needs fixing to not use this.controller
     controllerHasFireRing() {
-        return this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(this.controller);
+        return hasClaimedRing(this, elementSymbol.key, this.controller);
     }
     numberOfFireCards() {
-        return this.controller.getNumberOfCardsInPlay((card: DrawCard) => card.hasTrait('fire'));
+        return this.controller.getNumberOfCardsInPlay((card) => card.hasTrait('fire'));
     }
     totalKatanaModifier() {
-        var skillModifier = this.controllerHasFireRing() ? 2 : 0;
+        let skillModifier = this.controllerHasFireRing() ? 2 : 0;
         skillModifier += this.numberOfFireCards();
         return skillModifier;
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Fire
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

@@ -6,7 +6,6 @@ class InventiveButtressing extends ProvinceAttachment {
     static id = 'inventive-buttressing';
 
     setupCardAbilities() {
-        super.setupCardAbilities();
         this.persistentEffect({
             condition: () => this.game.isDuringConflict('military'),
             targetLocation: Location.Provinces,

@@ -6,9 +6,8 @@ class DisparagingChallenge extends DrawCard {
     static id = 'disparaging-challenge';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 targetCondition: card => !card.isParticipating(),
                 gameAction: duel => AbilityDsl.actions.conditional({
@@ -16,8 +15,7 @@ class DisparagingChallenge extends DrawCard {
                     trueGameAction: AbilityDsl.actions.moveToConflict({ target: duel.loser }),
                     falseGameAction: AbilityDsl.actions.sendHome({ target: duel.loser })
                 })
-            }
-        });
+            }));
     }
 }
 

@@ -25,11 +25,11 @@ describe('Taoist Adept', function() {
                 ring: 'air'
             });
 
-            let voidFate = this.game.rings.void.fate;
-            let airFate = this.game.rings.air.fate;
-            let earthFate = this.game.rings.earth.fate;
-            let fireFate = this.game.rings.fire.fate;
-            let waterFate = this.game.rings.water.fate;
+            const voidFate = this.game.rings.void.fate;
+            const airFate = this.game.rings.air.fate;
+            const earthFate = this.game.rings.earth.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const waterFate = this.game.rings.water.fate;
 
             this.player2.clickCard(this.adept);
             this.player2.clickCard(this.borderRider);
@@ -65,11 +65,11 @@ describe('Taoist Adept', function() {
                 ring: 'air'
             });
 
-            let voidFate = this.game.rings.void.fate;
-            let airFate = this.game.rings.air.fate;
-            let earthFate = this.game.rings.earth.fate;
-            let fireFate = this.game.rings.fire.fate;
-            let waterFate = this.game.rings.water.fate;
+            const voidFate = this.game.rings.void.fate;
+            const airFate = this.game.rings.air.fate;
+            const earthFate = this.game.rings.earth.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const waterFate = this.game.rings.water.fate;
 
             this.player2.clickCard(this.adept);
             this.player2.clickCard(this.borderRider);
@@ -105,11 +105,11 @@ describe('Taoist Adept', function() {
                 ring: 'air'
             });
 
-            let voidFate = this.game.rings.void.fate;
-            let airFate = this.game.rings.air.fate;
-            let earthFate = this.game.rings.earth.fate;
-            let fireFate = this.game.rings.fire.fate;
-            let waterFate = this.game.rings.water.fate;
+            const voidFate = this.game.rings.void.fate;
+            const airFate = this.game.rings.air.fate;
+            const earthFate = this.game.rings.earth.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const waterFate = this.game.rings.water.fate;
 
             this.player2.clickCard(this.adept);
             this.player2.clickCard(this.borderRider);
@@ -136,11 +136,11 @@ describe('Taoist Adept', function() {
                 ring: 'air'
             });
 
-            let voidFate = this.game.rings.void.fate;
-            let airFate = this.game.rings.air.fate;
-            let earthFate = this.game.rings.earth.fate;
-            let fireFate = this.game.rings.fire.fate;
-            let waterFate = this.game.rings.water.fate;
+            const voidFate = this.game.rings.void.fate;
+            const airFate = this.game.rings.air.fate;
+            const earthFate = this.game.rings.earth.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const waterFate = this.game.rings.water.fate;
 
             this.player2.clickCard(this.adept);
             this.player2.clickCard(this.borderRider);
@@ -172,11 +172,11 @@ describe('Taoist Adept', function() {
                 ring: 'air'
             });
 
-            let voidFate = this.game.rings.void.fate;
-            let airFate = this.game.rings.air.fate;
-            let earthFate = this.game.rings.earth.fate;
-            let fireFate = this.game.rings.fire.fate;
-            let waterFate = this.game.rings.water.fate;
+            const voidFate = this.game.rings.void.fate;
+            const airFate = this.game.rings.air.fate;
+            const earthFate = this.game.rings.earth.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const waterFate = this.game.rings.water.fate;
 
             this.player2.clickCard(this.adept);
             this.player2.clickCard(this.borderRider);

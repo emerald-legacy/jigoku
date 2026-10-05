@@ -85,7 +85,7 @@ describe('SoD - Dragon', function () {
 
             it('should prompt opponent to pick a card', function () {
                 this.player1.clickCard(this.night);
-                let deck = this.player1.conflictDeck.length;
+                const deck = this.player1.conflictDeck.length;
 
                 expect(this.player1).toHavePrompt('Choose two conflict cards');
                 expect(this.player1).not.toBeAbleToSelect(this.singer);
@@ -369,7 +369,7 @@ describe('SoD - Dragon', function () {
             });
 
             it('holding', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.player.showBid = 1;
                 this.player2.player.showBid = 5;
 

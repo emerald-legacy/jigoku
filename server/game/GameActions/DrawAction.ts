@@ -1,43 +1,47 @@
-import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface DrawProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class DrawAction extends PlayerAction<DrawProperties> {
+export class DrawAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DrawProperties, EventName.OnCardsDrawn, C, 'amount'> {
     name = 'draw';
     eventName = EventName.OnCardsDrawn;
 
-    defaultProperties: DrawProperties = {
+    defaultProperties = {
         amount: 1
     };
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['draw ' + properties.amount + ((properties.amount ?? 0) > 1 ? ' cards' : ' card'), []];
+    protected effectMessage(context: C): MessageArgs {
+        const { amount } = this.getProperties(context);
+        return ['draw ' + amount + (amount > 1 ? ' cards' : ' card'), []];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    protected effectMessageTarget(): MsgArg {
+        return undefined;
+    }
+
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.amount !== 0 && super.canAffect(player, context);
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDrawn>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties);
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDrawn, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount as number;
+        event.amount = amount;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardsDrawn>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardsDrawn, C>): void {
         event.player.drawCardsToHand(event.amount);
     }
 }

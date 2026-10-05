@@ -18,33 +18,33 @@ describe('Battle Maiden Recruit', function() {
             function worksWithRing(ringType) {
                 it('should give +2 to military skill if the ' + ringType + ' ring is claimed',
                     function() {
-                        let military = this.maiden.getMilitarySkill();
+                        const military = this.maiden.getMilitarySkill();
                         this.player1.claimRing(ringType);
                         expect(this.maiden.getMilitarySkill()).toBe(military + 2);
                     }
                 );
             }
 
-            for(let ringType of ['water', 'void']) {
+            for(const ringType of ['water', 'void']) {
                 worksWithRing(ringType);
             }
 
             function doesntWorkWithRing(ringType) {
                 it('should not give +2 to military skill if the ' + ringType + ' ring is claimed',
                     function() {
-                        let military = this.maiden.getMilitarySkill();
+                        const military = this.maiden.getMilitarySkill();
                         this.player1.claimRing(ringType);
                         expect(this.maiden.getMilitarySkill()).toBe(military);
                     }
                 );
             }
 
-            for(let ringType of ['air', 'earth', 'fire']) {
+            for(const ringType of ['air', 'earth', 'fire']) {
                 doesntWorkWithRing(ringType);
             }
 
             it('should not give +2 to military skill if the opponent claimed the air or water ring', function() {
-                let military = this.maiden.getMilitarySkill();
+                const military = this.maiden.getMilitarySkill();
                 this.player2.claimRing('air');
                 this.player2.claimRing('water');
                 expect(this.maiden.getMilitarySkill()).toBe(military);

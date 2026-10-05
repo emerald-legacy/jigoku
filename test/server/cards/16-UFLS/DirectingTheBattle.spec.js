@@ -92,7 +92,7 @@ describe('Directing the Battle', function() {
                 defenders: [this.defender, this.whisperer],
                 ring: 'void'
             });
-            let mil = this.whisperer.getMilitarySkill();
+            const mil = this.whisperer.getMilitarySkill();
             this.player2.pass();
             this.player1.clickCard(this.directing);
             this.player1.clickCard(this.whisperer);

@@ -40,12 +40,13 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickPrompt('0');
                 this.player2.pass();
 
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
                 this.player1.clickCard(this.tadaka);
 
+                expect(this.player1).toHavePrompt('Choose a spirit to receive 1 fate');
                 expect(this.player1).toBeAbleToSelect(this.kami);
                 expect(this.player1).not.toBeAbleToSelect(this.tadaka);
 
@@ -56,8 +57,29 @@ describe('SoD - Phoenix', function () {
                 expect(this.kami.fate).toBe(1);
                 expect(this.tadaka.fate).toBe(1);
                 expect(this.player1.fate).toBe(fate - 1);
-                expect(this.getChatLogs(5)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to choose up to 3 spirits to place fate on and injure Isawa Tadaka');
-                expect(this.getChatLogs(5)).toContain('player1 moves fate from their pool onto Kami Unleashed');
+                expect(this.getChatLogs(5)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to move up to 3 fate onto Spirit characters and injure Isawa Tadaka');
+                expect(this.getChatLogs(5)).toContain('player1 moves 1 fate from their pool onto Kami Unleashed');
+            });
+
+            it('the same spirit more than once', function () {
+                this.tadaka.fate = 2;
+
+                this.player1.clickCard(this.kami);
+                this.player1.clickPrompt('0');
+                this.player2.pass();
+
+                const fate = this.player1.fate;
+
+                this.player1.clickCard(this.restless);
+                this.player1.clickCard(this.tadaka);
+                this.player1.clickCard(this.kami);
+                this.player1.clickCard(this.kami);
+                this.player1.clickCard(this.kami);
+
+                expect(this.kami.fate).toBe(3);
+                expect(this.player1.fate).toBe(fate - 3);
+                expect(this.tadaka.fate).toBe(1);
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('four spirits', function () {
@@ -80,7 +102,7 @@ describe('SoD - Phoenix', function () {
                 this.player2.pass();
 
                 this.player1.fate = 10;
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
@@ -88,17 +110,17 @@ describe('SoD - Phoenix', function () {
 
                 this.player1.clickCard(this.kami);
                 this.player1.clickCard(this.onibi);
-                this.player1.clickCard(this.guardian);
                 expect(this.player1).toHavePromptButton('Done');
-                this.player1.clickPrompt('Done');
+                this.player1.clickCard(this.guardian);
 
                 expect(this.kami.fate).toBe(1);
                 expect(this.onibi.fate).toBe(2);
                 expect(this.guardian.fate).toBe(1);
                 expect(this.tadaka.location).toBe('dynasty discard pile');
                 expect(this.player1.fate).toBe(fate - 3);
-                expect(this.getChatLogs(5)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to choose up to 3 spirits to place fate on and injure Isawa Tadaka');
-                expect(this.getChatLogs(5)).toContain('player1 moves fate from their pool onto Kami Unleashed, Onibi and Guardian Kami');
+                expect(this.getChatLogs(6)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to move up to 3 fate onto Spirit characters and injure Isawa Tadaka');
+                expect(this.getChatLogs(6)).toContain('player1 moves 1 fate from their pool onto Onibi');
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('not enough fate', function () {
@@ -110,36 +132,20 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickPrompt('0');
                 this.player2.pass();
 
-                this.player1.clickCard(this.onibi);
-                this.player1.clickPrompt('0');
-                this.player1.clickCard(this.onibi);
-                this.player2.pass();
-
-                this.player1.clickCard(this.ancestor);
-                this.player1.clickPrompt('Play this character');
-                this.player1.clickPrompt('0');
-                this.player2.pass();
-
                 this.player1.fate = 1;
-                let fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
                 this.player1.clickCard(this.tadaka);
 
                 this.player1.clickCard(this.kami);
-                this.player1.clickCard(this.onibi);
-                this.player1.clickCard(this.guardian);
-                expect(this.player1).toHavePromptButton('Done');
-                this.player1.clickPrompt('Done');
 
                 expect(this.kami.fate).toBe(1);
-                expect(this.onibi.fate).toBe(1);
                 expect(this.guardian.fate).toBe(0);
                 expect(this.tadaka.location).toBe('dynasty discard pile');
-                expect(this.player1.fate).toBe(fate - 1);
-                expect(this.getChatLogs(5)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to choose up to 3 spirits to place fate on and injure Isawa Tadaka');
-                expect(this.getChatLogs(5)).toContain('player1 moves fate from their pool onto Kami Unleashed');
+                expect(this.player1.fate).toBe(0);
+                expect(this.getChatLogs(5)).toContain('player1 moves 1 fate from their pool onto Kami Unleashed');
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('void affinity', function () {
@@ -153,7 +159,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickPrompt('0');
                 this.player2.pass();
 
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.restless);
                 expect(this.player1).toBeAbleToSelect(this.tadaka);
@@ -169,8 +175,8 @@ describe('SoD - Phoenix', function () {
                 expect(this.kami.fate).toBe(1);
                 expect(this.tadaka.fate).toBe(2);
                 expect(this.player1.fate).toBe(fate - 1);
-                expect(this.getChatLogs(5)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to choose up to 3 spirits to place fate on');
-                expect(this.getChatLogs(5)).toContain('player1 moves fate from their pool onto Kami Unleashed');
+                expect(this.getChatLogs(5)).toContain('player1 plays Appeasing the Restless, bowing Isawa Tadaka to move up to 3 fate onto Spirit characters');
+                expect(this.getChatLogs(5)).toContain('player1 moves 1 fate from their pool onto Kami Unleashed');
             });
         });
 
@@ -381,7 +387,7 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.challenger]
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.pass();
                 this.player1.clickCard(this.shun);
@@ -401,7 +407,7 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.challenger]
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.pass();
                 this.player1.clickCard(this.shun);
@@ -464,7 +470,7 @@ describe('SoD - Phoenix', function () {
                     province: this.p1
                 });
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 expect(this.player2).toBeAbleToSelect(this.song);
                 this.player2.clickCard(this.song);
@@ -500,13 +506,46 @@ describe('SoD - Phoenix', function () {
                     ring: 'fire'
                 });
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 expect(this.player2).toBeAbleToSelect(this.song);
                 this.player2.clickCard(this.song);
 
                 expect(this.player2.honor).toBe(honor + 2);
                 expect(this.getChatLogs(5)).toContain('player2 uses Song of the Empty City to gain 2 honor');
+            });
+
+            it('should not count conflicts declared in an earlier round', function () {
+                this.scholar.fate = 3;
+                this.challenger.fate = 3;
+                this.keeper.fate = 3;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.scholar],
+                    province: this.p1
+                });
+                this.player2.clickCard(this.song);
+                this.player2.clickCard(this.challenger);
+                this.player2.clickPrompt('Done');
+
+                this.nextPhase();
+                this.advancePhases('conflict');
+                this.noMoreActions();
+                this.player2.passConflict();
+                this.noMoreActions();
+
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.scholar],
+                    province: this.p1,
+                    ring: 'fire'
+                });
+
+                const honor = this.player2.honor;
+                this.player2.clickCard(this.song);
+                expect(this.player2.honor).toBe(honor + 1);
+                expect(this.getChatLogs(5)).toContain('player2 uses Song of the Empty City to gain 1 honor');
             });
         });
 
@@ -571,6 +610,35 @@ describe('SoD - Phoenix', function () {
                 this.player2.clickCard(this.scholar);
                 expect(this.getChatLogs(5)).toContain('player2 uses Vengeful Kami to resolve the Void Ring effect');
                 expect(this.getChatLogs(5)).toContain('player2 resolves the void ring, removing a fate from Solemn Scholar');
+            });
+
+            it('should not count conflicts declared in an earlier round', function () {
+                this.challenger.fate = 3;
+                this.vengeful.fate = 3;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.scholar],
+                    defenders: [this.challenger],
+                    province: this.p3
+                });
+
+                this.nextPhase();
+                this.advancePhases('conflict');
+                this.noMoreActions();
+                this.player2.passConflict();
+                this.noMoreActions();
+
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.scholar],
+                    defenders: [this.vengeful],
+                    province: this.p3,
+                    ring: 'fire'
+                });
+
+                this.player2.clickCard(this.vengeful);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
             });
         });
 

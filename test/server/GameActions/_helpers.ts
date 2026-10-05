@@ -14,13 +14,12 @@ export function buildPlayerHarness(): PlayerHarness {
     return { player, opponent };
 }
 
+type SpiedMethods<K extends string> = Record<K, jasmine.Spy>;
+
 export function buildGameSpy<K extends string>(
     methods: readonly K[]
-): jasmine.SpyObj<Record<K, jasmine.Spy>> {
-    return jasmine.createSpyObj(
-        "game",
-        methods as readonly string[]
-    ) as jasmine.SpyObj<Record<K, jasmine.Spy>>;
+): jasmine.SpyObj<SpiedMethods<K>> {
+    return jasmine.createSpyObj("game", methods);
 }
 
 const baseGameActionMethods = [
@@ -36,22 +35,19 @@ type BaseGameActionMethod = typeof baseGameActionMethods[number];
 
 export function buildGameActionSpy<E extends string = never>(
     extras: readonly E[] = []
-): jasmine.SpyObj<Record<BaseGameActionMethod | E, jasmine.Spy>> {
-    const methodNames: ReadonlyArray<string> = [...baseGameActionMethods, ...extras];
-    const spy = jasmine.createSpyObj(
-        "gameAction",
-        methodNames
-    ) as jasmine.SpyObj<Record<BaseGameActionMethod | E, jasmine.Spy>>;
+): jasmine.SpyObj<SpiedMethods<BaseGameActionMethod | E>> {
+    const methodNames: ReadonlyArray<BaseGameActionMethod | E> = [...baseGameActionMethods, ...extras];
+    const spy: jasmine.SpyObj<SpiedMethods<BaseGameActionMethod | E>> = jasmine.createSpyObj("gameAction", methodNames);
     spy.canAffect.and.returnValue(true);
     spy.hasLegalTarget.and.returnValue(true);
     spy.allTargetsLegal.and.returnValue(true);
     return spy;
 }
 
-export function lastPromptArgs<T = unknown>(spy: jasmine.Spy): T {
-    return spy.calls.mostRecent().args[1] as T;
+export function lastPromptArgs(spy: jasmine.Spy): unknown {
+    return spy.calls.mostRecent().args[1];
 }
 
-export function lastPromptPlayer<T = unknown>(spy: jasmine.Spy): T {
-    return spy.calls.mostRecent().args[0] as T;
+export function lastPromptPlayer(spy: jasmine.Spy): unknown {
+    return spy.calls.mostRecent().args[0];
 }

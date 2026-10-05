@@ -1,37 +1,36 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Decks, Duration, EventName } from '../../../Constants.js';
+import { Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
-import type Player from '../../../Player.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export function makeTwin(id: string, opt: { siblingName: string; title: string; effect: string }) {
     return class Twin extends DrawCard {
         static id = id;
 
         setupCardAbilities() {
-            this.action({
-                title: opt.title,
-                effect: opt.effect,
-                gameAction: AbilityDsl.actions.deckSearch({
+            this.action(opt.title)
+                .gameAction(AbilityDsl.actions.deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,
                     deck: Decks.DynastyDeck,
                     shuffle: false,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {
-                        const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                         if(cards.length === 0) {
-                            context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, searchEvent.player);
+                            context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, event.player);
                             return;
                         }
 
                         const newCharacter = cards[0];
-                        const replacedCharacter = context.source as DrawCard;
+                        const replacedCharacter = context.source;
+                        if(!replacedCharacter.isDrawCard()) {
+                            return;
+                        }
                         const intoPlayAction = replacedCharacter.isParticipating()
                             ? AbilityDsl.actions.putIntoConflict({ target: newCharacter })
                             : AbilityDsl.actions.putIntoPlay({ target: newCharacter });
                         intoPlayAction.resolve(newCharacter, context);
 
-                        const sequence = replacedCharacter.attachments.map((attachment) =>
+                        const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
                             AbilityDsl.actions.ifAble({
                                 ifAbleAction: AbilityDsl.actions.attach({ attachment, target: newCharacter }),
                                 otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: attachment })
@@ -65,13 +64,13 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
 
                         context.game.addMessage(
                             '{0} replaces {1} with {2}',
-                            searchEvent.player,
+                            event.player,
                             replacedCharacter,
                             newCharacter
                         );
                     }
-                })
-            });
+                }))
+                .effect(opt.effect);
         }
     };
 }

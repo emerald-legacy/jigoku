@@ -5,16 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class FavorableGround extends DrawCard {
     static id = 'favorable-ground';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move a character into or out of the conflict',
-            cost: ability.costs.sacrificeSelf(),
-            target: {
+    setupCardAbilities() {
+        this.action('Move a character into or out of the conflict')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: [ability.actions.sendHome(), ability.actions.moveToConflict()]
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.sendHome(), AbilityDsl.actions.moveToConflict());
     }
 }
 

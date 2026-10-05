@@ -1,28 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityContext } from '../../AbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class Blackmail extends DrawCard {
     static id = 'blackmail';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Take control of a character',
-            condition: () => this.game.isDuringConflict(),
-            target: {
+        this.action('Take control of a character')
+            .condition(() => this.game.isDuringConflict())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.takeControl(context.player)
-                }))
-            },
-            effect: 'take control of {0}'
-        });
+                cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
+            }, AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: AbilityDsl.effects.takeControl(context.player)
+            })))
+            .effect('take control of {0}');
     }
 
-    canPlay(context: AbilityContext, playType: string = 'play'): boolean {
+    canPlay(context: AbilityContext, playType = 'play'): boolean {
         if(context.player.opponent && context.player.isLessHonorable()) {
             return super.canPlay(context, playType);
         }

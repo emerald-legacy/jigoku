@@ -3,53 +3,52 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { EventName } from '../Constants.js';
 
 export interface IfAbleActionProperties extends GameActionProperties {
     ifAbleAction: GameAction;
     otherwiseAction: GameAction;
 }
 
-export class IfAbleAction extends GameAction {
-    declare defaultProperties: IfAbleActionProperties;
-
-    getProperties(context: AbilityContext, additionalProperties = {}): IfAbleActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as IfAbleActionProperties;
+export class IfAbleAction<C extends AbilityContext = AbilityContext> extends GameAction<IfAbleActionProperties, EventName, C> {
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         properties.ifAbleAction.setDefaultTarget(() => properties.target);
         properties.otherwiseAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context);
+    getEffectMessage(context: C): MessageArgs {
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context);
         return ifAbleAction.hasLegalTarget(context)
             ? ifAbleAction.getEffectMessage(context)
             : otherwiseAction.getEffectMessage(context);
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+    hasLegalTarget(context: C, additionalProperties = {}) {
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         return (
             ifAbleAction.hasLegalTarget(context, additionalProperties) ||
             otherwiseAction.hasLegalTarget(context, additionalProperties)
         );
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+    canAffect(target: GameObject, context: C, additionalProperties = {}) {
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         return (
             ifAbleAction.canAffect(target, context, additionalProperties) ||
             otherwiseAction.canAffect(target, context, additionalProperties)
         );
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
-        let gameAction = ifAbleAction.hasLegalTarget(context) ? ifAbleAction : otherwiseAction;
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}) {
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+        const gameAction = ifAbleAction.hasLegalTarget(context) ? ifAbleAction : otherwiseAction;
         gameAction.addEventsToArray(events, context, additionalProperties);
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}) {
+        const { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         return (
             ifAbleAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties) ||
             otherwiseAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)

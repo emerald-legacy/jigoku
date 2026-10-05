@@ -1,26 +1,26 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { EffectName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KissOfTheSea extends DrawCard {
     static id = 'kiss-of-the-sea';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Bow attached character',
-            when: {
+        this.reaction('Bow attached character')
+            .when({
                 onEffectApplied: (event, context) => {
-                    const effects = [
-                        'modifyBothSkills',
-                        'modifyMilitarySkill',
-                        'modifyMilitarySkillMultiplier',
-                        'modifyPoliticalSkill',
-                        'modifyPoliticalSkillMultiplier',
-                        'switchBaseSkills',
-                        'setMilitarySkill',
-                        'setPoliticalSkill',
-                        'setBaseMilitarySkill',
-                        'setBasePoliticalSkill',
-                        'setBaseDash'
+                    const effects: string[] = [
+                        EffectName.ModifyBothSkills,
+                        EffectName.ModifyMilitarySkill,
+                        EffectName.ModifyMilitarySkillMultiplier,
+                        EffectName.ModifyPoliticalSkill,
+                        EffectName.ModifyPoliticalSkillMultiplier,
+                        EffectName.SwitchBaseSkills,
+                        EffectName.SetMilitarySkill,
+                        EffectName.SetPoliticalSkill,
+                        EffectName.SetBaseMilitarySkill,
+                        EffectName.SetBasePoliticalSkill,
+                        EffectName.SetBaseDash
                     ];
 
                     if(!event.effectTypes) {
@@ -43,10 +43,9 @@ export default class KissOfTheSea extends DrawCard {
                     }
                     return false;
                 }
-            },
-            gameAction: AbilityDsl.actions.bow(context => ({
-                target: context.source.parentCharacter
-            }))
-        });
+            })
+            .gameAction(AbilityDsl.actions.bow(context => ({
+                target: context.source.parentCharacter ?? []
+            })));
     }
 }

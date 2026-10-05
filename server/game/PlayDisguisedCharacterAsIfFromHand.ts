@@ -5,8 +5,8 @@ import DrawCard from './DrawCard.js';
 import Player from './Player.js';
 
 export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard) {
-        super(card);
+    constructor(card: DrawCard, intoLocation = PlayDisguisedCharacterIntoLocation.Any) {
+        super(card, intoLocation);
     }
 
     createContext(player: Player = this.card.controller) {
@@ -16,47 +16,29 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
     }
 
     meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
+        const newIgnoredRequirements = ignoredRequirements.includes('location')
             ? ignoredRequirements
             : ignoredRequirements.concat('location');
         return super.meetsRequirements(context, newIgnoredRequirements);
     }
 }
 
-export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAction {
+export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAsIfFromHand {
     constructor(card: DrawCard) {
         super(card, PlayDisguisedCharacterIntoLocation.Conflict);
     }
-
-    createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
-    }
 }
 
-export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAction {
+export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAsIfFromHand {
     constructor(card: DrawCard) {
         super(card, PlayDisguisedCharacterIntoLocation.Home);
     }
+}
 
-    createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+// Like PlayFacedownCharacterAsIfFromHand: putIntoPlay refuses a facedown card.
+export class PlayFacedownDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAsIfFromHand {
+    executeHandler(context: AbilityContext<DrawCard>) {
+        context.source.facedown = false;
+        super.executeHandler(context);
     }
 }

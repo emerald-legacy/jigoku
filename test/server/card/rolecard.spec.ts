@@ -1,6 +1,8 @@
 import { RoleCard } from '../../../server/game/RoleCard.js';
+import type { CardSummary } from '../../../server/game/BaseCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
-import { Location } from '../../../server/game/Constants.js';
+import { CardType, Location } from '../../../server/game/Constants.js';
+import type { GameActionName } from '../../../server/game/GameActions/GameActionRegistry.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'getPlayers']);
@@ -31,7 +33,7 @@ describe('RoleCard', () => {
         cardData = {
             id: 'role-test',
             name: 'Test Role',
-            type: 'role',
+            type: CardType.Role,
             clan: 'neutral',
             influence_pool: 3
         };
@@ -70,17 +72,6 @@ describe('RoleCard', () => {
         });
     });
 
-    describe('flipFaceup()', () => {
-        beforeEach(() => {
-            card.facedown = true;
-        });
-
-        it('sets facedown to false', () => {
-            card.flipFaceup();
-            expect(card.facedown).toBe(false);
-        });
-    });
-
     describe('getElement()', () => {
         it('returns an empty array', () => {
             expect(card.getElement()).toEqual([]);
@@ -92,10 +83,10 @@ describe('RoleCard', () => {
     });
 
     describe('allowGameAction()', () => {
-        const illegalActions = [
+        const illegalActions: GameActionName[] = [
             'bow', 'ready', 'dishonor', 'honor', 'sacrifice', 'discardFromPlay',
             'moveToConflict', 'sendHome', 'putIntoPlay', 'putIntoConflict',
-            'break', 'returnToHand', 'takeControl', 'placeFate', 'removeFate'
+            'returnToHand', 'takeControl', 'placeFate', 'removeFate'
         ];
 
         illegalActions.forEach((action) => {
@@ -104,8 +95,10 @@ describe('RoleCard', () => {
             });
         });
 
-        it('allows an action that is not on the illegal list', () => {
-            expect(card.allowGameAction('customLegalAction')).toBe(true);
+        it('asks the parent about an action that is not on the illegal list', () => {
+            const parent = spyOn(Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(card))), 'allowGameAction').and.returnValue(true);
+            expect(card.allowGameAction('taint')).toBe(true);
+            expect(parent).toHaveBeenCalledWith('taint', undefined);
         });
 
         it('never delegates to the parent for illegal actions', () => {
@@ -136,7 +129,9 @@ describe('RoleCard', () => {
         });
 
         it('reflects base card summary fields', () => {
-            expect((summary as Record<string, unknown>).uuid).toBeDefined();
+            // the subclass summary spreads the base one, whose fields are only typed by its index signature
+            const baseSummary: CardSummary = summary;
+            expect(baseSummary.uuid).toBeDefined();
         });
     });
 });

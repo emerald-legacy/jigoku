@@ -1,12 +1,13 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { Players } from '../Constants.js';
+import { Players, type EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameAction } from './GameAction.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
+import type { EffectArg } from '../Interfaces.js';
 
 export interface SelectTokenProperties extends TokenActionProperties {
     activePromptTitle?: string;
@@ -18,53 +19,46 @@ export interface SelectTokenProperties extends TokenActionProperties {
     cancelHandler?: () => void;
     subActionProperties?: (tokens: StatusToken | StatusToken[]) => Record<string, unknown>;
     message?: string;
-    messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => unknown[];
+    messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => MsgArg[];
     gameAction: GameAction;
     effect?: string;
-    effectArgs?: (context: AbilityContext) => string[];
+    effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
-type ResolvedSelectTokenProperties = SelectTokenProperties & {
-    tokenCondition: NonNullable<SelectTokenProperties['tokenCondition']>;
-    subActionProperties: NonNullable<SelectTokenProperties['subActionProperties']>;
-    card: BaseCard;
-};
-
-export class SelectTokenAction extends TokenAction {
+export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<
+    SelectTokenProperties,
+    EventName,
+    C,
+    'activePromptTitle' | 'tokenCondition' | 'singleToken' | 'subActionProperties'
+> {
     name = 'selectToken';
-    defaultProperties: SelectTokenProperties = {
+    defaultProperties = {
         activePromptTitle: 'Which token do you wish to select?',
         tokenCondition: () => true,
         singleToken: true,
-        subActionProperties: (token) => ({ target: token }),
-        gameAction: null as unknown as GameAction
+        subActionProperties: (tokens: StatusToken | StatusToken[]) => ({ target: tokens })
     };
 
-    constructor(properties: SelectTokenProperties | ((context: AbilityContext) => SelectTokenProperties)) {
-        super(properties);
-    }
-
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context) as SelectTokenProperties;
+    /** A custom `effect` brings its own arguments, from `{0}` on. */
+    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+        const { effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
-        return ['choose a status token for {0}', [target]];
+        return super.getEffectMessage(context, additionalProperties);
     }
 
-    private resolveProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectTokenProperties | null {
-        const properties = super.getProperties(context, additionalProperties) as SelectTokenProperties;
-        if(!properties.card) {
-            return null;
-        }
-        return Object.assign(properties, {
-            tokenCondition: properties.tokenCondition ?? (() => true),
-            subActionProperties: properties.subActionProperties ?? ((tokens: StatusToken | StatusToken[]) => ({ target: tokens })),
-            card: properties.card
-        });
+    protected effectMessage(): MessageArgs {
+        return ['choose a status token for {0}', []];
     }
 
-    canAffect(token: StatusToken, context: AbilityContext, additionalProperties = {}): boolean {
+    private resolveProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
+        const { card } = properties;
+        return card ? Object.assign(properties, { card }) : null;
+    }
+
+    canAffect(token: StatusToken, context: C, additionalProperties = {}): boolean {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return false;
@@ -82,59 +76,58 @@ export class SelectTokenAction extends TokenAction {
         );
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return false;
         }
-        return properties.card.statusTokens.some((token: StatusToken) => this.canAffect(token, context, additionalProperties));
+        return properties.card.statusTokens.some((token) => this.canAffect(token, context, additionalProperties));
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return;
         }
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
-        } else if(!properties.card.statusTokens.some((token: StatusToken) => properties.tokenCondition(token, context))) {
+        } else if(!properties.card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
-        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
+        const opponent = context.player.opponent;
+        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         if(properties.targets && context.choosingPlayerOverride) {
-            player = context.choosingPlayerOverride as Player;
+            player = context.choosingPlayerOverride;
         }
-        const validTokens = properties.card.statusTokens.filter((token: StatusToken) =>
+        const validTokens = properties.card.statusTokens.filter((token) =>
             properties.gameAction.canAffect(token, context)
         );
         const messageArgs = properties.messageArgs;
         if(properties.singleToken && validTokens.length > 1) {
-            const choices = validTokens.map((token: StatusToken) => token.name);
-            const handlers = validTokens.map((token: StatusToken) => {
-                return () => {
-                    if(properties.message && messageArgs) {
-                        context.game.addMessage(properties.message, ...(messageArgs(token, player) as MsgArg[]));
-                    }
-                    context.tokens[this.name] = token;
-                    properties.gameAction.addEventsToArray(
-                        events,
-                        context,
-                        Object.assign({}, additionalProperties, properties.subActionProperties(token))
-                    );
-                };
-            });
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: properties.activePromptTitle,
-                choices: choices,
-                handlers: handlers,
+                options: validTokens.map((token) => ({
+                    text: token.name,
+                    handler: () => {
+                        if(properties.message && messageArgs) {
+                            context.game.addMessage(properties.message, ...messageArgs(token, player));
+                        }
+                        context.tokens[this.name] = token;
+                        properties.gameAction.addEventsToArray(
+                            events,
+                            context,
+                            Object.assign({}, additionalProperties, properties.subActionProperties(token))
+                        );
+                    }
+                })),
                 context: context
             });
         } else {
             context.tokens[this.name] = validTokens;
             if(properties.message && messageArgs) {
-                context.game.addMessage(properties.message, ...(messageArgs(validTokens, player) as MsgArg[]));
+                context.game.addMessage(properties.message, ...messageArgs(validTokens, player));
             }
             properties.gameAction.addEventsToArray(
                 events,
@@ -144,8 +137,8 @@ export class SelectTokenAction extends TokenAction {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}): boolean {
-        const properties = super.getProperties(context, additionalProperties) as SelectTokenProperties;
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
+        const properties = super.getProperties(context, additionalProperties);
         return !!properties.targets && properties.player !== Players.Opponent;
     }
 }

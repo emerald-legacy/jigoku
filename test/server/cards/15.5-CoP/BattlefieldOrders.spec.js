@@ -102,8 +102,8 @@ describe('Battlefield Orders', function() {
                 type: 'military'
             });
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.player2.clickCard(this.orders);
             this.player2.clickCard(this.advisor);
@@ -160,7 +160,7 @@ describe('Battlefield Orders', function() {
             });
 
             this.player2.clickCard(this.orders);
-            let fate = this.kuwanan.fate;
+            const fate = this.kuwanan.fate;
             expect(this.player2).toHavePrompt('Select an ability to resolve');
             this.player2.clickCard(this.warrior);
             this.player1.clickCard(this.kuwanan);

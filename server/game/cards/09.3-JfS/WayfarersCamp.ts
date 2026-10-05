@@ -6,11 +6,8 @@ class WayfarersCamp extends DrawCard {
     static id = 'wayfarer-s-camp';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Play two characters',
-            phase: Phases.Dynasty,
-            effect: 'play two cards from their provinces',
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Play two characters')
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to play',
                     cardType: CardType.Character,
@@ -33,8 +30,9 @@ class WayfarersCamp extends DrawCard {
                     message: '{0} turns {1} faceup',
                     messageArgs: (card, player) => [player, card]
                 })
-            ])
-        });
+            ]))
+            .effect('play two cards from their provinces')
+            .phase(Phases.Dynasty);
     }
 }
 

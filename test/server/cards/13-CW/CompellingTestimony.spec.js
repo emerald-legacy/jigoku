@@ -63,7 +63,7 @@ describe('Compelling Testimony', function() {
                     type: 'political'
                 });
 
-                let politicalSkill = this.yoshi.getPoliticalSkill();
+                const politicalSkill = this.yoshi.getPoliticalSkill();
                 this.player2.clickCard(this.testimony);
                 this.player2.clickCard(this.yoshi);
                 expect(this.yoshi.getPoliticalSkill()).toBe(politicalSkill - 4);
@@ -77,7 +77,7 @@ describe('Compelling Testimony', function() {
                     type: 'political'
                 });
 
-                let politicalSkill = this.yoshi.getPoliticalSkill();
+                const politicalSkill = this.yoshi.getPoliticalSkill();
                 this.player2.clickCard(this.testimony);
                 this.player2.clickCard(this.yoshi);
                 expect(this.yoshi.getPoliticalSkill()).toBe(politicalSkill - 4);

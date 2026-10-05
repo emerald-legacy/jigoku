@@ -6,21 +6,19 @@ export default class CallingInFavors extends DrawCard {
     static id = 'calling-in-favors';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Take control of an attachment',
-            cost: AbilityDsl.costs.dishonor(),
-            target: {
+        this.action('Take control of an attachment')
+            .cost(AbilityDsl.costs.dishonor())
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Opponent
-            },
-            gameAction: AbilityDsl.actions.ifAble((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.ifAble((context) => ({
                 ifAbleAction: AbilityDsl.actions.attach({
                     target: context.costs.dishonor,
                     attachment: context.target,
                     takeControl: true
                 }),
                 otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.target })
-            }))
-        });
+            })));
     }
 }

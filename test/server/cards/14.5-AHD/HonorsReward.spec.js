@@ -64,7 +64,7 @@ describe('Honors Reward', function() {
                     attackers: [this.wanderer],
                     defenders: [this.maiden]
                 });
-                let maidenGlory = this.maiden.glory;
+                const maidenGlory = this.maiden.glory;
                 this.player2.clickCard(this.reward);
                 this.player2.clickCard(this.maiden);
                 expect(this.maiden.glory).toBe(maidenGlory + 3);

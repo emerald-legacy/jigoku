@@ -38,7 +38,7 @@ describe('Gallant Quartermaster', function() {
             });
 
             it('should trigger when character is sacrificed to pay for a cost', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player2.clickCard(this.crab2);
                 this.player2.clickCard(this.quartermaster);
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -49,7 +49,7 @@ describe('Gallant Quartermaster', function() {
             });
 
             it('should trigger when character is sacrificed as an effect', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player2.pass();
                 this.player1.clickCard(this.crab1);
                 this.player1.clickCard(this.defender);

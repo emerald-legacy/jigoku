@@ -1,38 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
-const elementKeys = {
-    fire: 'ikoma-reservist-fire',
-    water: 'ikoma-reservist-water'
-};
+const elementSymbols = [
+    { key: 'ikoma-reservist-fire', element: Element.Fire },
+    { key: 'ikoma-reservist-water', element: Element.Water }
+];
 
 class IkomaReservist extends DrawCard {
     static id = 'ikoma-reservist';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player) ||
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.water)].isConsideredClaimed(context.player)
-            ),
+            condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKeys.fire,
-            prettyName: 'Claimed Ring',
-            element: Element.Fire
-        });
-        symbols.push({
-            key: elementKeys.water,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
     }
 }
 

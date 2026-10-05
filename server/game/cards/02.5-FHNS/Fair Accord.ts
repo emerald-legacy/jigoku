@@ -5,13 +5,11 @@ import AbilityDsl from '../../abilitydsl.js';
 class FairAccord extends DrawCard {
     static id = 'fair-accord';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Discard favor to gain 2 fate',
-            phase: Phases.Dynasty,
-            cost: ability.costs.discardImperialFavor(),
-            gameAction: ability.actions.gainFate({ amount: 2 })
-        });
+    setupCardAbilities() {
+        this.action('Discard favor to gain 2 fate')
+            .cost(AbilityDsl.costs.discardImperialFavor())
+            .gameAction(AbilityDsl.actions.gainFate({ amount: 2 }))
+            .phase(Phases.Dynasty);
     }
 }
 

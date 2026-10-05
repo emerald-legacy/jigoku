@@ -27,7 +27,7 @@ describe('Twilight Ambush', function () {
             this.solemnScholar.dishonor();
             this.kuwanan.dishonor();
 
-            let fate = this.kuwanan.fate;
+            const fate = this.kuwanan.fate;
 
             this.player1.clickCard(this.ambush);
             expect(this.player1).toHavePrompt('Select card to sacrifice');
@@ -50,7 +50,7 @@ describe('Twilight Ambush', function () {
             this.adept.dishonor();
             this.kuwanan.dishonor();
 
-            let fate = this.kuwanan.fate;
+            const fate = this.kuwanan.fate;
 
             this.player1.clickCard(this.ambush);
             this.player1.clickCard(this.adept);

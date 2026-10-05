@@ -41,7 +41,7 @@ describe('Moto Oktai', function () {
             this.player1.clickCard(this.motoOktai);
             expect(this.motoOktai.getMilitarySkill()).toBe(initialOktaiMil + keeperMil);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Moto Oktai to get +3 military for this phase - he is emboldened by justice, but unburdened by mercy!'
+                'player1 uses Moto Oktai to get +3 military for this phase - he is emboldened by justice, but unburdened by mercy'
             );
         });
 
@@ -62,14 +62,14 @@ describe('Moto Oktai', function () {
 
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Moto Oktai to discard Mirumoto Raitsugu - purge the weak!'
+                'player1 uses Moto Oktai to discard Mirumoto Raitsugu - purge the weak'
             );
             expect(this.player1).toHavePrompt('Triggered Abilities');
 
             this.player1.clickCard(this.motoOktai);
             expect(this.motoOktai.getMilitarySkill()).toBe(initialOktaiMil + raitsuguMil);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Moto Oktai to get +4 military for this phase - he is emboldened by justice, but unburdened by mercy!'
+                'player1 uses Moto Oktai to get +4 military for this phase - he is emboldened by justice, but unburdened by mercy'
             );
         });
     });

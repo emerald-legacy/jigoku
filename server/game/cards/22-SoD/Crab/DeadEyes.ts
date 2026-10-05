@@ -1,8 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType, EventName } from '../../../Constants.js';
+import { ConflictType } from '../../../Constants.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
 
@@ -10,15 +9,13 @@ export default class DeadEyes extends DrawCard {
         this.attachmentConditions({ trait: 'berserker' });
 
         this.whileAttached({
-            match: _card => true,
             effect: AbilityDsl.effects.setGlory(0)
         });
 
-        this.action({
-            title: 'Increase a character\'s military skill',
-            condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter),
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parentCharacter,
+        this.action('Increase a character\'s military skill')
+            .condition(context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter))
+            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+                target: context.source.parentCharacter ?? [],
                 effect: [
                     AbilityDsl.effects.modifyMilitarySkill(2),
                     AbilityDsl.effects.cardCannot({
@@ -28,7 +25,7 @@ export default class DeadEyes extends DrawCard {
                     }),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<EventName.AfterConflict>) => {
+                            afterConflict: (event) => {
                                 if(!context.source.parentCharacter) {
                                     return false;
                                 }
@@ -46,9 +43,7 @@ export default class DeadEyes extends DrawCard {
                         messageArgs: [context.source.parentCharacter, context.source]
                     })
                 ]
-            })),
-            effect: 'grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill',
-            effectArgs: context => [context.source.parentCharacter ?? '', 'military']
-        });
+            })))
+            .effect('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
     }
 }

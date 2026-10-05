@@ -104,6 +104,24 @@ describe('Magistrate\'s Intervention', function() {
             expect(this.getChatLogs(5)).toContain('player1 plays Magistrate\'s Intervention to dishonor Akodo Toturi');
         });
 
+        it('should not be able to target an attacker that cannot be dishonored', function() {
+            this.toturi.dishonor();
+            this.toturi.dishonor();
+            expect(this.toturi.isDishonored).toBe(true);
+            this.noMoreActions();
+            this.player1.moveCard(this.cunning, 'play area');
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toturi, this.zerk],
+                defenders: [this.cunning],
+                type: 'military'
+            });
+            this.player1.clickCard(this.intervention);
+            expect(this.player1).not.toBeAbleToSelect(this.toturi);
+            expect(this.player1).toBeAbleToSelect(this.zerk);
+        });
+
         it('should dishonor the target twice if it is their second conflict against you', function() {
             this.noMoreActions();
             this.player1.moveCard(this.cunning, 'play area');

@@ -24,7 +24,7 @@ describe('Four Temples Advisor', function() {
             });
 
             it('should trigger when you gain fate during a conflict in which attached character is participating', function() {
-                let handSize = this.player1.hand.length;
+                const handSize = this.player1.hand.length;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -40,7 +40,7 @@ describe('Four Temples Advisor', function() {
             });
 
             it('should trigger when you gain fate during a conflict in which attached character is not participating', function() {
-                let handSize = this.player1.hand.length;
+                const handSize = this.player1.hand.length;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -56,7 +56,7 @@ describe('Four Temples Advisor', function() {
             });
 
             it('should be able to trigger more than once', function() {
-                let handSize = this.player1.hand.length;
+                const handSize = this.player1.hand.length;
 
                 this.noMoreActions();
                 this.initiateConflict({

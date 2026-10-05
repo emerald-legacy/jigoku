@@ -1,7 +1,8 @@
 import type { AbilityContext } from './AbilityContext.js';
+import type { GameActionName } from './GameActions/GameActionRegistry.js';
 import BaseCard from './BaseCard.js';
 import { EffectName, Element } from './Constants.js';
-import type Player from './Player.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 const illegalActions = new Set([
     'bow',
@@ -14,7 +15,6 @@ const illegalActions = new Set([
     'sendHome',
     'putIntoPlay',
     'putIntoConflict',
-    'break',
     'returnToHand',
     EffectName.TakeControl,
     'placeFate',
@@ -29,11 +29,7 @@ export class RoleCard extends BaseCard {
         return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
     }
 
-    flipFaceup(): void {
-        this.facedown = false;
-    }
-
-    getSummary(activePlayer: Player, hideWhenFaceup = false) {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
@@ -42,7 +38,7 @@ export class RoleCard extends BaseCard {
         };
     }
 
-    allowGameAction(actionType: string, context?: AbilityContext): boolean {
+    allowGameAction(actionType: GameActionName, context?: AbilityContext): boolean {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 

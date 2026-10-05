@@ -172,8 +172,8 @@ describe('Twin Soul Temple', function() {
             });
 
             this.player2.pass();
-            let fireFate = this.game.rings.fire.fate;
-            let voidFate = this.game.rings.void.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const voidFate = this.game.rings.void.fate;
             this.player1.clickCard(this.alchemist);
             this.player1.clickPrompt('Pay costs first');
             expect(this.player1).not.toBeAbleToSelectRing('fire');
@@ -201,8 +201,8 @@ describe('Twin Soul Temple', function() {
 
             this.player2.clickCard(this.yokuni);
             this.player2.clickCard(this.alchemist);
-            let fireFate = this.game.rings.fire.fate;
-            let voidFate = this.game.rings.void.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const voidFate = this.game.rings.void.fate;
             this.player1.clickCard(this.alchemist);
             this.player1.clickPrompt('Pay costs first');
             expect(this.player1).not.toBeAbleToSelectRing('fire');

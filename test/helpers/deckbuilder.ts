@@ -19,7 +19,7 @@ interface InPlayCardSpec {
     attachments?: string[];
 }
 
-interface PlayerDeckOptions {
+export interface PlayerDeckOptions {
     faction?: string;
     role?: string;
     stronghold?: string;

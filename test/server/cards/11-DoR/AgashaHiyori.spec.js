@@ -113,8 +113,8 @@ describe('Agasha Hiyori', function() {
 
 
             it('should pay fate to an unclaimed ring', function() {
-                let airFate = this.game.rings.air.fate;
-                let playerFate = this.player1.fate;
+                const airFate = this.game.rings.air.fate;
+                const playerFate = this.player1.fate;
 
                 expect(this.player1).toBeAbleToSelect(this.agashaHiyori);
                 this.player1.clickCard(this.agashaHiyori);
@@ -195,7 +195,7 @@ describe('Agasha Hiyori', function() {
                 this.player1.clickCard(this.agashaHiyori);
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.watchCommander);
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player2.clickCard(this.watchCommander);
                 expect(this.player1.honor).toBe(honor - 1);
             });
@@ -220,7 +220,7 @@ describe('Agasha Hiyori', function() {
                 this.player1.clickCard(this.agashaHiyori);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.player2).not.toBeAbleToSelect(this.watchCommander);
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player2.clickCard(this.watchCommander);
                 expect(this.player1.honor).toBe(honor);
             });

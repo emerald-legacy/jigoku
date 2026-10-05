@@ -1,5 +1,6 @@
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import { PlayableLocation } from './PlayableLocation.js';
+import EffectSource from './EffectSource.js';
 import {
     AbilityType,
     CardType,
@@ -52,11 +53,8 @@ export class PlayerCostManager {
         }
     }
 
-    addPlayableLocation(type: PlayType, player: Player, location: Location, cards: BaseCard[] = []): PlayableLocation | undefined {
-        if(!player) {
-            return undefined;
-        }
-        const playableLocation = new PlayableLocation(type as PlayType, player, location, new Set(cards as DrawCard[]));
+    addPlayableLocation(type: PlayType, player: Player, location: Location, cards: DrawCard[] = []): PlayableLocation {
+        const playableLocation = new PlayableLocation(type, player, location, new Set(cards));
         this.playableLocations.push(playableLocation);
         return playableLocation;
     }
@@ -71,17 +69,17 @@ export class PlayerCostManager {
         }
 
         return this.playableLocations.some(
-            (location) => (!playingType || location.playingType === playingType) && location.contains(card as DrawCard)
+            (location) => (!playingType || location.playingType === playingType) && location.contains(card)
         );
     }
 
     findPlayType(card: BaseCard): PlayType | undefined {
-        if(card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card)).length > 0) {
-            const effects = card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card));
+        const effects = card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card));
+        if(effects.length > 0) {
             return effects[effects.length - 1].playType || PlayType.PlayFromHand;
         }
 
-        const location = this.playableLocations.find((location) => location.contains(card as DrawCard));
+        const location = this.playableLocations.find((location) => location.contains(card));
         if(location) {
             return location.playingType;
         }
@@ -89,18 +87,18 @@ export class PlayerCostManager {
         return undefined;
     }
 
-    getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): FatePool[] {
+    getAlternateFatePools(card: BaseCard, context?: AbilityContext): FatePool[] {
         const effects = this.player.getEffects(EffectName.AlternateFatePool);
-        let alternateFatePools: FatePool[] = effects
-            .filter((match) => match(card) && match(card).getFate() > 0)
-            .map((match) => match(card));
+        let alternateFatePools: FatePool[] = effects.flatMap((match) => {
+            const pool = match(card);
+            return pool && pool.getFate() > 0 ? [pool] : [];
+        });
 
-        if(context && context.source && context.source.isTemptationsMaho()) {
-            alternateFatePools.push(...this.player.cardsInPlay.filter((a: DrawCard) => a.type === 'character'));
-        }
-        if(context && context.source && context.source.isTemptationsMaho()) {
+        const maho = !!context?.source.isTemptationsMaho();
+        if(maho) {
+            alternateFatePools.push(...this.player.cardsInPlay.filter((a) => a.type === CardType.Character));
             alternateFatePools = alternateFatePools.filter(
-                (a) => a.printedType !== 'ring' && (a as DrawCard).type === CardType.Character
+                (a) => a.printedType !== 'ring' && a.type === CardType.Character
             );
         }
 
@@ -108,7 +106,7 @@ export class PlayerCostManager {
         const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
         if(
             !this.player.checkRestrictions('takeFateFromRings', context) ||
-            (context && context.source && context.source.isTemptationsMaho())
+            maho
         ) {
             rings.forEach((ring) => {
                 alternateFatePools = alternateFatePools.filter((a) => a !== ring);
@@ -116,7 +114,7 @@ export class PlayerCostManager {
         }
 
         cards.forEach((card) => {
-            if(!card.allowGameAction('removeFate') && (card as DrawCard).type !== CardType.Attachment) {
+            if(!card.allowGameAction('removeFate') && card.type !== CardType.Attachment) {
                 alternateFatePools = alternateFatePools.filter((a) => a !== card);
             }
         });
@@ -124,15 +122,17 @@ export class PlayerCostManager {
         return [...new Set(alternateFatePools)];
     }
 
-    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext, target?: BaseCard, ignoreType: boolean = false): number {
+    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext<DrawCard>, target?: BaseCard, ignoreType: boolean = false): number {
         const card = context.source;
-        const reducedCost = this.getReducedCost(playingType, card as DrawCard, target, ignoreType);
-        const alternateFatePools = this.getAlternateFatePools(playingType, card as DrawCard, context);
+        const reducedCost = this.getReducedCost(playingType, card, target, ignoreType);
+        const alternateFatePools = this.getAlternateFatePools(card, context);
         const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         let triggeredCostReducers = 0;
         const fakeWindow = { addChoice: () => triggeredCostReducers++ };
-        const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
-        this.game.emit(EventName.OnCardPlayed + ':' + AbilityType.Interrupt, fakeEvent, fakeWindow);
+        if(card.isDrawCard()) {
+            const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
+            this.game.emit(EventName.OnCardPlayed + ':' + AbilityType.Interrupt, fakeEvent, fakeWindow);
+        }
         const fakeResolverEvent = this.game.getEvent(EventName.OnAbilityResolverInitiated, {
             card: card,
             player: this.player,
@@ -148,7 +148,7 @@ export class PlayerCostManager {
 
     getReducedCost(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         const matchingReducers = this.costReducers.filter((reducer) =>
-            reducer.canReduce(playingType as PlayType, card, target, ignoreType)
+            reducer.canReduce(playingType, card, target, ignoreType)
         );
         const costIncreases = matchingReducers
             .filter((a) => a.getAmount(card, this.player) < 0)
@@ -167,15 +167,14 @@ export class PlayerCostManager {
     getTotalCostModifiers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         const baseCost = 0;
         const matchingReducers = this.costReducers.filter((reducer) =>
-            reducer.canReduce(playingType as PlayType, card, target, ignoreType)
+            reducer.canReduce(playingType, card, target, ignoreType)
         );
         const reducedCost = matchingReducers.reduce((cost, reducer) => cost - reducer.getAmount(card, this.player), baseCost);
         return reducedCost;
     }
 
-    getAvailableAlternateFate(playingType: PlayType | undefined, context: AbilityContext): number {
-        const card = context.source as DrawCard;
-        const alternateFatePools = this.getAlternateFatePools(playingType, card);
+    getAvailableAlternateFate(context: AbilityContext): number {
+        const alternateFatePools = this.getAlternateFatePools(context.source);
         const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         return Math.max(alternateFate, 0);
     }
@@ -192,22 +191,25 @@ export class PlayerCostManager {
 
         let targetCost = 0;
         for(const target of targetList) {
-            const targetCard = target as BaseCard;
-            for(const cardCostToTarget of target.getEffects(EffectName.FateCostToTarget)) {
-                if(
-                    (!cardCostToTarget.cardType || abilitySource.type === cardCostToTarget.cardType) &&
-                    (!cardCostToTarget.targetPlayer ||
-                        abilitySource.controller ===
-                            (cardCostToTarget.targetPlayer === Players.Self
-                                ? targetCard.controller
-                                : targetCard.controller.opponent))
-                ) {
-                    targetCost += cardCostToTarget.amount;
+            // cost-to-target effects are card effects, so only effect sources carry them
+            if(target instanceof EffectSource) {
+                const targetController = target.getEffectController();
+                for(const cardCostToTarget of target.getEffects(EffectName.FateCostToTarget)) {
+                    if(
+                        (!cardCostToTarget.cardType || abilitySource.type === cardCostToTarget.cardType) &&
+                        (!cardCostToTarget.targetPlayer ||
+                            abilitySource.controller ===
+                                (cardCostToTarget.targetPlayer === Players.Self
+                                    ? targetController
+                                    : targetController?.opponent))
+                    ) {
+                        targetCost += cardCostToTarget.amount;
+                    }
                 }
             }
 
             for(const playerCostToTarget of playerCostToTargetEffects) {
-                if(playerCostToTarget.match(targetCard)) {
+                if(playerCostToTarget.match(target)) {
                     targetCost += playerCostToTarget.amount;
                 }
             }
@@ -216,8 +218,8 @@ export class PlayerCostManager {
         return targetCost;
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: BaseCard | null = null): void {
-        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType as PlayType, card, target ?? undefined));
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard): void {
+        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType, card, target));
         matchingReducers.forEach((reducer) => {
             reducer.markUsed();
             if(reducer.isExpired()) {

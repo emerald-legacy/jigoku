@@ -35,7 +35,7 @@ describe('For Death and Glory', function () {
         });
 
         it('choosing +2', function () {
-            let skill = this.miyaMystic.getMilitarySkill();
+            const skill = this.miyaMystic.getMilitarySkill();
 
             this.initiateConflict({
                 type: 'military',
@@ -59,7 +59,7 @@ describe('For Death and Glory', function () {
         });
 
         it('choosing +4', function () {
-            let skill = this.miyaMystic.getMilitarySkill();
+            const skill = this.miyaMystic.getMilitarySkill();
 
             this.initiateConflict({
                 type: 'military',

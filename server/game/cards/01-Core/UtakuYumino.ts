@@ -5,15 +5,13 @@ import AbilityDsl from '../../abilitydsl.js';
 class UtakuYumino extends DrawCard {
     static id = 'utaku-yumino';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Discard a card for +2/+2',
-            condition: () => this.game.isDuringConflict(),
-            cost: ability.costs.discardCard({ location: Location.Hand }),
-            effect: 'give {0} +2/+2',
-            gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(2) }),
-            limit: ability.limit.perConflict(1)
-        });
+    setupCardAbilities() {
+        this.action('Discard a card for +2/+2')
+            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .condition(() => this.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(2) }))
+            .effect('give {0} +2/+2')
+            .limit(AbilityDsl.limit.perConflict(1));
     }
 }
 

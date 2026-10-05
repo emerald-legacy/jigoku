@@ -256,3 +256,49 @@ describe('Countryside Trader', function() {
         });
     });
 });
+
+describe('Countryside Trader - The Art of Peace', function() {
+    integration(function() {
+        describe('resolving an interrupt that uses the conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['countryside-trader', 'doji-whisperer']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger'],
+                        provinces: ['the-art-of-peace']
+                    }
+                });
+
+                this.trader = this.player1.findCardByName('countryside-trader');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.artOfPeace = this.player2.findCardByName('the-art-of-peace', 'province 1');
+                this.artOfPeace.facedown = false;
+                this.trader.fate = 1;
+                this.game.checkGameState(true);
+            });
+
+            it('should dishonor the attackers and honor the defenders of the current conflict', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.trader, this.whisperer],
+                    defenders: [this.challenger],
+                    type: 'military',
+                    province: this.artOfPeace
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.trader);
+                this.player1.clickCard(this.artOfPeace);
+
+                expect(this.trader.isDishonored).toBe(true);
+                expect(this.whisperer.isDishonored).toBe(true);
+                expect(this.challenger.isHonored).toBe(true);
+                expect(this.artOfPeace.isBroken).toBe(false);
+            });
+        });
+    });
+});

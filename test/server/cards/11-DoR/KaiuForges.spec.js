@@ -92,7 +92,7 @@ describe('Kaiu Forges', function() {
                 expect(this.player1).toHavePrompt('Choose a holding to swap with a Kaiu Wall');
                 expect(this.player1).toHavePromptButton('Forgotten Library');
                 this.player1.clickPrompt('Forgotten Library');
-                expect(this.player1).toHavePrompt('Choose a holding');
+                expect(this.player1).toHavePrompt('Choose a Kaiu Wall to swap with');
                 expect(this.player1).toBeAbleToSelect(this.kaiuForges);
                 this.player1.clickCard(this.kaiuForges);
                 expect(this.kaiuForges.location).toBe('dynasty deck');

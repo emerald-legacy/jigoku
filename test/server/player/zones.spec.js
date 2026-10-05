@@ -195,37 +195,6 @@ describe('Player zone card operations', function() {
     });
 });
 
-describe('Player isCardUuidInList and isCardNameInList', function() {
-    beforeEach(function() {
-        this.gameSpy = jasmine.createSpyObj('game', [
-            'getOtherPlayer',
-            'emitEvent',
-            'addMessage',
-            'getProvinceArray'
-        ]);
-        this.gameSpy.getProvinceArray.and.returnValue([]);
-        this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
-        this.card = { uuid: 'card-1', name: 'Doji Challenger' };
-        this.list = [this.card];
-    });
-
-    it('isCardUuidInList returns true when uuid matches', function() {
-        expect(this.player.isCardUuidInList(this.list, this.card)).toBe(true);
-    });
-
-    it('isCardUuidInList returns false when uuid does not match', function() {
-        expect(this.player.isCardUuidInList(this.list, { uuid: 'other', name: 'Other' })).toBe(false);
-    });
-
-    it('isCardNameInList returns true when name matches', function() {
-        expect(this.player.isCardNameInList(this.list, this.card)).toBe(true);
-    });
-
-    it('isCardNameInList returns false when name does not match', function() {
-        expect(this.player.isCardNameInList(this.list, { uuid: 'other', name: 'Other' })).toBe(false);
-    });
-});
-
 describe('Player removeCardByUuid', function() {
     beforeEach(function() {
         this.gameSpy = jasmine.createSpyObj('game', [

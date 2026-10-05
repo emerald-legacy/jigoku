@@ -1,20 +1,17 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ConflictType } from '../../Constants.js';
 
 class RegalBearing extends DrawCard {
     static id = 'regal-bearing';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Lower bid and draw bid difference as cards',
-            max: AbilityDsl.limit.perConflict(1),
-            condition: context => context.game.isDuringConflict('political') &&
+        this.action('Lower bid and draw bid difference as cards')
+            .condition(context => context.game.isDuringConflict(ConflictType.Political) &&
                 !!context.player.opponent &&
-                context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')),
-            effect: 'set their bid dial to 1 and draw {1} cards.',
-            effectArgs: context => this.getHonorDialDifference(context),
-            gameAction: AbilityDsl.actions.sequential([
+                context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.setHonorDial(context => ({
                     target: context.player,
                     value: 1
@@ -23,11 +20,12 @@ class RegalBearing extends DrawCard {
                     target: context.player,
                     amount: this.getHonorDialDifference(context)
                 }))
-            ])
-        });
+            ]))
+            .effect('set their bid dial to 1 and draw {1} cards', context => this.getHonorDialDifference(context))
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
-    getHonorDialDifference(context: AbilityContext) {
+    private getHonorDialDifference(context: AbilityContext) {
         if(!context.player.opponent) {
             return 0;
         }

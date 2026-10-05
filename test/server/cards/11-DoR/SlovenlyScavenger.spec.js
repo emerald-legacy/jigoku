@@ -63,7 +63,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player1.dynastyDeck.length;
+                const size = this.player1.dynastyDeck.length;
                 this.player1.clickPrompt('player1\'s Dynasty');
                 expect(this.storehouseP1.location).toBe('dynasty deck');
                 expect(this.kisadaP1.location).toBe('dynasty deck');
@@ -83,7 +83,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player1.conflictDeck.length;
+                const size = this.player1.conflictDeck.length;
                 this.player1.clickPrompt('player1\'s Conflict');
                 expect(this.storehouseP1.location).toBe('dynasty discard pile');
                 expect(this.letGoP1.location).toBe('conflict deck');
@@ -106,7 +106,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player2.dynastyDeck.length;
+                const size = this.player2.dynastyDeck.length;
                 this.player1.clickPrompt('player2\'s Dynasty');
                 expect(this.storehouseP2.location).toBe('dynasty deck');
                 expect(this.kisadaP2.location).toBe('dynasty deck');
@@ -128,7 +128,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player2.conflictDeck.length;
+                const size = this.player2.conflictDeck.length;
 
                 this.player1.clickPrompt('player2\'s Conflict');
                 expect(this.storehouseP2.location).toBe('dynasty discard pile');
@@ -152,7 +152,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.player2).toHavePrompt('Triggered abilities');
                 expect(this.player2).toBeAbleToSelect(this.scavengerP2);
                 this.player2.clickCard(this.scavengerP2);
-                let size = this.player2.conflictDeck.length;
+                const size = this.player2.conflictDeck.length;
 
                 this.player2.clickPrompt('player2\'s Conflict');
                 expect(this.letGoP2.location).toBe('conflict deck');
@@ -196,7 +196,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                let size = this.player2.conflictDeck.length;
+                const size = this.player2.conflictDeck.length;
 
                 this.player1.clickPrompt('player1\'s Conflict');
 
@@ -217,6 +217,52 @@ describe('Slovenly Scavenger', function() {
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Slovenly Scavenger, sacrificing Slovenly Scavenger to shuffle player2\'s conflict discard pile into their deck');
                 expect(this.getChatLogs(2)).toContain('player2 is shuffling their conflict deck');
+            });
+        });
+
+        describe('Slovenly Scavenger\'s ability under another player\'s control', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['seize-the-mind'],
+                        conflictDiscard: ['let-go']
+                    },
+                    player2: {
+                        inPlay: ['slovenly-scavenger'],
+                        dynastyDiscard: ['hida-kisada'],
+                        conflictDiscard: ['assassination']
+                    }
+                });
+                this.adept = this.player1.findCardByName('adept-of-the-waves');
+                this.adept.fate = 3;
+                this.seizeTheMind = this.player1.findCardByName('seize-the-mind');
+                this.scavenger = this.player2.findCardByName('slovenly-scavenger');
+                this.kisada = this.player2.findCardByName('hida-kisada');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.adept],
+                    defenders: [this.scavenger]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.seizeTheMind);
+                this.player1.clickCard(this.scavenger);
+                this.player1.clickCard(this.adept);
+                this.player1.clickPrompt('3');
+                this.noMoreActions();
+            });
+
+            it('should offer the piles by their owner\'s name', function() {
+                expect(this.scavenger.controller).toBe(this.player1.player);
+                this.player1.clickCard(this.scavenger);
+                expect(this.player1).toHavePromptButton('player2\'s Dynasty');
+                expect(this.player1).not.toHavePromptButton('player1\'s Dynasty');
+                this.player1.clickPrompt('player2\'s Dynasty');
+                expect(this.kisada.location).toBe('dynasty deck');
             });
         });
     });

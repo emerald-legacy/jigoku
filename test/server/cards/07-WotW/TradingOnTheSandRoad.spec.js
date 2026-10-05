@@ -49,8 +49,8 @@ describe('Trading on the Sand Road', function () {
 
             it('should remove the top 4 cards from both player\'s decks from the game', function () {
                 this.noMoreActions();
-                let player1DeckSize = this.player1.conflictDeck.length;
-                let player2DeckSize = this.player2.conflictDeck.length;
+                const player1DeckSize = this.player1.conflictDeck.length;
+                const player2DeckSize = this.player2.conflictDeck.length;
                 this.player1.clickCard(this.tradingOnTheSandRoad);
                 expect(this.fineKatana.location).toBe('removed from game');
                 expect(this.iuchiWayfinder.location).toBe('removed from game');

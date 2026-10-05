@@ -13,7 +13,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     constructor(card: DrawCard, ignoreType = false) {
         super(card, [payTargetDependentFateCost('target', ignoreType)], {
             location: [Location.PlayArea, Location.Provinces],
-            gameAction: attach((context) => ({
+            gameAction: attach((context: AbilityContext<DrawCard>) => ({
                 attachment: context.source,
                 ignoreType: ignoreType,
                 takeControl: context.source.controller !== context.player
@@ -47,8 +47,8 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     }
 
     displayMessage(context: AbilityContext) {
-        const t = context.target as BaseCard;
-        const target = t.type === CardType.Province && t.isFacedown() ? t.location : t;
+        const t = context.target;
+        const target = t && t.type === CardType.Province && t.isFacedown() ? t.location : t;
         context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, target);
     }
 
@@ -61,6 +61,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: context.onPlayCardSource,
+            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
             playType: context.playType
         });
         context.game.openEventWindow([

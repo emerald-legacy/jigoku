@@ -94,3 +94,28 @@ describe('Earth\'s Stagnation', function () {
         });
     });
 });
+
+describe('Earth\'s Stagnation without a shugenja', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['master-tactician']
+                },
+                player2: {
+                    inPlay: ['kaiu-envoy'],
+                    hand: ['earth-s-stagnation']
+                }
+            });
+
+            this.stagnation = this.player2.findCardByName('earth-s-stagnation');
+        });
+
+        it('should not be playable', function () {
+            this.player1.pass();
+            this.player2.clickCard(this.stagnation);
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});

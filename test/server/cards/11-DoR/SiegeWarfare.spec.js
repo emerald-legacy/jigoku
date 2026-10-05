@@ -33,7 +33,7 @@ describe('Siege Warfare', function() {
             });
 
             it('should reduce the strength of the attacked province by 2', function () {
-                let strength = this.p1.getStrength();
+                const strength = this.p1.getStrength();
                 this.player2.pass();
                 this.player1.clickCard(this.siegeWarfare);
                 expect(this.p1.getStrength()).toBe(strength - 2);
@@ -42,7 +42,7 @@ describe('Siege Warfare', function() {
             });
 
             it('should not reduce the strength of the attacked province below 0', function () {
-                let strength = this.p1.getStrength();
+                const strength = this.p1.getStrength();
                 this.player2.pass();
                 this.player1.clickCard(this.siegeWarfare);
                 expect(this.p1.getStrength()).toBe(strength - 2);
@@ -53,7 +53,7 @@ describe('Siege Warfare', function() {
             });
 
             it('should not be playable if the province strength is already 0', function () {
-                let strength = this.p1.getStrength();
+                const strength = this.p1.getStrength();
                 this.player2.pass();
                 this.player1.clickCard(this.siegeWarfare);
                 expect(this.p1.getStrength()).toBe(strength - 2);
@@ -68,14 +68,14 @@ describe('Siege Warfare', function() {
             });
 
             it('should not be playable on defense', function () {
-                let strength = this.p1.getStrength();
+                const strength = this.p1.getStrength();
                 this.player2.clickCard(this.p2siege);
                 expect(this.p1.getStrength()).toBe(strength);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
             it('should not be playable without a holding', function () {
-                let strength = this.p1.getStrength();
+                const strength = this.p1.getStrength();
                 this.player1.moveCard(this.storehouse, 'dynasty discard pile');
                 this.player2.pass();
                 this.player1.clickCard(this.siegeWarfare);

@@ -3,15 +3,15 @@ import type { MenuItem } from './MenuCommands.js';
 import { Phases } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
-import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
+import type { MenuArg } from './gamesteps/Step.js';
 
 const CHANGEABLE_STATS = ['fate', 'honor'] as const;
 type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
 
 function isChangeableStat(stat: string): stat is ChangeableStat {
-    return (CHANGEABLE_STATS as readonly string[]).includes(stat);
+    return CHANGEABLE_STATS.some((changeable) => changeable === stat);
 }
 
 const TOGGLE_WINDOWS = new Set([
@@ -200,26 +200,26 @@ export class GameInputHandler {
         }
 
         if(!this.game.isSpectator(player)) {
-            if(this.game.chatCommands.executeCommand(player as Player, args[0], args)) {
+            if(this.game.chatCommands.executeCommand(player, args[0], args)) {
                 this.game.checkGameState(true);
                 return;
             }
 
             const card = Object.values(this.game.shortCardData).find((c: { name: string; id: string }) => {
                 return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
-            }) as { id: string; name: string; type: string } | undefined;
+            });
 
             if(card) {
                 const packId = resolvePackId(undefined, card, this.game.gameMode);
                 const cardFragment = { id: card.id, name: card.name, type: card.type, packId };
-                this.game.gameChat.addChatMessage(player as Player, { message: this.game.gameChat.formatMessage('{0}', [cardFragment]) });
+                this.game.gameChat.addChatMessage(player, { message: this.game.gameChat.formatMessage('{0}', [cardFragment]) });
 
                 return;
             }
         }
 
         if(!this.game.isSpectator(player) || !this.game.spectatorSquelch) {
-            this.game.gameChat.addChatMessage(player as Player, message);
+            this.game.gameChat.addChatMessage(player, message);
         }
     }
 
@@ -239,13 +239,13 @@ export class GameInputHandler {
         }
     }
 
-    selectDeck(playerName: string, deck: unknown): void {
+    selectDeck(playerName: string, deck: DeckDTO): void {
         if(this.game.playStarted) {
             return;
         }
         const player = this.game.getPlayerByName(playerName);
         if(player) {
-            player.selectDeck(deck as DeckDTO);
+            player.selectDeck(deck);
         }
     }
 
@@ -263,7 +263,7 @@ export class GameInputHandler {
         }
     }
 
-    menuButton(playerName: string, arg: string, uuid: string, method: string): boolean {
+    menuButton(playerName: string, arg: MenuArg, uuid: string, method?: string | null): boolean {
         const player = this.game.getPlayerByName(playerName);
         if(!player) {
             return false;
@@ -310,6 +310,6 @@ export class GameInputHandler {
     }
 
     toggleManualMode(playerName: string): void {
-        this.game.chatCommands.manual(this.game.getPlayerByName(playerName) as Player);
+        this.game.chatCommands.manual(this.game.getPlayerByName(playerName));
     }
 }

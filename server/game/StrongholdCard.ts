@@ -1,7 +1,7 @@
 import BaseCard from './BaseCard.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import type DrawCard from './DrawCard.js';
-import type Player from './Player.js';
+import type { StateViewer } from './types/StateViewer.js';
 import type { Location } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
@@ -30,10 +30,6 @@ export class StrongholdCard extends BaseCard {
         return this.cardData.fate ?? 0;
     }
 
-    getStartingHonor(): number {
-        return this.cardData.honor ?? 0;
-    }
-
     getInfluence(): number {
         return this.cardData.influence_pool ?? 0;
     }
@@ -42,11 +38,7 @@ export class StrongholdCard extends BaseCard {
         return parseInt(this.cardData.strength_bonus ?? '0');
     }
 
-    flipFaceup(): void {
-        this.facedown = false;
-    }
-
-    getSummary(activePlayer: Player, hideWhenFaceup = false) {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,

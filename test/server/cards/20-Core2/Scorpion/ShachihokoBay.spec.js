@@ -76,7 +76,7 @@ describe('Shachihoko Bay', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player2 takes Assassination, Finger of Jade and Tattooed Wanderer from player1\'s deck'
             );
-            expect(this.player2).toHavePrompt('Select a card to put in the top position of their deck');
+            expect(this.player2).toHavePrompt('Which card do you want to be on top?');
             expect(this.player2).not.toHavePromptButton(this.assassination.name);
             expect(this.player2).not.toHavePromptButton(this.fingerOfJade.name);
             expect(this.player2).not.toHavePromptButton(this.tattooedWanderer.name);
@@ -85,7 +85,7 @@ describe('Shachihoko Bay', function () {
             expect(this.player2).toHavePromptButton(this.levy.name);
 
             this.player2.clickPrompt(this.kamiUnleashed.name);
-            expect(this.player2).toHavePrompt('Select a card to put in the second position of their deck');
+            expect(this.player2).toHavePrompt('Which card do you want to be the second card?');
             expect(this.player2).not.toHavePromptButton(this.assassination.name);
             expect(this.player2).not.toHavePromptButton(this.fingerOfJade.name);
             expect(this.player2).not.toHavePromptButton(this.tattooedWanderer.name);
@@ -94,15 +94,6 @@ describe('Shachihoko Bay', function () {
             expect(this.player2).toHavePromptButton(this.levy.name);
 
             this.player2.clickPrompt(this.censure.name);
-            expect(this.player2).toHavePrompt('Select a card to put in the third position of their deck');
-            expect(this.player2).not.toHavePromptButton(this.assassination.name);
-            expect(this.player2).not.toHavePromptButton(this.fingerOfJade.name);
-            expect(this.player2).not.toHavePromptButton(this.tattooedWanderer.name);
-            expect(this.player2).not.toHavePromptButton(this.kamiUnleashed.name);
-            expect(this.player2).not.toHavePromptButton(this.censure.name);
-            expect(this.player2).toHavePromptButton(this.levy.name);
-
-            this.player2.clickPrompt(this.levy.name);
             expect(this.getChatLogs(5)).toContain('player2 returns 3 cards to the top of player1\'s deck');
             expect(this.getChatLogs(5)).toContain('player1 has broken Shachihoko Bay!');
             expect(this.assassination.location).toBe('removed from game');
@@ -123,10 +114,10 @@ describe('Shachihoko Bay', function () {
             this.player2.clickPrompt(this.kamiUnleashed.name);
             this.player2.clickPrompt(this.fingerOfJade.name);
             this.player2.clickPrompt(this.levy.name);
-            /* returns */
+            /* returns, the last card is placed without a prompt */
             this.player2.clickPrompt(this.assassination.name);
             this.player2.clickPrompt(this.tattooedWanderer.name);
-            this.player2.clickPrompt(this.censure.name);
+            expect(this.player1.conflictDeck.slice(0, 3)).toEqual([this.assassination, this.tattooedWanderer, this.censure]);
             /* finish conflict */
             this.player1.clickPrompt('No');
             this.player1.clickPrompt('Gain 2 Honor');

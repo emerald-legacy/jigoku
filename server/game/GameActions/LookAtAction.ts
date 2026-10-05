@@ -1,50 +1,45 @@
 import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName, Location } from '../Constants.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface LookAtProperties extends CardActionProperties {
     message?: string | ((context: AbilityContext) => string);
-    messageArgs?: (cards: BaseCard[]) => unknown[];
+    messageArgs?: (cards: BaseCard[]) => MsgArg[];
 }
 
-export class LookAtAction extends CardGameAction<CardActionProperties, EventName.OnLookAtCards> {
+export class LookAtAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LookAtProperties, EventName.OnLookAtCards, C, 'message'> {
     name = 'lookAt';
     eventName = EventName.OnLookAtCards;
     effect = 'look at a facedown card';
-    defaultProperties: LookAtProperties = {
+    defaultProperties = {
         message: '{0} sees {1}'
     };
 
-    canAffect(card: BaseCard, context: AbilityContext) {
+    canAffect(card: BaseCard, context: C) {
         if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let { target } = this.getProperties(context, additionalProperties);
-        let cards = (target as BaseCard[]).filter((card) => this.canAffect(card, context));
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+        const { target } = this.getProperties(context, additionalProperties);
+        const cards = targetList(target).filter((card) => this.canAffect(card, context));
         if(cards.length === 0) {
             return;
         }
-        let event = this.createEvent(null, context, additionalProperties);
+        const event = this.createEvent(null, context, additionalProperties);
         this.updateEvent(event, cards, context, additionalProperties);
         events.push(event);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnLookAtCards>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        let resolved: BaseCard[];
-        if(!cards) {
-            const target = this.getProperties(context, additionalProperties).target;
-            resolved = (Array.isArray(target) ? target : [target]) as BaseCard[];
-        } else {
-            resolved = (Array.isArray(cards) ? cards : [cards]) as BaseCard[];
-        }
+    addPropertiesToEvent(event: ActionEvent<EventName.OnLookAtCards, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: Record<string, unknown>): void {
+        const resolved = targetList(cards || this.getProperties(context, additionalProperties).target);
         event.cards = resolved;
         event.stateBeforeResolution = resolved.map((a: BaseCard) => {
             return { card: a, location: a.location };
@@ -52,22 +47,22 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
         event.context = context;
     }
 
-    eventHandler(event: GameEvent<EventName.OnLookAtCards>, additionalProperties = {}): void {
-        let context = event.context as AbilityContext;
-        let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
-        let cards = event.cards as BaseCard[];
-        let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
-        context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs as MsgArg[]));
+    eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties = {}): void {
+        const context = event.context;
+        const properties = this.getProperties(context, additionalProperties);
+        const cards = event.cards;
+        const messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
+        context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
     }
 
-    getMessage(message: string | ((context: AbilityContext) => string) | undefined, context: AbilityContext): string {
+    getMessage(message: string | ((context: C) => string), context: C): string {
         if(typeof message === 'function') {
             return message(context);
         }
-        return message ?? '';
+        return message;
     }
 
-    isEventFullyResolved(event: GameEvent<EventName.OnLookAtCards>): boolean {
+    isEventFullyResolved(event: AnyEvent): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

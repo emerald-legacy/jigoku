@@ -108,8 +108,8 @@ describe('Shaper of Stone', function () {
                 this.noMoreActions();
                 this.player2.passConflict();
 
-                let honor = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 this.noMoreActions();
 
@@ -154,8 +154,8 @@ describe('Shaper of Stone', function () {
                 this.noMoreActions();
                 this.player2.passConflict();
 
-                let honor = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 this.noMoreActions();
 
@@ -184,8 +184,8 @@ describe('Shaper of Stone', function () {
                 this.noMoreActions();
                 this.player2.passConflict();
 
-                let honor = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 this.noMoreActions();
 

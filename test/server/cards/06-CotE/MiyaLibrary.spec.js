@@ -27,6 +27,7 @@ describe('Miya Library', function () {
 
             it('should allow you to replace the library for satoshi', function () {
                 this.player1.clickCard(this.miyaLibrary);
+                expect(this.getChatLogs(1)).toContain('player1 uses Miya Library to search the top four cards of their dynasty deck for an Imperial character');
                 expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
                 this.player1.clickPrompt('Miya Satoshi');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');

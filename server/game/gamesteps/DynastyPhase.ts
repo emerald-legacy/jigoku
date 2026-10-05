@@ -1,4 +1,3 @@
-import type { MsgArg } from '../GameChat.js';
 import { EffectName, EventName, Phases } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
@@ -49,7 +48,7 @@ export class DynastyPhase extends Phase {
         for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             const revealedCards = new Set<DrawCard>();
             for(const province of this.game.getProvinceArray()) {
-                for(const card of player.getDynastyCardsInProvince(province) as DrawCard[]) {
+                for(const card of player.getDynastyCardsInProvince(province)) {
                     if(card.isFacedown()) {
                         this.game.applyGameAction(null, { flipDynasty: card });
                         revealedCards.add(card);
@@ -87,7 +86,7 @@ export class DynastyPhase extends Phase {
                 restarted = true;
                 player.resetHonorEvents(this.game.roundNumber, this.game.currentPhase);
                 const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
-                this.game.addMessage('{0} has started a new dynasty phase!', effectSource as MsgArg);
+                this.game.addMessage('{0} has started a new dynasty phase!', effectSource);
                 const dynastyPhase = new DynastyPhase(this.game, false);
                 this.game.queueStep(dynastyPhase);
             }

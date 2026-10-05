@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -6,25 +5,22 @@ import AbilityDsl from '../../abilitydsl.js';
 class JadeTetsubo extends DrawCard {
     static id = 'jade-tetsubo';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.action({
-            title: 'Return all fate from a character',
-            cost: ability.costs.bowSelf(),
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()),
-            target: {
+        this.action('Return all fate from a character')
+            .cost(AbilityDsl.costs.bowSelf())
+            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0),
-                gameAction: ability.actions.removeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    amount: context.target.getFate(),
-                    recipient: context.target.owner
-                }))
-            },
-            effect: 'return all fate from {0} to its owner'
-        });
+                cardCondition: (card, context) => card.isParticipating() && card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
+            }, AbilityDsl.actions.removeFate((context) => ({
+                amount: context.target.getFate(),
+                recipient: context.target.owner
+            })))
+            .effect('return all fate from {0} to its owner');
     }
 }
 

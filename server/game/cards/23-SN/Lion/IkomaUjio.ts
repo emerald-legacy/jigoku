@@ -1,4 +1,4 @@
-import { DuelType, Players } from '../../../Constants.js';
+import { DuelType, Players, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -6,10 +6,8 @@ export default class IkomaUjio extends DrawCard {
     static id = 'ikoma-ujio';
 
     setupCardAbilities() {
-        this.conflictAction({
-            conflictType: 'political',
-            title: 'Military duel to bow',
-            initiateDuel: {
+        this.conflictAction('Military duel to bow', { conflictType: ConflictType.Political })
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} chooses whether to bow {1} or give 1 honor to {2}',
                 messageArgs: duel => [duel.loserController, duel.loser, duel.winnerController],
@@ -29,7 +27,6 @@ export default class IkomaUjio extends DrawCard {
                         }
                     }
                 })
-            }
-        });
+            }));
     }
 }

@@ -1,31 +1,29 @@
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
-export interface FlipFavorProperties extends PlayerActionProperties {
-    target?: Player;
-}
+export type FlipFavorProperties = PlayerActionProperties;
 
-export class FlipFavorAction extends PlayerAction<FlipFavorProperties, EventName.OnFlipFavor> {
-    name = 'claimFavor';
+export class FlipFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FlipFavorProperties, EventName.OnFlipFavor, C> {
+    name = 'flipFavor';
     eventName = EventName.OnFlipFavor;
     effect = 'flip the Imperial favor';
 
-    hasLegalTarget(context: AbilityContext, _additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, _additionalProperties = {}): boolean {
         return this.playerHasFlippableFavor(context.player) || (!!context.player.opponent && this.playerHasFlippableFavor(context.player.opponent));
     }
 
     playerHasFlippableFavor(player: Player) {
-        return !!player && !!player.imperialFavor && player.imperialFavor !== 'both';
+        return !!player.imperialFavor && player.imperialFavor !== 'both';
     }
 
-    canAffect(player: Player, context: AbilityContext, _additionalProperties = {}): boolean {
-        return !!player && this.playerHasFlippableFavor(player) && super.canAffect(player, context);
+    canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
+        return this.playerHasFlippableFavor(player) && super.canAffect(player, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnFlipFavor>): void {
+    eventHandler(event: ActionEvent<EventName.OnFlipFavor, C>): void {
         const player = event.player;
         if(player.imperialFavor === 'military') {
             player.imperialFavor = 'political';

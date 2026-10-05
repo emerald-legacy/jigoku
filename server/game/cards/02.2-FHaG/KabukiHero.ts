@@ -1,21 +1,17 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KabukiHero extends DrawCard {
     static id = 'kabuki-hero';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Gain military bonus',
-            cost: ability.costs.payFate(1),
-            condition: () => this.game.isDuringConflict(),
-            effect: 'give itself +{1}{2}/+0{3} until the end of the conflict',
-            effectArgs: context => [context.source.politicalSkill, 'military', 'political'],
-            gameAction: ability.actions.cardLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
-                effect: ability.effects.modifyMilitarySkill(context.source.politicalSkill)
-            }))
-        });
+    setupCardAbilities() {
+        this.action('Gain military bonus')
+            .cost(AbilityDsl.costs.payFate(1))
+            .condition(() => this.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+                effect: AbilityDsl.effects.modifyMilitarySkill(context.source.politicalSkill)
+            })))
+            .effect('give itself +{1}{2}/+0{3} until the end of the conflict', context => [context.source.politicalSkill, 'military', 'political']);
     }
 }
 

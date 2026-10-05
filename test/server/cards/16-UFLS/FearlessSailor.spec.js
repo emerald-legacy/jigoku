@@ -53,7 +53,7 @@ describe('Fearless Sailor', function() {
         });
 
         it('should give the chosen character -2 mil', function() {
-            let skill = this.sailor.getMilitarySkill();
+            const skill = this.sailor.getMilitarySkill();
 
             this.noMoreActions();
             this.initiateConflict({

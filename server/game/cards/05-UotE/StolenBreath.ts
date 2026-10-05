@@ -1,15 +1,15 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class StolenBreath extends DrawCard {
     static id = 'stolen-breath';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
             effect: [
-                ability.effects.cannotParticipateAsAttacker('political'),
-                ability.effects.cannotParticipateAsDefender('political')
+                AbilityDsl.effects.cannotParticipateAsAttacker('political'),
+                AbilityDsl.effects.cannotParticipateAsDefender('political')
             ]
         });
     }

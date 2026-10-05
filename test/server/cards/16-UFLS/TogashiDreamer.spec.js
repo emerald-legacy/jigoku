@@ -72,8 +72,8 @@ describe('Togashi Dreamer', function() {
                 defenders: [this.dojiWhisperer, this.dreamer2],
                 ring: 'air'
             });
-            let fate = this.dojiWhisperer.fate;
-            let ringFate = this.game.rings.water.fate;
+            const fate = this.dojiWhisperer.fate;
+            const ringFate = this.game.rings.water.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.stance);

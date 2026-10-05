@@ -1,24 +1,32 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export type PlayerActionProperties = GameActionProperties;
+export interface PlayerActionProperties extends GameActionProperties {
+    target?: Player | Player[];
+}
 
-export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
+export type PlayerEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { player: Player };
+
+export class PlayerAction<
+    P extends PlayerActionProperties = PlayerActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends GameAction<P, N, C, D> {
     targetType = ['player'];
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return context.player && context.player.opponent ? [context.player.opponent] : [];
     }
 
-    checkEventCondition(event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect((event as { player: Player }).player, (event.context as AbilityContext), additionalProperties);
+    checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+        return this.canAffect(event.player, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        (event as { player: Player }).player = player;
+        event.player = player;
     }
 }

@@ -151,8 +151,8 @@ describe('Ancient Stone Guardian', function () {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.stoneGuardian);
 
-                let p1HandSizeInit = this.player1.hand.length;
-                let p2HandSizeInit = this.player2.hand.length;
+                const p1HandSizeInit = this.player1.hand.length;
+                const p2HandSizeInit = this.player2.hand.length;
 
                 expect(this.player1).toHavePrompt('Choose a character');
                 expect(this.player1).toHavePromptButton('Done');
@@ -174,7 +174,7 @@ describe('Ancient Stone Guardian', function () {
                 expect(this.player2.hand.length).toBe(p2HandSizeInit);
 
                 expect(this.getChatLogs(3)).toContain(
-                    'player2 uses Ancient Stone Guardian to present an opportunity to sneak around Ancient Stone Guardian and find some secrets! player1 dishonors Shinjo Archer to draw a card.'
+                    'player2 uses Ancient Stone Guardian to present an opportunity to sneak around Ancient Stone Guardian and find some secrets. player1 dishonors Shinjo Archer to draw a card'
                 );
             });
 
@@ -219,7 +219,7 @@ describe('Ancient Stone Guardian', function () {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.stoneGuardian);
 
-                let p2HandSizeInit = this.player2.hand.length;
+                const p2HandSizeInit = this.player2.hand.length;
 
                 expect(this.player1).not.toHavePrompt('Choose a character');
 
@@ -235,7 +235,7 @@ describe('Ancient Stone Guardian', function () {
                 expect(this.player2.hand.length).toBe(p2HandSizeInit + 1);
 
                 expect(this.getChatLogs(3)).toContain(
-                    'player2 uses Ancient Stone Guardian to present an opportunity to sneak around Ancient Stone Guardian and find some secrets! player2 dishonors Solemn Scholar to draw a card.'
+                    'player2 uses Ancient Stone Guardian to present an opportunity to sneak around Ancient Stone Guardian and find some secrets. player2 dishonors Solemn Scholar to draw a card'
                 );
             });
         });

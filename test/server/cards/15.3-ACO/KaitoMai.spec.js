@@ -49,7 +49,7 @@ describe('Kaito Mai', function() {
         });
 
         it('should let you remove a fate from an opponent character', function() {
-            let fate = this.alibi.fate;
+            const fate = this.alibi.fate;
             this.player1.playAttachment(this.steed, this.mai);
             this.player1.clickCard(this.mai);
             this.player1.clickPrompt('1');
@@ -61,7 +61,7 @@ describe('Kaito Mai', function() {
         });
 
         it('should let you remove a fate from your own character', function() {
-            let fate = this.manipulator.fate;
+            const fate = this.manipulator.fate;
             this.player1.playAttachment(this.steed, this.mai);
             this.player1.clickCard(this.mai);
             this.player1.clickPrompt('1');

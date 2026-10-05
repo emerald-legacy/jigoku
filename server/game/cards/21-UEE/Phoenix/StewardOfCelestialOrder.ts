@@ -9,12 +9,10 @@ export default class StewardOfCelestialOrder extends DrawCard {
             effect: AbilityDsl.effects.canContributeGloryWhileBowed()
         });
 
-        this.action({
-            title: 'Return rings to gain honor',
-            cost: AbilityDsl.costs.returnRings(),
-            gameAction: AbilityDsl.actions.gainHonor((context) => ({
+        this.action('Return rings to gain honor')
+            .cost(AbilityDsl.costs.returnRings())
+            .gameAction(AbilityDsl.actions.gainHonor((context) => ({
                 amount: context.costs.returnRing ? context.costs.returnRing.length : 1
-            }))
-        });
+            })));
     }
 }

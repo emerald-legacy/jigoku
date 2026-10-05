@@ -6,15 +6,11 @@ class HidaAmoro extends DrawCard {
     static id = 'hida-amoro';
 
     setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Sacrifice a character',
-            when: {
+        this.forcedReaction('Sacrifice a character')
+            .when({
                 onConflictPass: () => true
-            },
-            limit: AbilityDsl.limit.perPhase(Infinity),
-            effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.event.conflict?.attackingPlayer ?? '',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 player: context.event.conflict.attackingPlayer === context.player ? Players.Self : Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
@@ -22,8 +18,9 @@ class HidaAmoro extends DrawCard {
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.event.conflict.attackingPlayer, card, context.source],
                 gameAction: AbilityDsl.actions.sacrifice()
-            }))
-        });
+            })))
+            .effect('force {1} to sacrifice a character', (context) => context.event.conflict.attackingPlayer)
+            .limit(AbilityDsl.limit.unlimited());
     }
 }
 

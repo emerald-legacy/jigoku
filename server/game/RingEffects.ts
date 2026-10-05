@@ -7,6 +7,7 @@ import { WaterRingEffect } from './Rings/WaterRingEffect.js';
 import { AbilityContext } from './AbilityContext.js';
 import BaseAbility from './BaseAbility.js';
 import Player from './Player.js';
+import { isEnumValue } from './utils/helpers.js';
 
 interface RingAbility extends BaseAbility {
     title: string;
@@ -26,10 +27,10 @@ function ringForElement(element: string) {
             return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
                 new EarthRingEffect(optional, gameMode, onResolution);
         case 'fire':
-            return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
+            return (optional: boolean, _gameMode: GameModes, onResolution: ResolutionCb) =>
                 new FireRingEffect(optional, onResolution);
         case 'void':
-            return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
+            return (optional: boolean, _gameMode: GameModes, onResolution: ResolutionCb) =>
                 new VoidRingEffect(optional, onResolution);
         case 'water':
             return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
@@ -45,16 +46,16 @@ export class RingEffects {
         element: string,
         optional = true,
         onResolution: ResolutionCb = () => {}
-    ): Omit<AbilityContext, 'ability'> & { ability: RingAbility } {
+    ): AbilityContext & { ability: RingAbility } {
         const ring = ringForElement(element);
         const context = new AbilityContext({
             game: player.game,
             player,
             source: player.game.rings[element]
         });
-        const gameModeWithDefault = (context.game.gameMode as GameModes) || GameModes.Stronghold;
-        context.ability = ring(optional, gameModeWithDefault, onResolution);
-        return context as Omit<AbilityContext, 'ability'> & { ability: RingAbility };
+        const gameMode = context.game.gameMode;
+        const gameModeWithDefault = gameMode !== undefined && isEnumValue(GameModes, gameMode) ? gameMode : GameModes.Stronghold;
+        return Object.assign(context, { ability: ring(optional, gameModeWithDefault, onResolution) });
     }
 
     static getRingName(element: string) {

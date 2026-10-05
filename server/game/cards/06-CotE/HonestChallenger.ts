@@ -1,8 +1,6 @@
 import { CardType, DuelType, Players } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
 
 export default class HonestChallenger extends DrawCard {
     static id = 'honest-challenger';
@@ -12,13 +10,12 @@ export default class HonestChallenger extends DrawCard {
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
 
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: (context: AbilityContext) => ({
+        this.action('Initiate a military duel')
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 message: '{0} chooses a character to move to the conflict',
-                messageArgs: (duel: Duel) => duel.winnerController,
-                gameAction: (duel: Duel) =>
+                messageArgs: (duel) => duel.winnerController,
+                gameAction: (duel) =>
                     duel.winner
                         ? AbilityDsl.actions.selectCard({
                             activePromptTitle: 'Choose a character to move to the conflict',
@@ -30,7 +27,6 @@ export default class HonestChallenger extends DrawCard {
                             gameAction: AbilityDsl.actions.moveToConflict()
                         })
                         : AbilityDsl.actions.noAction()
-            })
-        });
+            }));
     }
 }

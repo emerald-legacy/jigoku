@@ -112,7 +112,7 @@ describe('Seize The Mind', function() {
                 defenders: [this.general]
             });
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.seize);
@@ -234,6 +234,57 @@ describe('Seize The Mind', function() {
             expect(this.steed.location).toBe('play area');
             this.noMoreActions();
             expect(this.khanbulak.controller).toBe(this.player2.player);
+        });
+    });
+});
+
+describe('Seize The Mind with apparent fate', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['kakita-yoshi'],
+                    dynastyDiscard: ['city-of-lies'],
+                    hand: ['seize-the-mind']
+                },
+                player2: {
+                    inPlay: ['alibi-artist'],
+                    provinces: ['by-onnotangu-s-light']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.cityOfLies = this.player1.placeCardInProvince('city-of-lies', 'province 1');
+            this.cityOfLies.facedown = false;
+            this.seize = this.player1.findCardByName('seize-the-mind');
+            this.alibi = this.player2.findCardByName('alibi-artist');
+            this.light = this.player2.findCardByName('by-onnotangu-s-light');
+
+            this.player1.player.imperialFavor = 'military';
+            this.alibi.fate = 4;
+        });
+
+        it('should lose honor equal to the fate the character is considered to have', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.yoshi],
+                defenders: [],
+                province: this.light
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.yoshi);
+            this.player2.pass();
+            this.player1.clickCard(this.cityOfLies);
+            this.player2.pass();
+            this.player1.clickCard(this.seize);
+            this.player1.clickCard(this.alibi);
+
+            expect(this.alibi.controller).toBe(this.player1.player);
+            expect(this.alibi.fate).toBe(4);
+            expect(this.player1.honor).toBe(10);
+            expect(this.getChatLogs(5)).toContain('player1 plays Seize the Mind to take control of Alibi Artist');
         });
     });
 });

@@ -29,8 +29,8 @@ describe('Mirumoto\'s Peak', function() {
         });
 
         it('should let you choose another Bushi you control and give you a skill bonus equal to their attachment bonus', function() {
-            let mil = this.rei.getMilitarySkill();
-            let pol = this.rei.getPoliticalSkill();
+            const mil = this.rei.getMilitarySkill();
+            const pol = this.rei.getPoliticalSkill();
 
             this.player1.playAttachment(this.fan, this.challenger);
             this.player2.pass();

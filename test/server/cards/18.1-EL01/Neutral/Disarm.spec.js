@@ -24,7 +24,7 @@ describe('Disarm', function() {
         });
 
         it('should cost 1 fate and let you choose an discard an attachment', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.disarm);
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.fan);

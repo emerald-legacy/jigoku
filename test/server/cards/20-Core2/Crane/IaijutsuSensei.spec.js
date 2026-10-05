@@ -21,8 +21,8 @@ describe('Iaijutsu Sensei', function () {
         });
 
         it('should get +1/+1 if it has a single weapon', function () {
-            let baseMil = this.sensei.getMilitarySkill();
-            let basePol = this.sensei.getPoliticalSkill();
+            const baseMil = this.sensei.getMilitarySkill();
+            const basePol = this.sensei.getPoliticalSkill();
 
             this.player1.playAttachment(this.katana, this.sensei);
             expect(this.sensei.getMilitarySkill()).toBe(baseMil + 3);
@@ -35,8 +35,8 @@ describe('Iaijutsu Sensei', function () {
         });
 
         it('should not give +1/+1 to other characters', function () {
-            let baseMil = this.toshimoko.getMilitarySkill();
-            let basePol = this.toshimoko.getPoliticalSkill();
+            const baseMil = this.toshimoko.getMilitarySkill();
+            const basePol = this.toshimoko.getPoliticalSkill();
 
             this.player1.playAttachment(this.katana, this.toshimoko);
             expect(this.toshimoko.getMilitarySkill()).toBe(baseMil + 2);

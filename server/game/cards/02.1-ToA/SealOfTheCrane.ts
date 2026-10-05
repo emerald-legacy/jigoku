@@ -4,11 +4,11 @@ import AbilityDsl from '../../abilitydsl.js';
 class SealOfTheCrane extends DrawCard {
     static id = 'seal-of-the-crane';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.whileAttached({
             effect: [
-                ability.effects.addFaction('crane'),
-                ability.effects.addTrait('duelist')
+                AbilityDsl.effects.addFaction('crane'),
+                AbilityDsl.effects.addTrait('duelist')
             ]
         });
     }

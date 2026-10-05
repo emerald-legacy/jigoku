@@ -40,8 +40,8 @@ describe('Fulfill Your Duty', function () {
                 attackers: [this.outrider],
                 defenders: []
             });
-            let pStrength = this.p2Pilgrimage.strength;
-            let toturiStrength = this.toturi.getMilitarySkill();
+            const pStrength = this.p2Pilgrimage.strength;
+            const toturiStrength = this.toturi.getMilitarySkill();
 
             this.player2.clickCard(this.fulfillYourDuty);
             this.player2.clickCard(this.toturi);
@@ -58,8 +58,8 @@ describe('Fulfill Your Duty', function () {
                 attackers: [this.outrider],
                 defenders: []
             });
-            let pStrength = this.p2Pilgrimage.strength;
-            let toturiStrength = this.toturi.getMilitarySkill();
+            const pStrength = this.p2Pilgrimage.strength;
+            const toturiStrength = this.toturi.getMilitarySkill();
 
             this.player2.clickCard(this.fulfillYourDuty);
             this.player2.clickCard(this.toturi);
@@ -83,8 +83,8 @@ describe('Fulfill Your Duty', function () {
 
             this.player1.pass();
 
-            let pStrength = this.p2Pilgrimage.strength;
-            let toturiStrength = this.toturi.getMilitarySkill();
+            const pStrength = this.p2Pilgrimage.strength;
+            const toturiStrength = this.toturi.getMilitarySkill();
 
             this.player2.clickCard(this.fulfillYourDuty);
             this.player2.clickCard(this.toturi);
@@ -101,8 +101,8 @@ describe('Fulfill Your Duty', function () {
                 attackers: [this.toturi],
                 defenders: []
             });
-            let pStrength = this.p1Pilgrimage.strength;
-            let toturiStrength = this.toturi.getMilitarySkill();
+            const pStrength = this.p1Pilgrimage.strength;
+            const toturiStrength = this.toturi.getMilitarySkill();
 
             this.player1.pass();
 

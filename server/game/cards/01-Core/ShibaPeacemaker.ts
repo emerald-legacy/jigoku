@@ -5,10 +5,10 @@ import AbilityDsl from '../../abilitydsl.js';
 class ShibaPeacemaker extends DrawCard {
     static id = 'shiba-peacemaker';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: ability.effects.cannotParticipateAsAttacker()
+            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
         });
     }
 }

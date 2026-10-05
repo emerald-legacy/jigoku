@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class TheImperialPalace extends DrawCard {
     static id = 'the-imperial-palace';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.changePlayerGloryModifier(3)
+            effect: AbilityDsl.effects.changePlayerGloryModifier(3)
         });
     }
 }

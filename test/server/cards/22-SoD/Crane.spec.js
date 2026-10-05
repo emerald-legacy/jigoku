@@ -43,7 +43,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.clickCard(this.castle);
                 expect(this.pilgrimage.getStrength()).toBe(5);
@@ -90,7 +90,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.clickCard(this.castle);
                 expect(this.pilgrimage.getStrength()).toBe(5);
@@ -140,7 +140,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.assassination);
@@ -181,8 +181,8 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
-                let fate = this.player1.fate;
+                const honor = this.player1.honor;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.serpent);
                 expect(this.player1).toHavePrompt('Eyes of the Serpent');
@@ -218,8 +218,8 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
-                let fate = this.player1.fate;
+                const honor = this.player1.honor;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.serpent);
                 this.player1.clickCard(this.kuwanan);
@@ -283,7 +283,7 @@ describe('SoD - Crane', function () {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.kabuto);
@@ -365,7 +365,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 const mil = this.kuwanan.getMilitarySkill();
                 this.player1.clickCard(this.virtue);
                 this.player1.clickCard(this.kuwanan);
@@ -389,7 +389,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.virtue);
                 this.player1.clickCard(this.daidoji);
                 this.noMoreActions();

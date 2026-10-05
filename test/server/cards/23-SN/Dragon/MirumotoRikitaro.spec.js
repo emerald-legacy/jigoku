@@ -30,7 +30,7 @@ describe('Mirumoto Rikitaro', function () {
             });
 
             it('should reduce the cost to play an attachment on Rikitaro', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.blade);
                 this.player1.clickCard(this.rikitaro);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -46,7 +46,7 @@ describe('Mirumoto Rikitaro', function () {
             });
 
             it('should work with monks played as an attachment', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.wanderer);
                 this.player1.clickPrompt('Play Tattooed Wanderer as an attachment');
                 this.player1.clickCard(this.rikitaro);
@@ -67,7 +67,7 @@ describe('Mirumoto Rikitaro', function () {
             });
 
             it('should not trigger if attachment is played a different character', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.blade);
                 this.player1.clickCard(this.yoshi);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
@@ -84,7 +84,7 @@ describe('Mirumoto Rikitaro', function () {
             });
 
             it('should still trigger if rikitaro has attachment controlled by opponent', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.pass();
                 this.player2.clickCard(this.blade2);
                 this.player2.clickCard(this.rikitaro);
@@ -101,7 +101,7 @@ describe('Mirumoto Rikitaro', function () {
             });
 
             it('should not trigger if rikitaro has attachment controlled by you', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.katana);
                 this.player1.clickCard(this.rikitaro);
 
@@ -186,7 +186,7 @@ describe('Mirumoto Rikitaro', function () {
                     defenders: [this.initiate]
                 });
 
-                let mil = this.rikitaro.getMilitarySkill();
+                const mil = this.rikitaro.getMilitarySkill();
 
                 expect(this.katana.parent).toBe(this.initiate);
 
@@ -203,7 +203,7 @@ describe('Mirumoto Rikitaro', function () {
                 expect(this.rikitaro.getMilitarySkill()).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Mirumoto Rikitaro to discard Fine Katana');
-                expect(this.getChatLogs(5)).toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon!');
+                expect(this.getChatLogs(5)).toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon');
             });
 
             it('should target items, armor, and weapons and not get +2 from discarding a non weapon', function () {
@@ -213,7 +213,7 @@ describe('Mirumoto Rikitaro', function () {
                     defenders: [this.initiate]
                 });
 
-                let mil = this.rikitaro.getMilitarySkill();
+                const mil = this.rikitaro.getMilitarySkill();
 
                 expect(this.katana.parent).toBe(this.initiate);
 
@@ -229,7 +229,7 @@ describe('Mirumoto Rikitaro', function () {
 
                 expect(this.rikitaro.getMilitarySkill()).toBe(mil);
 
-                expect(this.getChatLogs(5)).not.toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon!');
+                expect(this.getChatLogs(5)).not.toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon');
             });
 
             it('should require participating', function () {

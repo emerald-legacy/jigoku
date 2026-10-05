@@ -6,7 +6,7 @@ import { EffectName, Phases, PlayType, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-import type { EffectValue } from './Effects/EffectValue.js';
+import { isEffectOf } from './Effects/types.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -44,20 +44,19 @@ class DynastyCardAction extends BaseAction {
             '{0} plays {1} with {2} additional fate',
             context.player,
             context.source,
-            (context as AbilityContext & { chooseFate: number }).chooseFate
+            context.chooseFate
         );
         if(context.source.checkRestrictions('placeFate', context)) {
-            context.source
-                .getRawEffects()
-                .filter((effect) => effect.type === EffectName.GainExtraFateWhenPlayed)
-                .map((effect) =>
+            for(const effect of context.source.getRawEffects()) {
+                if(isEffectOf(effect, EffectName.GainExtraFateWhenPlayed)) {
                     context.game.addMessage(
                         '{0} enters play with {1} additional fate due to {2}',
                         context.source,
-                        (effect.value as EffectValue<number>).value,
+                        effect.getValue(context.source),
                         effect.context.source
-                    )
-                );
+                    );
+                }
+            }
         }
     }
 
@@ -69,18 +68,18 @@ class DynastyCardAction extends BaseAction {
         }
         extraFate = extraFate + legendaryFate;
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as AbilityContext & { chooseFate: number }).chooseFate + extraFate, status }).getEvent(
+        const enterPlayEvent = GameActions.putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
             context.source,
             context
         );
-        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
+        const card = this.card;
+        context.game.openEventWindow([enterPlayEvent, context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
-            card: context.source,
+            card,
             context: context,
-            originalLocation: context.source.location,
+            originalLocation: card.location,
             playType: PlayType.PlayFromProvince
-        });
-        context.game.openEventWindow([enterPlayEvent, cardPlayedEvent]);
+        })]);
     }
 
     isCardPlayed(): boolean {

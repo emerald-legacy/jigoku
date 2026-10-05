@@ -85,8 +85,8 @@ describe('Skirmish Conflict Phase', function() {
         });
 
         it('no unopposed honor loss', function () {
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
             this.player1.player.imperialFavor = 'both';
             this.noMoreActions();
 
@@ -170,8 +170,8 @@ describe('Normal Conflict Phase', function() {
         });
 
         it('should cause unopposed honor loss', function () {
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
             this.player1.player.imperialFavor = 'military';
             this.noMoreActions();
 

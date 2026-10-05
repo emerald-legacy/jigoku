@@ -1,45 +1,35 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardType, Phases } from '../../Constants.js';
+import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class RoadsideInn extends DrawCard {
     static id = 'roadside-inn';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Place a fate on a character',
-            cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
-                return (context.player.opponent?.fate ?? 0) > 0;
-            }),
-            when: {
+        this.reaction('Place a fate on a character')
+            .when({
                 onPhaseStarted: event => event.phase === Phases.Fate
-            },
-            targets: {
-                myCharacter: {
-                    cardType: CardType.Character,
-                    gameAction: AbilityDsl.actions.placeFate(context => ({ origin: context.player }))
-                },
-                oppCharacter: {
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid),
-                    gameAction: AbilityDsl.actions.placeFate(context => ({ origin: context.player.opponent }))
-                }
-            },
-            effect: 'place a fate from their pool on {1}{2}',
-            effectArgs: context => [context.targets.myCharacter, this.buildString(context)]
-        });
-    }
-
-    buildString(context: AbilityContext) {
-        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            let target = context.targets.oppCharacter;
-            return '.  ' + target.controller.name + ' gives ' + context.player.name + ' 1 honor to place a fate from their pool on ' + target.name;
-        }
-        return '';
+            })
+            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
+                return (context.player.opponent?.fate ?? 0) > 0;
+            }))
+            .target({
+                name: 'myCharacter',
+                cardType: CardType.Character
+            }, AbilityDsl.actions.placeFate(context => ({ origin: context.player })))
+            .target({
+                name: 'oppCharacter',
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
+            }, AbilityDsl.actions.placeFate(context => ({ origin: context.player.opponent })))
+            .effect('place a fate from their pool on {1}{2}', (context) => [
+                context.targets.myCharacter,
+                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name)
+            ]);
     }
 }
 

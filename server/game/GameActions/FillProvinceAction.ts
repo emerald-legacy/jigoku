@@ -1,44 +1,44 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface FillProvinceProperties extends PlayerActionProperties {
     location: Location;
     fillTo?: number;
     faceup?: boolean;
 }
 
-export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
-    defaultProperties: FillProvinceProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
+export class FillProvinceAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName.Unnamed, C, 'location' | 'fillTo' | 'faceup'> {
+    defaultProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
     name = 'fill';
     effect = 'fills {0} with more cards';
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as FillProvinceProperties;
-        return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['fills {0} to {1} cards!', [this.getProperties(context).fillTo]];
     }
 
-    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        let properties = this.getProperties(context, additionalProperties) as FillProvinceProperties;
-        const player = event.player as Player;
-        let currentCards = player.getDynastyCardsInProvince(properties.location).length;
-        player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);
+    protected effectMessageTarget(context: C): MsgArg {
+        return this.getProperties(context).location;
+    }
+
+    eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context;
+        const properties = this.getProperties(context, additionalProperties);
+        const player = event.player;
+        const currentCards = player.getDynastyCardsInProvince(properties.location).length;
+        player.refillProvince(properties.location, properties.fillTo - currentCards);
 
         if(properties.faceup) {
             context.game.queueSimpleStep(() => {
-                let cards = player.getDynastyCardsInProvince(properties.location);
+                const cards = player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card) => {
-                    if(card) {
-                        card.facedown = false;
-                    }
+                    card.facedown = false;
                 });
             });
         }

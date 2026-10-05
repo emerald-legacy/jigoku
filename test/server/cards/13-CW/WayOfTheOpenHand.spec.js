@@ -38,7 +38,7 @@ describe('Way of the Open Hand', function() {
                 province: this.p1
             });
 
-            let fate = this.mirumotoRaitsugu.fate;
+            const fate = this.mirumotoRaitsugu.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.way);
@@ -79,7 +79,7 @@ describe('Way of the Open Hand', function() {
                 defenders: [this.matsuTsuko]
             });
 
-            let fate = this.mirumotoRaitsugu.fate;
+            const fate = this.mirumotoRaitsugu.fate;
 
             this.player1.clickCard(this.way);
             expect(this.player1).toBeAbleToSelect(this.mirumotoRaitsugu);

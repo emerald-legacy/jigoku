@@ -38,8 +38,8 @@ describe('Overhear', function() {
             });
 
             it('should put a random card from your opponent\'s hand on top of their deck, and correctly log it', function() {
-                let handSize = this.player2.hand.length;
-                let deckSize = this.player2.conflictDeck.length;
+                const handSize = this.player2.hand.length;
+                const deckSize = this.player2.conflictDeck.length;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',
@@ -95,8 +95,8 @@ describe('Overhear', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.overhear);
-                let honorP1 = this.player1.player.honor;
-                let honorP2 = this.player2.player.honor;
+                const honorP1 = this.player1.player.honor;
+                const honorP2 = this.player2.player.honor;
                 this.player1.clickPrompt('Give 1 honor to resolve this ability again');
                 expect(this.player1.player.honor).toBe(honorP1 - 1);
                 expect(this.player2.player.honor).toBe(honorP2 + 1);
@@ -112,8 +112,8 @@ describe('Overhear', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.overhear);
-                let honorP1 = this.player1.player.honor;
-                let honorP2 = this.player2.player.honor;
+                const honorP1 = this.player1.player.honor;
+                const honorP2 = this.player2.player.honor;
                 this.player1.clickPrompt('Done');
                 expect(this.player1.player.honor).toBe(honorP1);
                 expect(this.player2.player.honor).toBe(honorP2);
@@ -122,8 +122,8 @@ describe('Overhear', function() {
             });
 
             it('should resolve again if you choose to do so', function() {
-                let handSize = this.player2.hand.length;
-                let deckSize = this.player2.conflictDeck.length;
+                const handSize = this.player2.hand.length;
+                const deckSize = this.player2.conflictDeck.length;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',

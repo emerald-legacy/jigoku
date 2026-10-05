@@ -1,4 +1,3 @@
-import type DrawCard from '../../DrawCard.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +7,7 @@ export default class SanpukuSeido extends ProvinceCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
-            effect: AbilityDsl.effects.changeConflictSkillFunction((card: DrawCard) => card.getGlory())
+            effect: AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
         });
     }
 

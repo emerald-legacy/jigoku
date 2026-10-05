@@ -9,42 +9,35 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class HonoredVeterans extends DrawCard {
     static id = 'honored-veterans';
 
-    private eventRegistrar?: EventRegistrar;
     private charactersPlayedThisPhase = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
+        new EventRegistrar(this.game, this).register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
 
-        this.action({
-            title: 'Honor characters',
-            condition: () => this.canBePlayed(),
-            targets: {
-                myCharacter: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card),
-                    gameAction: AbilityDsl.actions.honor()
-                },
-                oppCharacter: {
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card),
-                    gameAction: AbilityDsl.actions.honor()
-                }
-            },
-            effect: 'honor {1}',
-            effectArgs: (context) => [this.getCharacters(context)]
-        });
+        this.action('Honor characters')
+            .condition(() => this.canBePlayed())
+            .target({
+                name: 'myCharacter',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
+            }, AbilityDsl.actions.honor())
+            .target({
+                name: 'oppCharacter',
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
+            }, AbilityDsl.actions.honor())
+            .effect('honor {1}', (context) => [this.getCharacters(context)]);
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
-        if(event.player && event.card.type === CardType.Character) {
+        if(event.card.type === CardType.Character) {
             this.charactersPlayedThisPhase.add(event.card);
         }
     }
@@ -66,13 +59,13 @@ export default class HonoredVeterans extends DrawCard {
         return this.charactersPlayedThisPhase.has(card);
     }
 
-    private getCharacters(context: AbilityContext): Array<string | DrawCard> {
-        const characters: Array<string | DrawCard> = [];
+    private getCharacters(context: AbilityContext): Array<string | BaseCard> {
+        const characters: Array<string | BaseCard> = [];
         if(context.targets.myCharacter && !Array.isArray(context.targets.myCharacter)) {
-            characters.push(context.targets.myCharacter as DrawCard);
+            characters.push(context.targets.myCharacter);
         }
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            characters.push(context.targets.oppCharacter as DrawCard);
+            characters.push(context.targets.oppCharacter);
         }
         if(characters.length === 0) {
             characters.push('no one');

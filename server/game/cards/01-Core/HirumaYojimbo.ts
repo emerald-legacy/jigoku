@@ -4,9 +4,9 @@ import AbilityDsl from '../../abilitydsl.js';
 class HirumaYojimbo extends DrawCard {
     static id = 'hiruma-yojimbo';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.cannotBeDeclaredAsAttacker()
+            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
         });
     }
 }

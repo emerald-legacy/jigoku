@@ -2,24 +2,19 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export type MoveConflictProperties = CardActionProperties;
 
-export class MoveConflictAction extends CardGameAction {
+export class MoveConflictAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName.OnConflictMoved, C> {
     name = 'moveConflict';
     eventName = EventName.OnConflictMoved;
     targetType = [CardType.Province];
     effect = 'move the conflict to {0}';
     cost = 'moves the conflict to {0}';
-    defaultProperties: MoveConflictProperties = {};
-    constructor(properties: ((context: AbilityContext) => MoveConflictProperties) | MoveConflictProperties) {
-        super(properties);
-    }
 
-    canAffect(card: ProvinceCard, context: AbilityContext): boolean {
+    canAffect(card: ProvinceCard, context: C): boolean {
         if(
-            !card ||
             !context.game.isDuringConflict() ||
             card.type !== CardType.Province ||
             card.isConflictProvince() ||
@@ -31,9 +26,9 @@ export class MoveConflictAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnConflictMoved>, _additionalProperties: Record<string, unknown> = {}): void {
-        let context = (event.context as AbilityContext);
-        let newProvince = event.card;
+    eventHandler(event: ActionEvent<EventName.OnConflictMoved, C>, _additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context;
+        const newProvince = event.card;
         const conflict = context.game.currentConflict;
         if(!conflict || !conflict.conflictProvince) {
             return;

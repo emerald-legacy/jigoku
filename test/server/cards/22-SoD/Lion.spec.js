@@ -510,7 +510,7 @@ describe('SoD - Lion', function () {
 
                 this.player2.clickPrompt('Political');
                 expect(this.player2.player.imperialFavor).toBe('political');
-                expect(this.getChatLogs(5)).toContain('player2 claims the Imperial Favor to the delayed effect of Deeds, not Words');
+                expect(this.getChatLogs(5)).toContain('player2 claims the Imperial Favor due to the delayed effect of Deeds, not Words');
                 expect(this.getChatLogs(5)).toContain('player2 claims the Emperor\'s political favor!');
             });
 

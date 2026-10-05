@@ -1,16 +1,17 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
 import { GameModes } from '../../server/GameModes.js';
+import { Location } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/Player.js';
 import type BaseCard from '../../server/game/BaseCard.js';
 import type DrawCard from '../../server/game/DrawCard.js';
-import type { ProvinceCard } from '../../server/game/ProvinceCard.js';
 import type Ring from '../../server/game/Ring.js';
+import type { DeckDTO } from '../../server/gamenode/LobbyProtocol.js';
 
-type CardLike = BaseCard | string;
+export type CardLike = BaseCard | string;
 
-interface InPlayCardSpec {
+export interface InPlayCardSpec {
     card: string;
     fate?: number;
     honor?: 'honored' | 'dishonored';
@@ -19,9 +20,19 @@ interface InPlayCardSpec {
     attachments?: string[];
 }
 
-interface ProvinceContents {
+export interface ProvinceContents {
     provinceCard?: CardLike;
     dynastyCards?: CardLike[];
+}
+
+export type ProvinceState = CardLike[] | Record<string, ProvinceContents>;
+
+/** Prompts attach their uuid to each button and control as an untyped extra field. */
+function promptUuid(item: Record<string, unknown>): string {
+    if(typeof item.uuid !== 'string') {
+        throw new Error('Prompt button or control has no uuid');
+    }
+    return item.uuid;
 }
 
 class PlayerInteractionWrapper {
@@ -47,8 +58,8 @@ class PlayerInteractionWrapper {
         return this.player.fate;
     }
 
-    set fate(newFate: number) {
-        if(newFate >= 0) {
+    set fate(newFate: number | undefined) {
+        if(newFate !== undefined && newFate >= 0) {
             this.player.fate = newFate;
         }
     }
@@ -57,8 +68,8 @@ class PlayerInteractionWrapper {
         return this.player.honor;
     }
 
-    set honor(newHonor: number) {
-        if(newHonor > 0) {
+    set honor(newHonor: number | undefined) {
+        if(newHonor !== undefined && newHonor > 0) {
             this.player.honor = newHonor;
         }
     }
@@ -67,13 +78,13 @@ class PlayerInteractionWrapper {
         return this.player.hand;
     }
 
-    set hand(cards: any) {
+    set hand(cards: CardLike[] | undefined) {
         if(!cards) {
             cards = [];
         }
         const cardsInHand = this.hand;
         cardsInHand.forEach((card) => this.moveCard(card, 'conflict deck'));
-        const resolved = this.mixedListToCardList(cards as CardLike[], 'conflict deck');
+        const resolved = this.mixedListToCardList(cards, 'conflict deck');
         resolved.forEach((card) => this.moveCard(card, 'hand'));
     }
 
@@ -102,7 +113,7 @@ class PlayerInteractionWrapper {
         };
     }
 
-    set provinces(newProvinceState: any) {
+    set provinces(newProvinceState: ProvinceState | undefined) {
         if(!newProvinceState) {
             return;
         }
@@ -149,7 +160,7 @@ class PlayerInteractionWrapper {
         return this.player.filterCardsInPlay(() => true);
     }
 
-    set inPlay(newState: any) {
+    set inPlay(newState: Array<string | InPlayCardSpec> | undefined) {
         if(!newState) {
             newState = [];
         }
@@ -161,12 +172,12 @@ class PlayerInteractionWrapper {
                 this.moveCard(card, 'conflict deck');
             }
         });
-        (newState as Array<string | InPlayCardSpec>).forEach((entry) => {
+        newState.forEach((entry) => {
             const options: InPlayCardSpec = typeof entry === 'string' ? { card: entry } : entry;
             if(!options.card) {
                 throw new Error('You must provide a card name');
             }
-            const card = this.findCardByName(options.card, ['dynasty deck', 'conflict deck', 'hand', 'provinces']) as DrawCard;
+            const card = this.findDrawCard(options.card, ['dynasty deck', 'conflict deck', 'hand', 'provinces']);
             this.moveCard(card, 'play area');
             if(options.fate) {
                 card.fate = options.fate;
@@ -185,19 +196,13 @@ class PlayerInteractionWrapper {
             if(options.covert !== undefined) {
                 card.covert = options.covert;
             }
-            if(options.attachments) {
-                const attachments: BaseCard[] = [];
-                options.attachments.forEach((attachmentName) => {
-                    const attachment = this.findCardByName(attachmentName, ['conflict deck', 'hand']);
-                    attachments.push(attachment);
-                });
-                const playerAny = this.player as { attach?: (a: BaseCard, b: BaseCard) => void };
-                attachments.forEach((attachment) => {
-                    if(!playerAny.attach) {
-                        throw new Error('player.attach is not implemented');
-                    }
-                    playerAny.attach(attachment, card);
-                });
+            for(const attachmentName of options.attachments ?? []) {
+                // what AttachAction's handler does, without its prompts and events
+                const attachment = this.findDrawCard(attachmentName, ['conflict deck', 'hand']);
+                attachment.controller.removeCardFromPile(attachment);
+                attachment.moveTo(Location.PlayArea);
+                card.attachments.push(attachment);
+                attachment.parent = card;
             }
         });
     }
@@ -210,14 +215,14 @@ class PlayerInteractionWrapper {
         return this.player.conflictDiscardPile;
     }
 
-    set conflictDiscard(newContents: any) {
+    set conflictDiscard(newContents: string[] | undefined) {
         if(!newContents) {
             newContents = [];
         }
         this.conflictDiscard.slice().forEach((card) => {
             this.moveCard(card, 'conflict deck');
         });
-        (newContents as string[]).slice().reverse().forEach((name: string) => {
+        newContents.slice().reverse().forEach((name) => {
             const card = this.findCardByName(name, 'conflict deck');
             this.moveCard(card, 'conflict discard pile');
         });
@@ -231,14 +236,14 @@ class PlayerInteractionWrapper {
         return this.player.dynastyDiscardPile;
     }
 
-    set dynastyDiscard(newContents: any) {
+    set dynastyDiscard(newContents: string[] | undefined) {
         if(!newContents) {
             return;
         }
         this.dynastyDiscard.slice().forEach((card) => {
             this.moveCard(card, 'dynasty deck');
         });
-        (newContents as string[]).slice().reverse().forEach((name: string) => {
+        newContents.slice().reverse().forEach((name) => {
             const card = this.findCardByName(name, ['dynasty deck', 'provinces']);
             this.moveCard(card, 'dynasty discard pile');
         });
@@ -256,13 +261,13 @@ class PlayerInteractionWrapper {
         return this.player.opponent;
     }
 
-    currentPrompt(): any {
+    currentPrompt() {
         return this.player.currentPrompt();
     }
 
     get currentButtons(): string[] {
         const buttons = this.currentPrompt().buttons;
-        return buttons.map((button: { text: string | number }) => button.text.toString());
+        return buttons.map((button) => String(button.text));
     }
 
     get currentActionTargets(): BaseCard[] {
@@ -292,7 +297,7 @@ class PlayerInteractionWrapper {
         return (
             prompt.menuTitle +
             '\n' +
-            prompt.buttons.map((button: { text: string | number; disabled?: boolean }) =>
+            prompt.buttons.map((button) =>
                 '[ ' + button.text + (button.disabled ? ' (disabled)' : '') + ' ]'
             ).join('\n') +
             '\n' +
@@ -302,6 +307,15 @@ class PlayerInteractionWrapper {
 
     findCardByName(name: string, locations: string | string[] = 'any', side?: string): BaseCard {
         return this.filterCardsByName(name, locations, side)[0];
+    }
+
+    /** Like `findCardByName`, for cards that must be a `DrawCard` (characters, attachments, holdings, events). */
+    findDrawCard(name: string, locations: string | string[] = 'any', side?: string): DrawCard {
+        const card = this.findCardByName(name, locations, side);
+        if(!card.isDrawCard()) {
+            throw new Error(`${card.name} is not a draw card`);
+        }
+        return card;
     }
 
     findAllCardsByName(name: string, locations: string | string[] = 'any', side?: string): BaseCard[] {
@@ -331,7 +345,7 @@ class PlayerInteractionWrapper {
                 side
             );
         } catch(e) {
-            throw new Error(`Name: ${name}, Location: ${String(locs)}. Error thrown: ${String(e)}`);
+            throw new Error(`Name: ${name}, Location: ${String(locs)}. Error thrown: ${String(e)}`, { cause: e });
         }
     }
 
@@ -397,7 +411,7 @@ class PlayerInteractionWrapper {
         );
     }
 
-    selectDeck(deck: unknown): void {
+    selectDeck(deck: DeckDTO): void {
         this.game.selectDeck(this.player.name, deck);
     }
 
@@ -414,7 +428,7 @@ class PlayerInteractionWrapper {
             );
         }
 
-        this.game.menuButton(this.player.name, promptButton.arg as string, promptButton.uuid as string, promptButton.method as string);
+        this.game.menuButton(this.player.name, promptButton.arg, promptUuid(promptButton), promptButton.method);
         this.game.continue();
         this.checkUnserializableGameState();
     }
@@ -436,7 +450,7 @@ class PlayerInteractionWrapper {
             );
         }
 
-        this.game.menuButton(this.player.name, promptButton.arg as string, promptButton.uuid as string, promptButton.method as string);
+        this.game.menuButton(this.player.name, promptButton.arg, promptUuid(promptButton), promptButton.method);
         this.game.continue();
         this.checkUnserializableGameState();
     }
@@ -445,7 +459,7 @@ class PlayerInteractionWrapper {
         const currentPrompt = this.player.currentPrompt();
 
         const promptControl = currentPrompt.controls.find(
-            (control) => (control.name as string).toLowerCase() === controlName.toLowerCase()
+            (control) => typeof control.name === 'string' && control.name.toLowerCase() === controlName.toLowerCase()
         );
 
         if(!promptControl) {
@@ -454,7 +468,7 @@ class PlayerInteractionWrapper {
             );
         }
 
-        this.game.menuButton(this.player.name, cardName, promptControl.uuid as string, promptControl.method as string);
+        this.game.menuButton(this.player.name, cardName, promptUuid(promptControl), typeof promptControl.method === 'string' ? promptControl.method : undefined);
         this.game.continue();
         this.checkUnserializableGameState();
     }
@@ -620,7 +634,7 @@ class PlayerInteractionWrapper {
         } else {
             resolvedProvince = province;
         }
-        if((resolvedProvince as ProvinceCard).isBroken) {
+        if(resolvedProvince.isProvinceCard() && resolvedProvince.isBroken) {
             throw new Error(`Cannot initiate conflict on ${resolvedProvince.name} because it is broken`);
         }
         if(!conflictType || !['military', 'political'].includes(conflictType)) {
@@ -679,7 +693,7 @@ class PlayerInteractionWrapper {
             if(!card) {
                 return false;
             }
-            return !(card as DrawCard).hasDash(type);
+            return !(card.isDrawCard() && card.hasDash(type));
         });
     }
 

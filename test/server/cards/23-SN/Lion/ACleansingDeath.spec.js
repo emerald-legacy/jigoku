@@ -35,7 +35,7 @@ describe('A Cleansing Death', function () {
         });
 
         it('should let you pick a valid character', function () {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player1.clickCard(this.cleanse);
             expect(this.player1).toBeAbleToSelect(this.challenger);
             expect(this.player1).toBeAbleToSelect(this.yokuni);

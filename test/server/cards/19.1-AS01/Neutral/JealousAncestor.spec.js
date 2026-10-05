@@ -176,7 +176,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -257,7 +257,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -336,7 +336,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(

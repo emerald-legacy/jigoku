@@ -88,5 +88,20 @@ describe('Asako Maezawa 2', function () {
             this.player1.clickCard(this.asako);
             expect(this.player1).toBeAbleToSelect(this.adept);
         });
+
+        it('cannot target a bowed non-Phoenix character', function() {
+            this.manip2.bowed = true;
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.asako],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.asako);
+            expect(this.player1).not.toBeAbleToSelect(this.manip2);
+            expect(this.player1).toBeAbleToSelect(this.adept);
+        });
     });
 });

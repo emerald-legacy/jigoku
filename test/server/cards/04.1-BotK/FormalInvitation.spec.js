@@ -34,7 +34,7 @@ describe('Formal Invitation', function() {
                 });
 
                 it('should give +1 political skill to attached character', function() {
-                    let politicalSkill = this.dojiChallenger.getPoliticalSkill();
+                    const politicalSkill = this.dojiChallenger.getPoliticalSkill();
                     this.player1.clickCard(this.formalInvitation);
                     this.player1.clickCard(this.dojiChallenger);
                     expect(this.dojiChallenger.getPoliticalSkill()).toBe(politicalSkill + 1);

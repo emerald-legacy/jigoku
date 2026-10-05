@@ -2,41 +2,41 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { EventName } from '../Constants.js';
 
 export interface JointGameProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class JointGameAction extends GameAction {
+export class JointGameAction<C extends AbilityContext = AbilityContext> extends GameAction<JointGameProperties, EventName, C> {
     effect = 'do several things';
-    declare defaultProperties: JointGameProperties;
 
-    constructor(gameActions: GameAction[]) {
-        super({ gameActions: gameActions } as GameActionProperties);
+    constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
+        super({ gameActions: gameActions });
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): JointGameProperties {
-        let properties = super.getProperties(context, additionalProperties) as JointGameProperties;
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.every((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.every((gameAction) =>
             gameAction.canAffect(target, context, additionalProperties)
         );
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
         if(this.hasLegalTarget(context, additionalProperties)) {
             for(const gameAction of properties.gameActions) {
                 gameAction.addEventsToArray(events, context, additionalProperties);
@@ -44,8 +44,8 @@ export class JointGameAction extends GameAction {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
-        let properties = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C) {
+        const properties = this.getProperties(context);
         return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

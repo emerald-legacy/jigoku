@@ -58,7 +58,7 @@ describe('Village Doshin', function () {
                 'player1 uses Village Dōshin, discarding Village Dōshin to protect Fine Katana'
             );
             expect(this.getChatLogs(5)).toContain(
-                'player2 refuses to discard 2 cards. The effects of Let Go are canceled.'
+                'player2 refuses to discard 2 cards. The effects of Let Go are canceled'
             );
         });
 
@@ -128,7 +128,7 @@ describe('Village Doshin', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Village Dōshin, discarding Village Dōshin to protect Dragon\'s Claw'
             );
-            expect(this.getChatLogs(5)).toContain('player2 distracts the Dōshin.');
+            expect(this.getChatLogs(5)).toContain('player2 distracts the Dōshin');
         });
 
         it('does not save attachments on characters controlled by another player', function () {

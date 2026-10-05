@@ -9,18 +9,15 @@ export default class Firebrand extends DrawCard {
     static id = 'firebrand';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Resolve the fire ring',
-            cost: AbilityDsl.costs.returnRings(1, (ring) =>
+        this.action('Resolve the fire ring')
+            .cost(AbilityDsl.costs.returnRings(1, (ring) =>
                 ring.hasElement(this.getCurrentElementSymbol(ELEMENT_TO_RETURN))
-            ),
-            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({
+            ))
+            .gameAction(AbilityDsl.actions.resolveRingEffect((context) => ({
                 player: context.player,
                 target: context.game.rings[this.getCurrentElementSymbol(ELEMENT_TO_RESOLVE)]
-            })),
-            effect: 'resolve the {1} effect',
-            effectArgs: (context) => [context.game.rings.fire]
-        });
+            })))
+            .effect('resolve the {1} effect', (context) => [context.game.rings.fire]);
     }
 
     public getPrintedElementSymbols() {

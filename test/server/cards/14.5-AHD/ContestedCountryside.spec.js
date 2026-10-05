@@ -85,8 +85,8 @@ describe('Contested Countryside', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate1 = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.clickCard(this.manicuredGarden);
             expect(this.player1.fate).toBe(fate1);
@@ -112,8 +112,8 @@ describe('Contested Countryside', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate1 = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.clickCard(this.manicuredGarden);
             expect(this.player1.fate).toBe(fate1);
@@ -171,7 +171,7 @@ describe('Contested Countryside', function() {
             this.player1.passConflict();
             this.noMoreActions();
 
-            let fate = this.game.rings.water.fate;
+            const fate = this.game.rings.water.fate;
 
             this.initiateConflict({
                 attackers: [this.negotiator],
@@ -228,8 +228,8 @@ describe('Contested Countryside', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate1 = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.clickCard(this.manicuredGarden);
             expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -259,8 +259,8 @@ describe('Contested Countryside', function() {
                 province: this.fields
             });
 
-            let cards1 = this.player1.hand.length;
-            let cards2 = this.player2.hand.length;
+            const cards1 = this.player1.hand.length;
+            const cards2 = this.player2.hand.length;
 
             this.player1.clickCard(this.fields);
             expect(this.player1.hand.length).toBe(cards1 + 1);
@@ -284,8 +284,8 @@ describe('Contested Countryside', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate1 = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.clickCard(this.negotiator);
             this.player1.clickCard(this.toshimoko);
@@ -316,8 +316,8 @@ describe('Contested Countryside', function() {
                 type: 'military',
                 province: this.manicuredGarden
             });
-            let fate1 = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.clickCard(this.negotiator);
             this.player1.clickCard(this.toshimoko);

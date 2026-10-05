@@ -3,43 +3,42 @@ import type { Event } from '../Events/Event.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { EventName } from '../Constants.js';
 
 export interface SequentialContextProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class SequentialContextAction extends GameAction {
-    declare defaultProperties: SequentialContextProperties;
-
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = super.getProperties(context) as SequentialContextProperties;
+export class SequentialContextAction<C extends AbilityContext = AbilityContext> extends GameAction<SequentialContextProperties, EventName, C> {
+    getEffectMessage(context: C): MessageArgs {
+        const properties = super.getProperties(context);
         return properties.gameActions[0].getEffectMessage(context);
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): SequentialContextProperties {
-        let properties = super.getProperties(context, additionalProperties) as SequentialContextProperties;
+    getProperties(context: C, additionalProperties = {}) {
+        const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        let { gameActions } = this.getProperties(context, additionalProperties);
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+        const { gameActions } = this.getProperties(context, additionalProperties);
         return gameActions.some((gameAction) => gameAction.hasLegalTarget(context));
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context));
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context, additionalProperties)) {
-                    let eventsForThisAction: Event[] = [];
+                    const eventsForThisAction: Event[] = [];
                     gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
                     context.game.queueSimpleStep(() => {
                         for(const event of eventsForThisAction) {
@@ -54,8 +53,8 @@ export class SequentialContextAction extends GameAction {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}) {
-        let properties = this.getProperties(context, additionalProperties);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}) {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) =>
             gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
         );
