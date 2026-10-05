@@ -19,7 +19,7 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
     defaultProperties: PlaceFateRingProperties = { amount: 1 };
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
-        return ['placing {1} fate on the {0}', [properties.amount, properties.target]];
+        return ['placing {1} fate on the {0}', [properties.amount]];
     }
 
     getEffectMessage(context: C): MessageArgs {

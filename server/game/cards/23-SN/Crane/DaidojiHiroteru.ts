@@ -1,5 +1,5 @@
 import { CardType, Duration, Location, Phases, Players } from '../../../Constants.js';
-import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,7 +18,7 @@ export default class DaidojiHiroteru extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card) => card.isDynasty && card.type === CardType.Character,
-            effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand)
+            effect: AbilityDsl.effects.gainPlayAction(PlayFacedownCharacterAsIfFromHand)
         });
 
         this.reaction('Give a Scout or Shinobi covert')

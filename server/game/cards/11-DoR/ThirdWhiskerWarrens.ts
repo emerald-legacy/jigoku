@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Players, CardType } from '../../Constants.js';
-import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
+import { PlayFacedownCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class ThirdWhiskerWarrens extends DrawCard {
             match: (card, context) => context !== undefined && card === context.player.dynastyDeck[0],
             effect: [
                 AbilityDsl.effects.hideWhenFaceUp(),
-                AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand),
+                AbilityDsl.effects.gainPlayAction(PlayFacedownCharacterAsIfFromHand),
                 AbilityDsl.effects.gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
             ]
         });

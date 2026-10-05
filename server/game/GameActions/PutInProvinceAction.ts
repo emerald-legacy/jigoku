@@ -28,7 +28,7 @@ export class PutInProvinceAction<C extends AbilityContext = AbilityContext> exte
 
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
-        return ['putting {0} into {1}}', [properties.target, properties.destination]];
+        return ['putting {0} into {1}', [properties.destination]];
     }
 
     getEffectMessage(context: C): MessageArgs {

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Location } from '../Constants.js';
 import type { EventName } from '../Constants.js';
@@ -9,8 +10,12 @@ export interface ShuffleDeckProperties extends PlayerActionProperties {
 }
 
 export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ShuffleDeckProperties, EventName.Unnamed, C> {
-    name = 'refill';
-    effect = 'refill its province faceup';
+    name = 'shuffle';
+
+    getEffectMessage(context: C): MessageArgs {
+        const { target, deck } = this.getProperties(context);
+        return ['shuffle {0}\'s {1}', [target, deck]];
+    }
 
     defaultTargets(context: C): Player[] {
         return [context.player];

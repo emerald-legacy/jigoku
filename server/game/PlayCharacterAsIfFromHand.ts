@@ -5,15 +5,8 @@ import DrawCard from './DrawCard.js';
 import Player from './Player.js';
 
 export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
-    constructor(card: DrawCard) {
-        super(card);
-    }
-
-    // A card in hand is never facedown, and putIntoPlay refuses a facedown card, so a
-    // card played out of a province this way is turned face up as it is played.
-    public executeHandler(context: AbilityContext<DrawCard>): void {
-        context.source.facedown = false;
-        super.executeHandler(context);
+    constructor(card: DrawCard, intoLocation = PlayCharacterIntoLocation.Any) {
+        super(card, intoLocation);
     }
 
     public createContext(player: Player = this.card.controller) {
@@ -30,40 +23,23 @@ export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
     }
 }
 
-export class PlayCharacterAsIfFromHandIntoConflict extends PlayCharacterAction {
+export class PlayCharacterAsIfFromHandIntoConflict extends PlayCharacterAsIfFromHand {
     constructor(card: DrawCard) {
         super(card, PlayCharacterIntoLocation.Conflict);
     }
-
-    public createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        const newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
-    }
 }
 
-export class PlayCharacterAsIfFromHandAtHome extends PlayCharacterAction {
+export class PlayCharacterAsIfFromHandAtHome extends PlayCharacterAsIfFromHand {
     constructor(card: DrawCard) {
         super(card, PlayCharacterIntoLocation.Home);
     }
+}
 
-    public createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        const newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+// A card in hand is never facedown, and putIntoPlay refuses a facedown card, so a
+// facedown card played this way is turned face up as it is played.
+export class PlayFacedownCharacterAsIfFromHand extends PlayCharacterAsIfFromHand {
+    public executeHandler(context: AbilityContext<DrawCard>): void {
+        context.source.facedown = false;
+        super.executeHandler(context);
     }
 }

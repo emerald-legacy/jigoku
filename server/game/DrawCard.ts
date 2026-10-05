@@ -632,7 +632,7 @@ class DrawCard extends BaseCard {
         }
 
         const ignoreHonorStatus =
-            this.anyEffect(EffectName.HonorStatusDoesNotModifySkill) ||
+            this.anyEffect(EffectName.HonorStatusDoesNotAffectLeavePlay) ||
             (wasParticipating && !!this.game.currentConflict?.anyEffect(EffectName.ConflictIgnoreStatusTokens));
         if(!ignoreHonorStatus) {
             if(this.isDishonored) {

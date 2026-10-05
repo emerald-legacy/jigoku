@@ -1280,11 +1280,11 @@ class Player extends GameObject {
     }
 
     isTopConflictCardShown(activePlayer?: StateViewer): boolean {
-        const resolvedPlayer = activePlayer ?? this;
-
-        if(resolvedPlayer instanceof Player && resolvedPlayer.conflictDeck.length <= 0) {
+        if(this.conflictDeck.length <= 0) {
             return false;
         }
+
+        const resolvedPlayer = activePlayer ?? this;
 
         if(resolvedPlayer === this) {
             return (

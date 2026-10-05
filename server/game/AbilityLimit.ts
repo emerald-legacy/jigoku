@@ -115,6 +115,8 @@ class FixedAbilityLimit {
 }
 
 class RepeatableAbilityLimit extends FixedAbilityLimit {
+    private readonly onReset = () => this.reset();
+
     constructor(
         max: number,
         private eventName: Set<EventName>
@@ -132,13 +134,13 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
 
     public registerEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
-            eventEmitter.on(eventN, () => this.reset());
+            eventEmitter.on(eventN, this.onReset);
         }
     }
 
     public unregisterEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
-            eventEmitter.removeListener(eventN, () => this.reset());
+            eventEmitter.removeListener(eventN, this.onReset);
         }
     }
 }
