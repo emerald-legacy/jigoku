@@ -108,9 +108,7 @@ this.reaction('Gain 1 honor')
         onCharacterEntersPlay: (event, context) =>
             event.card.controller === context.player
     })
-    .gameAction(AbilityDsl.actions.gainHonor((context) => ({
-        target: context.player
-    })))
+    .gameAction(AbilityDsl.actions.gainHonor())
     .limit(AbilityDsl.limit.perRound(1));
 ```
 
@@ -125,7 +123,7 @@ this.interrupt('Gain 1 fate')
     .when({
         onCardLeavesPlay: (event, context) => event.card === context.source
     })
-    .gameAction(AbilityDsl.actions.gainFate((context) => ({ target: context.player })));
+    .gameAction(AbilityDsl.actions.gainFate());
 ```
 
 ### Forced variants
@@ -357,7 +355,7 @@ this.reaction('Gain 1 fate')
         afterConflict: (event, context) =>
             event.conflict.loser === context.player && context.source.isAttacking()
     })
-    .gameAction(AbilityDsl.actions.gainFate((context) => ({ target: context.player })));
+    .gameAction(AbilityDsl.actions.gainFate());
 ```
 
 Narrow on `context.event.name` (or `context.event.is(EventName.X)`) when you need a field specific to one event.
@@ -426,7 +424,6 @@ These prompt the player to pick a card, then perform the action as the cost.
 | `costs.reveal(cardFunc)` | Reveal specific cards |
 | `costs.selectedReveal(props)` | Reveal a player-selected card |
 | `costs.discardCardsUpToVariableX(n)` | Discard up to N cards from hand |
-| `costs.discardCardsExactlyVariableX(n)` | Discard exactly N cards from hand |
 | `costs.discardHand()` | Discard entire hand |
 | `costs.dishonorAndSacrifice(props)` | Dishonor and sacrifice a selected card |
 
@@ -471,7 +468,7 @@ Both `limit:` and `max:` on an ability accept a limit object. They are equivalen
 
 Game actions are called via `AbilityDsl.actions`. All accept an optional `propertyFactory`: either a plain properties object or `(context) => properties`. The `target` property inside the factory sets which card/player is affected.
 
-When no `target` is provided, the action defaults to `context.source`.
+When no `target` is provided, card actions target `context.source`, player actions target the ability's player (the opponent for lose, take and discard actions), `amount` is 1, and a target's own action targets the chosen card. Composite actions (`multiple`, `sequential`, `conditional`, `selectCard`, …) pass their own target down to their children instead, so a player action inside one still names its player.
 
 Every factory also takes an optional `<Target extends BaseCard>` type parameter, so the `context` inside a `(context) => properties` factory is typed the same way as the ability's target (see [Typed Targets & Events](#typed-targets--events-typescript)):
 
@@ -523,9 +520,11 @@ The tables below cover the most-used factories; the authoritative list lives in 
 | `actions.addToken()` | source | Add a token to a card |
 | `actions.createToken()` | source | Create a token character |
 | `actions.placeCardUnderneath()` | source | Place under another card |
-| `actions.cardLastingEffect({ effect, duration? })` | target | Apply a lasting effect to specific cards |
+| `actions.cardLastingEffect({ effect, duration? })` | source | Apply a lasting effect to specific cards |
 
 ### Player actions
+
+These target the ability's player, except `loseFate`, `loseHonor`, `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom` and `discardMatching`, which target the opponent.
 
 | Function | Notes |
 |----------|-------|
@@ -611,12 +610,11 @@ AbilityDsl.actions.deckSearch({
 
 ## Lasting Effects
 
-Lasting effects are applied via `actions.cardLastingEffect`, `actions.playerLastingEffect`, or `actions.ringLastingEffect`. They take `duration` and `effect` (one or more `AbilityDsl.effects` values).
+Lasting effects are applied via `actions.cardLastingEffect`, `actions.playerLastingEffect`, or `actions.ringLastingEffect`. They take `effect` (one or more `AbilityDsl.effects` values) and `duration`, which defaults to `Duration.UntilEndOfConflict`.
 
 ```typescript
 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
     target: context.targets.target,
-    duration: Duration.UntilEndOfConflict,
     effect: AbilityDsl.effects.modifyMilitarySkill(2)
 }))
 ```
@@ -956,7 +954,6 @@ gameAction: AbilityDsl.actions.multiple([
 ```typescript
 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
     target: context.targets.target,
-    duration: Duration.UntilEndOfConflict,
     effect: [
         AbilityDsl.effects.modifyMilitarySkill(3),
         AbilityDsl.effects.doesNotBow()
@@ -991,7 +988,7 @@ this.composure({
     effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
         title: 'Draw a card',
         condition: (context) => context.source.isParticipating(),
-        gameAction: AbilityDsl.actions.draw((context) => ({ target: context.player }))
+        gameAction: AbilityDsl.actions.draw()
     })
 });
 ```

@@ -480,7 +480,7 @@ In general, the effects of an ability should be implemented using Game Actions.
 
 ### Game Actions
 
-Actions (and other triggered abilities) often use game actions.  Available game actions can be found in `/server/game/GameActions/GameActions.ts`, along with any parameters and their defaults.  Game actions passed to `gameAction` default to targeting the card generating the ability (for cards), the opponent (for players) and the contested ring (for rings). Game actions passed to a `target` call default to that target. You can change the target of a game action or the parameters by passing either an object with the properties you want, or a function which takes `context` and returns those properties.
+Actions (and other triggered abilities) often use game actions.  Available game actions can be found in `/server/game/GameActions/GameActions.ts`, along with any parameters and their defaults.  Game actions passed to `gameAction` default to targeting the card generating the ability (for cards), the ability's player (for players; the opponent for actions that make a player lose, give or discard something, such as `loseHonor`, `takeFate` or `discardAtRandom`) and the contested ring (for rings), and an `amount` defaults to 1. Game actions passed to a `target` call default to that target, and the actions inside a composite action (`multiple`, `sequential`, `conditional`, ...) to the composite's target. You can change the target of a game action or the parameters by passing either an object with the properties you want, or a function which takes `context` and returns those properties.
 
 ```typescript
 // Action: During a conflict, bow this attachment – move attached character to the conflict.
@@ -597,7 +597,7 @@ this.duelFocus('Help a character with a duel', (duel, context) => duel.participa
 
 ### Lasting effects
 
-Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effect use the same properties as persistent effects, above.  Lasting effects are applied using the `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect.  They take a `duration:` property which is one of `Duration.UntilEndOfConflict` (default), `Duration.UntilEndOfPhase` or `Duration.UntilEndOfRound`.
+Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effect use the same properties as persistent effects, above.  Lasting effects are applied using the `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect.  They take a `duration:` property which is one of `Duration.UntilEndOfConflict` (the default, so it can be left out), `Duration.UntilEndOfPhase` or `Duration.UntilEndOfRound`.
 
 ```typescript
 // Action: During a conflict, bow this character. Choose another [crane] character – that character
@@ -608,10 +608,9 @@ this.action('Give a character +0/+3')
     .target({
         cardType: CardType.Character,
         cardCondition: (card, context) => card !== context.source && card.isFaction('crane')
-    }, AbilityDsl.actions.cardLastingEffect(() => ({
-        duration: Duration.UntilEndOfConflict,
+    }, AbilityDsl.actions.cardLastingEffect({
         effect: AbilityDsl.effects.modifyPoliticalSkill(3)
-    })))
+    }))
     .effect('give {0} +3{1} skill', () => ['political']);
 ```
 

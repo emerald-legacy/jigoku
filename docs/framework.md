@@ -305,8 +305,8 @@ Use when the card text says "Select one —":
 
 ```typescript
 .select({}, {
-    'Move into conflict': AbilityDsl.actions.moveToConflict((context) => ({ target: context.source })),
-    'Move home': AbilityDsl.actions.sendHome((context) => ({ target: context.source }))
+    'Move into conflict': AbilityDsl.actions.moveToConflict(),
+    'Move home': AbilityDsl.actions.sendHome()
 })
 ```
 
@@ -458,6 +458,8 @@ messageArgs: (duel) => [
 
 ## GameActions
 
+Without a `target`, card actions target the source, player actions the ability's player (the opponent for lose, take and discard actions), lasting effects last until the end of the conflict, `amount` is 1, and a target's own action targets the chosen card (inside `multiple`, `sequential`, `conditional` and other composites, the composite's target).
+
 ```typescript
 AbilityDsl.actions.bow()
 AbilityDsl.actions.bow((context) => ({ target: context.targets.something }))
@@ -478,7 +480,7 @@ AbilityDsl.actions.resolveRingEffect()
 AbilityDsl.actions.switchConflictType()
 AbilityDsl.actions.switchConflictElement()
 AbilityDsl.actions.turnFacedown()
-AbilityDsl.actions.moveConflict((context) => ({ target: context.source }))
+AbilityDsl.actions.moveConflict()
 
 // Apply multiple actions
 AbilityDsl.actions.multiple([action1, action2])
@@ -496,7 +498,6 @@ AbilityDsl.actions.conditional({
 // Lasting effects
 AbilityDsl.actions.cardLastingEffect((context) => ({
     target: context.target,
-    duration: Duration.UntilEndOfConflict,
     effect: AbilityDsl.effects.doesNotBow()
 }))
 
@@ -505,9 +506,8 @@ AbilityDsl.actions.playerLastingEffect((context) => ({
     effect: AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
 }))
 
-// Resolve another card's ability (used by Keeper of Secret Names)
+// Resolve another card's ability (used by Keeper of Secret Names: the action of its province target)
 AbilityDsl.actions.resolveAbility((context) => ({
-    target: context.target,
     ability: context.target.abilities.actions[0],
     ignoredRequirements: ['province'],
     choosingPlayerOverride: context.choosingPlayerOverride
