@@ -45,7 +45,6 @@ interface RegisteredEvent {
     handler: EventHandler;
 }
 
-/** A reaction or interrupt ability provided by card text; cards declare it through the builder (docs/ability_dsl.md). */
 
 class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     when?: WhenType;

@@ -4,7 +4,6 @@ import type { AbilityContext } from '../AbilityContext.js';
 
 export type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
 
-/** What the other player sees while one chooses for an ability. */
 export function waitingPromptTitle(context: AbilityContext): string {
     return context.ability.abilityType === AbilityType.Action ? 'Waiting for opponent to take an action or pass' : 'Waiting for opponent';
 }

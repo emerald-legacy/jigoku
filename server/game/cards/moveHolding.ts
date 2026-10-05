@@ -20,7 +20,6 @@ export function moveHoldingAction(holding: DrawCard) {
         })));
 }
 
-/** The other faceup holdings its controller has in the source's province. */
 export function otherHoldingsInSameProvince(context: AbilityContext): BaseCard[] {
     return context.game.allCards.filter(
         (card) =>

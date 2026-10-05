@@ -18,7 +18,6 @@ export interface TriggerAbilityProperties extends CardActionProperties {
     event?: Event;
 }
 
-/** The ability `ResolveAbilityAction` or `TriggerAbilityAction` resolves, and for whom. */
 interface AbilityToResolve {
     ability: CardAbility;
     subResolution?: boolean;
@@ -32,7 +31,6 @@ export function abilityContext(properties: AbilityToResolve, context: AbilityCon
     return ability instanceof TriggeredAbility ? ability.createContext(player, properties.event) : ability.createContext(player);
 }
 
-/** The ability checks of `canAffect`, after the card checks. */
 export function canResolveAbility(properties: AbilityToResolve, context: AbilityContext, ignoredRequirements: string[]): boolean {
     const ability = properties.ability;
     const player = properties.player || context.player;

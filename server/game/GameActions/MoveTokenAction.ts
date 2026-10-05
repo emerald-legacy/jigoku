@@ -19,7 +19,6 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
         return ['move {0}\'s {1} to {2}', [target, recipient]];
     }
 
-    /** The card the token moves from. */
     protected effectMessageTarget(context: C, additionalProperties = {}): MsgArg {
         return targetList(this.getProperties(context, additionalProperties).target)[0].card;
     }

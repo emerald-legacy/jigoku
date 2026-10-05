@@ -15,10 +15,8 @@ export interface FateBidProperties extends PlayerActionProperties {
     messageArgs?: (context: AbilityContext) => MsgArg[];
 }
 
-/** The bid's `postBidAction` and its message, which the bid event carries. */
 type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message' | 'messageArgs'>;
 
-/** Queues what follows a fate or honor bid: resolve `postBidAction`, then report it. */
 export function queuePostBidSteps(event: PostBid, context: AbilityContext): void {
     context.game.queueStep(
         new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))

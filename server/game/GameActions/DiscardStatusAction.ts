@@ -20,7 +20,6 @@ export class DiscardStatusAction<C extends AbilityContext = AbilityContext> exte
             : ['discard {0}\'s status token', cardsLosingStatus.slice(1)];
     }
 
-    /** The first card losing a status token; the others follow it as further arguments. */
     protected effectMessageTarget(context: C): MsgArg {
         return this.#cardsLosingStatus(context)[0];
     }

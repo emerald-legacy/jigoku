@@ -7,7 +7,6 @@ import type { ThenAbilityProperties } from '../ThenAbility.js';
 
 type ResolvingContext = AbilityContext & { ability: CardAbility };
 
-/** Resolves the context's ability again as a sub-resolution, by `player` if given. */
 export function resolveAbilityAgain(context: ResolvingContext, player?: Player) {
     return AbilityDsl.actions.resolveAbility({
         ability: context.ability,

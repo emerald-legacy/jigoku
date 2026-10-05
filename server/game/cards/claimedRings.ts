@@ -23,7 +23,6 @@ export function hasClaimedAnyRing(card: BaseCard, symbols: readonly ClaimedRingS
     return symbols.some(({ key }) => hasClaimedRing(card, key, player));
 }
 
-/** The number of claimed rings, optionally only those matching `predicate`. */
 export function countClaimedRings(game: Game, predicate: (ring: Ring) => boolean = () => true): number {
     return Object.values(game.rings).filter((ring) => ring.isConsideredClaimed() && predicate(ring)).length;
 }

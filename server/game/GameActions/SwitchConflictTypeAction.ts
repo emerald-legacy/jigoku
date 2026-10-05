@@ -27,7 +27,6 @@ export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext>
         return ['switch the conflict type from {0} to {1}', [newConflictType]];
     }
 
-    /** The current conflict type. */
     protected effectMessageTarget(context: C): MsgArg {
         return context.game.currentConflict && context.game.currentConflict.conflictType;
     }

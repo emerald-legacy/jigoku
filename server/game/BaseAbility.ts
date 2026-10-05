@@ -64,7 +64,6 @@ export interface BaseAbilityProperties {
     gameAction?: DeclaredGameAction | DeclaredGameAction[];
 }
 
-/** What resolving an ability's targets reports back: a cancel, a request to pay costs first, a target left for later. */
 export interface TargetResults {
     canIgnoreAllCosts?: boolean;
     cancelled?: boolean;

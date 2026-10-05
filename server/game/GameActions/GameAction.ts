@@ -29,10 +29,8 @@ export function targetList<T>(target: T | T[] | undefined): T[] {
     return Array.isArray(target) ? target : target ? [target] : [];
 }
 
-/** Values for the keys `D` of `P`. */
 export type Defaults<P, D extends keyof P> = { [Key in D]-?: NonNullable<P[Key]> };
 
-/** `P` after `getProperties` has filled in the defaults for `D`. */
 export type WithDefaults<P, D extends keyof P> = P & Defaults<P, D>;
 
 /** Sets each key of `defaults` that `properties` leaves missing or `undefined`. */

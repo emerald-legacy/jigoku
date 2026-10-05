@@ -25,7 +25,6 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         return ['cancel the effects of {0}', []];
     }
 
-    /** The replacement's target, or the card whose event is cancelled; nothing for a custom `effect`. */
     protected effectMessageTarget(context: C): MsgArg {
         const { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {

@@ -52,7 +52,6 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         return ['choose a status token for {0}', []];
     }
 
-    /** The properties, once there is a card to choose a token from. */
     private resolveProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         const { card } = properties;

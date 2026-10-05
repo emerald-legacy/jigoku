@@ -6,7 +6,6 @@ import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
-/** An action ability provided by card text; cards declare it through the builder (docs/ability_dsl.md). */
 export class CardAction extends CardAbility {
     declare properties: ActionProps;
     abilityType = AbilityType.Action;

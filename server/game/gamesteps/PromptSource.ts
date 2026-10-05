@@ -8,10 +8,7 @@ export interface PromptSourceProperties {
     waitingPromptTitle?: string;
 }
 
-/**
- * A prompt's source as an EffectSource: a name becomes one, else the context's source is used.
- * A given source names the default waiting title.
- */
+/** A prompt's source as an EffectSource: a given name becomes one, otherwise the context's source. */
 export function resolvePromptSource(game: Game, properties: PromptSourceProperties): { source: EffectSource; waitingPromptTitle?: string } {
     let source = properties.source;
     if(typeof source === 'string') {

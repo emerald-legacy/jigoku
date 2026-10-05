@@ -11,10 +11,8 @@ export function createSummonedCopy(context: AbilityContext, creature: DrawCard):
     return copy;
 }
 
-/** The effect message of summoning a creature, with `summonEffectArgs` as its args. */
 export const summonEffectMessage = 'summon {2} {1} from the depths of the Shadowlands!';
 
-/** The args of `summonEffectMessage`. */
 export function summonEffectArgs(creature: DrawCard | undefined): EffectArg[] {
     return [creature, article(creature?.name ?? '')];
 }

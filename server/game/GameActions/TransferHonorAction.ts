@@ -54,7 +54,6 @@ export class TransferHonorAction<C extends AbilityContext = AbilityContext> exte
         return ['take {1} honor from {0}', [amountToTransfer]];
     }
 
-    /** The opponent, who gives the honor. */
     protected effectMessageTarget(context: C): MsgArg {
         return context.player.opponent ?? null;
     }
