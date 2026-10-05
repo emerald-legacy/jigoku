@@ -72,17 +72,6 @@ describe('RoleCard', () => {
         });
     });
 
-    describe('flipFaceup()', () => {
-        beforeEach(() => {
-            card.facedown = true;
-        });
-
-        it('sets facedown to false', () => {
-            card.flipFaceup();
-            expect(card.facedown).toBe(false);
-        });
-    });
-
     describe('getElement()', () => {
         it('returns an empty array', () => {
             expect(card.getElement()).toEqual([]);

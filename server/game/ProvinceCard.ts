@@ -172,10 +172,6 @@ export class ProvinceCard extends BaseCard {
         }));
     }
 
-    flipFaceup() {
-        this.facedown = false;
-    }
-
     leavesPlay() {
         this.removeAllTokens();
         this.makeOrdinary();

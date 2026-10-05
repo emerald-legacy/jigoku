@@ -30,20 +30,12 @@ export class StrongholdCard extends BaseCard {
         return this.cardData.fate ?? 0;
     }
 
-    getStartingHonor(): number {
-        return this.cardData.honor ?? 0;
-    }
-
     getInfluence(): number {
         return this.cardData.influence_pool ?? 0;
     }
 
     getProvinceStrengthBonus(): number {
         return parseInt(this.cardData.strength_bonus ?? '0');
-    }
-
-    flipFaceup(): void {
-        this.facedown = false;
     }
 
     getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {

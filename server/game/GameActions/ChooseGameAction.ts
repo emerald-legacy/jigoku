@@ -7,6 +7,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ChooseActionProperties extends GameActionProperties {
     activePromptTitle?: string;
+    waitingPromptTitle?: string;
     messageArgs?: MsgArg[];
     player?: Players.Self | Players.Opponent;
     options: { [label: string]: { action: GameAction; message?: string } };
@@ -42,7 +43,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
             return;
         }
 
-        const { activePromptTitle, target } = properties;
+        const { activePromptTitle, waitingPromptTitle, target } = properties;
         const opponent = context.player.opponent;
         const player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         const choiceLabels = legalChoices.map(([label, _]) => label);
@@ -58,6 +59,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
         };
         context.game.promptWithHandlerMenu(player, {
             activePromptTitle,
+            waitingPromptTitle,
             context,
             choices: choiceLabels,
             choiceHandler,

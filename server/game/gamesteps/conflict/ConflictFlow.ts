@@ -281,7 +281,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                             this.game.addMessage(
                                 '{0} {1} in order to declare attacking characters',
                                 player,
-                                cost.getEffectMessage(context)
+                                this.game.gameChat.nested(cost.getEffectMessage(context))
                             );
                         } else {
                             this.conflict.attackerDeclarationFailed = true;
@@ -674,7 +674,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                             this.game.addMessage(
                                 '{0} {1} in order to declare defending characters',
                                 player,
-                                properties.message || cost.getEffectMessage(context)
+                                properties.message || this.game.gameChat.nested(cost.getEffectMessage(context))
                             );
                         } else {
                             this.conflict.defenderDeclarationFailed = true;

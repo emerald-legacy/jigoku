@@ -1,6 +1,7 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
 import { GameModes } from '../../server/GameModes.js';
+import { Location } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/Player.js';
 import type BaseCard from '../../server/game/BaseCard.js';
@@ -195,19 +196,13 @@ class PlayerInteractionWrapper {
             if(options.covert !== undefined) {
                 card.covert = options.covert;
             }
-            if(options.attachments) {
-                const attachments: BaseCard[] = [];
-                options.attachments.forEach((attachmentName) => {
-                    const attachment = this.findCardByName(attachmentName, ['conflict deck', 'hand']);
-                    attachments.push(attachment);
-                });
-                const attach: unknown = Reflect.get(this.player, 'attach');
-                attachments.forEach((attachment) => {
-                    if(typeof attach !== 'function') {
-                        throw new Error('player.attach is not implemented');
-                    }
-                    Reflect.apply(attach, this.player, [attachment, card]);
-                });
+            for(const attachmentName of options.attachments ?? []) {
+                // what AttachAction's handler does, without its prompts and events
+                const attachment = this.findDrawCard(attachmentName, ['conflict deck', 'hand']);
+                attachment.controller.removeCardFromPile(attachment);
+                attachment.moveTo(Location.PlayArea);
+                card.attachments.push(attachment);
+                attachment.parent = card;
             }
         });
     }

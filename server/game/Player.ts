@@ -391,18 +391,6 @@ class Player extends GameObject {
         this.clock.reset();
     }
 
-    isCardUuidInList(list: BaseCard[], card: BaseCard): boolean {
-        return list.some((c) => {
-            return c.uuid === card.uuid;
-        });
-    }
-
-    isCardNameInList(list: BaseCard[], card: BaseCard): boolean {
-        return list.some((c) => {
-            return c.name === card.name;
-        });
-    }
-
     removeCardByUuid(list: BaseCard[], uuid: string): BaseCard[] {
         return list.filter((card) => {
             return card.uuid !== uuid;

@@ -2,7 +2,7 @@ import InitateConflictPrompt from '../../../build/server/game/gamesteps/conflict
 
 describe('InitateConflictPrompt: ', function() {
     beforeEach(function() {
-        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'raiseEvent', 'promptWithHandlerMenu', 'getFrameworkContext', 'resetClocks']);
+        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'raiseEvent', 'promptWithHandlerMenu', 'getFrameworkContext']);
         this.airRing = { element: 'air' };
         this.earthRing = { element: 'earth' };
         this.fireRing = { element: 'fire' };

@@ -48,6 +48,7 @@ describe('Emissary of lies\'', function() {
                 this.player1.clickCard(this.tsukune);
                 this.player2.chooseCardInPrompt(this.katana.name, 'card-name');
                 expect(this.player1).toHavePrompt('Do you want to reveal your hand?');
+                expect(this.player2).toHavePrompt('Waiting for opponent to choose to reveal their hand or not');
                 expect(this.player1).toHavePromptButton('Yes');
                 expect(this.player1).toHavePromptButton('No');
             });

@@ -41,6 +41,7 @@ class EmissaryOfLies extends DrawCard {
     private offerToRevealHand(context: AbilityContext, character: DrawCard, cardName: string) {
         AbilityDsl.actions.chooseAction({
             activePromptTitle: 'Do you want to reveal your hand?',
+            waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not',
             options: {
                 'Yes': {
                     action: AbilityDsl.actions.multiple([

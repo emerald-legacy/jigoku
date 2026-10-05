@@ -87,6 +87,11 @@ export class GameChat {
         }, []);
     }
 
+    /** A message built elsewhere as `[format, args]`, to be passed as one argument of another message. */
+    nested([format, args]: MessageArgs): { message: MessageText } {
+        return { message: this.formatMessage(format, args) };
+    }
+
     formatArray(array: Array<MsgArg>): MessageText {
         if(array.length === 0) {
             return [];

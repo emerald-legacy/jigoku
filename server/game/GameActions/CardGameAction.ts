@@ -96,15 +96,15 @@ export class CardGameAction<
                             context.game.addMessage(
                                 '{0} {1} in order to {2}',
                                 card.controller,
-                                cost.getEffectMessage(context),
-                                this.getEffectMessage(context, additionalProperties)
+                                context.game.gameChat.nested(cost.getEffectMessage(context)),
+                                context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties))
                             );
                         } else {
                             allCostsPaid = false;
                             context.game.addMessage(
                                 '{0} cannot pay the additional cost required to {1}',
                                 card.controller,
-                                this.getEffectMessage(context, additionalProperties)
+                                context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties))
                             );
                         }
                     });

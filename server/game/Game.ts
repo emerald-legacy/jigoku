@@ -294,13 +294,6 @@ class Game {
     }
 
     /**
-     * Checks whether a player/spectator is still in the game
-     */
-    hasActivePlayer(playerName: string): boolean {
-        return this.playersAndSpectators[playerName] && !this.playersAndSpectators[playerName].left;
-    }
-
-    /**
      * Get all players (not spectators) in the game
      */
     getPlayers(): Player[] {
@@ -485,10 +478,6 @@ class Game {
 
     stopClocks(): void {
         this.getPlayers().forEach((player) => player.stopClock());
-    }
-
-    resetClocks(): void {
-        this.getPlayers().forEach((player) => player.resetClock());
     }
 
     /**

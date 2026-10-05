@@ -29,10 +29,6 @@ export class RoleCard extends BaseCard {
         return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
     }
 
-    flipFaceup(): void {
-        this.facedown = false;
-    }
-
     getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {

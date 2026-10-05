@@ -170,11 +170,7 @@ export function chooseFate(type: PlayType): Cost {
     };
 }
 
-function discardCardsVariableX<K extends string>(
-    key: K,
-    mode: TargetMode.UpTo | TargetMode.Exactly,
-    amountDerivable: Derivable<number, AbilityContext>
-): Cost<Record<K, DrawCard[]>> {
+export function discardCardsUpToVariableX(amountDerivable: Derivable<number, AbilityContext>): Cost<{ discardCardsUpToVariableX: DrawCard[] }> {
     return {
         promptsPlayer: true,
         canPay(context) {
@@ -185,17 +181,16 @@ function discardCardsVariableX<K extends string>(
         },
         resolve(context, result) {
             const amount = derive(amountDerivable, context);
-            const count = mode === TargetMode.UpTo ? 'up to ' + Math.min(amount, context.player.hand.length) : amount;
             context.game.promptForSelect(context.player, {
-                activePromptTitle: 'Choose ' + count + ' card' + (amount === 1 ? '' : 's') + ' to discard',
+                activePromptTitle: 'Choose up to ' + Math.min(amount, context.player.hand.length) + ' card' + (amount === 1 ? '' : 's') + ' to discard',
                 context: context,
-                mode: mode,
+                mode: TargetMode.UpTo,
                 numCards: amount,
                 ordered: false,
                 location: Location.Hand,
                 controller: Players.Self,
                 onSelect: (_player: Player, cards) => {
-                    Object.assign(context.costs, { [key]: cards.filter((card) => card.isDrawCard()) });
+                    context.costs.discardCardsUpToVariableX = cards.filter((card) => card.isDrawCard());
                     if(cards.length === 0) {
                         result.cancelled = true;
                     }
@@ -208,18 +203,10 @@ function discardCardsVariableX<K extends string>(
             });
         },
         payEvent(context) {
-            const action = context.game.actions.discardCard({ target: context.costs[key] });
-            return action.getEvent(context.costs[key], context);
+            const action = context.game.actions.discardCard({ target: context.costs.discardCardsUpToVariableX });
+            return action.getEvent(context.costs.discardCardsUpToVariableX ?? [], context);
         }
     };
-}
-
-export function discardCardsUpToVariableX(amountDerivable: Derivable<number, AbilityContext>) {
-    return discardCardsVariableX('discardCardsUpToVariableX', TargetMode.UpTo, amountDerivable);
-}
-
-export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, AbilityContext>) {
-    return discardCardsVariableX('discardCardsExactlyVariableX', TargetMode.Exactly, amountDerivable);
 }
 
 export function discardHand(): Cost<{ discardHand: DrawCard[] }> {

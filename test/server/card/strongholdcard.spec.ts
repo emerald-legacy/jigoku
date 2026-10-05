@@ -68,17 +68,6 @@ describe('StrongholdCard', () => {
         });
     });
 
-    describe('getStartingHonor()', () => {
-        it('returns the starting honor from card data', () => {
-            expect(card.getStartingHonor()).toBe(10);
-        });
-
-        it('returns the correct value when honor differs', () => {
-            const other = new StrongholdCard(owner, { ...cardData, honor: 13 });
-            expect(other.getStartingHonor()).toBe(13);
-        });
-    });
-
     describe('getInfluence()', () => {
         it('returns the influence pool from card data', () => {
             expect(card.getInfluence()).toBe(12);
@@ -127,17 +116,6 @@ describe('StrongholdCard', () => {
         it('sets bowed to false', () => {
             card.ready();
             expect(card.bowed).toBe(false);
-        });
-    });
-
-    describe('flipFaceup()', () => {
-        beforeEach(() => {
-            card.facedown = true;
-        });
-
-        it('sets facedown to false', () => {
-            card.flipFaceup();
-            expect(card.facedown).toBe(false);
         });
     });
 

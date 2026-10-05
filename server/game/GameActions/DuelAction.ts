@@ -131,7 +131,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
                                 context.game.addMessage(
                                     '{0} chooses to refuse the duel and {1}',
                                     context.player.opponent,
-                                    refuseGameAction.getEffectMessage(context)
+                                    context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))
                                 );
                             }
                             refuseGameAction.addEventsToArray(events, context, additionalProperties);

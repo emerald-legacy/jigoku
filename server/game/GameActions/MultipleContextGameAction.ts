@@ -18,7 +18,7 @@ export class MultipleContextGameAction<C extends AbilityContext = AbilityContext
             message += i === legalGameActions.length - 1 ? ' and ' : ', ';
             message += '{' + i + '}';
         }
-        return [message, legalGameActions.map((action) => action.getEffectMessage(context))];
+        return [message, legalGameActions.map((action) => context.game.gameChat.nested(action.getEffectMessage(context)))];
     }
 
     getProperties(context: C, additionalProperties = {}) {
