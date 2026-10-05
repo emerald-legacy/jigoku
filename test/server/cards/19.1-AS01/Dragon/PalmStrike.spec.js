@@ -127,7 +127,7 @@ describe('Palm Strike', function () {
             it('displays messages', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays Palm Strike to bow Brash Samurai');
                 expect(this.getChatLogs(5)).toContain(
-                    'Brash Samurai cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of Togashi Ichi!'
+                    'Brash Samurai cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of Togashi Ichi'
                 );
             });
         });

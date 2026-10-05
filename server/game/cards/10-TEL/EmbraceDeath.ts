@@ -20,15 +20,10 @@ class EmbraceDeath extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            })
-            .gameAction(AbilityDsl.actions.conditional({
+            }, AbilityDsl.actions.conditional({
                 condition: (context) => (context.target?.getFate() ?? 0) > 0,
-                trueGameAction: AbilityDsl.actions.removeFate((context) => ({
-                    target: context.target
-                })),
-                falseGameAction: AbilityDsl.actions.discardFromPlay((context) => ({
-                    target: context.target
-                }))
+                trueGameAction: AbilityDsl.actions.removeFate(),
+                falseGameAction: AbilityDsl.actions.discardFromPlay()
             }));
     }
 }

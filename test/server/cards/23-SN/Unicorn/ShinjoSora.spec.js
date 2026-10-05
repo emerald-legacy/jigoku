@@ -47,7 +47,7 @@ describe('Shinjo Sora', function () {
                     defenders: [this.sora]
                 });
                 this.player2.clickCard(this.sora);
-                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
+                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
 
                 const houndsValid = this.game.currentConflict.defenders.length >= 5;
                 expect(houndsValid).toBe(true);
@@ -98,7 +98,7 @@ describe('Shinjo Sora', function () {
                     defenders: [this.sora]
                 });
                 this.player2.clickCard(this.sora);
-                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
+                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
 
                 expect(this.kuwanan.location).toBe('province 1');
                 expect(this.storehouse.location).toBe('province 2');
@@ -154,7 +154,7 @@ describe('Shinjo Sora', function () {
                 expect(this.infantry.getPoliticalSkill()).toBe(2);
 
                 this.player2.clickCard(this.sora);
-                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds!');
+                expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
 
                 const hounds = this.game.currentConflict.defenders.filter((card) => card.name === 'Unleashed Hound');
                 expect(hounds.length).toBe(4);

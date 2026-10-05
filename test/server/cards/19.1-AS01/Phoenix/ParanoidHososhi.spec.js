@@ -34,7 +34,7 @@ describe('Paranoid Hososhi', function () {
                     expect(this.player1.fate).toBe(player1FateBefore + 1);
 
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Paranoid Hōsōshi, bowing Paranoid Hōsōshi to take 1 fate from Shiba Tsukune — evil begone!'
+                        'player1 uses Paranoid Hōsōshi, bowing Paranoid Hōsōshi to take 1 fate from Shiba Tsukune — evil begone'
                     );
                 });
             });

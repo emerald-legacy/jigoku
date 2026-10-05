@@ -37,7 +37,7 @@ export default class ShosuroTechnique extends DrawCard {
                     effect: AbilityDsl.effects.setMilitarySkill(context.targets.enemy.militarySkill)
                 }))
             ]))
-            .effect('set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise.', (context) => {
+            .effect('set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise', (context) => {
                 const shinobi = context.targets.shinobi;
                 const enemy = context.targets.enemy;
                 return [shinobi.name, enemy.name, 'military', enemy.militarySkill];

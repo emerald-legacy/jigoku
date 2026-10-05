@@ -28,7 +28,7 @@ class RightHandOfTheEmperor extends DrawCard {
                 destination: Location.ConflictDeck,
                 bottom: true
             })))
-            .effect('ready {0}{1}.  {2} is placed on the bottom of {3}\'s conflict deck', (context) => [context.targets.target.length > 0 ? '' : 'no one', context.source, context.source.owner]);
+            .effect('ready {0}{1}. {2} is placed on the bottom of {3}\'s conflict deck', (context) => [context.targets.target.length > 0 ? '' : 'no one', context.source, context.source.owner]);
     }
 }
 

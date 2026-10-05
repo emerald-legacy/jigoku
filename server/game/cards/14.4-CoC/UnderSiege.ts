@@ -87,7 +87,7 @@ class UnderSiege extends DrawCard {
                     })
                 })
             ]))
-            .effect('place {1} under siege!', context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
+            .effect('place {1} under siege', context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

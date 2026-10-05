@@ -41,7 +41,7 @@ describe('Sneak Attack', function () {
                 expect(this.player2).toHavePrompt('Waiting for opponent to take an action or pass');
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Sneak Attack, losing 1 honor to give player1 the first action in this conflict and sets aside opponent\'s cards'
+                    'player1 plays Sneak Attack, losing 1 honor to give player1 the first action in this conflict and set aside opponent\'s cards'
                 );
                 const logs = this.getChatLogs(5);
                 const setAsideLogs = logs.filter(l => l.startsWith('player2 sets aside'));

@@ -25,7 +25,7 @@ export default class DrawingTheVoid extends DrawCard {
                             cards: revealedCards,
                             targets: true,
                             player: Players.Self,
-                            message: '{0} removes {1} from the game - the void consumes!',
+                            message: '{0} removes {1} from the game - the void consumes',
                             messageArgs: (card, player) => [player, card],
                             gameAction: AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame })
                         })),

@@ -18,7 +18,7 @@ export default class JadeInfusedArrows extends DrawCard {
                 this.bonusAmount(context),
                 'military',
                 context.source.parentCharacter ?? '',
-                this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku!' : ''
+                this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku' : ''
             ])
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }

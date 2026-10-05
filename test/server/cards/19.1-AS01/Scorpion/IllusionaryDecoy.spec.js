@@ -83,7 +83,7 @@ describe('Illusionary Decoy', function () {
                 'player2 uses Illusionary Decoy to put Illusionary Decoy into play in the conflict'
             );
             expect(this.getChatLogs(3)).not.toContain(
-                'player2 moves home Doji Challenger - they were an Illusionary Decoy!'
+                'player2 moves home Doji Challenger - they were an Illusionary Decoy'
             );
         });
 
@@ -117,7 +117,7 @@ describe('Illusionary Decoy', function () {
                 'player2 uses Illusionary Decoy to put Illusionary Decoy into play in the conflict'
             );
             expect(this.getChatLogs(5)).toContain(
-                'player2 moves home Doji Challenger - they were an Illusionary Decoy!'
+                'player2 moves home Doji Challenger - they were an Illusionary Decoy'
             );
         });
 

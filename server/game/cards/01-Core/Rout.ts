@@ -6,7 +6,7 @@ class Rout extends DrawCard {
     static id = 'rout';
 
     setupCardAbilities() {
-        this.action('Send a character home.')
+        this.action('Send a character home')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

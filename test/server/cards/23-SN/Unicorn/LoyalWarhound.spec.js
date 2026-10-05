@@ -126,7 +126,7 @@ describe('Loyal Warhound', function () {
 
             expect(this.hound1.location).toBe('play area');
 
-            expect(this.getChatLogs(10)).toContain('player1 uses Loyal Warhound to detatch itself');
+            expect(this.getChatLogs(10)).toContain('player1 uses Loyal Warhound to detach itself');
         });
 
         it('hound -> hound -> other', function () {

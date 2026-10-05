@@ -92,7 +92,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player1).toHavePrompt('Choose characters');
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Done');
-                expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready no one.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready no one. Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
 
@@ -123,7 +123,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.dojiChallenger.bowed).toBe(false);
                 expect(this.brashSamurai.bowed).toBe(false);
                 expect(this.motoYouth.bowed).toBe(false);
-                expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready Doji Challenger, Brash Samurai and Moto Youth.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready Doji Challenger, Brash Samurai and Moto Youth. Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
             });
 
             it('should go to bottom of the deck rather than discard', function() {
@@ -135,7 +135,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.dojiChallenger.bowed).toBe(false);
                 expect(this.brashSamurai.bowed).toBe(false);
                 expect(this.motoYouth.bowed).toBe(false);
-                expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready Doji Challenger, Brash Samurai and Moto Youth.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready Doji Challenger, Brash Samurai and Moto Youth. Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
 
@@ -375,7 +375,7 @@ describe('Right Hand of the Emperor', function() {
                 this.player2.clickPrompt('Done');
                 expect(this.dojiKuwanan.bowed).toBe(false);
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
-                expect(this.getChatLogs(3)).toContain('player2 plays Right Hand of the Emperor to ready Doji Kuwanan.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(3)).toContain('player2 plays Right Hand of the Emperor to ready Doji Kuwanan. Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
             });
 
             it('should go to the owners discard if played by non-owner and cancelled', function() {

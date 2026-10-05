@@ -8,7 +8,7 @@ export default class ScoutsSteed extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
-        this.reaction('Call your steed and go out to explore!')
+        this.reaction('Call your steed and go out to explore')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })

@@ -19,7 +19,7 @@ export default class ParanoidHososhi extends DrawCard {
                 amount: 1,
                 recipient: context.player
             })))
-            .effect('take 1 fate from {0} — evil begone!')
+            .effect('take 1 fate from {0} — evil begone')
             .phase(Phases.Conflict);
     }
 

@@ -11,7 +11,7 @@ class UnspokenEtiquette extends DrawCard {
             .gameAction(AbilityDsl.actions.dishonor(context => ({
                 target: context.game.currentConflict?.getParticipants((card) => !card.hasTrait('courtier')) ?? []
             })))
-            .effect('dishonor each participating non-courtier.');
+            .effect('dishonor each participating non-courtier');
     }
 }
 

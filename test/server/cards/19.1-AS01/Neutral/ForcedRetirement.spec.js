@@ -63,7 +63,7 @@ describe('Forced Retirement', function () {
             this.player1.clickCard(this.forcedRetirement);
             this.player1.clickCard(this.hotaru);
             expect(this.getChatLogs(1)).toContain(
-                'player1 plays Forced Retirement to expiate Doji Hotaru\'s misdeeds by retiring them to the nearest monatery, recovering their 2 fate. Let them contemplate their sins.'
+                'player1 plays Forced Retirement to expiate Doji Hotaru\'s misdeeds by retiring them to the nearest monastery, recovering their 2 fate. Let them contemplate their sins'
             );
         });
     });

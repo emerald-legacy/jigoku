@@ -268,7 +268,7 @@ describe('Kuni Juurou', function () {
                 expect(this.borderlands.isTainted).toBe(true);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted.'
+                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted'
                 );
             });
 
@@ -292,7 +292,7 @@ describe('Kuni Juurou', function () {
                 this.player1.clickCard(this.borderlands);
                 expect(this.borderlands.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted.'
+                    'player1 uses Kuni Juurou to identify the source of Crab\'s misfortune… it is Borderlands Defender! Borderlands Defender is tainted'
                 );
             });
         });

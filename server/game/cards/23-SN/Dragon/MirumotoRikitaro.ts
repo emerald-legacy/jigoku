@@ -42,7 +42,7 @@ export default class MirumotoRikitaro extends DrawCard {
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay())
             .then((context) => ({
-                message: '{3} gains +2{4} due to discarding a weapon!',
+                message: '{3} gains +2{4} due to discarding a weapon',
                 messageArgs: () => [context.source, 'military'],
                 thenCondition: () => context.target.hasTrait('weapon'),
                 gameAction: AbilityDsl.actions.cardLastingEffect({

@@ -6,7 +6,7 @@ export default class RiverCrossing extends ProvinceCard {
     static id = 'river-crossing';
 
     setupCardAbilities() {
-        this.reaction('Search for an attachment')
+        this.reaction('Make characters count 1 skill')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })

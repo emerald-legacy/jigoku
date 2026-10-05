@@ -99,7 +99,7 @@ describe('Shosuro Technique', function () {
 
                 expect(this.sadako.getMilitarySkill()).toBe(this.aramoro.getMilitarySkill());
                 expect(this.getChatLogs(5)).toContain(
-                    'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise.'
+                    'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise'
                 );
             });
 

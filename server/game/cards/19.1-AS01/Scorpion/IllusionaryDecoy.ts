@@ -20,7 +20,7 @@ export default class IllusionaryDecoy extends DrawCard {
                                 controller: Players.Self,
                                 cardType: CardType.Character,
                                 cardCondition: (card) => card.isCharacter() && card.isParticipating(),
-                                message: '{0} moves home {1} - they were an {2}!',
+                                message: '{0} moves home {1} - they were an {2}',
                                 messageArgs: (card, player) => [player, card, context.source],
                                 gameAction: AbilityDsl.actions.sendHome()
                             }))

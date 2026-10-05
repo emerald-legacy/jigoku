@@ -25,6 +25,6 @@ export default class LightningAscends extends DrawCard {
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 effect: context.targets.enemy.traits.map((t) => AbilityDsl.effects.loseTrait(t))
             })))
-            .effect('grant +2 {1} to {2} and removes all traits from {3}', (context) => ['military', context.targets.monk, context.targets.enemy]);
+            .effect('grant +2 {1} to {2} and remove all traits from {3}', (context) => ['military', context.targets.monk, context.targets.enemy]);
     }
 }

@@ -41,6 +41,6 @@ export default class UtakuSumire extends DrawCard {
                     })
                 })
             ]))
-            .effect('charge into battle under the devout silence of the Utaku - during this conflict, {1} refuses to play Action events. If they win the conflict, their warriors will have their confidence renewed!', (context) => [context.player]);
+            .effect('charge into battle under the devout silence of the Utaku - during this conflict, {1} refuses to play Action events. If they win the conflict, their warriors will have their confidence renewed', (context) => [context.player]);
     }
 }

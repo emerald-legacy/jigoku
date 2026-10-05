@@ -19,6 +19,6 @@ export default class KyudenIkoma extends StrongholdCard {
                 cardCondition: (card) => !card.hasTrait('champion'),
                 activePromptTitle: 'Bow a non-champion'
             }, AbilityDsl.actions.bow())
-            .effect('bow {0}.');
+            .effect('bow {0}');
     }
 }

@@ -20,7 +20,7 @@ export default class KuniJuurou extends DrawCard {
             .target({
                 cardType: CardType.Character
             }, AbilityDsl.actions.taint())
-            .effect('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted.')
+            .effect('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted')
             .phase(Phases.Conflict);
     }
 

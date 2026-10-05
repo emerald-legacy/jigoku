@@ -27,7 +27,7 @@ class InServiceToMyLord extends DrawCard {
                     bottom: true
                 }))
             ]))
-            .effect('ready {0}.  {1} is placed on the bottom of {2}\'s conflict deck', (context) => [context.source, context.source.owner]);
+            .effect('ready {0}. {1} is placed on the bottom of {2}\'s conflict deck', (context) => [context.source, context.source.owner]);
     }
 }
 

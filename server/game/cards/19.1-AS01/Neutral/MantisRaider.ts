@@ -13,7 +13,7 @@ export default class MantisRaider extends DrawCard {
             .gameAction(AbilityDsl.actions.placeFate((context) => ({
                 origin: context.player.opponent
             })))
-            .effect('take a fate from {1} and place it on {0}.', (context) => context.player.opponent);
+            .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent);
 
         this.action('Give this character +1 military')
             .cost(AbilityDsl.costs.removeFateFromSelf())

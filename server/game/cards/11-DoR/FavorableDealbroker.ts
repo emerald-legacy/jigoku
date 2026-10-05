@@ -11,7 +11,7 @@ class FavorableDealbroker extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
             .gameAction(AbilityDsl.actions.deckSearch({
-                activePromptTitle: 'Choose a character to put into play ',
+                activePromptTitle: 'Choose a character to put into play',
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) => card.type === CardType.Character && card.printedCost === 1,
                 gameAction: AbilityDsl.actions.putIntoPlay()

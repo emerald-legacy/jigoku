@@ -42,7 +42,7 @@ describe('City of the Rich Frog', function() {
         it('should fill to 3 cards after setup', function() {
             this.keepDynasty();
             this.keepConflict();
-            expect(this.getChatLogs(10)).toContain('City of the Rich Frog fills to 3 cards!');
+            expect(this.getChatLogs(10)).toContain('City of the Rich Frog fills to 3 cards');
 
             expect(this.richFrog.location).toBe('province 1');
             expect(this.player1.player.getDynastyCardsInProvince('province 1').length).toBe(3);

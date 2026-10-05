@@ -129,7 +129,7 @@ describe('A War on Two Fronts', function() {
                 });
                 this.player1.clickCard(this.war);
                 this.player1.clickCard(this.throne);
-                expect(this.getChatLogs(10)).toContain('player1 plays A War on Two Fronts to reveal and also attack Before the Throne this conflict!');
+                expect(this.getChatLogs(10)).toContain('player1 plays A War on Two Fronts to reveal and also attack Before the Throne this conflict');
                 expect(this.game.currentConflict.getConflictProvinces()).toContain(this.garden);
                 expect(this.game.currentConflict.getConflictProvinces()).toContain(this.throne);
             });

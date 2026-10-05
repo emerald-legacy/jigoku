@@ -47,7 +47,7 @@ describe('Truthseeker', function() {
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('player1\'s Conflict');
-                expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck.');
+                expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck');
                 expect(this.player1).toHavePromptButton('Assassination');
                 expect(this.player1).toHavePromptButton('Ornate Fan');
                 expect(this.player1).toHavePromptButton('Fine Katana');
@@ -103,7 +103,7 @@ describe('Truthseeker', function() {
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('player1\'s Conflict');
-                expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck.');
+                expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck');
                 this.player1.clickPrompt('Fine Katana');
                 expect(this.player1.conflictDeck.length).toBe(1);
                 expect(this.player1.conflictDeck[0]).toBe(this.fineKatana);

@@ -106,7 +106,7 @@ describe('Ashalan Lantern', function () {
             );
             expect(this.getChatLogs(10)).toContain('player1 compels Tengu Sensei into service');
             expect(this.getChatLogs(10)).toContain(
-                'player1 puts Courtly Challenger and Brash Samurai on the top of player2\' dynasty deck'
+                'player1 puts Courtly Challenger and Brash Samurai on the top of player2\'s dynasty deck'
             );
         });
 

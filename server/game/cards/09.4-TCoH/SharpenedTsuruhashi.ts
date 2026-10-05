@@ -12,7 +12,7 @@ class SharpenedTsuruhashi extends DrawCard {
             .gameAction(AbilityDsl.actions.returnToHand(context => ({
                 target: context.source
             })))
-            .effect('return it to their hand.');
+            .effect('return it to their hand');
     }
 }
 

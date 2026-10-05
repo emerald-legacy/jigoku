@@ -38,7 +38,7 @@ describe('Seize The Day', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.seizeP2);
             this.player2.clickCard(this.seizeP2);
-            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player');
             expect(this.player2).toHavePrompt('Action Window');
             expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
         });
@@ -50,7 +50,7 @@ describe('Seize The Day', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.seizeP2);
             this.player2.clickCard(this.seizeP2);
-            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.unicorn);
             this.player1.clickCard(this.unicorn);
@@ -66,11 +66,11 @@ describe('Seize The Day', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.seizeP2);
             this.player2.clickCard(this.seizeP2);
-            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.seizeP1);
             this.player1.clickCard(this.seizeP1);
-            expect(this.getChatLogs(1)).toContain('player1 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player1 plays Seize the Day to become first player');
             expect(this.player1).toHavePrompt('Action Window');
             expect(this.player2).toHavePrompt('Waiting for opponent to take an action or pass');
         });

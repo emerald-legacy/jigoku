@@ -13,7 +13,7 @@ class HiddenMountainPass extends DrawCard {
             .gameAction(AbilityDsl.actions.turnFacedown(context => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
-            .effect('Turn {1} facedown', context => context.player.getProvinceCardInProvince(context.source.location));
+            .effect('turn {1} facedown', context => context.player.getProvinceCardInProvince(context.source.location));
     }
 }
 

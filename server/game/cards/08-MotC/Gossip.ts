@@ -1,39 +1,24 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import { PlayType } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Duration, PlayType, Players } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';
 
     setupCardAbilities() {
         this.action('Name a card that your opponent cannot play for the phase')
-            .handler(context => {
-                this.game.promptWithMenu(context.player, this, {
-                    context: context,
-                    activePrompt: {
-                        menuTitle: 'Name a card',
-                        controls: [
-                            { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                        ]
-                    }
-                });
-            });
-    }
-
-    selectCardName(player: Player, cardName: string, context: AbilityContext) {
-        this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
-        context.source.untilEndOfPhase((ability) => ({
-            targetController: context.player.opponent,
-            effect: ability.effects.playerCannot({
-                cannot: PlayType.PlayFromHand,
-                restricts: 'copiesOfX',
-                params: cardName
-            })
-        }));
-        return true;
+            .cost(AbilityDsl.costs.nameCard())
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                targetController: Players.Opponent,
+                effect: AbilityDsl.effects.playerCannot({
+                    cannot: PlayType.PlayFromHand,
+                    restricts: 'copiesOfX',
+                    params: context.costs.nameCardCost
+                })
+            })))
+            .effect('prevent {1} from playing cards named {2} from their hand this phase', (context) => [context.player.opponent, context.costs.nameCardCost]);
     }
 }
 
 export default Gossip;
-

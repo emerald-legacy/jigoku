@@ -22,7 +22,7 @@ export default class MidnightProwler extends DrawCard {
                     activePromptTitle: 'Which card do you want to discard?',
                     context: context,
                     cards: opponent.conflictDeck.slice(0, 2),
-                    options: [{ text: 'Do not discard either card.', handler: () => true }],
+                    options: [{ text: 'Do not discard either card', handler: () => true }],
                     cardHandler: (card) => {
                         opponent.moveCard(card, Location.ConflictDiscardPile);
                         context.game.addMessage('{0} chooses to discard {1}', context.player, card);

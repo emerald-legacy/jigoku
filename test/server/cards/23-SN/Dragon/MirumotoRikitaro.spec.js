@@ -203,7 +203,7 @@ describe('Mirumoto Rikitaro', function () {
                 expect(this.rikitaro.getMilitarySkill()).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Mirumoto Rikitaro to discard Fine Katana');
-                expect(this.getChatLogs(5)).toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon!');
+                expect(this.getChatLogs(5)).toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon');
             });
 
             it('should target items, armor, and weapons and not get +2 from discarding a non weapon', function () {
@@ -229,7 +229,7 @@ describe('Mirumoto Rikitaro', function () {
 
                 expect(this.rikitaro.getMilitarySkill()).toBe(mil);
 
-                expect(this.getChatLogs(5)).not.toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon!');
+                expect(this.getChatLogs(5)).not.toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon');
             });
 
             it('should require participating', function () {

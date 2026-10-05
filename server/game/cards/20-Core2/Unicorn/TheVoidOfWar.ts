@@ -15,7 +15,7 @@ export default class TheVoidOfWar extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.bow())
-            .effect('bow {0}.')
+            .effect('bow {0}')
             .then((context) => {
                 return {
                     target: {

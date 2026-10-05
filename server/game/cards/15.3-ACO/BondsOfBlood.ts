@@ -9,13 +9,10 @@ class BondsOfBlood extends DrawCard {
         this.action('Send a character home')
             .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: card => card.isParticipating() }))
             .target({
-                cardType: CardType.Character,
-                cardCondition: (card, context) => card.allowGameAction('sendHome', context)
-            })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.sendHome(context => ({target: context.target })),
-                AbilityDsl.actions.sendHome(context => ({target: context.costs.dishonor }))
-            ]))
+                cardType: CardType.Character
+            }, AbilityDsl.actions.sendHome())
+            .gameAction(AbilityDsl.actions.sendHome(context => ({ target: context.costs.dishonor })))
+            .effect('send {1} home', context => [context.costs.dishonor === context.target ? [context.target] : [context.target, context.costs.dishonor]])
             .cannotTargetFirst();
     }
 

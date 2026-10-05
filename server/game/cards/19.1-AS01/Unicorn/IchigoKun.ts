@@ -34,8 +34,8 @@ export default class IchigoKun extends DrawCard {
             }))
             .effect('give {0} {1} {2} and {3} {4} glory - {0} {5}', (context) =>
                 context.selects.select.choice === MORE_MIL_LESS_GLORY
-                    ? ['+2', 'military', context.targets.otherCharacter, '-2', 'is wild today!']
-                    : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive!']);
+                    ? ['+2', 'military', context.targets.otherCharacter, '-2', 'is wild today']
+                    : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive']);
     }
 
     public getPrintedElementSymbols() {

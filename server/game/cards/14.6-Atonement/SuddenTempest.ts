@@ -6,7 +6,7 @@ class SuddenTempest extends DrawCard {
     static id = 'sudden-tempest';
 
     setupCardAbilities() {
-        this.action('Remove a ring from the unclaimd ring pool')
+        this.action('Remove a ring from the unclaimed ring pool')
             .ringTarget({
                 ringCondition: ring => ring.isUnclaimed()
             }, AbilityDsl.actions.multiple([

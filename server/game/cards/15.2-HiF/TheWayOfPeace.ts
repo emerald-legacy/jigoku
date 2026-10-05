@@ -16,9 +16,6 @@ export default class TheWayOfPeace extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 player: Players.Self
-            })
-            .gameAction(AbilityDsl.actions.honor((context) => ({
-                target: context.targets.target
-            })));
+            }, AbilityDsl.actions.honor());
     }
 }

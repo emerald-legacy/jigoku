@@ -38,7 +38,7 @@ export default class SupportingCast extends DrawCard {
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.modifyMilitarySkill(3)
             }))
-            .effect('give +3 military skill to {1} - {2} was just a distraction!', (context) => [context.target, context.event.cardTargets])
+            .effect('give +3 military skill to {1} - {2} was just a distraction', (context) => [context.target, context.event.cardTargets])
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

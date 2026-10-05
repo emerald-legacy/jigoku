@@ -6,7 +6,7 @@ class ShibaSophist extends DrawCard {
     static id = 'shiba-sophist';
 
     setupCardAbilities() {
-        this.action('Search top 5 card for a card with the contested ring trait')
+        this.action('Search top 5 cards for a card with the contested ring trait')
             .condition(context => context.source.isParticipating())
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 5,

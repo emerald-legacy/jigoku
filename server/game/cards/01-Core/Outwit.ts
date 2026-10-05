@@ -6,7 +6,7 @@ class Outwit extends DrawCard {
     static id = 'outwit';
 
     setupCardAbilities() {
-        this.action('Send a character home.')
+        this.action('Send a character home')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

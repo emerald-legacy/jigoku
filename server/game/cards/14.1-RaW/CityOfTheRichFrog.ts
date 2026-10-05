@@ -17,7 +17,7 @@ export default class CityOfTheRichFrog extends ProvinceCard {
                 when: {
                     onPhaseEnded: (event) => event.phase === Phases.Setup
                 },
-                message: '{0} fills to 3 cards!',
+                message: '{0} fills to 3 cards',
                 messageArgs: (effectContext) => [effectContext.source],
                 gameAction: AbilityDsl.actions.fillProvince((context) => ({
                     location: context.source.location,

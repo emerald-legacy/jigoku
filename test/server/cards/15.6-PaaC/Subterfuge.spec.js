@@ -60,7 +60,7 @@ describe('Subterfuge', function() {
             expect(this.ornateFan.location).toBe('conflict discard pile');
             expect(this.sharpenTheMind.location).toBe('conflict discard pile');
             expect(this.fineKatana.location).toBe('hand');
-            expect(this.getChatLogs(10)).toContain('player1 plays Regal Bearing to set their bid dial to 1 and draw 4 cards.');
+            expect(this.getChatLogs(10)).toContain('player1 plays Regal Bearing to set their bid dial to 1 and draw 4 cards');
             expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent 3 cards from being drawn, discarding them instead');
             expect(this.getChatLogs(10)).toContain('player1 discards Honored Blade, Sharpen the Mind and Ornate Fan');
             expect(this.getChatLogs(10)).toContain('player1 draws 1 card');

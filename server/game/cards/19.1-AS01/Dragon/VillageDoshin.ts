@@ -38,11 +38,11 @@ export default class VillageDoshin extends DrawCard {
                                 amount: DOSHIN_TAX,
                                 target: context.player.opponent
                             }),
-                            message: '{0} distracts the Dōshin.'
+                            message: '{0} distracts the Dōshin'
                         },
                         'Let the effect be canceled': {
                             action: AbilityDsl.actions.cancel(),
-                            message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled.`
+                            message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled`
                         }
                     },
                     messageArgs: [context.event.card]

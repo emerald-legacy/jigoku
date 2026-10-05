@@ -46,7 +46,7 @@ export default class AshalanLantern extends DrawCard {
                     }),
                     remainingCardsHandler: (context, event, cards) => {
                         context.game.addMessage(
-                            '{0} puts {1} on the top of {2}\' dynasty deck',
+                            '{0} puts {1} on the top of {2}\'s dynasty deck',
                             context.player,
                             cards,
                             context.player.opponent

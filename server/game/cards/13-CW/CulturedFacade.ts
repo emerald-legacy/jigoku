@@ -5,7 +5,7 @@ class CulturedFacade extends DrawCard {
     static id = 'cultured-facade';
 
     setupCardAbilities() {
-        this.action('Prevent targetting')
+        this.action('Prevent targeting')
             .condition(() => this.game.isDuringConflict())
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
@@ -14,7 +14,7 @@ class CulturedFacade extends DrawCard {
                     restricts: 'eventPlayedByHigherBidPlayer'
                 })
             })))
-            .effect('prevent characters from being targetted by events played by players with a higher bid value than that of the character\'s controller');
+            .effect('prevent characters from being targeted by events played by players with a higher bid value than that of the character\'s controller');
     }
 }
 

@@ -7,7 +7,7 @@ export default class FortifiedLumberCamp extends DrawCard {
     static id = 'fortified-lumber-camp';
 
     setupCardAbilities() {
-        this.action('Discard all cards in and attached to a province ')
+        this.action('Discard all cards in and attached to a province')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .target({
                 location: Location.Provinces,

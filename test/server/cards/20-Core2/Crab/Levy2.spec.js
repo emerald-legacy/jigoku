@@ -83,3 +83,53 @@ describe('Levy 2', function () {
         });
     });
 });
+
+describe('Levy 2 with equal hands after playing it', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['levy-2', 'fine-katana']
+                },
+                player2: {
+                    hand: ['ornate-fan']
+                }
+            });
+            this.levy = this.player1.findCardByName('levy-2');
+        });
+
+        it('should not mention drawing a card', function () {
+            this.player1.clickCard(this.levy);
+            this.player2.clickPrompt('Give your opponent 1 honor');
+
+            expect(this.player1.hand.length).toBe(1);
+            expect(this.getChatLogs(5)).toContain('player1 plays Levy to take 1 honor from player2');
+        });
+    });
+});
+
+describe('Levy 2 with one card fewer after playing it', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['levy-2']
+                },
+                player2: {
+                    hand: ['ornate-fan']
+                }
+            });
+            this.levy = this.player1.findCardByName('levy-2');
+        });
+
+        it('should mention drawing a card', function () {
+            this.player1.clickCard(this.levy);
+            this.player2.clickPrompt('Give your opponent 1 honor');
+
+            expect(this.player1.hand.length).toBe(1);
+            expect(this.getChatLogs(5)).toContain('player1 plays Levy to take 1 honor from player2 and draw a card');
+        });
+    });
+});

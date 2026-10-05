@@ -35,7 +35,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 } else {
                     gameActions.push(AbilityDsl.actions.handler({
                         handler: () => {
-                            context.game.addMessage('{0}\'s affinity to Earth prevents them from discarding a card!', loser);
+                            context.game.addMessage('{0}\'s affinity to Earth prevents them from discarding a card', loser);
                         }
                     }));
                 }

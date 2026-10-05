@@ -130,7 +130,7 @@ describe('Join The Fray', function() {
             expect(this.game.currentConflict.attackers).not.toContain(this.chagatai);
             expect(this.game.currentConflict.defenders).toContain(this.chagatai);
 
-            expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Chagatai join the conflict for player2!');
+            expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Chagatai join the conflict for player2');
             expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 2 Defender: 6');
             expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -157,7 +157,7 @@ describe('Join The Fray', function() {
             expect(this.game.currentConflict.attackers).toContain(this.chagatai);
             expect(this.game.currentConflict.defenders).not.toContain(this.chagatai);
 
-            expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Chagatai join the conflict for player1!');
+            expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Chagatai join the conflict for player1');
             expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 8 Defender: 0');
             expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 
@@ -222,7 +222,7 @@ describe('Join The Fray', function() {
                 expect(this.game.currentConflict.attackers).not.toContain(this.youth);
                 expect(this.game.currentConflict.defenders).toContain(this.youth);
 
-                expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Youth join the conflict for player2!');
+                expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Youth join the conflict for player2');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 2 Defender: 3');
                 expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -252,7 +252,7 @@ describe('Join The Fray', function() {
                 expect(this.game.currentConflict.attackers).toContain(this.chagatai);
                 expect(this.game.currentConflict.defenders).not.toContain(this.chagatai);
 
-                expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Chagatai join the conflict for player1!');
+                expect(this.getChatLogs(3)).toContain('player1 plays Join the Fray to have Moto Chagatai join the conflict for player1');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 8 Defender: 0');
                 expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 

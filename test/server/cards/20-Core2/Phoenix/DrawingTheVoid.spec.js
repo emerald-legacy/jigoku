@@ -29,7 +29,7 @@ describe('Drawing the Void', function () {
             expect(this.player1).toHavePromptButton('Reprieve');
 
             this.player1.clickPrompt('Regal Bearing');
-            expect(this.getChatLogs(5)).toContain('player1 removes Regal Bearing from the game - the void consumes!');
+            expect(this.getChatLogs(5)).toContain('player1 removes Regal Bearing from the game - the void consumes');
             expect(this.regalBearing.location).toBe('removed from game');
 
             expect(this.player2).toHavePrompt('Initiate an action');
@@ -47,7 +47,7 @@ describe('Drawing the Void', function () {
             expect(this.player1).toHavePromptButton('Reprieve');
 
             this.player1.clickPrompt('Regal Bearing');
-            expect(this.getChatLogs(5)).toContain('player1 removes Regal Bearing from the game - the void consumes!');
+            expect(this.getChatLogs(5)).toContain('player1 removes Regal Bearing from the game - the void consumes');
             expect(this.regalBearing.location).toBe('removed from game');
             // Without affinity, no card is drawn
             expect(this.player1.hand.length).toBe(0);

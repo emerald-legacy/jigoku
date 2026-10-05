@@ -22,7 +22,7 @@ export default class AshigaruEncampment extends DrawCard {
     setupCardAbilities() {
         this.action('Recruit a fresh Ashigaru')
             .gameAction(AbilityDsl.actions.handler({ handler: putAshigaruTokenIntoPlay }))
-            .effect('recruit {1}!', () => ({
+            .effect('recruit {1}', () => ({
                 id: 'ashigaru-recruit',
                 label: 'Ashigaru Recruit',
                 name: 'Ashigaru Recruit',

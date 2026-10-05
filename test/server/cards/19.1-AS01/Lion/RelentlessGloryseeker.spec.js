@@ -54,7 +54,7 @@ describe('Relentless Gloryseeker', function () {
                 this.player1.clickCard(this.relentlessGloryseeker);
                 expect(this.relentlessGloryseeker.location).toBe('play area');
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more!'
+                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more'
                 );
             });
 
@@ -77,7 +77,7 @@ describe('Relentless Gloryseeker', function () {
                 this.player1.clickCard(this.relentlessGloryseeker);
                 expect(this.relentlessGloryseeker.location).toBe('play area');
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more!'
+                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more'
                 );
             });
 

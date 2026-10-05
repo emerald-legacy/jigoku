@@ -35,6 +35,6 @@ export default class AgashaCrucible extends DrawCard {
                 options,
                 activePromptTitle: 'Choose Trait to gain'
             }))
-            .effect('give {0} another Elemental Trait, and take another action!');
+            .effect('give {0} another Elemental Trait, and take another action');
     }
 }

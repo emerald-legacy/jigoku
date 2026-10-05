@@ -19,7 +19,7 @@ export default class MotoOktai extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus(context.event.card))
             })))
-            .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy!', (context) => [skillBonus(context.event.card), 'military']);
+            .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
 
         this.action('Discard a character from play')
             .condition((context) => context.source.isParticipatingFor(context.player))
@@ -27,6 +27,6 @@ export default class MotoOktai extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.discardFromPlay())
-            .effect('discard {1} - purge the weak!', (context) => [context.target]);
+            .effect('discard {1} - purge the weak', (context) => [context.target]);
     }
 }

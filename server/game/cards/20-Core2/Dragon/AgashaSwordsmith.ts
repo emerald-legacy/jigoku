@@ -6,7 +6,7 @@ export default class AgashaSwordsmith extends DrawCard {
     static id = 'agasha-swordsmith';
 
     setupCardAbilities() {
-        this.action('Search top 5 card for attachment')
+        this.action('Search top 5 cards for attachment')
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 5,
                 cardCondition: (card) => card.type === CardType.Attachment,

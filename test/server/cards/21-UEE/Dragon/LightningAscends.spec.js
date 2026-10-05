@@ -58,7 +58,7 @@ describe('Lightning Ascends', function () {
             expect(this.solemnScholar.getTraitSet().size).toBe(0);
 
             expect(this.getChatLogs(3)).toContain(
-                'player1 plays Lightning Ascends to grant +2 military to Itinerant Philosopher and removes all traits from Solemn Scholar'
+                'player1 plays Lightning Ascends to grant +2 military to Itinerant Philosopher and remove all traits from Solemn Scholar'
             );
         });
     });

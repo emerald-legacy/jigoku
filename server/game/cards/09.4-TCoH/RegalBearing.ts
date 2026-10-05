@@ -21,7 +21,7 @@ class RegalBearing extends DrawCard {
                     amount: this.getHonorDialDifference(context)
                 }))
             ]))
-            .effect('set their bid dial to 1 and draw {1} cards.', context => this.getHonorDialDifference(context))
+            .effect('set their bid dial to 1 and draw {1} cards', context => this.getHonorDialDifference(context))
             .max(AbilityDsl.limit.perConflict(1));
     }
 

@@ -35,7 +35,7 @@ describe('Bayushi Shoju 2', function() {
                 expect(this.player1.hand.length).toBe(p1Hand + 2);
                 expect(this.player2.hand.length).toBe(p2Hand + 2);
 
-                expect(this.getChatLogs(1)).toContain('player1 uses Bayushi Shoju to have each player loses an honor and draw two cards');
+                expect(this.getChatLogs(1)).toContain('player1 uses Bayushi Shoju to have each player lose an honor and draw two cards');
             });
 
             it('should let player 1 win if both are at 1 honor', function() {

@@ -19,22 +19,17 @@ export default class InfernoGuardInvoker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.honor((context) => ({ target: context.target })),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfPhase,
-                    target: context.target,
-                    effect: AbilityDsl.effects.delayedEffect({
-                        when: {
-                            onConflictFinished: () => this.provinceBroken
-                        },
-                        message: '{1} is discarded, burned to a pile of ash due to the delayed effect of {0}',
-                        messageArgs: [context.source, context.target],
-                        gameAction: AbilityDsl.actions.sacrifice({ target: context.target })
-                    })
-                }))
-            ]))
+            }, AbilityDsl.actions.honor(), AbilityDsl.actions.cardLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.delayedEffect({
+                    when: {
+                        onConflictFinished: () => this.provinceBroken
+                    },
+                    message: '{1} is discarded, burned to a pile of ash due to the delayed effect of {0}',
+                    messageArgs: [context.source, context.target],
+                    gameAction: AbilityDsl.actions.sacrifice({ target: context.target })
+                })
+            })))
             .effect('honor {0}. It will be discarded if a province is broken this conflict');
     }
 

@@ -46,7 +46,7 @@ describe('Endless Plains Skirmisher', function() {
             expect(this.game.currentConflict.attackers).not.toContain(this.skirmisher);
             expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
 
-            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
             expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 0 Defender: 3');
             expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -73,7 +73,7 @@ describe('Endless Plains Skirmisher', function() {
             expect(this.game.currentConflict.attackers).toContain(this.skirmisher);
             expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher);
 
-            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1!');
+            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1');
             expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 3 Defender: 0');
             expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 
@@ -170,7 +170,7 @@ describe('Endless Plains Skirmisher', function() {
             expect(this.game.currentConflict.attackers).toContain(this.skirmisher);
             expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher);
 
-            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
             expect(this.getChatLogs(2)).toContain('Political Air conflict - Attacker: 1 Defender: 0');
             expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict');
 
@@ -229,7 +229,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).not.toContain(this.skirmisher);
                 expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 0 Defender: 3');
                 expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -259,7 +259,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).toContain(this.skirmisher);
                 expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 3 Defender: 0');
                 expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 
@@ -300,7 +300,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).not.toContain(this.skirmisher2);
                 expect(this.game.currentConflict.defenders).toContain(this.skirmisher2);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 0 Defender: 3');
                 expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -319,7 +319,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
                 expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher2);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 3 Defender: 0');
                 expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 

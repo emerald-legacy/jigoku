@@ -9,12 +9,12 @@ class DaughterOfWar extends DrawCard {
         this.attachmentConditions({
             myControl: true
         });
-        this.interrupt('Put a character into play ')
+        this.interrupt('Put a character into play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter
             })
             .gameAction(AbilityDsl.actions.deckSearch(context => ({
-                activePromptTitle: 'Choose a character to put into play ',
+                activePromptTitle: 'Choose a character to put into play',
                 deck: Decks.DynastyDeck,
                 cardCondition: card => card.type === CardType.Character && card.costLessThan(context.source.parentCharacter?.getCost() ?? 0),
                 gameAction: AbilityDsl.actions.putIntoPlay()

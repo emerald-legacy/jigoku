@@ -11,12 +11,12 @@ class HotSpringsProprietor extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
             .gameAction(AbilityDsl.actions.deckSearch({
-                activePromptTitle: 'Choose a character to put into play ',
+                activePromptTitle: 'Choose a character to put into play',
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 1,
                 gameAction: AbilityDsl.actions.putIntoPlay()
             }))
-            .effect('search their dynasty deck for a character that costs 1 and put it into play');
+            .effect('search their dynasty deck for a character with printed cost 1 or less and put it into play');
     }
 }
 

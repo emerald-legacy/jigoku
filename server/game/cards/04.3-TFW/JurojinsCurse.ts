@@ -18,7 +18,7 @@ export default class JurojinsCurse extends DrawCard {
                     when: {
                         onPhaseEnded: (event) => event.phase === Phases.Fate
                     },
-                    message: '{0} takes hold!',
+                    message: '{0} takes hold',
                     messageArgs: (context) => [context.source],
                     gameAction: AbilityDsl.actions.handler({
                         handler: (context) => context.game.queueStep(new FatePhase(context.game))

@@ -19,7 +19,7 @@ class MasterpiecePainter extends DrawCard {
                     this.revealAndMayPlayAbility(this.owner.opponent)
                 ])
             })
-            .effect('make {1} reveal the top card of their deck. They may play their card until the end of the phase.', context => context.select);
+            .effect('make {1} reveal the top card of their deck. They may play their card until the end of the phase', context => context.select);
     }
 
     revealAndMayPlayAbility(player: Player | undefined) {

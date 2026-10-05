@@ -23,7 +23,7 @@ class Truthseeker extends DrawCard {
             .handler((context) => arrangeTopOfDeck(
                 context,
                 this.mapChoiceToDeck(context).slice(0, 3),
-                'Select the card you would like to place on top of the deck.',
+                'Select the card you would like to place on top of the deck',
                 (ordered) => {
                     this.mapChoiceToDeck(context).splice(0, 3, ...ordered);
                 }

@@ -28,7 +28,7 @@ class IkomaMessageRunner extends DrawCard {
                 optional: true,
                 cardCondition: card => card.isDynasty && card.isFacedown()
             }, AbilityDsl.actions.flipDynasty())
-            .effect('reveal up to 1 facedown card in each player\'s provinces.{1}', context => [this.buildString(context.targets.myCard, context.targets.opponentsCard)]);
+            .effect('reveal up to 1 facedown card in each player\'s provinces{1}', context => [this.buildString(context.targets.myCard, context.targets.opponentsCard)]);
     }
 
     buildString(myCards: BaseCard[] | undefined, opponentsCards: BaseCard[] | undefined) {
@@ -36,12 +36,12 @@ class IkomaMessageRunner extends DrawCard {
 
         const myCard = myCards?.[0];
         if(myCard) {
-            string = string.concat(` ${myCard.name} is revealed in ${myCard.controller.name}'s ${myCard.location}.`);
+            string = string.concat(`. ${myCard.name} is revealed in ${myCard.controller.name}'s ${myCard.location}`);
         }
 
         const opponentCard = opponentsCards?.[0];
         if(opponentCard) {
-            string = string.concat(` ${opponentCard.name} is revealed in ${opponentCard.controller.name}'s ${opponentCard.location}.`);
+            string = string.concat(`. ${opponentCard.name} is revealed in ${opponentCard.controller.name}'s ${opponentCard.location}`);
         }
         return string;
     }

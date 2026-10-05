@@ -8,7 +8,7 @@ export default class AncientMaster extends DrawCard {
 
     setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
-        this.reaction('Search top 5 card for kiho or tattoo')
+        this.reaction('Search top 5 cards for kiho or tattoo')
             .when({
                 onConflictDeclared: (event, context) =>
                     context.source.type === CardType.Attachment && (event.attackers ?? []).some((card) => card === context.source.parentCharacter),

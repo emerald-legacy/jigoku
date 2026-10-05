@@ -6,7 +6,7 @@ class FearlessSailor extends DrawCard {
     static id = 'fearless-sailor';
 
     setupCardAbilities() {
-        this.action('Move a fate from a character to a ring')
+        this.action('Give a character -2 military')
             .condition(context => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,

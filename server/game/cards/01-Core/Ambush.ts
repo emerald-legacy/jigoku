@@ -6,7 +6,7 @@ class Ambush extends DrawCard {
     static id = 'ambush';
 
     setupCardAbilities() {
-        this.action('Put characters from you hand or provinces into play')
+        this.action('Put characters from your hand or provinces into play')
             .targetCards({
                 activePromptTitle: 'Choose up to two characters',
                 numCards: 2,

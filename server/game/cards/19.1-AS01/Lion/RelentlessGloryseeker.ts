@@ -22,7 +22,7 @@ export default class RelentlessGloryseeker extends DrawCard {
                     this.ressurrectionsThisRound < MAXIMUM_RESSURRECTIONS
             })
             .gameAction(AbilityDsl.actions.putIntoPlay())
-            .effect('return to play - {0} is ready for more!')
+            .effect('return to play - {0} is ready for more')
             .then(() => {
                 this.ressurrectionsThisRound++;
                 return { gameAction: AbilityDsl.actions.noAction() };

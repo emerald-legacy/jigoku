@@ -11,11 +11,7 @@ class ChrysanthemumSteward extends DrawCard {
             .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent
-            })
-            .gameAction(AbilityDsl.actions.moveCard(context => ({
-                target: context.target,
-                destination: Location.ConflictDeck
-            })));
+            }, AbilityDsl.actions.moveCard({ destination: Location.ConflictDeck }));
     }
 }
 

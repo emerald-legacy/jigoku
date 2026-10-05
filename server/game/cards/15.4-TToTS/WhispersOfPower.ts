@@ -13,10 +13,8 @@ class WhispersOfPower extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfConflict,
-                target: context.target,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(
                     this.getPoliticalPowerChange(context)
                 )
