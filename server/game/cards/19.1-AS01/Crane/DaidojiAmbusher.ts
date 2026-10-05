@@ -23,11 +23,7 @@ export default class DaidojiAmbusher extends DrawCard {
                 }),
                 AbilityDsl.actions.conditional({
                     condition: (context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY),
-                    trueGameAction: AbilityDsl.actions.conditional({
-                        condition: (context) => this.shouldDiscardTarget(context),
-                        trueGameAction: AbilityDsl.actions.discardFromPlay(),
-                        falseGameAction: AbilityDsl.actions.removeFate()
-                    }),
+                    trueGameAction: AbilityDsl.actions.injure(),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })
             ]))

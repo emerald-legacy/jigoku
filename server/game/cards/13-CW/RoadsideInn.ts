@@ -28,7 +28,7 @@ class RoadsideInn extends DrawCard {
             }, AbilityDsl.actions.placeFate(context => ({ origin: context.player.opponent })))
             .effect('place a fate from their pool on {1}{2}', (context) => [
                 context.targets.myCharacter,
-                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name, (card) => card.controller)
+                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name)
             ]);
     }
 }

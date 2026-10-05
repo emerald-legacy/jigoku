@@ -32,6 +32,20 @@ describe('Captive Audience', function () {
                 expect(this.game.currentConflict.conflictType).toBe('military');
             });
 
+            it('should switch the conflict type through a switch conflict type event', function () {
+                const switched = jasmine.createSpy('onSwitchConflictType');
+                this.game.on('onSwitchConflictType', switched);
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.dojiWhisperer],
+                    defenders: []
+                });
+                this.player2.clickCard(this.captiveAudience);
+                expect(switched).toHaveBeenCalledTimes(1);
+                expect(this.game.currentConflict.conflictType).toBe('military');
+                expect(this.getChatLogs(5)).toContain('player2 plays Captive Audience, losing 1 honor to switch the conflict type from political to military');
+            });
+
             it('should send home and bow characters with a dash in military', function () {
                 this.initiateConflict({
                     type: 'political',

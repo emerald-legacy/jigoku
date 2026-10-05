@@ -1,13 +1,13 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
+import { arrangeTopOfDeck } from '../../arrangeTopOfDeck.js';
 
 class Process {
     private topCards: Set<DrawCard>;
     private cardsToSteal: Set<DrawCard> = new Set();
-    private newTopOrder: Array<DrawCard> = [];
 
     public constructor(private context: AbilityContext) {
         this.topCards = new Set(context.player.opponent?.conflictDeck.slice(0, 6) ?? []);
@@ -67,56 +67,19 @@ class Process {
             }
         }
 
-        if(this.topCards.size > 0) {
-            this.reorderPrompt();
-        }
-    }
-
-    private reorderPrompt() {
-        this.context.game.promptWithHandlerMenu(this.context.player, {
-            activePromptTitle: `Select a card to put in the ${this.positionWord()} position of their deck`,
-            context: this.context,
-            cards: this.topCardsArray,
-            cardHandler: (card) => this.markNextOnTop(card),
-            options: []
-        });
-    }
-
-    private positionWord(): string {
-        switch(this.newTopOrder.length) {
-            case 0:
-                return 'top';
-            case 1:
-                return 'second';
-            case 2:
-                return 'third';
-            default:
-                return 'next';
-        }
-    }
-
-    private markNextOnTop(card: DrawCard): void {
-        this.topCards.delete(card);
-        this.newTopOrder.push(card);
-        if(this.topCards.size > 0) {
-            this.reorderPrompt();
-        } else {
-            this.reorderCardsAndContinue();
-        }
-    }
-
-    private reorderCardsAndContinue() {
-        if(this.newTopOrder.length === 0) {
+        const remaining = this.topCardsArray;
+        if(remaining.length === 0) {
             return;
         }
-        this.context.game.addMessage(
-            '{0} returns {1} cards to the top of {2}\'s deck',
-            this.context.player,
-            this.newTopOrder.length,
-            this.context.player.opponent
-        );
-
-        this.context.player.opponent?.conflictDeck.splice(0, this.newTopOrder.length, ...this.newTopOrder);
+        arrangeTopOfDeck(this.context, remaining, 'Which card do you want to be on top?', (ordered) => {
+            this.context.game.addMessage(
+                '{0} returns {1} cards to the top of {2}\'s deck',
+                this.context.player,
+                ordered.length,
+                this.context.player.opponent
+            );
+            this.context.player.opponent?.conflictDeck.splice(0, ordered.length, ...ordered);
+        });
     }
 }
 

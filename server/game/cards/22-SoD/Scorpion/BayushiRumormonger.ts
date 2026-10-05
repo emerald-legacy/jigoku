@@ -1,4 +1,3 @@
-import { Location } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,18 +8,9 @@ export default class BayushiRumormonger extends DrawCard {
     public setupCardAbilities() {
         this.action('Discard cards from opponent\'s conflict deck')
             .condition(context => context.source.isParticipating() && Boolean(context.player.opponent))
-            .gameAction(AbilityDsl.actions.handler({
-                handler: context => {
-                    const opponent = context.player.opponent;
-                    if(!opponent) {
-                        return;
-                    }
-                    const x = this.getHighestNumberOfParticipants(context);
-                    opponent.conflictDeck.slice(0, x).forEach(card =>
-                        opponent.moveCard(card, Location.ConflictDiscardPile)
-                    );
-                }
-            }))
+            .gameAction(AbilityDsl.actions.discardCard(context => ({
+                target: context.player.opponent?.conflictDeck.slice(0, this.getHighestNumberOfParticipants(context)) ?? []
+            })))
             .effect('discard {1} card{2} from {3}\'s conflict deck', context => {
                 const x = this.getHighestNumberOfParticipants(context);
                 const opponent = context.player.opponent;

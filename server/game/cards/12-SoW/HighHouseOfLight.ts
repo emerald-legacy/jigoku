@@ -6,7 +6,7 @@ export default class HighHouseOfLight extends StrongholdCard {
     static id = 'high-house-of-light';
 
     setupCardAbilities() {
-        this.action('Give a character with attachments bonus skill')
+        this.action('Prevent a monk from being targeted by opponent\'s events')
             .cost(AbilityDsl.costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
             .target({
@@ -31,7 +31,7 @@ export default class HighHouseOfLight extends StrongholdCard {
                         subActionProperties: (ring) => ({ origin: ring }),
                         gameAction: AbilityDsl.actions.placeFate({ target: context.target })
                     })),
-                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 })
+                    falseGameAction: AbilityDsl.actions.noAction()
                 })
             ]))
             .effect('make {0} unable to be targeted by opponent\'s events');

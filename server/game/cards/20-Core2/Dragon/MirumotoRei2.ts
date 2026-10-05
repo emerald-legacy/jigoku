@@ -27,14 +27,7 @@ export default class MirumotoRei2 extends DrawCard {
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: 'injure {0}',
-                messageArgs: (duel) => [duel.loser],
-                gameAction: (duel) =>
-                    duel.loser ? AbilityDsl.actions.multipleContext(() => ({
-                        gameActions: (duel.loser ?? []).map((loser) => loser.getFate() > 0
-                            ? AbilityDsl.actions.removeFate({ target: loser, amount: 1 })
-                            : AbilityDsl.actions.discardFromPlay({ target: loser }))
-                    })) : AbilityDsl.actions.noAction()
+                gameAction: (duel) => AbilityDsl.actions.injure({ target: duel.loser ?? [] })
             }));
     }
 }

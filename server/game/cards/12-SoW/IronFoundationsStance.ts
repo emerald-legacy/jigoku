@@ -29,7 +29,7 @@ class IronFoundationsStance extends DrawCard {
                 AbilityDsl.actions.conditional({
                     condition: (context) => context.player.isKihoPlayedThisConflict(context, this),
                     trueGameAction: AbilityDsl.actions.draw((context) => ({ target: context.player })),
-                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 })
+                    falseGameAction: AbilityDsl.actions.noAction()
                 })
             ]))
             .effect('prevent opponents\' actions from bowing or moving home {0}{1}', (context) => (context.player.isKihoPlayedThisConflict(context, this) ? ' and draw 1 card' : ''));

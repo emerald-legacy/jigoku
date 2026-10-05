@@ -50,14 +50,15 @@ describe('To Connect the People', function () {
 
             it('discards a few cards from the opponents dynasty deck', function () {
                 const initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
+                const topCards = this.player2.player.dynastyDeck.slice(0, 3);
+                const discarded = jasmine.createSpy('onCardsDiscarded');
+                this.game.on('onCardsDiscarded', discarded);
 
                 this.player1.clickCard(this.toConnectThePeople);
                 expect(this.player2.player.dynastyDiscardPile.length).toBe(initialDiscardPile + 3);
+                expect(discarded).toHaveBeenCalledWith(jasmine.objectContaining({ cards: topCards }));
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays To Connect the People to discard the top 3 cards of player2\'s dynasty deck'
-                );
-                expect(this.getChatLogs(5)).toContain(
-                    'To Connect the People discards Adept of the Waves, Adept of the Waves and Adept of the Waves'
+                    'player1 plays To Connect the People to discard Adept of the Waves, Adept of the Waves and Adept of the Waves from the top of player2\'s dynasty deck'
                 );
             });
 

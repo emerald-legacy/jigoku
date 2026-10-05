@@ -91,3 +91,31 @@ describe('Soshi\'s Memory', function() {
         });
     });
 });
+
+describe('Soshi\'s Memory - Shugenja condition', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['soshi-s-memory', 'ornate-fan']
+                }
+            });
+
+            this.memory = this.player1.findCardByName('soshi-s-memory');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.fan = this.player1.findCardByName('ornate-fan');
+        });
+
+        it('should not count a non-character card with the Shugenja trait', function() {
+            this.player1.playAttachment(this.fan, this.whisperer);
+            spyOn(this.fan, 'hasTrait').and.callFake((trait) => trait === 'shugenja');
+            this.player2.pass();
+
+            this.player1.clickCard(this.memory);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.memory.location).toBe('hand');
+        });
+    });
+});

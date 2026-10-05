@@ -57,6 +57,6 @@ export default class AppeasingTheRestless extends DrawCard {
         if(!bowed || context.player.hasAffinity('void', context)) {
             return;
         }
-        (bowed.getFate() === 0 ? AbilityDsl.actions.discardFromPlay() : AbilityDsl.actions.removeFate()).resolve(bowed, context);
+        AbilityDsl.actions.injure().resolve(bowed, context);
     }
 }

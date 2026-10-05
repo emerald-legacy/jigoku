@@ -38,11 +38,7 @@ export default class TheHundredHandStrike extends DrawCard {
                 thenCondition: () => context.targets.puncher.hasTrait('tattooed') &&
                     context.game.currentConflict !== null &&
                     context.game.currentConflict.calculateSkillFor([context.targets.punchee]) === 0,
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: () => context.targets.punchee.getFate() === 0,
-                    trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.targets.punchee }),
-                    falseGameAction: AbilityDsl.actions.removeFate({ target: context.targets.punchee })
-                }),
+                gameAction: AbilityDsl.actions.injure({ target: context.targets.punchee }),
                 message: '{3} is injured because it is not contributing skill to the current conflict',
                 messageArgs: () => [context.targets.punchee]
             }))

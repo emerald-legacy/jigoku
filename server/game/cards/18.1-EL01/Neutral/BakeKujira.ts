@@ -17,10 +17,6 @@ export default class BakeKujira extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, AbilityDsl.actions.conditional({
-                condition: (context) => context.target?.getFate() === 0,
-                trueGameAction: AbilityDsl.actions.discardFromPlay(),
-                falseGameAction: AbilityDsl.actions.removeFate()
-            }));
+            }, AbilityDsl.actions.injure());
     }
 }
