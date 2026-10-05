@@ -7,7 +7,12 @@ export type RingActionProperties = GameActionProperties;
 
 export type RingEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { ring: Ring };
 
-export class RingAction<P extends RingActionProperties = RingActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {
+export class RingAction<
+    P extends RingActionProperties = RingActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends GameAction<P, N, C, D> {
     targetType = ['ring'];
 
     defaultTargets(context: C): Ring[] {

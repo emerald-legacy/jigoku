@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
@@ -11,21 +11,25 @@ export interface GainHonorProperties extends PlayerActionProperties {
     dueToStatusToken?: boolean;
 }
 
-export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName.OnModifyHonor, C> {
-    defaultProperties: GainHonorProperties = { amount: 1, dueToStatusToken: false };
+export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName.OnModifyHonor, C, 'amount' | 'dueToStatusToken'> {
+    defaultProperties = { amount: 1, dueToStatusToken: false };
 
     name = 'gainHonor';
     eventName = EventName.OnModifyHonor;
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         const [, amountToTransfer] = CalculateHonorLimit(
             context.player,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount ?? 0
+            properties.amount
         );
         return ['gain ' + amountToTransfer + ' honor', []];
+    }
+
+    protected effectMessageTarget(): MsgArg {
+        return undefined;
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
@@ -40,7 +44,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
             player,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount ?? 0
+            properties.amount
         );
 
         if(hasHonorLimit && !amountToTransfer) {
@@ -57,7 +61,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount ?? 0;
+        event.amount = amount;
         event.dueToStatusToken = dueToStatusToken;
     }
 

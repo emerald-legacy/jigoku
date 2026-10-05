@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import { CardType, EventName } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
@@ -14,18 +14,27 @@ export interface CancelActionProperties extends GameActionProperties {
 export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): void };
 
 export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName.Unnamed, C> {
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {
             return [effect, []];
         }
         if(replacementGameAction) {
-            return ['{1} {0} instead of {2}', [context.target, replacementGameAction.name, context.event?.card]];
+            return ['{1} {0} instead of {2}', [replacementGameAction.name, context.event?.card]];
         }
-        return ['cancel the effects of {0}', [context.event?.card]];
+        return ['cancel the effects of {0}', []];
     }
 
-    getProperties(context: C, additionalProperties = {}): CancelActionProperties {
+    /** The replacement's target, or the card whose event is cancelled; nothing for a custom `effect`. */
+    protected effectMessageTarget(context: C): MsgArg {
+        const { replacementGameAction, effect } = this.getProperties(context);
+        if(effect) {
+            return undefined;
+        }
+        return replacementGameAction ? context.target : context.event?.card;
+    }
+
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         if(properties.replacementGameAction) {
             properties.replacementGameAction.setDefaultTarget(() => properties.target);

@@ -5,7 +5,7 @@ import { Players, type EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { GameAction, WithDefaults } from './GameAction.js';
+import type { GameAction } from './GameAction.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
 export interface CardMenuProperties extends CardActionProperties {
@@ -22,21 +22,25 @@ export interface CardMenuProperties extends CardActionProperties {
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
 }
 
-export class CardMenuAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CardMenuProperties, EventName, C> {
+export class CardMenuAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    CardMenuProperties,
+    EventName,
+    C,
+    'activePromptTitle' | 'targets' | 'cards' | 'subActionProperties' | 'cardCondition'
+> {
     effect = 'choose a target for {0}';
-    defaultProperties: Partial<CardMenuProperties> = {
+    defaultProperties = {
         activePromptTitle: 'Select a card:',
         targets: false,
-        cards: []
+        cards: [],
+        subActionProperties: (card: DrawCard) => ({ target: card }),
+        cardCondition: () => true
     };
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<CardMenuProperties, 'subActionProperties' | 'cardCondition'> {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
-        return Object.assign(properties, {
-            subActionProperties: properties.subActionProperties ?? ((card: DrawCard) => ({ target: card })),
-            cardCondition: properties.cardCondition ?? (() => true)
-        });
+        return properties;
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {

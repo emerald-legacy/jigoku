@@ -11,16 +11,13 @@ export interface TakeFateRingProperties extends RingActionProperties {
     removeOnly?: boolean;
 }
 
-export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C> {
+export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C, 'amount' | 'removeOnly'> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
-    defaultProperties: TakeFateRingProperties = { amount: 1, removeOnly: false };
-    getEffectMessage(context: C): MessageArgs {
+    defaultProperties = { amount: 1, removeOnly: false };
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
-        return [
-            '{2} {1} fate from {0}',
-            [properties.target, properties.amount, properties.removeOnly ? 'remove' : 'take']
-        ];
+        return ['{2} {1} fate from {0}', [properties.amount, properties.removeOnly ? 'remove' : 'take']];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
@@ -28,14 +25,14 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
         return (
             context.player.checkRestrictions('takeFateFromRings', context) &&
             ring.fate > 0 &&
-            (properties.amount ?? 0) > 0 &&
+            properties.amount > 0 &&
             super.canAffect(ring, context)
         );
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        event.fate = properties.amount ?? 0;
+        event.fate = properties.amount;
         event.origin = ring;
         event.context = context;
         event.recipient = properties.removeOnly ? undefined : context.player;

@@ -12,7 +12,7 @@ export interface ConditionalActionProperties<C extends AbilityContext = AbilityC
 }
 
 export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties<C>, EventName, C> {
-    getProperties(context: C, additionalProperties = {}): ConditionalActionProperties<C> {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         properties.trueGameAction.setDefaultTarget(() => properties.target);
         properties.falseGameAction.setDefaultTarget(() => properties.target);

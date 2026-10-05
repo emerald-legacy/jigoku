@@ -14,9 +14,8 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
     name = 'onAddDuelParticipant';
     eventName = EventName.OnAddDuelParticipant;
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['extend the duel challenge to {0}', [properties.target]];
+    protected effectMessage(): MessageArgs {
+        return ['extend the duel challenge to {0}', []];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {

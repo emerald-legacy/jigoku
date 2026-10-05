@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
@@ -14,9 +14,13 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
     cost = 'dishonoring {0}';
     effect = 'dishonor {0}';
 
-    getEffectMessage(context: C): MessageArgs {
-        const targetArray = targetList(this.getProperties(context).target).map((target) => target.isFacedown() ? target.location : target);
-        return ['place a dishonored status token on {0}, blanking it', [targetArray]];
+    protected effectMessage(): MessageArgs {
+        return ['place a dishonored status token on {0}, blanking it', []];
+    }
+
+    /** A facedown province is named by its location. */
+    protected effectMessageTarget(context: C): MsgArg {
+        return targetList(this.getProperties(context).target).map((target) => target.isFacedown() ? target.location : target);
     }
 
     canAffect(card: BaseCard, context: C): boolean {

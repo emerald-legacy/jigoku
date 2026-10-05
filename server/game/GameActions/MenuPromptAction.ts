@@ -14,12 +14,11 @@ export interface MenuPromptProperties extends GameActionProperties {
 }
 
 export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends GameAction<MenuPromptProperties, EventName, C> {
-    getEffectMessage(context: C): MessageArgs {
-        const { target } = this.getProperties(context);
-        return ['make a choice for {0}', [target]];
+    protected effectMessage(): MessageArgs {
+        return ['make a choice for {0}', []];
     }
 
-    getProperties(context: C, additionalProperties = {}): MenuPromptProperties & { choices: string[] } {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         const choices = properties.choices;
         return Object.assign(properties, { choices: typeof choices === 'function' ? choices(properties) : choices });

@@ -12,7 +12,12 @@ export interface CardActionProperties extends GameActionProperties {
 
 export type CardEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { card: BaseCard };
 
-export class CardGameAction<P extends CardActionProperties = CardActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {
+export class CardGameAction<
+    P extends CardActionProperties = CardActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends GameAction<P, N, C, D> {
     targetType = [
         CardType.Character,
         CardType.Attachment,

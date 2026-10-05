@@ -11,11 +11,11 @@ export interface InitiateConflictProperties extends PlayerActionProperties {
     forceProvinceTarget?: ProvinceCard;
 }
 
-export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName.OnConflictInitiated, C> {
+export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName.OnConflictInitiated, C, 'canPass'> {
     name = 'initiateConflict';
     eventName = EventName.OnConflictInitiated;
     effect = 'declare a new conflict';
-    defaultProperties: InitiateConflictProperties = {
+    defaultProperties = {
         canPass: true
     };
 
@@ -33,7 +33,7 @@ export class InitiateConflictAction<C extends AbilityContext = AbilityContext> e
         const properties = this.getProperties(context, additionalProperties);
         context.game.initiateConflict(
             event.player,
-            properties.canPass ?? true,
+            properties.canPass,
             properties.forcedDeclaredType,
             properties.forceProvinceTarget
         );

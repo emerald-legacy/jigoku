@@ -19,9 +19,8 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
         }
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return [this.name === 'sacrifice' ? 'sacrifice {0}' : 'discard {0}', [properties.target]];
+    protected effectMessage(): MessageArgs {
+        return [this.name === 'sacrifice' ? 'sacrifice {0}' : 'discard {0}', []];
     }
 
     canAffect(card: BaseCard, context: C): boolean {

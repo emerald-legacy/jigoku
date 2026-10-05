@@ -13,12 +13,21 @@ export interface CreateTokenProperties extends CardActionProperties {
     canEnterConflict: (type: 'military' | 'political') => boolean;
 }
 
-export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CreateTokenProperties, EventName.OnCreateTokenCharacter, C> {
+export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    CreateTokenProperties,
+    EventName.OnCreateTokenCharacter,
+    C,
+    'token' | 'leavingPlayMessage' | 'canEnterConflict'
+> {
     name = 'createToken';
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
-    defaultProperties: CreateTokenProperties = { token: SpiritOfTheRiver, canEnterConflict: () => true };
+    defaultProperties = {
+        token: SpiritOfTheRiver,
+        leavingPlayMessage: '{0} returns to the deep',
+        canEnterConflict: () => true
+    };
 
     canAffect(card: BaseCard, context: C): boolean {
         const { canEnterConflict } = this.getProperties(context);
@@ -58,7 +67,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
                     when: {
                         onConflictFinished: () => true
                     },
-                    message: leavingPlayMessage ?? '{0} returns to the deep',
+                    message: leavingPlayMessage,
                     messageArgs: [token],
                     gameAction: context.game.actions.discardFromPlay()
                 })

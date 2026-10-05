@@ -12,11 +12,11 @@ export interface LookAtProperties extends CardActionProperties {
     messageArgs?: (cards: BaseCard[]) => MsgArg[];
 }
 
-export class LookAtAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LookAtProperties, EventName.OnLookAtCards, C> {
+export class LookAtAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LookAtProperties, EventName.OnLookAtCards, C, 'message'> {
     name = 'lookAt';
     eventName = EventName.OnLookAtCards;
     effect = 'look at a facedown card';
-    defaultProperties: LookAtProperties = {
+    defaultProperties = {
         message: '{0} sees {1}'
     };
 
@@ -55,11 +55,11 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
     }
 
-    getMessage(message: string | ((context: C) => string) | undefined, context: C): string {
+    getMessage(message: string | ((context: C) => string), context: C): string {
         if(typeof message === 'function') {
             return message(context);
         }
-        return message ?? '';
+        return message;
     }
 
     isEventFullyResolved(event: AnyEvent): boolean {

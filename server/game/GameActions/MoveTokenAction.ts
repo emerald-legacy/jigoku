@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -14,10 +14,14 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
     name = 'moveStatusToken';
     eventName = EventName.OnStatusTokenMoved;
 
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+    protected effectMessage(context: C, additionalProperties = {}): MessageArgs {
         const { target, recipient } = this.getProperties(context, additionalProperties);
-        const card = targetList(target)[0].card;
-        return ['move {0}\'s {1} to {2}', [card, target, recipient]];
+        return ['move {0}\'s {1} to {2}', [target, recipient]];
+    }
+
+    /** The card the token moves from. */
+    protected effectMessageTarget(context: C, additionalProperties = {}): MsgArg {
+        return targetList(this.getProperties(context, additionalProperties).target)[0].card;
     }
 
     canAffect(token: StatusToken, context: C, additionalProperties = {}): boolean {

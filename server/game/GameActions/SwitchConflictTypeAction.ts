@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
@@ -20,11 +20,16 @@ export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext>
         return ['switching the conflict type from {0} to {1}', [currentConflictType, newConflictType]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const currentConflictType = context.game.currentConflict && context.game.currentConflict.conflictType;
         const newConflictType =
             currentConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military;
-        return ['switch the conflict type from {0} to {1}', [currentConflictType, newConflictType]];
+        return ['switch the conflict type from {0} to {1}', [newConflictType]];
+    }
+
+    /** The current conflict type. */
+    protected effectMessageTarget(context: C): MsgArg {
+        return context.game.currentConflict && context.game.currentConflict.conflictType;
     }
 
     canAffect(ring: Ring, context: C, _additionalProperties = {}) {

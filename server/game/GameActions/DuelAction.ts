@@ -7,7 +7,7 @@ import { Duel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
-import { targetList, type GameAction, type WithDefaults, type ActionEvent } from './GameAction.js';
+import { targetList, type GameAction, type ActionEvent } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 function toArray(args: MsgArg | MsgArg[]): MsgArg[] {
@@ -36,25 +36,20 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<DuelProperties, 'challenger'> {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
-        if(!Array.isArray(properties.target)) {
-            return [
-                'initiate a ' + properties.type.toString() + ' duel : {0} vs. {1}',
-                [properties.challenger, properties.target]
-            ];
-        }
+        const targets = targetList(properties.target);
+        const indices = targets.map((_, idx) => `{${idx + 1}}`);
+        return ['initiate a ' + properties.type.toString() + ' duel : {0} vs. ' + indices.join(' and '), targets];
+    }
 
-        const indices = properties.target.map((_, idx) => `{${idx + 1}}`);
-        return [
-            'initiate a ' + properties.type.toString() + ' duel : {0} vs. ' + indices.join(' and '),
-            [properties.challenger, ...properties.target]
-        ];
+    protected effectMessageTarget(context: C): MsgArg {
+        return this.getProperties(context).challenger;
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {

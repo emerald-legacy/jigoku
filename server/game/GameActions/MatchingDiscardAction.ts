@@ -13,8 +13,14 @@ export interface MatchingDiscardProperties extends PlayerActionProperties {
     match?: (context: AbilityContext, card: BaseCard) => boolean;
 }
 
-export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, C> {
-    defaultProperties: MatchingDiscardProperties = {
+/** A discard event this action created: `addPropertiesToEvent` always sets its amount and match. */
+type MatchingDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, C> & {
+    amount: number;
+    match: (context: AbilityContext, card: BaseCard) => boolean;
+};
+
+export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'reveal' | 'match'> {
+    defaultProperties = {
         amount: -1,
         reveal: false,
         match: () => true
@@ -23,9 +29,8 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['make {0} discard all cards that match a condition', [properties.target]];
+    protected effectMessage(): MessageArgs {
+        return ['make {0} discard all cards that match a condition', []];
     }
 
     canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
@@ -44,10 +49,10 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
         event.match = properties.match;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
+    eventHandler(event: MatchingDiscardEvent<C>): void {
         const context = event.context;
         const player = event.player;
-        let amount = Math.min(event.amount ?? -1, player.hand.length);
+        let amount = Math.min(event.amount, player.hand.length);
         if(amount < 0) {
             amount = player.hand.length;
         }
@@ -56,8 +61,7 @@ export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> ex
             return;
         }
         const cards = event.cards ?? [];
-        const match = event.match ?? (() => true);
-        let cardsToDiscard = cards.filter((a: BaseCard) => match(context, a));
+        let cardsToDiscard = cards.filter((a: BaseCard) => event.match(context, a));
         if(amount < cardsToDiscard.length) {
             cardsToDiscard = cardsToDiscard.slice(0, amount);
         }

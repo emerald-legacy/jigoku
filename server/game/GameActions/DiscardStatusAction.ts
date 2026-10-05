@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName } from '../Constants.js';
@@ -13,11 +13,16 @@ export class DiscardStatusAction<C extends AbilityContext = AbilityContext> exte
     eventName = EventName.OnStatusTokenDiscarded;
     cost = 'discarding a status token';
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const cardsLosingStatus = this.#cardsLosingStatus(context);
         return cardsLosingStatus.length === 0
             ? ['discard a status token', []]
-            : ['discard {0}\'s status token', cardsLosingStatus];
+            : ['discard {0}\'s status token', cardsLosingStatus.slice(1)];
+    }
+
+    /** The first card losing a status token; the others follow it as further arguments. */
+    protected effectMessageTarget(context: C): MsgArg {
+        return this.#cardsLosingStatus(context)[0];
     }
 
     addPropertiesToEvent(

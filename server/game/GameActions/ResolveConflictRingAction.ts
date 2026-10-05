@@ -12,9 +12,8 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
     name = 'resolveRing';
     eventName = EventName.OnResolveConflictRing;
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['resolve {0}', [properties.target]];
+    protected effectMessage(): MessageArgs {
+        return ['resolve {0}', []];
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {

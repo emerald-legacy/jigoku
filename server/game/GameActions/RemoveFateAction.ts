@@ -14,19 +14,18 @@ export interface RemoveFateProperties extends CardActionProperties {
     recipient?: DrawCard | Player | Ring;
 }
 
-export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFateProperties, EventName.OnMoveFate, C> {
+export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFateProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'removeFate';
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
-    defaultProperties: RemoveFateProperties = { amount: 1 };
+    defaultProperties = { amount: 1 };
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['removing {1} fate from {0}', [properties.amount]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['remove {1} fate from {0}', [properties.target, properties.amount]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['remove {1} fate from {0}', [this.getProperties(context).amount]];
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
@@ -49,7 +48,7 @@ export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, recipient } = this.getProperties(context, additionalProperties);
-        event.fate = amount ?? 0;
+        event.fate = amount;
         event.recipient = recipient;
         event.origin = card;
         event.context = context;

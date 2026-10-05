@@ -5,7 +5,6 @@ import { Duration, EffectName, EventName, Location } from '../Constants.js';
 import { CardGameAction, type CardActionProperties, type CardEvent } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import { toEffectList, type LastingEffectFields } from './LastingEffectAction.js';
-import type { EffectFactory } from '../Effects/EffectBuilder.js';
 import type { TargetLocation } from '../Interfaces.js';
 
 export interface LastingEffectCardProperties extends CardActionProperties, LastingEffectFields {
@@ -14,24 +13,26 @@ export interface LastingEffectCardProperties extends CardActionProperties, Lasti
     canChangeZoneNTimes?: number;
 }
 
-export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LastingEffectCardProperties, EventName.OnEffectApplied, C> {
+export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    LastingEffectCardProperties,
+    EventName.OnEffectApplied,
+    C,
+    'duration' | 'canChangeZoneOnce' | 'canChangeZoneNTimes'
+> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect to {0}';
-    defaultProperties: Partial<LastingEffectCardProperties> = {
+    defaultProperties = {
         duration: Duration.UntilEndOfConflict,
         canChangeZoneOnce: false,
         canChangeZoneNTimes: 0
     };
 
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        const properties = this.getProperties(context, additionalProperties);
-        const message = properties.message || this.effect;
-
-        return [message, [properties.target]];
+    protected effectMessage(context: C, additionalProperties = {}): MessageArgs {
+        return [this.getProperties(context, additionalProperties).message || this.effect, []];
     }
 
-    getProperties(context: C, additionalProperties = {}): LastingEffectCardProperties & { effect: EffectFactory[] } {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }

@@ -15,7 +15,7 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
         super({ gameActions: gameActions });
     }
 
-    getProperties(context: C, additionalProperties = {}): JointGameProperties {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);

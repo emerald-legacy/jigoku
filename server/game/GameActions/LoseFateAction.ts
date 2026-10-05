@@ -9,14 +9,13 @@ export interface LoseFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C> {
+export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C, 'amount'> {
     name = 'spendFate';
     eventName = EventName.OnModifyFate;
-    defaultProperties: LoseFateProperties = { amount: 1 };
+    defaultProperties = { amount: 1 };
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['make {0} lose {1} fate', [properties.target, properties.amount]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['make {0} lose {1} fate', [this.getProperties(context).amount]];
     }
 
     getCostMessage(context: C): MessageArgs {
@@ -26,13 +25,13 @@ export class LoseFateAction<C extends AbilityContext = AbilityContext> extends P
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        return (properties.amount ?? 0) > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
+        return properties.amount > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = -(amount ?? 0);
+        event.amount = -amount;
     }
 
     eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {

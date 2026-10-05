@@ -11,8 +11,8 @@ export interface LoseHonorProperties extends PlayerActionProperties {
     dueToStatusToken?: boolean;
 }
 
-export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName.OnModifyHonor, C> {
-    defaultProperties: LoseHonorProperties = { amount: 1, dueToUnopposed: false, dueToStatusToken: false };
+export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName.OnModifyHonor, C, 'amount' | 'dueToUnopposed' | 'dueToStatusToken'> {
+    defaultProperties = { amount: 1, dueToUnopposed: false, dueToStatusToken: false };
 
     name = 'loseHonor';
     eventName = EventName.OnModifyHonor;
@@ -22,9 +22,8 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
         return ['losing {1} honor', [properties.amount]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['make {0} lose ' + properties.amount + ' honor', [properties.target]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['make {0} lose ' + this.getProperties(context).amount + ' honor', []];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
@@ -35,7 +34,7 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, dueToUnopposed, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = -(amount ?? 0);
+        event.amount = -amount;
         event.dueToUnopposed = dueToUnopposed;
         event.dueToStatusToken = dueToStatusToken;
     }

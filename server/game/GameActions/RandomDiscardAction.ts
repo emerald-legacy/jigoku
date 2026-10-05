@@ -10,22 +10,22 @@ export interface RandomDiscardProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class RandomDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C> {
-    defaultProperties: RandomDiscardProperties = { amount: 1 };
+/** A discard event this action created: `addPropertiesToEvent` always sets its amount. */
+type RandomDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, C> & { amount: number };
+
+export class RandomDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount'> {
+    defaultProperties = { amount: 1 };
 
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return [
-            'make {0} discard {1} {2} at random',
-            [properties.target, properties.amount, (properties.amount ?? 0) > 1 ? 'cards' : 'card']
-        ];
+    protected effectMessage(context: C): MessageArgs {
+        const { amount } = this.getProperties(context);
+        return ['make {0} discard {1} {2} at random', [amount, amount > 1 ? 'cards' : 'card']];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        return (properties.amount ?? 0) > 0 && player.hand.length > 0 && super.canAffect(player, context);
+        return properties.amount > 0 && player.hand.length > 0 && super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
@@ -35,9 +35,9 @@ export class RandomDiscardAction<C extends AbilityContext = AbilityContext> exte
         event.discardedAtRandom = true;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
+    eventHandler(event: RandomDiscardEvent<C>): void {
         const player = event.player;
-        const amount = Math.min(event.amount ?? 0, player.hand.length);
+        const amount = Math.min(event.amount, player.hand.length);
         if(amount === 0) {
             return;
         }

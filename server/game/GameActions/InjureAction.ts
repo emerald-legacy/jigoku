@@ -1,4 +1,3 @@
-import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -16,6 +15,7 @@ export interface InjureActionProperties extends GameActionProperties {
 export class InjureAction<C extends AbilityContext = AbilityContext> extends GameAction<InjureActionProperties, EventName, C> {
     name = 'injure';
     targetType = [CardType.Character];
+    effect = 'injure {0}';
     removeFateGameAction: GameAction;
     discardGameAction: GameAction;
 
@@ -25,16 +25,11 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         this.discardGameAction = new DiscardFromPlayAction({});
     }
 
-    getProperties(context: C, additionalProperties = {}): InjureActionProperties {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         this.removeFateGameAction.setDefaultTarget(() => properties.target);
         this.discardGameAction.setDefaultTarget(() => properties.target);
         return properties;
-    }
-
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['injure {0}', [properties.target]];
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {

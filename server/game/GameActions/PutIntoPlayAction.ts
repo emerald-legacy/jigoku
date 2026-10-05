@@ -4,7 +4,7 @@ import { CardType, EventName, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { ActionEvent } from './GameAction.js';
+import type { ActionEvent, Defaults } from './GameAction.js';
 
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
@@ -14,13 +14,20 @@ export interface PutIntoPlayProperties extends CardActionProperties {
     overrideLocation?: Location;
 }
 
-export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PutIntoPlayProperties, EventName.OnCharacterEntersPlay, C> {
+export type PutIntoPlayDefaults = 'fate' | 'status' | 'controller';
+
+export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    PutIntoPlayProperties,
+    EventName.OnCharacterEntersPlay,
+    C,
+    PutIntoPlayDefaults
+> {
     name = 'putIntoPlay';
     eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';
     targetType = [CardType.Character];
     intoConflict: boolean;
-    defaultProperties: PutIntoPlayProperties = {
+    defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
         status: 'ordinary',
         controller: Players.Self
@@ -41,9 +48,8 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return context.player;
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const { target } = this.getProperties(context);
-        return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), [target]];
+    protected effectMessage(): MessageArgs {
+        return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
     canAffect(card: DrawCard, context: C): boolean {

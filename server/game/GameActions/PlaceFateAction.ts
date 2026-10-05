@@ -14,14 +14,13 @@ export interface PlaceFateProperties extends CardActionProperties {
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, C> {
+export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
-    defaultProperties: PlaceFateProperties = { amount: 1 };
-    getEffectMessage(context: C): MessageArgs {
-        const { amount, target } = this.getProperties(context);
-        return ['place {1} fate on {0}', [target, amount]];
+    defaultProperties = { amount: 1 };
+    protected effectMessage(context: C): MessageArgs {
+        return ['place {1} fate on {0}', [this.getProperties(context).amount]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
@@ -50,7 +49,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
-        event.fate = amount ?? 0;
+        event.fate = amount;
         event.origin = origin;
         event.context = context;
         event.recipient = card;

@@ -11,12 +11,12 @@ export interface RevealProperties extends CardActionProperties {
     onDeclaration?: boolean;
 }
 
-export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName.OnCardRevealed, C> {
+export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName.OnCardRevealed, C, 'chatMessage'> {
     name = 'reveal';
     eventName = EventName.OnCardRevealed;
     effect = 'reveal a card';
     cost = 'revealing {0}';
-    defaultProperties: RevealProperties = { chatMessage: false };
+    defaultProperties = { chatMessage: false };
     canAffect(card: BaseCard, context: C): boolean {
         if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;

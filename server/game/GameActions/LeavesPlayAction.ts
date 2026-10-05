@@ -9,7 +9,11 @@ import type { ActionEvent } from './GameAction.js';
 /** A leaves-play event this action created: `updateEvent` always sets its destination. */
 export type LeavesPlayEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, C> & { destination: Location };
 
-export class LeavesPlayAction<P extends CardActionProperties = CardActionProperties, C extends AbilityContext = AbilityContext> extends CardGameAction<P, EventName.OnCardLeavesPlay, C> {
+export class LeavesPlayAction<
+    P extends CardActionProperties = CardActionProperties,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends CardGameAction<P, EventName.OnCardLeavesPlay, C, D> {
     eventName = EventName.OnCardLeavesPlay;
 
     updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {

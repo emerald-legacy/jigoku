@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Stage } from '../Constants.js';
@@ -29,13 +29,30 @@ export function targetList<T>(target: T | T[] | undefined): T[] {
     return Array.isArray(target) ? target : target ? [target] : [];
 }
 
-/** `P` after `getProperties` has filled in the defaults for `K`. */
-export type WithDefaults<P, K extends keyof P> = P & { [Key in K]-?: NonNullable<P[Key]> };
+/** Values for the keys `D` of `P`. */
+export type Defaults<P, D extends keyof P> = { [Key in D]-?: NonNullable<P[Key]> };
 
+/** `P` after `getProperties` has filled in the defaults for `D`. */
+export type WithDefaults<P, D extends keyof P> = P & Defaults<P, D>;
+
+/** Sets each key of `defaults` that `properties` leaves missing or `undefined`. */
+function fillDefaults<T extends object>(properties: Partial<T>, defaults: Partial<T>): void {
+    for(const key in defaults) {
+        const value = defaults[key];
+        if(properties[key] === undefined && value !== undefined) {
+            properties[key] = value;
+        }
+    }
+}
+
+const baseDefaults = { cannotBeCancelled: false, optional: false };
+
+/** `D` names the properties `defaultProperties` supplies, which `getProperties` returns as non-optional. */
 export class GameAction<
     P extends GameActionProperties = GameActionProperties,
     N extends EventName = EventName,
-    C extends AbilityContext = AbilityContext
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
 > {
     properties?: P;
     targetType: string[] = [];
@@ -44,7 +61,7 @@ export class GameAction<
     cost = '';
     effect = '';
     isNoAction?: boolean;
-    defaultProperties: Partial<P> = {};
+    defaultProperties?: Partial<P> & Defaults<P, D>;
     #defaultTargetsOverride?: (context: AbilityContext) => TargetValue;
     // Method syntax keeps an action for a narrower context assignable to GameAction.
     readonly #own: { resolve(context: C): P };
@@ -66,13 +83,19 @@ export class GameAction<
         return this.#defaultTargetsOverride ? this.#defaultTargetsOverride(context) : this.defaultTargets(context);
     }
 
-    getProperties(context: C, additionalProperties = {}): P {
+    getProperties(context: C, additionalProperties = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+        const defaults = this.defaultProperties;
         const properties = Object.assign(
-            { target: this.getDefaultTargets(context), cannotBeCancelled: false, optional: false },
-            this.defaultProperties,
+            { target: this.getDefaultTargets(context) },
+            baseDefaults,
+            defaults,
             additionalProperties,
             this.#own.resolve(context)
         );
+        fillDefaults<GameActionProperties>(properties, baseDefaults);
+        if(defaults) {
+            fillDefaults<P>(properties, defaults);
+        }
         const rawTarget: GameActionTarget | GameActionTarget[] | undefined = properties.target;
         const targets = (Array.isArray(rawTarget) ? rawTarget : [rawTarget]).filter((target) => !!target);
         return Object.assign(properties, { target: targets });
@@ -82,9 +105,20 @@ export class GameAction<
         return [this.cost, []];
     }
 
+    /** The effect message with `effectMessageTarget` as `{0}`, in front of `effectMessage`'s arguments. */
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        const { target } = this.getProperties(context, additionalProperties);
-        return [this.effect, [target]];
+        const [format, args] = this.effectMessage(context, additionalProperties);
+        return [format, [this.effectMessageTarget(context, additionalProperties), ...args]];
+    }
+
+    /** The effect message, with its arguments from `{1}` on. */
+    protected effectMessage(_context: C, _additionalProperties = {}): MessageArgs {
+        return [this.effect, []];
+    }
+
+    /** `{0}` of the effect message: `undefined` for a message without one. */
+    protected effectMessageTarget(context: C, additionalProperties = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).target;
     }
 
     setDefaultTarget(func: (context: AbilityContext) => TargetValue): void {
@@ -95,7 +129,7 @@ export class GameAction<
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         return (
             this.targetType.includes(target.type) &&
-            !context.gameActionsResolutionChain.includes(this) &&
+            !context.gameActionsResolutionChain.some((action) => action === this) &&
             ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.name, context))
         );
     }
@@ -186,7 +220,7 @@ export class GameAction<
     }
 
     isOptional(context: C, additionalProperties = {}): boolean {
-        return this.getProperties(context, additionalProperties).optional ?? false;
+        return this.getProperties(context, additionalProperties).optional;
     }
 
     moveFateEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {

@@ -17,10 +17,15 @@ export interface MoveCardProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class MoveCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveCardProperties, EventName.Unnamed, C> {
+export class MoveCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    MoveCardProperties,
+    EventName.Unnamed,
+    C,
+    'switch' | 'shuffle' | 'faceup' | 'bottom' | 'changePlayer' | 'discardDestinationCards'
+> {
     name = 'move';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
-    defaultProperties: MoveCardProperties = {
+    defaultProperties = {
         switch: false,
         shuffle: false,
         faceup: false,
@@ -34,16 +39,16 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         const [target] = targetList(properties.target);
         const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
         if(properties.shuffle) {
-            return ['shuffle {0} into {1}\'s {2}', [properties.target, destinationController, properties.destination]];
+            return ['shuffle {0} into {1}\'s {2}', [destinationController, properties.destination]];
         }
         return [
             'move {0} to ' + (properties.bottom ? 'the bottom of ' : '') + '{1}\'s {2}',
-            [properties.target, destinationController, properties.destination]
+            [destinationController, properties.destination]
         ];
     }
 
@@ -84,7 +89,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
             }
         }
         if(properties.destination) {
-            player.moveCard(card, properties.destination, { bottom: !!properties.bottom });
+            player.moveCard(card, properties.destination, { bottom: properties.bottom });
         }
         const targetArr = targetList(properties.target);
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {

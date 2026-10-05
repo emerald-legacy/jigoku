@@ -12,9 +12,9 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
     eventName = EventName.OnCardDetached;
     targetType = [CardType.Attachment];
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const [target] = targetList(this.getProperties(context).target);
-        return ['detach {1} from {0}', [target, target.parent]];
+        return ['detach {1} from {0}', [target.parent]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {

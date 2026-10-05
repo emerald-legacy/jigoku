@@ -9,10 +9,10 @@ export interface GainStatusTokenProperties extends CardActionProperties {
     token?: CharacterStatus;
 }
 
-export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName.OnStatusTokenGained, C> {
+export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName.OnStatusTokenGained, C, 'token'> {
     name = 'gainStatus';
     eventName = EventName.OnStatusTokenGained;
-    defaultProperties: GainStatusTokenProperties = {
+    defaultProperties = {
         token: CharacterStatus.Honored
     };
 
@@ -34,9 +34,8 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         return super.canAffect(card, context);
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['give {0} a {1} status token', [properties.target, properties.token]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['give {0} a {1} status token', [this.getProperties(context).token]];
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenGained, C>, card: BaseCard, context: C, additionalProperties = {}): void {

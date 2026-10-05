@@ -7,7 +7,7 @@ import { CardType, EffectName, Location, Players, TargetMode, type EventName } f
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { GameAction, WithDefaults } from './GameAction.js';
+import type { GameAction } from './GameAction.js';
 import type { EffectArg } from '../Interfaces.js';
 import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
@@ -109,28 +109,37 @@ export function eraseSelectCardsProperties<C extends AbilityContext, K extends C
     return erased;
 }
 
-export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SelectCardActionProperties<C>, EventName, C> {
-    defaultProperties: Partial<SelectCardActionProperties<C>> = {
+export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    SelectCardActionProperties<C>,
+    EventName,
+    C,
+    'cardCondition' | 'subActionProperties' | 'targets' | 'hidePromptIfSingleCard' | 'manuallyRaiseEvent'
+> {
+    defaultProperties = {
         cardCondition: () => true,
-        subActionProperties: (card) => ({ target: card }),
+        subActionProperties: (card: BaseCard | BaseCard[]) => ({ target: card }),
         targets: false,
         hidePromptIfSingleCard: false,
         manuallyRaiseEvent: false
     };
 
-    getEffectMessage(context: C): MessageArgs {
-        const { target, effect, effectArgs } = this.getProperties(context);
+    /** A custom `effect` brings its own arguments, from `{0}` on. */
+    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+        const { effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
-        return ['choose a target for {0}', [target]];
+        return super.getEffectMessage(context, additionalProperties);
     }
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardActionProperties<C>, 'cardCondition' | 'subActionProperties' | 'selector'> {
+    protected effectMessage(): MessageArgs {
+        return ['choose a target for {0}', []];
+    }
+
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
-        const cardCondition = properties.cardCondition ?? (() => true);
-        const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));
+        const { cardCondition, subActionProperties } = properties;
         let selector = properties.selector;
         if(!selector) {
             // the selector is built for this context and only used with it
@@ -141,7 +150,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
                 ) && cardCondition(card, context);
             selector = CardSelector.for(Object.assign({}, properties, { cardCondition: selectorCardCondition }));
         }
-        return Object.assign(properties, { cardCondition, subActionProperties, selector });
+        return Object.assign(properties, { selector });
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
@@ -219,6 +228,6 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        return !!properties.targets && properties.player !== Players.Opponent;
+        return properties.targets && properties.player !== Players.Opponent;
     }
 }

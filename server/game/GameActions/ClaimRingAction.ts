@@ -2,23 +2,18 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
-import type { ActionEvent, WithDefaults } from './GameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
     type?: ConflictType;
 }
 
-export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, C> {
+export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, C, 'takeFate' | 'type'> {
     name = 'claimRing';
     eventName = EventName.OnClaimRing;
     effect = 'claim {0}';
-    defaultProperties: ClaimRingProperties = { takeFate: true, type: ConflictType.Military };
-
-    getProperties(context: C, additionalProperties = {}): WithDefaults<ClaimRingProperties, 'type'> {
-        const properties = super.getProperties(context, additionalProperties);
-        return Object.assign(properties, { type: properties.type ?? ConflictType.Military });
-    }
+    defaultProperties = { takeFate: true, type: ConflictType.Military };
 
     canAffect(ring: Ring, context: C): boolean {
         if(!context.player.checkRestrictions('claimRings', context)) {

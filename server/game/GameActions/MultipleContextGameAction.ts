@@ -21,7 +21,7 @@ export class MultipleContextGameAction<C extends AbilityContext = AbilityContext
         return [message, legalGameActions.map((action) => action.getEffectMessage(context))];
     }
 
-    getProperties(context: C, additionalProperties = {}): MultipleContextActionProperties {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);

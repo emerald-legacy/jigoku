@@ -10,8 +10,8 @@ export interface HandlerProperties<C extends AbilityContext = AbilityContext> ex
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties<C>, EventName.Unnamed, C> {
-    defaultProperties: HandlerProperties<C> = {
+export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties<C>, EventName.Unnamed, C, 'handler' | 'hasTargetsChosenByInitiatingPlayer'> {
+    defaultProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
     };
@@ -30,14 +30,10 @@ export class HandlerAction<C extends AbilityContext = AbilityContext> extends Ga
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
-        properties.handler?.(event.context, targetList(properties.target));
+        properties.handler(event.context, targetList(properties.target));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
-        const { hasTargetsChosenByInitiatingPlayer } = this.getProperties(
-            context,
-            additionalProperties
-        );
-        return !!hasTargetsChosenByInitiatingPlayer;
+        return this.getProperties(context, additionalProperties).hasTargetsChosenByInitiatingPlayer;
     }
 }

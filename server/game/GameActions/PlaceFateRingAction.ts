@@ -13,21 +13,21 @@ export interface PlaceFateRingProperties extends RingActionProperties {
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C> {
+export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
-    defaultProperties: PlaceFateRingProperties = { amount: 1 };
+    defaultProperties = { amount: 1 };
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['placing {1} fate on the {0}', [properties.amount]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         if(properties.origin) {
-            return ['move {1} fate from {2} to {0}', [properties.target, properties.amount, properties.origin]];
+            return ['move {1} fate from {2} to {0}', [properties.amount, properties.origin]];
         }
-        return ['place {1} fate on {0}', [properties.target, properties.amount]];
+        return ['place {1} fate on {0}', [properties.amount]];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
@@ -38,12 +38,12 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
         ) {
             return false;
         }
-        return (properties.amount ?? 0) > 0 && super.canAffect(ring, context);
+        return properties.amount > 0 && super.canAffect(ring, context);
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
-        event.fate = amount ?? 0;
+        event.fate = amount;
         event.origin = origin;
         event.context = context;
         event.recipient = ring;

@@ -9,16 +9,18 @@ export interface AddTokenProperties extends CardActionProperties {
     tokenType?: TokenType;
 }
 
-export class AddTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName.OnAddTokenToCard, C> {
+/** An add-token event this action created: `addPropertiesToEvent` always sets its token type. */
+type AddTokenEvent<C extends AbilityContext> = ActionEvent<EventName.OnAddTokenToCard, C> & { tokenType: TokenType };
+
+export class AddTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName.OnAddTokenToCard, C, 'tokenType'> {
     name = 'addToken';
     eventName = EventName.OnAddTokenToCard;
-    defaultProperties: AddTokenProperties = {
+    defaultProperties = {
         tokenType: TokenType.Honor
     };
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['add a {1} token to {0}', [properties.target, properties.tokenType]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['add a {1} token to {0}', [this.getProperties(context).tokenType]];
     }
 
     canAffect(card: BaseCard, context: C): boolean {
@@ -41,7 +43,7 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
         event.tokenType = tokenType;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnAddTokenToCard, C>): void {
-        event.card.addToken(event.tokenType ?? '');
+    eventHandler(event: AddTokenEvent<C>): void {
+        event.card.addToken(event.tokenType);
     }
 }

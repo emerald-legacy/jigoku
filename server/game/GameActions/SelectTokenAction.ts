@@ -5,7 +5,7 @@ import { Players, type EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
-import type { GameAction, WithDefaults } from './GameAction.js';
+import type { GameAction } from './GameAction.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 import type { EffectArg } from '../Interfaces.js';
 
@@ -25,33 +25,38 @@ export interface SelectTokenProperties extends TokenActionProperties {
     effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
-export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<SelectTokenProperties, EventName, C> {
+export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<
+    SelectTokenProperties,
+    EventName,
+    C,
+    'activePromptTitle' | 'tokenCondition' | 'singleToken' | 'subActionProperties'
+> {
     name = 'selectToken';
-    defaultProperties: Partial<SelectTokenProperties> = {
+    defaultProperties = {
         activePromptTitle: 'Which token do you wish to select?',
         tokenCondition: () => true,
         singleToken: true,
-        subActionProperties: (token) => ({ target: token })
+        subActionProperties: (tokens: StatusToken | StatusToken[]) => ({ target: tokens })
     };
 
-    getEffectMessage(context: C): MessageArgs {
-        const { target, effect, effectArgs } = this.getProperties(context);
+    /** A custom `effect` brings its own arguments, from `{0}` on. */
+    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+        const { effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
-        return ['choose a status token for {0}', [target]];
+        return super.getEffectMessage(context, additionalProperties);
     }
 
-    private resolveProperties(context: C, additionalProperties = {}): WithDefaults<SelectTokenProperties, 'tokenCondition' | 'subActionProperties' | 'card'> | null {
+    protected effectMessage(): MessageArgs {
+        return ['choose a status token for {0}', []];
+    }
+
+    /** The properties, once there is a card to choose a token from. */
+    private resolveProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
-        if(!properties.card) {
-            return null;
-        }
-        return Object.assign(properties, {
-            tokenCondition: properties.tokenCondition ?? (() => true),
-            subActionProperties: properties.subActionProperties ?? ((tokens: StatusToken | StatusToken[]) => ({ target: tokens })),
-            card: properties.card
-        });
+        const { card } = properties;
+        return card ? Object.assign(properties, { card }) : null;
     }
 
     canAffect(token: StatusToken, context: C, additionalProperties = {}): boolean {

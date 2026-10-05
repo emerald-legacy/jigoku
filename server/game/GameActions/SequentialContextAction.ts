@@ -15,7 +15,7 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
         return properties.gameActions[0].getEffectMessage(context);
     }
 
-    getProperties(context: C, additionalProperties = {}): SequentialContextProperties {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);

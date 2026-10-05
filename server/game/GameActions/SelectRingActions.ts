@@ -4,7 +4,7 @@ import type { Event } from '../Events/Event.js';
 import { Players, type EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import type { GameAction, WithDefaults } from './GameAction.js';
+import type { GameAction } from './GameAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface SelectRingProperties extends RingActionProperties {
@@ -19,22 +19,14 @@ export interface SelectRingProperties extends RingActionProperties {
     gameAction: GameAction;
 }
 
-export class SelectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<SelectRingProperties, EventName, C> {
-    defaultProperties: Partial<SelectRingProperties> = {
+export class SelectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<SelectRingProperties, EventName, C, 'ringCondition' | 'subActionProperties'> {
+    defaultProperties = {
         ringCondition: () => true,
-        subActionProperties: (ring) => ({ target: ring })
+        subActionProperties: (ring: Ring) => ({ target: ring })
     };
 
-    getEffectMessage(context: C): MessageArgs {
-        const { target } = this.getProperties(context);
-        return ['choose a ring for {0}', [target]];
-    }
-
-    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectRingProperties, 'ringCondition' | 'subActionProperties'> {
-        const properties = super.getProperties(context, additionalProperties);
-        const ringCondition = properties.ringCondition ?? (() => true);
-        const subActionProperties = properties.subActionProperties ?? ((ring: Ring) => ({ target: ring }));
-        return Object.assign(properties, { ringCondition, subActionProperties });
+    protected effectMessage(): MessageArgs {
+        return ['choose a ring for {0}', []];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {

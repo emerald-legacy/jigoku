@@ -15,8 +15,8 @@ export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     bottom?: boolean;
 }
 
-export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved, C> {
-    defaultProperties: ChosenReturnToDeckProperties = {
+export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved, C, 'amount' | 'targets' | 'shuffle' | 'bottom'> {
+    defaultProperties = {
         amount: 1,
         targets: true,
         shuffle: false,
@@ -25,9 +25,8 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     name = 'returnToDeck';
     eventName = EventName.OnCardMoved;
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['make {0} return {1} cards to their deck', [properties.target, properties.amount]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['make {0} return {1} cards to their deck', [this.getProperties(context).amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
@@ -41,7 +40,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
-            const amount = Math.min(player.hand.length, properties.amount ?? 0);
+            const amount = Math.min(player.hand.length, properties.amount);
             if(amount > 0) {
                 if(amount === player.hand.length) {
                     const event = this.getEvent(player, context);

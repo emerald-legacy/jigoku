@@ -9,7 +9,12 @@ export interface TokenActionProperties extends GameActionProperties {
 
 export type TokenEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { token: StatusToken };
 
-export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {
+export class TokenAction<
+    P extends TokenActionProperties = TokenActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext,
+    D extends keyof P = never
+> extends GameAction<P, N, C, D> {
     targetType = ['token'];
 
     defaultTargets(context: C): StatusToken[] {

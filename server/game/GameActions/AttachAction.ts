@@ -20,11 +20,16 @@ export interface AttachActionProperties extends CardActionProperties {
     wasACharacter?: boolean;
 }
 
-export class AttachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AttachActionProperties, EventName.OnCardAttached, C> {
+export class AttachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    AttachActionProperties,
+    EventName.OnCardAttached,
+    C,
+    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised' | 'wasACharacter'
+> {
     name = 'attach';
     eventName = EventName.OnCardAttached;
     targetType = [CardType.Character, CardType.Province];
-    defaultProperties: AttachActionProperties = {
+    defaultProperties = {
         ignoreType: false,
         takeControl: false,
         giveControl: false,
@@ -33,20 +38,14 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         wasACharacter: false
     };
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         if(properties.takeControl) {
-            return [
-                'take control of and attach {2}\'s {1} to {0}',
-                [properties.target, properties.attachment, properties.attachment?.parent]
-            ];
+            return ['take control of and attach {2}\'s {1} to {0}', [properties.attachment, properties.attachment?.parent]];
         } else if(properties.giveControl) {
-            return [
-                'give control of and attach {2}\'s {1} to {0}',
-                [properties.target, properties.attachment, properties.attachment?.parent]
-            ];
+            return ['give control of and attach {2}\'s {1} to {0}', [properties.attachment, properties.attachment?.parent]];
         }
-        return ['attach {1} to {0}', [properties.target, properties.attachment]];
+        return ['attach {1} to {0}', [properties.attachment]];
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
@@ -61,7 +60,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
             !properties.attachment ||
             (!properties.ignoreUniqueness && properties.attachment.anotherUniqueInPlay(context.player)) ||
             !properties.attachment.canAttach(card, {
-                ignoreType: !!properties.ignoreType,
+                ignoreType: properties.ignoreType,
                 controller: this.getFinalController(properties, context) ?? properties.attachment.controller
             })
         ) {

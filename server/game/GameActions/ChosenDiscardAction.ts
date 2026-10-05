@@ -5,7 +5,7 @@ import type BaseCard from '../BaseCard.js';
 import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import { targetList, type WithDefaults, type ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export interface ChosenDiscardProperties extends PlayerActionProperties {
     amount?: number;
@@ -13,24 +13,17 @@ export interface ChosenDiscardProperties extends PlayerActionProperties {
     cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
 }
 
-export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, C> {
-    defaultProperties: Partial<ChosenDiscardProperties> = {
-        targets: true
+export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'targets' | 'cardCondition'> {
+    defaultProperties = {
+        amount: 1,
+        targets: true,
+        cardCondition: () => true
     };
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<ChosenDiscardProperties, 'amount' | 'cardCondition'> {
-        const properties = super.getProperties(context, additionalProperties);
-        return Object.assign(properties, {
-            amount: properties.amount ?? 1,
-            cardCondition: properties.cardCondition ?? (() => true)
-        });
-    }
-
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['make {0} discard {1} cards', [properties.target, properties.amount]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['make {0} discard {1} cards', [this.getProperties(context).amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {

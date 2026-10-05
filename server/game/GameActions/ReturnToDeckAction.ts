@@ -12,10 +12,10 @@ export interface ReturnToDeckProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<ReturnToDeckProperties, C> {
+export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<ReturnToDeckProperties, C, 'bottom' | 'shuffle' | 'location'> {
     name = 'returnToDeck';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
-    defaultProperties: ReturnToDeckProperties = {
+    defaultProperties = {
         bottom: false,
         shuffle: false,
         location: Location.PlayArea
@@ -31,21 +31,17 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         ];
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         if(properties.shuffle) {
-            return ['shuffle {0} into its owner\'s deck', [properties.target]];
+            return ['shuffle {0} into its owner\'s deck', []];
         }
-        return [
-            'return {0} to the ' + (properties.bottom ? 'bottom' : 'top') + ' of its owner\'s deck',
-            [properties.target]
-        ];
+        return ['return {0} to the ' + (properties.bottom ? 'bottom' : 'top') + ' of its owner\'s deck', []];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context);
-        const rawLocation = properties.location ?? Location.PlayArea;
-        let location: Location[] = Array.isArray(rawLocation) ? [...rawLocation] : [rawLocation];
+        let location: Location[] = Array.isArray(properties.location) ? [...properties.location] : [properties.location];
         const index = location.indexOf(Location.Provinces);
         if(index > -1) {
             location.splice(index, 1);

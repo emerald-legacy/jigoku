@@ -1,4 +1,4 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -17,10 +17,10 @@ export interface ModifyBidProperties extends PlayerActionProperties {
     direction?: Direction;
 }
 
-export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid, C> {
+export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid, C, 'amount' | 'direction'> {
     name = 'modifyBid';
     eventName = EventName.OnModifyBid;
-    defaultProperties: ModifyBidProperties = {
+    defaultProperties = {
         amount: 1,
         direction: Direction.Increase
     };
@@ -29,12 +29,18 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         return [context.player];
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
-            return ['modify their honor bid by {0}', [properties.amount]];
+            return ['modify their honor bid by {0}', []];
         }
-        return ['{0} their bid by {1}', [properties.direction, properties.amount]];
+        return ['{0} their bid by {1}', [properties.amount]];
+    }
+
+    /** The direction, or the amount when the player picks the direction. */
+    protected effectMessageTarget(context: C): MsgArg {
+        const properties = this.getProperties(context);
+        return properties.direction === Direction.Prompt ? properties.amount : properties.direction;
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
@@ -79,7 +85,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount ?? 0;
+        event.amount = amount;
         event.direction = direction;
     }
 

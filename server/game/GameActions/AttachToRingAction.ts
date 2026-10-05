@@ -17,9 +17,8 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
     eventName = EventName.OnCardAttached;
     targetType = ['ring'];
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['attach {1} to {0}', [properties.target, properties.attachment]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['attach {1} to {0}', [this.getProperties(context).attachment]];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {

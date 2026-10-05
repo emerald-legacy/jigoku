@@ -15,6 +15,24 @@ export interface FateBidProperties extends PlayerActionProperties {
     messageArgs?: (context: AbilityContext) => MsgArg[];
 }
 
+/** The bid's `postBidAction` and its message, which the bid event carries. */
+type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message' | 'messageArgs'>;
+
+/** Queues what follows a fate or honor bid: resolve `postBidAction`, then report it. */
+export function queuePostBidSteps(event: PostBid, context: AbilityContext): void {
+    context.game.queueStep(
+        new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
+    );
+    context.game.queueStep(
+        new SimpleStep(context.game, () => {
+            const [message, messageArgs]: MessageArgs = event.message
+                ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
+                : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
+            context.game.addMessage(message, ...messageArgs);
+        })
+    );
+}
+
 export class FateBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FateBidProperties, EventName.Unnamed, C> {
     name = 'fateBid';
     eventName = EventName.Unnamed;
@@ -23,9 +41,12 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
         return [context.player];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const players = [context.player, context.player.opponent];
-        return ['have {0} select an amount of fate from their pool', [players]];
+    protected effectMessage(): MessageArgs {
+        return ['have {0} select an amount of fate from their pool', []];
+    }
+
+    protected effectMessageTarget(context: C): MsgArg {
+        return [context.player, context.player.opponent];
     }
 
     addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
@@ -51,16 +72,6 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
                 new JointGameAction(actions).resolve(undefined, context);
             })
         );
-        context.game.queueStep(
-            new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
-        );
-        context.game.queueStep(
-            new SimpleStep(context.game, () => {
-                const [message, messageArgs]: MessageArgs = event.message
-                    ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
-                    : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
-                context.game.addMessage(message, ...messageArgs);
-            })
-        );
+        queuePostBidSteps(event, context);
     }
 }

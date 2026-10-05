@@ -6,11 +6,11 @@ import type { ActionEvent } from './GameAction.js';
 
 export type LastingEffectRingProperties = LastingEffectGeneralProperties;
 
-export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, C> {
+export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, C, 'duration' | 'effect'> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect';
-    defaultProperties: LastingEffectRingProperties = {
+    defaultProperties = {
         duration: Duration.UntilEndOfConflict,
         effect: []
     };
@@ -20,6 +20,6 @@ export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> 
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => Object.assign({ match: event.ring }, properties));
+        event.context.source.applyDurationEffect(properties.duration, () => Object.assign({ match: event.ring }, properties));
     }
 }

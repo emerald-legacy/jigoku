@@ -9,24 +9,22 @@ export interface TransferFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class TransferFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferFateProperties, EventName.OnMoveFate, C> {
+export class TransferFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferFateProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
-    defaultProperties: TransferFateProperties = { amount: 1 };
+    defaultProperties = { amount: 1 };
 
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['take {1} fate from {0}', [properties.target, properties.amount]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['take {1} fate from {0}', [this.getProperties(context).amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties);
-        const amount = properties.amount ?? 0;
+        const { amount } = this.getProperties(context, additionalProperties);
         return (
             !!player.opponent &&
             amount > 0 &&
@@ -38,7 +36,7 @@ export class TransferFateAction<C extends AbilityContext = AbilityContext> exten
     addPropertiesToEvent(event: PlayerEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.fate = amount ?? 0;
+        event.fate = amount;
         event.origin = player;
         event.recipient = player.opponent;
     }

@@ -18,38 +18,53 @@ export interface TriggerAbilityProperties extends CardActionProperties {
     event?: Event;
 }
 
-export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, C> {
+/** The ability `ResolveAbilityAction` or `TriggerAbilityAction` resolves, and for whom. */
+interface AbilityToResolve {
+    ability: CardAbility;
+    subResolution?: boolean;
+    player?: Player;
+    event?: Event;
+}
+
+export function abilityContext(properties: AbilityToResolve, context: AbilityContext) {
+    const ability = properties.ability;
+    const player = properties.player || context.player;
+    return ability instanceof TriggeredAbility ? ability.createContext(player, properties.event) : ability.createContext(player);
+}
+
+/** The ability checks of `canAffect`, after the card checks. */
+export function canResolveAbility(properties: AbilityToResolve, context: AbilityContext, ignoredRequirements: string[]): boolean {
+    const ability = properties.ability;
+    const player = properties.player || context.player;
+    if(!ability || (!properties.subResolution && player.isAbilityAtMax(ability.maxIdentifier))) {
+        return false;
+    }
+    return !ability.meetsRequirements(abilityContext(properties, context), ignoredRequirements);
+}
+
+export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, C, 'ignoredRequirements' | 'subResolution'> {
     name = 'triggerAbility';
-    defaultProperties: Partial<TriggerAbilityProperties> = {
+    defaultProperties = {
         ignoredRequirements: [],
         subResolution: false
     };
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
+    protected effectMessage(context: C): MessageArgs {
+        return ['resolve {0}\'s {1} ability', [this.getProperties(context).ability.title]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        const ability = properties.ability;
-        const player = properties.player || context.player;
-        if(
-            !super.canAffect(card, context) ||
-            !ability ||
-            (!properties.subResolution && player.isAbilityAtMax(ability.maxIdentifier))
-        ) {
-            return false;
-        }
-        const newContext = this.triggeredAbilityContext(properties, context);
-        const ignoredRequirements = (properties.ignoredRequirements ?? []).concat('player', 'location', 'limit');
-        return !ability.meetsRequirements(newContext, ignoredRequirements);
+        return (
+            super.canAffect(card, context) &&
+            canResolveAbility(properties, context, properties.ignoredRequirements.concat('player', 'location', 'limit'))
+        );
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
-        const newContext = this.triggeredAbilityContext(properties, event.context);
-        newContext.subResolution = !!properties.subResolution;
+        const newContext = abilityContext(properties, event.context);
+        newContext.subResolution = properties.subResolution;
         if(properties.subResolution) {
             newContext.originatingContext = event.context.triggeringContext;
         }
@@ -61,13 +76,7 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         return (
             properties.ability &&
             properties.ability.hasTargetsChosenByInitiatingPlayer &&
-            properties.ability.hasTargetsChosenByInitiatingPlayer(this.triggeredAbilityContext(properties, context))
+            properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context))
         );
-    }
-
-    private triggeredAbilityContext(properties: TriggerAbilityProperties, context: C) {
-        const ability = properties.ability;
-        const player = properties.player || context.player;
-        return ability instanceof TriggeredAbility ? ability.createContext(player, properties.event) : ability.createContext(player);
     }
 }

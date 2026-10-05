@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { Decks, EventName, Location, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/shuffle.js';
 import type DrawCard from '../DrawCard.js';
-import type { GameAction, ActionEvent } from './GameAction.js';
+import type { GameAction, ActionEvent, WithDefaults } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
@@ -31,11 +31,24 @@ export interface DeckSearchProperties extends PlayerActionProperties {
     takesNothingGameAction?: GameAction;
 }
 
-export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DeckSearchProperties, EventName.OnDeckSearch, C> {
+type DeckSearchDefaults =
+    | 'amount'
+    | 'numCards'
+    | 'targetMode'
+    | 'deck'
+    | 'shuffle'
+    | 'reveal'
+    | 'uniqueNames'
+    | 'placeOnBottomInRandomOrder'
+    | 'cardCondition';
+
+type ResolvedDeckSearchProperties = WithDefaults<DeckSearchProperties, DeckSearchDefaults>;
+
+export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DeckSearchProperties, EventName.OnDeckSearch, C, DeckSearchDefaults> {
     name = 'deckSearch';
     eventName = EventName.OnDeckSearch;
 
-    defaultProperties: DeckSearchProperties = {
+    defaultProperties = {
         amount: -1,
         numCards: 1,
         targetMode: TargetMode.Single,
@@ -49,16 +62,15 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(derive(properties.amount ?? -1, context) === 0) {
+        if(derive(properties.amount, context) === 0) {
             return false;
         }
         const player = properties.player || context.player;
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
-        const amount = derive(properties.amount ?? -1, context);
+    protected effectMessage(context: C): MessageArgs {
+        const amount = derive(this.getProperties(context).amount, context);
         const message =
             amount > 0
                 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of their deck`
@@ -66,9 +78,13 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return [message, []];
     }
 
+    protected effectMessageTarget(): MsgArg {
+        return undefined;
+    }
+
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        const amount = derive(properties.amount ?? -1, context);
+        const amount = derive(properties.amount, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
@@ -78,27 +94,24 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
-        const fAmount = derive(amount ?? -1, context);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = fAmount;
+        event.amount = derive(amount, context);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const player = properties.player || context.player;
         const event = this.getEvent(player, context);
-        const evAmount = event.amount ?? -1;
-        const amount = evAmount > -1 ? evAmount : this.#getDeck(player, properties).length;
+        const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
-        const cardCondition = properties.cardCondition ?? (() => true);
-        if(evAmount === -1) {
-            cards = cards.filter((card) => cardCondition(card, context));
+        if(event.amount === -1) {
+            cards = cards.filter((card) => properties.cardCondition(card, context));
         }
         events.push(event);
         this.#selectCard(event, additionalProperties, cards, new Set());
     }
 
-    #getDeck(player: Player, properties: DeckSearchProperties): DrawCard[] {
+    #getDeck(player: Player, properties: ResolvedDeckSearchProperties): DrawCard[] {
         switch(properties.deck) {
             case Decks.DynastyDeck:
                 return player.dynastyDeck.slice();
@@ -117,13 +130,13 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         const choosingPlayer = properties.choosingPlayer || event.player;
 
         if(properties.targetMode === TargetMode.UpTo || properties.targetMode === TargetMode.UpToVariable) {
-            selectAmount = derive(properties.numCards ?? 1, context);
+            selectAmount = derive(properties.numCards, context);
         }
         if(properties.targetMode === TargetMode.Single) {
             selectAmount = 1;
         }
         if(properties.targetMode === TargetMode.Exactly || properties.targetMode === TargetMode.ExactlyVariable) {
-            selectAmount = derive(properties.numCards ?? 1, context);
+            selectAmount = derive(properties.numCards, context);
         }
         if(properties.targetMode === TargetMode.Unlimited) {
             selectAmount = -1;
@@ -148,7 +161,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
             context: context,
             cards: cards,
             cardCondition: (card) =>
-                (properties.cardCondition ?? (() => true))(card, context) &&
+                properties.cardCondition(card, context) &&
                 (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
                 (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties)),
             options: canCancel ? [{ text: selectedCards.size > 0 ? 'Done' : 'Take nothing', handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
@@ -169,7 +182,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #handleDone(
-        properties: DeckSearchProperties,
+        properties: ResolvedDeckSearchProperties,
         context: C,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>,
@@ -192,14 +205,14 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #defaultRemainingCardsHandler(
-        properties: DeckSearchProperties,
+        properties: ResolvedDeckSearchProperties,
         context: C,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
     ): void {
         const player = event.player;
-        if(derive(properties.shuffle ?? false, context)) {
+        if(derive(properties.shuffle, context)) {
             switch(properties.deck) {
                 case Decks.ConflictDeck:
                     return player.shuffleConflictDeck();
@@ -230,7 +243,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #defaultHandleDone(
-        properties: DeckSearchProperties,
+        properties: ResolvedDeckSearchProperties,
         context: C,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
@@ -251,7 +264,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #doneMessage(
-        properties: DeckSearchProperties,
+        properties: ResolvedDeckSearchProperties,
         context: C,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
@@ -278,7 +291,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         );
     }
 
-    #takesNothing(properties: DeckSearchProperties, context: C, event: GameEvent<EventName.OnDeckSearch>): void {
+    #takesNothing(properties: ResolvedDeckSearchProperties, context: C, event: GameEvent<EventName.OnDeckSearch>): void {
         const choosingPlayer = (properties.choosingPlayer || event.player);
         context.game.addMessage('{0} takes nothing', choosingPlayer);
         if(properties.takesNothingGameAction) {

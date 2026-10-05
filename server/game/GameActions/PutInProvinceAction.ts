@@ -15,11 +15,16 @@ export interface PutInProvinceProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class PutInProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PutInProvinceProperties, EventName.OnCardLeavesPlay, C> {
+export class PutInProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+    PutInProvinceProperties,
+    EventName.OnCardLeavesPlay,
+    C,
+    'switch' | 'faceup' | 'changePlayer' | 'discardDestinationCards'
+> {
     name = 'putInProvince';
     eventName = EventName.OnCardLeavesPlay;
     targetType = [CardType.Character, CardType.Attachment];
-    defaultProperties: PutInProvinceProperties = {
+    defaultProperties = {
         switch: false,
         faceup: true,
         changePlayer: false,
@@ -31,11 +36,11 @@ export class PutInProvinceAction<C extends AbilityContext = AbilityContext> exte
         return ['putting {0} into {1}', [properties.destination]];
     }
 
-    getEffectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         const [target] = targetList(properties.target);
         const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
-        return ['move {0} to {1}\'s {2}', [properties.target, destinationController, properties.destination]];
+        return ['move {0} to {1}\'s {2}', [destinationController, properties.destination]];
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {

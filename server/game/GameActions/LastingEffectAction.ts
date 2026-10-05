@@ -31,15 +31,15 @@ export interface LastingEffectProperties extends LastingEffectGeneralProperties 
     targetController?: Players | Player;
 }
 
-export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, C> {
+export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, C, 'duration'> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect';
-    defaultProperties: Partial<LastingEffectProperties> = {
+    defaultProperties = {
         duration: Duration.UntilEndOfConflict
     };
 
-    getProperties(context: C, additionalProperties = {}): LastingEffectProperties & { effect: EffectFactory[] } {
+    getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
@@ -60,6 +60,6 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => properties);
+        event.context.source.applyDurationEffect(properties.duration, () => properties);
     }
 }
