@@ -3,6 +3,7 @@ const jasmine = require('eslint-plugin-jasmine');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsparser = require('@typescript-eslint/parser');
 const globals = require('globals');
+const declaredTargetNames = require('./eslint/declared-target-names.cjs');
 
 module.exports = [
     {
@@ -28,11 +29,11 @@ module.exports = [
             jasmine
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2024,
             sourceType: 'module',
             globals: {
                 ...globals.node,
-                ...globals.es2020,
+                ...globals.es2024,
                 ...globals.jasmine
             }
         },
@@ -86,10 +87,11 @@ module.exports = [
         files: ['server/**/*.ts'],
         plugins: {
             '@typescript-eslint': tseslint,
-            jasmine
+            jasmine,
+            local: { rules: { 'declared-target-names': declaredTargetNames } }
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2024,
             sourceType: 'module',
             parser: tsparser,
             parserOptions: {
@@ -97,7 +99,7 @@ module.exports = [
             },
             globals: {
                 ...globals.node,
-                ...globals.es2020,
+                ...globals.es2024,
                 ...globals.jasmine
             }
         },
@@ -120,6 +122,7 @@ module.exports = [
             '@typescript-eslint/no-duplicate-enum-values': 'error',
             '@typescript-eslint/no-unused-expressions': 'error',
             '@typescript-eslint/no-this-alias': 'error',
+            'local/declared-target-names': 'error',
             'no-redeclare': 'off',
 
             // Jasmine rules
@@ -171,12 +174,12 @@ module.exports = [
             jasmine
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 2024,
             sourceType: 'module',
             parser: tsparser,
             globals: {
                 ...globals.node,
-                ...globals.es2020,
+                ...globals.es2024,
                 ...globals.jasmine,
                 integration: 'readonly',
                 fillers: 'readonly'
