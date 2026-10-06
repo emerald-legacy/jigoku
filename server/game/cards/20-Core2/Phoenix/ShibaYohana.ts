@@ -17,16 +17,15 @@ export default class ShibaYohana extends DrawCard {
                 replacementGameAction: taint()
             })))
             .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
-            .then((context) => ({
-                gameAction: cardLastingEffect({
-                    target: context.source,
-                    duration: Duration.Custom,
-                    until: {
-                        onCardLeavesPlay: (event) => event.card === context.source
-                    },
-                    effect: addTrait('spirit')
-                })
-            }));
+            .then()
+            .gameAction(cardLastingEffect((context) => ({
+                target: context.source,
+                duration: Duration.Custom,
+                until: {
+                    onCardLeavesPlay: (event) => event.card === context.source
+                },
+                effect: addTrait('spirit')
+            })));
 
         this.conflictAction('Move a character into the conflict')
             .target({

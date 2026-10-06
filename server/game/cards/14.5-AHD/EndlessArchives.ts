@@ -14,23 +14,22 @@ class EndlessArchives extends DrawCard {
             })
             .gameAction(addToken())
             .effect((context) => msg`place an honor token on ${context.source} and exchange cards from their hand`)
-            .then(() => ({
-                gameAction: sequential([
-                    chosenReturnToDeck(context => ({
-                        target: context.player,
-                        targets: false,
-                        shuffle: false,
-                        bottom: true,
-                        amount: context.source.getTokenCount(TokenType.Honor)
-                    })),
-                    draw(context => ({
-                        target: context.player,
-                        amount: context.events.find((event) => event.is(EventName.OnCardMoved))?.cards?.length ?? 0
-                    }))
-                ])
-            }))
             .limit(AbilityDsl.limit.unlimitedPerConflict())
-            .anyPlayer();
+            .anyPlayer()
+            .then()
+            .gameAction(sequential([
+                chosenReturnToDeck(context => ({
+                    target: context.player,
+                    targets: false,
+                    shuffle: false,
+                    bottom: true,
+                    amount: context.source.getTokenCount(TokenType.Honor)
+                })),
+                draw(context => ({
+                    target: context.player,
+                    amount: context.events.find((event) => event.is(EventName.OnCardMoved))?.cards?.length ?? 0
+                }))
+            ]));
     }
 }
 

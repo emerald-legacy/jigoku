@@ -28,16 +28,8 @@ export default class SupplyOfficer extends DrawCard {
                 ])
             ]))
             .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`)
-            .then((context) => {
-                const characterInConflict = context.targets.characterInConflict;
-                return {
-                    message: '{3} is readied',
-                    messageArgs: () => [characterInConflict],
-                    thenCondition: () => !characterInConflict.isParticipating(),
-                    gameAction: ready({
-                        target: characterInConflict
-                    })
-                };
-            });
+            .thenIf((context) => !context.targets.characterInConflict.isParticipating())
+            .gameAction(ready((context) => ({ target: context.targets.characterInConflict })))
+            .message((context) => msg`${context.targets.characterInConflict} is readied`);
     }
 }

@@ -558,10 +558,18 @@ export class AbilityBuilder<
     /** The choice lands in `context.selects`, not in `targets`. */
     select<const Name extends string = never, D extends Dependency<TG, RG, TK, SL> = never>(
         props: Named<Name> & SelectTargetProps<EarlierContext<Base, TG, RG, CO, TK, D>, D>,
-        choices: NoInfer<Record<string, BuilderAction<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>>
+        choices: NoInfer<Record<string,
+            | BuilderAction<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>
+            | ((context: EarlierContext<Base, TG, RG, CO, TK, D>) => boolean)>>
     ): AbilityBuilder<Base, TG, RG, CO, TK, SL | TargetName<Name>> {
         const name = props.name ?? 'target';
-        this.#select(name, props, this.#actionChoices(choices));
+        const [required, optional] = this.#earlier(props.dependsOn);
+        const entries: Record<string, GameAction | ((context: AbilityContext) => boolean)> = {};
+        for(const [label, choice] of Object.entries(choices)) {
+            // a condition is a choice without game actions ("No"), available while it holds
+            entries[label] = typeof choice === 'function' ? this.#checked(choice, required, optional) : toGameAction(choice, `${this.draft.title}: not a game action`);
+        }
+        this.#select(name, props, entries);
         return new AbilityBuilder(this.draft);
     }
 

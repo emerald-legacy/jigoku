@@ -1,4 +1,4 @@
-import { CardType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -38,22 +38,13 @@ export default class DeedsNotWords extends DrawCard {
                 }))
             ]))
             .effect('give {0} +2{1}', () => ['military'])
-            .then(context => ({
-                thenCondition: () => context.player.imperialFavor !== '',
-                target: {
-                    mode: TargetMode.Select,
-                    choices: {
-                        'Discard the Imperial Favor': joint([
-                            loseImperialFavor({
-                                target: context.player
-                            }),
-                            honor({
-                                target: context.target
-                            })
-                        ]),
-                        'Done': () => true
-                    }
-                }
-            }));
+            .thenIf((context) => context.player.imperialFavor !== '')
+            .select({}, {
+                'Discard the Imperial Favor': joint([
+                    loseImperialFavor((context) => ({ target: context.player })),
+                    honor((context) => ({ target: context.target }))
+                ]),
+                Done: () => true
+            });
     }
 }
