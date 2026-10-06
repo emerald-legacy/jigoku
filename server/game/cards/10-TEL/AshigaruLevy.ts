@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class AshigaruLevy extends DrawCard {
@@ -14,7 +14,7 @@ class AshigaruLevy extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.DynastyDiscardPile],
                 cardCondition: (card, context) => card.owner === context.player && card.id === 'ashigaru-levy'
-            }, AbilityDsl.actions.putIntoPlay())
+            }, putIntoPlay())
             .effect('put {0} into play');
     }
 }

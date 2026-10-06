@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, dishonor, honor } from '../../GameActions/GameActions.js';
 import { CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
@@ -19,10 +19,10 @@ class AGameOfLetters extends DrawCard {
                 dependsOn: 'token',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.controller !== context.tokens.token[0].card?.controller && card.isParticipating()
-            }, AbilityDsl.actions.conditional((context) => ({
+            }, conditional((context) => ({
                 condition: context.tokens.token[0].grantedStatus === CharacterStatus.Honored,
-                trueGameAction: AbilityDsl.actions.honor(),
-                falseGameAction: AbilityDsl.actions.dishonor()
+                trueGameAction: honor(),
+                falseGameAction: dishonor()
             })));
     }
 }

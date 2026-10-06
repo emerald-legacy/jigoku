@@ -1,5 +1,7 @@
 import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cannotDeclareRing } from '../../../effects.js';
+import { ringLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class YoungIseZumi extends DrawCard {
@@ -13,10 +15,10 @@ export default class YoungIseZumi extends DrawCard {
                     context.source.isParticipating()
             })
             .cost(AbilityDsl.costs.payFateToRing(1, () => true))
-            .gameAction(AbilityDsl.actions.ringLastingEffect((context) => ({
+            .gameAction(ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.costs.placeFate || context.game.rings.air,
-                effect: AbilityDsl.effects.cannotDeclareRing(() => true)
+                effect: cannotDeclareRing(() => true)
             })))
             .effect('prevent conflicts from being declared with the {1}', context => [context.costs.placeFate]);
     }

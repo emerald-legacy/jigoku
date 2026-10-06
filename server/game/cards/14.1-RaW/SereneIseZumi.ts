@@ -1,6 +1,7 @@
 import { CardType, Location, Players } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { loseKeyword, reduceCost } from '../../effects.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class SereneIseZumi extends DrawCard {
@@ -17,7 +18,7 @@ export default class SereneIseZumi extends DrawCard {
                 context.game.isDuringConflict() &&
                 context.source.type === CardType.Attachment &&
                 context.source.parentCharacter.isParticipating()))
-            .gameAction(AbilityDsl.actions.sendHome((context) => ({
+            .gameAction(sendHome((context) => ({
                 target: context.source.parentCharacter ?? []
             })))
             .notPrinted();
@@ -25,12 +26,12 @@ export default class SereneIseZumi extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             condition: (context) => context.source.type === CardType.Attachment,
-            effect: AbilityDsl.effects.loseKeyword('sincerity')
+            effect: loseKeyword('sincerity')
         });
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 2,
                 targetCondition: (target) => target.type === CardType.Character,
                 match: (card, source) => card === source

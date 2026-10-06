@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class NitenAdept extends DrawCard {
@@ -15,6 +16,6 @@ export default class NitenAdept extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length === 0
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

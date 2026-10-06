@@ -1,5 +1,6 @@
 import { DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setConflictTotalSkill } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaToshimoko extends DrawCard {
@@ -15,11 +16,11 @@ export default class KakitaToshimoko extends DrawCard {
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: 'both players count 0 total skill for the conflict',
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: playerLastingEffect((context) => ({
                     targetController: Players.Any,
                     effect:
                         context.game.currentDuel?.winner?.some((card) => card === context.source) ?? false
-                            ? AbilityDsl.effects.setConflictTotalSkill(0)
+                            ? setConflictTotalSkill(0)
                             : []
                 }))
             }));

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class FearlessSailor extends DrawCard {
     static id = 'fearless-sailor';
@@ -11,8 +12,8 @@ class FearlessSailor extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens && card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(-2)
+            }, cardLastingEffect({
+                effect: modifyMilitarySkill(-2)
             }))
             .effect('give {0} -2{1}', () => ['military']);
     }

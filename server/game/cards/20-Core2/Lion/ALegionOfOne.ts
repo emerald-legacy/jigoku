@@ -2,7 +2,8 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { Event } from '../../../Events/Event.js';
 import { CardType, Players, TargetMode, EventName, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { resolveAbilityAgain } from '../../resolveAgain.js';
 
@@ -18,8 +19,8 @@ export default class ALegionOfOne extends DrawCard {
                     card.isParticipating() &&
                     this.game.currentConflict !== null &&
                     this.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(3)
+            }, cardLastingEffect({
+                effect: modifyMilitarySkill(3)
             }))
             .effect('give {0} +3/+0')
             .then((context) => {
@@ -28,7 +29,7 @@ export default class ALegionOfOne extends DrawCard {
                         target: {
                             mode: TargetMode.Select,
                             choices: {
-                                'Remove 1 fate for no effect': AbilityDsl.actions.removeFate({
+                                'Remove 1 fate for no effect': removeFate({
                                     target: context.target
                                 }),
                                 Done: () => true
@@ -42,7 +43,7 @@ export default class ALegionOfOne extends DrawCard {
                     target: {
                         mode: TargetMode.Select,
                         choices: {
-                            'Remove 1 fate to resolve this ability again': AbilityDsl.actions.removeFate({
+                            'Remove 1 fate to resolve this ability again': removeFate({
                                 target: context.target
                             }),
                             Done: () => true

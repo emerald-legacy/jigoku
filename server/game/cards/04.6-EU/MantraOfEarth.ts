@@ -1,5 +1,6 @@
 import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect, draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfEarth extends DrawCard {
@@ -15,14 +16,14 @@ export default class MantraOfEarth extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
+            }, cardLastingEffect((context) => ({
+                effect: cardCannot({
                     cannot: 'target',
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })
             })))
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .effect('make {0} untargetable by opponents\' card effects and draw a card');
     }
 }

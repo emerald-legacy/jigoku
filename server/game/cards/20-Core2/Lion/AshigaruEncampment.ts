@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { handler } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -21,7 +21,7 @@ export default class AshigaruEncampment extends DrawCard {
 
     setupCardAbilities() {
         this.action('Recruit a fresh Ashigaru')
-            .gameAction(AbilityDsl.actions.handler({ handler: putAshigaruTokenIntoPlay }))
+            .gameAction(handler({ handler: putAshigaruTokenIntoPlay }))
             .effect('recruit {1}', () => ({
                 id: 'ashigaru-recruit',
                 label: 'Ashigaru Recruit',

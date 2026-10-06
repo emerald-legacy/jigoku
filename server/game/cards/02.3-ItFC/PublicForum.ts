@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addToken, cancel } from '../../GameActions/GameActions.js';
 
 export default class PublicForum extends ProvinceCard {
     static id = 'public-forum';
@@ -9,8 +9,8 @@ export default class PublicForum extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source && !event.card.hasToken('honor')
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.addToken({ target: context.source })
+            .gameAction(cancel((context) => ({
+                replacementGameAction: addToken({ target: context.source })
             })))
             .effect('add an honor token to {0} instead of breaking it');
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveStatusToken } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class BayushiDairu extends DrawCard {
@@ -11,7 +11,7 @@ class BayushiDairu extends DrawCard {
             .tokenTarget({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source
-            }, AbilityDsl.actions.moveStatusToken((context) => ({ recipient: context.source })));
+            }, moveStatusToken((context) => ({ recipient: context.source })));
     }
 }
 

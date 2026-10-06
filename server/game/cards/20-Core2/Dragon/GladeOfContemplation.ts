@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { chosenDiscard, draw } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function cardDifference(context: AbilityContext): number {
@@ -18,10 +18,10 @@ export default class GladeOfContemplation extends ProvinceCard {
                     context.player.hand.length < context.player.opponent.hand.length
             })
             .select({}, {
-                'Draw cards': AbilityDsl.actions.draw((context) => ({
+                'Draw cards': draw((context) => ({
                     amount: cardDifference(context)
                 })),
-                'Force opponent to discard cards': AbilityDsl.actions.chosenDiscard((context) => ({
+                'Force opponent to discard cards': chosenDiscard((context) => ({
                     amount: cardDifference(context)
                 }))
             })

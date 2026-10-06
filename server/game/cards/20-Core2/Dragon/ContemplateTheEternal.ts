@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ContemplateTheEternal extends DrawCard {
@@ -13,7 +14,7 @@ export default class ContemplateTheEternal extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) =>
                     !card.bowed && !card.attachments.some((attachment) => !attachment.hasTrait('tattoo'))
-            }, AbilityDsl.actions.placeFate((context) => ({
+            }, placeFate((context) => ({
                 amount: context.costs.returnRing ? context.costs.returnRing.length : 1
             })));
     }

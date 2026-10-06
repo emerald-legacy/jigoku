@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class ShosuroHyobu extends DrawCard {
@@ -15,7 +15,7 @@ class ShosuroHyobu extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }
 

@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class NorthernWallSensei extends DrawCard {
@@ -12,8 +13,8 @@ export default class NorthernWallSensei extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+            }, cardLastingEffect({
+                effect: immunity({ restricts: 'events' })
             }))
             .effect('grant immunity to events to {0}');
     }

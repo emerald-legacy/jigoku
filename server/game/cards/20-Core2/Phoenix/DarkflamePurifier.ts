@@ -1,5 +1,5 @@
 import { CardType, Phases, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DarkflamePurifier extends DrawCard {
@@ -18,6 +18,6 @@ export default class DarkflamePurifier extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }

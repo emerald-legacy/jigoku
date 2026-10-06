@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor, duel } from '../../GameActions/GameActions.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, DuelType } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class InsolentRival extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
 
         this.action('Challenge a participating character to a Military duel: dishonor the loser of the duel')
@@ -17,9 +18,9 @@ class InsolentRival extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.duel({
+            }, duel({
                 type: DuelType.Military,
-                gameAction: (duel) => AbilityDsl.actions.dishonor({ target: duel.loser })
+                gameAction: (duel) => dishonor({ target: duel.loser })
             }));
     }
 }

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
+import { putIntoConflict, reveal, selectCards, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -12,7 +13,7 @@ export default class StokeInsurrection extends DrawCard {
             targetController: Players.Any,
             condition: (context) =>
                 context.player.opponent !== undefined && this.getFaceDownProvinceCards(context.player.opponent) >= 4,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 2,
                 match: (card, source) => card === source
             })
@@ -20,11 +21,11 @@ export default class StokeInsurrection extends DrawCard {
 
         this.action('Put characters into play')
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.reveal((context) => ({
+            .gameAction(sequential([
+                reveal((context) => ({
                     target: context.player.opponent ? context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : []
                 })),
-                AbilityDsl.actions.selectCards((context) => ({
+                selectCards((context) => ({
                     activePromptTitle: 'Choose up to two characters',
                     numCards: 2,
                     targets: true,
@@ -38,7 +39,7 @@ export default class StokeInsurrection extends DrawCard {
                     cardCondition: (card) => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
                     message: '{0} puts {1} into play into the conflict',
                     messageArgs: (cards) => [context.player, cards],
-                    gameAction: AbilityDsl.actions.putIntoConflict()
+                    gameAction: putIntoConflict()
                 }))
             ]))
             .effect('reveal {1}\'s dynasty cards and put up to two of them into play', (context) => context.player.opponent ? [context.player.opponent] : []);

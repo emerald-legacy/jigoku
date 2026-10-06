@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class Cursecatcher extends DrawCard {
@@ -11,7 +11,7 @@ class Cursecatcher extends DrawCard {
                 onInitiateAbilityEffects: event => event.card.type === CardType.Province &&
                     event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFacedown())
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .effect('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }

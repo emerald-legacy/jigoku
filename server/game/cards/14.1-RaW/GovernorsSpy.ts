@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -14,7 +14,7 @@ class GovernorsSpy extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .selectFrom({
                 targets: true
-            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.handler({
+            }, (context) => playerChoices(context.player, (player) => handler({
                 handler: (handlerContext) => this.rearrange(handlerContext, player)
             })))
             .effect('turn facedown and rearrange all of {1}\'s dynasty cards', (context) => (context.select === context.player.name ? context.player : context.player.opponent));

@@ -1,4 +1,12 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, entersPlayWithStatus, takeControl } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    handler,
+    loseHonor,
+    multiple,
+    playerLastingEffect
+} from '../../../GameActions/GameActions.js';
 import { CardType, CharacterStatus, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,16 +17,16 @@ export default class BayushiShinobu extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,
-            effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Dishonored)
+            effect: entersPlayWithStatus(CharacterStatus.Dishonored)
         });
 
         // entersPlayWithStatus only covers playing it; put into play by an effect, it is dishonored afterwards
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 when: {
                     onCharacterEntersPlay: (event, context) => event.card === context.source && !context.source.isDishonored
                 },
-                gameAction: AbilityDsl.actions.handler({
+                gameAction: handler({
                     handler: (context) => {
                         context.source.dishonor();
                     }
@@ -33,19 +41,19 @@ export default class BayushiShinobu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.isDishonored && !card.isUnique()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.takeControl(context.player),
+            }, multiple([
+                cardLastingEffect(context => ({
+                    effect: takeControl(context.player),
                     duration: Duration.UntilEndOfPhase
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     target: context.player,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onCardLeavesPlay: (event) => event.card === context.target
                         },
                         onlyRemoveOnSuccess: true,
-                        gameAction: AbilityDsl.actions.loseHonor({
+                        gameAction: loseHonor({
                             amount: 2,
                             target: context.player
                         }),

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Players } from '../../Constants.js';
 
 class JadeInlaidKatana extends DrawCard {
@@ -7,7 +8,7 @@ class JadeInlaidKatana extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            effect: gainAbility(AbilityType.Reaction, {
                 title: 'Remove 1 fate from a character',
                 printedAbility: false,
                 when: {
@@ -20,7 +21,7 @@ class JadeInlaidKatana extends DrawCard {
                     cardCondition: (card) => {
                         return card.hasStatusTokens && card.isParticipating();
                     },
-                    gameAction: AbilityDsl.actions.removeFate()
+                    gameAction: removeFate()
                 }
             })
         });

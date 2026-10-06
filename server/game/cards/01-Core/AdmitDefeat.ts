@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class AdmitDefeat extends DrawCard {
     static id = 'admit-defeat';
@@ -11,7 +11,7 @@ class AdmitDefeat extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isDefending()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

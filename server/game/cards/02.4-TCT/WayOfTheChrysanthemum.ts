@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { gainHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class WayOfTheChrysanthemum extends DrawCard {
@@ -9,7 +10,7 @@ class WayOfTheChrysanthemum extends DrawCard {
             .when({
                 onTransferHonor: (event, context) => event.player === context.player.opponent && event.afterBid
             })
-            .gameAction(AbilityDsl.actions.gainHonor((context) => ({ amount: context.event.amount })))
+            .gameAction(gainHonor((context) => ({ amount: context.event.amount })))
             .max(AbilityDsl.limit.perRound(1))
             .cannotBeMirrored();
     }

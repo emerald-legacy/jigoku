@@ -1,4 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { addTrait, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, CardType } from '../../Constants.js';
 
@@ -17,17 +19,17 @@ class SoshiAoi extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Give +1/+0 and the Bushi trait': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Give +1/+0 and the Bushi trait': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     duration: Duration.UntilEndOfPhase,
-                    effect: [AbilityDsl.effects.modifyMilitarySkill(1),
-                        AbilityDsl.effects.addTrait('bushi')]
+                    effect: [modifyMilitarySkill(1),
+                        addTrait('bushi')]
                 })),
-                'Give +0/+1 and the Courtier trait': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Give +0/+1 and the Courtier trait': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     duration: Duration.UntilEndOfPhase,
-                    effect: [AbilityDsl.effects.modifyPoliticalSkill(1),
-                        AbilityDsl.effects.addTrait('courtier')]
+                    effect: [modifyPoliticalSkill(1),
+                        addTrait('courtier')]
                 }))
             })
             .effect('{1}{2}', context => {

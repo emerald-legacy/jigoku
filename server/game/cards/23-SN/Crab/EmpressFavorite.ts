@@ -1,6 +1,6 @@
 import { ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { takeHonor } from '../../../GameActions/GameActions.js';
 
 export default class EmpressFavorite extends DrawCard {
     static id = 'empress-favorite';
@@ -10,6 +10,6 @@ export default class EmpressFavorite extends DrawCard {
             .condition((context) => context.source.isDefending() &&
                 !!context.player.opponent &&
                 !context.player.opponent.hasDeclaredConflictOfType(context, ConflictType.Military))
-            .gameAction(AbilityDsl.actions.takeHonor());
+            .gameAction(takeHonor());
     }
 }

@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect, multipleContext } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -12,17 +13,17 @@ export default class AimiDemagogue extends DrawCard {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.multipleContext((context) => {
+            }, multipleContext((context) => {
                 const gameActions: GameAction[] = [];
 
-                gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.addKeyword('pride'),
+                gameActions.push(cardLastingEffect({
+                    effect: addKeyword('pride'),
                     target: context.target
                 }));
 
                 if(context.target.controller !== context.player) {
-                    gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.addKeyword('pride'),
+                    gameActions.push(cardLastingEffect({
+                        effect: addKeyword('pride'),
                         target: context.source
                     }));
                 }

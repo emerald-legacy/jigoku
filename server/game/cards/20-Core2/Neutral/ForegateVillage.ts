@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { switchConflictType } from '../../../GameActions/GameActions.js';
 
 export default class ForegateVillage extends ProvinceCard {
     static id = 'foregate-village';
@@ -9,7 +9,7 @@ export default class ForegateVillage extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(AbilityDsl.actions.switchConflictType())
+            .gameAction(switchConflictType())
             .effect('switch the conflict type');
     }
 

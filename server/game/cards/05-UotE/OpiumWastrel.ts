@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { setGlory } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
@@ -14,8 +15,8 @@ class OpiumWastrel extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.setGlory(0)
+            }, cardLastingEffect({
+                effect: setGlory(0)
             }))
             .effect('set {0}\'s glory to 0 until the end of the conflict');
     }

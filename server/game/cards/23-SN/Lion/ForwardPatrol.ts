@@ -1,6 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { ready } from '../../../GameActions/GameActions.js';
 
 export default class ForwardPatrol extends DrawCard {
     static id = 'forward-patrol';
@@ -10,6 +10,6 @@ export default class ForwardPatrol extends DrawCard {
             .target({
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
                 cardType: CardType.Character
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

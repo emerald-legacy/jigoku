@@ -1,6 +1,8 @@
 import { Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { replacePrintedElement } from '../../effects.js';
+import { cardLastingEffect, menuPrompt } from '../../GameActions/GameActions.js';
 import type { ElementSymbol } from '../../ElementSymbol.js';
 import { isEnumValue } from '../../utils/helpers.js';
 
@@ -13,10 +15,10 @@ export default class TwinSoulTemple extends StrongholdCard {
             .elementTarget({
                 activePromptTitle: 'Choose an element to replace',
                 location: [Location.PlayArea, Location.Provinces]
-            }, AbilityDsl.actions.menuPrompt((context) => ({
+            }, menuPrompt((context) => ({
                 activePromptTitle: 'Choose the new element',
                 choices: this.getChoices(context.element),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                gameAction: cardLastingEffect({
                     target: context.elementCard,
                     duration: Duration.UntilEndOfPhase
                 }),
@@ -36,7 +38,7 @@ export default class TwinSoulTemple extends StrongholdCard {
                         );
                     }
                     return {
-                        effect: AbilityDsl.effects.replacePrintedElement({
+                        effect: replacePrintedElement({
                             key: context.element.key,
                             element: newElement
                         })

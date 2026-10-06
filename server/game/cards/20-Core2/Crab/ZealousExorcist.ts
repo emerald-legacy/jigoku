@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { removeFromGame } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
 
@@ -13,6 +13,6 @@ export default class ZealousExorcist extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => charactersEntered.has(card)
-            }, AbilityDsl.actions.removeFromGame());
+            }, removeFromGame());
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonorProvince, reveal, sequential } from '../../GameActions/GameActions.js';
 
 class Overrun extends DrawCard {
     static id = 'overrun';
@@ -15,9 +15,9 @@ class Overrun extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.controller !== context.player
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.dishonorProvince(),
-                AbilityDsl.actions.reveal({ chatMessage: true })
+            }, sequential([
+                dishonorProvince(),
+                reveal({ chatMessage: true })
             ]));
     }
 }

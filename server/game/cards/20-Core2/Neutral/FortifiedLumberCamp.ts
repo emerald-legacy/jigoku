@@ -1,6 +1,7 @@
 import { CardType, Location } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay, moveCard, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class FortifiedLumberCamp extends DrawCard {
@@ -13,13 +14,13 @@ export default class FortifiedLumberCamp extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(AbilityDsl.actions.multipleContext((context) => ({
+            .gameAction(multipleContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.moveCard({
+                    moveCard({
                         destination: Location.DynastyDiscardPile,
                         target: this.cardsInProvince(context.target)
                     }),
-                    AbilityDsl.actions.discardFromPlay({ target: context.target.attachments })
+                    discardFromPlay({ target: context.target.attachments })
                 ]
             })))
             .effect('discard {1}', (context) => [this.cardsInProvince(context.target).concat(context.target.attachments)]);

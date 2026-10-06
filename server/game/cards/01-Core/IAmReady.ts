@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -11,7 +12,7 @@ class IAmReady extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('unicorn') && card.bowed
             }))
-            .handler((context) => AbilityDsl.actions.ready().resolve(context.costs.removeFate, context))
+            .handler((context) => ready().resolve(context.costs.removeFate, context))
             .effect('ready {1}', (context) => context.costs.removeFate)
             .cannotBeMirrored();
     }

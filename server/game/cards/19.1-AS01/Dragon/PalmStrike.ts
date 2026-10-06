@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { bow, cardLastingEffect, conditional, multiple, noAction } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -29,16 +30,16 @@ export default class PalmStrike extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (opponentCharacter) =>
                     opponentCharacter.isParticipating() && this.cardHasNoWeapons(opponentCharacter)
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.bow(),
-                AbilityDsl.actions.conditional({
+            }, multiple([
+                bow(),
+                conditional({
                     condition: (context) => {
                         const monk = context.targets[TARGET_MONK];
                         return !Array.isArray(monk) && !!monk?.hasTrait('tattooed');
                     },
-                    falseGameAction: AbilityDsl.actions.noAction(),
-                    trueGameAction: AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' })
+                    falseGameAction: noAction(),
+                    trueGameAction: cardLastingEffect({
+                        effect: cardCannot({ cannot: 'ready' })
                     })
                 })
             ]))

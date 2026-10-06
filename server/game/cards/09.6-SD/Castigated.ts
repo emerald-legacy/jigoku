@@ -3,18 +3,19 @@ import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class Castigated extends DrawCard {
     static id = 'castigated';
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.getPoliticalSkill() < 1,
                 message: '{0} is discarded by {1}',
                 messageArgs: (context) => [context.source.parentCharacter, context.source],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+                gameAction: discardFromPlay()
             })
         });
     }

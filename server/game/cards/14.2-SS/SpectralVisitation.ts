@@ -1,6 +1,16 @@
 import { CardType, Decks, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import {
+    cardLastingEffect,
+    handler,
+    multiple,
+    putIntoPlay,
+    returnToDeck,
+    selectCard,
+    sequential
+} from '../../GameActions/GameActions.js';
 
 export default class SpectralVisitation extends ProvinceCard {
     static id = 'spectral-visitation';
@@ -11,27 +21,27 @@ export default class SpectralVisitation extends ProvinceCard {
                 onCardRevealed: (event, context) => context.source === event.card
             })
             .cost(AbilityDsl.costs.discardTopCardsFromDeck({ amount: 4, deck: Decks.DynastyDeck }))
-            .gameAction(AbilityDsl.actions.sequential([
+            .gameAction(sequential([
                 // always legal, so this can trigger when only the cards the cost discards give it a choice
-                AbilityDsl.actions.handler({
+                handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context) => ({
+                selectCard((context) => ({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.putIntoPlay(),
-                        AbilityDsl.actions.cardLastingEffect((context) => ({
+                    gameAction: multiple([
+                        putIntoPlay(),
+                        cardLastingEffect((context) => ({
                             duration: Duration.UntilEndOfRound,
-                            effect: AbilityDsl.effects.delayedEffect({
+                            effect: delayedEffect({
                                 when: {
                                     onPhaseEnded: () => true
                                 },
                                 message: '{0} returns to the bottom of the deck due to {1}\'s effect',
                                 messageArgs: (_effectContext, effectTargets) => [effectTargets, context.source],
-                                gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
+                                gameAction: returnToDeck({ bottom: true })
                             })
                         }))
                     ]),

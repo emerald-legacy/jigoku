@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Decks, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, putIntoPlay } from '../../GameActions/GameActions.js';
 
 class FavorableDealbroker extends DrawCard {
     static id = 'favorable-dealbroker';
@@ -10,11 +10,11 @@ class FavorableDealbroker extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) => card.type === CardType.Character && card.printedCost === 1,
-                gameAction: AbilityDsl.actions.putIntoPlay()
+                gameAction: putIntoPlay()
             }))
             .effect('search their dynasty deck for a character that costs 1 and put it into play');
     }

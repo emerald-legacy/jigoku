@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { claimImperialFavor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IkomaYumiko extends DrawCard {
@@ -7,7 +8,7 @@ export default class IkomaYumiko extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.modifyBothSkills(
+                modifyBothSkills(
                     (_card, context) =>
                         context.player.opponent?.cardsInPlay.reduce(
                             (total, char) => (char.isDishonored ? total + 1 : total),
@@ -21,7 +22,7 @@ export default class IkomaYumiko extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.claimImperialFavor((context) => ({
+            .gameAction(claimImperialFavor((context) => ({
                 target: context.player
             })))
             .effect('claim the Emperor\'s favor');

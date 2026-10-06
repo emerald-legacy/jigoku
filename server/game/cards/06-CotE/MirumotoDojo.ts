@@ -1,6 +1,6 @@
 import { DuelType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { joint, removeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 
@@ -18,9 +18,9 @@ export default class MirumotoDojo extends DrawCard {
                         : ['move 1 fate from', duel.loser, ' to ', this.loserOwner(duel), '\'s pool'])
                         : ['no effect', '', '', '', ''],
                 gameAction: (duel) =>
-                    AbilityDsl.actions.joint(
+                    joint(
                         duel.loser ? duel.loser.map((loserChar) =>
-                            AbilityDsl.actions.removeFate({
+                            removeFate({
                                 target: loserChar,
                                 recipient: this.wonByDuelist(duel) ? undefined : loserChar.owner
                             })

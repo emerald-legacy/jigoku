@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { playCard, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
@@ -74,12 +75,12 @@ export default class IsawaHifumi extends DrawCard {
 
         this.action('Play an event from discard')
             .cost(hifumiCost)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.ConflictDiscardPile,
-                gameAction: AbilityDsl.actions.playCard({
+                gameAction: playCard({
                     resetOnCancel: true,
                     source: this,
                     playType: PlayType.PlayFromHand,

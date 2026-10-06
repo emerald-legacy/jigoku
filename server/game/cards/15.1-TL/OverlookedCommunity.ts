@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class OverlookedCommunity extends DrawCard {
@@ -11,7 +12,7 @@ class OverlookedCommunity extends DrawCard {
             .tokenTarget({
                 cardType: CardType.Character,
                 location: Location.PlayArea
-            }, AbilityDsl.actions.discardStatusToken());
+            }, discardStatusToken());
     }
 }
 

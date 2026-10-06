@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict, ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 
@@ -18,7 +18,7 @@ class CrisisBreaker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('berserker')
-            }, AbilityDsl.actions.ready(), AbilityDsl.actions.moveToConflict())
+            }, ready(), moveToConflict())
             .effect('ready {0} and move it into the conflict');
     }
 }

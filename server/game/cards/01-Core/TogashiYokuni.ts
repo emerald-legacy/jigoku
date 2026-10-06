@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class TogashiYokuni extends DrawCard {
     static id = 'togashi-yokuni';
@@ -12,9 +14,9 @@ class TogashiYokuni extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source,
                 abilityCondition: ability => ability.printedAbility
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
+            }, cardLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
-                effect: context.targetAbility ? AbilityDsl.effects.gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
+                effect: context.targetAbility ? gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
             })))
             .effect('copy {1}\'s \'{2}\' ability', context => [context.targetAbility.card, context.targetAbility.title])
             .max(AbilityDsl.limit.perRound(1));

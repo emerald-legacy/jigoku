@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainHonor } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'bonsai-garden-air';
@@ -10,7 +10,7 @@ class BonsaiGarden extends DrawCard {
     setupCardAbilities() {
         this.action('Gain 1 honor')
             .condition(context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gameAction(gainHonor());
     }
 
     getPrintedElementSymbols() {

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Element, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 const elementKey = 'student-of-the-tao-void';
 
@@ -13,7 +13,7 @@ class StudentOfTheTao extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 
     getPrintedElementSymbols() {

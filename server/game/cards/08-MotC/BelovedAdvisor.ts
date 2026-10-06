@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 
 class BelovedAdvisor extends DrawCard {
     static id = 'beloved-advisor';
 
     setupCardAbilities() {
         this.action('Each player draws 1 card')
-            .gameAction(AbilityDsl.actions.draw(context => ({
+            .gameAction(draw(context => ({
                 target: context.game.getPlayers()
             })));
     }

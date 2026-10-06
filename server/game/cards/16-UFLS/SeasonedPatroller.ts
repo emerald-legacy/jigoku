@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotApplyLastingEffects, provinceCannotHaveSkillIncreased, suppressEffects } from '../../effects.js';
 import { Players, Location } from '../../Constants.js';
 
 class SeasonedPatroller extends DrawCard {
@@ -12,11 +12,11 @@ class SeasonedPatroller extends DrawCard {
             targetController: Players.Any,
             condition: context => context.source.isAttacking(),
             effect: [
-                AbilityDsl.effects.suppressEffects((effect) =>
+                suppressEffects((effect) =>
                     effect.isProvinceStrengthModifier() && (effect.getValue() ?? 0) > 0
                 ),
-                AbilityDsl.effects.provinceCannotHaveSkillIncreased(),
-                AbilityDsl.effects.cannotApplyLastingEffects((effect) =>
+                provinceCannotHaveSkillIncreased(),
+                cannotApplyLastingEffects((effect) =>
                     effect.isProvinceStrengthModifier() && (effect.getValue() ?? 0) > 0
                 )
             ]

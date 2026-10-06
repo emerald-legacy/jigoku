@@ -1,6 +1,7 @@
 import { CardType, EventName, Location, Phases } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { returnToHand } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -19,7 +20,7 @@ export default class SoshiShadowshaper extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card)
-            }, AbilityDsl.actions.returnToHand())
+            }, returnToHand())
             .phase(Phases.Conflict);
     }
 

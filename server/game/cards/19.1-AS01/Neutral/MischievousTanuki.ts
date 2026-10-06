@@ -1,5 +1,14 @@
 import { Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import {
+    conditional,
+    draw,
+    gainHonor,
+    handler,
+    honorBid,
+    multiple,
+    sequential,
+    takeFate
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -12,7 +21,7 @@ export default class MischievousTanuki extends DrawCard {
         this.legendary(0);
 
         this.action('Set honor dials')
-            .gameAction(AbilityDsl.actions.honorBid({
+            .gameAction(honorBid({
                 message: '{0}{1}{2}{3}',
                 messageArgs: (context: TanukiContext) => {
                     if(context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2) {
@@ -22,25 +31,25 @@ export default class MischievousTanuki extends DrawCard {
                     }
                     return [context.player, ' draws 2 cards and ', context.player.opponent, ' gains 2 honor'];
                 },
-                postBidAction: AbilityDsl.actions.conditional({
+                postBidAction: conditional({
                     condition: (context) => context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2,
-                    trueGameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.handler((context: TanukiContext) => ({
+                    trueGameAction: sequential([
+                        handler((context: TanukiContext) => ({
                             handler: () => {
                                 context.fateTaken = Math.min(2, context.player.opponent?.getFate() ?? 0);
                             }
                         })),
-                        AbilityDsl.actions.takeFate((context: TanukiContext) => ({
+                        takeFate((context: TanukiContext) => ({
                             target: context.player.opponent,
                             amount: context.fateTaken
                         }))
                     ]),
-                    falseGameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.draw((context) => ({
+                    falseGameAction: multiple([
+                        draw((context) => ({
                             target: context.player.showBid % 2 === 1 ? context.player : context.player.opponent,
                             amount: 2
                         })),
-                        AbilityDsl.actions.gainHonor((context) => ({
+                        gainHonor((context) => ({
                             target: context.player.showBid % 2 === 0 ? context.player : context.player.opponent,
                             amount: 2
                         }))

@@ -1,6 +1,7 @@
 import { CardType, Players, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 export default class GoldenPlainsOutpost extends StrongholdCard {
     static id = 'golden-plains-outpost';
@@ -13,6 +14,6 @@ export default class GoldenPlainsOutpost extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('cavalry')
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }

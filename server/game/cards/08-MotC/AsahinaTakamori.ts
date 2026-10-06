@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Duration, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class AsahinaTakamori extends DrawCard {
     static id = 'asahina-takamori';
@@ -14,11 +15,11 @@ class AsahinaTakamori extends DrawCard {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.costLessThan((context.event.card.getCost() ?? 0) + 1)
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 effect: [
-                    AbilityDsl.effects.cannotBeDeclaredAsAttacker(),
-                    AbilityDsl.effects.cannotBeDeclaredAsDefender()
+                    cannotBeDeclaredAsAttacker(),
+                    cannotBeDeclaredAsDefender()
                 ]
             }))
             .effect('prevent {0} from being declared as an attacker or defender this round');

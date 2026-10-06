@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AncientMaster extends DrawCard {
@@ -15,10 +15,10 @@ export default class AncientMaster extends DrawCard {
                 onDefendersDeclared: (event, context) =>
                     context.source.type === CardType.Attachment && event.defenders.some((card) => card === context.source.parentCharacter)
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 5,
                 cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             }))

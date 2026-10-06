@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 
 class ThirdWhiskerSneak extends DrawCard {
     static id = 'third-whisker-sneak';
@@ -8,10 +9,10 @@ class ThirdWhiskerSneak extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({
+                immunity({
                     restricts: 'maho'
                 }),
-                AbilityDsl.effects.immunity({
+                immunity({
                     restricts: 'shadowlands'
                 })]
         });
@@ -20,10 +21,10 @@ class ThirdWhiskerSneak extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && event.conflict.conflictUnopposed && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: (context) => context.player.getProvinces(a => !a.isBroken).length,
                 reveal: false,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             }))

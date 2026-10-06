@@ -1,6 +1,8 @@
 import { CardType, Duration, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 
 export default class KyudenBayushi extends StrongholdCard {
     static id = 'kyuden-bayushi';
@@ -12,10 +14,10 @@ export default class KyudenBayushi extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isDishonored
-            }, AbilityDsl.actions.ready(), AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, ready(), cardLastingEffect((context) => ({
                 target: context.player.honor <= 6 ? context.target : [],
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.modifyBothSkills(1)
+                effect: modifyBothSkills(1)
             })))
             .effect('{1}{2}{3} {0}', (context) => [
                 context.target.bowed ? 'ready' : '',

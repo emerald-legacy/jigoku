@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, PlayType } from '../../Constants.js';
 
@@ -12,7 +12,7 @@ class TogashiMitsu extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('monk') || card.hasTrait('kiho') || card.hasTrait('tattoo')
-            }, AbilityDsl.actions.playCard({
+            }, playCard({
                 source: this,
                 playType: PlayType.PlayFromHand,
                 destination: Location.ConflictDeck,

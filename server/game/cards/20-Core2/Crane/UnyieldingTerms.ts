@@ -1,6 +1,7 @@
 import { DuelType } from '../../../Constants.js';
 import type { Duel } from '../../../Duel.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow, chosenDiscard, multiple, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class UnyieldingTerms extends DrawCard {
@@ -11,7 +12,7 @@ export default class UnyieldingTerms extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 requiresConflict: false,
-                refuseGameAction: AbilityDsl.actions.chosenDiscard((context) => ({
+                refuseGameAction: chosenDiscard((context) => ({
                     targets: false,
                     target: context.player.opponent,
                     amount: Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
@@ -22,9 +23,9 @@ export default class UnyieldingTerms extends DrawCard {
                     Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
                 ],
                 gameAction: (duel) =>
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.bow({ target: duel.loser }),
-                        AbilityDsl.actions.removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
+                    multiple([
+                        bow({ target: duel.loser }),
+                        removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ]),
                 message: 'bow{1} {0}',
                 messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : '']

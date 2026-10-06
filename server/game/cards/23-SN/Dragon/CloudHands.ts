@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
 
 export default class CloudHands extends DrawCard {
@@ -22,12 +23,12 @@ export default class CloudHands extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(context => ({
+            }, multiple([
+                cardLastingEffect(context => ({
                     target: context.targets.myCharacter,
                     effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })
                 })),
-                AbilityDsl.actions.honor(context => ({
+                honor(context => ({
                     target: context.targets.myCharacter
                 }))
             ]))

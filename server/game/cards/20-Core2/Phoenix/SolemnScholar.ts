@@ -1,5 +1,5 @@
 import { CardType, Element } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
 
@@ -14,7 +14,7 @@ export default class SolemnScholar extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 
     getPrintedElementSymbols() {

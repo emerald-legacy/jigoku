@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
 
 class RighteousMagistrate extends DrawCard {
     static id = 'righteous-magistrate';
@@ -10,13 +10,13 @@ class RighteousMagistrate extends DrawCard {
             condition: context => context.source.isDefending(),
             targetController: Players.Any,
             effect: [
-                AbilityDsl.effects.playerCannot({
+                playerCannot({
                     cannot: 'loseHonor'
                 }),
-                AbilityDsl.effects.playerCannot({
+                playerCannot({
                     cannot: 'gainHonor'
                 }),
-                AbilityDsl.effects.playerCannot({
+                playerCannot({
                     cannot: 'takeHonor'
                 })
             ]

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
@@ -22,7 +22,7 @@ class MyAncestorsStrength extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
+            }, cardLastingEffect(context => ({
                 target: context.targets.shugenja,
                 effect: copyBaseSkillEffects(context.targets.ancestor)
             })))

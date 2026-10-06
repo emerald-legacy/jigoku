@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { gainFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class MantisSeafarer extends DrawCard {
@@ -10,7 +11,7 @@ class MantisSeafarer extends DrawCard {
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
             })
             .cost(AbilityDsl.costs.payHonor(1))
-            .gameAction(AbilityDsl.actions.gainFate())
+            .gameAction(gainFate())
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

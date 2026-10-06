@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 
 class WhiteHordeVanguard extends DrawCard {
     static id = 'white-horde-vanguard';
@@ -8,15 +8,15 @@ class WhiteHordeVanguard extends DrawCard {
         this.persistentEffect({
             condition: context => context.game.isDuringConflict() && context.game.conflictRecord.filter(record => record.completed).length === 0,
             effect: [
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'sendHome',
                     restricts: 'opponentsCardEffects'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'moveToConflict',
                     restricts: 'opponentsCardEffects'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects'
                 })

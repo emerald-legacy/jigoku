@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, dishonor, multiple, placeFate, sendHome } from '../../GameActions/GameActions.js';
 
 class UjiakisOffer extends DrawCard {
     static id = 'ujiaki-s-offer';
@@ -11,13 +11,13 @@ class UjiakisOffer extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some((myCard) => (
                     myCard !== card && myCard.isParticipating() && (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)))
-            }, AbilityDsl.actions.placeFate())
+            }, placeFate())
             .effect('place a fate on {0} then bow, dishonor, and move them home')
             .then(context => ({
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.bow({target: context.target}),
-                    AbilityDsl.actions.dishonor({target: context.target}),
-                    AbilityDsl.actions.sendHome({target: context.target})
+                gameAction: multiple([
+                    bow({target: context.target}),
+                    dishonor({target: context.target}),
+                    sendHome({target: context.target})
                 ])
             }));
     }

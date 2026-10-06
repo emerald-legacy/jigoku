@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,15 +19,15 @@ export default class InLadyDojisService extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Prevent Attacking': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Prevent Attacking': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     duration: Duration.UntilEndOfPhase,
-                    effect: [AbilityDsl.effects.cannotBeDeclaredAsAttacker()]
+                    effect: [cannotBeDeclaredAsAttacker()]
                 })),
-                'Prevent Defending': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Prevent Defending': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     duration: Duration.UntilEndOfPhase,
-                    effect: [AbilityDsl.effects.cannotBeDeclaredAsDefender()]
+                    effect: [cannotBeDeclaredAsDefender()]
                 }))
             })
             .effect('prevent {1} from being declared as {2} this phase', (context) => [

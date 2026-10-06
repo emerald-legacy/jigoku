@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect, modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect, discardFromPlay } from '../../GameActions/GameActions.js';
 
 class BayushiShoju extends DrawCard {
     static id = 'bayushi-shoju';
@@ -12,14 +14,14 @@ class BayushiShoju extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.modifyPoliticalSkill(-1),
-                    AbilityDsl.effects.delayedEffect({
+                    modifyPoliticalSkill(-1),
+                    delayedEffect({
                         condition: () => context.target.getPoliticalSkill() < 1,
                         message: '{0} is discarded due to {1}\'s lasting effect',
                         messageArgs: [context.target, context.source],
-                        gameAction: AbilityDsl.actions.discardFromPlay()
+                        gameAction: discardFromPlay()
                     })
                 ]
             })))

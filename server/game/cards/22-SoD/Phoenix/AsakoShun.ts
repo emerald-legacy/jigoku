@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function penalty(context: AbilityContext): number {
@@ -22,8 +23,8 @@ export default class AsakoShun extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(penalty(context))
             })))
             .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target])
             .then((context) => ({
@@ -31,7 +32,7 @@ export default class AsakoShun extends DrawCard {
                     const conflict = context.game.currentConflict;
                     return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
                 },
-                gameAction: AbilityDsl.actions.gainHonor(),
+                gameAction: gainHonor(),
                 message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
                 messageArgs: () => [context.target, context.player]
             }));

@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changeConflictSkillFunction } from '../../effects.js';
 
 export default class SanpukuSeido extends ProvinceCard {
     static id = 'sanpuku-seido';
@@ -7,7 +7,7 @@ export default class SanpukuSeido extends ProvinceCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
-            effect: AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
+            effect: changeConflictSkillFunction((card) => card.getGlory())
         });
     }
 

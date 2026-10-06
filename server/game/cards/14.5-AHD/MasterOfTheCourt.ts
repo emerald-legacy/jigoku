@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class MasterOfTheCourt extends DrawCard {
@@ -11,7 +12,7 @@ class MasterOfTheCourt extends DrawCard {
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.source.isHonored
             })
             .cost(AbilityDsl.costs.discardStatusTokenFromSelf())
-            .gameAction(AbilityDsl.actions.cancel());
+            .gameAction(cancel());
     }
 }
 

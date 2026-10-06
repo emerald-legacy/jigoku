@@ -1,14 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class CulturedFacade extends DrawCard {
     static id = 'cultured-facade';
 
     setupCardAbilities() {
         this.conflictAction('Prevent targeting')
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
-                effect: AbilityDsl.effects.cardCannot({
+                effect: cardCannot({
                     cannot: 'target',
                     restricts: 'eventPlayedByHigherBidPlayer'
                 })

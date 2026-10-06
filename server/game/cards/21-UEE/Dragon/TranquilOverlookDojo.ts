@@ -1,4 +1,12 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import {
+    cardMenu,
+    conditional,
+    discardCard,
+    lookAt,
+    noAction,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { DuelType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import type { AbilityLimit } from '../../../AbilityLimit.js';
@@ -22,26 +30,26 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
             type,
             opponentChoosesDuelTarget: true,
             gameAction: (duel) =>
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: (context) => duel.winningPlayer === context.player,
-                    falseGameAction: AbilityDsl.actions.noAction(),
-                    trueGameAction: AbilityDsl.actions.sequentialContext((context) => {
+                    falseGameAction: noAction(),
+                    trueGameAction: sequentialContext((context) => {
                         const revealedCards = randomHandCards(context.player.opponent, 2);
                         return {
                             gameActions: [
-                                AbilityDsl.actions.lookAt((context) => ({
+                                lookAt((context) => ({
                                     target: revealedCards,
                                     message: '{0} reveals {1} from their hand',
                                     messageArgs: (cards) => [context.player.opponent, cards]
                                 })),
-                                AbilityDsl.actions.cardMenu({
+                                cardMenu({
                                     activePromptTitle: 'Choose a card to discard',
                                     cards: revealedCards,
                                     targets: true,
                                     player: Players.Self,
                                     message: '{0} discards {1}',
                                     messageArgs: (card, player) => [player, card],
-                                    gameAction: AbilityDsl.actions.discardCard()
+                                    gameAction: discardCard()
                                 })
                             ]
                         };

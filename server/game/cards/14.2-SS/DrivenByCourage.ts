@@ -1,6 +1,7 @@
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 const elementKey = 'driven-by-courage-air';
 
@@ -13,8 +14,8 @@ export default class DrivenByCourage extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyBothSkills(2)
+            }, cardLastingEffect({
+                effect: modifyBothSkills(2)
             }))
             .effect('give {0} +2{1} and +2{2}', () => ['political', 'military'])
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));

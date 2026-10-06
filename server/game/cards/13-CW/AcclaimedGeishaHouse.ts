@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { switchConflictElement } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class AcclaimedGeishaHouse extends DrawCard {
@@ -11,7 +12,7 @@ class AcclaimedGeishaHouse extends DrawCard {
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
-            }, AbilityDsl.actions.switchConflictElement())
+            }, switchConflictElement())
             .effect('switch the contested ring with the {0}');
     }
 }

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
+import { resolveAbility } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location, AbilityType, ConflictType } from '../../Constants.js';
 
 class BattlefieldOrders extends DrawCard {
@@ -10,7 +11,7 @@ class BattlefieldOrders extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             match: (player) => !!player.opponent && player.honor >= player.opponent.honor + 5,
-            effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
+            effect: reduceCost({ match: (card, source) => card === source })
         });
 
         this.conflictAction('Resolve an ability', { conflictType: ConflictType.Military })
@@ -20,7 +21,7 @@ class BattlefieldOrders extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 controller: Players.Any
-            }, AbilityDsl.actions.resolveAbility((context) => ({
+            }, resolveAbility((context) => ({
                 target: context.targetAbility.card,
                 ability: context.targetAbility,
                 player: context.targetAbility.card.controller,

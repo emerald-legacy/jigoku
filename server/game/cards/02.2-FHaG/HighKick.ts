@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../effects.js';
+import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class HighKick extends DrawCard {
     static id = 'high-kick';
@@ -16,7 +18,7 @@ class HighKick extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.cannotTriggerAbilities() }))
+            }, bow(), cardLastingEffect({ effect: cannotTriggerAbilities() }))
             .effect('bow {0} and prevent them from using abilities');
     }
 }

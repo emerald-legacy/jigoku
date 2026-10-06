@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -28,12 +29,12 @@ export default class AgashaJianyu extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => {
+            }, cardLastingEffect((context) => {
                 const bonus = bonusBase(context);
                 return {
                     effect: [
-                        AbilityDsl.effects.modifyMilitarySkill(2 * bonus),
-                        AbilityDsl.effects.modifyPoliticalSkill(1 * bonus)
+                        modifyMilitarySkill(2 * bonus),
+                        modifyPoliticalSkill(1 * bonus)
                     ]
                 };
             }))

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class AudienceChamber extends DrawCard {
@@ -13,7 +13,7 @@ class AudienceChamber extends DrawCard {
                     event.card.type === CardType.Character &&
                     (event.card.getCost() ?? 0) >= 4
             })
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({
+            .gameAction(placeFate((context) => ({
                 target: context.event.card
             })));
     }

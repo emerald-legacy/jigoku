@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class YasukiOguri2 extends DrawCard {
     static id = 'yasuki-oguri-2';
@@ -12,7 +13,7 @@ class YasukiOguri2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.getFate() > 0
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }
 

@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOwn } from '../../effects.js';
+import { moveCard, multiple, ready } from '../../GameActions/GameActions.js';
 import { Location, PlayType, CardType } from '../../Constants.js';
 
 class InServiceToMyLord extends DrawCard {
@@ -8,7 +10,7 @@ class InServiceToMyLord extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
         this.action('Ready a character')
             .cost(AbilityDsl.costs.bow({
@@ -19,9 +21,9 @@ class InServiceToMyLord extends DrawCard {
                 activePromptTitle: 'Choose a unique character',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isUnique()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.moveCard((context) => ({
+            }, multiple([
+                ready(),
+                moveCard((context) => ({
                     target: context.source,
                     destination: Location.ConflictDeck,
                     bottom: true

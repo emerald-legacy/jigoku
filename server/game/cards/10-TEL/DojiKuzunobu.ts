@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
 import { Players } from '../../Constants.js';
 
 class DojiKuzuNobu extends DrawCard {
@@ -9,7 +9,7 @@ class DojiKuzuNobu extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'triggerAbilities',
                 restricts: 'reactions'
             })

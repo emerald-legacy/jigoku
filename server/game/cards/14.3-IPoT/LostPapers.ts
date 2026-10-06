@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class LostPapers extends DrawCard {
     static id = 'lost-papers';
@@ -17,7 +17,7 @@ class LostPapers extends DrawCard {
                     const charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardType.Character);
                     return card.getFate() === Math.max(...charactersInPlay.map((c) => c.getFate()));
                 }
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

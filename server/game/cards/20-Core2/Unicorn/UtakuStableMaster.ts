@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
@@ -27,6 +27,6 @@ export default class UtakuStableMaster extends DrawCard {
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     card.glory <= participatingCavGlory(context.game.requireConflict(), context.player)
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changeContributionFunction, contributeToConflict } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class HirumaYoshino extends DrawCard {
     static id = 'hiruma-yoshino';
@@ -13,11 +14,11 @@ class HirumaYoshino extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: card => card.isInConflictProvince() &&
                     card.printedMilitarySkill > 0
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 targetLocation: Location.Provinces,
                 effect: [
-                    AbilityDsl.effects.contributeToConflict((_card, context) => context.player),
-                    AbilityDsl.effects.changeContributionFunction((card) => card.printedMilitarySkill)
+                    contributeToConflict((_card, context) => context.player),
+                    changeContributionFunction((card) => card.printedMilitarySkill)
                 ]
             }))
             .effect('contribute {0}\'s printed {1} skill of {2} to their side of the conflict', context => ['military', context.target.printedMilitarySkill]);

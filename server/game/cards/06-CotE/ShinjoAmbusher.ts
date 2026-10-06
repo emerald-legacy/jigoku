@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../effects.js';
+import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
 
 class ShinjoAmbusher extends DrawCard {
     static id = 'shinjo-ambusher';
@@ -10,7 +11,7 @@ class ShinjoAmbusher extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.selectCard(context => ({
+            .gameAction(selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -18,9 +19,9 @@ class ShinjoAmbusher extends DrawCard {
                 cardCondition: card => card.isConflictProvince(),
                 message: '{0} prevents {1} from triggering its abilities',
                 messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
+                gameAction: cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cannotTriggerAbilities()
+                    effect: cannotTriggerAbilities()
                 }))
             })))
             .effect('prevent an attacked province from triggering its abilities this conflict');

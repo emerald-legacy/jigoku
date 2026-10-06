@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { resolveAbility } from '../../GameActions/GameActions.js';
 
 class KeeperOfSecretNames extends DrawCard {
     static id = 'keeper-of-secret-names';
@@ -12,7 +12,7 @@ class KeeperOfSecretNames extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.abilities.actions.length > 0 && !card.isBroken
-            }, AbilityDsl.actions.resolveAbility((context) => ({
+            }, resolveAbility((context) => ({
                 ability: context.target.abilities.actions[0],
                 ignoredRequirements: ['province'],
                 choosingPlayerOverride: context.choosingPlayerOverride

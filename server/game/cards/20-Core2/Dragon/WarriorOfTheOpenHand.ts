@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WarriorOfTheOpenHand extends DrawCard {
@@ -11,7 +12,7 @@ export default class WarriorOfTheOpenHand extends DrawCard {
                 context.player.opponent &&
                 context.game.currentConflict &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent) > 0))
-            .gameAction(AbilityDsl.actions.returnToHand())
+            .gameAction(returnToHand())
             .max(AbilityDsl.limit.perRound(1));
     }
 }

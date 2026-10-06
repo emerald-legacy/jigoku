@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { draw, gainFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class MinamiKazeRegulars extends DrawCard {
@@ -12,7 +12,7 @@ class MinamiKazeRegulars extends DrawCard {
                     context.source.isParticipating() &&
                     context.game.currentConflict?.hasMoreParticipants(context.player)
             })
-            .gameAction(AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw())
+            .gameAction(gainFate(), draw())
             .effect('gain a fate and draw a card');
     }
 }

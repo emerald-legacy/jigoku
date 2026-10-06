@@ -1,5 +1,5 @@
 import { Players, PlayType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { increaseCost } from '../../effects.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class UnderAmaterasusGaze extends BattlefieldAttachment {
@@ -16,7 +16,7 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
                 !!context.player.opponent &&
                 context.player.opponent.honor < context.player.honor + 5,
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.increaseCost({
+            effect: increaseCost({
                 amount: 1,
                 playingTypes: PlayType.PlayFromHand
             })
@@ -30,7 +30,7 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
                 !!context.player.opponent &&
                 context.player.honor < context.player.opponent.honor + 5,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.increaseCost({
+            effect: increaseCost({
                 amount: 1,
                 playingTypes: PlayType.PlayFromHand
             })

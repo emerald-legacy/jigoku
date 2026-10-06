@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 
@@ -11,7 +12,7 @@ class UnveiledCorruption extends DrawCard {
             .cost(AbilityDsl.costs.taint({ cardCondition: (card) => {
                 return card.type === CardType.Province && !(card instanceof ProvinceCard && card.isBroken);
             }}))
-            .gameAction(AbilityDsl.actions.chosenDiscard(context => ({
+            .gameAction(chosenDiscard(context => ({
                 amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - context.player.hand.filter((card) => card !== context.source).length)
             })));
     }

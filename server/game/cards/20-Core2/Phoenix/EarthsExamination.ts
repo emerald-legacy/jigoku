@@ -1,5 +1,5 @@
 import { CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -13,12 +13,12 @@ export default class EarthsExamination extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.taint(),
-                AbilityDsl.actions.onAffinity((context) => ({
+            }, multiple([
+                taint(),
+                onAffinity((context) => ({
                     trait: 'earth',
                     promptTitleForConfirmingAffinity: context.target.isTainted ? undefined : 'Bow that character?',
-                    gameAction: AbilityDsl.actions.bow(),
+                    gameAction: bow(),
                     effect: 'bow {0}',
                     effectArgs: (context) => [context.target]
                 }))

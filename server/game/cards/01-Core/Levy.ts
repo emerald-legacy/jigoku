@@ -1,5 +1,5 @@
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { takeFate, takeHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class Levy extends DrawCard {
@@ -11,8 +11,8 @@ export default class Levy extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()
+                'Give your opponent 1 fate': takeFate(),
+                'Give your opponent 1 honor': takeHonor()
             });
     }
 }

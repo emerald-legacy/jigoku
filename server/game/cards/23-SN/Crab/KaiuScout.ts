@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { handler } from '../../../GameActions/GameActions.js';
 
 export default class KaiuScout extends DrawCard {
     static id = 'kaiu-scout';
@@ -13,7 +13,7 @@ export default class KaiuScout extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: card => card.controller.getDynastyCardsInProvince(card.location).filter(a => a.isFacedown()).length > 0
             })
-            .gameAction(AbilityDsl.actions.handler({
+            .gameAction(handler({
                 handler: (context) => {
                     const cards = context.target.controller.getDynastyCardsInProvince(context.target.location);
                     this.chooseCardsToTurnFaceup(context, cards.filter(a => a.isFacedown()));

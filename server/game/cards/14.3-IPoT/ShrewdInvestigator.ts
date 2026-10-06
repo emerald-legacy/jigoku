@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -8,7 +8,7 @@ export default class ShrewdInvestigator extends DrawCard {
     setupCardAbilities() {
         this.action('Look at random cards from your opponent\'s hand')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.lookAt((context) => ({
+            .gameAction(lookAt((context) => ({
                 target: shuffle(context.player.opponent?.hand ?? [])
                     .slice(0, context.player.getNumberOfFacedownProvinces())
                     .sort((a, b) => a.name.localeCompare(b.name))

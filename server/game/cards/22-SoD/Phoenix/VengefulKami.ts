@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
 
@@ -20,12 +22,12 @@ export default class VengefulKami extends DrawCard {
                     context.game.requireConflict()
                         .getConflictProvinces()
                         .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict) && province.getElement().includes(ring.element))
-            }, AbilityDsl.actions.resolveRingEffect())
+            }, resolveRingEffect())
             .effect('resolve the {0} effect')
             .max(AbilityDsl.limit.perConflict(1));
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'applyCovert',
                 restricts: 'opponentsCardEffects'
             })

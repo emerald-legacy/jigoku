@@ -1,5 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, claimImperialFavor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AncestralRivalry extends DrawCard {
@@ -18,11 +20,11 @@ export default class AncestralRivalry extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Give the character +3/+3': AbilityDsl.actions.cardLastingEffect(context => ({
+                'Give the character +3/+3': cardLastingEffect(context => ({
                     target: context.targets.character,
-                    effect: AbilityDsl.effects.modifyBothSkills(3)
+                    effect: modifyBothSkills(3)
                 })),
-                'Let opponent claim favor': AbilityDsl.actions.claimImperialFavor(context => ({
+                'Let opponent claim favor': claimImperialFavor(context => ({
                     target: context.player
                 }))
             })

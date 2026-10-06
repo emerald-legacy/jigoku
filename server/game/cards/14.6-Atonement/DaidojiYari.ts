@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { loseKeyword } from '../../effects.js';
 
 class DaidojiYari extends DrawCard {
     static id = 'daidoji-yari';
@@ -11,7 +11,7 @@ class DaidojiYari extends DrawCard {
             targetController: Players.Opponent,
             targetLocation: Location.PlayArea,
             match: card => card.type === CardType.Character,
-            effect: AbilityDsl.effects.loseKeyword('covert')
+            effect: loseKeyword('covert')
         });
     }
 }

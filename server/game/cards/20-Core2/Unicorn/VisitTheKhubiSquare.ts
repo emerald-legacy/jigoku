@@ -1,6 +1,6 @@
 import { CardType, Decks, Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../../GameActions/GameActions.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
@@ -10,11 +10,11 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
-                        AbilityDsl.actions.deckSearch({
+                        deckSearch({
                             activePromptTitle: 'Choose a character to put into play',
                             amount: 5,
                             deck: Decks.DynastyDeck,
@@ -26,15 +26,15 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                                 const card = cards.length > 0 ? cards : 'nothing';
                                 return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
                             },
-                            gameAction: AbilityDsl.actions.putIntoPlay()
+                            gameAction: putIntoPlay()
                         }),
-                        AbilityDsl.actions.moveCard((context2) => ({
+                        moveCard((context2) => ({
                             target: topFive.filter((a) => {
-                                const deckSearch = context2.events
+                                const searchEvent = context2.events
                                     .filter((event) => !event.cancelled)
                                     .find((event) => event.is(EventName.OnDeckSearch));
-                                if(deckSearch && deckSearch.selectedCards) {
-                                    return !deckSearch.selectedCards.includes(a);
+                                if(searchEvent && searchEvent.selectedCards) {
+                                    return !searchEvent.selectedCards.includes(a);
                                 }
                                 return true;
                             }),

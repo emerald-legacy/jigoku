@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { CardType, Phases } from '../../Constants.js';
 
 class CommanderOfTheLegions extends DrawCard {
@@ -10,7 +10,7 @@ class CommanderOfTheLegions extends DrawCard {
             match: (card, context) => card.isFaction('lion')
             && card !== context?.source
             && card.controller === context?.player,
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            effect: modifyMilitarySkill(1)
         });
 
         this.persistentEffect({
@@ -23,7 +23,7 @@ class CommanderOfTheLegions extends DrawCard {
                 && (card.printedCost ?? 0) <= 3
                 && card !== context?.source
                 && card.controller === context?.player,
-            effect: AbilityDsl.effects.cardCannot('removeFate')
+            effect: cardCannot('removeFate')
         });
     }
 }

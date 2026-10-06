@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { honor, multiple, ready } from '../../GameActions/GameActions.js';
 
 class CommonCause extends DrawCard {
     static id = 'common-cause';
@@ -11,9 +12,9 @@ class CommonCause extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to ready',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.honor((context) => ({ target: context.target.controller !== context.player ? context.target : [] }))
+            }, multiple([
+                ready(),
+                honor((context) => ({ target: context.target.controller !== context.player ? context.target : [] }))
             ]));
     }
 }

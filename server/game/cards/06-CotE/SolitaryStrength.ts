@@ -1,12 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay, gainHonor } from '../../GameActions/GameActions.js';
 
 class SolitaryStrength extends DrawCard {
     static id = 'solitary-strength';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition: (context) => {
                     if(context.source.parentCharacter && context.source.parentCharacter.isParticipating()) {
                         let participantsForController = (this.game.currentConflict && this.game.currentConflict.getNumberOfParticipantsFor(context.player)) ?? 0;
@@ -20,7 +21,7 @@ class SolitaryStrength extends DrawCard {
                 },
                 message: '{0} is discarded from play as {1} is not participating alone in the conflict',
                 messageArgs: (context) => [context.source, context.source.parentCharacter],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+                gameAction: discardFromPlay()
             })
         });
 
@@ -29,7 +30,7 @@ class SolitaryStrength extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller
             })
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gameAction(gainHonor());
     }
 }
 

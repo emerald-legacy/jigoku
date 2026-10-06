@@ -1,5 +1,5 @@
 import { PlayType, Decks, CardType, EventName, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
@@ -16,11 +16,11 @@ export default class ShinjoGunso extends DrawCard {
                     !!event.originalLocation &&
                     context.game.getProvinceArray().some((location) => location === event.originalLocation)
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
-                        AbilityDsl.actions.deckSearch(() => ({
+                        deckSearch(() => ({
                             activePromptTitle: 'Choose a character to put into play',
                             amount: 5,
                             deck: Decks.DynastyDeck,
@@ -32,9 +32,9 @@ export default class ShinjoGunso extends DrawCard {
                                 const card = cards.length > 0 ? cards : 'nothing';
                                 return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
                             },
-                            gameAction: AbilityDsl.actions.putIntoPlay()
+                            gameAction: putIntoPlay()
                         })),
-                        AbilityDsl.actions.moveCard((context2) => ({
+                        moveCard((context2) => ({
                             target: topFive.filter((a) => {
                                 const events = context2.events.filter((a: Event): a is GameEvent<EventName.OnDeckSearch> => a.name === EventName.OnDeckSearch && !a.cancelled);
                                 if(events.length > 0 && events[0].selectedCards) {

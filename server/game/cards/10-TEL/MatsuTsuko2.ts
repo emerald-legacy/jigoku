@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { breakProvince, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MatsuTsuko2 extends DrawCard {
@@ -14,7 +14,7 @@ export default class MatsuTsuko2 extends DrawCard {
                     context.player.isMoreHonorable() &&
                     event.conflict.getConflictProvinces().some(p => p.location !== Location.StrongholdProvince)
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -22,7 +22,7 @@ export default class MatsuTsuko2 extends DrawCard {
                 cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
                 message: '{0} breaks {1}',
                 messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.breakProvince()
+                gameAction: breakProvince()
             })))
             .effect('break an attacked province');
     }

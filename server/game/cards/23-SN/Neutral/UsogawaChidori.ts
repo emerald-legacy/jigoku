@@ -1,5 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { blank } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 
 export default class UsogawaChidori extends DrawCard {
@@ -12,8 +14,8 @@ export default class UsogawaChidori extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.blank(),
+            }, cardLastingEffect({
+                effect: blank(),
                 duration: Duration.UntilEndOfPhase
             }))
             .effect('treat {1} as if it had no printed abilities until the end of the phase', (context) => [context.target]);

@@ -1,5 +1,5 @@
 import { CardType, Players, Location, TargetMode, Decks } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TennyosBlessing extends DrawCard {
@@ -12,7 +12,7 @@ export default class TennyosBlessing extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.deckSearch({
+            }, deckSearch({
                 targetMode: TargetMode.UpTo,
                 numCards: 2,
                 amount: 4,

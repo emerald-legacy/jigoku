@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import Ring from '../../Ring.js';
 
 class JadeTalisman extends DrawCard {
@@ -19,7 +20,7 @@ class JadeTalisman extends DrawCard {
                 onCardReadied: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .effect('cancel the effects of the {1}', context => [context.event.context.source]);
     }
 }

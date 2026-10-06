@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { customFatePhaseFateRemoval } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -12,7 +12,7 @@ class ReveredBonsho extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.customFatePhaseFateRemoval((player, fate) => {
+            effect: customFatePhaseFateRemoval((player, fate) => {
                 const context = this.game.getFrameworkContext();
                 const ringsBase = [this.game.rings.air, this.game.rings.earth, this.game.rings.fire, this.game.rings.void, this.game.rings.water];
                 let rings = ringsBase.filter(a => a.isUnclaimed());

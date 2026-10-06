@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor, selectCard, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, EventName, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
@@ -8,11 +9,11 @@ import { resolveAbilityAgain } from '../../resolveAgain.js';
 const TARGET_CHARACTER = 'character';
 
 function selfDishonorSelect(message: string) {
-    return AbilityDsl.actions.selectCard((context: AbilityContext) => ({
+    return selectCard((context: AbilityContext) => ({
         cardType: CardType.Character,
         controller: Players.Self,
         cardCondition: (card) => card.isParticipating(),
-        gameAction: AbilityDsl.actions.dishonor(),
+        gameAction: dishonor(),
         message: message,
         messageArgs: (card) => [context.player, card, context.source]
     }));
@@ -34,10 +35,10 @@ export default class NaturesWrath extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             })
             .select({ name: 'select', dependsOn: TARGET_CHARACTER, player: Players.Opponent }, {
-                'Dishonor this character': AbilityDsl.actions.dishonor((context) => ({
+                'Dishonor this character': dishonor((context) => ({
                     target: context.targets[TARGET_CHARACTER]
                 })),
-                'Move this character home': AbilityDsl.actions.sendHome((context) => ({
+                'Move this character home': sendHome((context) => ({
                     target: context.targets[TARGET_CHARACTER]
                 }))
             })

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, blank, loseTrait } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SeijisFate extends DrawCard {
@@ -7,10 +7,10 @@ export default class SeijisFate extends DrawCard {
     public setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addTrait('creature'),
-                AbilityDsl.effects.loseTrait('bushi'),
-                AbilityDsl.effects.loseTrait('courtier'),
-                AbilityDsl.effects.blank()
+                addTrait('creature'),
+                loseTrait('bushi'),
+                loseTrait('courtier'),
+                blank()
             ]
         });
     }

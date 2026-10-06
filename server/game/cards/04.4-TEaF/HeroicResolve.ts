@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class HeroicResolve extends DrawCard {
@@ -7,7 +7,7 @@ class HeroicResolve extends DrawCard {
     setupCardAbilities() {
         this.action('Ready attached character')
             .condition(context => context.player.getClaimedRings().length >= 2)
-            .gameAction(AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter ?? [] })));
+            .gameAction(ready(context => ({ target: context.source.parentCharacter ?? [] })));
     }
 }
 

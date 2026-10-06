@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardStatusToken } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WebisusBlessing extends DrawCard {
@@ -9,14 +9,14 @@ export default class WebisusBlessing extends DrawCard {
             .tokenTarget({
                 name: 'first',
                 activePromptTitle: 'Choose a status token'
-            }, AbilityDsl.actions.discardStatusToken())
+            }, discardStatusToken())
             .tokenTarget({
                 name: 'second',
                 activePromptTitle: 'Choose a status token',
                 dependsOn: 'first',
                 optional: true,
                 tokenCondition: (token, context) => token !== context.tokens.first[0]
-            }, AbilityDsl.actions.discardStatusToken())
+            }, discardStatusToken())
             .effect('discard {1}\'s {2}{3}{4}{5}{6}', (context) =>
                 context.tokens.second
                     ? [

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class DaidojiStrategist extends DrawCard {
     static id = 'daidoji-strategist';
@@ -12,7 +12,7 @@ class DaidojiStrategist extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isHonored
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

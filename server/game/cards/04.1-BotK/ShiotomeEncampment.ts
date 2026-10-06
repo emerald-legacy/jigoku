@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
@@ -16,7 +16,7 @@ class ShiotomeEncampment extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('cavalry')
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

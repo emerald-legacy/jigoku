@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
+import { multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration, Location, Decks } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -15,7 +16,7 @@ class MasterpiecePainter extends DrawCard {
             }, (context) => playerChoices(
                 context.player,
                 (player) => this.revealAndMayPlayAbility(player),
-                (player, opponent) => AbilityDsl.actions.multiple([
+                (player, opponent) => multiple([
                     this.revealAndMayPlayAbility(player),
                     this.revealAndMayPlayAbility(opponent)
                 ])
@@ -24,7 +25,7 @@ class MasterpiecePainter extends DrawCard {
     }
 
     revealAndMayPlayAbility(player: Player) {
-        return AbilityDsl.actions.playerLastingEffect(() => {
+        return playerLastingEffect(() => {
             const topCard = player.conflictDeck[0];
 
             return {
@@ -36,8 +37,8 @@ class MasterpiecePainter extends DrawCard {
                     onDeckShuffled: event => event.player === player && event.deck === Decks.ConflictDeck
                 },
                 effect: [
-                    AbilityDsl.effects.showTopConflictCard(),
-                    AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
+                    showTopConflictCard(),
+                    canPlayFromOwn(Location.ConflictDeck, [topCard], this)
                 ]
             };
         });

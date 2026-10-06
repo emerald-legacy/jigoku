@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Duration, Phases } from '../../Constants.js';
 
 class AgashaHiyori extends DrawCard {
@@ -14,9 +16,9 @@ class AgashaHiyori extends DrawCard {
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter)
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.blank()
+                effect: blank()
             }))
             .effect('treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase', (context) => context.target);
     }

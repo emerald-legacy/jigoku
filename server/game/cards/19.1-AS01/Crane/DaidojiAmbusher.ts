@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, conditional, injure, noAction, sequential } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,14 +18,14 @@ export default class DaidojiAmbusher extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(-2)
+            }, sequential([
+                cardLastingEffect({
+                    effect: modifyMilitarySkill(-2)
                 }),
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: (context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY),
-                    trueGameAction: AbilityDsl.actions.injure(),
-                    falseGameAction: AbilityDsl.actions.noAction()
+                    trueGameAction: injure(),
+                    falseGameAction: noAction()
                 })
             ]))
             .effect('give {0} -2{1}{2}', (context) => [

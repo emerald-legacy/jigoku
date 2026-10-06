@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { reveal } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
@@ -14,7 +14,7 @@ class IuchiFarseer extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.reveal())
+            }, reveal())
             .effect('reveal {0}');
     }
 }

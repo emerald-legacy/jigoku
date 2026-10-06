@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOutOfPlay, showTopConflictCard } from '../../effects.js';
 import { Location, Players, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { LimitedPlaysFromOutOfPlay } from '../LimitedPlaysFromOutOfPlay.js';
@@ -23,7 +23,7 @@ export default class MasterTactician extends DrawCard {
             targetController: Players.Self,
             match: (card, context) =>
                 !!(context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0]),
-            effect: AbilityDsl.effects.canPlayFromOutOfPlay(
+            effect: canPlayFromOutOfPlay(
                 (player, card) => player === card.owner,
                 PlayType.PlayFromHand
             )
@@ -36,7 +36,7 @@ export default class MasterTactician extends DrawCard {
                 return context.game.isTraitInPlay('battlefield') && context.source.isParticipating() && !preventShowing;
             },
             targetController: Players.Self,
-            effect: AbilityDsl.effects.showTopConflictCard(Players.Self)
+            effect: showTopConflictCard(Players.Self)
         });
     }
 }

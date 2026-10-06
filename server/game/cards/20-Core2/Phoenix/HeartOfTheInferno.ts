@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, discardFromPlay, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -21,17 +21,17 @@ export default class HeartOfTheInferno extends DrawCard {
                 cardCondition: (card, context) => !!context.player.opponent &&
                     (card.isParticipatingFor(context.player.opponent) ||
                         !!card.parentCharacter?.isParticipatingFor(context.player.opponent))
-            }, AbilityDsl.actions.multipleContext((context) => {
+            }, multipleContext((context) => {
                 if(!(context.target instanceof DrawCard)) {
                     return { gameActions: [] };
                 }
 
                 const gameActions: Array<GameAction> = [];
                 if(context.target.type === CardType.Character && context.target.attachments.length === 0) {
-                    gameActions.push(AbilityDsl.actions.bow({ target: context.target }));
+                    gameActions.push(bow({ target: context.target }));
                 }
                 if(context.target.type === CardType.Attachment && context.player.hasAffinity('fire', context)) {
-                    gameActions.push(AbilityDsl.actions.discardFromPlay({ target: context.target }));
+                    gameActions.push(discardFromPlay({ target: context.target }));
                 }
 
                 return { gameActions };

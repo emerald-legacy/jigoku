@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
 
 class DoomedShugenja extends DrawCard {
     static id = 'doomed-shugenja';
@@ -8,7 +8,7 @@ class DoomedShugenja extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'placeFateWhenPlayingCharacterFromProvince',
                 restricts: 'source'
             })

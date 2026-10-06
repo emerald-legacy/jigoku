@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { hasMoreParticipatingGlory } from '../participatingGlory.js';
@@ -12,7 +12,7 @@ class RadiantOrator extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

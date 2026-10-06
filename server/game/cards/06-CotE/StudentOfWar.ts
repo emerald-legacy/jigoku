@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 class StudentOfWar extends DrawCard {
     static id = 'student-of-war';
@@ -6,8 +6,8 @@ class StudentOfWar extends DrawCard {
     setupCardAbilities() {
         this.composure({
             effect: [
-                AbilityDsl.effects.cardCannot('removeFate'),
-                AbilityDsl.effects.cardCannot('discardFromPlay')
+                cardCannot('removeFate'),
+                cardCannot('discardFromPlay')
             ]
         });
     }

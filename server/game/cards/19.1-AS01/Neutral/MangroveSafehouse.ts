@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { multipleContext, sendHome, takeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -13,10 +13,10 @@ export default class MangroveSafehouse extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.multipleContext((context) => {
-                const gameActions: GameAction[] = [AbilityDsl.actions.sendHome()];
+            }, multipleContext((context) => {
+                const gameActions: GameAction[] = [sendHome()];
                 if(this.targetIsMantis(context)) {
-                    gameActions.push(AbilityDsl.actions.takeFate({ target: context.player.opponent }));
+                    gameActions.push(takeFate({ target: context.player.opponent }));
                 }
                 return { gameActions };
             }))

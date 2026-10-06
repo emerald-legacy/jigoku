@@ -1,5 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import {
+    cardLastingEffect,
+    honor,
+    joint,
+    menuPrompt,
+    removeFate,
+    resolveAbility,
+    sequential
+} from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import CardAbility from '../../CardAbility.js';
 
@@ -13,11 +22,11 @@ class CaptivatingStory extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && (context.player.getNumberOfFaceupProvinces() > 0 || card.allowGameAction('removeFate', context))
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
+            }, sequential([
+                cardLastingEffect(context => ({
+                    effect: modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
                 })),
-                AbilityDsl.actions.menuPrompt((context) => ({
+                menuPrompt((context) => ({
                     activePromptTitle: 'Remove 1 fate from ' + context.target.name + ' to honor them?',
                     choices: ['Yes'].concat(context.player.getNumberOfFaceupProvinces() > 0 ? ['No'] : []),
                     choiceHandler: (choice, displayMessage) => {
@@ -26,16 +35,16 @@ class CaptivatingStory extends DrawCard {
                         }
                         return { amount: choice === 'Yes' ? 1 : 0 };
                     },
-                    gameAction: AbilityDsl.actions.joint([
-                        AbilityDsl.actions.removeFate((context) => ({
+                    gameAction: joint([
+                        removeFate((context) => ({
                             target: context.target
                         })),
-                        AbilityDsl.actions.resolveAbility({
+                        resolveAbility({
                             target: context.source,
                             subResolution: true,
                             ability: new CardAbility(context.source, {
                                 title: 'Honor this character',
-                                gameAction: AbilityDsl.actions.honor({ target: context.target })
+                                gameAction: honor({ target: context.target })
                             })
                         })
                     ])

@@ -1,6 +1,15 @@
 import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import {
+    cardLastingEffect,
+    conditional,
+    multiple,
+    noAction,
+    placeFate,
+    selectRing
+} from '../../GameActions/GameActions.js';
 
 export default class HighHouseOfLight extends StrongholdCard {
     static id = 'high-house-of-light';
@@ -13,25 +22,25 @@ export default class HighHouseOfLight extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.cardCannot({
+            }, multiple([
+                cardLastingEffect((context) => ({
+                    effect: cardCannot({
                         cannot: 'target',
                         restricts: 'opponentsEvents',
                         applyingPlayer: context.player
                     })
                 })),
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: (context) => (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 5,
-                    trueGameAction: AbilityDsl.actions.selectRing((context) => ({
+                    trueGameAction: selectRing((context) => ({
                         activePromptTitle: 'Choose a ring to take a fate from',
                         message: '{0} moves a fate from the {1} to {2}',
                         ringCondition: (ring) => ring.fate >= 1,
                         messageArgs: (ring) => [context.player, ring, context.target],
                         subActionProperties: (ring) => ({ origin: ring }),
-                        gameAction: AbilityDsl.actions.placeFate({ target: context.target })
+                        gameAction: placeFate({ target: context.target })
                     })),
-                    falseGameAction: AbilityDsl.actions.noAction()
+                    falseGameAction: noAction()
                 })
             ]))
             .effect('make {0} unable to be targeted by opponent\'s events');

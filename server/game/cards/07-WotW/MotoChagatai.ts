@@ -1,6 +1,6 @@
 import { EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
@@ -15,7 +15,7 @@ export default class MotoChagatai extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 Boolean(context.source.isAttacking() && context.player.opponent && this.provinceBroken.get(context.player.opponent.uuid)),
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 

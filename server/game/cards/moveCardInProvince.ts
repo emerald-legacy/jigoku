@@ -1,4 +1,4 @@
-import AbilityDsl from '../abilitydsl.js';
+import { attach, conditional, moveCard } from '../GameActions/GameActions.js';
 import { CardType, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 
@@ -29,13 +29,13 @@ export function moveCardInProvinceAction(source: DrawCard) {
                         (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
                         (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                     )
-        }, AbilityDsl.actions.conditional(context => ({
+        }, conditional(context => ({
             condition: context.targets.cardInProvince.type === CardType.Attachment,
-            trueGameAction: AbilityDsl.actions.attach({
+            trueGameAction: attach({
                 target: context.targets.province,
                 attachment: context.targets.cardInProvince
             }),
-            falseGameAction: AbilityDsl.actions.moveCard({
+            falseGameAction: moveCard({
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             })

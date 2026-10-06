@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration, PlayType, Players } from '../../Constants.js';
 
 class Gossip extends DrawCard {
@@ -8,10 +10,10 @@ class Gossip extends DrawCard {
     setupCardAbilities() {
         this.action('Name a card that your opponent cannot play for the phase')
             .cost(AbilityDsl.costs.nameCard())
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Opponent,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
                     restricts: 'copiesOfX',
                     params: context.costs.nameCardCost

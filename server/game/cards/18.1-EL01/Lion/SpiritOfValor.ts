@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainAllAbilities, reduceCost } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -11,7 +13,7 @@ export default class SpiritOfValor extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (_, player) => controlsShugenja(player) ? 1 : 0,
                 match: (card, source) => card === source
             })
@@ -25,9 +27,9 @@ export default class SpiritOfValor extends DrawCard {
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
                 cardCondition: (card) => card.isFaction('lion')
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: capturedParent(context) ?? [],
-                effect: context.target ? AbilityDsl.effects.gainAllAbilities(context.target) : []
+                effect: context.target ? gainAllAbilities(context.target) : []
             })))
             .effect('copy {0}\'s abilities onto {1}', (context) => [capturedParent(context)]);
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class Heresy extends DrawCard {
@@ -12,7 +12,7 @@ class Heresy extends DrawCard {
                 opponentChoosesChallenger: true,
                 message: 'remove a fate from {0}',
                 messageArgs: duel => [duel.loser],
-                gameAction: duel => AbilityDsl.actions.removeFate({
+                gameAction: duel => removeFate({
                     target: duel.loser
                 })
             }));

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BorderlandsDefender extends DrawCard {
@@ -8,11 +8,11 @@ export default class BorderlandsDefender extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             effect: [
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'sendHome',
                     restricts: 'opponentsCardEffects'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects'
                 })

@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate, selectCard } from '../../GameActions/GameActions.js';
 
 export default class SharingShinseisWisdom extends ProvinceCard {
     static id = 'sharing-shinsei-s-wisdom';
@@ -13,14 +13,14 @@ export default class SharingShinseisWisdom extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.selectCard((context) => ({
+            }, selectCard((context) => ({
                 activePromptTitle: 'Choose a character to receive a fate',
                 cardType: CardType.Character,
                 controller: context.target.controller === context.player ? Players.Self : Players.Opponent,
                 cardCondition: (card, context) => card !== context.target,
                 message: '{0} moves 1 fate from {1} to {2}',
                 messageArgs: (card) => [context.player, context.target, card],
-                gameAction: AbilityDsl.actions.placeFate({
+                gameAction: placeFate({
                     origin: context.target
                 })
             })))

@@ -1,5 +1,6 @@
 import { CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { chosenDiscard, conditional, discardAtRandom } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TalkWithTheServants extends DrawCard {
@@ -16,13 +17,13 @@ export default class TalkWithTheServants extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .gameAction(AbilityDsl.actions.conditional({
+            .gameAction(conditional({
                 condition: (context) => context.costs.dishonor instanceof DrawCard,
-                trueGameAction: AbilityDsl.actions.discardAtRandom((context) => ({
+                trueGameAction: discardAtRandom((context) => ({
                     amount: 2,
                     target: context.player.opponent
                 })),
-                falseGameAction: AbilityDsl.actions.chosenDiscard((context) => ({
+                falseGameAction: chosenDiscard((context) => ({
                     amount: 2,
                     target: context.player.opponent
                 }))

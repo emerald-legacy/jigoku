@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { Location, TargetMode } from '../../../Constants.js';
 import { countCardsUnderneath } from '../../cardsUnderneath.js';
 
@@ -19,11 +20,11 @@ class Stowaway extends DrawCard {
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards in a discard pile',
                 sameDiscardPile: true
-            }, AbilityDsl.actions.placeCardUnderneath({ destination: this }))
+            }, placeCardUnderneath({ destination: this }))
             .effect('place {0} beneath {1}', context => [context.source]);
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyMilitarySkill(() => Math.floor(countCardsUnderneath(this) / 2))
+            effect: modifyMilitarySkill(() => Math.floor(countCardsUnderneath(this) / 2))
         });
     }
 }

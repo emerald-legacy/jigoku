@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
@@ -13,7 +13,7 @@ class FromTheShadows extends DrawCard {
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('shinobi')
-            }, AbilityDsl.actions.putIntoConflict({ status: 'dishonored' }));
+            }, putIntoConflict({ status: 'dishonored' }));
     }
 
     canPlay(context: AbilityContext, type: string): boolean {

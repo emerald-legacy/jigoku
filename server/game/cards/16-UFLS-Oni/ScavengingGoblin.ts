@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler, multipleContext, removeFromGame } from '../../GameActions/GameActions.js';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';
@@ -15,7 +15,7 @@ export default class ScavengingGoblin extends BaseOni {
                     context.player.opponent &&
                     context.player.opponent.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const cardsToRemove = context.player.opponent?.conflictDeck.slice(0, 3) ?? [];
                 const cardNames = cardsToRemove.map((card) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
@@ -33,14 +33,14 @@ export default class ScavengingGoblin extends BaseOni {
 
                 return {
                     gameActions: [
-                        AbilityDsl.actions.removeFromGame({
+                        removeFromGame({
                             target: cardsToRemove,
                             location: Location.ConflictDeck
                         }),
-                        AbilityDsl.actions.removeFromGame({
+                        removeFromGame({
                             target: attachmentsToRemove
                         }),
-                        AbilityDsl.actions.handler({
+                        handler({
                             handler: (context) => {
                                 context.game.addMessage(
                                     '{0} {1} removed from the game from the top of {2}\'s conflict deck',

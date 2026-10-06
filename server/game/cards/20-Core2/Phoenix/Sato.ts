@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { loseHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Sato extends DrawCard {
@@ -14,7 +15,7 @@ export default class Sato extends DrawCard {
                     event.player === context.player.opponent &&
                     context.source.parentCharacter.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.loseHonor())
+            .gameAction(loseHonor())
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

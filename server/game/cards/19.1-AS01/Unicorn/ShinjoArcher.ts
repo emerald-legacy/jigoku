@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,8 +13,8 @@ export default class ShinjoArcher extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyBothSkills(-2)
+            }, cardLastingEffect({
+                effect: modifyBothSkills(-2)
             }))
             .effect('give {0} -2{2}/-2{3}', (context) => [context.source, 'military', 'political']);
     }

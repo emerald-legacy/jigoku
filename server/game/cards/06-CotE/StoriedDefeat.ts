@@ -1,6 +1,14 @@
 import CardAbility from '../../CardAbility.js';
 import { CardType, EventName } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import {
+    bow,
+    dishonor,
+    joint,
+    loseFate,
+    menuPrompt,
+    resolveAbility,
+    sequential
+} from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
@@ -13,9 +21,9 @@ export default class StoriedDefeat extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => duelLosers.has(card)
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.bow(),
-                AbilityDsl.actions.menuPrompt((context) => ({
+            }, sequential([
+                bow(),
+                menuPrompt((context) => ({
                     activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                     choices: ['Yes'].concat(
                         context.events.some((event) => event.name === EventName.OnCardBowed) ? ['No'] : []
@@ -31,14 +39,14 @@ export default class StoriedDefeat extends DrawCard {
                         }
                         return { amount: choice === 'Yes' ? 1 : 0 };
                     },
-                    gameAction: AbilityDsl.actions.joint([
-                        AbilityDsl.actions.loseFate({ target: context.player }),
-                        AbilityDsl.actions.resolveAbility({
+                    gameAction: joint([
+                        loseFate({ target: context.player }),
+                        resolveAbility({
                             target: context.source,
                             subResolution: true,
                             ability: new CardAbility(context.source, {
                                 title: 'Dishonor this character',
-                                gameAction: AbilityDsl.actions.dishonor({ target: context.target })
+                                gameAction: dishonor({ target: context.target })
                             })
                         })
                     ])

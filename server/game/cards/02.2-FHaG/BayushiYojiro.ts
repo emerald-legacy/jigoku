@@ -1,6 +1,10 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import {
+    honorStatusDoesNotAffectLeavePlay,
+    honorStatusDoesNotModifySkill,
+    taintedStatusDoesNotCostHonor
+} from '../../effects.js';
 
 class BayushiYojiro extends DrawCard {
     static id = 'bayushi-yojiro';
@@ -11,9 +15,9 @@ class BayushiYojiro extends DrawCard {
             targetController: Players.Any,
             match: (card) => card.isParticipating(),
             effect: [
-                AbilityDsl.effects.honorStatusDoesNotModifySkill(),
-                AbilityDsl.effects.honorStatusDoesNotAffectLeavePlay(),
-                AbilityDsl.effects.taintedStatusDoesNotCostHonor()
+                honorStatusDoesNotModifySkill(),
+                honorStatusDoesNotAffectLeavePlay(),
+                taintedStatusDoesNotCostHonor()
             ]
         });
     }

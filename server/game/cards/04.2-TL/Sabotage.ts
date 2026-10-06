@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { discardCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 
@@ -11,7 +11,7 @@ class Sabotage extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]
-            }, AbilityDsl.actions.discardCard());
+            }, discardCard());
     }
 }
 

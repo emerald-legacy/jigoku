@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type Ring from '../../Ring.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../effects.js';
 import { ConflictType } from '../../Constants.js';
 
 class PoliticalSanction extends DrawCard {
@@ -10,7 +10,7 @@ class PoliticalSanction extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotTriggerAbilities()
+            effect: cannotTriggerAbilities()
         });
     }
 

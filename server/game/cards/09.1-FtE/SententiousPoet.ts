@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainFate } from '../../GameActions/GameActions.js';
 import { Stage } from '../../Constants.js';
 
 class SententiousPoet extends DrawCard {
@@ -22,7 +22,7 @@ class SententiousPoet extends DrawCard {
                     event.context?.stage === Stage.Cost &&
                     event.recipient?.type === 'ring'
             })
-            .gameAction(AbilityDsl.actions.gainFate());
+            .gameAction(gainFate());
     }
 }
 

@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, takeHonor } from '../../GameActions/GameActions.js';
 
 export default class TheEternalWatch extends ProvinceCard {
     static id = 'the-eternal-watch';
@@ -17,10 +17,10 @@ export default class TheEternalWatch extends ProvinceCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Bow this character': AbilityDsl.actions.bow((context) => ({
+                'Bow this character': bow((context) => ({
                     target: context.targets.character
                 })),
-                'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()
+                'Give your opponent 1 honor': takeHonor()
             })
             .effect('{1}{2}', (context) =>
                 context.selects.select.choice === 'Give your opponent 1 honor'

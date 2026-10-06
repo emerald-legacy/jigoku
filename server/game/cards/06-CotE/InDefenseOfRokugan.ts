@@ -1,4 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { setMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -14,8 +16,8 @@ class InDefenseOfRokugan extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.setMilitarySkill(0)
+            }, cardLastingEffect({
+                effect: setMilitarySkill(0)
             }))
             .effect('set {0}\'s {1} skill to 0', () => 'military');
     }

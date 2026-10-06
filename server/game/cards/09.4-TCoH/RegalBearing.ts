@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { draw, sequential, setHonorDial } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class RegalBearing extends DrawCard {
@@ -11,12 +12,12 @@ class RegalBearing extends DrawCard {
             .condition(context => context.game.isDuringConflict(ConflictType.Political) &&
                 !!context.player.opponent &&
                 context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.setHonorDial(context => ({
+            .gameAction(sequential([
+                setHonorDial(context => ({
                     target: context.player,
                     value: 1
                 })),
-                AbilityDsl.actions.draw(context => ({
+                draw(context => ({
                     target: context.player,
                     amount: this.getHonorDialDifference(context)
                 }))

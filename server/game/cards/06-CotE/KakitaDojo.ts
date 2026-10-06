@@ -1,6 +1,7 @@
 import { DuelType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../effects.js';
+import { bow, cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaDojo extends DrawCard {
@@ -13,12 +14,12 @@ export default class KakitaDojo extends DrawCard {
                 message: '{0} {1}cannot trigger its abilities until the end of the conflict',
                 messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? 'is bowed and ' : ''],
                 gameAction: (duel) =>
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.cardLastingEffect({
+                    multiple([
+                        cardLastingEffect({
                             target: duel.loser,
-                            effect: AbilityDsl.effects.cannotTriggerAbilities()
+                            effect: cannotTriggerAbilities()
                         }),
-                        AbilityDsl.actions.bow({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
+                        bow({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ])
             }));
     }

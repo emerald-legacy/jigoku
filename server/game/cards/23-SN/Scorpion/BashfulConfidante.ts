@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { additionalTriggerCostForCard } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { giveHonorToTriggerCost } from '../../giveHonorToTriggerCost.js';
 
@@ -15,8 +16,8 @@ export default class BashfulConfidante extends DrawCard {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
-                effect: AbilityDsl.effects.additionalTriggerCostForCard(() => [giveHonorToTriggerCost(context.player)])
+            }, cardLastingEffect(context => ({
+                effect: additionalTriggerCostForCard(() => [giveHonorToTriggerCost(context.player)])
             })))
             .effect('force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities', context => [context.player.opponent, context.player]);
     }

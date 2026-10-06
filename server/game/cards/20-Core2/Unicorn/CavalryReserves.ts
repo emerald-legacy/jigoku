@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,6 +17,6 @@ export default class CavalryReserves extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('cavalry')
-            }, AbilityDsl.actions.putIntoConflict());
+            }, putIntoConflict());
     }
 }

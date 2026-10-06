@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotParticipateAsAttacker, cardCannot } from '../../../effects.js';
+import { dishonor, draw, sequentialContext } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -10,11 +11,11 @@ export default class AncientStoneGuardian extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
+            effect: cannotParticipateAsAttacker()
         });
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
+            effect: cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
         });
 
         this.forcedInterrupt('Dishonor a character and draw a card')
@@ -30,7 +31,7 @@ export default class AncientStoneGuardian extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context)
-            }, AbilityDsl.actions.sequentialContext((context) =>
+            }, sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.firstCharacter)
             ))
             .target({
@@ -42,7 +43,7 @@ export default class AncientStoneGuardian extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context)
-            }, AbilityDsl.actions.sequentialContext((context) =>
+            }, sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.secondCharacter)
             ))
             .effect('present an opportunity to sneak around {0} and find some secrets{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}', (context) =>
@@ -52,15 +53,15 @@ export default class AncientStoneGuardian extends DrawCard {
     }
 
     private cardCanBeChosenForDishonor(card: BaseCard, context: TriggeredAbilityContext): boolean {
-        return card !== context.source && AbilityDsl.actions.dishonor({ target: card }).canAffect(card, context);
+        return card !== context.source && dishonor({ target: card }).canAffect(card, context);
     }
 
     private dishonorAndDraw(target?: BaseCard | []): SequentialContextProperties {
         return {
             gameActions: target instanceof DrawCard
                 ? [
-                    AbilityDsl.actions.dishonor({ target: target }),
-                    AbilityDsl.actions.draw({ target: target.controller })
+                    dishonor({ target: target }),
+                    draw({ target: target.controller })
                 ]
                 : []
         };

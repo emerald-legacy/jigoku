@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
@@ -13,10 +14,10 @@ export default class MagnificentTriumph extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => duelWinners.has(card)
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.modifyBothSkills(2),
-                    AbilityDsl.effects.cardCannot({
+                    modifyBothSkills(2),
+                    cardCannot({
                         cannot: 'target',
                         restricts: 'opponentsEvents',
                         applyingPlayer: context.player

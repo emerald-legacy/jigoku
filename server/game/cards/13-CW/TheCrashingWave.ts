@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveConflict } from '../../GameActions/GameActions.js';
 
 class TheCrashingWave extends DrawCard {
     static id = 'the-crashing-wave';
@@ -13,7 +13,7 @@ class TheCrashingWave extends DrawCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
-            }, AbilityDsl.actions.moveConflict());
+            }, moveConflict());
     }
 }
 

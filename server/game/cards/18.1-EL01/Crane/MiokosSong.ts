@@ -1,6 +1,8 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { handler } from '../../../GameActions/GameActions.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
@@ -12,7 +14,7 @@ export default class MiokosSong extends StrongholdCard {
                 card.type === CardType.Character &&
                 card.isDishonored &&
                 card.isFaction('crane'),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
 
         this.reaction('Sabotage the opponent\'s resources')
@@ -28,7 +30,7 @@ export default class MiokosSong extends StrongholdCard {
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: CardType.Province
-            }, AbilityDsl.actions.handler({
+            }, handler({
                 handler: (context) => {
                     const opponent = context.player.opponent;
                     if(!opponent) {

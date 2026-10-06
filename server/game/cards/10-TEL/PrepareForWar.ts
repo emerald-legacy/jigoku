@@ -1,6 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import {
+    discardFromPlay,
+    discardStatusToken,
+    honor,
+    menuPrompt,
+    multipleContext,
+    selectCards,
+    sequential
+} from '../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 
 class PrepareForWar extends DrawCard {
@@ -11,19 +19,19 @@ class PrepareForWar extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.multipleContext((context) => {
+            }, sequential([
+                multipleContext((context) => {
                     const promptActions = this.getStatusTokenPrompts(context);
                     return {
                         gameActions: [
-                            AbilityDsl.actions.selectCards((context) => ({
+                            selectCards((context) => ({
                                 mode: TargetMode.Unlimited,
                                 cardType: CardType.Attachment,
                                 controller: Players.Any,
                                 cardCondition: (card) => card.parentCharacter === context.target,
                                 activePromptTitle: 'Choose any amount of attachments',
                                 optional: true,
-                                gameAction: AbilityDsl.actions.discardFromPlay(),
+                                gameAction: discardFromPlay(),
                                 message: '{0} chooses to discard {1} from {2}',
                                 messageArgs: (cards) => [
                                     context.player,
@@ -35,7 +43,7 @@ class PrepareForWar extends DrawCard {
                         ]
                     };
                 }),
-                AbilityDsl.actions.honor((context) => ({
+                honor((context) => ({
                     target: context.target?.hasTrait('commander') ? context.target : []
                 }))
             ]))
@@ -68,7 +76,7 @@ class PrepareForWar extends DrawCard {
 
     private getStatusTokenPrompts(context: AbilityContext) {
         return (context.target?.statusTokens ?? []).map((token) =>
-            AbilityDsl.actions.menuPrompt((context) => ({
+            menuPrompt((context) => ({
                 activePromptTitle: `Do you wish to discard ${token.name}?`,
                 choices: ['Yes', 'No'],
                 optional: true,
@@ -85,7 +93,7 @@ class PrepareForWar extends DrawCard {
                     return { target: choice === 'Yes' ? token : [] };
                 },
                 player: Players.Self,
-                gameAction: AbilityDsl.actions.discardStatusToken()
+                gameAction: discardStatusToken()
             }))
         );
     }

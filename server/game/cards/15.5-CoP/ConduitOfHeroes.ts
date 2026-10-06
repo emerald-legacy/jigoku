@@ -1,7 +1,8 @@
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { Cost } from '../../costs/Cost.js';
 
 function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
@@ -50,11 +51,11 @@ class ConduitOfHeroes extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card !== context.source
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
+            }, cardLastingEffect(() => ({
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(3),
-                    AbilityDsl.effects.modifyPoliticalSkill(1),
-                    AbilityDsl.effects.modifyGlory(1)
+                    modifyMilitarySkill(3),
+                    modifyPoliticalSkill(1),
+                    modifyGlory(1)
                 ]
             })))
             .effect('grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict', () => (['military', 'political', 'glory']));

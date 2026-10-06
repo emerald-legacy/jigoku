@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt, moveCard, multipleContext, resolveAbility, takeHonor } from '../../GameActions/GameActions.js';
 import { Location, TargetMode, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
@@ -9,16 +9,16 @@ export default class Overhear extends DrawCard {
     public setupCardAbilities() {
         this.action('Place random card on top of deck')
             .condition((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const card = context.player.opponent ? shuffle(context.player.opponent.hand).slice(0, 1) : [];
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt(() => ({
+                        lookAt(() => ({
                             target: card,
                             message: '{0} sees {1}',
                             messageArgs: (cards) => [context.player, cards]
                         })),
-                        AbilityDsl.actions.moveCard(() => ({
+                        moveCard(() => ({
                             target: card,
                             destination: Location.ConflictDeck
                         }))
@@ -42,7 +42,7 @@ export default class Overhear extends DrawCard {
                         target: {
                             mode: TargetMode.Select,
                             choices: {
-                                'Give 1 honor for no effect': AbilityDsl.actions.takeHonor({ target: context.player }),
+                                'Give 1 honor for no effect': takeHonor({ target: context.player }),
                                 Done: () => true
                             }
                         },
@@ -57,7 +57,7 @@ export default class Overhear extends DrawCard {
                     target: {
                         mode: TargetMode.Select,
                         choices: {
-                            'Give 1 honor to resolve this ability again': AbilityDsl.actions.takeHonor({
+                            'Give 1 honor to resolve this ability again': takeHonor({
                                 target: context.player
                             }),
                             Done: () => true
@@ -69,7 +69,7 @@ export default class Overhear extends DrawCard {
                         innerContext.player.opponent
                     ],
                     then: {
-                        gameAction: AbilityDsl.actions.resolveAbility({
+                        gameAction: resolveAbility({
                             ability: context.ability,
                             subResolution: true,
                             choosingPlayerOverride: context.choosingPlayerOverride ?? undefined

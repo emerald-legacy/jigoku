@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -79,6 +79,6 @@ export default class ToGovernTheLand extends DrawCard {
     }
 
     private gameAction(): GameAction {
-        return AbilityDsl.actions.multiple([AbilityDsl.actions.sendHome(), AbilityDsl.actions.bow()]);
+        return multiple([sendHome(), bow()]);
     }
 }

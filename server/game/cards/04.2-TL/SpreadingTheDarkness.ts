@@ -1,4 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -12,10 +14,10 @@ class SpreadingTheDarkness extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
+            }, cardLastingEffect(context => ({
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(4),
-                    AbilityDsl.effects.cardCannot({
+                    modifyMilitarySkill(4),
+                    cardCannot({
                         cannot: 'target',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player

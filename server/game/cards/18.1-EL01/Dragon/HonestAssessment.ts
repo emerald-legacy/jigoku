@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardMatching, multipleContext, reveal } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
@@ -15,13 +16,13 @@ export default class HonestAssessment extends DrawCard {
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .cost(AbilityDsl.costs.nameCard())
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const hand = shuffle(context.player.opponent?.hand ?? []);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [
-                        AbilityDsl.actions.reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
-                        AbilityDsl.actions.discardMatching({
+                        reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
+                        discardMatching({
                             target: context.player.opponent,
                             cards,
                             amount: -1, //all

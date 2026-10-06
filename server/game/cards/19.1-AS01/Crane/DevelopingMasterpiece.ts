@@ -1,6 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
+import { gainHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
@@ -10,19 +12,19 @@ export default class DevelopingMasterpiece extends DrawCard {
 
     public setupCardAbilities() {
         this.whileAttached({
-            effect: [AbilityDsl.effects.cannotParticipateAsAttacker(), AbilityDsl.effects.cannotParticipateAsDefender()]
+            effect: [cannotParticipateAsAttacker(), cannotParticipateAsDefender()]
         });
 
         this.persistentEffect({
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
         this.action('Gain honor')
             .cost(captureParentCost())
             .cost(AbilityDsl.costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
-            .gameAction(AbilityDsl.actions.gainHonor((context) => ({
+            .gameAction(gainHonor((context) => ({
                 amount: capturedParent(context)?.getGlory() ?? 0
             })))
             .effect('gain {1} honor', (context) => [capturedParent(context)?.getGlory() ?? 0])

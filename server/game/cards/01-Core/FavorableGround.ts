@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 class FavorableGround extends DrawCard {
     static id = 'favorable-ground';
@@ -11,7 +12,7 @@ class FavorableGround extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sendHome(), AbilityDsl.actions.moveToConflict());
+            }, sendHome(), moveToConflict());
     }
 }
 

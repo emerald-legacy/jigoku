@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay, multiple, removeFate } from '../../../GameActions/GameActions.js';
 import { Phases } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,11 +21,11 @@ export default class CripplingCurse extends DrawCard {
                     !context.source.parentCharacter.bowed &&
                     context.source.parentCharacter.getFate() > 0
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardFromPlay((context) => ({
+            .gameAction(multiple([
+                discardFromPlay((context) => ({
                     target: cardsInPlay(context, (c) => c.getFate() === 0)
                 })),
-                AbilityDsl.actions.removeFate((context) => ({
+                removeFate((context) => ({
                     target: cardsInPlay(context, (c) => c.getFate() !== 0)
                 }))
             ]))

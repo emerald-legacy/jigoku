@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
@@ -11,7 +11,7 @@ class GoodOmen extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => (card.getCost() ?? 0) > 2
-            }, AbilityDsl.actions.placeFate());
+            }, placeFate());
     }
 
     canPlay(context: AbilityContext, playType: string): boolean {

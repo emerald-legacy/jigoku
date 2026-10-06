@@ -1,4 +1,14 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    discardFromPlay,
+    draw,
+    gainHonor,
+    honor,
+    multiple,
+    placeFate
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { attacksAloneWithTrait } from '../../attacksAlone.js';
 
@@ -10,7 +20,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'bushi')
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => {
+            .gameAction(cardLastingEffect((context) => {
                 const target = context.game.requireConflict().getParticipants(
                     (participant) => participant.controller === context.player
                 )[0];
@@ -18,25 +28,25 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                 return {
                     target,
                     effect: [
-                        AbilityDsl.effects.delayedEffect({
+                        delayedEffect({
                             when: {
                                 afterConflict: (event) =>
                                     event.conflict.winner !== target.controller || !target.isParticipating()
                             },
-                            gameAction: AbilityDsl.actions.discardFromPlay(),
+                            gameAction: discardFromPlay(),
                             message: '{0} is discarded from play due to failing at {1}',
                             messageArgs: (context) => [target, context.source]
                         }),
-                        AbilityDsl.effects.delayedEffect({
+                        delayedEffect({
                             when: {
                                 afterConflict: (event) =>
                                     event.conflict.winner === target.controller && target.isParticipating()
                             },
-                            gameAction: AbilityDsl.actions.multiple([
-                                AbilityDsl.actions.honor(),
-                                AbilityDsl.actions.placeFate(),
-                                AbilityDsl.actions.gainHonor({ target: context.source.controller }),
-                                AbilityDsl.actions.draw({ target: context.source.controller })
+                            gameAction: multiple([
+                                honor(),
+                                placeFate(),
+                                gainHonor({ target: context.source.controller }),
+                                draw({ target: context.source.controller })
                             ]),
                             message:
                                 '{0} is honored and receives 1 fate, and {1} gains 1 honor and draws 1 card due to {0} succeeding at {2}',

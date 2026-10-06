@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardMenu, putIntoConflict, sequential, shuffleDeck } from '../../GameActions/GameActions.js';
 
 class ShinjoAltansarnai2 extends DrawCard {
     static id = 'shinjo-altansarnai-2';
@@ -8,8 +8,8 @@ class ShinjoAltansarnai2 extends DrawCard {
     setupCardAbilities() {
         this.action('Put a character into play')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardMenu((context) => ({
+            .gameAction(sequential([
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a character that costs 3 or less',
                     cards: context.player.dynastyDeck.slice(0, 8),
                     cardCondition: (card) =>
@@ -28,9 +28,9 @@ class ShinjoAltansarnai2 extends DrawCard {
 
                     message: '{0} chooses to put {1} into the conflict',
                     messageArgs: (card, player) => [player, card],
-                    gameAction: AbilityDsl.actions.putIntoConflict()
+                    gameAction: putIntoConflict()
                 })),
-                AbilityDsl.actions.shuffleDeck((context) => ({
+                shuffleDeck((context) => ({
                     deck: Location.DynastyDeck,
                     target: context.player
                 }))

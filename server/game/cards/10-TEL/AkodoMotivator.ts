@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardAtRandom } from '../../GameActions/GameActions.js';
 import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 
 class AkodoMotivator extends DrawCard {
@@ -11,7 +11,7 @@ class AkodoMotivator extends DrawCard {
                 onCardsDiscardedFromHand: (event, context) =>
                     event.player === context.player && isOpponentsRingOrCardEffect(event.player, event.context)
             })
-            .gameAction(AbilityDsl.actions.discardAtRandom((context) => ({
+            .gameAction(discardAtRandom((context) => ({
                 amount: context.event.amount
             })));
     }

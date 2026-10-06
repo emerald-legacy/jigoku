@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KinutanukiYoite extends DrawCard {
@@ -19,6 +19,6 @@ export default class KinutanukiYoite extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.militarySkill <= context.source.militarySkill
-            }, AbilityDsl.actions.injure());
+            }, injure());
     }
 }

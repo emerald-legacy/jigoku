@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, honor, ready } from '../../GameActions/GameActions.js';
 
 class RecklessAvenger extends DrawCard {
     static id = 'reckless-avenger';
@@ -17,7 +17,7 @@ class RecklessAvenger extends DrawCard {
                 hideIfNoLegalTargets: true,
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                 player: context => context.player.firstPlayer ? Players.Self : Players.Opponent
-            }, AbilityDsl.actions.ready())
+            }, ready())
             .target({
                 name: 'secondCharacter',
                 activePromptTitle: 'Choose a character',
@@ -26,12 +26,12 @@ class RecklessAvenger extends DrawCard {
                 dependsOn: 'firstCharacter',
                 controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
                 player: context => context.player.firstPlayer ? Players.Opponent : Players.Self
-            }, AbilityDsl.actions.conditional({
+            }, conditional({
                 condition: context => this.isTargetValid(context.targets.firstCharacter),
-                trueGameAction: AbilityDsl.actions.honor(context => ({
+                trueGameAction: honor(context => ({
                     target: context.targets.secondCharacter
                 })),
-                falseGameAction: AbilityDsl.actions.ready(context => ({
+                falseGameAction: ready(context => ({
                     target: context.targets.secondCharacter
                 }))
             }))

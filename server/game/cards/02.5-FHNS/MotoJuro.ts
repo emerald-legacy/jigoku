@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { conditional, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class MotoJuro extends DrawCard {
@@ -6,10 +7,10 @@ class MotoJuro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move this character to the conflict or home from the conflict')
-            .gameAction(AbilityDsl.actions.conditional({
+            .gameAction(conditional({
                 condition: (context) => context.source.isDrawCard() && context.source.isParticipating(),
-                trueGameAction: AbilityDsl.actions.sendHome((context) => ({ target: context.source })),
-                falseGameAction: AbilityDsl.actions.moveToConflict((context) => ({ target: context.source }))
+                trueGameAction: sendHome((context) => ({ target: context.source })),
+                falseGameAction: moveToConflict((context) => ({ target: context.source }))
             }))
             .limit(AbilityDsl.limit.perRound(2));
     }

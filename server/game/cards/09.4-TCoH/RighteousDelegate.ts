@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 
 class RighteousDelegate extends DrawCard {
     static id = 'righteous-delegate';
@@ -7,11 +8,11 @@ class RighteousDelegate extends DrawCard {
     setupCardAbilities() {
         this.action('Weaken bushi, empower non-bushi')
             .condition((context) => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => {
+            .gameAction(multiple([
+                cardLastingEffect((context) => {
                     const conflict = this.game.currentConflict;
                     if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(1) };
+                        return { target: [], effect: modifyBothSkills(1) };
                     }
                     return {
                         target: conflict
@@ -22,13 +23,13 @@ class RighteousDelegate extends DrawCard {
                                     .getCharacters(context.player.opponent)
                                     .filter((card) => !card.hasTrait('bushi'))
                             ),
-                        effect: AbilityDsl.effects.modifyBothSkills(1)
+                        effect: modifyBothSkills(1)
                     };
                 }),
-                AbilityDsl.actions.cardLastingEffect((context) => {
+                cardLastingEffect((context) => {
                     const conflict = this.game.currentConflict;
                     if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(-1) };
+                        return { target: [], effect: modifyBothSkills(-1) };
                     }
                     return {
                         target: conflict
@@ -39,7 +40,7 @@ class RighteousDelegate extends DrawCard {
                                     .getCharacters(context.player.opponent)
                                     .filter((card) => card.hasTrait('bushi'))
                             ),
-                        effect: AbilityDsl.effects.modifyBothSkills(-1)
+                        effect: modifyBothSkills(-1)
                     };
                 })
             ]))

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class DirectingTheBattle extends DrawCard {
@@ -17,15 +18,15 @@ class DirectingTheBattle extends DrawCard {
                 dependsOn: 'character',
                 player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Move this character home': AbilityDsl.actions.sendHome(context => ({
+                'Move this character home': sendHome(context => ({
                     target: context.targets.character
                 })),
-                'Give +3 Military': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(3),
+                'Give +3 Military': cardLastingEffect(context => ({
+                    effect: modifyMilitarySkill(3),
                     target: context.targets.character
                 })),
-                'Prevent bowing during conflict': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.cardCannot({
+                'Prevent bowing during conflict': cardLastingEffect(context => ({
+                    effect: cardCannot({
                         cannot: 'bow',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, Phases } from '../../Constants.js';
 
@@ -13,10 +14,10 @@ class EtherealDreamer extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 condition: () => context.ring.isContested(),
-                effect: AbilityDsl.effects.modifyBothSkills(2)
+                effect: modifyBothSkills(2)
             })))
             .effect('give herself +2{1}/+2{2} while the {0} is contested', () => (['military', 'political']));
     }

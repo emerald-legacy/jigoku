@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LiaisonToTheAncestors extends DrawCard {
@@ -14,7 +14,7 @@ export default class LiaisonToTheAncestors extends DrawCard {
                         (discarded) => (card.printedCost ?? 0) < (discarded.printedCost ?? 0)
                     )
             })
-            .gameAction(AbilityDsl.actions.honor((context) => ({
+            .gameAction(honor((context) => ({
                 target: context.event.card
             })));
     }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 
 class AlibiArtist extends DrawCard {
     static id = 'alibi-artist';
@@ -8,9 +8,9 @@ class AlibiArtist extends DrawCard {
     setupCardAbilities() {
         this.action('Look at top 2 cards of conflict deck')
             .condition(context => context.player.honor <= 6)
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 2,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
                 shuffle: false,

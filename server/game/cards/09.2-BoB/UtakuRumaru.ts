@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class UtakuRumaru extends DrawCard {
     static id = 'utaku-rumaru';
@@ -9,13 +11,13 @@ class UtakuRumaru extends DrawCard {
         this.persistentEffect({
             match: (card) => card.isHonored && card.type === CardType.Character,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.modifyGlory(1)
+            effect: modifyGlory(1)
         });
 
         this.persistentEffect({
             match: (card) => card.isDishonored && card.type === CardType.Character,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.modifyGlory(-1)
+            effect: modifyGlory(-1)
         });
 
         this.reaction('Honor a participating character')
@@ -29,7 +31,7 @@ class UtakuRumaru extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

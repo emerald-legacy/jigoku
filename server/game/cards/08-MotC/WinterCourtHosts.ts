@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 
 class WinterCourtHosts extends DrawCard {
     static id = 'winter-court-hosts';
@@ -13,7 +14,7 @@ class WinterCourtHosts extends DrawCard {
                         context.player.isMoreHonorable();
                 }
             })
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, TargetMode, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardMenu, discardCard, lookAt, multiple } from '../../GameActions/GameActions.js';
 
 class DaidojiHarrier extends DrawCard {
     static id = 'daidoji-harrier';
@@ -19,13 +19,13 @@ class DaidojiHarrier extends DrawCard {
                 mode: TargetMode.Exactly,
                 location: Location.Hand
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.lookAt(context => ({
+            .gameAction(multiple([
+                lookAt(context => ({
                     target: context.targets.target
                 })),
-                AbilityDsl.actions.cardMenu(context => ({
+                cardMenu(context => ({
                     cards: context.targets.target.filter((card) => card.isDrawCard()),
-                    gameAction: AbilityDsl.actions.discardCard(),
+                    gameAction: discardCard(),
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card, player) => [player, card]
                 }))

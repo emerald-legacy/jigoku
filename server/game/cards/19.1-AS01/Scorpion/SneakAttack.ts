@@ -1,5 +1,7 @@
 import { Duration, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainActionPhasePriority, playerDelayedEffect } from '../../../effects.js';
+import { handler, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
@@ -14,8 +16,8 @@ export default class SneakAttack extends DrawCard {
                 onConflictStarted: (event, context) => event.conflict.attackingPlayer === context.player
             })
             .cost(AbilityDsl.costs.payHonor(1))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.handler({
+            .gameAction(sequential([
+                handler({
                     handler: (context) => {
                         const opponent = context.player.opponent;
                         if(!opponent || opponent.hand.length === 0) {
@@ -29,12 +31,12 @@ export default class SneakAttack extends DrawCard {
                         }
                     }
                 }),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     duration: Duration.UntilEndOfRound,
                     targetController: context.player.opponent,
-                    effect: AbilityDsl.effects.playerDelayedEffect({
+                    effect: playerDelayedEffect({
                         when: { onConflictFinished: () => true },
-                        gameAction: AbilityDsl.actions.handler({
+                        gameAction: handler({
                             handler: (context) => {
                                 if(this.setAsideCards.length === 0) {
                                     return;
@@ -49,9 +51,9 @@ export default class SneakAttack extends DrawCard {
                         })
                     })
                 })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.gainActionPhasePriority()
+                    effect: gainActionPhasePriority()
                 }))
             ]))
             .effect('give {1} the first action in this conflict{2}', (context) => [

@@ -1,5 +1,6 @@
 import { TargetMode, Players, Phases, CardType, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AcademyOfEtiquette extends DrawCard {
@@ -17,8 +18,8 @@ export default class AcademyOfEtiquette extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
-                effect: AbilityDsl.effects.addKeyword('courtesy'),
+            }, cardLastingEffect(() => ({
+                effect: addKeyword('courtesy'),
                 duration: Duration.UntilEndOfPhase
             })))
             .effect('give {0} courtesy');

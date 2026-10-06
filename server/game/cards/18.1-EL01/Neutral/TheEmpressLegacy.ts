@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { canContributeGloryWhileBowed, changePlayerGloryModifier } from '../../../effects.js';
 
 class TheEmpressLegacy extends DrawCard {
     static id = 'the-empress-legacy';
@@ -7,11 +7,11 @@ class TheEmpressLegacy extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isFaction('crab')),
-            effect: AbilityDsl.effects.changePlayerGloryModifier(1)
+            effect: changePlayerGloryModifier(1)
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.canContributeGloryWhileBowed()
+            effect: canContributeGloryWhileBowed()
         });
     }
 }

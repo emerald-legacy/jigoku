@@ -2,7 +2,8 @@ import { CardType, Duration, Element, Location, Players } from '../../../Constan
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import { cardLastingEffect, honor, moveToConflict, multipleContext } from '../../../GameActions/GameActions.js';
 
 function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
     return {
@@ -81,17 +82,17 @@ export default class Maelstrom extends ProvinceCard {
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     context.costs.maelstromCostPaid ? true : card.controller === context.player
-            }, AbilityDsl.actions.multipleContext((context) => {
+            }, multipleContext((context) => {
                 const target = context.target;
                 // the triggering player, not always the controller (Contested Countryside)
                 const triggeringPlayer = context.player;
                 return {
                     gameActions: [
-                        AbilityDsl.actions.moveToConflict(),
-                        AbilityDsl.actions.cardLastingEffect({
+                        moveToConflict(),
+                        cardLastingEffect({
                             target: target,
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.delayedEffect({
+                            effect: delayedEffect({
                                 when: {
                                     afterConflict: (event) =>
                                         event.conflict.winner === target.controller &&
@@ -100,7 +101,7 @@ export default class Maelstrom extends ProvinceCard {
                                 },
                                 message: '{0} is honored due to {1}\'s effect',
                                 messageArgs: [target, context.source],
-                                gameAction: AbilityDsl.actions.honor()
+                                gameAction: honor()
                             })
                         })
                     ]

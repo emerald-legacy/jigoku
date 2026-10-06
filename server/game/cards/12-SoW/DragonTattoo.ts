@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait } from '../../effects.js';
+import { ifAble, moveCard, playCard } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -12,7 +13,7 @@ export default class DragonTattoo extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
-        this.whileAttached({ effect: AbilityDsl.effects.addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait('tattooed') });
 
         this.reaction('Play card again')
             .when({
@@ -25,12 +26,12 @@ export default class DragonTattoo extends DrawCard {
                     (event.context?.triggeringContext.chosenCardTargets ?? []).some((card) =>
                         this.isValidTargetForTattoo(card, context))
             })
-            .gameAction(AbilityDsl.actions.ifAble((context) => {
+            .gameAction(ifAble((context) => {
                 const card = context.event.card;
                 const played = context.event.context;
                 const respondingTo = played instanceof TriggeredAbilityContext ? played.event : undefined;
                 return {
-                    ifAbleAction: AbilityDsl.actions.playCard(() => {
+                    ifAbleAction: playCard(() => {
                         this.cardPlayed = true;
                         return {
                             source: this,
@@ -43,7 +44,7 @@ export default class DragonTattoo extends DrawCard {
                             event: respondingTo
                         };
                     }),
-                    otherwiseAction: AbilityDsl.actions.moveCard(() => {
+                    otherwiseAction: moveCard(() => {
                         this.cardPlayed = false;
                         return {
                             target: card,

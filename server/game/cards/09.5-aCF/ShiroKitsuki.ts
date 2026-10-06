@@ -1,6 +1,8 @@
 import { ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { claimRing, playerLastingEffect, selectRing } from '../../GameActions/GameActions.js';
 
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
@@ -11,21 +13,21 @@ export default class ShiroKitsuki extends StrongholdCard {
                 onConflictDeclared: () => true
             })
             .cost(AbilityDsl.costs.nameCard())
-            .gameAction(AbilityDsl.actions.playerLastingEffect((playerLastingEffectContext) => ({
+            .gameAction(playerLastingEffect((playerLastingEffectContext) => ({
                 targetController: playerLastingEffectContext.player,
-                effect: AbilityDsl.effects.delayedEffect({
+                effect: delayedEffect({
                     when: {
                         onCardPlayed: (event, context) =>
                             event.player === context.player.opponent &&
                             event.card.name === playerLastingEffectContext.costs.nameCardCost
                     },
                     multipleTrigger: true,
-                    gameAction: AbilityDsl.actions.selectRing((context) => ({
+                    gameAction: selectRing((context) => ({
                         activePromptTitle: 'Choose a ring to claim',
                         ringCondition: (ring) => ring.isUnclaimed(),
                         message: '{0} claims the {1}',
                         messageArgs: (ring) => [context.player, ring],
-                        gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: ConflictType.Political })
+                        gameAction: claimRing({ takeFate: true, type: ConflictType.Political })
                     }))
                 })
             })))

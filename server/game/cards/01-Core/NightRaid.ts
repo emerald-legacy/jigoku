@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard } from '../../GameActions/GameActions.js';
 
 export default class NightRaid extends ProvinceCard {
     static id = 'night-raid';
@@ -9,7 +9,7 @@ export default class NightRaid extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.chosenDiscard((context) => ({
+            .gameAction(chosenDiscard((context) => ({
                 amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
             })));
     }

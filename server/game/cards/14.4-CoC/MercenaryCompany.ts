@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { takeControl } from '../../effects.js';
+import { handler, loseFate, placeFate } from '../../GameActions/GameActions.js';
 
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
@@ -9,10 +11,10 @@ class MercenaryCompany extends DrawCard {
         this.forcedReaction('Give control of this character')
             .when({
                 afterConflict: (event, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
-                    && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context)
-                    && AbilityDsl.actions.placeFate().canAffect(context.source, context)
+                    && loseFate().canAffect(context.player.opponent, context)
+                    && placeFate().canAffect(context.source, context)
             })
-            .gameAction(AbilityDsl.actions.handler({
+            .gameAction(handler({
                 handler: context => {
                     const opponent = context.player.opponent;
                     const source = context.source;
@@ -26,11 +28,11 @@ class MercenaryCompany extends DrawCard {
                             {
                                 text: 'Yes',
                                 handler: () => {
-                                    AbilityDsl.actions.placeFate({ origin: opponent }).resolve(source, context);
+                                    placeFate({ origin: opponent }).resolve(source, context);
                                     context.game.queueSimpleStep(() => {
                                         context.source.lastingEffect(() => ({
                                             duration: Duration.Custom,
-                                            effect: AbilityDsl.effects.takeControl(opponent)
+                                            effect: takeControl(opponent)
                                         }));
                                         this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
                                     });

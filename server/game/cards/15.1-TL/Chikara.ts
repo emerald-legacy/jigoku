@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { removeFate, sacrifice, sequential } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType } from '../../Constants.js';
 
 class Chikara extends DrawCard {
@@ -14,7 +15,7 @@ class Chikara extends DrawCard {
 
         this.whileAttached({
             match: (card) => card.hasTrait('champion'),
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            effect: gainAbility(AbilityType.Reaction, {
                 title: 'Return all fate from, then sacrifice a character',
                 when: {
                     afterConflict: (event, context) => {
@@ -27,12 +28,12 @@ class Chikara extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.removeFate((context) => ({
+                    gameAction: sequential([
+                        removeFate((context) => ({
                             amount: context.target?.getFate(),
                             recipient: context.target?.owner
                         })),
-                        AbilityDsl.actions.sacrifice((context) => ({
+                        sacrifice((context) => ({
                             target: context.target
                         }))
                     ])

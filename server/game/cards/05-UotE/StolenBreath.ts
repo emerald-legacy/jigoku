@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -8,8 +8,8 @@ class StolenBreath extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.cannotParticipateAsAttacker('political'),
-                AbilityDsl.effects.cannotParticipateAsDefender('political')
+                cannotParticipateAsAttacker('political'),
+                cannotParticipateAsDefender('political')
             ]
         });
     }

@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location, Players, Stage } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainHonor, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
 
 export default class ACleansingDeath extends DrawCard {
     static id = 'a-cleansing-death';
@@ -26,7 +27,7 @@ export default class ACleansingDeath extends DrawCard {
 
                     const hasValidCharacters = faceupCharacters.some(a => {
                         return (a.printedCost || 0) <= (card.printedCost || 0) &&
-                            AbilityDsl.actions.putIntoPlay().canAffect(a, contextCopy);
+                            putIntoPlay().canAffect(a, contextCopy);
                     });
                     return hasValidCharacters;
                 }
@@ -37,9 +38,9 @@ export default class ACleansingDeath extends DrawCard {
                     (context.costs.sacrificeStateWhenChosen?.printedCost || 10),
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.putIntoPlay(),
-                AbilityDsl.actions.gainHonor(context => ({
+            }, joint([
+                putIntoPlay(),
+                gainHonor(context => ({
                     target: context.player
                 }))
             ]))

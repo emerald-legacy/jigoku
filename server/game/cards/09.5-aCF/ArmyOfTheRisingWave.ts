@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFateOnRing } from '../../GameActions/GameActions.js';
 
 class ArmyOfTheRisingWave extends DrawCard {
     static id = 'army-of-the-rising-wave';
@@ -9,7 +9,7 @@ class ArmyOfTheRisingWave extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.placeFateOnRing(context =>
+            .gameAction(placeFateOnRing(context =>
                 ({ target: Object.values(context.game.rings).filter((ring) => ring.isUnclaimed()) })));
     }
 }

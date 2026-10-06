@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow, menuPrompt, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DojiShigenobu extends DrawCard {
@@ -16,9 +17,9 @@ export default class DojiShigenobu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow())
+            }, bow())
             .then(() => ({
-                gameAction: AbilityDsl.actions.menuPrompt((context) => ({
+                gameAction: menuPrompt((context) => ({
                     activePromptTitle: 'Do you want to move home?',
                     choices: ['Yes', 'No'],
                     choiceHandler: (choice, displayMessage) => {
@@ -27,7 +28,7 @@ export default class DojiShigenobu extends DrawCard {
                         }
                         return { target: choice === 'Yes' ? context.source : [] };
                     },
-                    gameAction: AbilityDsl.actions.sendHome()
+                    gameAction: sendHome()
                 }))
             }));
     }

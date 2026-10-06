@@ -1,6 +1,8 @@
 import { CardType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 export default class ShiroYogo extends StrongholdCard {
     static id = 'shiro-yogo';
@@ -11,9 +13,9 @@ export default class ShiroYogo extends StrongholdCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDishonored
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.cannotTriggerAbilities()
+                effect: cannotTriggerAbilities()
             }))
             .effect('prevent {0} from triggering their abilities until the end of the phase');
     }

@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function penalty(target: DrawCard): number {
@@ -14,8 +15,8 @@ export default class StrikeBeneathTheVeil extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyBothSkills(context.target ? penalty(context.target) : 0)
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(context.target ? penalty(context.target) : 0)
             })))
             .effect('give {0} {1}{2} and {1}{3}', (context) => [penalty(context.target), 'military','political']);
     }

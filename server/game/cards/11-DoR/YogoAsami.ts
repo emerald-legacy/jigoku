@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class YogoAsami extends DrawCard {
@@ -9,7 +11,7 @@ class YogoAsami extends DrawCard {
         this.persistentEffect({
             match: (card) => card.name === 'Bayushi Kachiko',
             targetController: Players.Any,
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'target',
                 restricts: 'abilitiesTriggeredByOpponents'
             })
@@ -21,7 +23,7 @@ class YogoAsami extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyMilitarySkill(-2) }))
+            }, cardLastingEffect({ effect: modifyMilitarySkill(-2) }))
             .effect('reduce {0}\'s military skill by 2');
     }
 }

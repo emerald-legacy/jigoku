@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { increaseCost } from '../../../effects.js';
+import { bow, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CaptureTheFalseEye extends DrawCard {
@@ -16,9 +17,9 @@ export default class CaptureTheFalseEye extends DrawCard {
                         .some(
                             (myCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
                         ) ?? false)
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.playerLastingEffect((context) => ({
+            }, bow(), playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.increaseCost({
+                effect: increaseCost({
                     amount: 1,
                     match: (card) => card.type === CardType.Event
                 })

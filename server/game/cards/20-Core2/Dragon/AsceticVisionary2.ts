@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AsceticVisionary2 extends DrawCard {
@@ -12,6 +13,6 @@ export default class AsceticVisionary2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('monk')
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

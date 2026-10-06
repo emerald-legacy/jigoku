@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { switchAttachmentSkillModifiers } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,8 +11,8 @@ export default class TravelingTinkerer extends DrawCard {
             .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.switchAttachmentSkillModifiers()
+            }, cardLastingEffect({
+                effect: switchAttachmentSkillModifiers()
             }))
             .effect('switch the skill modifiers of {0}');
     }

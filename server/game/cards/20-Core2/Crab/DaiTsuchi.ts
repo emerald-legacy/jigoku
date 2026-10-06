@@ -1,5 +1,6 @@
 import { AbilityType, CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility, playerCannot } from '../../../effects.js';
+import { playerLastingEffect, returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaiTsuchi extends DrawCard {
@@ -11,7 +12,7 @@ export default class DaiTsuchi extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Return attachment to owners hand',
                 condition: (context) => context.source.isParticipating(ConflictType.Military),
                 target: {
@@ -19,11 +20,11 @@ export default class DaiTsuchi extends DrawCard {
                     cardCondition: (card, context) =>
                         !!context.player.opponent &&
                         !!card.parentCharacter?.isParticipatingFor(context.player.opponent),
-                    gameAction: AbilityDsl.actions.returnToHand()
+                    gameAction: returnToHand()
                 },
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: playerLastingEffect((context) => ({
                     targetController: context.target?.owner,
-                    effect: AbilityDsl.effects.playerCannot({
+                    effect: playerCannot({
                         cannot: 'play',
                         restricts: 'copiesOfX',
                         params: context.target?.name

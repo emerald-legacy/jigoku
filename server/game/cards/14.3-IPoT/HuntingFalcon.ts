@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt } from '../../GameActions/GameActions.js';
 
 class HuntingFalcon extends DrawCard {
     static id = 'hunting-falcon';
@@ -14,7 +14,7 @@ class HuntingFalcon extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isFacedown()
-            }, AbilityDsl.actions.lookAt(context => ({
+            }, lookAt(context => ({
                 message: '{0} sees {1} in {2}',
                 messageArgs: (cards) => [context.source, cards[0], cards[0].location]
             })));

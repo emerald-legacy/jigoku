@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, CharacterStatus, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, putIntoPlay, removeFromGame, sequential } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
     static id = 'shadow-step';
@@ -11,18 +11,18 @@ class ShadowStep extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => !card.hasTrait('mythic'),
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.removeFromGame(context => ({
+            }, sequential([
+                removeFromGame(context => ({
                     target: context.target
                 })),
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: context => {
                         return !!context.target?.hasTrait('shadow');
                     },
-                    trueGameAction: AbilityDsl.actions.putIntoPlay(context => ({
+                    trueGameAction: putIntoPlay(context => ({
                         target: context.target
                     })),
-                    falseGameAction: AbilityDsl.actions.putIntoPlay(context => ({
+                    falseGameAction: putIntoPlay(context => ({
                         target: context.target,
                         status: CharacterStatus.Dishonored
                     }))

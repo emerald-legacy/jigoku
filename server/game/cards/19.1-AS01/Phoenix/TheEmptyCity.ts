@@ -2,6 +2,8 @@ import { CardType, ConflictType, Duration, EventName, Location, Players } from '
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../../effects.js';
+import { cardLastingEffect, claimRing, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -23,7 +25,7 @@ export default class TheEmptyCity extends ProvinceCard {
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: (ring) => ring.isUnclaimed()
-            }, AbilityDsl.actions.claimRing({
+            }, claimRing({
                 takeFate: false,
                 type: ConflictType.Political
             }))
@@ -37,11 +39,11 @@ export default class TheEmptyCity extends ProvinceCard {
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 cardCondition: (card) => card.hasTrait('spirit') && (card.getCost() ?? 0) <= 3
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.putIntoPlay(),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, joint([
+                putIntoPlay(),
+                cardLastingEffect((context) => ({
                     target: context.source,
-                    effect: AbilityDsl.effects.cannotTriggerAbilities(),
+                    effect: cannotTriggerAbilities(),
                     duration: Duration.UntilEndOfRound
                 }))
             ]))

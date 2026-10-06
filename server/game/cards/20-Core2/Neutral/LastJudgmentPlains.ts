@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { menuPrompt, placeFate } from '../../../GameActions/GameActions.js';
 
 const DONOR = 'donor';
 const RECIPIENT = 'recipient';
@@ -22,7 +22,7 @@ export default class LastJudgmentPlains extends ProvinceCard {
                 activePromptTitle: 'Choose a recipient character',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.menuPrompt(({ targets }) => ({
+            }, menuPrompt(({ targets }) => ({
                 activePromptTitle: 'How much fate do you want to move?',
                 choices: this.createChoiceArray(targets[DONOR].getFate()),
                 choiceHandler: (choice) => ({
@@ -30,7 +30,7 @@ export default class LastJudgmentPlains extends ProvinceCard {
                     origin: targets[DONOR],
                     target: targets[RECIPIENT]
                 }),
-                gameAction: AbilityDsl.actions.placeFate()
+                gameAction: placeFate()
             })))
             .effect('move fate from {1} to {2}', ({ targets }) => [targets[DONOR], targets[RECIPIENT]]);
     }

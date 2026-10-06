@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, addTrait } from '../../effects.js';
 
 class PhoenixTattoo extends DrawCard {
     static id = 'phoenix-tattoo';
@@ -11,14 +11,14 @@ class PhoenixTattoo extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('tattooed')
+            effect: addTrait('tattooed')
         });
 
         this.persistentEffect({
             targetController: Players.Any,
             condition: (context) => Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.game.isDuringConflict()),
             match: (card, context) => card !== context?.source.parentCharacter && card.isParticipating(),
-            effect: AbilityDsl.effects.addKeyword('pride')
+            effect: addKeyword('pride')
         });
     }
 }

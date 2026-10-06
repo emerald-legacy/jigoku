@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import AbilityDsl from '../abilitydsl.js';
+import { attach } from '../GameActions/GameActions.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { MsgArg } from '../GameChat.js';
@@ -12,6 +12,6 @@ export function attachSearchedCard(context: AbilityContext, parent: BaseCard | u
 
     context.game.addMessage(message, ...messageArgs(card));
     context.game.queueSimpleStep(() =>
-        AbilityDsl.actions.attach({ target: parent, attachment: card }).resolve(undefined, context)
+        attach({ target: parent, attachment: card }).resolve(undefined, context)
     );
 }

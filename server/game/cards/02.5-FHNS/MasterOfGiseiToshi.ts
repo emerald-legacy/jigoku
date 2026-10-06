@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Phases, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';
@@ -13,11 +14,11 @@ class MasterOfGiseiToshi extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .gameAction(playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict?.ring === context.ring,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: playerCannot({
                     cannot: 'play',
                     restricts: 'nonSpellEvents'
                 })

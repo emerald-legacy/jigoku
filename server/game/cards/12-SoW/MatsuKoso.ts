@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class MatsuKoso extends DrawCard {
@@ -8,9 +9,9 @@ class MatsuKoso extends DrawCard {
     setupCardAbilities() {
         this.action('Lower military skill')
             .condition((context) => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: this.getTargets(context),
-                effect: AbilityDsl.effects.modifyMilitarySkill((card) => -card.printedPoliticalSkill)
+                effect: modifyMilitarySkill((card) => -card.printedPoliticalSkill)
             })))
             .effect('lower the military skill of {1} by their respective printed political skill', (context) => [this.getTargets(context)]);
     }

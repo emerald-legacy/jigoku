@@ -1,5 +1,6 @@
 import { CardType, Decks, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, moveCard, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
@@ -14,7 +15,7 @@ export default class CinderSalamander extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.moveCard({
+            .gameAction(moveCard({
                 destination: Location.DynastyDeck,
                 shuffle: true
             }))
@@ -22,19 +23,19 @@ export default class CinderSalamander extends DrawCard {
 
         this.action('Search other copies of this character and put them into play')
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.deckSearch({
+            .gameAction(multiple([
+                deckSearch({
                     activePromptTitle: 'Select characters to put into play from your deck',
                     deck: Decks.DynastyDeck,
                     targetMode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
                     shuffle: true,
-                    gameAction: AbilityDsl.actions.putIntoPlay(),
+                    gameAction: putIntoPlay(),
                     message: '{0} finds {1} in their deck',
                     messageArgs: (context, cards) => [context.player, this.salamanderCountToText(cards.length)]
                 }),
-                AbilityDsl.actions.selectCards({
+                selectCards({
                     activePromptTitle: 'Select characters to put into play from your provinces',
                     controller: Players.Self,
                     cardType: CardType.Character,
@@ -42,7 +43,7 @@ export default class CinderSalamander extends DrawCard {
                     mode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
-                    gameAction: AbilityDsl.actions.putIntoPlay(),
+                    gameAction: putIntoPlay(),
                     message: '{0} finds {1} in their provinces',
                     messageArgs: (cards, player) => [player, this.salamanderCountToText(cards.length)]
                 })

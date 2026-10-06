@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { handler, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
@@ -16,7 +17,7 @@ class DanceOfChikushoDo extends DrawCard {
             }, (context) => playerChoices(
                 context.player,
                 (player) => this.fillProvinces(player),
-                (player, opponent) => AbilityDsl.actions.multiple([
+                (player, opponent) => multiple([
                     this.fillProvinces(player),
                     this.fillProvinces(opponent)
                 ])
@@ -26,7 +27,7 @@ class DanceOfChikushoDo extends DrawCard {
     }
 
     fillProvinces(player: Player) {
-        return AbilityDsl.actions.handler({
+        return handler({
             handler: () => {
                 const unbrokenProvinces = this.getUnbrokenProvinces(player);
                 unbrokenProvinces.forEach(province => {

@@ -1,5 +1,5 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { conditional, discardAtRandom, dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroHiroyuki extends DrawCard {
@@ -13,12 +13,12 @@ export default class ShosuroHiroyuki extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.politicalSkill < context.source.politicalSkill
-            }, AbilityDsl.actions.conditional(({ target }) => ({
+            }, conditional(({ target }) => ({
                 condition: () => target.isDishonored,
-                trueGameAction: AbilityDsl.actions.discardAtRandom({
+                trueGameAction: discardAtRandom({
                     target: target.controller
                 }),
-                falseGameAction: AbilityDsl.actions.dishonor({ target })
+                falseGameAction: dishonor({ target })
             })));
     }
 }

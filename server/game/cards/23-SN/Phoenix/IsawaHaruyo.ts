@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { lookAt, multipleContext, selectCard } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
@@ -10,7 +10,7 @@ export default class IsawaHaruyo extends DrawCard {
     public setupCardAbilities() {
         this.conflictAction('Discard a card')
             .condition((context) => context.source.isDefending() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -20,12 +20,12 @@ export default class IsawaHaruyo extends DrawCard {
                     context.target = card;
                     return { target: card };
                 },
-                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
+                gameAction: multipleContext((context: AbilityContext<this>) => {
                     const cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
                     const cards = randomHandCards(context.player.opponent, cardNumber);
                     return {
                         gameActions: [
-                            AbilityDsl.actions.lookAt(() => ({
+                            lookAt(() => ({
                                 target: cards
                             })),
                             chooseCardToDiscard(cards)

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class MakeYourCase extends DrawCard {
@@ -15,7 +15,7 @@ class MakeYourCase extends DrawCard {
                     duel.winner,
                     duel.winner ? ' gains a fate' : ''
                 ],
-                gameAction: duel => AbilityDsl.actions.placeFate({
+                gameAction: duel => placeFate({
                     target: duel.winner
                 })
             }));

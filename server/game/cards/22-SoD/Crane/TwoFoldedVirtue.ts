@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, gainHonor, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Players } from '../../../Constants.js';
 
@@ -11,19 +12,19 @@ export default class TwoFoldedVirtue extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('scout'))
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2),
+            }, multiple([
+                cardLastingEffect(context => ({
+                    effect: modifyMilitarySkill(2),
                     target: context.target
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             afterConflict: (event) =>
                                 context.player === event.conflict.loser
                         },
-                        gameAction: AbilityDsl.actions.gainHonor({ target: context.player }),
+                        gameAction: gainHonor({ target: context.player }),
                         message: '{0} gains 1 honor due to the delayed effect of {1}',
                         messageArgs: [context.player, context.source]
                     })

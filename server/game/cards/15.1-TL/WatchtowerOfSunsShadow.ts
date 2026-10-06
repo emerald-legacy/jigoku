@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { loseFate } from '../../GameActions/GameActions.js';
 import { Players } from '../../Constants.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
 
@@ -11,14 +12,14 @@ class WatchtowerOfSunsShadow extends DrawCard {
             condition: context => defendingAtKaiuWall(context.player, context.game.currentConflict),
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),
-            effect: AbilityDsl.effects.modifyBothSkills((card) => -card.getFate())
+            effect: modifyBothSkills((card) => -card.getFate())
         });
 
         this.forcedInterrupt('Lose 2 fate')
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
             })
-            .gameAction(AbilityDsl.actions.loseFate(context => ({
+            .gameAction(loseFate(context => ({
                 amount: 2,
                 target: context.player
             })));

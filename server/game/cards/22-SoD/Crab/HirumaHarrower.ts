@@ -1,5 +1,7 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HirumaHarrower extends DrawCard {
@@ -10,8 +12,8 @@ export default class HirumaHarrower extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            .gameAction(cardLastingEffect({
+                effect: modifyMilitarySkill(2)
             }))
             .effect('give itself +2{1}', () => ['military'])
             .limit(AbilityDsl.limit.unlimitedPerConflict());

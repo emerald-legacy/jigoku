@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility } from '../../../effects.js';
+import { draw, gainHonor, sequential } from '../../../GameActions/GameActions.js';
 import { AbilityType, CardType, EffectName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -9,12 +10,12 @@ export default class DesperateAide extends DrawCard {
 
     public setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Draw a card',
                 condition: (context) => context.source.isParticipating(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.draw((context) => ({ target: context.player })),
-                    AbilityDsl.actions.gainHonor((context) => ({
+                gameAction: sequential([
+                    draw((context) => ({ target: context.player })),
+                    gainHonor((context) => ({
                         amount: this.controllerHasHigherPol(context) ? 1 : 0,
                         target: context.player
                     }))

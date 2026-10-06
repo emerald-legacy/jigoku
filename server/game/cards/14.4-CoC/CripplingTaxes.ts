@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
 
 class CripplingTaxes extends DrawCard {
@@ -11,7 +11,7 @@ class CripplingTaxes extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(AbilityDsl.actions.moveCard(context => ({
+            .gameAction(moveCard(context => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location)
             })))

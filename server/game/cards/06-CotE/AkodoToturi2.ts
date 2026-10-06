@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, PlayType } from '../../Constants.js';
 
@@ -8,9 +9,9 @@ class AkodoToturi2 extends DrawCard {
     setupCardAbilities() {
         this.action('Prevent each player playing cards from hand')
             .condition((context) => context.source.isParticipating() && context.player.imperialFavor !== '')
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
+            .gameAction(playerLastingEffect({
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: playerCannot({
                     cannot: PlayType.PlayFromHand
                 })
             }))

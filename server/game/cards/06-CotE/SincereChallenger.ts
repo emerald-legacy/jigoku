@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity, modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class SincereChallenger extends DrawCard {
@@ -7,16 +8,16 @@ class SincereChallenger extends DrawCard {
 
     setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            effect: modifyPoliticalSkill(2)
         });
         this.action('Initiate a Political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 message: '{0} is immune to events until the end of the conflict',
                 messageArgs: duel => duel.winner,
-                gameAction: duel => AbilityDsl.actions.cardLastingEffect({
+                gameAction: duel => cardLastingEffect({
                     target: duel.winner,
-                    effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+                    effect: immunity({ restricts: 'events' })
                 })
             }));
     }

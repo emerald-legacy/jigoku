@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
 
 class GuestOfHonor extends DrawCard {
     static id = 'guest-of-honor';
@@ -9,7 +9,7 @@ class GuestOfHonor extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'play',
                 restricts: 'events'
             })

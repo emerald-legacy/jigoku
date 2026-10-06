@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class IdeMessenger extends DrawCard {
     static id = 'ide-messenger';
@@ -11,7 +12,7 @@ class IdeMessenger extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }
 

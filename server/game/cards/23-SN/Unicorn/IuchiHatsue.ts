@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { joint, moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 
@@ -13,7 +14,7 @@ export default class IuchiHatsue extends DrawCard {
                 }
                 return context.game.currentConflict.getNumberOfParticipantsFor(context.player, card => card.type === CardType.Character && card.hasTrait('creature')) > 0;
             },
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
 
         this.action('Switch 2 characters you control')
@@ -31,9 +32,9 @@ export default class IuchiHatsue extends DrawCard {
                 cardType: CardType.Character,
                 controller: context => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent,
                 player: context => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
-                AbilityDsl.actions.moveToConflict()
+            }, joint([
+                sendHome(context => ({ target: context.targets.characterInConflict })),
+                moveToConflict()
             ]))
             .effect('switch {1} and {2}', context => [context.targets.characterInConflict, context.targets.characterAtHome]);
     }

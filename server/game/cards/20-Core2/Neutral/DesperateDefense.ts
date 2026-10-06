@@ -1,5 +1,7 @@
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DesperateDefense extends DrawCard {
@@ -8,7 +10,7 @@ export default class DesperateDefense extends DrawCard {
     setupCardAbilities() {
         this.action('Add Province Strength')
             .condition((context) => context.player.cardsInPlay.some((card) => card.isParticipating()))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -16,9 +18,9 @@ export default class DesperateDefense extends DrawCard {
                 cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} increases the strength of {1}',
                 messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength(3)
+                    effect: modifyProvinceStrength(3)
                 })
             })))
             .effect('increase the strength of an attacked province by 3')

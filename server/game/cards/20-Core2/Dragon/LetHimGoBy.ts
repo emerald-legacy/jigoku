@@ -1,5 +1,7 @@
 import { DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { bow, cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LetHimGoBy extends DrawCard {
@@ -15,7 +17,7 @@ export default class LetHimGoBy extends DrawCard {
                     event.card.controller === context.player.opponent &&
                     event.card.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.bow((context) => ({
+            .gameAction(bow((context) => ({
                 target: context.event.card
             })));
 
@@ -24,9 +26,9 @@ export default class LetHimGoBy extends DrawCard {
                 type: DuelType.Military,
                 targetCondition: () => true,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.cardLastingEffect({
+                    cardLastingEffect({
                         target: duel.winner,
-                        effect: AbilityDsl.effects.modifyMilitarySkill(
+                        effect: modifyMilitarySkill(
                             (duel.loser ?? []).reduce((total, card) => total + card.getMilitarySkill(), 0)
                         )
                     }),

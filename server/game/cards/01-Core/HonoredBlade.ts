@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainHonor } from '../../GameActions/GameActions.js';
 
 class HonoredBlade extends DrawCard {
     static id = 'honored-blade';
@@ -10,7 +10,7 @@ class HonoredBlade extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller
             })
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gameAction(gainHonor());
     }
 }
 

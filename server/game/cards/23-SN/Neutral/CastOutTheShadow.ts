@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { sacrifice, takeHonor } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
@@ -20,8 +20,8 @@ export default class CastOutTheShadow extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Sacrifice this character': AbilityDsl.actions.sacrifice((context) => ({ target: context.targets.character })),
-                'Give opponent 2 honor': AbilityDsl.actions.takeHonor({ amount: 2 })
+                'Sacrifice this character': sacrifice((context) => ({ target: context.targets.character })),
+                'Give opponent 2 honor': takeHonor({ amount: 2 })
             });
     }
 

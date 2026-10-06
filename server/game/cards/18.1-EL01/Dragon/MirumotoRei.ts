@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, EffectName, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AttachmentMilitarySkillModifierValue } from '../../../Effects/Library/attachmentMilitarySkillModifier.js';
@@ -24,10 +25,10 @@ export default class MirumotoRei extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.hasTrait('bushi') && card !== context.source
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: context.source,
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(
+                    modifyMilitarySkill(
                         context.target
                             ? sumModifiers(
                                 context.target.getEffects(EffectName.AttachmentMilitarySkillModifier),
@@ -36,7 +37,7 @@ export default class MirumotoRei extends DrawCard {
                             )
                             : 0
                     ),
-                    AbilityDsl.effects.modifyPoliticalSkill(
+                    modifyPoliticalSkill(
                         context.target
                             ? sumModifiers(
                                 context.target.getEffects(EffectName.AttachmentPoliticalSkillModifier),

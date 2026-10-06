@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { setProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect, onAffinity } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -25,9 +26,9 @@ export default class TheRushingWave extends DrawCard {
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
-            }, AbilityDsl.actions.onAffinity({
+            }, onAffinity({
                 trait: 'water',
-                gameAction: AbilityDsl.actions.cardLastingEffect(({ target }) => ({
+                gameAction: cardLastingEffect(({ target }) => ({
                     target: target?.isProvinceCard()
                         ? target.controller.getProvinces(
                             (province) =>
@@ -37,12 +38,12 @@ export default class TheRushingWave extends DrawCard {
                         : [],
                     targetLocation: Location.Provinces,
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.setProvinceStrength(0)
+                    effect: setProvinceStrength(0)
                 })),
-                noAffinityGameAction: AbilityDsl.actions.cardLastingEffect({
+                noAffinityGameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.setProvinceStrength(0)
+                    effect: setProvinceStrength(0)
                 }),
                 effect: 'also set the strength of {0} to 0',
                 effectArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]

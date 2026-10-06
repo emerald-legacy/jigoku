@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 export default class Brushfires extends ProvinceCard {
     static id = 'brushfires';
@@ -13,6 +13,6 @@ export default class Brushfires extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.removeFate({ amount: 2 }));
+            }, removeFate({ amount: 2 }));
     }
 }

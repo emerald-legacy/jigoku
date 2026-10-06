@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, discardFromPlay } from '../../GameActions/GameActions.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 
 class BayushiAramoro extends DrawCard {
@@ -13,14 +15,14 @@ class BayushiAramoro extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(-2),
-                    AbilityDsl.effects.delayedEffect({
+                    modifyMilitarySkill(-2),
+                    delayedEffect({
                         condition: () => context.target.getMilitarySkill() < 1,
                         message: '{0} is discarded due to {1}\'s lasting effect',
                         messageArgs: [context.target, context.source],
-                        gameAction: AbilityDsl.actions.discardFromPlay()
+                        gameAction: discardFromPlay()
                     })
                 ]
             })))

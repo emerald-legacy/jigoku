@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
+import { conditional, gainHonor, noAction, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, Phases, Duration } from '../../../Constants.js';
 
 export default class ShaperOfStone extends DrawCard {
@@ -10,13 +11,13 @@ export default class ShaperOfStone extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player,
-            effect: AbilityDsl.effects.modifyProvinceStrength(1)
+            effect: modifyProvinceStrength(1)
         });
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Opponent,
             match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(-1)
+            effect: modifyProvinceStrength(-1)
         });
 
         this.reaction('Mark a province')
@@ -28,19 +29,19 @@ export default class ShaperOfStone extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: card => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.playerLastingEffect((context) => ({
-                effect: AbilityDsl.effects.delayedEffect({
+            }, playerLastingEffect((context) => ({
+                effect: delayedEffect({
                     when: {
                         onPhaseEnded: (event) => event.phase === Phases.Conflict
                     },
                     message: '{0}{1}{2}',
                     messageArgs: () => context.target.isBroken ? ['', '', ''] : [context.player, ' gains 1 honor due to the delayed effect of ', context.source],
-                    gameAction: AbilityDsl.actions.conditional({
+                    gameAction: conditional({
                         condition: () => !context.target.isBroken,
-                        trueGameAction: AbilityDsl.actions.gainHonor({
+                        trueGameAction: gainHonor({
                             target: context.player
                         }),
-                        falseGameAction: AbilityDsl.actions.noAction()
+                        falseGameAction: noAction()
                     })
                 }),
                 duration: Duration.UntilEndOfRound

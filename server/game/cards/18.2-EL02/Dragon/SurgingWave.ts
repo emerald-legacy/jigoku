@@ -1,5 +1,13 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, doesNotBow } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    discardStatusToken,
+    joint,
+    loseFate,
+    menuPrompt,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { CardType, Players, Duration } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
@@ -11,13 +19,13 @@ class SurgingWave extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.sequentialContext((context) => {
+            }, sequentialContext((context) => {
                 const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                 const gameActions = [];
                 gameActions.push(
-                    AbilityDsl.actions.cardLastingEffect(() => ({
+                    cardLastingEffect(() => ({
                         duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.delayedEffect({
+                        effect: delayedEffect({
                             when: {
                                 onConflictFinished: () => true
                             },
@@ -28,7 +36,7 @@ class SurgingWave extends DrawCard {
                                 context.source,
                                 context.target.statusTokens.length > 1 ? 'are' : 'is'
                             ],
-                            gameAction: AbilityDsl.actions.discardStatusToken(() => ({
+                            gameAction: discardStatusToken(() => ({
                                 target: context.target.statusTokens
                             }))
                         })
@@ -36,7 +44,7 @@ class SurgingWave extends DrawCard {
                 );
                 if(kihoPlayed) {
                     gameActions.push(
-                        AbilityDsl.actions.menuPrompt(() => ({
+                        menuPrompt(() => ({
                             activePromptTitle:
                                     'Spend 1 fate to prevent ' +
                                     context.target.name +
@@ -53,10 +61,10 @@ class SurgingWave extends DrawCard {
                                 }
                                 return { amount: choice === 'Yes' ? 1 : 0 };
                             },
-                            gameAction: AbilityDsl.actions.joint([
-                                AbilityDsl.actions.loseFate({ target: context.player }),
-                                AbilityDsl.actions.cardLastingEffect(() => ({
-                                    effect: AbilityDsl.effects.doesNotBow(),
+                            gameAction: joint([
+                                loseFate({ target: context.player }),
+                                cardLastingEffect(() => ({
+                                    effect: doesNotBow(),
                                     target: context.target
                                 }))
                             ])

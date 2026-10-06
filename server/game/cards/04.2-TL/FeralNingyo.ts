@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Location, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, putIntoConflict, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 const elementKey = 'feral-ningyo-water';
 
@@ -10,21 +11,21 @@ class FeralNingyo extends DrawCard {
     setupCardAbilities() {
         this.action('Put into play')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.putIntoConflict(context => ({
+            .gameAction(sequential([
+                putIntoConflict(context => ({
                     target: context.source
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect(context => ({
                     target: context.source,
                     location: [Location.Hand, Location.PlayArea],
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onConflictFinished: () => true
                         },
                         message: '{0} returns to the deck and shuffles due to its delayed effect',
                         messageArgs: (context) => [context.source],
-                        gameAction: AbilityDsl.actions.returnToDeck({ shuffle: true })
+                        gameAction: returnToDeck({ shuffle: true })
                     })
                 }))
             ]))

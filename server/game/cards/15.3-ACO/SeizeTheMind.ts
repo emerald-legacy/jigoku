@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { takeControl } from '../../effects.js';
+import { cardLastingEffect, loseHonor, multiple } from '../../GameActions/GameActions.js';
 
 class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';
@@ -11,13 +12,13 @@ class SeizeTheMind extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor((context) => ({
+            }, multiple([
+                loseHonor((context) => ({
                     target: context.player,
                     amount: context.target?.getFate() ?? 0
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.takeControl(context.player)
+                cardLastingEffect(context => ({
+                    effect: takeControl(context.player)
                 }))
             ]))
             .effect('take control of {0}{1}{2}{3}', context => {

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait } from '../../effects.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -11,7 +12,7 @@ class UtakuBattleSteed extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('cavalry')
+            effect: addTrait('cavalry')
         });
 
         this.reaction('Honor attached character')
@@ -20,7 +21,7 @@ class UtakuBattleSteed extends DrawCard {
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
-            .gameAction(AbilityDsl.actions.honor((context) => ({
+            .gameAction(honor((context) => ({
                 target: context.source.parentCharacter ?? []
             })));
     }

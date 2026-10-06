@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Location } from '../../Constants.js';
 
 class TacticalIngenuity extends DrawCard {
@@ -10,14 +11,14 @@ class TacticalIngenuity extends DrawCard {
             trait: 'commander'
         });
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Reveal and draw an event',
                 condition: (context) => context.source.isParticipating(),
                 effect: 'look at the top four cards of their deck',
-                gameAction: AbilityDsl.actions.deckSearch({
+                gameAction: deckSearch({
                     amount: 4,
                     cardCondition: (card) => card.type === CardType.Event,
-                    gameAction: AbilityDsl.actions.moveCard({
+                    gameAction: moveCard({
                         destination: Location.Hand
                     })
                 })

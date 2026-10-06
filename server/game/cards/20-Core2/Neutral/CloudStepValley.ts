@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { joint, moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 
 const STARTED_IN_CONFLICT = 'started_in';
 const STARTED_AT_HOME = 'started_out';
@@ -14,7 +14,7 @@ export default class CloudStepValley extends ProvinceCard {
                 name: STARTED_IN_CONFLICT,
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
-                cardCondition: (card, context) => AbilityDsl.actions.sendHome().canAffect(card, context)
+                cardCondition: (card, context) => sendHome().canAffect(card, context)
             })
             .target({
                 name: STARTED_AT_HOME,
@@ -27,11 +27,11 @@ export default class CloudStepValley extends ProvinceCard {
                         : Players.Opponent,
                 cardCondition: (card, context) =>
                     card.controller === context.targets[STARTED_IN_CONFLICT].controller &&
-                        AbilityDsl.actions.moveToConflict().canAffect(card, context)
+                        moveToConflict().canAffect(card, context)
             })
-            .gameAction(AbilityDsl.actions.joint([
-                AbilityDsl.actions.sendHome(({ targets }) => ({ target: targets[STARTED_IN_CONFLICT] })),
-                AbilityDsl.actions.moveToConflict(({ targets }) => ({ target: targets[STARTED_AT_HOME] }))
+            .gameAction(joint([
+                sendHome(({ targets }) => ({ target: targets[STARTED_IN_CONFLICT] })),
+                moveToConflict(({ targets }) => ({ target: targets[STARTED_AT_HOME] }))
             ]))
             .effect('move {1} home, and move {2} to the conflict', (context) => [context.targets[STARTED_IN_CONFLICT], context.targets[STARTED_AT_HOME]]);
     }

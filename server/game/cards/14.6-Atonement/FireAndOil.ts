@@ -1,4 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -8,7 +10,7 @@ export default class FireAndOil extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !context.player.getProvinceCardInProvince(context.source.location)?.isBroken,
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Dishonor a character',
                 condition: (context) =>
                     !!context.game.currentConflict &&
@@ -17,7 +19,7 @@ export default class FireAndOil extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card) => card.isAttacking(),
-                    gameAction: AbilityDsl.actions.dishonor()
+                    gameAction: dishonor()
                 }
             })
         });

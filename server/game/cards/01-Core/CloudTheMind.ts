@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { blank } from '../../effects.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 
 class CloudTheMind extends DrawCard {
@@ -8,7 +8,7 @@ class CloudTheMind extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.blank()
+            effect: blank()
         });
     }
 

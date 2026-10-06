@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainHonor } from '../../GameActions/GameActions.js';
 
 class AsakoLawmaster extends DrawCard {
     static id = 'asako-lawmaster';
@@ -9,7 +9,7 @@ class AsakoLawmaster extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gameAction(gainHonor());
     }
 }
 

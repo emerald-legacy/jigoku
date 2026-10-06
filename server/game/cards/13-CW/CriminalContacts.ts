@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
@@ -13,7 +14,7 @@ class CriminalContacts extends DrawCard {
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.removeFate())
+            }, removeFate())
             .target({
                 name: 'oppCharacter',
                 player: Players.Opponent,
@@ -21,7 +22,7 @@ class CriminalContacts extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
-            }, AbilityDsl.actions.removeFate())
+            }, removeFate())
             .effect('discard a fate from {1}{2}', (context) => [
                 context.targets.myCharacter,
                 honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard a fate from ' + name)

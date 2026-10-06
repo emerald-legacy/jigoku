@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow, sendHome } from '../../GameActions/GameActions.js';
 
 class KanjoDistrict extends DrawCard {
     static id = 'kanjo-district';
@@ -11,7 +12,7 @@ class KanjoDistrict extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())
+            }, bow(), sendHome())
             .effect('bow and send {0} home');
     }
 }

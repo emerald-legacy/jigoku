@@ -1,5 +1,14 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    discardCard,
+    multiple,
+    putIntoConflict,
+    returnToDeck,
+    selectCard,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -12,26 +21,26 @@ export default class SecondWind extends DrawCard {
 
     public setupCardAbilities() {
         this.action('put a character from your discard pile into play')
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard((context) => ({
+            .gameAction(sequential([
+                discardCard((context) => ({
                     target: cardsToDiscard(context)
                 })),
-                AbilityDsl.actions.selectCard((context) => ({
+                selectCard((context) => ({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
                     cardCondition: (card) => !card.isUnique(),
                     controller: Players.Self,
                     targets: true,
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.putIntoConflict(),
-                        AbilityDsl.actions.cardLastingEffect(() => ({
+                    gameAction: multiple([
+                        putIntoConflict(),
+                        cardLastingEffect(() => ({
                             duration: Duration.UntilEndOfPhase,
                             location: [Location.PlayArea],
-                            effect: AbilityDsl.effects.delayedEffect({
+                            effect: delayedEffect({
                                 when: {
                                     onConflictFinished: () => true
                                 },
-                                gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
+                                gameAction: returnToDeck({ bottom: true })
                             })
                         }))
                     ]),

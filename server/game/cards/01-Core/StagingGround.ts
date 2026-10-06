@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { flipDynasty } from '../../GameActions/GameActions.js';
 
 class StagingGround extends DrawCard {
     static id = 'staging-ground';
@@ -13,7 +13,7 @@ class StagingGround extends DrawCard {
                 activePromptTitle: 'Choose up to 2 cards',
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.flipDynasty());
+            }, flipDynasty());
     }
 }
 

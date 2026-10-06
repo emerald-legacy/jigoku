@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class HigesSermon extends DrawCard {
     static id = 'hige-s-sermon';
@@ -14,14 +14,14 @@ class HigesSermon extends DrawCard {
                 cardType: CardType.Character,
                 controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
                 player: context => context.player.firstPlayer ? Players.Self : Players.Opponent
-            }, AbilityDsl.actions.bow())
+            }, bow())
             .target({
                 name: 'secondCharacter',
                 activePromptTitle: 'Choose a character to bow',
                 cardType: CardType.Character,
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                 player: context => context.player.firstPlayer ? Players.Opponent : Players.Self
-            }, AbilityDsl.actions.bow())
+            }, bow())
             .effect('bow {1} and {2}', context => [context.targets.firstCharacter, context.targets.secondCharacter])
             .phase(Phases.Draw);
     }

@@ -1,6 +1,7 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
 
@@ -52,7 +53,7 @@ class OniTyrant extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(1))
             .cost(oniTyrantCost())
             .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
+            .gameAction(putIntoConflict(context => ({
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))
             .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class FanOfCommand extends DrawCard {
     static id = 'fan-of-command';
@@ -11,7 +11,7 @@ class FanOfCommand extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi')
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

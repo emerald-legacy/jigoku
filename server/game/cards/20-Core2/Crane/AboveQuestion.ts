@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AboveQuestion extends DrawCard {
@@ -6,7 +6,7 @@ export default class AboveQuestion extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'target',
                 restricts: 'opponentsEvents',
                 source: this

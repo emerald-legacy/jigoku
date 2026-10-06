@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { bow, discardFromPlay } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
 class DojiKuwanan extends DrawCard {
@@ -7,7 +8,7 @@ class DojiKuwanan extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition: (context) =>
                     context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
                 message: '{1} is discarded from play as its controller controls {0}',
@@ -15,7 +16,7 @@ class DojiKuwanan extends DrawCard {
                     context.source,
                     context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
                 ],
-                gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
+                gameAction: discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
                 }))
             })
@@ -27,7 +28,7 @@ class DojiKuwanan extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

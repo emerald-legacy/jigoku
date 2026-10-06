@@ -2,6 +2,8 @@ import { CardType, Decks, Duration, Location, PlayType } from '../../../Constant
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import { deckSearch, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AshalanLantern extends DrawCard {
@@ -11,23 +13,23 @@ export default class AshalanLantern extends DrawCard {
         this.action('Play a character from your opponent\'s dynasty deck')
             .cost(AbilityDsl.costs.nameCard())
             .condition((context) => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(sequential([
+                playerLastingEffect((context) => ({
                     duration: Duration.UntilPassPriority,
                     targetController: context.player,
-                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                    effect: reduceNextPlayedCardCost(
                         3,
                         (card) => card.name === context.costs.nameCardCost
                     )
                 })),
-                AbilityDsl.actions.deckSearch((context) => ({
+                deckSearch((context) => ({
                     amount: 3,
                     deck: Decks.DynastyDeck,
                     player: context.player.opponent,
                     choosingPlayer: context.player,
                     shuffle: false,
                     cardCondition: (card) => card.type === CardType.Character && !card.isUnique(),
-                    gameAction: AbilityDsl.actions.playCard((deckSearchContext) => {
+                    gameAction: playCard((deckSearchContext) => {
                         const target = deckSearchContext.deckSearchSelected[0];
                         return {
                             target,

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType, Element } from '../../Constants.js';
 import { countTargetable } from '../countTargetable.js';
 
@@ -26,7 +27,7 @@ class IsawaTsuke2 extends DrawCard {
                 },
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.removeFate((context) => {
+            }, removeFate((context) => {
                 return { target: Object.values(context.targets).flat() };
             }))
             .effect('lose {1} honor to discard a fate from {2}', (context) => [context.costs.variableHonorCost, context.targets.target])

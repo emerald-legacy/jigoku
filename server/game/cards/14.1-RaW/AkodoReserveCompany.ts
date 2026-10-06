@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 class AkodoReserveCompany extends DrawCard {
     static id = 'akodo-reserve-company';
@@ -11,9 +11,9 @@ class AkodoReserveCompany extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),
-                AbilityDsl.actions.sendHome()
+            }, joint([
+                moveToConflict(context => ({ target: context.source })),
+                sendHome()
             ]));
     }
 }

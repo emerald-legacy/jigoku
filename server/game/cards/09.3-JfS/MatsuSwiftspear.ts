@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 
 class MatsuSwiftspear extends DrawCard {
     static id = 'matsu-swiftspear';
@@ -8,7 +8,7 @@ class MatsuSwiftspear extends DrawCard {
         this.persistentEffect({
             condition: context => !!context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length,
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            effect: modifyMilitarySkill(2)
         });
     }
 }

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { attach } from '../../GameActions/GameActions.js';
 import { captureParentCost } from '../captureParentCost.js';
 
 class Niten extends DrawCard {
@@ -21,7 +22,7 @@ class Niten extends DrawCard {
                 location: Location.Hand,
                 cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.captureParentCost ?? undefined)
             })
-            .gameAction(AbilityDsl.actions.attach((context) => ({
+            .gameAction(attach((context) => ({
                 target: context.costs.captureParentCost ?? [],
                 attachment: context.target
             })))

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOwn } from '../../effects.js';
+import { moveCard, ready } from '../../GameActions/GameActions.js';
 import { Location, PlayType, TargetMode, CardType, Players } from '../../Constants.js';
 
 class RightHandOfTheEmperor extends DrawCard {
@@ -9,7 +10,7 @@ class RightHandOfTheEmperor extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.player.opponent !== undefined && context.player.isMoreHonorable(),
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
         this.action('Ready characters')
             .targetCards({
@@ -22,8 +23,8 @@ class RightHandOfTheEmperor extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('bushi')
-            }, AbilityDsl.actions.ready())
-            .gameAction(AbilityDsl.actions.moveCard((context) => ({
+            }, ready())
+            .gameAction(moveCard((context) => ({
                 target: context.source,
                 destination: Location.ConflictDeck,
                 bottom: true

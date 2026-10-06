@@ -1,17 +1,18 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class PeerlessDiscipline extends DrawCard {
     static id = 'peerless-discipline';
 
     setupCardAbilities() {
         this.action('Give each character +1 military and Bushi')
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(1),
-                    AbilityDsl.effects.addTrait('bushi')
+                    modifyMilitarySkill(1),
+                    addTrait('bushi')
                 ],
                 duration: Duration.UntilEndOfPhase
             })))

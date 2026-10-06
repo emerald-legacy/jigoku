@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'isawa-atsuko-void';
@@ -10,12 +11,12 @@ class IsawaAtsuko extends DrawCard {
     setupCardAbilities() {
         this.action('Wield the power of the void')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: this.game.currentConflict?.getCharacters(context.player) ?? [],
-                effect: AbilityDsl.effects.modifyBothSkills(1)
-            })), AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: modifyBothSkills(1)
+            })), cardLastingEffect(context => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
-                effect: AbilityDsl.effects.modifyBothSkills(-1)
+                effect: modifyBothSkills(-1)
             })))
             .effect('give friendly characters +1/+1 and opposing characters -1/-1');
     }

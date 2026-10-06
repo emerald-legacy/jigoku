@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { customRefillProvince } from '../../effects.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -14,7 +14,7 @@ class EducatedHeimin extends ProvinceAttachment {
             condition: context => !!context?.source.parent,
             targetLocation: Location.Provinces,
             match: (card, context) => !!context && card === context.source.parent,
-            effect: AbilityDsl.effects.customRefillProvince((player, province) => {
+            effect: customRefillProvince((player, province) => {
                 const cards = player.dynastyDeck.slice(0, province.isFacedown() ? 4 : 2);
                 this.game.promptWithHandlerMenu(player, {
                     activePromptTitle: 'Choose a card to refill the province with',

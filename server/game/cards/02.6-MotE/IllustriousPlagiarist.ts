@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { CardAction } from '../../CardAction.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration, Players, AbilityType, CardType } from '../../Constants.js';
@@ -13,10 +14,10 @@ class IllustriousPlagiarist extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card === this.topmostEvent(context) && card.abilities.actions.length > 0
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.source,
-                effect: context.target?.abilities.actions.map((action: CardAction) => AbilityDsl.effects.gainAbility(AbilityType.Action, action)) ?? []
+                effect: context.target?.abilities.actions.map((action: CardAction) => gainAbility(AbilityType.Action, action)) ?? []
             })))
             .effect('copy {0}\'s action abilities');
     }

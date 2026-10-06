@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, TargetMode, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 
 class Ambush extends DrawCard {
     static id = 'ambush';
@@ -17,7 +17,7 @@ class Ambush extends DrawCard {
                 location: [Location.Hand, Location.Provinces],
                 controller: Players.Self,
                 cardCondition: card => card.isFaction('scorpion')
-            }, AbilityDsl.actions.putIntoConflict());
+            }, putIntoConflict());
     }
 }
 

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { optional, turnFacedown } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { moveCardInProvinceAction } from '../../moveCardInProvince.js';
@@ -10,9 +10,9 @@ export default class HirumaHajime extends DrawCard {
         moveCardInProvinceAction(this)
             .then((context) => ({
                 thenCondition: () => context.targets.province.isConflictProvince() && context.targets.cardInProvince.type !== CardType.Attachment && context.targets.cardInProvince.isFaceup(),
-                gameAction: AbilityDsl.actions.optional(() => ({
+                gameAction: optional(() => ({
                     promptTitleForConfirming: 'Do you want to turn ' + context.targets.cardInProvince.name + ' facedown?',
-                    gameAction: AbilityDsl.actions.turnFacedown({
+                    gameAction: turnFacedown({
                         target: context.targets.cardInProvince
                     }),
                     showMessageOnNo: true,

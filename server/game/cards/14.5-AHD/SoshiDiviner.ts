@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class SoshiDiviner extends DrawCard {
     static id = 'soshi-diviner';
@@ -22,7 +22,7 @@ class SoshiDiviner extends DrawCard {
                     card.location !== Location.StrongholdProvince &&
                     card.controller === context.targets.cardInProvince.controller &&
                     card.location !== context.targets.cardInProvince.location
-            }, AbilityDsl.actions.moveCard(context => ({
+            }, moveCard(context => ({
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             })))

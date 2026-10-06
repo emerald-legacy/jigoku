@@ -1,5 +1,6 @@
 import { Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor, moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ImperialAdjutant extends DrawCard {
@@ -24,10 +25,10 @@ export default class ImperialAdjutant extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Move this character to the conflict': AbilityDsl.actions.moveToConflict(context => ({
+                'Move this character to the conflict': moveToConflict(context => ({
                     target: context.targets.character
                 })),
-                'Dishonor this character': AbilityDsl.actions.dishonor(context => ({
+                'Dishonor this character': dishonor(context => ({
                     target: context.targets.character
                 }))
             });

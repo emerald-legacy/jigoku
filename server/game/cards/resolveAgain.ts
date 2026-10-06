@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import AbilityDsl from '../abilitydsl.js';
+import { resolveAbility } from '../GameActions/GameActions.js';
 import type CardAbility from '../CardAbility.js';
 import { Players, TargetMode } from '../Constants.js';
 import type Player from '../Player.js';
@@ -8,7 +8,7 @@ import type { ThenAbilityProperties } from '../ThenAbility.js';
 type ResolvingContext = AbilityContext & { ability: CardAbility };
 
 export function resolveAbilityAgain(context: ResolvingContext, player?: Player) {
-    return AbilityDsl.actions.resolveAbility({
+    return resolveAbility({
         ability: context.ability,
         ...(player && { player }),
         subResolution: true,

@@ -1,6 +1,7 @@
 import { GameModes } from '../../../GameModes.js';
 import { CardType, TargetMode, Decks, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { hideWhenFaceUp } from '../../effects.js';
+import { deckSearch } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KaiuShihobu extends DrawCard {
@@ -12,7 +13,7 @@ export default class KaiuShihobu extends DrawCard {
                 onCharacterEntersPlay: (event, context) =>
                     event.card === context.source && context.game.gameMode !== GameModes.Skirmish
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
                 targetMode: TargetMode.Unlimited,
                 deck: Decks.DynastyDeck,
@@ -28,7 +29,7 @@ export default class KaiuShihobu extends DrawCard {
                                         event.card === card && event.originalLocation === Location.UnderneathStronghold
                                 },
                                 match: card,
-                                effect: [AbilityDsl.effects.hideWhenFaceUp()]
+                                effect: [hideWhenFaceUp()]
                             }));
                         });
                     } else {

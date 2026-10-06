@@ -1,6 +1,7 @@
 import { CardType, EventName, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { cardLastingEffect, conditional, multiple, noAction, ready } from '../../../GameActions/GameActions.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -20,32 +21,32 @@ export default class KakitasFirstKata extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('duelist') || card.isFaction('crane')
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.cardCannot({
+            }, multiple([
+                cardLastingEffect((context) => ({
+                    effect: cardCannot({
                         cannot: 'sendHome',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })
                 })),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.cardCannot({
+                cardLastingEffect((context) => ({
+                    effect: cardCannot({
                         cannot: 'moveToConflict',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })
                 })),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.cardCannot({
+                cardLastingEffect((context) => ({
+                    effect: cardCannot({
                         cannot: 'bow',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })
                 })),
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: (context) => context.target !== undefined && this.bowedCharactersThisConflict.has(context.target),
-                    trueGameAction: AbilityDsl.actions.ready((context) => ({ target: context.target })),
-                    falseGameAction: AbilityDsl.actions.noAction()
+                    trueGameAction: ready((context) => ({ target: context.target })),
+                    falseGameAction: noAction()
                 })
             ]))
             .effect('{1}prevent opponents\' actions from bowing or moving {0}', (context) => (context.target && this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : ''));

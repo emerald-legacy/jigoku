@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { draw, takeHonor } from '../../../GameActions/GameActions.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class TheatreOfHonestLies extends StrongholdCard {
@@ -11,7 +12,7 @@ export default class TheatreOfHonestLies extends StrongholdCard {
                 onTransferHonor: (event, context) => event.player === context.player.opponent && event.amount > 0
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.draw());
+            .gameAction(draw());
 
         this.reaction('Take 1 honor')
             .when({
@@ -19,6 +20,6 @@ export default class TheatreOfHonestLies extends StrongholdCard {
                 onTransferHonor: (event, context) => event.player === context.player && event.amount > 0
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.takeHonor());
+            .gameAction(takeHonor());
     }
 }

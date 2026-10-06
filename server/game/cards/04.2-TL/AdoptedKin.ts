@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -13,7 +13,7 @@ class AdoptedKin extends DrawCard {
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter,
             match: (card, context) => card !== context?.source && card.getType() === CardType.Attachment && context?.source.parentCharacter === card.parentCharacter,
-            effect: AbilityDsl.effects.addKeyword('ancestral'),
+            effect: addKeyword('ancestral'),
             targetController: Players.Any
         });
     }

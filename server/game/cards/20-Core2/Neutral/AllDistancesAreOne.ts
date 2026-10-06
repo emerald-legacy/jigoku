@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveConflict, onAffinity, selectCard, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
 
@@ -16,22 +16,22 @@ export default class AllDistancesAreOne extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 )))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                gameAction: AbilityDsl.actions.moveConflict(),
+                gameAction: moveConflict(),
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card) => [context.player, card]
             })))
             .effect('move the conflict to another eligible province')
             .then((context) => ({
                 thenCondition: () => !context.costs.originalProvince?.isBroken,
-                gameAction: AbilityDsl.actions.onAffinity({
+                gameAction: onAffinity({
                     trait: 'water',
                     promptTitleForConfirmingAffinity: 'Flip the original province facedown?',
                     effect: 'flip {0} facedown',
                     effectArgs: () => [context.costs.originalProvince],
-                    gameAction: AbilityDsl.actions.turnFacedown({
+                    gameAction: turnFacedown({
                         target: context.costs.originalProvince
                     })
                 })

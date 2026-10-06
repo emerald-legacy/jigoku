@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkillMultiplier } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 
@@ -13,7 +14,7 @@ class VengefulBerserker extends DrawCard {
                     return !!card && card.location === Location.PlayArea && card.type === CardType.Character && card.controller === context.player && this.game.isDuringConflict();
                 }
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyMilitarySkillMultiplier(2) }))
+            .gameAction(cardLastingEffect({ effect: modifyMilitarySkillMultiplier(2) }))
             .effect('double his military skill until the end of the conflict');
     }
 }

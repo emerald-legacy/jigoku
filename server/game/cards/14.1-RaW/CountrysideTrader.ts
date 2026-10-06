@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { resolveAbility } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class CountrysideTrader extends DrawCard {
@@ -15,7 +16,7 @@ class CountrysideTrader extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: card => card.isConflictProvince(),
                 abilityCondition: ability => ability.printedAbility
-            }, AbilityDsl.actions.resolveAbility((context) => ({
+            }, resolveAbility((context) => ({
                 target: context.targetAbility?.card,
                 ability: context.targetAbility,
                 player: context.player,

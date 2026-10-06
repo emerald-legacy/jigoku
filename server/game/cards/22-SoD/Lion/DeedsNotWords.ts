@@ -1,5 +1,14 @@
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    claimImperialFavor,
+    honor,
+    joint,
+    loseImperialFavor,
+    playerLastingEffect,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DeedsNotWords extends DrawCard {
@@ -11,18 +20,18 @@ export default class DeedsNotWords extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            }, sequential([
+                cardLastingEffect({
+                    effect: modifyMilitarySkill(2)
                 }),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             afterConflict: (event) =>
                                 context.player === event.conflict.winner
                         },
-                        gameAction: AbilityDsl.actions.claimImperialFavor(() => ({ target: context.player })),
+                        gameAction: claimImperialFavor(() => ({ target: context.player })),
                         message: '{0} claims the Imperial Favor due to the delayed effect of {1}',
                         messageArgs: [context.player, context.source]
                     })
@@ -34,11 +43,11 @@ export default class DeedsNotWords extends DrawCard {
                 target: {
                     mode: TargetMode.Select,
                     choices: {
-                        'Discard the Imperial Favor': AbilityDsl.actions.joint([
-                            AbilityDsl.actions.loseImperialFavor({
+                        'Discard the Imperial Favor': joint([
+                            loseImperialFavor({
                                 target: context.player
                             }),
-                            AbilityDsl.actions.honor({
+                            honor({
                                 target: context.target
                             })
                         ]),

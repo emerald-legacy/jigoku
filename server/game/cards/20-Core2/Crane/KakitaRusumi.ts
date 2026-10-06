@@ -1,5 +1,6 @@
 import { CardType, Decks, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import { cardLastingEffect, deckSearch, discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -13,7 +14,7 @@ export default class KakitaRusumi extends DrawCard {
     setupCardAbilities() {
         this.action('Put a character into play')
             .condition((context) => context.player.isDefendingPlayer())
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
                 amount: 4,
                 deck: Decks.DynastyDeck,
@@ -22,22 +23,22 @@ export default class KakitaRusumi extends DrawCard {
                 message: '{0} puts {1} into play {2}',
                 messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
                 shuffle: true,
-                gameAction: AbilityDsl.actions.putIntoConflict((context) => ({ status: statusOfIntern(context) }))
+                gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
             }))
             .effect('search their dynasty deck for a character to put into play')
             .then((context) => ({
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => {
+                gameAction: cardLastingEffect(() => {
                     const target = context.deckSearchSelected[0] ?? [];
                     return {
                         target: target,
                         duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.delayedEffect({
+                        effect: delayedEffect({
                             when: {
                                 onConflictFinished: () => true
                             },
                             message: '{0} is discarded from play due to {1}\'s effect',
                             messageArgs: [target, context.source],
-                            gameAction: AbilityDsl.actions.discardFromPlay()
+                            gameAction: discardFromPlay()
                         })
                     };
                 })

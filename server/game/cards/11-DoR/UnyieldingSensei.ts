@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, Location, Decks } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 
 class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
@@ -13,7 +13,7 @@ class UnyieldingSensei extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 activePromptTitle: 'Choose a character',
                 amount: 2,
                 deck: Decks.DynastyDeck,
@@ -24,7 +24,7 @@ class UnyieldingSensei extends DrawCard {
                     const province = context.target;
                     return [context.player, cards, province?.isFacedown() ? 'a facedown province' : province?.name];
                 },
-                gameAction: AbilityDsl.actions.moveCard(context => ({
+                gameAction: moveCard(context => ({
                     destination: context.target?.location,
                     faceup: true
                 }))

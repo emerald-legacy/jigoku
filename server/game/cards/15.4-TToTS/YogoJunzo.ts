@@ -1,17 +1,18 @@
 import DrawCard from '../../DrawCard.js';
 import { AbilityType, CardType, Players} from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { menuPrompt, removeFate } from '../../GameActions/GameActions.js';
 
 class YogoJunzo extends DrawCard {
     static id = 'yogo-junzo';
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Remove all fate from a character',
                 target: {
                     cardType: CardType.Character,
-                    gameAction: AbilityDsl.actions.removeFate((context) => ({
+                    gameAction: removeFate((context) => ({
                         amount: context.target?.getFate() ?? 0
                     }))
                 },
@@ -23,7 +24,7 @@ class YogoJunzo extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.menuPrompt((context) => ({
+            }, menuPrompt((context) => ({
                 activePromptTitle: 'Select fate amount:',
                 choices: Array.from(Array(context.target.getFate()), (_x, i) => (i + 1).toString()),
                 choiceHandler: (choice, displayMessage) => {
@@ -32,7 +33,7 @@ class YogoJunzo extends DrawCard {
                     }
                     return { target: context.target, amount: parseInt(choice), recipient:context.target.controller };
                 },
-                gameAction: AbilityDsl.actions.removeFate()
+                gameAction: removeFate()
             })));
     }
 }

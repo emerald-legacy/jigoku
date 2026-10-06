@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class SubterraneanGuile extends DrawCard {
     static id = 'subterranean-guile';
@@ -9,7 +9,7 @@ class SubterraneanGuile extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: context => this.game.isDuringConflict(ConflictType.Military) && this.isHoldingOnUnbrokenProvince(context),
-            effect: AbilityDsl.effects.addKeyword('covert')
+            effect: addKeyword('covert')
         });
     }
 

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw, gainFate, ready, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { HandlerMenuOption } from '../../gamesteps/HandlerMenuPrompt.js';
@@ -47,15 +47,13 @@ export default class NegotiationTable extends DrawCard {
     private eachPlayerDraws(context: AbilityContext, opponent: Player) {
         this.game.addMessage('{0} chooses to have each player draw a card', opponent);
 
-        AbilityDsl.actions
-            .draw((ctx) => ({
-                target: ctx.player.opponent
-            }))
+        draw((ctx) => ({
+            target: ctx.player.opponent
+        }))
             .resolve(opponent, context);
-        AbilityDsl.actions
-            .draw((ctx) => ({
-                target: ctx.player
-            }))
+        draw((ctx) => ({
+            target: ctx.player
+        }))
             .resolve(context.player, context);
     }
 
@@ -66,29 +64,27 @@ export default class NegotiationTable extends DrawCard {
             opponent.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length;
 
         if(bowedCharacters > 0) {
-            AbilityDsl.actions
-                .selectCard((ctx) => ({
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    targets: true,
-                    message: '{0} chooses to ready {1}',
-                    messageArgs: card => [ctx.player.opponent, card],
-                    gameAction: AbilityDsl.actions.ready()
-                }))
+            selectCard((ctx) => ({
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                targets: true,
+                message: '{0} chooses to ready {1}',
+                messageArgs: card => [ctx.player.opponent, card],
+                gameAction: ready()
+            }))
                 .resolve(opponent, context);
         }
 
         //This is ugly, but it's needed to not deadlock the game
         if(bowedCharacters > 1) {
-            AbilityDsl.actions
-                .selectCard((ctx) => ({
-                    player: Players.Self,
-                    cardType: CardType.Character,
-                    targets: true,
-                    message: '{0} chooses to ready {1}',
-                    messageArgs: card => [ctx.player, card],
-                    gameAction: AbilityDsl.actions.ready()
-                }))
+            selectCard((ctx) => ({
+                player: Players.Self,
+                cardType: CardType.Character,
+                targets: true,
+                message: '{0} chooses to ready {1}',
+                messageArgs: card => [ctx.player, card],
+                gameAction: ready()
+            }))
                 .resolve(context.player, context);
         }
     }
@@ -96,15 +92,13 @@ export default class NegotiationTable extends DrawCard {
     private eachPlayerGainsFate(context: AbilityContext, opponent: Player) {
         this.game.addMessage('{0} chooses to have each player gain a fate', opponent);
 
-        AbilityDsl.actions
-            .gainFate((ctx) => ({
-                target: ctx.player.opponent
-            }))
+        gainFate((ctx) => ({
+            target: ctx.player.opponent
+        }))
             .resolve(opponent, context);
-        AbilityDsl.actions
-            .gainFate((ctx) => ({
-                target: ctx.player
-            }))
+        gainFate((ctx) => ({
+            target: ctx.player
+        }))
             .resolve(context.player, context);
     }
 }

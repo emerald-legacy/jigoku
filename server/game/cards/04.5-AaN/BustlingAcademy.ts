@@ -1,5 +1,5 @@
 import { CardType, EventName, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard, refillFaceup } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class BustlingAcademy extends DrawCard {
@@ -13,10 +13,10 @@ export default class BustlingAcademy extends DrawCard {
             .target({
                 location: Location.Provinces,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]
-            }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile }))
+            }, moveCard({ destination: Location.DynastyDiscardPile }))
             .effect('discard {0} and refill it faceup')
             .then((context) => ({
-                gameAction: AbilityDsl.actions.refillFaceup(() => {
+                gameAction: refillFaceup(() => {
                     const moveEvent = context.events[0];
                     const discarded = moveEvent.is(EventName.Unnamed) ? moveEvent.cardStateWhenMoved : undefined;
                     return discarded

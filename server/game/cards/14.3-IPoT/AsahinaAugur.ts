@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { canBeSeenWhenFacedown } from '../../effects.js';
+import { discardCard } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
 
 class AsahinaAugur extends DrawCard {
@@ -9,7 +11,7 @@ class AsahinaAugur extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFacedown(),
-            effect: AbilityDsl.effects.canBeSeenWhenFacedown()
+            effect: canBeSeenWhenFacedown()
         });
 
         this.action('Discard a card in a province')
@@ -17,7 +19,7 @@ class AsahinaAugur extends DrawCard {
                 cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.discardCard())
+            }, discardCard())
             .effect('discard {1} in {2}', context => [context.target.isFacedown() ? 'a facedown card' : context.target, context.target.location])
             .limit(AbilityDsl.limit.perRound(3));
     }

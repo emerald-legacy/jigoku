@@ -1,5 +1,6 @@
 import { AbilityType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility } from '../../../effects.js';
+import { gainFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CollectorOfFavors extends DrawCard {
@@ -9,13 +10,13 @@ export default class CollectorOfFavors extends DrawCard {
         this.attachmentConditions({ trait: 'courtier' });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            effect: gainAbility(AbilityType.Reaction, {
                 title: 'Gain 1 fate',
                 when: {
                     afterConflict: (event, context) =>
                         event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
-                gameAction: AbilityDsl.actions.gainFate()
+                gameAction: gainFate()
             })
         });
     }

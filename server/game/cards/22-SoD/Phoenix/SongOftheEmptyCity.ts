@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardCard, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
 import { moveHoldingAction, otherHoldingsInSameProvince } from '../../moveHolding.js';
@@ -13,7 +14,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
         moveHoldingAction(this)
             .then((context) => ({
                 thenCondition: () => otherHoldingsInSameProvince(context).length > 0,
-                gameAction: AbilityDsl.actions.discardCard(() => ({
+                gameAction: discardCard(() => ({
                     target: otherHoldingsInSameProvince(context)
                 })),
                 message: '{1} discards the other holdings in the province'
@@ -23,7 +24,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.player.getProvinceCardInProvince(context.source.location)
             })
-            .gameAction(AbilityDsl.actions.gainHonor(context => ({
+            .gameAction(gainHonor(context => ({
                 amount: declaredConflicts.countAgainst(context.player.getProvinceCardInProvince(context.source.location))
             })))
             .limit(AbilityDsl.limit.unlimitedPerConflict());

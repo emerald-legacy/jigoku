@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 
 class TrustedAdvisor extends DrawCard {
     static id = 'trusted-advisor';
@@ -11,7 +11,7 @@ class TrustedAdvisor extends DrawCard {
                     event.origin && event.origin.type === 'ring' &&
                     event.recipient === context.player
             })
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .effect('draw a card');
     }
 }

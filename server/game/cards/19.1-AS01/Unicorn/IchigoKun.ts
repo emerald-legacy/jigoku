@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory, modifyMilitarySkill, setBaseMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, moveToConflict, multiple, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, Element, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +16,7 @@ export default class IchigoKun extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT)) ?? false,
-            effect: AbilityDsl.effects.setBaseMilitarySkill(0)
+            effect: setBaseMilitarySkill(0)
         });
 
         this.action('Modify military skill and glory')
@@ -45,16 +46,16 @@ export default class IchigoKun extends DrawCard {
     }
 
     private actionSequence(context: AbilityContext, modifiers: { military: number; glory: number }) {
-        return AbilityDsl.actions.sequential([
-            AbilityDsl.actions.moveToConflict({ target: context.source }),
-            AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
+        return sequential([
+            moveToConflict({ target: context.source }),
+            multiple([
+                cardLastingEffect({
                     target: context.source,
-                    effect: AbilityDsl.effects.modifyMilitarySkill(modifiers.military)
+                    effect: modifyMilitarySkill(modifiers.military)
                 }),
-                AbilityDsl.actions.cardLastingEffect({
+                cardLastingEffect({
                     target: context.targets.otherCharacter,
-                    effect: AbilityDsl.effects.modifyGlory(modifiers.glory)
+                    effect: modifyGlory(modifiers.glory)
                 })
             ])
         ]);

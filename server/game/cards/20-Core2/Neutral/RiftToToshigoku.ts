@@ -1,6 +1,7 @@
 import { Players, CardType, EventName, AbilityType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { Event } from '../../../Events/Event.js';
 
@@ -27,7 +28,7 @@ export default class RiftToToshigoku extends ProvinceCard {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.discardFromPlay())
+            }, discardFromPlay())
             .then((context) => {
                 this.cancelRingEffectsInConflict = context.game.currentConflict?.uuid;
             });

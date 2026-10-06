@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { multiple, removeRingFromPlay, returnRingToPlay, ringLastingEffect } from '../../GameActions/GameActions.js';
 
 class SuddenTempest extends DrawCard {
     static id = 'sudden-tempest';
@@ -9,19 +10,19 @@ class SuddenTempest extends DrawCard {
         this.action('Remove a ring from the unclaimed ring pool')
             .ringTarget({
                 ringCondition: ring => ring.isUnclaimed()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.removeRingFromPlay(),
-                AbilityDsl.actions.ringLastingEffect(context => ({
+            }, multiple([
+                removeRingFromPlay(),
+                ringLastingEffect(context => ({
                     duration: Duration.Custom,
                     until: {
                         onBeginRound: () => true
                     },
                     target: context.ring?.getElements().map((element) => this.game.rings[element]),
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onRoundEnded: () => true
                         },
-                        gameAction: AbilityDsl.actions.returnRingToPlay()
+                        gameAction: returnRingToPlay()
                     })
                 }))
             ]))

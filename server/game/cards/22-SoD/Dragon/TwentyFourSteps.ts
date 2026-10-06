@@ -1,5 +1,5 @@
 import { CardType, Players, TargetMode, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TwentyFourSteps extends DrawCard {
@@ -11,9 +11,9 @@ export default class TwentyFourSteps extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi') && card.attachments.length >= 2
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.moveToConflict()
+            }, multiple([
+                ready(),
+                moveToConflict()
             ]))
             .effect('ready {0} and move it into the conflict');
 
@@ -25,6 +25,6 @@ export default class TwentyFourSteps extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('monk')
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }

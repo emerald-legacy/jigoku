@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 
 class IuchiShahai2 extends DrawCard {
     static id = 'iuchi-shahai-2';
@@ -7,7 +9,7 @@ class IuchiShahai2 extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => this.game.getFirstPlayer() === context.player,
-            effect: AbilityDsl.effects.addKeyword('covert')
+            effect: addKeyword('covert')
         });
 
         this.reaction('Place 1 fate on this character')
@@ -15,7 +17,7 @@ class IuchiShahai2 extends DrawCard {
                 onCardPlayed: (event, context) => (event.card.hasTrait('meishodo') || event.card.hasTrait('maho')) && event.player === context.player
             })
             .cost(AbilityDsl.costs.payHonor(1))
-            .gameAction(AbilityDsl.actions.placeFate());
+            .gameAction(placeFate());
     }
 }
 

@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { sacrifice, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class WayOfTheCrab extends DrawCard {
@@ -12,14 +13,14 @@ export default class WayOfTheCrab extends DrawCard {
                 cardCondition: (card) => card.isFaction('crab')
             }))
             .condition((context) => context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.player.opponent, card, context.source],
-                gameAction: AbilityDsl.actions.sacrifice()
+                gameAction: sacrifice()
             })))
             .effect('force {1} to sacrifice a character', (context) => context.player.opponent ?? '')
             .max(AbilityDsl.limit.perRound(1));

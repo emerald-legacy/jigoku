@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CampfireCounsel extends DrawCard {
@@ -12,10 +13,10 @@ export default class CampfireCounsel extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => (card.printedCost ?? 0) <= 3
-            }, AbilityDsl.actions.ready())
+            }, ready())
             .then(context => ({
                 thenCondition: () => !context.player.isCharacterTraitInPlay('storyteller'),
-                gameAction: AbilityDsl.actions.dishonor({
+                gameAction: dishonor({
                     target: context.target
                 }),
                 message: '{3} is dishonored',

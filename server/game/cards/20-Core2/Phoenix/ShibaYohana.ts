@@ -1,5 +1,6 @@
 import { CardType, Duration, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait } from '../../../effects.js';
+import { cancel, cardLastingEffect, moveToConflict, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaYohana extends DrawCard {
@@ -11,19 +12,19 @@ export default class ShibaYohana extends DrawCard {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && event.card.location === Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
+            .gameAction(cancel((context) => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.taint()
+                replacementGameAction: taint()
             })))
             .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
             .then((context) => ({
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                gameAction: cardLastingEffect({
                     target: context.source,
                     duration: Duration.Custom,
                     until: {
                         onCardLeavesPlay: (event) => event.card === context.source
                     },
-                    effect: AbilityDsl.effects.addTrait('spirit')
+                    effect: addTrait('spirit')
                 })
             }));
 
@@ -32,6 +33,6 @@ export default class ShibaYohana extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored || card.isDishonored
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }

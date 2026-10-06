@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class MidnightRevels extends ProvinceCard {
     static id = 'midnight-revels';
@@ -16,6 +16,6 @@ export default class MidnightRevels extends ProvinceCard {
                     const charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardType.Character);
                     return card.getCost() === Math.max(...charactersInPlay.map((c) => c.getCost() ?? 0));
                 }
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, removeFate, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class CleanseTheEmpire extends DrawCard {
@@ -10,17 +10,17 @@ class CleanseTheEmpire extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.player.opponent && context.player.isAttackingPlayer() && event.conflict.winner === context.player
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.removeFate(context => ({
+            .gameAction(sequential([
+                removeFate(context => ({
                     target: context.player.opponent?.filterCardsInPlay((card) => card.getType() === CardType.Character) ?? []
                 })),
-                AbilityDsl.actions.selectCard({
+                selectCard({
                     activePromptTitle: 'Choose a character to bow',
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     targets: true,
                     cardCondition: (card) => card.getFate() === 0,
-                    gameAction: AbilityDsl.actions.bow(),
+                    gameAction: bow(),
                     message: '{0} chooses to bow {1}',
                     messageArgs: (card, player) => [player, card]
                 })

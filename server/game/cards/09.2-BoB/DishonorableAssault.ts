@@ -2,6 +2,7 @@ import { TargetMode, CardType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 
 export default class DishonorableAssault extends ProvinceCard {
     static id = 'dishonorable-assault';
@@ -14,7 +15,7 @@ export default class DishonorableAssault extends ProvinceCard {
                 numCardsFunc: (context) => context.costs.discardCardsUpToVariableX?.length ?? this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.dishonor())
+            }, dishonor())
             .effect('discard {1} and dishonor {2}', (context) => [context.costs.discardCardsUpToVariableX, context.targets.target])
             .cannotTargetFirst();
     }

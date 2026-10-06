@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { CardType, AbilityType } from '../../Constants.js';
 
 class CommandTheTributary extends DrawCard {
@@ -7,12 +8,12 @@ class CommandTheTributary extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Move 1 fate to a character',
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card, context) => card !== context.source,
-                    gameAction: AbilityDsl.actions.placeFate((context) => ({
+                    gameAction: placeFate((context) => ({
                         origin: context.source.isDrawCard() ? context.source : undefined
                     }))
                 }

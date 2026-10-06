@@ -1,5 +1,6 @@
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class DojiGiftGiver extends DrawCard {
@@ -14,6 +15,6 @@ export default class DojiGiftGiver extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating() && !card.bowed
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

@@ -1,5 +1,6 @@
 import { ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { switchConflictType } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DiplomatOfTheSteppes extends DrawCard {
@@ -19,7 +20,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 const diff = conflict.attackerSkill - conflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
             })
-            .gameAction(AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictType.Military }))
+            .gameAction(switchConflictType({ targetConflictType: ConflictType.Military }))
             .effect('switch the conflict type to {1}', () => 'military');
     }
 }

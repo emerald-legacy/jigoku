@@ -1,6 +1,7 @@
 import { CardType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 export default class HayakenNoShiro extends StrongholdCard {
     static id = 'hayaken-no-shiro';
@@ -11,6 +12,6 @@ export default class HayakenNoShiro extends StrongholdCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.costLessThan(3)
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

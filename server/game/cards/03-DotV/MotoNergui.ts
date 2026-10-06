@@ -1,6 +1,6 @@
 import { CardType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class MotoNergui extends DrawCard {
     static id = 'moto-nergui';
@@ -14,7 +14,7 @@ class MotoNergui extends DrawCard {
                     const participants = (context.game.currentConflict?.getParticipants() ?? []);
                     return participants.includes(card) && card.getGlory() === Math.max(...participants.map((c) => c.getGlory()));
                 }
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

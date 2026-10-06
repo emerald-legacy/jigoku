@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveStatusToken } from '../../GameActions/GameActions.js';
 import { Players, CardType, CharacterStatus } from '../../Constants.js';
 
 class OrigamiMaster extends DrawCard {
@@ -12,7 +12,7 @@ class OrigamiMaster extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source
-            }, AbilityDsl.actions.moveStatusToken((context) => ({
+            }, moveStatusToken((context) => ({
                 target: context.source.getStatusToken(CharacterStatus.Honored),
                 recipient: context.target
             })));

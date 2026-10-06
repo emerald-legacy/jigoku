@@ -1,5 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../../effects.js';
+import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoScout2 extends DrawCard {
@@ -11,7 +12,7 @@ export default class ShinjoScout2 extends DrawCard {
                 onCardRevealed: (event, context) =>
                     event.card.type === CardType.Province && context.source.isAttacking()
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -19,9 +20,9 @@ export default class ShinjoScout2 extends DrawCard {
                 cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} prevents {1} from triggering its abilities during this conflict',
                 messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cannotTriggerAbilities()
+                    effect: cannotTriggerAbilities()
                 })
             })))
             .effect('avoid the dangers of their exploration');

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait, cardCannot } from '../../effects.js';
 
 class VineTattoo extends DrawCard {
     static id = 'vine-tattoo';
@@ -11,13 +11,13 @@ class VineTattoo extends DrawCard {
 
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addTrait('tattooed'),
-                AbilityDsl.effects.cardCannot({
+                addTrait('tattooed'),
+                cardCannot({
                     cannot: 'target',
                     restricts: 'equalOrMoreExpensiveCharacterTriggeredAbilities',
                     source: this
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'target',
                     restricts: 'equalOrMoreExpensiveCharacterKeywords',
                     source: this

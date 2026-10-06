@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class VenerableHistorian extends DrawCard {
     static id = 'venerable-historian';
@@ -7,7 +7,7 @@ class VenerableHistorian extends DrawCard {
     setupCardAbilities() {
         this.action('Honor this character')
             .condition(context => !!(context.source.isParticipating() && context.player.opponent && context.player.isMoreHonorable()))
-            .gameAction(AbilityDsl.actions.honor());
+            .gameAction(honor());
     }
 }
 

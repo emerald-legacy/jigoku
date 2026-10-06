@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { increaseCost } from '../../../effects.js';
+import { conditional, gainFate, multiple, noAction, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,10 +8,10 @@ export default class IntoTheStorm extends DrawCard {
 
     public setupCardAbilities() {
         this.conflictAction('Increase the cost to play events')
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(multiple([
+                playerLastingEffect((context) => ({
                     targetController: Players.Any,
-                    effect: AbilityDsl.effects.increaseCost({
+                    effect: increaseCost({
                         amount: 1,
                         match: (card) => card.type === CardType.Event
                     }),
@@ -21,12 +22,12 @@ export default class IntoTheStorm extends DrawCard {
                     },
                     endingMessage: 'The storm abates, events no longer cost 1 more'
                 })),
-                AbilityDsl.actions.conditional(context => ({
+                conditional(context => ({
                     condition: context => context.player.isCharacterTraitInPlay('scout'),
-                    trueGameAction: AbilityDsl.actions.gainFate({
+                    trueGameAction: gainFate({
                         target: context.player
                     }),
-                    falseGameAction: AbilityDsl.actions.noAction()
+                    falseGameAction: noAction()
                 }))
             ]))
             .effect('increase the cost of events this conflict by 1{1}', context => [

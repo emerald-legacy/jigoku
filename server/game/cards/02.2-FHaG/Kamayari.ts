@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class Kamayari extends DrawCard {
     static id = 'kamayari';
@@ -14,7 +14,7 @@ class Kamayari extends DrawCard {
             .when({
                 onCardAbilityInitiated: (event, context) => event.card.type === CardType.Character && context.source.parentCharacter && context.source.parentCharacter.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.bow((context) => ({ target: context.event.card })));
+            .gameAction(bow((context) => ({ target: context.event.card })));
     }
 }
 

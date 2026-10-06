@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class TrickOfTheLight extends DrawCard {
@@ -10,8 +11,8 @@ class TrickOfTheLight extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.blank()
+            }, cardLastingEffect({
+                effect: blank()
             }));
     }
 }

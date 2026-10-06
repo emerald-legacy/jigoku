@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard, draw, multiple } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
 
 class MasterWhisperer extends DrawCard {
@@ -9,9 +9,9 @@ class MasterWhisperer extends DrawCard {
         this.action('Select a player to discard 3 cards and draw 3 cards')
             .selectFrom({
                 targets: true
-            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.multiple([
-                AbilityDsl.actions.chosenDiscard({ targets: false, target: player, amount: 3 }),
-                AbilityDsl.actions.draw({ target: player, amount: 3 })
+            }, (context) => playerChoices(context.player, (player) => multiple([
+                chosenDiscard({ targets: false, target: player, amount: 3 }),
+                draw({ target: player, amount: 3 })
             ])))
             .effect('make {1}{2} draw 3 cards', context => {
                 const player = context.select === context.player.name ? context.player : context.player.opponent;

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardCard, ifAble, moveCard, multiple, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
 class AkodoZentaro extends DrawCard {
@@ -13,22 +13,22 @@ class AkodoZentaro extends DrawCard {
                 controller: Players.Opponent,
                 location: Location.Provinces,
                 cardCondition: card => card.isInConflictProvince() && !card.isUnique() && card.isFaceup()
-            }, AbilityDsl.actions.ifAble(context => ({
-                ifAbleAction: AbilityDsl.actions.selectCard({
+            }, ifAble(context => ({
+                ifAbleAction: selectCard({
                     cardType: CardType.Province,
                     location: Location.Provinces,
                     controller: Players.Self,
                     cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
                     subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.moveCard({
+                    gameAction: multiple([
+                        moveCard({
                             target: context.target,
                             changePlayer: true
                         }),
-                        AbilityDsl.actions.discardCard()
+                        discardCard()
                     ])
                 }),
-                otherwiseAction: AbilityDsl.actions.discardCard({ target: context.target })
+                otherwiseAction: discardCard({ target: context.target })
             })))
             .effect('take control of {0} and move it one of their provinces');
     }

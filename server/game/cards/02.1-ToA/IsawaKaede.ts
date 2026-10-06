@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addElementAsAttacker, immunity, modifyConflictElementsToResolve } from '../../effects.js';
 
 const elementKey = 'isawa-kaede-void';
 
@@ -9,16 +9,16 @@ class IsawaKaede extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.immunity({
+            effect: immunity({
                 restricts: 'opponentsRingEffects'
             })
         });
         this.persistentEffect({
-            effect: AbilityDsl.effects.addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
+            effect: addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
         this.persistentEffect({
             condition: context => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
-            effect: AbilityDsl.effects.modifyConflictElementsToResolve(5)
+            effect: modifyConflictElementsToResolve(5)
         });
     }
 

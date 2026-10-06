@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOwn, hideWhenFaceUp } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
@@ -40,8 +41,8 @@ class StolenSecrets extends DrawCard {
             },
             match: card,
             effect: [
-                AbilityDsl.effects.hideWhenFaceUp(),
-                AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this)
+                hideWhenFaceUp(),
+                canPlayFromOwn(Location.RemovedFromGame, [card], this)
             ]
         }));
         this.game.checkGameState();

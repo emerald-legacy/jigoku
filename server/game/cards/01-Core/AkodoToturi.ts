@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { resolveConflictRing } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class AkodoToturi extends DrawCard {
@@ -11,7 +11,7 @@ class AkodoToturi extends DrawCard {
                 onClaimRing: (event, context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating() &&
                                                  event.player === context.player
             })
-            .gameAction(AbilityDsl.actions.resolveConflictRing());
+            .gameAction(resolveConflictRing());
     }
 }
 

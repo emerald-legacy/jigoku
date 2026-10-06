@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotParticipateAsAttacker } from '../../effects.js';
 
 class ShibaPeacemaker extends DrawCard {
     static id = 'shiba-peacemaker';
@@ -8,7 +8,7 @@ class ShibaPeacemaker extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
+            effect: cannotParticipateAsAttacker()
         });
     }
 }

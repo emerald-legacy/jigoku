@@ -1,5 +1,6 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, discardCard, menuPrompt, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToStormAFortress extends DrawCard {
@@ -11,11 +12,11 @@ export default class ToStormAFortress extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasSomeTrait('bushi', 'monk')
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            }, sequential([
+                cardLastingEffect({
+                    effect: modifyMilitarySkill(2)
                 }),
-                AbilityDsl.actions.menuPrompt((context) => ({
+                menuPrompt((context) => ({
                     activePromptTitle: 'Discard each card in the attacked province?',
                     choices: ['Yes', 'No'],
                     choiceHandler: (choice, displayMessage) => {
@@ -35,7 +36,7 @@ export default class ToStormAFortress extends DrawCard {
                         }
                         return { target: choice === 'Yes' ? cardsToDiscard : [] };
                     },
-                    gameAction: AbilityDsl.actions.discardCard()
+                    gameAction: discardCard()
                 }))
             ]))
             .effect('grant +2{1} to {0}', () => ['military']);

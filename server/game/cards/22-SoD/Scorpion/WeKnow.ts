@@ -1,6 +1,7 @@
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardStatusToken, draw, gainStatusToken, joint, loseHonor } from '../../../GameActions/GameActions.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,13 +31,13 @@ export default class WeKnow extends DrawCard {
                 const targetCard = targetToken.card;
                 const choices: Record<string, GameAction> = {};
                 if(targetCard instanceof DrawCard) {
-                    choices[`Dishonor ${targetCard.name}`] = AbilityDsl.actions.joint([
-                        AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                        AbilityDsl.actions.gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })
+                    choices[`Dishonor ${targetCard.name}`] = joint([
+                        discardStatusToken({ target: targetToken }),
+                        gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })
                     ]);
-                    choices['Lose honor and let opponent draw cards'] = AbilityDsl.actions.joint([
-                        AbilityDsl.actions.loseHonor({ target: context.player.opponent }),
-                        AbilityDsl.actions.draw({ target: context.player, amount: 2 })
+                    choices['Lose honor and let opponent draw cards'] = joint([
+                        loseHonor({ target: context.player.opponent }),
+                        draw({ target: context.player, amount: 2 })
                     ]);
                 }
                 return choices;
@@ -58,7 +59,7 @@ export default class WeKnow extends DrawCard {
             })
             .then(context => ({
                 thenCondition: () => !!context.player.opponent && context.player.honor > context.player.opponent.honor,
-                gameAction: AbilityDsl.actions.loseHonor({
+                gameAction: loseHonor({
                     target: context.player,
                     amount: 2
                 }),

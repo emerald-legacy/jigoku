@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler } from '../../GameActions/GameActions.js';
 
 class FieldTactician extends DrawCard {
     static id = 'field-tactician';
@@ -15,7 +15,7 @@ class FieldTactician extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Any
-            }, AbilityDsl.actions.handler({
+            }, handler({
                 handler: context => {
                     const card = context.target;
                     const player = card.owner;

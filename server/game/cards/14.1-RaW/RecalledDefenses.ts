@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType, Players } from '../../Constants.js';
 
 class RecalledDefenses extends DrawCard {
@@ -11,7 +11,7 @@ class RecalledDefenses extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source
-            }, AbilityDsl.actions.moveCard({ destination: Location.StrongholdProvince }))
+            }, moveCard({ destination: Location.StrongholdProvince }))
             .effect('move {1} to their stronghold province', context => [context.target]);
     }
 }

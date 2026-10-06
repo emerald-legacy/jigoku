@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 
@@ -11,7 +11,7 @@ export default class PearlOfTheBalash extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addKeyword('covert')
+            effect: addKeyword('covert')
         });
     }
 }

@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { additionalPlayCost } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 class CommandRespect extends DrawCard {
     static id = 'command-respect';
@@ -9,9 +11,9 @@ class CommandRespect extends DrawCard {
         this.action('Take honor from opponent when they play an event')
             .condition(context => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .gameAction(playerLastingEffect(context => ({
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.additionalPlayCost((sourceContext) =>
+                effect: additionalPlayCost((sourceContext) =>
                     sourceContext.source.type === CardType.Event ? [AbilityDsl.costs.giveHonorToOpponent(1)] : []
                 )
             })))

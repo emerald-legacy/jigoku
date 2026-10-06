@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class CeaselessDuty extends DrawCard {
@@ -10,7 +10,7 @@ class CeaselessDuty extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces(a => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .effect('prevent {1} from leaving play', context => context.event.card)
             .cannotBeMirrored();
     }

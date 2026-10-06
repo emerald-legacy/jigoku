@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotContribute } from '../../effects.js';
 
 class StoicMagistrate extends DrawCard {
     static id = 'stoic-magistrate';
@@ -7,7 +7,7 @@ class StoicMagistrate extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isDefending(),
-            effect: AbilityDsl.effects.cannotContribute(() => {
+            effect: cannotContribute(() => {
                 return (card) => card.costLessThan(3);
             })
         });

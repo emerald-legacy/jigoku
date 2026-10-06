@@ -1,5 +1,6 @@
 import { DuelType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotContribute, modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IaijutsuSensei extends DrawCard {
@@ -8,7 +9,7 @@ export default class IaijutsuSensei extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.attachments.filter((card) => card.hasTrait('weapon')).length === 1,
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
 
         this.action('Military duel to stop contribution')
@@ -20,9 +21,9 @@ export default class IaijutsuSensei extends DrawCard {
                 message: 'prevent {0} from contributing to resolution of this conflict',
                 messageArgs: (duel) => duel.loser,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.cardLastingEffect({
+                    cardLastingEffect({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
+                        effect: [cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
                     })
             }));
     }

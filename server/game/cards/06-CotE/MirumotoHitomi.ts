@@ -1,5 +1,5 @@
 import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, chooseAction, dishonor, duel, multiple, noAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MirumotoHitomi extends DrawCard {
@@ -14,7 +14,7 @@ export default class MirumotoHitomi extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 mode: TargetMode.UpTo,
                 numCards: 2
-            }, AbilityDsl.actions.duel((context) => ({
+            }, duel((context) => ({
                 type: DuelType.Military,
 
                 message: '{0} chooses whether to dishonor or bow {1}',
@@ -24,20 +24,20 @@ export default class MirumotoHitomi extends DrawCard {
                 ],
                 gameAction: (duel) => {
                     if(!duel.loser) {
-                        return AbilityDsl.actions.noAction();
+                        return noAction();
                     }
-                    return AbilityDsl.actions.multiple(
+                    return multiple(
                         duel.loser.map((card) =>
-                            AbilityDsl.actions.chooseAction({
+                            chooseAction({
                                 target: card,
                                 player: context.player !== card.controller ? Players.Opponent : Players.Self,
                                 options: {
                                     'Dishonor this character': {
-                                        action: AbilityDsl.actions.dishonor(),
+                                        action: dishonor(),
                                         message: '{0} chooses to dishonor {1}'
                                     },
                                     'Bow this character': {
-                                        action: AbilityDsl.actions.bow(),
+                                        action: bow(),
                                         message: '{0} chooses to bow {1}'
                                     }
                                 }

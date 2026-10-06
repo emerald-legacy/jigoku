@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, increaseLimitOnAbilities } from '../../effects.js';
 
 class HidaEtsuji extends DrawCard {
     static id = 'hida-etsuji';
@@ -10,11 +10,11 @@ class HidaEtsuji extends DrawCard {
             match: (card, context) => card.type === CardType.Province && card.controller === context?.player,
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.increaseLimitOnAbilities()
+            effect: increaseLimitOnAbilities()
         });
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'applyCovert',
                 restricts: 'opponentsCardEffects'
             })

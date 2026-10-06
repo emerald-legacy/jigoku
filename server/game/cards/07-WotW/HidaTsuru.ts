@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class HidaTsuru extends DrawCard {
     static id = 'hida-tsuru';
@@ -9,7 +11,7 @@ class HidaTsuru extends DrawCard {
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(1) }))
+            .gameAction(cardLastingEffect({ effect: modifyBothSkills(1) }))
             .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
             .limit(AbilityDsl.limit.unlimitedPerConflict());
 
@@ -17,7 +19,7 @@ class HidaTsuru extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card.isParticipating() && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(1) }))
+            .gameAction(cardLastingEffect({ effect: modifyBothSkills(1) }))
             .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }

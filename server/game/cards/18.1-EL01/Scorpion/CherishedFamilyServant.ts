@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword, entersPlayForOpponent } from '../../../effects.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class CherishedFamilyServant extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,
-            effect: AbilityDsl.effects.entersPlayForOpponent()
+            effect: entersPlayForOpponent()
         });
 
         this.persistentEffect({
@@ -18,7 +18,7 @@ export default class CherishedFamilyServant extends DrawCard {
                 card.hasTrait('poison') &&
                 card.parentCharacter &&
                 context?.source.controller === card.parentCharacter.controller),
-            effect: AbilityDsl.effects.addKeyword('ancestral'),
+            effect: addKeyword('ancestral'),
             targetController: Players.Any
         });
     }

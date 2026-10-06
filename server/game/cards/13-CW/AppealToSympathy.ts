@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, moveCard, multiple } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class AppealToSympathy extends DrawCard {
@@ -10,9 +10,9 @@ class AppealToSympathy extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.moveCard((context) => ({
+            .gameAction(multiple([
+                cancel(),
+                moveCard((context) => ({
                     target: context.event.card,
                     destination: context.event.card.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
                 }))

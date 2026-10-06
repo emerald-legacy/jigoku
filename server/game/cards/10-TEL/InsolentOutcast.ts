@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -8,7 +8,7 @@ class InsolentOutcast extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills((_card, context) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
+            effect: modifyBothSkills((_card, context) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
         });
     }
 

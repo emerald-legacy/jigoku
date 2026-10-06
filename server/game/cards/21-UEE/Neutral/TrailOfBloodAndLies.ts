@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { conditional, dishonor, noAction, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -24,17 +25,17 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.dishonor())
+            }, dishonor())
             .then(() => ({
-                gameAction: AbilityDsl.actions.conditional({
+                gameAction: conditional({
                     condition: (context) => context.player.isCharacterTraitInPlay('magistrate'),
-                    falseGameAction: AbilityDsl.actions.noAction(),
-                    trueGameAction: AbilityDsl.actions.selectCard({
+                    falseGameAction: noAction(),
+                    trueGameAction: selectCard({
                         activePromptTitle: 'Choose a character to dishonor',
                         cardType: CardType.Character,
                         player: Players.Opponent,
                         controller: Players.Opponent,
-                        gameAction: AbilityDsl.actions.dishonor()
+                        gameAction: dishonor()
                     })
                 })
             }))

@@ -1,5 +1,6 @@
 import { DuelType, Duration, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { changePlayerSkillModifier, modifyDuelSkill } from '../../../effects.js';
+import { conditional, duelLastingEffect, noAction, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaidojiAkikore extends DrawCard {
@@ -8,9 +9,9 @@ export default class DaidojiAkikore extends DrawCard {
     setupCardAbilities() {
         this.duelFocus('Add +1 to your duel total', (duel, context) =>
             context.game.isDuringConflict(ConflictType.Political) && duel.participants.includes(context.source))
-            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
+            .gameAction(duelLastingEffect((context) => ({
                 target: context.event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
+                effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             })))
             .effect('add 1 to their duel total');
@@ -25,13 +26,13 @@ export default class DaidojiAkikore extends DrawCard {
                         ? ['add 3 to ', context.player, '\'s side for this conflict']
                         : ['no effect', '', ''],
                 gameAction: (duel) =>
-                    AbilityDsl.actions.conditional({
+                    conditional({
                         condition: duel.winningPlayer === context.player,
-                        trueGameAction: AbilityDsl.actions.playerLastingEffect({
+                        trueGameAction: playerLastingEffect({
                             targetController: duel.winningPlayer,
-                            effect: AbilityDsl.effects.changePlayerSkillModifier(3)
+                            effect: changePlayerSkillModifier(3)
                         }),
-                        falseGameAction: AbilityDsl.actions.noAction()
+                        falseGameAction: noAction()
                     })
             }));
     }

@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 
 export default class OniOfObsidianAndBlood extends BaseOni {
@@ -17,7 +17,7 @@ export default class OniOfObsidianAndBlood extends BaseOni {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isTainted
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 
     public allowAttachment(attachment: BaseCard) {

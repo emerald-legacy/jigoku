@@ -1,5 +1,13 @@
 import { Location, Duration, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import {
+    cancel,
+    cardLastingEffect,
+    putIntoPlay,
+    removeFromGame,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MirumotoHitori extends DrawCard {
@@ -12,11 +20,11 @@ export default class MirumotoHitori extends DrawCard {
                     event.card === context.source && context.game.currentPhase === Phases.Fate
             })
             .cost(AbilityDsl.costs.returnRings(1))
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
+            .gameAction(cancel((context) => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.removeFromGame(),
-                    AbilityDsl.actions.cardLastingEffect({
+                replacementGameAction: sequential([
+                    removeFromGame(),
+                    cardLastingEffect({
                         target: context.source,
                         canChangeZoneOnce: true,
                         duration: Duration.Custom,
@@ -24,13 +32,13 @@ export default class MirumotoHitori extends DrawCard {
                             onCharacterEntersPlay: (event) => event.card === context.source,
                             onPhaseEnded: (event) => event.phase === Phases.Dynasty
                         },
-                        effect: AbilityDsl.effects.delayedEffect({
+                        effect: delayedEffect({
                             when: {
                                 onPhaseStarted: (event) => event.phase === Phases.Dynasty
                             },
                             message: '{0} is put into play due to {0}\'s effect',
                             messageArgs: [context.source],
-                            gameAction: AbilityDsl.actions.putIntoPlay((context) => ({
+                            gameAction: putIntoPlay((context) => ({
                                 location: Location.Any,
                                 target: context.source
                             }))

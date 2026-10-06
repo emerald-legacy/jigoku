@@ -1,6 +1,7 @@
 import { CardType, Duration, EventName, Players } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, honor, sacrifice } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InfernoGuardInvoker extends DrawCard {
@@ -19,15 +20,15 @@ export default class InfernoGuardInvoker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.honor(), AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, honor(), cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.delayedEffect({
+                effect: delayedEffect({
                     when: {
                         onConflictFinished: () => this.provinceBroken
                     },
                     message: '{1} is discarded, burned to a pile of ash due to the delayed effect of {0}',
                     messageArgs: [context.source, context.target],
-                    gameAction: AbilityDsl.actions.sacrifice({ target: context.target })
+                    gameAction: sacrifice({ target: context.target })
                 })
             })))
             .effect('honor {0}. It will be discarded if a province is broken this conflict');

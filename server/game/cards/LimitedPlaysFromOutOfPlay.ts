@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import AbilityDsl from '../abilitydsl.js';
+import { delayedEffect } from '../effects.js';
+import { handler } from '../GameActions/GameActions.js';
 import { EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { EventRegistrar } from '../EventRegistrar.js';
@@ -34,7 +35,7 @@ export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
     ) {
         new EventRegistrar(card.game, this).register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
         card.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect<T>({
+            effect: delayedEffect<T>({
                 when: {
                     onCardPlayed: (event, context) => {
                         if(!this.available) {
@@ -51,7 +52,7 @@ export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
                         );
                     }
                 },
-                gameAction: AbilityDsl.actions.handler({
+                gameAction: handler({
                     handler: (context: AbilityContext<T>) => this.count(context)
                 })
             })

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { takeHonor } from '../../GameActions/GameActions.js';
 import { AbilityType, ConflictType } from '../../Constants.js';
 
 class WayWithWords extends DrawCard {
@@ -7,7 +8,7 @@ class WayWithWords extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            effect: gainAbility(AbilityType.Reaction, {
                 title: 'Take 1 honor',
                 when: {
                     afterConflict: (event, context) =>
@@ -16,7 +17,7 @@ class WayWithWords extends DrawCard {
                         context.player.opponent &&
                         event.conflict.conflictType === ConflictType.Political
                 },
-                gameAction: AbilityDsl.actions.takeHonor()
+                gameAction: takeHonor()
             })
         });
     }

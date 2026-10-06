@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class BentensTouch extends DrawCard {
     static id = 'benten-s-touch';
@@ -16,7 +17,7 @@ class BentensTouch extends DrawCard {
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

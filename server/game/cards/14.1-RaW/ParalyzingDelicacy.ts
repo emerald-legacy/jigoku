@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
 
 class ParalyzingDelicacy extends DrawCard {
@@ -11,8 +12,8 @@ class ParalyzingDelicacy extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
-                effect: AbilityDsl.effects.modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
+            }, cardLastingEffect(context => ({
+                effect: modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
             })))
             .effect('give {1} -{2}{3}', context => [context.target, this.getFaceDownProvinceCards(context), 'military']);
     }

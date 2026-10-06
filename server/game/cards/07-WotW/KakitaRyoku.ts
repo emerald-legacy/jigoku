@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Phases, Players } from '../../Constants.js';
 
@@ -13,7 +13,7 @@ class KakitaRyoku extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

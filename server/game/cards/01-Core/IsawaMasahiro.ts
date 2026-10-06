@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
 
 const elementKey = 'isawa-masahiro-fire';
@@ -14,7 +15,7 @@ class IsawaMasahiro extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(3) && card.isParticipating()
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 
     getPrintedElementSymbols() {

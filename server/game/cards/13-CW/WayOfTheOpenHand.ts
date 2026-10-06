@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { multiple, placeFate, sendHome } from '../../GameActions/GameActions.js';
 
 class WayOfTheOpenHand extends DrawCard {
     static id = 'way-of-the-open-hand';
@@ -11,9 +11,9 @@ class WayOfTheOpenHand extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller !== context.player
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.sendHome(),
-                AbilityDsl.actions.placeFate()
+            }, multiple([
+                sendHome(),
+                placeFate()
             ]))
             .effect('send home and place a fate on {0}');
     }

@@ -1,5 +1,13 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import {
+    chooseAction,
+    dishonor,
+    sacrifice,
+    selectCard,
+    sendHome,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -17,33 +25,33 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     card.controller !== context.player &&
                     (context.game.currentConflict?.getCharacters(context.player) ?? [])
                         .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
-            }, AbilityDsl.actions.chooseAction((context) => ({
+            }, chooseAction((context) => ({
                 activePromptTitle: 'Select one',
                 options: {
                     'Dishonor it': {
-                        action: AbilityDsl.actions.dishonor({ target: context.target }),
+                        action: dishonor({ target: context.target }),
                         message: '{0} chooses to dishonor {1}'
                     },
                     'Move it home': {
-                        action: AbilityDsl.actions.sendHome({ target: context.target }),
+                        action: sendHome({ target: context.target }),
                         message: '{0} chooses to send {1} home'
                     },
                     'Sacrifice a character to perform both': {
-                        action: AbilityDsl.actions.sequentialContext((context) => {
-                            const gameActions: GameAction[] = [AbilityDsl.actions.sendHome()];
+                        action: sequentialContext((context) => {
+                            const gameActions: GameAction[] = [sendHome()];
                             gameActions.push(
-                                AbilityDsl.actions.selectCard({
+                                selectCard({
                                     activePromptTitle: 'Select a character to sacrifice',
                                     cardType: CardType.Character,
                                     controller: Players.Self,
                                     message: '{0} chooses to sacrifice {1}',
                                     messageArgs: (card) => [context.player, card],
                                     subActionProperties: (card) => ({ target: card, cannotBeCancelled: true }),
-                                    gameAction: AbilityDsl.actions.sacrifice()
+                                    gameAction: sacrifice()
                                 })
                             );
-                            gameActions.push(AbilityDsl.actions.dishonor({ target: context.target }));
-                            gameActions.push(AbilityDsl.actions.sendHome({ target: context.target }));
+                            gameActions.push(dishonor({ target: context.target }));
+                            gameActions.push(sendHome({ target: context.target }));
 
                             return { gameActions };
                         }),

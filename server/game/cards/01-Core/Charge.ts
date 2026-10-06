@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 
 class Charge extends DrawCard {
     static id = 'charge';
@@ -11,7 +11,7 @@ class Charge extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.putIntoConflict());
+            }, putIntoConflict());
     }
 }
 

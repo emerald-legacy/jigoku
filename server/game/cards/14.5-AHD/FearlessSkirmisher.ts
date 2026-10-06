@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveStatusToken } from '../../GameActions/GameActions.js';
 import { Location, CharacterStatus, CardType, ConflictType } from '../../Constants.js';
 
 class FearlessSkirmisher extends DrawCard {
@@ -26,7 +26,7 @@ class FearlessSkirmisher extends DrawCard {
                 activePromptTitle: 'Choose a character to receive the token',
                 dependsOn: 'token',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.moveStatusToken((context) => ({
+            }, moveStatusToken((context) => ({
                 target: context.tokens.token,
                 recipient: context.targets.character
             })));

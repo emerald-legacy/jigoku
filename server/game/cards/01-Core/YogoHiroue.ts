@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, dishonor, menuPrompt, moveToConflict, sequential } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class YogoHiroue extends DrawCard {
@@ -10,14 +11,14 @@ class YogoHiroue extends DrawCard {
             .condition(context => context.source.isParticipating())
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.moveToConflict(),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.delayedEffect({
+            }, sequential([
+                moveToConflict(),
+                cardLastingEffect((context) => ({
+                    effect: delayedEffect({
                         when: {
                             afterConflict: (event) => event.conflict.winner === context.player
                         },
-                        gameAction: AbilityDsl.actions.menuPrompt({
+                        gameAction: menuPrompt({
                             activePromptTitle: 'Dishonor ' + context.target.name + '?',
                             choices: ['Yes', 'No'],
                             choiceHandler: (choice, displayMessage) => {
@@ -26,7 +27,7 @@ class YogoHiroue extends DrawCard {
                                 }
                                 return { target: (choice === 'Yes' ? context.target : []) };
                             },
-                            gameAction: AbilityDsl.actions.dishonor()
+                            gameAction: dishonor()
                         })
                     })
                 }))

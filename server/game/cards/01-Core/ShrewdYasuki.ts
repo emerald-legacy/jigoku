@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 
 class ShrewdYasuki extends DrawCard {
     static id = 'shrewd-yasuki';
@@ -9,9 +9,9 @@ class ShrewdYasuki extends DrawCard {
         this.action('Look at top 2 cards of conflict deck')
             .condition(context => context.player.conflictDeck.length > 0 && context.source.isParticipating() &&
                                   this.game.allCards.some(card => card.type === CardType.Holding && card.location.includes('province') && card.isFaceup()))
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 2,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
                 shuffle: false,

@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 
 class MatsuSakura extends DrawCard {
@@ -12,7 +12,7 @@ class MatsuSakura extends DrawCard {
                     (event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFaceup()) || //any faceup cards
                         event.card.location === Location.StrongholdProvince)
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .effect('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }

@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IkomaNatsuko extends DrawCard {
@@ -13,7 +14,7 @@ export default class IkomaNatsuko extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())
+            }, bow(), sendHome())
             .effect('bow and send {0} home');
     }
 }

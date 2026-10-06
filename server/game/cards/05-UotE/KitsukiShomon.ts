@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor, ready } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import ThenAbility from '../../ThenAbility.js';
@@ -20,10 +20,10 @@ export default class KitsukiShomon extends DrawCard {
                 if(!window) {
                     return;
                 }
-                const newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
+                const newEvent = dishonor().getEvent(context.source, context);
                 context.event.replacementEvent = newEvent;
                 const thenAbility = new ThenAbility(context.source, {
-                    gameAction: AbilityDsl.actions.ready()
+                    gameAction: ready()
                 });
                 context.events = [newEvent];
                 window.addEvent(newEvent);

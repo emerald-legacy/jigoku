@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../Constants.js';
 
 class StudentOfAnatomies extends DrawCard {
@@ -12,9 +14,9 @@ class StudentOfAnatomies extends DrawCard {
             }))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.blank()
+                effect: blank()
             }))
             .effect('treat {1} as if its printed text box were blank until the end of the phase', (context) => context.target);
     }

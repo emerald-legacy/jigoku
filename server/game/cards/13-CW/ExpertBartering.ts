@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { attach, discardFromPlay, ifAble, joint } from '../../GameActions/GameActions.js';
 
 class ExpertBartering extends DrawCard {
     static id = 'expert-bartering';
@@ -18,22 +19,22 @@ class ExpertBartering extends DrawCard {
                 cardCondition: (card, context) => card !== context.source,
                 controller: context => (context.costs.optionalFateCost === undefined || context.costs.optionalFateCost > 0) ? Players.Any : Players.Self
             })
-            .gameAction(AbilityDsl.actions.joint([
-                AbilityDsl.actions.ifAble((context) => ({
-                    ifAbleAction: AbilityDsl.actions.attach({
+            .gameAction(joint([
+                ifAble((context) => ({
+                    ifAbleAction: attach({
                         target: context.source.parentCharacter ?? [],
                         attachment: context.target,
                         takeControl: context.target?.controller !== context.player
                     }),
-                    otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.target })
+                    otherwiseAction: discardFromPlay({ target: context.target })
                 })),
-                AbilityDsl.actions.ifAble((context) => ({
-                    ifAbleAction: AbilityDsl.actions.attach({
+                ifAble((context) => ({
+                    ifAbleAction: attach({
                         target: context.target?.parentCharacter ?? undefined,
                         attachment: context.source,
                         giveControl: context.target?.controller !== context.player
                     }),
-                    otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.source })
+                    otherwiseAction: discardFromPlay({ target: context.source })
                 }))
             ]))
             .effect('switch {1} with {2}', context => [context.source, context.target])

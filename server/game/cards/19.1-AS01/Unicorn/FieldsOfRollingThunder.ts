@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import { cardLastingEffect, discardFromPlay, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,25 +12,25 @@ export default class FieldsOfRollingThunder extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player && event.conflict.conflictUnopposed
             })
-            .gameAction(AbilityDsl.actions.discardFromPlay());
+            .gameAction(discardFromPlay());
 
         this.action('Honor a character')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn')
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.honor(),
-                AbilityDsl.actions.cardLastingEffect((context) => {
+            }, multiple([
+                honor(),
+                cardLastingEffect((context) => {
                     const conflictWhenItWasTriggered = this.game.currentConflict;
                     return {
                         duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.delayedEffect({
+                        effect: delayedEffect({
                             when: {
                                 onConflictFinished: (event, context) =>
                                     event.conflict === conflictWhenItWasTriggered &&
                                         event.conflict.winner === context.player.opponent
                             },
-                            gameAction: AbilityDsl.actions.dishonor({ target: context.target })
+                            gameAction: dishonor({ target: context.target })
                         })
                     };
                 })

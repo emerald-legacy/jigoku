@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility } from '../../../effects.js';
+import { cancel, honor, moveCard, multiple } from '../../../GameActions/GameActions.js';
 import { AbilityType, CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,13 +18,13 @@ export default class ShibasOath extends DrawCard {
                 onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.honor((context) => ({
+            .gameAction(honor((context) => ({
                 target: context.source.parentCharacter ?? []
             })))
             .effect('honor {1}', (context) => context.source.parentCharacter);
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
+            effect: gainAbility(AbilityType.WouldInterrupt, {
                 title: 'Cancel an ability',
                 when: {
                     onInitiateAbilityEffects: (event, context) =>
@@ -39,9 +41,9 @@ export default class ShibasOath extends DrawCard {
                         )
                 },
                 cost: AbilityDsl.costs.sacrificeSelf(),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cancel(),
-                    AbilityDsl.actions.moveCard({
+                gameAction: multiple([
+                    cancel(),
+                    moveCard({
                         target: this,
                         destination: Location.Hand
                     })

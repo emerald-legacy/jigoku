@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import { deckSearch, moveCard, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
@@ -8,10 +9,10 @@ export default class EarnestSculptor extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Search top 8 card for a spell')
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 8,
                 cardCondition: (card) => card.hasTrait('spell'),
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             }))
@@ -33,9 +34,9 @@ export default class EarnestSculptor extends DrawCard {
                     event.context.source.hasTrait('jade') &&
                     event.context.ability.getReducedCost(event.context) > 0
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                effect: reduceNextPlayedCardCost(
                     1,
                     (card) =>
                         card === context.event.card || card === context.event.context.source

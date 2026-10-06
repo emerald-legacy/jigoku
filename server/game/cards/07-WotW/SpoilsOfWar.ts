@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class SpoilsOfWar extends DrawCard {
@@ -12,9 +13,9 @@ class SpoilsOfWar extends DrawCard {
                                                    event.conflict.winner === context.player &&
                                                    context.player.isAttackingPlayer()
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.draw(context => ({ target: context.player, amount: 3 })),
-                AbilityDsl.actions.chosenDiscard(context => ({ target: context.player }))
+            .gameAction(sequential([
+                draw(context => ({ target: context.player, amount: 3 })),
+                chosenDiscard(context => ({ target: context.player }))
             ]))
             .effect('draw 3 cards, then discard 1')
             .max(AbilityDsl.limit.perConflict(1));

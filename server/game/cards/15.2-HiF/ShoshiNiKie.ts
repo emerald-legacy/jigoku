@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,7 +13,7 @@ class ShoshiNiKie extends DrawCard {
                 cardCondition: card => card.isOrdinary(),
                 cardType: CardType.Character,
                 player: Players.Self
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

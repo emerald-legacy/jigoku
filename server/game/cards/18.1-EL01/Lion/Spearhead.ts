@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 
 class Spearhead extends DrawCard {
     static id = 'spearhead';
@@ -19,7 +20,7 @@ class Spearhead extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow())
+            }, bow())
             .cannotTargetFirst();
     }
 }

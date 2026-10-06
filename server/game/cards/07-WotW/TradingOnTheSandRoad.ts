@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOpponents, canPlayFromOwn } from '../../effects.js';
+import { cancel, lookAt, moveCard, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Location, Duration, Phases } from '../../Constants.js';
 
 class TradingOnTheSandRoad extends DrawCard {
@@ -10,47 +11,47 @@ class TradingOnTheSandRoad extends DrawCard {
             .when({
                 onPhaseCreated: event => event.phase === Phases.Draw
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.lookAt(context=> ({
+            .gameAction(multiple([
+                cancel(),
+                lookAt(context=> ({
                     target: context.player.conflictDeck.slice(0, 4),
                     message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
                     messageArgs: cards => [context.player, cards.length, cards]
                 })),
-                AbilityDsl.actions.lookAt(context=> ({
+                lookAt(context=> ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
                     messageArgs: cards => [context.player.opponent, cards.length, cards]
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     targetController: context.player,
                     duration: Duration.UntilEndOfRound,
                     effect: [
-                        AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, context.player.conflictDeck.slice(0, 4), this),
-                        AbilityDsl.effects.canPlayFromOpponents(
+                        canPlayFromOwn(Location.RemovedFromGame, context.player.conflictDeck.slice(0, 4), this),
+                        canPlayFromOpponents(
                             Location.RemovedFromGame,
                             context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [], this)
                     ]
 
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     targetController: context.player.opponent,
                     duration: Duration.UntilEndOfRound,
                     effect: [
-                        AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame,
+                        canPlayFromOwn(Location.RemovedFromGame,
                             context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [], this),
-                        AbilityDsl.effects.canPlayFromOpponents(
+                        canPlayFromOpponents(
                             Location.RemovedFromGame,
                             context.player.opponent ? context.player.conflictDeck.slice(0, 4) : [],
                             this
                         )
                     ]
                 })),
-                AbilityDsl.actions.moveCard(context => ({
+                moveCard(context => ({
                     target: context.player.conflictDeck.slice(0, 4),
                     destination: Location.RemovedFromGame
                 })),
-                AbilityDsl.actions.moveCard(context => ({
+                moveCard(context => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     destination: Location.RemovedFromGame
                 }))

@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { removeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +16,7 @@ export default class ParanoidHososhi extends DrawCard {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context)
-            }, AbilityDsl.actions.removeFate((context) => ({
+            }, removeFate((context) => ({
                 recipient: context.player
             })))
             .effect('take 1 fate from {0} — evil begone')

@@ -1,6 +1,6 @@
 import { EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
@@ -17,7 +17,7 @@ export default class IkomaAnakazu extends DrawCard {
                 !!(context.source.isParticipating() &&
                 context.player.opponent &&
                 (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0),
-            effect: AbilityDsl.effects.modifyBothSkills(3)
+            effect: modifyBothSkills(3)
         });
     }
 

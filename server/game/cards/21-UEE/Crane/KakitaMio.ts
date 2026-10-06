@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, deckSearch } from '../../../GameActions/GameActions.js';
 import { CardType, Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
@@ -9,7 +10,7 @@ export default class KakitaMio extends DrawCard {
     setupCardAbilities() {
         this.reaction('Search for Writ of Sanctification')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 activePromptTitle: 'Choose a Writ of Sanctification',
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Sanctification',
@@ -24,8 +25,8 @@ export default class KakitaMio extends DrawCard {
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     context.game.currentConflict?.getNumberOfParticipantsFor(card.controller) === 1
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.addTrait('shadowlands')
+            }, cardLastingEffect({
+                effect: addTrait('shadowlands')
             }));
 
         this.persistentEffect({
@@ -36,7 +37,7 @@ export default class KakitaMio extends DrawCard {
                 card.type === CardType.Character &&
                 !!context && card.isParticipatingFor(context.player) &&
                 (card.hasTrait('imperial') || card.attachments.some((attachment) => attachment.hasTrait('imperial'))),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
     }
 }

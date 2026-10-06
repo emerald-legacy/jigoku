@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { playCard } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Location, Players, PlayType } from '../../Constants.js';
 
 class Kunshu extends DrawCard {
@@ -12,7 +14,7 @@ class Kunshu extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Play a card',
                 cost: AbilityDsl.costs.discardImperialFavor(),
                 condition: (context) => context.source.isParticipating(),
@@ -22,7 +24,7 @@ class Kunshu extends DrawCard {
                     location: [Location.ConflictDiscardPile],
                     player: Players.Self,
                     controller: Players.Opponent,
-                    gameAction: AbilityDsl.actions.playCard(() => ({
+                    gameAction: playCard(() => ({
                         playType: PlayType.Other,
                         ignoreFateCost: true,
                         source: this

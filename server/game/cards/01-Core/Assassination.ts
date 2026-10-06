@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class Assassination extends DrawCard {
     static id = 'assassination';
@@ -12,7 +13,7 @@ class Assassination extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(3)
-            }, AbilityDsl.actions.discardFromPlay())
+            }, discardFromPlay())
             .max(AbilityDsl.limit.perRound(1));
     }
 }

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 
 class OneOfTheForgotten extends DrawCard {
     static id = 'one-of-the-forgotten';
@@ -8,7 +9,7 @@ class OneOfTheForgotten extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'placeFateWhenPlayingCharacterFromProvince',
                 restricts: 'source'
             })
@@ -18,7 +19,7 @@ class OneOfTheForgotten extends DrawCard {
             .when({
                 onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.cardsInPlay.some(card => card.type === CardType.Character && !card.bowed)
             })
-            .gameAction(AbilityDsl.actions.placeFate());
+            .gameAction(placeFate());
     }
 }
 

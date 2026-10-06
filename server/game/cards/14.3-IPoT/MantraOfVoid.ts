@@ -1,5 +1,6 @@
 import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
+import { draw, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfVoid extends DrawCard {
@@ -15,15 +16,15 @@ export default class MantraOfVoid extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
-            }, AbilityDsl.actions.playerLastingEffect((context) => ({
+            }, playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceCost({
+                effect: reduceCost({
                     amount: 1,
                     cardType: CardType.Attachment,
                     targetCondition: (target) => target === context.target
                 })
             })))
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .effect('reduce the cost of attachments they play on {0} this conflict by 1 and draw a card');
     }
 }

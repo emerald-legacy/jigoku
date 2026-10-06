@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory } from '../../../effects.js';
+import { loseHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +16,7 @@ export default class CeremonialRobes extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory((_character, context) =>
+            effect: modifyGlory((_character, context) =>
                 context.player.cardsInPlay.reduce(
                     (sum, card) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
@@ -57,8 +58,7 @@ export default class CeremonialRobes extends DrawCard {
                                     context.player,
                                     context.player.opponent
                                 );
-                                AbilityDsl.actions
-                                    .loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
+                                loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
                                     .resolve(chosenCard, context);
                             }
                         }

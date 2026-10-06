@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot, delayedEffect, modifyMilitarySkill, setGlory } from '../../../effects.js';
+import { cardLastingEffect, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType } from '../../../Constants.js';
 
@@ -9,21 +10,21 @@ export default class DeadEyes extends DrawCard {
         this.attachmentConditions({ trait: 'berserker' });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.setGlory(0)
+            effect: setGlory(0)
         });
 
         this.action('Increase a character\'s military skill')
             .condition(context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter))
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: context.source.parentCharacter ?? [],
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(2),
-                    AbilityDsl.effects.cardCannot({
+                    modifyMilitarySkill(2),
+                    cardCannot({
                         cannot: 'sendHome',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.delayedEffect({
+                    delayedEffect({
                         when: {
                             afterConflict: (event) => {
                                 if(!context.source.parentCharacter) {
@@ -38,7 +39,7 @@ export default class DeadEyes extends DrawCard {
                                 return mySkill <= opponentSkill * 2;
                             }
                         },
-                        gameAction: AbilityDsl.actions.sacrifice(),
+                        gameAction: sacrifice(),
                         message: '{0} is sacrificed due to the delayed effect of {1}',
                         messageArgs: [context.source.parentCharacter, context.source]
                     })

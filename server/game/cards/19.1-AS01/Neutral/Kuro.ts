@@ -1,4 +1,12 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import {
+    conditional,
+    moveToConflict,
+    playCard,
+    playerLastingEffect,
+    sendHome,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,12 +29,12 @@ export default class Kuro extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: (card) =>
                     (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller })
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+            }, sequential([
+                playerLastingEffect((context) => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1)
+                    effect: reduceNextPlayedCardCost(1)
                 })),
-                AbilityDsl.actions.playCard((context) => ({
+                playCard((context) => ({
                     source: this,
                     payCosts: true,
                     target: context.target,
@@ -35,10 +43,10 @@ export default class Kuro extends DrawCard {
                         attachContext.targets.target = context.source;
                     }
                 })),
-                AbilityDsl.actions.conditional((conditionalContext) => ({
+                conditional((conditionalContext) => ({
                     condition: (context) => context.source.isDrawCard() && context.source.isParticipating(),
-                    trueGameAction: AbilityDsl.actions.sendHome({ target: conditionalContext.source }),
-                    falseGameAction: AbilityDsl.actions.moveToConflict({ target: conditionalContext.source })
+                    trueGameAction: sendHome({ target: conditionalContext.source }),
+                    falseGameAction: moveToConflict({ target: conditionalContext.source })
                 }))
             ]))
             .effect('seek the lost treasure \'{1}\'. {2}', (context) => [

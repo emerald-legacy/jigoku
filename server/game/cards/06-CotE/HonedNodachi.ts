@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 
@@ -23,7 +24,7 @@ class HonedNodachi extends DrawCard {
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }
 

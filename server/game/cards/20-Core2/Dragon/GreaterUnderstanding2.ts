@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { immunity } from '../../../effects.js';
+import { attachToRing, resolveRingEffect, selectRing } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import Ring from '../../../Ring.js';
 import { RingAttachment } from '../../RingAttachment.js';
@@ -9,7 +10,7 @@ export default class GreaterUnderstanding2 extends RingAttachment {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Any,
-            effect: AbilityDsl.effects.immunity({
+            effect: immunity({
                 restricts: 'opponentsCardEffects'
             })
         });
@@ -19,14 +20,14 @@ export default class GreaterUnderstanding2 extends RingAttachment {
                 onMoveFate: (event, context) => event.recipient === context.source.parent,
                 onPlaceFateOnUnclaimedRings: (_event, context) => context.source.parent instanceof Ring && context.source.parent.isUnclaimed()
             })
-            .gameAction(AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.source.parent ?? [] })))
+            .gameAction(resolveRingEffect((context) => ({ target: context.source.parent ?? [] })))
             .then((context) => ({
-                gameAction: AbilityDsl.actions.selectRing({
+                gameAction: selectRing({
                     activePromptTitle: 'Choose a ring to attach Greater Understanding',
                     player: Players.Opponent,
                     ringCondition: (ring) => ring !== context.source.parent && ring.getFate() === 0,
                     subActionProperties: (ring) => ({ attachment: context.source, target: ring }),
-                    gameAction: AbilityDsl.actions.attachToRing(),
+                    gameAction: attachToRing(),
                     message: '{0} moves {1} to {2} - enlightenment is elusive',
                     messageArgs: (ring, player) => [player, context.source, ring]
                 })

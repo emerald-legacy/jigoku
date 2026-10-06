@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
 class SpiritcallerProdigy extends DrawCard {
@@ -14,7 +15,7 @@ class SpiritcallerProdigy extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('lion') && card.costLessThan(4),
                 controller: Players.Self
-            }, AbilityDsl.actions.putIntoPlay())
+            }, putIntoPlay())
             .effect('call {0} back from the dead');
     }
 }

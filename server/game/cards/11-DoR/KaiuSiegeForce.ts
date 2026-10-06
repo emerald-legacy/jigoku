@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
 
 class KaiuSiegeForce extends DrawCard {
@@ -12,7 +13,7 @@ class KaiuSiegeForce extends DrawCard {
                 cardCondition: card => card.type === CardType.Holding,
                 bottom: true
             }))
-            .gameAction(AbilityDsl.actions.ready());
+            .gameAction(ready());
     }
 }
 

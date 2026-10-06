@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, reveal, selectCard } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, EventName, ConflictType } from '../../Constants.js';
 
 class OfferTestimony extends DrawCard {
@@ -21,18 +21,18 @@ class OfferTestimony extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('bow', context)
             })
-            .gameAction(AbilityDsl.actions.selectCard({
+            .gameAction(selectCard({
                 activePromptTitle: 'Choose a card to reveal',
                 location: Location.Hand,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
-            }), AbilityDsl.actions.selectCard({
+                gameAction: reveal({ chatMessage: true })
+            }), selectCard({
                 activePromptTitle: 'Choose a card to reveal',
                 player: Players.Opponent,
                 location: Location.Hand,
                 controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
-            }), AbilityDsl.actions.bow(context => {
+                gameAction: reveal(context => ({ chatMessage: true, player: context.player.opponent }))
+            }), bow(context => {
                 const revealedCards = context.events.flatMap((event) =>
                     event.is(EventName.OnCardRevealed) && event.card.isDrawCard() ? [event.card] : []);
                 const lowestCost = Math.min(...revealedCards.map((card) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));

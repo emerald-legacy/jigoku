@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class IkomaKiyono extends DrawCard {
     static id = 'ikoma-kiyono';
@@ -11,7 +11,7 @@ class IkomaKiyono extends DrawCard {
                     return context.player.isMoreHonorable();
                 }
             })
-            .gameAction(AbilityDsl.actions.ready());
+            .gameAction(ready());
     }
 }
 

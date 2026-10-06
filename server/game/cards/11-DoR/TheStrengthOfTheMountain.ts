@@ -1,23 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class TheStrengthOfTheMountain extends DrawCard {
     static id = 'the-strength-of-the-mountain';
 
     setupCardAbilities() {
         this.conflictAction('Defending characters do not bow')
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: context.game.currentConflict?.getDefenders(),
-                effect: AbilityDsl.effects.doesNotBow()
-            })), AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: doesNotBow()
+            })), cardLastingEffect(context => ({
                 target: context.game.currentConflict?.getDefenders(),
                 effect: [
-                    AbilityDsl.effects.cardCannot({
+                    cardCannot({
                         cannot: 'sendHome',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.cardCannot({
+                    cardCannot({
                         cannot: 'bow',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player

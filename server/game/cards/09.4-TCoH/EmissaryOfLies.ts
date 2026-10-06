@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chooseAction, conditional, lookAt, multiple, noAction, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -39,23 +39,23 @@ class EmissaryOfLies extends DrawCard {
     }
 
     private offerToRevealHand(context: AbilityContext, character: DrawCard, cardName: string) {
-        AbilityDsl.actions.chooseAction({
+        chooseAction({
             activePromptTitle: 'Do you want to reveal your hand?',
             waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not',
             options: {
                 'Yes': {
-                    action: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.lookAt({
+                    action: multiple([
+                        lookAt({
                             target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
                         }),
-                        AbilityDsl.actions.conditional({
+                        conditional({
                             condition: () => !context.player.hand.some((card) => card.name === cardName),
-                            trueGameAction: AbilityDsl.actions.sendHome({ target: character }),
-                            falseGameAction: AbilityDsl.actions.noAction()
+                            trueGameAction: sendHome({ target: character }),
+                            falseGameAction: noAction()
                         })
                     ])
                 },
-                'No': { action: AbilityDsl.actions.noAction() }
+                'No': { action: noAction() }
             }
         }).resolve(undefined, context);
     }

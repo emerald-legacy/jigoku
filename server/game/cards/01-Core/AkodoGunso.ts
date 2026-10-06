@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { refillFaceup } from '../../GameActions/GameActions.js';
 
 class AkodoGunso extends DrawCard {
     static id = 'akodo-gunso';
@@ -11,7 +11,7 @@ class AkodoGunso extends DrawCard {
                     event.card === context.source &&
                     context.game.getProvinceArray().includes(event.originalLocation)
             })
-            .gameAction(AbilityDsl.actions.refillFaceup((context) => ({ location: context.event.originalLocation })));
+            .gameAction(refillFaceup((context) => ({ location: context.event.originalLocation })));
     }
 }
 

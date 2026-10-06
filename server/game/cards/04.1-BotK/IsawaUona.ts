@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class IsawaUona extends DrawCard {
     static id = 'isawa-uona';
@@ -15,7 +15,7 @@ class IsawaUona extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && !card.isUnique()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

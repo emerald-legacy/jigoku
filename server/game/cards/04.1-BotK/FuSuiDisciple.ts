@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor, honor } from '../../GameActions/GameActions.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
 const elementSymbol = { key: 'fu-sui-disciple-air', element: Element.Air };
@@ -33,8 +33,8 @@ class FuSuiDisciple extends DrawCard {
                 name: 'effect',
                 dependsOn: 'character'
             }, {
-                'Honor this character': AbilityDsl.actions.honor(context => ({ target: context.targets.character })),
-                'Dishonor this character': AbilityDsl.actions.dishonor(context => ({ target: context.targets.character }))
+                'Honor this character': honor(context => ({ target: context.targets.character })),
+                'Dishonor this character': dishonor(context => ({ target: context.targets.character }))
             });
     }
 

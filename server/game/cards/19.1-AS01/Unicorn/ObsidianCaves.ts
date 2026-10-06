@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
 
 export default class ObsidianCaves extends ProvinceCard {
     static id = 'obsidian-caves';
@@ -13,6 +13,6 @@ export default class ObsidianCaves extends ProvinceCard {
                 player: (context) => (context.player.isAttackingPlayer() ? Players.Self : Players.Opponent),
                 activePromptTitle: 'Choose a character to send home',
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }

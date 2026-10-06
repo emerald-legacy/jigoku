@@ -1,6 +1,7 @@
 import { Location, Players } from '../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainPlayAction } from '../../effects.js';
+import { flipDynasty, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class HiddenMoonDojo extends DrawCard {
@@ -14,16 +15,16 @@ export default class HiddenMoonDojo extends DrawCard {
                 card.isDynasty &&
                 card.isFaceup() &&
                 context.player.areLocationsAdjacent(context.source.location, card.location),
-            effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand)
+            effect: gainPlayAction(PlayCharacterAsIfFromHand)
         });
 
         this.conflictAction('Turn an adjacent card face up')
-            .gameAction(AbilityDsl.actions.selectCard({
+            .gameAction(selectCard({
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.player.areLocationsAdjacent(context.source.location, card.location),
-                gameAction: AbilityDsl.actions.flipDynasty(),
+                gameAction: flipDynasty(),
                 message: '{0} chooses to turn {1} in {2} faceup',
                 messageArgs: (card, player) => [player, card, card.location]
             }))

@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { canContributeWhileBowed } from '../../../effects.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IncessantMoto extends DrawCard {
@@ -10,13 +11,13 @@ export default class IncessantMoto extends DrawCard {
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
             match: (card, context) => card === context?.source,
-            effect: AbilityDsl.effects.canContributeWhileBowed()
+            effect: canContributeWhileBowed()
         });
 
         this.reaction('Move to conflict')
             .when({
                 onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player
             })
-            .gameAction(AbilityDsl.actions.moveToConflict());
+            .gameAction(moveToConflict());
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
 import { ConflictType } from '../../Constants.js';
 
 class ReinforcedPlate extends DrawCard {
@@ -8,7 +8,7 @@ class ReinforcedPlate extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: context => context.source.parentCharacter !== null && context.source.parentCharacter !== undefined && context.source.parentCharacter.isParticipating() && this.game.isDuringConflict(ConflictType.Military),
-            effect: AbilityDsl.effects.immunity({
+            effect: immunity({
                 restricts: 'opponentsEvents'
             })
         });

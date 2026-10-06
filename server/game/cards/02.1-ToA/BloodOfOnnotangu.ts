@@ -1,6 +1,6 @@
 import { Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
 
 export default class BloodOfOnnotangu extends ProvinceCard {
     static id = 'blood-of-onnotangu';
@@ -9,7 +9,7 @@ export default class BloodOfOnnotangu extends ProvinceCard {
         this.persistentEffect({
             targetController: Players.Any,
             condition: (context) => context.source.isConflictProvince(),
-            effect: AbilityDsl.effects.playerCannot('spendFate')
+            effect: playerCannot('spendFate')
         });
     }
 }

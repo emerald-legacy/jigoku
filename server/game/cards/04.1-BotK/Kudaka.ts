@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { draw, gainFate } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
@@ -13,7 +14,7 @@ class Kudaka extends DrawCard {
             .when({
                 onClaimRing: (event, context) => claimsRingOf(this, elementSymbol.key, event) && event.player === context.player
             })
-            .gameAction(AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw())
+            .gameAction(gainFate(), draw())
             .effect('gain 1 fate and draw 1 card')
             .limit(AbilityDsl.limit.perRound(2));
     }

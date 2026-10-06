@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 
 class ShadowStalker extends DrawCard {
     static id = 'shadow-stalker';
@@ -7,7 +7,7 @@ class ShadowStalker extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.player.honor <= 6,
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
     }
 }

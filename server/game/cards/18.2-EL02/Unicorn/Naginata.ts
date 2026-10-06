@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility, modifyMilitarySkill } from '../../../effects.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import { AbilityType, CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,11 +11,11 @@ export default class Naginata extends DrawCard {
 
         this.whileAttached({
             condition: (context) => !!context.source.parentCharacter && context.source.controller.firstPlayer,
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            effect: modifyMilitarySkill(1)
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            effect: gainAbility(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
                     onMoveToConflict: (event, context) =>
@@ -30,7 +31,7 @@ export default class Naginata extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
-                    gameAction: AbilityDsl.actions.bow()
+                    gameAction: bow()
                 }
             })
         });

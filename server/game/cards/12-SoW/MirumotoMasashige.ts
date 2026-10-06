@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class MirumotoMasashige extends DrawCard {
     static id = 'mirumoto-masashige';
@@ -14,7 +14,7 @@ class MirumotoMasashige extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

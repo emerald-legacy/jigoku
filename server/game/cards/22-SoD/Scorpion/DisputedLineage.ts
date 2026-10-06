@@ -1,5 +1,6 @@
 import { CardType, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { loseFaction, playerCannot } from '../../../effects.js';
+import { cardLastingEffect, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -10,16 +11,16 @@ export default class DisputedLineage extends DrawCard {
         this.action('Choose a character')
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.loseFaction(context.target.printedFaction),
+            }, multiple([
+                cardLastingEffect((context) => ({
+                    effect: loseFaction(context.target.printedFaction),
                     duration: Duration.UntilEndOfRound
                 })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     duration: Duration.UntilEndOfRound,
                     targetController: context.target.controller,
                     condition: () => context.target.isParticipating(),
-                    effect: AbilityDsl.effects.playerCannot({
+                    effect: playerCannot({
                         cannot: 'honor'
                     })
                 }))
@@ -28,7 +29,7 @@ export default class DisputedLineage extends DrawCard {
             .then(context => ({
                 thenCondition: () => context.player.imperialFavor !== '',
                 message: '{0} draws a card',
-                gameAction: AbilityDsl.actions.draw()
+                gameAction: draw()
             }));
     }
 

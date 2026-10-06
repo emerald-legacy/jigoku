@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RediscoveredShrine extends DrawCard {
@@ -16,9 +17,9 @@ export default class RediscoveredShrine extends DrawCard {
                         !!event.context && event.context.ability.getReducedCost(event.context) > 0;
                 }
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.card
                 )

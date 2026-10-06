@@ -2,6 +2,8 @@ import { CardType, Players, Location } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainPlayAction } from '../../../effects.js';
+import { cardLastingEffect, playCard, sequential, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToSowTheEarth extends DrawCard {
@@ -14,15 +16,15 @@ export default class ToSowTheEarth extends DrawCard {
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 cardCondition: (card) => card.hasTrait('peasant')
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, sequential([
+                cardLastingEffect((context) => ({
                     target: context.target,
                     effect: [
-                        AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand),
-                        AbilityDsl.effects.gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
+                        gainPlayAction(PlayCharacterAsIfFromHand),
+                        gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
                     ]
                 })),
-                AbilityDsl.actions.playCard((context) => ({
+                playCard((context) => ({
                     target: context.target
                 }))
             ]))
@@ -37,7 +39,7 @@ export default class ToSowTheEarth extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Any,
                 cardCondition: (card) => card.isBroken === false
-            }, AbilityDsl.actions.turnFacedown())
+            }, turnFacedown())
             .max(AbilityDsl.limit.perRound(1));
     }
 }

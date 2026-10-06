@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { attach } from '../../GameActions/GameActions.js';
 
 class ShinjoSaddle extends DrawCard {
     static id = 'shinjo-saddle';
@@ -16,7 +16,7 @@ class ShinjoSaddle extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('cavalry')
-            }, AbilityDsl.actions.attach((context) => ({ attachment: context.source })));
+            }, attach((context) => ({ attachment: context.source })));
     }
 }
 

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,6 +15,6 @@ export default class MasterAtArms extends DrawCard {
                 cardCondition: (card) => card.hasTrait('weapon'),
                 location: [Location.ConflictDiscardPile],
                 controller: Players.Self
-            }, AbilityDsl.actions.moveCard({ destination: Location.Hand }));
+            }, moveCard({ destination: Location.Hand }));
     }
 }

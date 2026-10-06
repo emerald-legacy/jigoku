@@ -1,4 +1,4 @@
-import AbilityDsl from '../abilitydsl.js';
+import { canPlayFromOutOfPlay, registerToPlayFromOutOfPlay } from '../effects.js';
 import type BaseCard from '../BaseCard.js';
 import { Location, Players, PlayType } from '../Constants.js';
 
@@ -10,8 +10,8 @@ export function playableFromUnderneath(card: BaseCard, match: (underneath: BaseC
         targetController: Players.Self,
         match: (underneath: BaseCard) => underneath.location === card.uuid && match(underneath),
         effect: [
-            AbilityDsl.effects.canPlayFromOutOfPlay((player) => player === card.controller, PlayType.PlayFromHand),
-            AbilityDsl.effects.registerToPlayFromOutOfPlay()
+            canPlayFromOutOfPlay((player) => player === card.controller, PlayType.PlayFromHand),
+            registerToPlayFromOutOfPlay()
         ]
     };
 }

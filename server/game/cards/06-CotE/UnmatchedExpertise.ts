@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class UnmatchedExpertise extends DrawCard {
@@ -6,14 +7,14 @@ class UnmatchedExpertise extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
+            effect: cannotReceiveDishonorToken()
         });
         this.forcedReaction('Removed after attached character loses a conflict')
             .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.loser === context.source.parentCharacter.controller
             })
-            .gameAction(AbilityDsl.actions.discardFromPlay());
+            .gameAction(discardFromPlay());
     }
 }
 

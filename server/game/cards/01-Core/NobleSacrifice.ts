@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class NobleSacrifice extends DrawCard {
     static id = 'noble-sacrifice';
@@ -14,7 +15,7 @@ class NobleSacrifice extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }
 

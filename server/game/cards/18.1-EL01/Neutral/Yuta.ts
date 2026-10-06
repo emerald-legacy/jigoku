@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { takeFate } from '../../../GameActions/GameActions.js';
 
 class Yuta extends DrawCard {
     static id = 'yuta';
@@ -9,7 +9,7 @@ class Yuta extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isAttacking()
             })
-            .gameAction(AbilityDsl.actions.takeFate());
+            .gameAction(takeFate());
     }
 }
 

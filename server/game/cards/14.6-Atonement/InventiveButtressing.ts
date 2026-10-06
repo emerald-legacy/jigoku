@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -10,7 +10,7 @@ class InventiveButtressing extends ProvinceAttachment {
             condition: () => this.game.isDuringConflict('military'),
             targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(3)
+            effect: modifyProvinceStrength(3)
         });
     }
 

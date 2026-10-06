@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
 
 export default class InquisitorsGrove extends StrongholdCard {
     static id = 'inquisitor-s-grove';
@@ -15,6 +16,6 @@ export default class InquisitorsGrove extends StrongholdCard {
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to send home',
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }

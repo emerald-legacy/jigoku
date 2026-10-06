@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import { CardType, Players, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +11,7 @@ export default class OneWithTheSea extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
 
         this.action('Move any character to the conflict')
             .cost(AbilityDsl.costs.payFate(1))
@@ -19,7 +20,7 @@ export default class OneWithTheSea extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.moveToConflict())
+            }, moveToConflict())
             .max(AbilityDsl.limit.perRound(1));
     }
 }

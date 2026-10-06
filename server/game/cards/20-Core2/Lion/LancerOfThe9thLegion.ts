@@ -1,5 +1,5 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LancerOfThe9thLegion extends DrawCard {
@@ -13,6 +13,6 @@ export default class LancerOfThe9thLegion extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

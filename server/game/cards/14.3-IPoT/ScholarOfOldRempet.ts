@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class ScholarOfOldRempet extends DrawCard {
@@ -12,8 +14,8 @@ class ScholarOfOldRempet extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => !card.isUnique()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+            }, cardLastingEffect({
+                effect: immunity({ restricts: 'events' })
             }))
             .effect('make {0} immune to events');
     }

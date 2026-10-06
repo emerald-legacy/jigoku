@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class SanguineMastery extends DrawCard {
     static id = 'sanguine-mastery';
@@ -12,7 +13,7 @@ class SanguineMastery extends DrawCard {
                 mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.costs.dishonor ? context.costs.dishonor.glory : 1,
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.discardFromPlay())
+            }, discardFromPlay())
             .cannotTargetFirst();
     }
 

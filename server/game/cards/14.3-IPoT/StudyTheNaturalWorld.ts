@@ -1,6 +1,13 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addElement, delayedEffect } from '../../effects.js';
+import {
+    menuPrompt,
+    multiple,
+    playerLastingEffect,
+    resolveRingEffect,
+    ringLastingEffect
+} from '../../GameActions/GameActions.js';
 import type { Element } from '../../Constants.js';
 
 class StudyTheNaturalWorld extends DrawCard {
@@ -9,19 +16,19 @@ class StudyTheNaturalWorld extends DrawCard {
     setupCardAbilities() {
         this.action('Add elements to the conflict ring')
             .condition((context) => context.player.anyCardsInPlay((card) => card.isAttacking() && card.hasTrait('scholar')))
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ringLastingEffect((context) => ({
+            .gameAction(multiple([
+                ringLastingEffect((context) => ({
                     target: context.game.currentConflict?.ring,
-                    effect: AbilityDsl.effects.addElement(this.getElementsOfAttackedProvinces(context))
+                    effect: addElement(this.getElementsOfAttackedProvinces(context))
                 })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             afterConflict: (event) =>
                                 context.player === event.conflict.winner
                         },
-                        gameAction: AbilityDsl.actions.menuPrompt({
+                        gameAction: menuPrompt({
                             activePromptTitle: 'Resolve Ring Effects?',
                             choices: ['Yes', 'No'],
                             choiceHandler: (choice, displayMessage) => {
@@ -30,7 +37,7 @@ class StudyTheNaturalWorld extends DrawCard {
                                 }
                                 return { target: (choice === 'Yes' ? (context.game.currentConflict?.ring?.getElements() ?? []) : []) };
                             },
-                            gameAction: AbilityDsl.actions.resolveRingEffect()
+                            gameAction: resolveRingEffect()
                         })
                     })
                 }))

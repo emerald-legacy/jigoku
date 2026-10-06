@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
 import { FavorType, Phases, Stage } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -18,9 +18,9 @@ export default class Funeral extends DrawCard {
                     event.amount >= context.player.honor &&
                     event.context?.stage === Stage.Effect
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.gainHonor((context) => ({ target: context.player }))
+            .gameAction(sequential([
+                cancel(),
+                gainHonor((context) => ({ target: context.player }))
             ]))
             .effect('cancel their honor loss, then gain 1 honor')
             .cannotBeMirrored();

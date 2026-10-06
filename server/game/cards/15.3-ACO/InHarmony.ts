@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 
 class InHarmony extends DrawCard {
     static id = 'in-harmony';
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'removeFate',
                 restricts: 'cardAndRingEffects'
             })

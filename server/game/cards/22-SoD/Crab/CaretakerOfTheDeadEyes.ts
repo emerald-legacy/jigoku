@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect, honor, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CaretakerOfTheDeadEyes extends DrawCard {
@@ -9,16 +10,16 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait('bushi')
             })
-            .gameAction(AbilityDsl.actions.multipleContext(context => {
+            .gameAction(multipleContext(context => {
                 const card = context.event.card;
                 const gameActions = [];
                 if(card.isDishonored) {
-                    gameActions.push(AbilityDsl.actions.honor({ target: card }));
+                    gameActions.push(honor({ target: card }));
                 }
                 if(card.hasTrait('berserker')) {
-                    gameActions.push(AbilityDsl.actions.cardLastingEffect({
+                    gameActions.push(cardLastingEffect({
                         target: card,
-                        effect: AbilityDsl.effects.addKeyword('courtesy'),
+                        effect: addKeyword('courtesy'),
                         message: 'give Courtesy to {0}'
                     }));
                 }

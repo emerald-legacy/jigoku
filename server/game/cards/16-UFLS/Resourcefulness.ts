@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class Resourcefulness extends DrawCard {
     static id = 'resourcefulness';
@@ -11,7 +12,7 @@ class Resourcefulness extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

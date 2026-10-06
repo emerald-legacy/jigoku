@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost } from '../../../effects.js';
+import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,9 +18,9 @@ export default class CraneIndustry extends DrawCard {
             .when({
                 onConflictStarted: () => true
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceCost({
+                effect: reduceCost({
                     amount: 1,
                     match: (card) => !this.hasEventBeenPlayedByThisPlayer(card)
                 })

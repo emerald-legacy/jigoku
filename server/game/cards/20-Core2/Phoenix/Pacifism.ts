@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType } from '../../../Constants.js';
 
@@ -8,8 +8,8 @@ export default class Pacifism extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.cannotParticipateAsAttacker(ConflictType.Military),
-                AbilityDsl.effects.cannotParticipateAsDefender(ConflictType.Military)
+                cannotParticipateAsAttacker(ConflictType.Military),
+                cannotParticipateAsDefender(ConflictType.Military)
             ]
         });
     }

@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
+import { ringLastingEffect } from '../../GameActions/GameActions.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class ExpertInterpreter extends DrawCard {
@@ -15,11 +17,11 @@ class ExpertInterpreter extends DrawCard {
             .ringTarget({
                 name: 'myRing',
                 ringCondition: () => true
-            }, AbilityDsl.actions.ringLastingEffect((context) => ({
+            }, ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: playerCannot({
                     cannot: 'enterPlay',
                     restricts: 'characters'
                 })
@@ -30,11 +32,11 @@ class ExpertInterpreter extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 ringCondition: (_ring, context) => !!context.costs.optionalHonorTransferFromOpponentCostPaid
-            }, AbilityDsl.actions.ringLastingEffect((context) => ({
+            }, ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: playerCannot({
                     cannot: 'enterPlay',
                     restricts: 'characters'
                 })

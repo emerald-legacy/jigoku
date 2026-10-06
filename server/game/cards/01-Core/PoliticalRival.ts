@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 
 class PoliticalRival extends DrawCard {
     static id = 'political-rival';
@@ -7,7 +7,7 @@ class PoliticalRival extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isDefending(),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(3)
+            effect: modifyPoliticalSkill(3)
         });
     }
 }

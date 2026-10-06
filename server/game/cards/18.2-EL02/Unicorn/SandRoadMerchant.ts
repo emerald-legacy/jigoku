@@ -1,5 +1,12 @@
 import { Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import {
+    chooseAction,
+    deckSearch,
+    moveCard,
+    noAction,
+    placeCardUnderneath,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
@@ -16,30 +23,30 @@ export default class SandRoadMerchant extends DrawCard {
                 onDefendersDeclared: (event, context) =>
                     event.defenders.includes(context.source) && context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
+            .gameAction(sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.deckSearch({
+                    deckSearch({
                         amount: 2,
                         player: context.player.opponent,
                         choosingPlayer: context.player,
-                        gameAction: AbilityDsl.actions.placeCardUnderneath({
+                        gameAction: placeCardUnderneath({
                             destination: this
                         }),
                         shuffle: false,
                         reveal: true
                     }),
-                    AbilityDsl.actions.chooseAction(() => {
+                    chooseAction(() => {
                         const topCard = context.player.opponent?.conflictDeck[0];
                         return {
                             activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                             player: Players.Opponent,
                             options: {
                                 'Leave on top of your deck': {
-                                    action: AbilityDsl.actions.noAction(),
+                                    action: noAction(),
                                     message: '{0} chooses to put {2} on top of their deck'
                                 },
                                 'Put on the bottom of your deck': {
-                                    action: AbilityDsl.actions.moveCard({ target: topCard ?? [], destination: Location.ConflictDeck, bottom: true }),
+                                    action: moveCard({ target: topCard ?? [], destination: Location.ConflictDeck, bottom: true }),
                                     message: '{0} chooses to put {2} on the bottom of their deck'
                                 }
                             },

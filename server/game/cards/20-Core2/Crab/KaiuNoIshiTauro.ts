@@ -1,5 +1,6 @@
 import { CardType, Players, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
 
@@ -12,7 +13,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.deckSearch(context => ({
+            }, deckSearch(context => ({
                 activePromptTitle: 'Select an attachment',
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.type === CardType.Attachment &&

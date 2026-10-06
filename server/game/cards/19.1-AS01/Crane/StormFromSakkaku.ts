@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardCard } from '../../../GameActions/GameActions.js';
 import { EventName, AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
@@ -15,7 +15,7 @@ export default class StormFromSakkaku extends DrawCard {
 
         moveHoldingAction(this)
             .then(() => ({
-                gameAction: AbilityDsl.actions.discardCard((context) => ({
+                gameAction: discardCard((context) => ({
                     target: otherHoldingsInSameProvince(context)
                 })),
                 message: 'The {1} {3}',

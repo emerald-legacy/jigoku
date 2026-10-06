@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict, multiple, ready } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class HirumaSignaller extends DrawCard {
@@ -12,9 +13,9 @@ class HirumaSignaller extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.moveToConflict()
+            }, multiple([
+                ready(),
+                moveToConflict()
             ]))
             .effect('ready and move {0} to the conflict');
     }

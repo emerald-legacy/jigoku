@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 
 export default class Penanggalan extends BaseOni {
     static id = 'penanggalan';
@@ -16,7 +16,7 @@ export default class Penanggalan extends BaseOni {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isTainted && card.isParticipating()
-            }, AbilityDsl.actions.placeFate((context) => ({
+            }, placeFate((context) => ({
                 target: context.source,
                 origin: context.target
             })))

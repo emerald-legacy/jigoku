@@ -1,5 +1,6 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { playerCannot } from '../../../effects.js';
+import { playerLastingEffect, restoreProvince } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HidaHonoka extends DrawCard {
@@ -11,16 +12,16 @@ export default class HidaHonoka extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isBroken
-            }, AbilityDsl.actions.restoreProvince())
+            }, restoreProvince())
             .then(() => ({
-                gameAction: AbilityDsl.actions.playerLastingEffect({
+                gameAction: playerLastingEffect({
                     targetController: Players.Self,
                     duration: Duration.Custom,
                     until: {
                         // FOREVER
                         onCardLeavesPlay: () => false
                     },
-                    effect: AbilityDsl.effects.playerCannot({
+                    effect: playerCannot({
                         cannot: 'restoreProvince'
                     })
                 })

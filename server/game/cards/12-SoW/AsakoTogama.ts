@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { joint, returnRing, selectRing, takeRing } from '../../GameActions/GameActions.js';
 
 class AsakoTogama extends DrawCard {
     static id = 'asako-togama';
@@ -7,20 +7,20 @@ class AsakoTogama extends DrawCard {
     setupCardAbilities() {
         this.action('Switch a claimed ring with an unclaimed one')
             .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.joint([
-                AbilityDsl.actions.selectRing(context => ({
+            .gameAction(joint([
+                selectRing(context => ({
                     activePromptTitle: 'Choose a ring to return',
                     ringCondition: ring => ring.claimedBy === context.player.name,
                     message: '{0} returns the {1}',
                     messageArgs: ring => [context.player, ring],
-                    gameAction: AbilityDsl.actions.returnRing()
+                    gameAction: returnRing()
                 })),
-                AbilityDsl.actions.selectRing(context => ({
+                selectRing(context => ({
                     activePromptTitle: 'Choose a ring to take',
                     ringCondition: ring => ring.isUnclaimed(),
                     message: '{0} takes the {1}',
                     messageArgs: ring => [context.player, ring],
-                    gameAction: AbilityDsl.actions.takeRing({ takeFate: true })
+                    gameAction: takeRing({ takeFate: true })
                 }))
             ]))
             .effect('switch a claimed ring with an unclaimed one');

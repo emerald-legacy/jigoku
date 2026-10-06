@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch } from '../../GameActions/GameActions.js';
 import { Location, CardType, Players, TargetMode, Decks } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
@@ -15,7 +15,7 @@ class TheWesternWind extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.deckSearch({
+            }, deckSearch({
                 cardCondition: (card) => card.type === CardType.Character,
                 targetMode: TargetMode.UpToVariable,
                 numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),

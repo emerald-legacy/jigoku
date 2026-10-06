@@ -1,5 +1,6 @@
 import { Location, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { draw, gainFate, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AnkokusBlessing extends DrawCard {
@@ -11,10 +12,10 @@ export default class AnkokusBlessing extends DrawCard {
                 location: Location.Hand,
                 cardCondition: (card) => !card.hasTrait('blessing')
             }))
-            .gameAction(AbilityDsl.actions.multipleContext((context) => ({
+            .gameAction(multipleContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.draw({ target: context.player, amount: 2 }),
-                    AbilityDsl.actions.gainFate({ target: context.player, amount: 2 })
+                    draw({ target: context.player, amount: 2 }),
+                    gainFate({ target: context.player, amount: 2 })
                 ]
             })))
             .effect('draw 2 cards and gain 2 fate')

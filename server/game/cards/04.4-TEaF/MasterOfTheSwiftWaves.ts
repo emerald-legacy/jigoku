@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -20,9 +20,9 @@ class MasterOfTheSwiftWaves extends DrawCard {
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
-                AbilityDsl.actions.moveToConflict()
+            }, joint([
+                sendHome(context => ({ target: context.targets.characterInConflict })),
+                moveToConflict()
             ]))
             .effect('switch {1} and {2}', context => [context.targets.characterInConflict, context.targets.characterAtHome]);
     }

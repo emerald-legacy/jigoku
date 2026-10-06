@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
 import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -11,7 +12,7 @@ class TheWealthOfTheCrane extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (_card, player: Player) => {
                     return player.getNumberOfFaceupProvinces();
                 },

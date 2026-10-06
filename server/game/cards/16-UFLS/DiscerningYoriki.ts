@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class DiscerningYoriki extends DrawCard {
@@ -16,7 +16,7 @@ class DiscerningYoriki extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor())
+            }, honor())
             .collectiveTrigger();
     }
 }

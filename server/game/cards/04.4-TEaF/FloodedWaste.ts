@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class FloodedWaste extends ProvinceCard {
     static id = 'flooded-waste';
@@ -10,7 +10,7 @@ export default class FloodedWaste extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.bow(() => ({
+            .gameAction(bow(() => ({
                 target: this.game.findAnyCardsInPlay(
                     (card) => card.getType() === CardType.Character && card.isAttacking()
                 )

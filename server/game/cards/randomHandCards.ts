@@ -1,4 +1,4 @@
-import AbilityDsl from '../abilitydsl.js';
+import { cardMenu, discardCard } from '../GameActions/GameActions.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { shuffle } from '../utils/shuffle.js';
@@ -8,11 +8,11 @@ export function randomHandCards(player: Player | undefined, amount: number): Dra
 }
 
 export function chooseCardToDiscard(cards: DrawCard[]) {
-    return AbilityDsl.actions.cardMenu((context) => ({
+    return cardMenu((context) => ({
         cards,
         targets: true,
         message: '{0} chooses {1} to be discarded',
         messageArgs: (card) => [context.player, card],
-        gameAction: AbilityDsl.actions.discardCard()
+        gameAction: discardCard()
     }));
 }

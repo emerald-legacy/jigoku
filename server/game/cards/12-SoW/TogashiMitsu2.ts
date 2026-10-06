@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { resolveRingEffect } from '../../GameActions/GameActions.js';
 import { RingEffects } from '../../RingEffects.js';
 
 class TogashiMitsu2 extends DrawCard {
@@ -8,7 +9,7 @@ class TogashiMitsu2 extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'applyCovert',
                 restricts: 'opponentsCardEffects'
             })
@@ -20,7 +21,7 @@ class TogashiMitsu2 extends DrawCard {
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 ringCondition: (ring, context) => RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context)
-            }, AbilityDsl.actions.resolveRingEffect(context => ({ player: context.player })))
+            }, resolveRingEffect(context => ({ player: context.player })))
             .effect('resolve the {0}\'s effect');
     }
 }

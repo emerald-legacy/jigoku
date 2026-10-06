@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor, duel, honor, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, DuelType } from '../../Constants.js';
 
@@ -19,12 +19,12 @@ class GameOfSadane extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.duel((context) => ({
+            }, duel((context) => ({
                 type: DuelType.Political,
                 challenger: context.targets.challenger,
-                gameAction: (duel) => AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.honor({ target: duel.winner }),
-                    AbilityDsl.actions.dishonor({ target: duel.loser })
+                gameAction: (duel) => multiple([
+                    honor({ target: duel.winner }),
+                    dishonor({ target: duel.loser })
                 ])
             })));
     }

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { copyCard } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -23,8 +24,8 @@ export default class BetrayedVision extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy)
+            }, cardLastingEffect((context) => ({
+                effect: copyCard(context.targets.cardToCopy)
             })))
             .effect('make {1} into a copy of {2}', (context) => [context.targets.myCharacter, context.targets.cardToCopy]);
     }

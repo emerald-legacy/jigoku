@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class ChrysanthemumSteward extends DrawCard {
     static id = 'chrysanthemum-steward';
@@ -11,7 +11,7 @@ class ChrysanthemumSteward extends DrawCard {
             .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.moveCard({ destination: Location.ConflictDeck }));
+            }, moveCard({ destination: Location.ConflictDeck }));
     }
 }
 

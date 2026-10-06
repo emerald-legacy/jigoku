@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard, discardAtRandom, multiple } from '../../GameActions/GameActions.js';
 
 class ParagonOfGrace extends DrawCard {
     static id = 'paragon-of-grace';
@@ -9,9 +9,9 @@ class ParagonOfGrace extends DrawCard {
             .condition((context) =>
                 context.source.isParticipatingFor(context.player) &&
                 this.game.currentConflict?.getNumberOfParticipantsFor(context.player) === 1)
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardAtRandom((context) => ({ target: context.source.isHonored ? context.player.opponent : [] })),
-                AbilityDsl.actions.chosenDiscard((context) => ({ target: context.source.isHonored ? [] : context.player.opponent }))
+            .gameAction(multiple([
+                discardAtRandom((context) => ({ target: context.source.isHonored ? context.player.opponent : [] })),
+                chosenDiscard((context) => ({ target: context.source.isHonored ? [] : context.player.opponent }))
             ]))
             .effect('make {1} discard 1 card{2}', (context) => [context.player.opponent ?? '', context.source.isHonored ? ' at random' : '']);
     }

@@ -1,6 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class JadeInfusedArrows extends DrawCard {
@@ -10,9 +12,9 @@ export default class JadeInfusedArrows extends DrawCard {
         this.action('Give attached character a skill bonus')
             .cost(AbilityDsl.costs.payFate(1))
             .condition((context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false)
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyMilitarySkill(this.bonusAmount(context))
+                effect: modifyMilitarySkill(this.bonusAmount(context))
             })))
             .effect('give +{1}{2} to {3}{4}', (context) => [
                 this.bonusAmount(context),

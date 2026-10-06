@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { attach, removeFate, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class InvocationOfAsh extends DrawCard {
@@ -11,9 +12,9 @@ class InvocationOfAsh extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.attach((context) => ({ attachment: context.source })),
-                AbilityDsl.actions.removeFate()
+            }, sequential([
+                attach((context) => ({ attachment: context.source })),
+                removeFate()
             ]))
             .effect('move {1} to {0}, then remove a fate from {0}', context => context.source);
     }

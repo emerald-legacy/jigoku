@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MasterOfTheBlade extends DrawCard {
@@ -6,11 +7,11 @@ export default class MasterOfTheBlade extends DrawCard {
 
     public setupCardAbilities() {
         this.duelStrike('Don\'t bow during resolution', (duel, context) => duel.participants.includes(context.source))
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 condition: (context) => context.game.isDuringConflict(),
                 effect: [
-                    AbilityDsl.effects.doesNotBow(),
-                    AbilityDsl.effects.cardCannot({
+                    doesNotBow(),
+                    cardCannot({
                         cannot: 'bow',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player

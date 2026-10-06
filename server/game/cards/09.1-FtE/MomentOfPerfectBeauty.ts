@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { resolveConflictEarly } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 class MomentOfPerfectBeauty extends DrawCard {
     static id = 'moment-of-perfect-beauty';
@@ -12,9 +13,9 @@ class MomentOfPerfectBeauty extends DrawCard {
                     conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .gameAction(playerLastingEffect(context => ({
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.resolveConflictEarly()
+                effect: resolveConflictEarly()
             })))
             .effect('resolve the conflict after {1}\'s next action', context => [context.player.opponent]);
     }

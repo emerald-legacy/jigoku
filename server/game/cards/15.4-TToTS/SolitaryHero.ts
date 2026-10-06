@@ -1,12 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 class SolitaryHero extends DrawCard {
     static id = 'solitary-hero';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'applyCovert',
                 restricts: 'opponentsCardEffects'
             })
@@ -16,7 +17,7 @@ class SolitaryHero extends DrawCard {
             .condition(context =>
                 context.source.isParticipatingFor(context.player) &&
                 (context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
-            .gameAction(AbilityDsl.actions.removeFate((context) => ({
+            .gameAction(removeFate((context) => ({
                 target: context.game.currentConflict?.getParticipants((card) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) ?? []
             })));
     }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class FlankTheEnemy extends DrawCard {
     static id = 'flank-the-enemy';
@@ -13,7 +13,7 @@ class FlankTheEnemy extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

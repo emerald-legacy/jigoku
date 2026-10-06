@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 export default class IntoTheForbiddenCity extends ProvinceCard {
     static id = 'into-the-forbidden-city';
@@ -10,6 +10,6 @@ export default class IntoTheForbiddenCity extends ProvinceCard {
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => !!card.parentCharacter?.isAttacking()
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }

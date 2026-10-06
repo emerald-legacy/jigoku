@@ -1,13 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { charactersCannot } from '../../effects.js';
+import { conflictLastingEffect } from '../../GameActions/GameActions.js';
 
 class ExemplaryEtiquette extends DrawCard {
     static id = 'exemplary-etiquette';
 
     setupCardAbilities() {
         this.conflictAction('Stop characters from triggering abilities')
-            .gameAction(AbilityDsl.actions.conflictLastingEffect({
-                effect: AbilityDsl.effects.charactersCannot({
+            .gameAction(conflictLastingEffect({
+                effect: charactersCannot({
                     cannot: 'triggerAbilities'
                 })
             }))

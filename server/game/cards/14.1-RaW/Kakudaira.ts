@@ -1,12 +1,13 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerDelayedEffect } from '../../effects.js';
+import { flipDynasty } from '../../GameActions/GameActions.js';
 
 export default class Kakudaira extends ProvinceCard {
     static id = 'kakudaira';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.playerDelayedEffect({
+            effect: playerDelayedEffect({
                 when: {
                     onPhaseStarted: (_event, context) =>
                         context.source.isProvinceCard() &&
@@ -22,7 +23,7 @@ export default class Kakudaira extends ProvinceCard {
                         .filter((a) => a.isFacedown()),
                     effectContext.source
                 ],
-                gameAction: AbilityDsl.actions.flipDynasty((context) => ({
+                gameAction: flipDynasty((context) => ({
                     target: context.player
                         .getDynastyCardsInProvince(context.source.location)
                         .filter((a) => a.isFacedown())

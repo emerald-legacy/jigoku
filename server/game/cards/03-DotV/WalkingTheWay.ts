@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { controlsShugenja } from '../controlsShugenja.js';
@@ -11,7 +11,7 @@ class WalkingTheWay extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             match: (player) => controlsShugenja(player),
-            effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
+            effect: reduceCost({ match: (card, source) => card === source })
         });
 
         this.action('Place a card from your deck faceup on a province')

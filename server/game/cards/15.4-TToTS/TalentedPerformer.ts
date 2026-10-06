@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { mustBeChosen } from '../../effects.js';
 
 class TalentedPerformer extends DrawCard {
     static id = 'talented-performer';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.mustBeChosen({ restricts: 'events' })
+            effect: mustBeChosen({ restricts: 'events' })
         });
     }
 }

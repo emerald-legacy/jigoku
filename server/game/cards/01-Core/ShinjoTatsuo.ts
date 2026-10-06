@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class ShinjoTatsuo extends DrawCard {
     static id = 'shinjo-tatsuo';
@@ -12,14 +12,14 @@ class ShinjoTatsuo extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card === context.source
-            }, AbilityDsl.actions.moveToConflict())
+            }, moveToConflict())
             .target({
                 name: 'optional',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source,
                 optional: true
-            }, AbilityDsl.actions.moveToConflict())
+            }, moveToConflict())
             .effect('move {0}{1}{2} into the conflict', context => [
                 !Array.isArray(context.targets.optional) ? ' and ' : '',
                 !Array.isArray(context.targets.optional) ? context.targets.optional : '']);

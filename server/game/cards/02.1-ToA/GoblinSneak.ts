@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class GoblinSneak extends DrawCard {
@@ -10,7 +10,7 @@ export default class GoblinSneak extends DrawCard {
                 onCharacterEntersPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({
+            .gameAction(placeFate((context) => ({
                 origin: context.player.opponent
             })))
             .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent ?? '');

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict, selectCards, sendHome, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 
 class WarriorsOfTheWind extends DrawCard {
@@ -7,11 +7,11 @@ class WarriorsOfTheWind extends DrawCard {
 
     setupCardAbilities() {
         this.action('Re-arrange participating cavalry characters')
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.sendHome((context) => ({
+            .gameAction(sequential([
+                sendHome((context) => ({
                     target: context.player.filterCardsInPlay((card) => card.hasTrait('cavalry') && card.isParticipating())
                 })),
-                AbilityDsl.actions.selectCards({
+                selectCards({
                     activePromptTitle: 'Choose characters',
                     mode: TargetMode.Unlimited,
                     optional: true,
@@ -19,7 +19,7 @@ class WarriorsOfTheWind extends DrawCard {
                     controller: Players.Self,
                     targets: true,
                     cardCondition: (card) => card.hasTrait('cavalry'),
-                    gameAction: AbilityDsl.actions.moveToConflict(),
+                    gameAction: moveToConflict(),
                     message: '{0} chooses to move {1} to the conflict',
                     messageArgs: (cards, player) => [player, cards]
                 })

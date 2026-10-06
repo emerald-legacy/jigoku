@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { reveal } from '../../GameActions/GameActions.js';
 
 class DaidojiMarketplace extends DrawCard {
     static id = 'daidoji-marketplace';
@@ -10,7 +10,7 @@ class DaidojiMarketplace extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .gameAction(AbilityDsl.actions.reveal(context => ({
+            .gameAction(reveal(context => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
             .effect('reveal {1}', context => context.player.getProvinceCardInProvince(context.source.location));

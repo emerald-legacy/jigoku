@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canBeTriggeredByOpponent, playerCannot } from '../../effects.js';
 
 class TheSkinOfFuLeng extends DrawCard {
     static id = 'the-skin-of-fu-leng';
@@ -13,7 +13,7 @@ class TheSkinOfFuLeng extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'triggerAbilities',
                 restricts: ['charactersWithNoFate', 'nonForcedAbilities']
             })
@@ -22,7 +22,7 @@ class TheSkinOfFuLeng extends DrawCard {
         this.persistentEffect({
             match: (card) => card.getFate() === 0,
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.canBeTriggeredByOpponent()
+            effect: canBeTriggeredByOpponent()
         });
     }
 }

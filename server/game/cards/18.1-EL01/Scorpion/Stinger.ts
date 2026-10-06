@@ -1,5 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { attach } from '../../../GameActions/GameActions.js';
 import { Location, Players, CardType, Phases, ConflictType } from '../../../Constants.js';
 
 class Stinger extends DrawCard {
@@ -8,7 +10,7 @@ class Stinger extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: context => context.game.currentPhase !== Phases.Fate,
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'ready',
                 source: this
             })
@@ -21,7 +23,7 @@ class Stinger extends DrawCard {
                 player: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking()
-            }, AbilityDsl.actions.attach((context) => ({
+            }, attach((context) => ({
                 attachment: context.source
             })))
             .location(Location.Hand);

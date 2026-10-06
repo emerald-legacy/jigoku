@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changeType, setBaseGlory, setBaseMilitarySkill, setBasePoliticalSkill } from '../../effects.js';
+import { cardLastingEffect, detach, multiple, selectCard } from '../../GameActions/GameActions.js';
 
 import { CardType, Duration } from '../../Constants.js';
 
@@ -8,22 +9,22 @@ class TogashiHoshi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Turn attachment into character')
-            .gameAction(AbilityDsl.actions.selectCard({
+            .gameAction(selectCard({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player,
                 subActionProperties: (card) => ({
                     target: card,
-                    effect: [AbilityDsl.effects.changeType(CardType.Character)].concat(
+                    effect: [changeType(CardType.Character)].concat(
                         card.printedType === CardType.Attachment ? [
-                            AbilityDsl.effects.setBaseMilitarySkill(parseInt(card.cardData.military_bonus ?? '')),
-                            AbilityDsl.effects.setBasePoliticalSkill(parseInt(card.cardData.political_bonus ?? '')),
-                            AbilityDsl.effects.setBaseGlory(0)
+                            setBaseMilitarySkill(parseInt(card.cardData.military_bonus ?? '')),
+                            setBasePoliticalSkill(parseInt(card.cardData.political_bonus ?? '')),
+                            setBaseGlory(0)
                         ] : []
                     )
                 }),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.detach(),
-                    AbilityDsl.actions.cardLastingEffect({ duration: Duration.Custom })
+                gameAction: multiple([
+                    detach(),
+                    cardLastingEffect({ duration: Duration.Custom })
                 ])
             }));
     }

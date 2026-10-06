@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class ReturnTheOffense extends DrawCard {
@@ -17,14 +18,14 @@ class ReturnTheOffense extends DrawCard {
                     duel.loser,
                     duel.loser?.length ? ' cannot be readied' : ''
                 ],
-                gameAction: (duel) => AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
+                gameAction: (duel) => multiple([
+                    cardLastingEffect({
                         target: duel.winner,
-                        effect: AbilityDsl.effects.doesNotBow()
+                        effect: doesNotBow()
                     }),
-                    AbilityDsl.actions.cardLastingEffect({
+                    cardLastingEffect({
                         target: duel.loser,
-                        effect: AbilityDsl.effects.cardCannot({
+                        effect: cardCannot({
                             cannot: 'ready',
                             restricts: 'cardEffects'
                         })

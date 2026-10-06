@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class GuardDuty extends DrawCard {
     static id = 'guard-duty';
@@ -7,7 +7,7 @@ class GuardDuty extends DrawCard {
     setupCardAbilities() {
         this.action('Honor this character')
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isDefending()))
-            .gameAction(AbilityDsl.actions.honor(context => ({ target: context.source.parentCharacter ?? [] })));
+            .gameAction(honor(context => ({ target: context.source.parentCharacter ?? [] })));
     }
 }
 

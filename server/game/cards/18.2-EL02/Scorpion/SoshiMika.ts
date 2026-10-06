@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { draw, flipImperialFavor, loseHonor, multiple } from '../../../GameActions/GameActions.js';
 
 class SoshiMika extends DrawCard {
     static id = 'soshi-mika';
@@ -10,11 +10,11 @@ class SoshiMika extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor(context => ({
+            .gameAction(multiple([
+                loseHonor(context => ({
                     target: context.game.getPlayers()
                 })),
-                AbilityDsl.actions.draw(context => ({
+                draw(context => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 }))
@@ -22,7 +22,7 @@ class SoshiMika extends DrawCard {
             .effect('have each player lose an honor and draw two cards');
 
         this.action('Flip the Imperial Favor')
-            .gameAction(AbilityDsl.actions.flipImperialFavor(context => ({
+            .gameAction(flipImperialFavor(context => ({
                 target: context.player.imperialFavor ? context.player : context.player.opponent
             })));
     }

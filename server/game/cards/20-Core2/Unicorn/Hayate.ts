@@ -1,5 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost } from '../../../effects.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Hayate extends DrawCard {
@@ -9,7 +10,7 @@ export default class Hayate extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (_, player) =>
                     player.cardsInPlay.reduce(
                         (cavCount, card) => (card.hasTrait('cavalry') ? cavCount + 1 : cavCount),
@@ -25,14 +26,14 @@ export default class Hayate extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card === context.source
-            }, AbilityDsl.actions.moveToConflict())
+            }, moveToConflict())
             .target({
                 name: 'optional',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source,
                 optional: true
-            }, AbilityDsl.actions.moveToConflict())
+            }, moveToConflict())
             .effect('move {0}{1}{2} into the conflict', (context) => [
                 !Array.isArray(context.targets.optional) ? ' and ' : '',
                 !Array.isArray(context.targets.optional) ? context.targets.optional : ''

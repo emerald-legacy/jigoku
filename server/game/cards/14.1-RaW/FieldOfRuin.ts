@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
+import { discardCard } from '../../GameActions/GameActions.js';
 import { Location, Phases, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
@@ -11,7 +12,7 @@ export default class FieldOfRuin extends BattlefieldAttachment {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 1,
                 targetCondition: (target) => target.isProvinceCard() && target.isBroken,
                 match: (card, source) => card === source
@@ -22,7 +23,7 @@ export default class FieldOfRuin extends BattlefieldAttachment {
             .when({
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
             })
-            .gameAction(AbilityDsl.actions.discardCard((context) => ({
+            .gameAction(discardCard((context) => ({
                 target:
                     context.source.parentProvince?.controller.getDynastyCardsInProvince(context.source.parentProvince.location) ?? []
             })))

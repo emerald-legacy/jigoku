@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class VoiceOfHonor extends DrawCard {
@@ -12,7 +12,7 @@ class VoiceOfHonor extends DrawCard {
                                                             context.player.getNumberOfCardsInPlay(card => card.isHonored) >
                                                             context.player.opponent.getNumberOfCardsInPlay(card => card.isHonored)
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .cannotBeMirrored();
     }
 }

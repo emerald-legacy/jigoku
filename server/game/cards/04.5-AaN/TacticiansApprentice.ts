@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class TacticiansApprentice extends DrawCard {
@@ -12,7 +13,7 @@ export default class TacticiansApprentice extends DrawCard {
                     !!context.player.opponent &&
                     context.player.showBid < context.player.opponent.showBid
             })
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .effect('draw a card')
             .limit(AbilityDsl.limit.perPhase(1));
     }

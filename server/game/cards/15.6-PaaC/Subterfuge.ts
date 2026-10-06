@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, discardCard, draw, handler, sequentialContext } from '../../GameActions/GameActions.js';
 import { Phases } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
@@ -17,18 +17,18 @@ class Subterfuge extends DrawCard {
                     );
                 }
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
+            .gameAction(cancel((context) => ({
+                replacementGameAction: sequentialContext(() => {
                     const eventAmount = context.event.amount ?? 0;
                     const discardAmount = Math.min(eventAmount, 3);
                     const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
                     const drawAmount = eventAmount - discardAmount;
                     return {
                         gameActions: [
-                            AbilityDsl.actions.discardCard({
+                            discardCard({
                                 target: cardsToDiscard
                             }),
-                            AbilityDsl.actions.handler({
+                            handler({
                                 handler: (context) => {
                                     context.game.addMessage(
                                         '{0} discards {1}',
@@ -45,7 +45,7 @@ class Subterfuge extends DrawCard {
                                     }
                                 }
                             }),
-                            AbilityDsl.actions.draw({
+                            draw({
                                 target: context.player.opponent,
                                 amount: drawAmount
                             })

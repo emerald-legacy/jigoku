@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ProtectedMerchant extends DrawCard {
@@ -7,7 +7,7 @@ export default class ProtectedMerchant extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory(() => Math.min(2, this.getHoldingsInPlay()))
+            effect: modifyGlory(() => Math.min(2, this.getHoldingsInPlay()))
         });
     }
 

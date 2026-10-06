@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { reveal, turnFacedown } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class LayOfTheLand extends DrawCard {
                 controller: Players.Any,
                 location: Location.Provinces,
                 cardCondition: (card) => !card.isBroken && card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.reveal(), AbilityDsl.actions.turnFacedown())
+            }, reveal(), turnFacedown())
             .effect('{1} {2}', (context) => {
                 const target = context.target;
                 return target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location];

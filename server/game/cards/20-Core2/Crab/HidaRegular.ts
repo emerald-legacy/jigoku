@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HidaRegular extends DrawCard {
@@ -15,6 +15,6 @@ export default class HidaRegular extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill()
-            }, AbilityDsl.actions.removeFate());
+            }, removeFate());
     }
 }

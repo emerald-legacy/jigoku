@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 class InspiredVisionary extends DrawCard {
     static id = 'inspired-visionary';
@@ -13,13 +14,13 @@ class InspiredVisionary extends DrawCard {
             .cost(AbilityDsl.costs.bowSelf())
             .target({
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.returnToDeck((context) => ({
+            }, sequential([
+                returnToDeck((context) => ({
                     target: context.target,
                     destination: Location.ConflictDeck,
                     shuffle: true
                 })),
-                AbilityDsl.actions.draw((context) => ({
+                draw((context) => ({
                     target: context.target.owner
                 }))
             ]));

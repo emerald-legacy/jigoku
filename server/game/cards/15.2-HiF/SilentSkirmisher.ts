@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class SilentSkirmisher extends DrawCard {
@@ -12,8 +14,8 @@ class SilentSkirmisher extends DrawCard {
                 cardCondition: (card, context) => card !== context.source
             }))
             .condition(context => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            .gameAction(cardLastingEffect({
+                effect: modifyMilitarySkill(2)
             }))
             .effect('give itself +2{1}', () => ['military']);
     }

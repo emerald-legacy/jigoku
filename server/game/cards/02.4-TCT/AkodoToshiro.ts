@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, delayedEffect, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, discardFromPlay, multiple } from '../../GameActions/GameActions.js';
 import { Duration, Location } from '../../Constants.js';
 
 class AkodoToshiro extends DrawCard {
@@ -8,26 +9,26 @@ class AkodoToshiro extends DrawCard {
     setupCardAbilities() {
         this.action('Gain +5/+0 and provinces can\'t be broken')
             .condition(context => context.source.isAttacking())
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(() => ({
+            .gameAction(multiple([
+                cardLastingEffect(() => ({
                     target: this.game.provinceCards,
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cardCannot('break')
+                    effect: cardCannot('break')
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect(context => ({
                     target: context.source,
-                    effect: AbilityDsl.effects.modifyMilitarySkill(5)
+                    effect: modifyMilitarySkill(5)
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect(context => ({
                     target: context.source,
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onConflictFinished: () => !context.player.cardsInPlay.some((card) => card.hasTrait('commander'))
                         },
                         message: '{0} is discarded due to his delayed effect',
                         messageArgs: [context.source],
-                        gameAction: AbilityDsl.actions.discardFromPlay()
+                        gameAction: discardFromPlay()
                     })
                 }))
             ]))

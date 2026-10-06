@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict, ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -12,7 +12,7 @@ class FightOn extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.bowed
-            }, AbilityDsl.actions.ready(), AbilityDsl.actions.moveToConflict())
+            }, ready(), moveToConflict())
             .effect('ready {0} and move it into the conflict');
     }
 }

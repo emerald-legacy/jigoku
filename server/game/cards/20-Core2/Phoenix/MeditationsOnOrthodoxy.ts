@@ -1,5 +1,7 @@
 import { CardType, Location, PlayType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { canPlayFromOwn } from '../../../effects.js';
+import { moveCard, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MeditationsOnOrthodoxy extends DrawCard {
@@ -9,7 +11,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
         this.persistentEffect({
             condition: (context) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
         this.reaction('Ready characters')
@@ -22,10 +24,10 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.ready())
+            }, ready())
             .then((context) => ({
                 gameAction: [
-                    AbilityDsl.actions.moveCard({
+                    moveCard({
                         target: context.source,
                         destination: Location.ConflictDeck,
                         bottom: true

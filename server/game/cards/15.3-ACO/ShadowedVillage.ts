@@ -1,7 +1,7 @@
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 
 class ShadowedVillage extends DrawCard {
     static id = 'shadowed-village';
@@ -17,7 +17,7 @@ class ShadowedVillage extends DrawCard {
                     event.origin.controller === context.player &&
                     (event.fate ?? 0) > 0
             })
-            .gameAction(AbilityDsl.actions.draw((context) => ({
+            .gameAction(draw((context) => ({
                 amount: context.event.origin instanceof BaseCard && context.event.origin.isDishonored ? 2 : 1
             })))
             .effect('draw {1} card{2}', (context) => (context.event.origin instanceof BaseCard && context.event.origin.isDishonored ? ['2', 's'] : ['a', '']));

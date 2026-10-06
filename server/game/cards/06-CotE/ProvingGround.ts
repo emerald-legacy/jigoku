@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class ProvingGround extends DrawCard {
@@ -14,7 +15,7 @@ class ProvingGround extends DrawCard {
                     return event.winner.some((card) => card.controller === context.player);
                 }
             })
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .limit(AbilityDsl.limit.perRound(2));
     }
 }

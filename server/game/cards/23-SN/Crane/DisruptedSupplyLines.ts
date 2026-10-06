@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, removeFromGame, takeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
@@ -91,10 +91,10 @@ export default class DisruptedSupplyLines extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                'Remove attachment from the game': AbilityDsl.actions.cancel((context) => ({
+                'Give your opponent 1 fate': takeFate(),
+                'Remove attachment from the game': cancel((context) => ({
                     target: context.source,
-                    replacementGameAction: AbilityDsl.actions.removeFromGame({ target: context.event.card, location: Location.Any })
+                    replacementGameAction: removeFromGame({ target: context.event.card, location: Location.Any })
                 }))
             })
             .effect('{1}{2}{3}', context => context.select === 'Give your opponent 1 fate' ?

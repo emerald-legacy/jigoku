@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { returnRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class WindsOfChange extends DrawCard {
@@ -7,7 +7,7 @@ class WindsOfChange extends DrawCard {
     setupCardAbilities() {
         this.action('Return the air ring to the unclaimed pool')
             .condition(() => this.game.rings.air.isClaimed())
-            .gameAction(AbilityDsl.actions.returnRing(context => ({
+            .gameAction(returnRing(context => ({
                 target: context.game.rings.air
             })))
             .effect('return the air ring to the unclaimed pool');

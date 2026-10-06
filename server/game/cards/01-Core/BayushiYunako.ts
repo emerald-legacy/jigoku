@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { switchBaseSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class BayushiYunako extends DrawCard {
     static id = 'bayushi-yunako';
@@ -11,8 +12,8 @@ class BayushiYunako extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => !card.hasDash()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.switchBaseSkills()
+            }, cardLastingEffect({
+                effect: switchBaseSkills()
             }))
             .effect('switch {0}\'s military and political skill');
     }

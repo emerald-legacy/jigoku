@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType } from '../../../Constants.js';
 
@@ -11,20 +12,20 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 ))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.sendHome((context) => ({
+            .gameAction(sequential([
+                sendHome((context) => ({
                     target:
                         context.game.currentConflict?.getParticipants(
                             (character) => character.fate === 0
                         ) ?? []
                 })),
-                AbilityDsl.actions.onAffinity({
+                onAffinity({
                     trait: 'air',
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                    gameAction: cardLastingEffect((context) => ({
                         target: context.game.findAnyCardsInPlay(
                             (card) => card.getType() === CardType.Character
                         ),
-                        effect: AbilityDsl.effects.cardCannot('moveToConflict')
+                        effect: cardCannot('moveToConflict')
                     })),
                     effect: 'forbid all players from moving characters into the conflict'
                 })

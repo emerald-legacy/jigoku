@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBidInDuels, cannotHaveOtherRestrictedAttachments } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 
@@ -7,15 +7,15 @@ class MirumotoDaisho extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotHaveOtherRestrictedAttachments(this)
+            effect: cannotHaveOtherRestrictedAttachments(this)
         });
 
         this.persistentEffect({
             condition: context => !!this.game.currentDuel && !!context.source.parentCharacter && this.game.currentDuel.isInvolved(context.source.parentCharacter),
             targetController: Players.Opponent,
             effect: [
-                AbilityDsl.effects.cannotBidInDuels('1'),
-                AbilityDsl.effects.cannotBidInDuels('5')
+                cannotBidInDuels('1'),
+                cannotBidInDuels('5')
             ]
         });
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setBaseGlory } from '../../effects.js';
 import { Players } from '../../Constants.js';
 
 class ShosuroDenmaru extends DrawCard {
@@ -9,7 +9,7 @@ class ShosuroDenmaru extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             match: (card) => card.isHonored,
-            effect: AbilityDsl.effects.setBaseGlory(0)
+            effect: setBaseGlory(0)
         });
     }
 }

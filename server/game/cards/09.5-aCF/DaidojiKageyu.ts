@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 import type Player from '../../Player.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -19,7 +19,7 @@ class DaidojiKageyu extends DrawCard {
             .condition((context) => this.game.isDuringConflict(ConflictType.Political) &&
                 context.source.isParticipating() &&
                 cardsPlayed(context.player.opponent) > 0)
-            .gameAction(AbilityDsl.actions.draw((context) => ({ amount: cardsPlayed(context.player.opponent) })))
+            .gameAction(draw((context) => ({ amount: cardsPlayed(context.player.opponent) })))
             .effect('draw {1} card{2}', (context) => [
                 cardsPlayed(context.player.opponent),
                 cardsPlayed(context.player.opponent) > 1 ? 's' : ''

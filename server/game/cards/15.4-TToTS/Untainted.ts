@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken, gainHonor, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -20,11 +20,11 @@ class Untainted extends ProvinceAttachment {
                     return !!token.card && (token.card === parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardStatusToken((context) => ({
+            .gameAction(multiple([
+                discardStatusToken((context) => ({
                     target: context.token
                 })),
-                AbilityDsl.actions.gainHonor((context) => ({
+                gainHonor((context) => ({
                     target: context.player
                 }))
             ]))

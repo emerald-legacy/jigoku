@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class NitenMaster extends DrawCard {
     static id = 'niten-master';
@@ -13,7 +14,7 @@ class NitenMaster extends DrawCard {
                     event.card.controller === context.player
                 )
             })
-            .gameAction(AbilityDsl.actions.ready())
+            .gameAction(ready())
             .limit(AbilityDsl.limit.perRound(2));
     }
 }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { draw, moveCard } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
@@ -8,15 +8,15 @@ class KarmicBalance extends DrawCard {
 
     setupCardAbilities() {
         this.action('Shuffle and draw 4 new conflict cards')
-            .gameAction(AbilityDsl.actions.moveCard((context) => ({
+            .gameAction(moveCard((context) => ({
                 shuffle: true,
                 destination: Location.ConflictDeck,
                 target: [...context.player.conflictDiscardPile, ...context.player.hand]
-            })), AbilityDsl.actions.moveCard((context) => ({
+            })), moveCard((context) => ({
                 shuffle: true,
                 destination: Location.ConflictDeck,
                 target: context.player.opponent ? [...context.player.opponent.conflictDiscardPile, ...context.player.opponent.hand] : []
-            })), AbilityDsl.actions.draw((context) => ({ target: context.game.getPlayers(), amount: 4 })), AbilityDsl.actions.moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame })))
+            })), draw((context) => ({ target: context.game.getPlayers(), amount: 4 })), moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame })))
             .effect('shuffle hand and discard pile into conflict deck and draw 4 cards');
     }
 

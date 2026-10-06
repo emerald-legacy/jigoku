@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost } from '../../../effects.js';
+import { deckSearch, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, Decks, Duration, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
@@ -11,20 +12,20 @@ export default class AgashaAyako extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 activePromptTitle: 'Choose a character to play',
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && !card.isUnique(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: sequential([
+                    playerLastingEffect((context) => ({
                         targetController: context.player,
                         duration: Duration.UntilSelfPassPriority,
-                        effect: AbilityDsl.effects.reduceCost({
+                        effect: reduceCost({
                             match: (card) => card === context.deckSearchSelected[0],
                             amount: 1
                         })
                     })),
-                    AbilityDsl.actions.playCard((context) => {
+                    playCard((context) => {
                         const target = context.deckSearchSelected[0];
                         return {
                             target,

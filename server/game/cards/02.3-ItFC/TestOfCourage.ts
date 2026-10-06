@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor, moveToConflict, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class TestOfCourage extends DrawCard {
@@ -12,9 +12,9 @@ class TestOfCourage extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isFaction('lion')
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.moveToConflict(),
-                AbilityDsl.actions.honor()
+            }, sequential([
+                moveToConflict(),
+                honor()
             ]))
             .effect('move {0} to the conflict and honor it');
     }

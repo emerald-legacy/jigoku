@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOutOfPlay, registerToPlayFromOutOfPlay } from '../../effects.js';
 import { CardType, Location, Players, PlayType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { LimitedPlaysFromOutOfPlay } from '../LimitedPlaysFromOutOfPlay.js';
@@ -34,11 +34,11 @@ export default class BayushiKachiko2 extends DrawCard {
                 card.location === Location.ConflictDiscardPile &&
                 card.owner === context?.player.opponent,
             effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(
+                canPlayFromOutOfPlay(
                     (player, card) => player !== card.owner,
                     PlayType.PlayFromHand
                 ),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
+                registerToPlayFromOutOfPlay()
             ]
         });
     }

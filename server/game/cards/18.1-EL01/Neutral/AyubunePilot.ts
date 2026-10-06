@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import { captureParentCost } from '../../captureParentCost.js';
 
 class AyubunePilot extends DrawCard {
@@ -14,7 +15,7 @@ class AyubunePilot extends DrawCard {
             .cost(captureParentCost())
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed))
-            .gameAction(AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
+            .gameAction(moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
     }
 }
 

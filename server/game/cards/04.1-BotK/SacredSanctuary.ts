@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 
 export default class SacredSanctuary extends ProvinceCard {
     static id = 'sacred-sanctuary';
@@ -14,11 +15,11 @@ export default class SacredSanctuary extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('monk')
-            }, AbilityDsl.actions.ready(), AbilityDsl.actions.cardLastingEffect({
+            }, ready(), cardLastingEffect({
                 condition: () => this.game.isDuringConflict(),
-                effect: AbilityDsl.effects.doesNotBow()
-            }), AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
+                effect: doesNotBow()
+            }), cardLastingEffect((context) => ({
+                effect: cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player

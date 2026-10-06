@@ -1,5 +1,14 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import {
+    chooseAction,
+    multiple,
+    noAction,
+    putIntoConflict,
+    returnToHand,
+    selectCard,
+    sendHome
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -11,21 +20,21 @@ export default class IllusionaryDecoy extends DrawCard {
             .when({
                 onConflictStarted: (_event, context) => controlsShugenja(context.player)
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.putIntoConflict((context) => ({ target: context.source })),
-                AbilityDsl.actions.chooseAction({
+            .gameAction(multiple([
+                putIntoConflict((context) => ({ target: context.source })),
+                chooseAction({
                     options: {
                         'Move another of your characters home': {
-                            action: AbilityDsl.actions.selectCard((context) => ({
+                            action: selectCard((context) => ({
                                 controller: Players.Self,
                                 cardType: CardType.Character,
                                 cardCondition: (card) => card.isCharacter() && card.isParticipating(),
                                 message: '{0} moves home {1} - they were an {2}',
                                 messageArgs: (card, player) => [player, card, context.source],
-                                gameAction: AbilityDsl.actions.sendHome()
+                                gameAction: sendHome()
                             }))
                         },
-                        Done: { action: AbilityDsl.actions.noAction() }
+                        Done: { action: noAction() }
                     }
                 })
             ]))
@@ -46,6 +55,6 @@ export default class IllusionaryDecoy extends DrawCard {
                 );
                 return matchShugenjaElementWithClaimedRing;
             })
-            .gameAction(AbilityDsl.actions.returnToHand());
+            .gameAction(returnToHand());
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { attach, conditional, draw, moveCard, multiple } from '../../GameActions/GameActions.js';
 
 class Logistics extends DrawCard {
     static id = 'logistics';
@@ -33,19 +33,19 @@ class Logistics extends DrawCard {
                             (moving.type !== CardType.Attachment && card.location !== moving.location)
                         );
                 }
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.conditional((context) => ({
+            }, multiple([
+                conditional((context) => ({
                     condition: context.targets.cardInProvince.type === CardType.Attachment,
-                    trueGameAction: AbilityDsl.actions.attach({
+                    trueGameAction: attach({
                         target: context.targets.province,
                         attachment: context.targets.cardInProvince
                     }),
-                    falseGameAction: AbilityDsl.actions.moveCard({
+                    falseGameAction: moveCard({
                         target: context.targets.cardInProvince,
                         destination: context.targets.province.location
                     })
                 })),
-                AbilityDsl.actions.draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] }))
+                draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] }))
             ]))
             .effect('move {1} to {2}{3}', (context) => [
                 context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,

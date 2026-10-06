@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,6 +14,6 @@ export default class ShosuroActress extends DrawCard {
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 controller: Players.Opponent,
                 cardCondition: (card) => card.costLessThan(4) && !card.hasTrait('shinobi')
-            }, AbilityDsl.actions.putIntoConflict());
+            }, putIntoConflict());
     }
 }

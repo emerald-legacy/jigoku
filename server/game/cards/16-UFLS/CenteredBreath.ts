@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { additionalAction, increaseLimitOnPrintedAbilities } from '../../effects.js';
+import { cardLastingEffect, playerLastingEffect, sequential } from '../../GameActions/GameActions.js';
 
 class CenteredBreath extends DrawCard {
     static id = 'centered-breath';
@@ -11,15 +12,15 @@ class CenteredBreath extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.hasTrait('monk') && card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect({
+            }, sequential([
+                cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.increaseLimitOnPrintedAbilities()
+                    effect: increaseLimitOnPrintedAbilities()
                 }),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     targetController: context.player,
                     duration: Duration.UntilPassPriority,
-                    effect: context.player.isKihoPlayedThisConflict(context, this) ? AbilityDsl.effects.additionalAction() : []
+                    effect: context.player.isKihoPlayedThisConflict(context, this) ? additionalAction() : []
                 }))
             ]))
             .effect('add an additional use to each of {0}\'s printed abilities{1}', context => [context.player.isKihoPlayedThisConflict(context, this) ? ' and take an additional action' : '']);

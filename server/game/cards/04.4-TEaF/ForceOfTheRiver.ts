@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { createToken } from '../../GameActions/GameActions.js';
 import SpiritOfTheRiver from '../SpiritOfTheRiver.js';
 
 export default class ForceOfTheRiver extends DrawCard {
@@ -11,7 +11,7 @@ export default class ForceOfTheRiver extends DrawCard {
 
         this.action('Create spirits from facedown dynasty cards')
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.createToken((context) => ({
+            .gameAction(createToken((context) => ({
                 target: context.game
                     .getProvinceArray()
                     .flatMap((location) =>

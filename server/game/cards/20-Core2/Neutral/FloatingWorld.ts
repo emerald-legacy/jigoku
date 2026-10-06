@@ -1,6 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 
 export default class FloatingWorld extends ProvinceCard {
     static id = 'floating-world';
@@ -11,7 +11,7 @@ export default class FloatingWorld extends ProvinceCard {
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.dishonor())
+            }, dishonor())
             .effect('dishonor {0}');
     }
 }

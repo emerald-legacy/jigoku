@@ -1,5 +1,6 @@
 import { AbilityType, CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility, reduceCost } from '../../../effects.js';
+import { cancel } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GraspOfEarth2 extends DrawCard {
@@ -11,7 +12,7 @@ export default class GraspOfEarth2 extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 1,
                 targetCondition: (target, _, context) => target.controller.hasAffinity('earth', context),
                 match: (card, source) => card === source
@@ -19,7 +20,7 @@ export default class GraspOfEarth2 extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
+            effect: gainAbility(AbilityType.WouldInterrupt, {
                 title: 'Block a character\'s movement to the conflict',
                 when: {
                     onMoveToConflict: (event, context) =>
@@ -27,7 +28,7 @@ export default class GraspOfEarth2 extends DrawCard {
                 },
                 effect: 'deny {1}\'s movement',
                 effectArgs: (context) => [context.event.card],
-                gameAction: AbilityDsl.actions.cancel()
+                gameAction: cancel()
             })
         });
     }

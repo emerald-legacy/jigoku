@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, ready, selectCard } from '../../GameActions/GameActions.js';
 
 class IdeRyoma extends DrawCard {
     static id = 'ide-ryoma';
@@ -22,13 +22,13 @@ class IdeRyoma extends DrawCard {
                 cardCondition: (card, context) =>
                     !card.isFaction('unicorn') &&
                         card.controller === context.targets.unicorn.controller
-            }, AbilityDsl.actions.selectCard(context => ({
+            }, selectCard(context => ({
                 activePromptTitle: 'Choose a character to bow',
                 cardCondition: card => Object.values(context.targets).includes(card),
-                gameAction: AbilityDsl.actions.bow()
+                gameAction: bow()
             })))
             .then((context) => ({
-                gameAction: AbilityDsl.actions.ready(() => ({
+                gameAction: ready(() => ({
                     target: [context.targets.unicorn, context.targets.nonunicorn].filter((card) => context.events.every((event) => !('card' in event) || event.card !== card))
                 }))
             }));

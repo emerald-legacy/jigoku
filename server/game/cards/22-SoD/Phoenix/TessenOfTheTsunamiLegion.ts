@@ -1,4 +1,11 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, gainAbility, modifyMilitarySkill } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    conditional,
+    moveToConflict,
+    multiple,
+    sendHome
+} from '../../../GameActions/GameActions.js';
 import { CardType, AbilityType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,8 +20,8 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
 
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addTrait('water'),
-                AbilityDsl.effects.gainAbility(AbilityType.Action, {
+                addTrait('water'),
+                gainAbility(AbilityType.Action, {
                     title: 'Give a character +2 and move them',
                     condition: (context) => context.game.isDuringConflict(),
                     printedAbility: false,
@@ -22,14 +29,14 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                         cardType: CardType.Character,
                         controller: Players.Self,
                         cardCondition: (card) => card.hasTrait('bushi'),
-                        gameAction: AbilityDsl.actions.multiple([
-                            AbilityDsl.actions.cardLastingEffect({
-                                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                        gameAction: multiple([
+                            cardLastingEffect({
+                                effect: modifyMilitarySkill(2)
                             }),
-                            AbilityDsl.actions.conditional({
+                            conditional({
                                 condition: context => context.source.isDrawCard() && context.source.isParticipating(),
-                                trueGameAction: AbilityDsl.actions.moveToConflict(),
-                                falseGameAction: AbilityDsl.actions.sendHome()
+                                trueGameAction: moveToConflict(),
+                                falseGameAction: sendHome()
                             })
                         ])
                     },

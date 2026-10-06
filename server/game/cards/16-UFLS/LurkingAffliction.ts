@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { taint } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class LurkingAffliction extends DrawCard {
@@ -10,7 +10,7 @@ class LurkingAffliction extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.taint());
+            }, taint());
     }
 }
 

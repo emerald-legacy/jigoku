@@ -1,7 +1,7 @@
 import { CardType, Decks, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, playCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { article } from '../../article.js';
 
@@ -10,7 +10,7 @@ export default class UtakuTakeko extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Play a character from your dynasty deck')
-            .gameAction(AbilityDsl.actions.deckSearch(() => ({
+            .gameAction(deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
                 amount: 8,
                 deck: Decks.DynastyDeck,
@@ -19,7 +19,7 @@ export default class UtakuTakeko extends DrawCard {
                     card.glory >= 1 &&
                     card.isFaction('unicorn') &&
                     !card.isUnique(),
-                gameAction: AbilityDsl.actions.playCard((context) => {
+                gameAction: playCard((context) => {
                     const target = context.deckSearchSelected[0];
                     return {
                         target,

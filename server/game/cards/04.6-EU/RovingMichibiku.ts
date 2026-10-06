@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { selectRing, takeRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class RovingMichibiku extends DrawCard {
@@ -12,12 +12,12 @@ export default class RovingMichibiku extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.selectRing((context) => ({
+            .gameAction(selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to take',
                 ringCondition: (ring) => ring.claimedBy === context.player.opponent?.name,
                 message: '{0} takes {1}',
                 messageArgs: (ring) => [context.player, ring],
-                gameAction: AbilityDsl.actions.takeRing()
+                gameAction: takeRing()
             })));
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 
 class UtakuMediator extends DrawCard {
     static id = 'utaku-mediator';
@@ -7,7 +7,7 @@ class UtakuMediator extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.player.imperialFavor === '',
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
     }
 }

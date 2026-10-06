@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { dishonor, multiple, ready } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,11 +10,11 @@ export default class DaidojiNakatama extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking() && context.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
             effect: [
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'sendHome',
                     restricts: 'opponentsCardEffects'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'moveToConflict',
                     restricts: 'opponentsCardEffects'
                 })
@@ -25,9 +26,9 @@ export default class DaidojiNakatama extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card !== context.source && card.costLessThan(4) && card.bowed
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.dishonor()
+            }, multiple([
+                ready(),
+                dishonor()
             ]))
             .effect('ready and dishonor {0}');
     }

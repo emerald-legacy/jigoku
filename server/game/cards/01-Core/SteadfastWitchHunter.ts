@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class SteadfastWitchHunter extends DrawCard {
     static id = 'steadfast-witch-hunter';
@@ -11,7 +12,7 @@ class SteadfastWitchHunter extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to ready',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

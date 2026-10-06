@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, loseKeyword } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 
 class AcolyteOfKoyane extends DrawCard {
@@ -18,12 +19,12 @@ class AcolyteOfKoyane extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Gain Pride': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.addKeyword('pride'),
+                'Gain Pride': cardLastingEffect(context => ({
+                    effect: addKeyword('pride'),
                     target: context.targets.character
                 })),
-                'Lose Pride': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.loseKeyword('pride'),
+                'Lose Pride': cardLastingEffect(context => ({
+                    effect: loseKeyword('pride'),
                     target: context.targets.character
                 }))
             })

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { conditional, noAction, ready, selectCard, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,17 +13,17 @@ export default class RetreatToSafety extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isDefending()
-            }, AbilityDsl.actions.sendHome())
+            }, sendHome())
             .then((parentContext) => ({
-                gameAction: AbilityDsl.actions.conditional({
+                gameAction: conditional({
                     condition: (context) => context.player.isCharacterTraitInPlay('commander'),
-                    falseGameAction: AbilityDsl.actions.noAction(),
-                    trueGameAction: AbilityDsl.actions.selectCard({
+                    falseGameAction: noAction(),
+                    trueGameAction: selectCard({
                         activePromptTitle: 'Choose a character to ready',
                         player: Players.Self,
                         cardType: CardType.Character,
                         cardCondition: (card) => parentContext.targets.target.includes(card),
-                        gameAction: AbilityDsl.actions.ready(),
+                        gameAction: ready(),
                         message: '{0} is readied due to {1}\'s superior leadership',
                         messageArgs: (card, player) => [card, player]
                     })

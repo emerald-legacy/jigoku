@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveCard, refillFaceup } from '../../GameActions/GameActions.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -15,7 +16,7 @@ class IsawaEju extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(AbilityDsl.actions.moveCard(context => ({
+            .gameAction(moveCard(context => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
             })))
@@ -23,7 +24,7 @@ class IsawaEju extends DrawCard {
             .then(context => {
                 const target = context.target;
                 return {
-                    gameAction: AbilityDsl.actions.refillFaceup(() => ({
+                    gameAction: refillFaceup(() => ({
                         target: target.controller,
                         location: target.location
                     }))

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, multiple, putIntoProvince, returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location } from '../../Constants.js';
 
 class MasterOfManyLifetimes extends DrawCard {
@@ -22,12 +22,12 @@ class MasterOfManyLifetimes extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.facedown
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.returnToHand({
+            .gameAction(cancel((context) => ({
+                replacementGameAction: multiple([
+                    returnToHand({
                         target: context.event.card?.attachments ?? []
                     }),
-                    AbilityDsl.actions.putIntoProvince({
+                    putIntoProvince({
                         target: context.event.card,
                         destination: context.target?.location
                     })

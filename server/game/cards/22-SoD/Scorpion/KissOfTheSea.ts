@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import { EffectName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -44,7 +44,7 @@ export default class KissOfTheSea extends DrawCard {
                     return false;
                 }
             })
-            .gameAction(AbilityDsl.actions.bow(context => ({
+            .gameAction(bow(context => ({
                 target: context.source.parentCharacter ?? []
             })));
     }

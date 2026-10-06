@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { attach, cardMenu, shuffleDeck } from '../../GameActions/GameActions.js';
 import { Players, CardType, Location } from '../../Constants.js';
 
 class AgashaShunsen extends DrawCard {
@@ -12,7 +13,7 @@ class AgashaShunsen extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardMenu(context => ({
+            }, cardMenu(context => ({
                 cards: context.player.conflictDeck.filter((card) =>
                     card.type === CardType.Attachment &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1)
@@ -22,10 +23,10 @@ class AgashaShunsen extends DrawCard {
                 options: [
                     { text: 'Don\'t attach a card', handler: () => this.game.addMessage('{0} chooses not to attach anything to {1}', context.player, context.target) }
                 ],
-                gameAction: AbilityDsl.actions.attach(),
+                gameAction: attach(),
                 subActionProperties: card => ({ attachment: card })
             })))
-            .gameAction(AbilityDsl.actions.shuffleDeck({ deck: Location.ConflictDeck }))
+            .gameAction(shuffleDeck({ deck: Location.ConflictDeck }))
             .effect('search their deck for an attachment costing {1} or less and attach it to {0}', context => (context.costs.returnRing ?? []).length);
     }
 }

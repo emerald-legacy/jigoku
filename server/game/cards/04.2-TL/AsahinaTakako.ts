@@ -1,5 +1,6 @@
 import { Location, CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canBeSeenWhenFacedown } from '../../effects.js';
+import { chooseAction, discardCard, moveCard, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsahinaTakako extends DrawCard {
@@ -9,7 +10,7 @@ export default class AsahinaTakako extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFacedown(),
-            effect: AbilityDsl.effects.canBeSeenWhenFacedown()
+            effect: canBeSeenWhenFacedown()
         });
 
         this.action('Discard a card or switch with another card')
@@ -17,13 +18,13 @@ export default class AsahinaTakako extends DrawCard {
                 cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.chooseAction((context) => ({
+            }, chooseAction((context) => ({
                 options: {
                     Discard: {
-                        action: AbilityDsl.actions.discardCard({ target: context.target })
+                        action: discardCard({ target: context.target })
                     },
                     'Switch with another card': {
-                        action: AbilityDsl.actions.selectCard({
+                        action: selectCard({
                             activePromptTitle: 'Choose a card to switch with',
                             cardType: [CardType.Character, CardType.Holding, CardType.Event],
                             location: Location.Provinces,
@@ -36,7 +37,7 @@ export default class AsahinaTakako extends DrawCard {
                                 card.isFacedown() ? 'a facedown card' : card,
                                 card.location
                             ],
-                            gameAction: AbilityDsl.actions.moveCard({
+                            gameAction: moveCard({
                                 destination: context.target?.location,
                                 switch: true,
                                 switchTarget: context.target

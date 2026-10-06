@@ -1,6 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { AbilityType, CardType, Location, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainAbility } from '../../../effects.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ArmorOfTheFallen extends DrawCard {
@@ -10,7 +12,7 @@ export default class ArmorOfTheFallen extends DrawCard {
         this.attachmentConditions({ trait: 'bushi' });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Remove characters from your discard pile to bow a character',
                 condition: (context) => context.source.isParticipating(),
                 cost: AbilityDsl.costs.removeFromGame({
@@ -22,7 +24,7 @@ export default class ArmorOfTheFallen extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() && (card.printedCost ?? 0) <= this.maxCostReachable(context),
-                    gameAction: AbilityDsl.actions.bow()
+                    gameAction: bow()
                 },
                 cannotTargetFirst: true
             })

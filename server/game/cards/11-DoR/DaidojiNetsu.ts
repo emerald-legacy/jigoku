@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 
 class DaidojiNetsu extends DrawCard {
     static id = 'daidoji-netsu';
@@ -11,7 +11,7 @@ class DaidojiNetsu extends DrawCard {
             targetController: Players.Any,
             match: (card, context) => card.getType() === CardType.Character && card !== context?.source,
             effect: [
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'leavePlay',
                     restricts: 'nonKeywordAbilities'})
             ]

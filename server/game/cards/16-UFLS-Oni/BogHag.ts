@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { discardCard } from '../../GameActions/GameActions.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class BogHag extends BaseOni {
@@ -14,7 +14,7 @@ export default class BogHag extends BaseOni {
                     context.player.opponent &&
                     context.player.opponent.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.discardCard((context) => ({
+            .gameAction(discardCard((context) => ({
                 target: context.player.opponent?.conflictDeck.slice(0, 8) ?? []
             })))
             .effect('discard the top 8 cards of {1}\'s conflict deck', (context) => [context.player.opponent]);

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { returnToDeck } from '../../GameActions/GameActions.js';
 
 class HidaTomonatsu extends DrawCard {
     static id = 'hida-tomonatsu';
@@ -15,7 +16,7 @@ class HidaTomonatsu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isAttacking() && !card.isUnique()
-            }, AbilityDsl.actions.returnToDeck());
+            }, returnToDeck());
     }
 }
 

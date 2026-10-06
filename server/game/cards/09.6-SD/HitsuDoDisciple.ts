@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 
 class HitsuDoDisciple extends DrawCard {
     static id = 'hitsu-do-disciple';
@@ -13,7 +13,7 @@ class HitsuDoDisciple extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }
 

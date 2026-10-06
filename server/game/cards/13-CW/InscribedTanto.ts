@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -11,7 +11,7 @@ class InscribedTanto extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: context => hasClaimedRing(this, elementSymbol.key, context.player),
-            effect: AbilityDsl.effects.immunity({
+            effect: immunity({
                 restricts: 'opponentsRingEffects'
             })
         });

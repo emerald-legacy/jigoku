@@ -1,24 +1,25 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
+import { handler, selectCard } from '../../GameActions/GameActions.js';
 
 class FrontlineEngineer extends DrawCard {
     static id = 'frontline-engineer';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory(() => this.getHoldingsInPlay())
+            effect: modifyGlory(() => this.getHoldingsInPlay())
         });
 
         this.action('Place a holding from your deck faceup in the defending province')
             .condition(context => context.player.dynastyDeck.length > 0 && context.source.isDefending())
-            .gameAction(AbilityDsl.actions.selectCard({
+            .gameAction(selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: card => card.isConflictProvince(),
-                gameAction: AbilityDsl.actions.handler({
+                gameAction: handler({
                     handler: (context, [province]) => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
                         context: context,

@@ -1,13 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 class KaitoMai extends DrawCard {
     static id = 'kaito-mai';
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.modifyGlory(3)
+            effect: modifyGlory(3)
         });
 
         this.reaction('Remove a fate')
@@ -17,7 +18,7 @@ class KaitoMai extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.removeFate());
+            }, removeFate());
     }
 }
 

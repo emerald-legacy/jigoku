@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class IuchiDaiyu extends DrawCard {
@@ -10,8 +11,8 @@ class IuchiDaiyu extends DrawCard {
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyMilitarySkill(
+            }, cardLastingEffect((context) => ({
+                effect: modifyMilitarySkill(
                     context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
                 )
             })))

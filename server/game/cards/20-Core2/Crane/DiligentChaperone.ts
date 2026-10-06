@@ -1,5 +1,6 @@
 import { Location, CardType, CharacterStatus, EventName } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotParticipateAsAttacker } from '../../../effects.js';
+import { honor, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -30,7 +31,7 @@ export default class DiligentChaperone extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
+            effect: cannotParticipateAsAttacker()
         });
 
         this.reaction('Rehonor the character')
@@ -46,11 +47,11 @@ export default class DiligentChaperone extends DrawCard {
                     event.token.grantedStatus === CharacterStatus.Honored &&
                     event.cards.some(isFriendlyCharacter.bind(null, context))
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => targetsFromEvent(context.event).has(card),
-                gameAction: AbilityDsl.actions.honor(),
+                gameAction: honor(),
                 message: '{0} honors {1}',
                 messageArgs: (card, player) => [player, card]
             })))

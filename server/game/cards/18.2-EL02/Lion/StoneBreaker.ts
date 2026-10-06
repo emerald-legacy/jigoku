@@ -1,6 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect, refillFaceup, selectCard } from '../../../GameActions/GameActions.js';
 import { moveCardInProvinceAction } from '../../moveCardInProvince.js';
 
 class StoneBreaker extends DrawCard {
@@ -9,10 +11,10 @@ class StoneBreaker extends DrawCard {
     setupCardAbilities() {
         moveCardInProvinceAction(this)
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location ?? [] })));
+            .gameAction(refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location ?? [] })));
 
         this.conflictAction('Reduce province strength')
-            .gameAction(AbilityDsl.actions.selectCard(context => ({
+            .gameAction(selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -20,9 +22,9 @@ class StoneBreaker extends DrawCard {
                 cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength(-2)
+                    effect: modifyProvinceStrength(-2)
                 })
             })))
             .effect('reduce an attacked province strength by 2');

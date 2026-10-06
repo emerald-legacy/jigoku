@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, loseHonor } from '../../../GameActions/GameActions.js';
 import { Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
@@ -9,7 +10,7 @@ export default class YasukiYoshi extends DrawCard {
     setupCardAbilities() {
         this.reaction('Search for Writ of Survey')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 activePromptTitle: 'Choose a Writ of Survey',
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Survey',
@@ -23,7 +24,7 @@ export default class YasukiYoshi extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.loseHonor((context) => ({
+            .gameAction(loseHonor((context) => ({
                 target: context.event.conflict.loser
             })))
             .limit(AbilityDsl.limit.unlimited());

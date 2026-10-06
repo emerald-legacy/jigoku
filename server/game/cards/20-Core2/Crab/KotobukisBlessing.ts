@@ -1,5 +1,6 @@
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay, placeFate, selectCards, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KotobukisBlessing extends DrawCard {
@@ -10,9 +11,9 @@ export default class KotobukisBlessing extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.placeFate(),
-                AbilityDsl.actions.selectCards((context) => ({
+            }, sequential([
+                placeFate(),
+                selectCards((context) => ({
                     mode: TargetMode.UpTo,
                     numCards: 1,
                     cardType: CardType.Attachment,
@@ -20,7 +21,7 @@ export default class KotobukisBlessing extends DrawCard {
                     cardCondition: (card) => card.parentCharacter === context.target,
                     activePromptTitle: 'Choose up to 1 attachment',
                     optional: true,
-                    gameAction: AbilityDsl.actions.discardFromPlay(),
+                    gameAction: discardFromPlay(),
                     message: '{0} chooses to discard {1} from {2}',
                     messageArgs: (cards) => [
                         context.player,

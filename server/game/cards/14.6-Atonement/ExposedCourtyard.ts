@@ -1,5 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOwn, delayedEffect } from '../../effects.js';
+import {
+    cardLastingEffect,
+    handler,
+    playerLastingEffect,
+    returnToDeck,
+    selectCard,
+    sequential
+} from '../../GameActions/GameActions.js';
 import { CardType, Location, Players, Duration, ConflictType } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
 
@@ -31,12 +39,12 @@ class ExposedCourtyard extends DrawCard {
         this.action('Make an event in your conflict discard playable')
             .cost(exposedCourtyardCost())
             .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .gameAction(AbilityDsl.actions.sequential([
+            .gameAction(sequential([
                 // always legal, so this can trigger when only the cards the cost discards give it a choice
-                AbilityDsl.actions.handler({
+                handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context) => ({
+                selectCard((context) => ({
                     location: Location.ConflictDiscardPile,
                     cardType: CardType.Event,
                     activePromptTitle: 'Choose an event',
@@ -46,8 +54,8 @@ class ExposedCourtyard extends DrawCard {
                         context.target = card;
                         return ({ target: card });
                     },
-                    gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.playerLastingEffect((context) => {
+                    gameAction: sequential([
+                        playerLastingEffect((context) => {
                             return {
                                 targetController: context.player,
                                 duration: Duration.Custom,
@@ -57,13 +65,13 @@ class ExposedCourtyard extends DrawCard {
                                     },
                                     onConflictFinished: () => true
                                 },
-                                effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, context.target?.isDrawCard() ? [context.target] : [], this)
+                                effect: canPlayFromOwn(Location.ConflictDiscardPile, context.target?.isDrawCard() ? [context.target] : [], this)
                             };
                         }),
-                        AbilityDsl.actions.cardLastingEffect((context) => ({
+                        cardLastingEffect((context) => ({
                             targetLocation: Location.Any,
                             canChangeZoneNTimes: 2,
-                            effect: AbilityDsl.effects.delayedEffect({
+                            effect: delayedEffect({
                                 when: {
                                     onCardPlayed: (event) => {
                                         return event.card === context.target && event.player === context.target?.controller;
@@ -72,7 +80,7 @@ class ExposedCourtyard extends DrawCard {
                                 multipleTrigger: true,
                                 message: '{0} returns to the bottom of the deck due to {1}\'s effect',
                                 messageArgs: [context.target, context.source],
-                                gameAction: AbilityDsl.actions.returnToDeck({
+                                gameAction: returnToDeck({
                                     location: Location.Any,
                                     bottom: true
                                 })

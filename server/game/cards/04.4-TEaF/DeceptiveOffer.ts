@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect, takeHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -18,11 +19,11 @@ class DeceptiveOffer extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Allow your opponent\'s character to gain military and political skill': AbilityDsl.actions.cardLastingEffect(context => ({
+                'Allow your opponent\'s character to gain military and political skill': cardLastingEffect(context => ({
                     target: context.targets.character,
-                    effect: AbilityDsl.effects.modifyBothSkills(2)
+                    effect: modifyBothSkills(2)
                 })),
-                'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()
+                'Give your opponent 1 honor': takeHonor()
             })
             .effect('{1}{2}', context => {
                 if(context.selects.select.choice === 'Give your opponent 1 honor') {

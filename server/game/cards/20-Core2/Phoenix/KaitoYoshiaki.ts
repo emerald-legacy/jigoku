@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect, conditional, multiple, noAction, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 
@@ -21,17 +22,17 @@ export default class KaitoYoshiaki extends DrawCard {
                     context.game.requireConflict()
                         .getCharacters(context.player)
                         .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
+            }, multiple([
+                cardLastingEffect({
                     effect: [
-                        AbilityDsl.effects.setBaseMilitarySkill(0),
-                        AbilityDsl.effects.setBasePoliticalSkill(0)
+                        setBaseMilitarySkill(0),
+                        setBasePoliticalSkill(0)
                     ]
                 }),
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: (context) => !!context.target && isEvil(context.target),
-                    trueGameAction: AbilityDsl.actions.removeFate(),
-                    falseGameAction: AbilityDsl.actions.noAction()
+                    trueGameAction: removeFate(),
+                    falseGameAction: noAction()
                 })
             ]))
             .effect('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', isEvil(context.target) ? 'remove a fate from and ' : '']);

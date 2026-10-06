@@ -1,5 +1,7 @@
 import { ConflictType, DuelType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { additionalConflict } from '../../effects.js';
+import { noAction, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class CourteousScheming extends DrawCard {
@@ -14,12 +16,12 @@ export default class CourteousScheming extends DrawCard {
                 messageArgs: (duel) => [duel.winnerController ?? ''],
                 gameAction: (duel) =>
                     duel.winner
-                        ? AbilityDsl.actions.playerLastingEffect({
+                        ? playerLastingEffect({
                             targetController: duel.winnerController,
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
+                            effect: additionalConflict(ConflictType.Political)
                         })
-                        : AbilityDsl.actions.noAction()
+                        : noAction()
             }))
             .max(AbilityDsl.limit.perRound(1));
     }

@@ -1,5 +1,6 @@
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ApprenticeEarthcaller extends DrawCard {
@@ -10,10 +11,10 @@ export default class ApprenticeEarthcaller extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking() && card.attachments.length === 0
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.setMilitarySkill(context.target.printedMilitarySkill),
-                    AbilityDsl.effects.setPoliticalSkill(context.target.printedPoliticalSkill)
+                    setMilitarySkill(context.target.printedMilitarySkill),
+                    setPoliticalSkill(context.target.printedPoliticalSkill)
                 ]
             })))
             .effect('set {0}\'s skill values to their printed values until the end of the conflict');

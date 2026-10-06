@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainHonor, moveCard } from '../../GameActions/GameActions.js';
 import { Players, Location, CardType } from '../../Constants.js';
 
 class ProceduralInterference extends DrawCard {
@@ -19,11 +19,11 @@ class ProceduralInterference extends DrawCard {
                 dependsOn: 'province',
                 player: Players.Opponent
             }, {
-                'Discard each card in the province': AbilityDsl.actions.moveCard(context => ({
+                'Discard each card in the province': moveCard(context => ({
                     destination: Location.DynastyDiscardPile,
                     target: context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)
                 })),
-                'Let opponent gain 2 honor': AbilityDsl.actions.gainHonor({
+                'Let opponent gain 2 honor': gainHonor({
                     amount: 2
                 })
             })

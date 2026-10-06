@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { changePlayerSkillModifier } from '../../../effects.js';
+import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,9 +15,9 @@ export default class MarvelousBeings extends DrawCard {
                     card.type === CardType.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
             }))
             .condition((context) => context.game.isDuringConflict(ConflictType.Political))
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 target: context.player,
-                effect: AbilityDsl.effects.changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
+                effect: changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
             })))
             .effect('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context.costs.moveToConflict), 'political'])
             .max(AbilityDsl.limit.perConflict(1));

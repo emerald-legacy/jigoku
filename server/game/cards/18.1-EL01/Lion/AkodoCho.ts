@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, discardFromPlay, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -26,7 +26,7 @@ export default class AkodoCho extends DrawCard {
                 player: (context) =>
                     context.targets[CHARACTER].controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Discard an attachment from this character': AbilityDsl.actions.selectCard((context) => ({
+                'Discard an attachment from this character': selectCard((context) => ({
                     cardType: CardType.Attachment,
                     effect: 'discard an attachment on {0}',
                     effectArgs: () => [context.targets[CHARACTER]],
@@ -38,9 +38,9 @@ export default class AkodoCho extends DrawCard {
                     cardCondition: (card) => card.parentCharacter === context.targets[CHARACTER],
                     message: '{0} discards {1}',
                     messageArgs: (card) => [context.targets[CHARACTER].controller, card],
-                    gameAction: AbilityDsl.actions.discardFromPlay()
+                    gameAction: discardFromPlay()
                 })),
-                'Bow this character': AbilityDsl.actions.bow((context) => ({
+                'Bow this character': bow((context) => ({
                     target: context.targets[CHARACTER]
                 }))
             })

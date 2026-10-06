@@ -3,6 +3,7 @@ import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import { Location, CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class AkodoMastermind extends DrawCard {
     static id = 'akodo-mastermind';
@@ -19,7 +20,7 @@ class AkodoMastermind extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.getGlory() <= this.getGloryCheck(context.player, context.costs.removeFromGame)
-            }, AbilityDsl.actions.bow())
+            }, bow())
             .cannotTargetFirst();
     }
 

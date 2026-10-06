@@ -1,5 +1,7 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SawakitensBlessing extends DrawCard {
@@ -10,11 +12,11 @@ export default class SawakitensBlessing extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 condition: () => this.game.isDuringConflict(),
-                effect: AbilityDsl.effects.doesNotBow()
-            }), AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
+                effect: doesNotBow()
+            }), cardLastingEffect((context) => ({
+                effect: cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player

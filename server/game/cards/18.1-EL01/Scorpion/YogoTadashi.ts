@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 
 class YogoTadashi extends DrawCard {
@@ -15,8 +16,8 @@ class YogoTadashi extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.cardCannot({
+            }, cardLastingEffect({
+                effect: cardCannot({
                     cannot: 'target',
                     restricts: 'opponentsEvents'
                 })

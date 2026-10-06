@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
 
 class JoinTheFray extends DrawCard {
@@ -20,7 +20,7 @@ class JoinTheFray extends DrawCard {
                 dependsOn: 'character',
                 targets: true,
                 activePromptTitle: 'Which side should this character be on?'
-            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.putIntoConflict({ side: player, target: context.targets.character })))
+            }, (context) => playerChoices(context.player, (player) => putIntoConflict({ side: player, target: context.targets.character })))
             .effect('have {1} join the conflict for {2}', (context) => [
                 context.targets.character,
                 context.selects.select.choice === context.player.name ? context.player : context.player.opponent

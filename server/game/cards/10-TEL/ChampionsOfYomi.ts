@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, putIntoPlay, removeFromGame, sequential } from '../../GameActions/GameActions.js';
 import {CardType, Duration, Location} from '../../Constants.js';
 
 class ChampionsOfYomi extends DrawCard {
@@ -15,20 +17,20 @@ class ChampionsOfYomi extends DrawCard {
             .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Stronghold
             }))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.putIntoPlay(context => ({
+            .gameAction(sequential([
+                putIntoPlay(context => ({
                     target: context.source
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect(context => ({
                     target: context.source,
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onPhaseEnded: () => true
                         },
                         message: '{0} is removed from the game due to its delayed effect',
                         messageArgs: (context) => [context.source],
-                        gameAction: AbilityDsl.actions.removeFromGame()
+                        gameAction: removeFromGame()
                     })
                 }))
             ]))

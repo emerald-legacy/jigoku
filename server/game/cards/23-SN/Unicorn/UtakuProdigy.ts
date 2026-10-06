@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../../effects.js';
+import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
 
 
 export default class UtakuProdigy extends DrawCard {
@@ -7,16 +8,16 @@ export default class UtakuProdigy extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
+            effect: cannotReceiveDishonorToken()
         });
 
         this.wouldInterrupt('Gain 2 honor instead')
             .when({
                 onModifyHonor: (event, context) => event.dueToStatusToken && event.amount > 0 && event.player === context.player
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.gainHonor(context => ({ target: context.player, amount: 2 }))
+            .gameAction(sequential([
+                cancel(),
+                gainHonor(context => ({ target: context.player, amount: 2 }))
             ]))
             .effect('instead gain 2 honor from the status token');
     }

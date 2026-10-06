@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 
 class PalaceGuard extends DrawCard {
     static id = 'palace-guard';
@@ -7,7 +7,7 @@ class PalaceGuard extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => !!context.player.opponent && context.player.opponent.isLessHonorable(),
-            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
+            effect: cannotBeDeclaredAsAttacker()
         });
     }
 }

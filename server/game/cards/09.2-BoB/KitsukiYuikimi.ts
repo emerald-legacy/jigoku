@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KitsukiYuikimi extends DrawCard {
@@ -14,8 +15,8 @@ export default class KitsukiYuikimi extends DrawCard {
                     event.recipient === context.player &&
                     context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
+            .gameAction(cardLastingEffect((context) => ({
+                effect: cardCannot({
                     cannot: 'target',
                     restricts: 'opponentsTriggeredAbilities',
                     applyingPlayer: context.player

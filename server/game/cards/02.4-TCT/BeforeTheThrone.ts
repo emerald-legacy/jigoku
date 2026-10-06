@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { takeHonor } from '../../GameActions/GameActions.js';
 
 export default class BeforeTheThrone extends ProvinceCard {
     static id = 'before-the-throne';
@@ -9,7 +9,7 @@ export default class BeforeTheThrone extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.takeHonor({ amount: 2 }));
+            .gameAction(takeHonor({ amount: 2 }));
     }
 
     cannotBeStrongholdProvince() {

@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardStatusToken, gainHonor, multiple } from '../../../GameActions/GameActions.js';
 
 class HeraldOfJade extends DrawCard {
     static id = 'herald-of-jade';
@@ -12,9 +12,9 @@ class HeraldOfJade extends DrawCard {
             })
             .tokenTarget({
                 location: Location.Any
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardStatusToken(),
-                AbilityDsl.actions.gainHonor(context => ({
+            }, multiple([
+                discardStatusToken(),
+                gainHonor(context => ({
                     target: context.player
                 }))
             ]))

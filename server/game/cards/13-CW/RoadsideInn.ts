@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { Players, CardType, Phases } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
@@ -17,7 +18,7 @@ class RoadsideInn extends DrawCard {
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.placeFate(context => ({ origin: context.player })))
+            }, placeFate(context => ({ origin: context.player })))
             .target({
                 name: 'oppCharacter',
                 player: Players.Opponent,
@@ -25,7 +26,7 @@ class RoadsideInn extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
-            }, AbilityDsl.actions.placeFate(context => ({ origin: context.player.opponent })))
+            }, placeFate(context => ({ origin: context.player.opponent })))
             .effect('place a fate from their pool on {1}{2}', (context) => [
                 context.targets.myCharacter,
                 honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name)

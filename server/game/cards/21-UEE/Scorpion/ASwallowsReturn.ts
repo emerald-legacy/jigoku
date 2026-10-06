@@ -1,5 +1,6 @@
 import { Location, PlayType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cardMenu, discardCard, playCard, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CARD_COUNT = 3;
@@ -14,8 +15,8 @@ export default class ASwallowsReturn extends DrawCard {
                 context.game.currentConflict !== null &&
         context.player.opponent !== undefined &&
         context.player.opponent.conflictDeck.length >= CARD_COUNT)
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardMenu((context) => ({
+            .gameAction(sequential([
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to play',
                     cards: context.costs.reveal ?? [],
                     cardCondition: (card) =>
@@ -31,14 +32,14 @@ export default class ASwallowsReturn extends DrawCard {
                             }
                         }
                     ],
-                    gameAction: AbilityDsl.actions.playCard({
+                    gameAction: playCard({
                         playType: PlayType.PlayFromHand,
                         source: context.source
                     }),
                     message: '{0} chooses to play {1} and discard {2}',
                     messageArgs: (card, player) => [player, card.name, context.costs.reveal?.filter((c) => c !== card)]
                 })),
-                AbilityDsl.actions.discardCard((context) => ({
+                discardCard((context) => ({
                     target: (context.costs.reveal ?? []).filter((card) => card.location === Location.ConflictDeck)
                 }))
             ]))

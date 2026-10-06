@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { loseHonor } from '../../GameActions/GameActions.js';
 
 class IntimidatingHida extends DrawCard {
     static id = 'intimidating-hida';
@@ -9,7 +9,7 @@ class IntimidatingHida extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
             })
-            .gameAction(AbilityDsl.actions.loseHonor());
+            .gameAction(loseHonor());
     }
 }
 

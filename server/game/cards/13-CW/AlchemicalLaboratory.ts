@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
 const elementSymbol = { key: 'alchemical-laboratory-fire', element: Element.Fire };
@@ -12,7 +12,7 @@ class AlchemicalLaboratory extends DrawCard {
         this.persistentEffect({
             condition: context => hasClaimedRing(this, elementSymbol.key, context.player),
             match: (card, context) => card.getType() === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
-            effect: AbilityDsl.effects.addKeyword('ancestral'),
+            effect: addKeyword('ancestral'),
             targetController: Players.Self
         });
     }

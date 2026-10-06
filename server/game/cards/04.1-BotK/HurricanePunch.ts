@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, draw } from '../../GameActions/GameActions.js';
 
 class HurricanePunch extends DrawCard {
     static id = 'hurricane-punch';
@@ -10,10 +11,10 @@ class HurricanePunch extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            }, cardLastingEffect({
+                effect: modifyMilitarySkill(2)
             }))
-            .gameAction(AbilityDsl.actions.draw())
+            .gameAction(draw())
             .effect('grant 2 military skill to {0} and draw a card');
     }
 }

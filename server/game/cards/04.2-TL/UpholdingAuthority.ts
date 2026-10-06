@@ -1,5 +1,6 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardMenu, discardCard, lookAt, menuPrompt, sequential } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { MenuPromptProperties } from '../../GameActions/MenuPromptAction.js';
 
@@ -9,16 +10,16 @@ export default class UpholdingAuthority extends ProvinceCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!(context.player.role && context.player.role.hasTrait('earth')),
-            effect: AbilityDsl.effects.modifyProvinceStrength(2)
+            effect: modifyProvinceStrength(2)
         });
 
-        const gameAction = AbilityDsl.actions.menuPrompt((context) => ({
+        const gameAction = menuPrompt((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
             choices: (properties) =>
                 (context.game.currentConflict?.attackingPlayer.hand ?? [])
                     .filter((card) => card.name === this.chosenCard(properties)?.name)
                     .map((_, idx) => (idx + 1).toString()),
-            gameAction: AbilityDsl.actions.discardCard(),
+            gameAction: discardCard(),
             choiceHandler: (choice, displayMessage, properties) => {
                 const chosenCard = this.chosenCard(properties);
                 if(displayMessage) {
@@ -45,13 +46,13 @@ export default class UpholdingAuthority extends ProvinceCard {
                     context.game.currentConflict &&
                     context.game.currentConflict.attackingPlayer.hand.length > 0
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt((context) => ({
+            .gameAction(sequential([
+                lookAt((context) => ({
                     target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                     message: '{0} reveals their hand: {1}',
                     messageArgs: (cards) => [context.game.currentConflict?.attackingPlayer, cards]
                 })),
-                AbilityDsl.actions.cardMenu((context) => ({
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',
                     cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) ?? [],
                     targets: true,

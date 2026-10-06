@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
 class HonorInBattle extends DrawCard {
@@ -10,7 +10,7 @@ class HonorInBattle extends DrawCard {
             .condition((context) => context.player.getClaimedRings().some((ring) => ring.isConflictType(ConflictType.Military)))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

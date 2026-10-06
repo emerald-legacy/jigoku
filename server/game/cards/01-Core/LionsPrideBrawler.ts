@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class LionsPrideBrawler extends DrawCard {
     static id = 'lion-s-pride-brawler';
@@ -11,7 +11,7 @@ class LionsPrideBrawler extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

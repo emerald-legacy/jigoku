@@ -1,5 +1,6 @@
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 
 export default class PalaceOfKnowledge extends StrongholdCard {
     static id = 'palace-of-knowledge';
@@ -16,6 +17,6 @@ export default class PalaceOfKnowledge extends StrongholdCard {
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>
                     ring !== context.event.ring && ring.isUnclaimed()
-            }, AbilityDsl.actions.resolveRingEffect());
+            }, resolveRingEffect());
     }
 }

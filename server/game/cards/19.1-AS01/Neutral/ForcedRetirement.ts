@@ -1,4 +1,11 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import {
+    discardFromPlay,
+    discardStatusToken,
+    gainHonor,
+    multiple,
+    removeFate,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,27 +19,27 @@ export default class ForcedRetirement extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
+            .gameAction(sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.discardStatusToken({
+                    multiple([
+                        discardStatusToken({
                             target: context.target.statusTokens.filter(
                                 (t) =>
                                     t.grantedStatus === CharacterStatus.Dishonored ||
                                     t.grantedStatus === CharacterStatus.Tainted
                             )
                         }),
-                        AbilityDsl.actions.removeFate({
+                        removeFate({
                             target: context.target,
                             amount: context.target.getFate(),
                             recipient: context.target.owner
                         })
                     ]),
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.discardFromPlay({
+                    multiple([
+                        discardFromPlay({
                             target: context.target
                         }),
-                        AbilityDsl.actions.gainHonor({
+                        gainHonor({
                             target: context.player
                         })
                     ])

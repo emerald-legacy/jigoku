@@ -1,6 +1,7 @@
 import CardAbility from '../../../CardAbility.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiAya extends DrawCard {
@@ -13,9 +14,9 @@ export default class SoshiAya extends DrawCard {
                     event.context.ability instanceof CardAbility && event.context.ability.printedAbility
             })
             .cost(AbilityDsl.costs.putSelfIntoPlay())
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .then(() => ({
-                gameAction: AbilityDsl.actions.placeFate()
+                gameAction: placeFate()
             }))
             .location(Location.Hand);
     }

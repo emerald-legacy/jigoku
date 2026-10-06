@@ -1,5 +1,5 @@
 import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw, honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfAir extends DrawCard {
@@ -15,8 +15,8 @@ export default class MantraOfAir extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
-            }, AbilityDsl.actions.honor())
-            .gameAction(AbilityDsl.actions.draw())
+            }, honor())
+            .gameAction(draw())
             .effect('honor {0} and draw a card');
     }
 }

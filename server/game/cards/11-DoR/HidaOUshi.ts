@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { additionalConflict } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration, ConflictType } from '../../Constants.js';
 
 class HidaOUshi extends DrawCard {
@@ -8,10 +10,10 @@ class HidaOUshi extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain additional military conflict')
             .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .gameAction(playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(ConflictType.Military)
+                effect: additionalConflict(ConflictType.Military)
             })))
             .effect('allow {1} to declare an additional military conflict this phase', context => [context.player])
             .max(AbilityDsl.limit.perPhase(1));

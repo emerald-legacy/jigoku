@@ -1,6 +1,6 @@
 import { EventName, Location, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -21,7 +21,7 @@ export default class RelentlessGloryseeker extends DrawCard {
                     context.game.currentPhase === Phases.Conflict &&
                     this.ressurrectionsThisRound < MAXIMUM_RESSURRECTIONS
             })
-            .gameAction(AbilityDsl.actions.putIntoPlay())
+            .gameAction(putIntoPlay())
             .effect('return to play - {0} is ready for more')
             .then(() => {
                 this.ressurrectionsThisRound++;

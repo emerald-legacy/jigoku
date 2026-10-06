@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, dishonor, draw, sequential } from '../../GameActions/GameActions.js';
 
 class MagistratesIntervention extends DrawCard {
     static id = 'magistrate-s-intervention';
@@ -11,14 +11,14 @@ class MagistratesIntervention extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.dishonor(),
-                AbilityDsl.actions.conditional({
+            }, sequential([
+                dishonor(),
+                conditional({
                     condition: (context) => !!(
                         context.player.opponent && context.target?.controller === context.player.opponent &&
                             context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1),
-                    trueGameAction: AbilityDsl.actions.dishonor(),
-                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
+                    trueGameAction: dishonor(),
+                    falseGameAction: draw({ amount: 0 }) //do nothing
                 })
 
             ]))

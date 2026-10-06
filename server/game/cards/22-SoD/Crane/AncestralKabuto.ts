@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { setGlory } from '../../../effects.js';
+import { gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AncestralKabuto extends DrawCard {
@@ -9,7 +10,7 @@ export default class AncestralKabuto extends DrawCard {
 
         this.whileAttached({
             match: (card) => card.isDishonored,
-            effect: AbilityDsl.effects.setGlory(0)
+            effect: setGlory(0)
         });
 
         this.reaction('Gain 1 honor')
@@ -17,6 +18,6 @@ export default class AncestralKabuto extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     event.conflict.winner === context.source.parentCharacter.controller && context.source.parentCharacter.isDishonored
             })
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gameAction(gainHonor());
     }
 }

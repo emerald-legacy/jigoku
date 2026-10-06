@@ -1,5 +1,6 @@
 import { CardType, Duration, Phases, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import { cardLastingEffect, moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IkomaMasterHunter extends DrawCard {
@@ -13,10 +14,10 @@ export default class IkomaMasterHunter extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.source,
-                effect: AbilityDsl.effects.delayedEffect({
+                effect: delayedEffect({
                     when: {
                         onMoveToConflict: (event) => event.card === context.target,
                         onDefendersDeclared: (event) =>
@@ -25,11 +26,11 @@ export default class IkomaMasterHunter extends DrawCard {
                             event.conflict.getParticipants().includes(context.target)
                     },
                     multipleTrigger: true,
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.moveToConflict({
+                    gameAction: multiple([
+                        moveToConflict({
                             target: context.source
                         }),
-                        AbilityDsl.actions.ready({
+                        ready({
                             target: context.source
                         })
                     ])

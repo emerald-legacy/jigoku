@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
 import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
@@ -101,7 +101,7 @@ class AccursedSummoning extends DrawCard {
     setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
             .cost(accursedSummoningCost())
-            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
+            .gameAction(putIntoConflict(context => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
             .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));

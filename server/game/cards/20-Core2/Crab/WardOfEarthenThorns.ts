@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../../effects.js';
+import { removeFate } from '../../../GameActions/GameActions.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 
@@ -13,7 +14,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             targetController: Players.Any,
             condition: (context) => context.source.controller.hasAffinity('earth', context),
             match: (card, context) => card.type === CardType.Province && card === context?.source.parent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(1)
+            effect: modifyProvinceStrength(1)
         });
 
         this.action('Remove a fate from a character')
@@ -24,7 +25,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.removeFate());
+            }, removeFate());
     }
 
     canPlay(context: AbilityContext, playType: string) {

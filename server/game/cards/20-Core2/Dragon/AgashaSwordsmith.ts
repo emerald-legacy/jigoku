@@ -1,5 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AgashaSwordsmith extends DrawCard {
@@ -7,10 +8,10 @@ export default class AgashaSwordsmith extends DrawCard {
 
     setupCardAbilities() {
         this.action('Search top 5 cards for attachment')
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 5,
                 cardCondition: (card) => card.type === CardType.Attachment,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             }))

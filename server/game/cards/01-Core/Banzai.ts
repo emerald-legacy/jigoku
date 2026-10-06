@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, loseHonor } from '../../GameActions/GameActions.js';
 import { resolveAbilityAgain } from '../resolveAgain.js';
 
 class Banzai extends DrawCard {
@@ -11,8 +13,8 @@ class Banzai extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            }, cardLastingEffect({
+                effect: modifyMilitarySkill(2)
             }))
             .effect('grant 2 military skill to {0}')
             .then((ctx) => {
@@ -21,7 +23,7 @@ class Banzai extends DrawCard {
                         target: {
                             mode: TargetMode.Select,
                             choices: {
-                                'Lose 1 honor for no effect': AbilityDsl.actions.loseHonor({target: ctx.player }),
+                                'Lose 1 honor for no effect': loseHonor({target: ctx.player }),
                                 'Done': () => true
                             }
                         },
@@ -33,7 +35,7 @@ class Banzai extends DrawCard {
                     target: {
                         mode: TargetMode.Select,
                         choices: {
-                            'Lose 1 honor to resolve this ability again': AbilityDsl.actions.loseHonor({target: ctx.player }),
+                            'Lose 1 honor to resolve this ability again': loseHonor({target: ctx.player }),
                             'Done': () => true
                         }
                     },

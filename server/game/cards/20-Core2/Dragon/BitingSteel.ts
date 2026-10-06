@@ -1,5 +1,6 @@
 import { CardType, DuelType, Duration, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyDuelistSkill } from '../../../effects.js';
+import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -32,9 +33,9 @@ export default class BitingSteel extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) =>
                     !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: context.target?.parentCharacter ?? undefined,
-                effect: AbilityDsl.effects.modifyDuelistSkill(
+                effect: modifyDuelistSkill(
                     context.target ? getAttachmentSkill(context.target) : 0,
                     context.event.duel
                 ),
@@ -50,7 +51,7 @@ export default class BitingSteel extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 
     public canAttach(card: BaseCard) {

@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, chooseAction, conditional, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,28 +21,27 @@ export default class VillageDoshin extends DrawCard {
                     })
             })
             .cost(AbilityDsl.costs.discardSelf())
-            .gameAction(AbilityDsl.actions.conditional((context) => ({
+            .gameAction(conditional((context) => ({
                 condition: () => {
                     const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
-                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
-                        .discardAtRandom({ amount: 2 })
+                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && discardAtRandom({ amount: 2 })
                         .canAffect(context.player.opponent, context);
                     return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
                 },
-                falseGameAction: AbilityDsl.actions.cancel(),
-                trueGameAction: AbilityDsl.actions.chooseAction({
+                falseGameAction: cancel(),
+                trueGameAction: chooseAction({
                     player: Players.Opponent,
                     activePromptTitle: 'Select one',
                     options: {
                         [`Discard ${DOSHIN_TAX} random cards from hand`]: {
-                            action: AbilityDsl.actions.discardAtRandom({
+                            action: discardAtRandom({
                                 amount: DOSHIN_TAX,
                                 target: context.player.opponent
                             }),
                             message: '{0} distracts the Dōshin'
                         },
                         'Let the effect be canceled': {
-                            action: AbilityDsl.actions.cancel(),
+                            action: cancel(),
                             message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled`
                         }
                     },

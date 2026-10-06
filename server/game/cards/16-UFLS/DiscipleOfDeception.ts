@@ -1,7 +1,7 @@
 import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { StatusToken } from '../../StatusToken.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class DiscipleOfDeception extends DrawCard {
@@ -28,7 +28,7 @@ export default class DiscipleOfDeception extends DrawCard {
                     card !== context.tokens.first[0].card &&
                         !card.hasStatusToken(context.tokens.first[0].grantedStatus),
                 tokenCondition: (token, context) => token.grantedStatus !== context.tokens.first[0].grantedStatus
-            }, AbilityDsl.actions.handler({
+            }, handler({
                 handler: (context) => {
                     const targetToken = context.tokens.second[0];
                     const newStatus = context.tokens.first[0].grantedStatus;

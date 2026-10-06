@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Phases, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate, removeFate } from '../../GameActions/GameActions.js';
 
 class KamiOfAncientWisdom extends DrawCard {
     static id = 'kami-of-ancient-wisdom';
@@ -20,8 +20,8 @@ class KamiOfAncientWisdom extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Place 1 Fate': AbilityDsl.actions.placeFate(context => ({ target: context.targets.character })),
-                'Remove 1 Fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character }))
+                'Place 1 Fate': placeFate(context => ({ target: context.targets.character })),
+                'Remove 1 Fate': removeFate(context => ({ target: context.targets.character }))
             });
     }
 }

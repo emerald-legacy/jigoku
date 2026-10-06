@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { playerFateCostToTargetCard } from '../../../effects.js';
+import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,10 +16,10 @@ export default class ToShowThePath extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => !card.hasTrait('monk') && !card.hasTrait('shugenja')
-            }, AbilityDsl.actions.playerLastingEffect((context) => ({
+            }, playerLastingEffect((context) => ({
                 targetController: context.player.opponent,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.playerFateCostToTargetCard({
+                effect: playerFateCostToTargetCard({
                     amount: 1,
                     match: (card) =>
                         card === context.target ||

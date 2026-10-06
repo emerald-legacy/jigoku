@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, EventName, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -23,7 +23,7 @@ export default class HonoredVeterans extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
-            }, AbilityDsl.actions.honor())
+            }, honor())
             .target({
                 name: 'oppCharacter',
                 player: Players.Opponent,
@@ -32,7 +32,7 @@ export default class HonoredVeterans extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
-            }, AbilityDsl.actions.honor())
+            }, honor())
             .effect('honor {1}', (context) => [this.getCharacters(context)]);
     }
 

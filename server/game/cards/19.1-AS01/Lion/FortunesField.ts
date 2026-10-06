@@ -1,6 +1,7 @@
 import { CardType, Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 
 export default class FortunesField extends ProvinceCard {
     static id = 'fortune-s-field';
@@ -11,10 +12,10 @@ export default class FortunesField extends ProvinceCard {
                 onCardPlayed: (event, context) =>
                     event.player === context.player && event.card.type === CardType.Character
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfRound,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card.type === CardType.Character || card.hasTrait('follower')
                 )

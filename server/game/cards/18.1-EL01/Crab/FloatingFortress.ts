@@ -1,4 +1,13 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { copyCard } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    chooseAction,
+    moveCard,
+    noAction,
+    selectCard,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,16 +22,16 @@ export default class FloatingFortress extends DrawCard {
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.DynastyDiscardPile
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, sequential([
+                cardLastingEffect((context) => ({
                     target: context.source,
-                    effect: AbilityDsl.effects.copyCard(context.target)
+                    effect: copyCard(context.target)
                 })),
-                AbilityDsl.actions.chooseAction({
+                chooseAction({
                     activePromptTitle: 'Move the holding to into the attacked provinces?',
                     options: {
                         Yes: {
-                            action: AbilityDsl.actions.selectCard((context) => ({
+                            action: selectCard((context) => ({
                                 activePromptTitle: 'Choose an attacked province',
                                 hidePromptIfSingleCard: true,
                                 cardType: CardType.Province,
@@ -34,10 +43,10 @@ export default class FloatingFortress extends DrawCard {
                                     target: context.source,
                                     destination: card.location
                                 }),
-                                gameAction: AbilityDsl.actions.moveCard({})
+                                gameAction: moveCard({})
                             }))
                         },
-                        No: { action: AbilityDsl.actions.noAction() }
+                        No: { action: noAction() }
                     }
                 })
             ]))

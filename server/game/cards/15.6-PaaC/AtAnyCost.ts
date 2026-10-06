@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class AtAnyCost extends DrawCard {
@@ -10,7 +11,7 @@ class AtAnyCost extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(3))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.placeFate({ amount: 2 }));
+            }, placeFate({ amount: 2 }));
     }
 }
 

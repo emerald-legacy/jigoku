@@ -1,5 +1,5 @@
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiYuka extends DrawCard {
@@ -15,10 +15,10 @@ export default class SoshiYuka extends DrawCard {
                 player: Players.Opponent,
                 cardCondition: (card) => !card.bowed
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isCharacter() && context.targets.target.includes(card),
-                gameAction: AbilityDsl.actions.bow(),
+                gameAction: bow(),
                 message: '{0} is bowed, as they are dragged into a web of intrigue',
                 messageArgs: (card, _player) => [card]
             })))

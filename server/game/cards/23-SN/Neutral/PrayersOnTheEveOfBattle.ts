@@ -1,6 +1,14 @@
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import {
+    conditional,
+    discardFromPlay,
+    gainFate,
+    moveCard,
+    multiple,
+    removeFromGame
+} from '../../../GameActions/GameActions.js';
 
 export default class PrayersOnTheEveOfBattle extends DrawCard {
     static id = 'prayers-on-the-eve-of-battle';
@@ -10,18 +18,18 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .when({
                 afterConflict: (_event, context) => !!context.source.parentCharacter
             })
-            .gameAction(AbilityDsl.actions.conditional((context) => ({
+            .gameAction(conditional((context) => ({
                 condition: !!context.source.parentCharacter?.isParticipating() &&
                     context.event.conflict.winner === context.source.parentCharacter?.controller,
-                trueGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.gainFate({
+                trueGameAction: multiple([
+                    gainFate({
                         target: context.player
                     }),
-                    AbilityDsl.actions.discardFromPlay({
+                    discardFromPlay({
                         target: context.source
                     })
                 ]),
-                falseGameAction: AbilityDsl.actions.removeFromGame({
+                falseGameAction: removeFromGame({
                     target: context.source
                 })
             })));
@@ -30,7 +38,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .when({
                 onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.cardsInPlay.some(card => card.type === CardType.Character && !card.bowed)
             })
-            .gameAction(AbilityDsl.actions.moveCard(context => ({ target: context.source, destination: Location.Hand })))
+            .gameAction(moveCard(context => ({ target: context.source, destination: Location.Hand })))
             .max(AbilityDsl.limit.perConflictOpportunity(1))
             .location(Location.ConflictDiscardPile);
     }

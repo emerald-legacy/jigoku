@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
 class KaitoTempleProtector extends DrawCard {
@@ -9,7 +10,7 @@ class KaitoTempleProtector extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isDefending(),
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'sendHome',
                 restricts: 'opponentsCardEffects'
             })
@@ -20,7 +21,7 @@ class KaitoTempleProtector extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: context.source,
                 effect: copyBaseSkillEffects(context.target)
             })))

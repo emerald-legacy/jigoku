@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { turnFacedown } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class KitsukiYaruma extends DrawCard {
@@ -15,7 +15,7 @@ class KitsukiYaruma extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => !card.isBroken
-            }, AbilityDsl.actions.turnFacedown());
+            }, turnFacedown());
     }
 
     allowAttachment(attachment: BaseCard): boolean {

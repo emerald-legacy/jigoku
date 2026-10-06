@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardCard, moveCard, multiple, selectCard } from '../../GameActions/GameActions.js';
 
 class ApprenticeEngineer extends DrawCard {
     static id = 'apprentice-engineer';
@@ -14,7 +14,7 @@ class ApprenticeEngineer extends DrawCard {
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.DynastyDiscardPile
-            }, AbilityDsl.actions.selectCard(context => ({
+            }, selectCard(context => ({
                 activePromptTitle: 'Choose an unbroken province',
                 cardType: CardType.Province,
                 location: Location.Provinces,
@@ -23,12 +23,12 @@ class ApprenticeEngineer extends DrawCard {
                 message: '{0} places {1} in {2}, discarding {3}',
                 messageArgs: (card) => [context.player, context.target, card.facedown ? card.location : card, context.player.getDynastyCardsInProvince(card.location)],
                 subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard({
+                gameAction: multiple([
+                    moveCard({
                         target: context.target,
                         faceup: true
                     }),
-                    AbilityDsl.actions.discardCard()
+                    discardCard()
                 ])
             })))
             .effect('put {0} into a province');

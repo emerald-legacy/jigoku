@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { injure, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 
@@ -19,8 +19,8 @@ export default class MotoZealot extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Injure this character': AbilityDsl.actions.injure((context) => ({ target: context.targets.character })),
-                'Place 1 fate on opponent\'s character': AbilityDsl.actions.placeFate()
+                'Injure this character': injure((context) => ({ target: context.targets.character })),
+                'Place 1 fate on opponent\'s character': placeFate()
             });
     }
 }

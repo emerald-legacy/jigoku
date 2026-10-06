@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBaseMilitarySkillMultiplier, modifyBasePoliticalSkillMultiplier } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration } from '../../Constants.js';
 
 class NitenPupil extends DrawCard {
@@ -10,10 +11,10 @@ class NitenPupil extends DrawCard {
             .when({
                 onHonorDialsRevealed: (event, context) => event.duel && event.duel.isInvolved(context.source)
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
+            .gameAction(cardLastingEffect({
                 effect: [
-                    AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2),
-                    AbilityDsl.effects.modifyBasePoliticalSkillMultiplier(2)
+                    modifyBaseMilitarySkillMultiplier(2),
+                    modifyBasePoliticalSkillMultiplier(2)
                 ],
                 duration: Duration.UntilEndOfPhase
             }))

@@ -1,6 +1,6 @@
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { attach, cardMenu, selectCard, sequential, shuffleDeck } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 
 export default class IllustriousForge extends ProvinceCard {
@@ -12,8 +12,8 @@ export default class IllustriousForge extends ProvinceCard {
                 onCardRevealed: (event, context) =>
                     event.card === context.source && context.player.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardMenu((context) => ({
+            .gameAction(sequential([
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
                     cardCondition: (card) => card.type === CardType.Attachment,
@@ -31,15 +31,15 @@ export default class IllustriousForge extends ProvinceCard {
                         attachment,
                         messageArgs: (card: BaseCard | BaseCard[]) => [context.player, attachment, card]
                     }),
-                    gameAction: AbilityDsl.actions.selectCard({
+                    gameAction: selectCard({
                         controller: Players.Self,
                         location: Location.PlayArea,
                         cardType: CardType.Character,
                         message: '{0} chooses to attach {1} to {2}',
-                        gameAction: AbilityDsl.actions.attach()
+                        gameAction: attach()
                     })
                 })),
-                AbilityDsl.actions.shuffleDeck((context) => ({
+                shuffleDeck((context) => ({
                     deck: Location.ConflictDeck,
                     target: context.player
                 }))

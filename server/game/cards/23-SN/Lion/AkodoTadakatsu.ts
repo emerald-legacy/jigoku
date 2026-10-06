@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, injure } from '../../../GameActions/GameActions.js';
 import Ring from '../../../Ring.js';
 
 export default class AkodoTadakatsu extends DrawCard {
@@ -21,7 +21,7 @@ export default class AkodoTadakatsu extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.injure());
+            }, injure());
 
         this.reaction('Injure or bow a character')
             .when({
@@ -39,8 +39,8 @@ export default class AkodoTadakatsu extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Injure this character': AbilityDsl.actions.injure((context) => ({ target: context.targets.character })),
-                'Bow this character': AbilityDsl.actions.bow((context) => ({ target: context.targets.character }))
+                'Injure this character': injure((context) => ({ target: context.targets.character })),
+                'Bow this character': bow((context) => ({ target: context.targets.character }))
             });
     }
 }

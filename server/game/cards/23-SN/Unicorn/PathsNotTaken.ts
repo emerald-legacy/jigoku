@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -17,7 +18,7 @@ export default class PathsNotTaken extends DrawCard {
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     card.printedCost !== null && card.printedCost < this.getSkillThreshold(context)
-            }, AbilityDsl.actions.sendHome())
+            }, sendHome())
             .max(AbilityDsl.limit.perConflict(1));
     }
 

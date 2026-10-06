@@ -1,6 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { attach, cardMenu, selectCard, sequential, shuffleDeck } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 
 export default class ExcellenceAttained extends ProvinceCard {
@@ -11,8 +11,8 @@ export default class ExcellenceAttained extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source && context.player.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardMenu((context) => ({
+            .gameAction(sequential([
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
                     cardCondition: (card) => card.type === CardType.Attachment && (card.printedCost ?? 0) <= 1,
@@ -30,15 +30,15 @@ export default class ExcellenceAttained extends ProvinceCard {
                         attachment,
                         messageArgs: (card: BaseCard | BaseCard[]) => [context.player, attachment, card]
                     }),
-                    gameAction: AbilityDsl.actions.selectCard({
+                    gameAction: selectCard({
                         controller: Players.Any,
                         location: Location.PlayArea,
                         cardType: CardType.Character,
                         message: '{0} chooses to attach {1} to {2}',
-                        gameAction: AbilityDsl.actions.attach()
+                        gameAction: attach()
                     })
                 })),
-                AbilityDsl.actions.shuffleDeck((context) => ({
+                shuffleDeck((context) => ({
                     deck: Location.ConflictDeck,
                     target: context.player
                 }))

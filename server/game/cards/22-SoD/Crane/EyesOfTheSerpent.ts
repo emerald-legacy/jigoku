@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -60,11 +60,11 @@ export default class EyesOfTheSerpent extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.taint(),
-                AbilityDsl.actions.onAffinity({
+            }, multiple([
+                taint(),
+                onAffinity({
                     trait: 'air',
-                    gameAction: AbilityDsl.actions.gainHonor(context => ({
+                    gameAction: gainHonor(context => ({
                         target: context.player
                     })),
                     effect: 'gain 1 honor'

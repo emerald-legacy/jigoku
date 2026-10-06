@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { multipleContext, reveal } from '../../../GameActions/GameActions.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 
 export default class HidaMarauder extends DrawCard {
@@ -12,12 +12,12 @@ export default class HidaMarauder extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent
             })
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const count = context.game.currentConflict?.getCharacters(context.player).length ?? 0;
                 const cards = context.player.opponent && count > 0 ? randomHandCards(context.player.opponent, count) : [context.source];
                 return {
                     gameActions: [
-                        AbilityDsl.actions.reveal({
+                        reveal({
                             target: cards,
                             chatMessage: true,
                             player: context.player.opponent

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility, modifyMilitarySkill } from '../../effects.js';
+import { bow } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, ConflictType } from '../../Constants.js';
 
 class Daikyu extends DrawCard {
@@ -8,11 +9,11 @@ class Daikyu extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: (context) => !!context.source.parentCharacter && !!context.source.controller.firstPlayer,
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            effect: modifyMilitarySkill(2)
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
+            effect: gainAbility(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
                     onConflictDeclared: (_event, context) =>
@@ -26,7 +27,7 @@ class Daikyu extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
-                    gameAction: AbilityDsl.actions.bow()
+                    gameAction: bow()
                 }
             })
         });

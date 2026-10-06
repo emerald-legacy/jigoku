@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken } from '../../GameActions/GameActions.js';
 
 class ProveYourSkill extends DrawCard {
     static id = 'prove-your-skill';
@@ -10,7 +10,7 @@ class ProveYourSkill extends DrawCard {
         this.action('Discard a status token off a character')
             .tokenTarget({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.discardStatusToken())
+            }, discardStatusToken())
             .effect('discard {1}\'s {2}', context => [context.token[0].card, context.token]);
     }
 

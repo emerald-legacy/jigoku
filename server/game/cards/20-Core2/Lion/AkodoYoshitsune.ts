@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AkodoYoshitsune extends DrawCard {
@@ -9,7 +10,7 @@ export default class AkodoYoshitsune extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player
             })
-            .gameAction(AbilityDsl.actions.gainHonor())
+            .gameAction(gainHonor())
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

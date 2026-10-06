@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 
 class RamshackleFacade extends DrawCard {
     static id = 'ramshackle-facade';
@@ -14,7 +15,7 @@ class RamshackleFacade extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isAttacking() && card.costLessThan(4)
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

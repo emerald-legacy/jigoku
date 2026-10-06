@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { chooseAction, conditional, discardAtRandom, discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function shinobiCount(context: AbilityContext): number {
@@ -26,20 +27,20 @@ export default class SpiderwebPassage extends DrawCard {
                     ((!card.hasDash('political') && card.getPoliticalSkill() === 0) ||
                         (!card.hasDash('military') && card.getMilitarySkill() === 0))
             })
-            .gameAction(AbilityDsl.actions.conditional(context => {
+            .gameAction(conditional(context => {
                 const discardCount = shinobiCount(context);
-                const discardFromHandAction = AbilityDsl.actions.discardAtRandom({
+                const discardFromHandAction = discardAtRandom({
                     amount: discardCount,
                     target: context.player.opponent
                 });
-                const killAction = AbilityDsl.actions.discardFromPlay({ target: context.target });
+                const killAction = discardFromPlay({ target: context.target });
 
                 return {
                     condition: () =>
                         (context.player.opponent?.hand.length ?? 0) >= discardCount &&
                         !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
-                    trueGameAction: AbilityDsl.actions.chooseAction(context => ({
+                    trueGameAction: chooseAction(context => ({
                         player: Players.Opponent,
                         activePromptTitle: 'Select one',
                         options: {

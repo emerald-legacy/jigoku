@@ -1,6 +1,7 @@
 import { CardType } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow, ready } from '../../../GameActions/GameActions.js';
 
 export default class FortressAtTheSeaOfFire extends StrongholdCard {
     static id = 'fortress-at-the-sea-of-fire';
@@ -12,6 +13,6 @@ export default class FortressAtTheSeaOfFire extends StrongholdCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => !card.isParticipating()
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.ready());
+            }, bow(), ready());
     }
 }

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { mustBeChosen } from '../../effects.js';
+import { setHonorDial } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class SocialPuppeteer extends DrawCard {
@@ -6,14 +7,14 @@ class SocialPuppeteer extends DrawCard {
 
     setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.mustBeChosen({ restricts: 'opponentsEvents' })
+            effect: mustBeChosen({ restricts: 'opponentsEvents' })
         });
 
         this.action('Switch honor dials with opponent')
             .condition((context) =>
                 context.source.isParticipating() && !!context.player.opponent &&
                 context.player.showBid !== context.player.opponent.showBid)
-            .gameAction(AbilityDsl.actions.setHonorDial((context) => ({ value: context.player.showBid })), AbilityDsl.actions.setHonorDial((context) => ({
+            .gameAction(setHonorDial((context) => ({ value: context.player.showBid })), setHonorDial((context) => ({
                 target: context.player,
                 value: context.player.opponent ? context.player.opponent.showBid : 0
             })))

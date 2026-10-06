@@ -1,16 +1,17 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect, discardAtRandom, selectCard } from '../../GameActions/GameActions.js';
 
 class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
 
     setupCardAbilities() {
         this.conflictAction('Discard a card at random from your opponent\'s hand', { conflictType: ConflictType.Political })
-            .gameAction(AbilityDsl.actions.discardAtRandom())
+            .gameAction(discardAtRandom())
             .then((context) => ({
-                gameAction: AbilityDsl.actions.selectCard({
+                gameAction: selectCard({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
                     cardType: CardType.Province,
@@ -18,10 +19,10 @@ class RootOutHeresy extends DrawCard {
                     cardCondition: (card) => card.isConflictProvince(),
                     message: '{0} reduces the strength of {1} by {2}',
                     messageArgs: (cards) => [context.player, cards, this.getStrengthModifier(context)],
-                    gameAction: AbilityDsl.actions.cardLastingEffect(() => {
+                    gameAction: cardLastingEffect(() => {
                         const amount = this.getStrengthModifier(context);
                         return ({
-                            effect: AbilityDsl.effects.modifyProvinceStrength(amount)
+                            effect: modifyProvinceStrength(amount)
                         });
                     })
                 })

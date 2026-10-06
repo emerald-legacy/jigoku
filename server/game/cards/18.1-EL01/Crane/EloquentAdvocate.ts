@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
 import { ConflictType, Location } from '../../../Constants.js';
 
 class EloquentAdvocate extends DrawCard {
@@ -11,9 +11,9 @@ class EloquentAdvocate extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() &&
                                                    event.conflict.conflictType === ConflictType.Political
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 2,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
                 shuffle: false,

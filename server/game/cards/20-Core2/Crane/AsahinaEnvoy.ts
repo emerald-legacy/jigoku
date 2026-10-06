@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch } from '../../../GameActions/GameActions.js';
 import { CardType, Decks, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +15,7 @@ export default class AsahinaEnvoy extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.deckSearch({
+            }, deckSearch({
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
                 amount: 6,

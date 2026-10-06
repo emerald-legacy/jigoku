@@ -1,5 +1,6 @@
 import { CardType, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cardMenu, discardCard, lookAt, multipleContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -14,7 +15,7 @@ export default class IsawaTadaka2 extends DrawCard {
                 mode: TargetMode.Unlimited
             }))
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const removed = context.costs.removeFromGame;
                 const cards =
                     context.player.opponent && removed
@@ -22,15 +23,15 @@ export default class IsawaTadaka2 extends DrawCard {
                         : [context.source];
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt(() => ({
+                        lookAt(() => ({
                             target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
                         })),
-                        AbilityDsl.actions.cardMenu((context) => ({
+                        cardMenu((context) => ({
                             cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             targets: true,
                             message: '{0} chooses {1} to be discarded',
                             messageArgs: (card) => [context.player, card],
-                            gameAction: AbilityDsl.actions.discardCard()
+                            gameAction: discardCard()
                         }))
                     ]
                 };

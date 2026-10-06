@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 
 class MasterOfJade extends DrawCard {
     static id = 'master-of-jade';
@@ -10,7 +11,7 @@ class MasterOfJade extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(2))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.placeFate());
+            }, placeFate());
     }
 }
 

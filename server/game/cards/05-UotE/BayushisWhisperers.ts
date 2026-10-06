@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler, lookAt, sequential } from '../../GameActions/GameActions.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -9,9 +9,9 @@ class BayushisWhisperers extends DrawCard {
     setupCardAbilities() {
         this.action('Look at opponent\'s hand and name a card')
             .condition(context => !!(context.player.opponent && this.game.isDuringConflict()))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt(context => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
-                AbilityDsl.actions.handler({
+            .gameAction(sequential([
+                lookAt(context => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
+                handler({
                     handler: context => this.game.promptWithMenu(context.player, this, {
                         context: context,
                         activePrompt: {

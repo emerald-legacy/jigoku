@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveConflict } from '../../GameActions/GameActions.js';
 
 export default class ShrugOffDespair extends ProvinceCard {
     static id = 'shrug-off-despair';
@@ -7,7 +7,7 @@ export default class ShrugOffDespair extends ProvinceCard {
     setupCardAbilities() {
         this.action('Move the conflict to this province')
             .condition((context) => context.game.isDuringConflict() && !context.source.isConflictProvince())
-            .gameAction(AbilityDsl.actions.moveConflict())
+            .gameAction(moveConflict())
             .conflictProvinceCondition(() => true);
     }
 }

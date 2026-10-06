@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { setBaseProvinceStrength } from '../../effects.js';
+import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
 
 class RideThemDown extends DrawCard {
     static id = 'ride-them-down';
@@ -9,7 +11,7 @@ class RideThemDown extends DrawCard {
         this.action('Reduce province strength')
             .cost(AbilityDsl.costs.discardImperialFavor())
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.selectCard(context => ({
+            .gameAction(selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -17,9 +19,9 @@ class RideThemDown extends DrawCard {
                 cardCondition: card => card.isConflictProvince(),
                 message: '{0} reduces the strength of {1} to 1',
                 messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.setBaseProvinceStrength(1)
+                    effect: setBaseProvinceStrength(1)
                 })
             })))
             .effect('reduce the strength of an attacked province to 1');

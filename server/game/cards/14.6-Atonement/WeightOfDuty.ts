@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow, dishonor, multiple } from '../../GameActions/GameActions.js';
 import type DrawCard from '../../DrawCard.js';
 
 const ELEMENT_KEY = 'weight-of-duty-void';
@@ -22,7 +23,7 @@ export default class WeightOfDuty extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true
-            }, AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]))
+            }, multiple([bow(), dishonor()]))
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .cannotTargetFirst();
     }

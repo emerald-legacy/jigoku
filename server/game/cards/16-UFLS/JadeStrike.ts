@@ -1,7 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setBaseMilitarySkill, setBasePoliticalSkill } from '../../effects.js';
+import { cardLastingEffect, multiple, removeFate } from '../../GameActions/GameActions.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 
 class JadeStrike extends DrawCard {
@@ -12,14 +13,14 @@ class JadeStrike extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens && card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
+            }, multiple([
+                cardLastingEffect({
                     effect: [
-                        AbilityDsl.effects.setBaseMilitarySkill(0),
-                        AbilityDsl.effects.setBasePoliticalSkill(0)
+                        setBaseMilitarySkill(0),
+                        setBasePoliticalSkill(0)
                     ]
                 }),
-                AbilityDsl.actions.removeFate(context => ({
+                removeFate(context => ({
                     target: context.target?.isTainted ? context.target : []
                 }))
             ]))

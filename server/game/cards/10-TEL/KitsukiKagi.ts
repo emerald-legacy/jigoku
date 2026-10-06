@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class KitsukiKagi extends DrawCard {
     static id = 'kitsuki-kagi';
@@ -14,7 +14,7 @@ class KitsukiKagi extends DrawCard {
                 name: 'first',
                 activePromptTitle: 'Choose up to 3 cards',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile]
-            }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }))
+            }, moveCard({ destination: Location.RemovedFromGame }))
             .target({
                 name: 'second',
                 activePromptTitle: 'Choose a card',
@@ -25,7 +25,7 @@ class KitsukiKagi extends DrawCard {
                     card.controller === context.targets.first.controller &&
                         card.location === context.targets.first.location &&
                         card !== context.targets.first
-            }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }))
+            }, moveCard({ destination: Location.RemovedFromGame }))
             .target({
                 name: 'third',
                 activePromptTitle: 'Choose a card',
@@ -37,7 +37,7 @@ class KitsukiKagi extends DrawCard {
                         card.location === context.targets.first.location &&
                         card !== context.targets.first &&
                         card !== context.targets.second
-            }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }));
+            }, moveCard({ destination: Location.RemovedFromGame }));
     }
 }
 

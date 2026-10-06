@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { additionalAttackedProvince } from '../../effects.js';
+import { conflictLastingEffect, reveal, sequential } from '../../GameActions/GameActions.js';
 
 class AWarOnTwoFronts extends DrawCard {
     static id = 'a-war-on-two-fronts';
@@ -14,10 +15,10 @@ class AWarOnTwoFronts extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.reveal(),
-                AbilityDsl.actions.conflictLastingEffect(context => ({
-                    effect: AbilityDsl.effects.additionalAttackedProvince(context.target)
+            }, sequential([
+                reveal(),
+                conflictLastingEffect(context => ({
+                    effect: additionalAttackedProvince(context.target)
                 }))
             ]))
             .effect('{2}also attack {1} this conflict', context => [context.target, context.target.isFacedown() ? 'reveal and ' : '']);

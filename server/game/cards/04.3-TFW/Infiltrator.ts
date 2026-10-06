@@ -1,5 +1,5 @@
 import { PlayType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chooseAction, discardCard, playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -9,20 +9,20 @@ export default class Infiltrator extends DrawCard {
     setupCardAbilities() {
         this.action('Look at the top card of an opponent\'s deck and play or discard it')
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.chooseAction((context) => {
+            .gameAction(chooseAction((context) => {
                 const topCard = context.player.opponent?.conflictDeck[0];
                 return {
                     activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                     options: {
                         'Play this card': {
-                            action: AbilityDsl.actions.playCard({
+                            action: playCard({
                                 target: topCard,
                                 playType: PlayType.PlayFromHand,
                                 source: this
                             })
                         },
                         'Discard this card': {
-                            action: AbilityDsl.actions.discardCard({ target: topCard }),
+                            action: discardCard({ target: topCard }),
                             message: '{0} chooses to discard {1}'
                         }
                     }

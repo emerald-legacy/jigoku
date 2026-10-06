@@ -1,5 +1,6 @@
 import { Element, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { immunity } from '../../../effects.js';
+import { draw, gainFate, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimsRingOf } from '../../claimedRings.js';
 
@@ -10,7 +11,7 @@ export default class OtterFisherman extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: [AbilityDsl.effects.immunity({ restricts: 'creature' })]
+            effect: [immunity({ restricts: 'creature' })]
         });
 
         this.reaction('Gain resource after claiming water')
@@ -21,13 +22,13 @@ export default class OtterFisherman extends DrawCard {
                 player: Players.Opponent,
                 activePromptTitle: 'Choose an option for your opponent'
             }, {
-                'Opponent gains 1 fate': AbilityDsl.actions.gainFate((context) => ({
+                'Opponent gains 1 fate': gainFate((context) => ({
                     target: context.source.controller
                 })),
-                'Opponent gains 1 honor': AbilityDsl.actions.gainHonor((context) => ({
+                'Opponent gains 1 honor': gainHonor((context) => ({
                     target: context.source.controller
                 })),
-                'Opponent draws 1 card': AbilityDsl.actions.draw((context) => ({
+                'Opponent draws 1 card': draw((context) => ({
                     target: context.source.controller
                 }))
             });

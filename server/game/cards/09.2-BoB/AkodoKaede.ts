@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
+import { cancel, removeFate } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class AkodoKaede extends DrawCard {
@@ -7,7 +8,7 @@ class AkodoKaede extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.immunity({
+            effect: immunity({
                 restricts: 'opponentsRingEffects'
             })
         });
@@ -16,9 +17,9 @@ class AkodoKaede extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.type === CardType.Character && event.card !== context.source && event.card.location === Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.cancel(context => ({
+            .gameAction(cancel(context => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.removeFate()
+                replacementGameAction: removeFate()
             })))
             .effect('prevent {1} from leaving play', context => context.event.card);
     }

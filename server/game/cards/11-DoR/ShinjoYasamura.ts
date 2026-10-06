@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsDefender } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class ShinjoYasamura extends DrawCard {
     static id = 'shinjo-yasamura';
@@ -13,10 +14,10 @@ class ShinjoYasamura extends DrawCard {
                         (Array.isArray(event.card) && event.card.includes(context.source))) &&
                     !!event.context?.target?.isDrawCard() && event.context.target.covert
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: context.event.context.target,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
+                effect: cannotBeDeclaredAsDefender()
             })))
             .effect('prevent {1} from defending this phase', (context) => context.event.context.target);
     }

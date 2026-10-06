@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class AsahinaArtisan extends DrawCard {
     static id = 'asahina-artisan';
@@ -12,8 +14,8 @@ class AsahinaArtisan extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source && card.isFaction('crane')
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyPoliticalSkill(3)
+            }, cardLastingEffect({
+                effect: modifyPoliticalSkill(3)
             }))
             .effect('give {0} +3{1} skill', () => 'political');
     }

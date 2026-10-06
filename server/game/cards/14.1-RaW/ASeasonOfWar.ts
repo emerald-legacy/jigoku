@@ -1,31 +1,32 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { restartDynastyPhase } from '../../effects.js';
+import { discardCard, playerLastingEffect, refillFaceup, sequential } from '../../GameActions/GameActions.js';
 
 class ASeasonOfWar extends DrawCard {
     static id = 'a-season-of-war';
 
     setupCardAbilities() {
         this.action('Discard all cards from provinces, refill faceup, and start a new dynasty phase')
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard(context => ({
+            .gameAction(sequential([
+                discardCard(context => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces).concat(context.player.opponent ?
                         context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : [])
                 })),
-                AbilityDsl.actions.refillFaceup(context => ({
+                refillFaceup(context => ({
                     target: context.player,
                     location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
-                AbilityDsl.actions.refillFaceup(context => ({
+                refillFaceup(context => ({
                     target: context.player.opponent,
                     location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect(context => ({
                     duration: Duration.Custom,
                     until: {
                         onPhaseStarted: event => event.phase === Phases.Dynasty
                     },
-                    effect: AbilityDsl.effects.restartDynastyPhase(context.source)
+                    effect: restartDynastyPhase(context.source)
                 }))
             ]))
             .effect('discard all cards in all provinces, and refill each province faceup');

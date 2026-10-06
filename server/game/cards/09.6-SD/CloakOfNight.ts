@@ -1,7 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyGlory } from '../../effects.js';
+import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 
 class CloakOfNight extends DrawCard {
@@ -12,12 +13,12 @@ class CloakOfNight extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(() => ({
-                    effect: AbilityDsl.effects.modifyGlory(3)
+            }, multiple([
+                cardLastingEffect(() => ({
+                    effect: modifyGlory(3)
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.cardCannot({
+                cardLastingEffect(context => ({
+                    effect: cardCannot({
                         cannot: 'target',
                         restricts: 'opponentsCardAbilities',
                         applyingPlayer: context.player

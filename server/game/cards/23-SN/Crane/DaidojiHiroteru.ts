@@ -1,6 +1,7 @@
 import { CardType, Duration, Location, Phases, Players } from '../../../Constants.js';
 import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword, canBeSeenWhenFacedown, gainPlayAction } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaidojiHiroteru extends DrawCard {
@@ -11,14 +12,14 @@ export default class DaidojiHiroteru extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card) => card.isDynasty && card.isFacedown(),
-            effect: AbilityDsl.effects.canBeSeenWhenFacedown()
+            effect: canBeSeenWhenFacedown()
         });
 
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card) => card.isDynasty && card.type === CardType.Character,
-            effect: AbilityDsl.effects.gainPlayAction(PlayFacedownCharacterAsIfFromHand)
+            effect: gainPlayAction(PlayFacedownCharacterAsIfFromHand)
         });
 
         this.reaction('Give a Scout or Shinobi covert')
@@ -29,10 +30,10 @@ export default class DaidojiHiroteru extends DrawCard {
                     event.card.type === CardType.Character &&
                     event.card.hasSomeTrait('scout', 'shinobi')
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: context.event.card,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.addKeyword('covert')
+                effect: addKeyword('covert')
             })))
             .effect('give {1} covert until the end of the phase', (context) => [context.event.card]);
     }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, dishonor, honor } from '../../GameActions/GameActions.js';
 import { Element, EventName } from '../../Constants.js';
 import { isOwnRingEffect } from '../effectSource.js';
 
@@ -17,12 +17,12 @@ class IsawaTsuke extends DrawCard {
                 onCardHonored: (event, context) =>
                     isOwnRingEffect(context.player, event.context) && this.getCurrentElementSymbol(elementKey) === Element.Fire
             })
-            .gameAction(AbilityDsl.actions.conditional((context) => ({
+            .gameAction(conditional((context) => ({
                 condition: context.event.name === EventName.OnCardDishonored,
-                trueGameAction: AbilityDsl.actions.dishonor({
+                trueGameAction: dishonor({
                     target: this.getTsukeTargets(context.event.card)
                 }),
-                falseGameAction: AbilityDsl.actions.honor({
+                falseGameAction: honor({
                     target: this.getTsukeTargets(context.event.card)
                 })
             })));

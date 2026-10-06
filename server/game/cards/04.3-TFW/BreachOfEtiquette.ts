@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { playerDelayedEffect } from '../../effects.js';
+import { loseHonor, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
 class BreachOfEtiquette extends DrawCard {
@@ -7,10 +9,10 @@ class BreachOfEtiquette extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Force honor loss on players when their non-courtier characters use abilities', { conflictType: ConflictType.Political })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(multiple([
+                playerLastingEffect((context) => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.playerDelayedEffect({
+                    effect: playerDelayedEffect({
                         when: {
                             onCardAbilityTriggered: (event) =>
                                 event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
@@ -18,12 +20,12 @@ class BreachOfEtiquette extends DrawCard {
                         message: '{1} loses 1 honor due to {0}',
                         messageArgs: (effectContext) => [context.player, effectContext.source],
                         multipleTrigger: true,
-                        gameAction: AbilityDsl.actions.loseHonor()
+                        gameAction: loseHonor()
                     })
                 })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player.opponent,
-                    effect: AbilityDsl.effects.playerDelayedEffect({
+                    effect: playerDelayedEffect({
                         when: {
                             onCardAbilityTriggered: (event) =>
                                 event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
@@ -31,7 +33,7 @@ class BreachOfEtiquette extends DrawCard {
                         message: '{1} loses 1 honor due to {0}',
                         messageArgs: (effectContext) => [context.player.opponent, effectContext.source],
                         multipleTrigger: true,
-                        gameAction: AbilityDsl.actions.loseHonor()
+                        gameAction: loseHonor()
                     })
                 }))
             ]))

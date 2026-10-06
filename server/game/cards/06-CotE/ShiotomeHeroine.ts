@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { Stage } from '../../Constants.js';
 
 class ShiotomeHeroine extends DrawCard {
@@ -11,7 +11,7 @@ class ShiotomeHeroine extends DrawCard {
                 onModifyHonor: (event, context) =>
                     event.amount > 0 && event.player === context.player.opponent && event.context?.stage === Stage.Effect
             })
-            .gameAction(AbilityDsl.actions.ready());
+            .gameAction(ready());
     }
 }
 

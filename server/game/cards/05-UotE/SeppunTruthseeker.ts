@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class SeppunTruthseeker extends DrawCard {
@@ -9,7 +9,7 @@ class SeppunTruthseeker extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.draw((context) => ({
+            .gameAction(draw((context) => ({
                 target: context.game.getPlayers(),
                 amount: 2
             })))

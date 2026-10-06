@@ -1,5 +1,5 @@
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class FouleyesElite extends BaseOni {
@@ -16,6 +16,6 @@ export default class FouleyesElite extends BaseOni {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 
 class TheSpearRushesForth extends DrawCard {
@@ -15,7 +16,7 @@ class TheSpearRushesForth extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

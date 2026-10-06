@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ViceProprietor extends DrawCard {
@@ -14,6 +15,6 @@ export default class ViceProprietor extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

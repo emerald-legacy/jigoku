@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { lookAt, moveCard, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { Location, Phases, CardType } from '../../Constants.js';
 
 class PeasantsAdvice extends DrawCard {
@@ -11,12 +12,12 @@ class PeasantsAdvice extends DrawCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt(context => ({
+            }, sequential([
+                lookAt(context => ({
                     message: '{0} sees {1} in {2}',
                     messageArgs: (cards) => [context.source, cards[0], cards[0].location]
                 })),
-                AbilityDsl.actions.selectCard(context => ({
+                selectCard(context => ({
                     activePromptTitle: 'Choose a faceup card to return to its owner\'s deck',
                     cardCondition: card =>
                         card.location === context.target?.location &&
@@ -26,7 +27,7 @@ class PeasantsAdvice extends DrawCard {
                     optional: true,
                     message: '{0} chooses to shuffle {1} into its owner\'s deck',
                     messageArgs: card => [context.player, card],
-                    gameAction: AbilityDsl.actions.moveCard({
+                    gameAction: moveCard({
                         destination: Location.DynastyDeck,
                         shuffle: true
                     })

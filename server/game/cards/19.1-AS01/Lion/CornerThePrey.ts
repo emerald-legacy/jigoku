@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -22,7 +23,7 @@ export default class CornerThePrey extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context, context.costs.sacrifice)
-            }, AbilityDsl.actions.discardFromPlay())
+            }, discardFromPlay())
             .cannotTargetFirst();
     }
 

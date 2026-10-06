@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class Forgery extends DrawCard {
@@ -11,7 +11,7 @@ class Forgery extends DrawCard {
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.player.opponent &&
                     context.player.isLessHonorable()
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .cannotBeMirrored();
     }
 }

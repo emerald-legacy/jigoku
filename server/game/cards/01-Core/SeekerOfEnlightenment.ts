@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 
 class SeekerOfEnlightenment extends DrawCard {
     static id = 'seeker-of-enlightenment';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills(() => this.getFateOnRings())
+            effect: modifyBothSkills(() => this.getFateOnRings())
         });
     }
 

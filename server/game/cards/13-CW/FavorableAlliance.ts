@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { canPlayFromOwn } from '../../effects.js';
+import { handler, lookAt, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class FavorableAlliance extends DrawCard {
@@ -12,13 +14,13 @@ class FavorableAlliance extends DrawCard {
                 maxAmount: (context) => context.player.conflictDeck.length,
                 activePromptTitle: 'Choose a value for X'
             }))
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.lookAt((context) => ({
+            .gameAction(multiple([
+                lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, context.costs.variableFateCost),
                     message: '{0} sets aside the top {1} card{3} from their conflict deck: {2}',
                     messageArgs: (cards) => [context.player, cards.length, cards, cards.length > 1 ? 's' : '']
                 })),
-                AbilityDsl.actions.handler({
+                handler({
                     handler: (context) => {
                         const cards = context.player.conflictDeck.slice(0, context.costs.variableFateCost);
                         cards.forEach((card) => {
@@ -31,7 +33,7 @@ class FavorableAlliance extends DrawCard {
                                         event.card === card && event.originalLocation === Location.RemovedFromGame
                                 },
                                 match: card,
-                                effect: [AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this)]
+                                effect: [canPlayFromOwn(Location.RemovedFromGame, [card], this)]
                             }));
                         });
                     }

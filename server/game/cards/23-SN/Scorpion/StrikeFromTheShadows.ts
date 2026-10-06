@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class StrikeFromTheShadows extends DrawCard {
@@ -9,10 +11,10 @@ export default class StrikeFromTheShadows extends DrawCard {
             .when({
                 afterConflict: (_event, context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')).length > 0
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')),
                 effect: [
-                    AbilityDsl.effects.modifyBothSkills(1)
+                    modifyBothSkills(1)
                 ]
             })))
             .effect('give all participating Shinobi they control +1{1}/+1{2} until the end of the conflict', () => ['military', 'political'])

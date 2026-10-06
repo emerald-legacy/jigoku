@@ -1,6 +1,6 @@
 import { TargetMode, CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 export default class TheWayOfPeace extends ProvinceCard {
     static id = 'the-way-of-peace';
@@ -16,6 +16,6 @@ export default class TheWayOfPeace extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 player: Players.Self
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }

@@ -1,5 +1,7 @@
 import { CardType, Players, Duration, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, multiple, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CHARACTER = 'character';
@@ -19,24 +21,24 @@ export default class ForDeathAndGlory extends DrawCard {
                 name: 'select',
                 dependsOn: CHARACTER
             }, {
-                'Gain +2 skill': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Gain +2 skill': cardLastingEffect((context) => ({
                     target: context.targets[CHARACTER],
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                    effect: modifyMilitarySkill(2)
                 })),
-                'Gain +4 skill, and get discarded when the conflict ends': AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Gain +4 skill, and get discarded when the conflict ends': multiple([
+                    cardLastingEffect((context) => ({
                         target: context.targets[CHARACTER],
-                        effect: AbilityDsl.effects.modifyMilitarySkill(4)
+                        effect: modifyMilitarySkill(4)
                     })),
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                    cardLastingEffect((context) => ({
                         target: context.targets[CHARACTER],
                         duration: Duration.UntilEndOfPhase,
                         effect: [
-                            AbilityDsl.effects.delayedEffect({
+                            delayedEffect({
                                 when: { onConflictFinished: () => true },
                                 message: '{1} is discarded from play due to the delayed effect of {0}',
                                 messageArgs: [context.source, context.targets[CHARACTER]],
-                                gameAction: AbilityDsl.actions.sacrifice({
+                                gameAction: sacrifice({
                                     target: context.targets[CHARACTER]
                                 })
                             })

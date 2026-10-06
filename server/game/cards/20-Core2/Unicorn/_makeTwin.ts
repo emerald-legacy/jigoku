@@ -1,4 +1,17 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { blank } from '../../../effects.js';
+import {
+    attach,
+    cardLastingEffect,
+    deckSearch,
+    discardFromPlay,
+    ifAble,
+    moveStatusToken,
+    placeFate,
+    putIntoConflict,
+    putIntoPlay,
+    returnToDeck,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import { Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -9,7 +22,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
 
         setupCardAbilities() {
             this.action(opt.title)
-                .gameAction(AbilityDsl.actions.deckSearch({
+                .gameAction(deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,
                     deck: Decks.DynastyDeck,
                     shuffle: false,
@@ -26,18 +39,18 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                             return;
                         }
                         const intoPlayAction = replacedCharacter.isParticipating()
-                            ? AbilityDsl.actions.putIntoConflict({ target: newCharacter })
-                            : AbilityDsl.actions.putIntoPlay({ target: newCharacter });
+                            ? putIntoConflict({ target: newCharacter })
+                            : putIntoPlay({ target: newCharacter });
                         intoPlayAction.resolve(newCharacter, context);
 
                         const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
-                            AbilityDsl.actions.ifAble({
-                                ifAbleAction: AbilityDsl.actions.attach({ attachment, target: newCharacter }),
-                                otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: attachment })
+                            ifAble({
+                                ifAbleAction: attach({ attachment, target: newCharacter }),
+                                otherwiseAction: discardFromPlay({ target: attachment })
                             })
                         );
                         sequence.push(
-                            AbilityDsl.actions.placeFate({
+                            placeFate({
                                 target: newCharacter,
                                 origin: replacedCharacter,
                                 amount: replacedCharacter.fate
@@ -45,21 +58,19 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                         );
                         for(const token of replacedCharacter.statusTokens) {
                             sequence.push(
-                                AbilityDsl.actions.moveStatusToken({ target: token, recipient: newCharacter })
+                                moveStatusToken({ target: token, recipient: newCharacter })
                             );
                         }
-                        AbilityDsl.actions.sequential(sequence).resolve(newCharacter, context);
+                        sequential(sequence).resolve(newCharacter, context);
 
-                        AbilityDsl.actions
-                            .cardLastingEffect({
-                                effect: AbilityDsl.effects.blank(),
-                                duration: Duration.UntilEndOfRound,
-                                target: newCharacter
-                            })
+                        cardLastingEffect({
+                            effect: blank(),
+                            duration: Duration.UntilEndOfRound,
+                            target: newCharacter
+                        })
                             .resolve(newCharacter, context);
 
-                        AbilityDsl.actions
-                            .returnToDeck({ target: replacedCharacter, shuffle: true })
+                        returnToDeck({ target: replacedCharacter, shuffle: true })
                             .resolve(replacedCharacter, context);
 
                         context.game.addMessage(

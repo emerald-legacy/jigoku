@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
 class KakitaTaneharu extends DrawCard {
@@ -8,7 +8,7 @@ class KakitaTaneharu extends DrawCard {
     setupCardAbilities() {
         this.action('Search your conflict deck')
             .condition(context => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: 4,
                 reveal: false,
                 placeOnBottomInRandomOrder: true,
@@ -17,7 +17,7 @@ class KakitaTaneharu extends DrawCard {
                 messageArgs: context => {
                     return [context.player, context.source];
                 },
-                gameAction: AbilityDsl.actions.placeCardUnderneath({
+                gameAction: placeCardUnderneath({
                     destination: this
                 })
             }));

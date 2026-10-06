@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { moveCard, multiple, refillFaceup, sequential } from '../../GameActions/GameActions.js';
 
 import { Location, Players, CardType } from '../../Constants.js';
 
@@ -13,22 +14,22 @@ class CycleOfRebirth extends DrawCard {
                 controller: Players.Any,
                 cardCondition: card => card.type !== CardType.Province && card.type !== CardType.Stronghold
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard(context => ({
+            .gameAction(sequential([
+                multiple([
+                    moveCard(context => ({
                         destination: Location.DynastyDeck,
                         target: context.target,
                         shuffle: true,
                         bottom: true
                     })),
-                    AbilityDsl.actions.moveCard(context => ({
+                    moveCard(context => ({
                         destination: Location.DynastyDeck,
                         target: context.source,
                         shuffle: true,
                         bottom: true
                     }))
                 ]),
-                AbilityDsl.actions.refillFaceup(context => ({
+                refillFaceup(context => ({
                     target: context.target ? [context.target.controller, context.source.controller] : [context.source.controller],
                     location: context.game.getProvinceArray()
                 }))

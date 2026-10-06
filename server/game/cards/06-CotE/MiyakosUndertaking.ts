@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { copyCard } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -21,8 +22,8 @@ export default class MiyakosUndertaking extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy)
+            }, cardLastingEffect((context) => ({
+                effect: copyCard(context.targets.cardToCopy)
             })))
             .effect('make {1} into a copy of {2}', (context) => [context.targets.myCharacter, context.targets.cardToCopy]);
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { selectRing, takeFateFromRing } from '../../GameActions/GameActions.js';
 
 class TogashiYoshi extends DrawCard {
     static id = 'togashi-yoshi';
@@ -10,10 +10,10 @@ class TogashiYoshi extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.selectRing(context => ({
+            .gameAction(selectRing(context => ({
                 ringCondition:  ring => ring.fate >= 1 && ring.isUnclaimed(),
                 target: context.ring,
-                gameAction: AbilityDsl.actions.takeFateFromRing()
+                gameAction: takeFateFromRing()
             })))
             .effect('gain 1 fate from the {1}', (context) => [context.ring]);
     }

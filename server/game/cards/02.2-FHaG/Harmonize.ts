@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class Harmonize extends DrawCard {
     static id = 'harmonize';
@@ -11,13 +11,13 @@ class Harmonize extends DrawCard {
                 name: 'myCharacter',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isDefending() && card.controller === context.player
-            }, AbilityDsl.actions.sendHome())
+            }, sendHome())
             .target({
                 name: 'oppCharacter',
                 dependsOn: 'myCharacter',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.costLessThan((context.targets.myCharacter.getCost() ?? 0) + 1)
-            }, AbilityDsl.actions.sendHome())
+            }, sendHome())
             .effect('send home {1} and {2}', context => [context.targets.myCharacter, context.targets.oppCharacter])
             .cannotBeMirrored();
     }

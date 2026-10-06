@@ -1,5 +1,7 @@
 import { Location, Players, PlayType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, playerCannot, reduceCost } from '../../effects.js';
+import { cardLastingEffect, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class GraspOfEarth extends DrawCard {
@@ -15,18 +17,18 @@ export default class GraspOfEarth extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             condition: (context) => context.player.hasAffinity('earth', context),
-            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card, source) => card === source })
+            effect: reduceCost({ amount: 1, match: (card, source) => card === source })
         });
 
         this.action('Opponent\'s cards cannot join this conflict')
             .cost(AbilityDsl.costs.bowSelf())
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: context.player.opponent?.cardsInPlay.slice(),
-                effect: AbilityDsl.effects.cardCannot('moveToConflict')
-            })), AbilityDsl.actions.playerLastingEffect((context) => ({
+                effect: cardCannot('moveToConflict')
+            })), playerLastingEffect((context) => ({
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
                     restricts: 'characters'
                 })

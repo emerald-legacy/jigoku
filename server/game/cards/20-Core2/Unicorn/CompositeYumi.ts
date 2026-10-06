@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { ConflictType } from '../../../Constants.js';
@@ -13,9 +15,9 @@ export default class CompositeYumi extends DrawCard {
                 onCharacterEntersPlay: (_, context) => this.matchCondition(context),
                 onCreateTokenCharacter: (_, context) => this.matchCondition(context)
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyMilitarySkill(1)
+                effect: modifyMilitarySkill(1)
             })))
             .effect('give +1{1} to {2}', (context) => ['military', context.source.parentCharacter])
             .limit(AbilityDsl.limit.unlimitedPerConflict());

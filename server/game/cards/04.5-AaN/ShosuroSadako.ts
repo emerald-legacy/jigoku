@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honorStatusReverseModifySkill } from '../../effects.js';
 
 class ShosuroSadako extends DrawCard {
     static id = 'shosuro-sadako';
@@ -7,7 +7,7 @@ class ShosuroSadako extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isDishonored,
-            effect: AbilityDsl.effects.honorStatusReverseModifySkill()
+            effect: honorStatusReverseModifySkill()
         });
     }
 }

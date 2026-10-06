@@ -1,5 +1,6 @@
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class BlatantSwindler extends DrawCard {
@@ -14,6 +15,6 @@ export default class BlatantSwindler extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }

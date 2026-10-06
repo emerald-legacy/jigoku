@@ -2,6 +2,7 @@ import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
@@ -79,7 +80,7 @@ class MerchantOfCuriosities extends DrawCard {
         this.action('Discard a card to draw a card')
             .cost(AbilityDsl.costs.discardCard())
             .cost(merchantOfCuriositiesCost())
-            .gameAction(AbilityDsl.actions.draw(context => ({
+            .gameAction(draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
             })))
             // the card is chosen only once the opponent agreed to pay

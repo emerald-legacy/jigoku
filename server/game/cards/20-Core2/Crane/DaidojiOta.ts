@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost } from '../../../effects.js';
+import { chosenDiscard, lookAt } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaidojiOta extends DrawCard {
@@ -12,7 +13,7 @@ export default class DaidojiOta extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.getType() === CardType.Character && card.isParticipating()
                 ),
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (card, player) => {
                     const dynastyMatchesByName = player.dynastyDiscardPile.filter((a) => a.name === card.name);
                     const conflictMatchesByName = player.conflictDiscardPile.filter((a) => a.name === card.name);
@@ -30,10 +31,10 @@ export default class DaidojiOta extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Discard an event': AbilityDsl.actions.chosenDiscard({
+                'Discard an event': chosenDiscard({
                     cardCondition: (card) => card.type === CardType.Event
                 }),
-                'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
+                'Reveal your hand': lookAt((context) => ({
                     target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                     chatMessage: true,
                     message: '{0} reveals their hand: {1}',

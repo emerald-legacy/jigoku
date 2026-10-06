@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ObservantDaidoji extends DrawCard {
@@ -7,7 +7,7 @@ export default class ObservantDaidoji extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
-            effect: AbilityDsl.effects.cardCannot({
+            effect: cardCannot({
                 cannot: 'target',
                 restricts: 'opponentsEvents'
             })

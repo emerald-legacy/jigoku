@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { initiateConflict } from '../../GameActions/GameActions.js';
 
 class Breakthrough extends DrawCard {
     static id = 'breakthrough';
@@ -12,7 +12,7 @@ class Breakthrough extends DrawCard {
                     this.game.getConflicts(context.player).filter(conflict => !conflict.passed).length === 1 &&
                     event.conflict.getConflictProvinces().some(a => a.isBroken)
             })
-            .gameAction(AbilityDsl.actions.initiateConflict({ canPass: false }));
+            .gameAction(initiateConflict({ canPass: false }));
     }
 }
 

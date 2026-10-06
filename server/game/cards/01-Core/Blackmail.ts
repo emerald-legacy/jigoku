@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { takeControl } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class Blackmail extends DrawCard {
@@ -12,8 +13,8 @@ class Blackmail extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
-                effect: AbilityDsl.effects.takeControl(context.player)
+            }, cardLastingEffect(context => ({
+                effect: takeControl(context.player)
             })))
             .effect('take control of {0}');
     }

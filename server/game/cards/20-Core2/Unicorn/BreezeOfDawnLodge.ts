@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { conditional, moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class BreezeOfDawnLodge extends StrongholdCard {
@@ -14,10 +15,10 @@ export default class BreezeOfDawnLodge extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => !card.bowed
-            }, AbilityDsl.actions.conditional(({ target }) => ({
+            }, conditional(({ target }) => ({
                 condition: () => !!target?.isParticipating(),
-                trueGameAction: AbilityDsl.actions.sendHome({ target }),
-                falseGameAction: AbilityDsl.actions.moveToConflict({ target })
+                trueGameAction: sendHome({ target }),
+                falseGameAction: moveToConflict({ target })
             })));
     }
 }

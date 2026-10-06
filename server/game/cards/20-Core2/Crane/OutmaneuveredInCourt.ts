@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredInCourt extends DrawCard {
@@ -12,6 +13,6 @@ export default class OutmaneuveredInCourt extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.isParticipating() && !card.isUnique()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

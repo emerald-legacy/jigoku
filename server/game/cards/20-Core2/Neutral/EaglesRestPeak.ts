@@ -1,6 +1,7 @@
 import { CardType, Duration, Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { playerDelayedEffect } from '../../../effects.js';
+import { handler, lookAt, playerLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
@@ -14,16 +15,16 @@ export default class EaglesRestPeak extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending() && (card.getCost() ?? 0) > 0
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const opponent = context.player.opponent;
                 const setAsideCards = shuffle(opponent?.hand ?? [])
                     .slice(0, context.target.getCost() ?? 0);
 
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt({ target: setAsideCards }),
+                        lookAt({ target: setAsideCards }),
 
-                        AbilityDsl.actions.handler({
+                        handler({
                             handler: () => {
                                 this.game.addMessage('{0} sets aside {1}', opponent, setAsideCards);
                                 if(opponent) {
@@ -34,12 +35,12 @@ export default class EaglesRestPeak extends ProvinceCard {
                             }
                         }),
 
-                        AbilityDsl.actions.playerLastingEffect({
+                        playerLastingEffect({
                             duration: Duration.UntilEndOfRound,
                             targetController: opponent,
-                            effect: AbilityDsl.effects.playerDelayedEffect({
+                            effect: playerDelayedEffect({
                                 when: { onConflictFinished: () => true },
-                                gameAction: AbilityDsl.actions.handler({
+                                gameAction: handler({
                                     handler: (context) => {
                                         context.game.addMessage('{0} picks back their cards', opponent);
                                         if(opponent) {

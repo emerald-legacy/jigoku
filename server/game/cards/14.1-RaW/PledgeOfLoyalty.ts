@@ -1,6 +1,6 @@
 import { CharacterStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, discardStatusToken } from '../../GameActions/GameActions.js';
 
 export default class PledgeOfLoyalty extends ProvinceCard {
     static id = 'pledge-of-loyalty';
@@ -10,8 +10,8 @@ export default class PledgeOfLoyalty extends ProvinceCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.isHonored
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.discardStatusToken({
+            .gameAction(cancel((context) => ({
+                replacementGameAction: discardStatusToken({
                     target: context.event?.card.getStatusToken(CharacterStatus.Honored)
                 })
             })))

@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class WanderingRonin extends DrawCard {
     static id = 'wandering-ronin';
@@ -8,7 +10,7 @@ class WanderingRonin extends DrawCard {
         this.action('Give this character +2/+2')
             .cost(AbilityDsl.costs.removeFateFromSelf())
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(2) }))
+            .gameAction(cardLastingEffect({ effect: modifyBothSkills(2) }))
             .effect('give himself +2{1}/+2{2}', () => ['military', 'political'])
             .limit(AbilityDsl.limit.perConflict(2));
     }

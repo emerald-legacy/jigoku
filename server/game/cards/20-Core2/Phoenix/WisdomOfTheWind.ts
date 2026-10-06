@@ -1,5 +1,13 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    chooseAction,
+    dishonor,
+    honor,
+    onAffinity,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -12,24 +20,24 @@ export default class WisdomOfTheWind extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.chooseAction({
+            }, sequential([
+                chooseAction({
                     options: {
                         'Honor this character': {
-                            action: AbilityDsl.actions.honor(),
+                            action: honor(),
                             message: '{0} chooses to honor {1}'
                         },
                         'Dishonor this character': {
-                            action: AbilityDsl.actions.dishonor(),
+                            action: dishonor(),
                             message: '{0} chooses to dishonor {1}'
                         }
                     }
                 }),
-                AbilityDsl.actions.onAffinity(context => ({
+                onAffinity(context => ({
                     trait: 'air',
-                    gameAction: AbilityDsl.actions.cardLastingEffect({
+                    gameAction: cardLastingEffect({
                         target: context.target,
-                        effect: AbilityDsl.effects.modifyGlory(2)
+                        effect: modifyGlory(2)
                     }),
                     effect: 'give {0} +2 glory',
                     effectArgs: () => [context.target]

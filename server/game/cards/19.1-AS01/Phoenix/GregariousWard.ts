@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GregariousWard extends DrawCard {
@@ -12,7 +13,7 @@ export default class GregariousWard extends DrawCard {
                     context.source.isParticipating() &&
                     event.conflict.hasMoreParticipants(context.player)
             })
-            .gameAction(AbilityDsl.actions.placeFate())
+            .gameAction(placeFate())
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

@@ -1,6 +1,7 @@
 import { CardType, Location, PlayType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { playCard, selectCard } from '../../GameActions/GameActions.js';
 
 export default class KyudenIsawa extends StrongholdCard {
     static id = 'kyuden-isawa';
@@ -12,13 +13,13 @@ export default class KyudenIsawa extends StrongholdCard {
                 cardCondition: (card) => card.hasTrait('spell') && card.type === CardType.Event
             }))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose a spell event',
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.ConflictDiscardPile,
                 cardCondition: (card) => card.hasTrait('spell'),
-                gameAction: AbilityDsl.actions.playCard({
+                gameAction: playCard({
                     resetOnCancel: true,
                     source: this,
                     playType: PlayType.PlayFromHand,

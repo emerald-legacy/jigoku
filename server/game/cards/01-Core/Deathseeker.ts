@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { injure } from '../../GameActions/GameActions.js';
 
 class Deathseeker extends DrawCard {
     static id = 'deathseeker';
@@ -14,7 +15,7 @@ class Deathseeker extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.injure())
+            }, injure())
             .effect('{1} {0}', (context) => context.target.getFate() > 0 ? 'remove 1 fate from' : 'discard');
     }
 }

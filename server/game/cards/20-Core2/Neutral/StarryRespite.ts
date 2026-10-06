@@ -1,6 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { honor } from '../../../GameActions/GameActions.js';
 
 export default class StarryRespite extends ProvinceCard {
     static id = 'starry-respite';
@@ -11,7 +11,7 @@ export default class StarryRespite extends ProvinceCard {
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.honor())
+            }, honor())
             .effect('honor {0}');
     }
 }

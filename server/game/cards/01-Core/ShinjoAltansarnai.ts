@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class ShinjoAltansarnai extends DrawCard {
     static id = 'shinjo-altansarnai';
@@ -15,7 +15,7 @@ class ShinjoAltansarnai extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }
 

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canContributeWhileBowed } from '../../effects.js';
 import { CardType, Players } from '../../Constants.js';
 
 class NimbleNoyan extends DrawCard {
@@ -10,7 +10,7 @@ class NimbleNoyan extends DrawCard {
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
             match: (card) => card.type === CardType.Character && card.isParticipating(),
-            effect: AbilityDsl.effects.canContributeWhileBowed()
+            effect: canContributeWhileBowed()
         });
     }
 }

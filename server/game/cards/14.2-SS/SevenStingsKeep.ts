@@ -2,6 +2,8 @@ import { EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { defendersChosenFirstDuringConflict } from '../../effects.js';
+import { menuPrompt, playerLastingEffect } from '../../GameActions/GameActions.js';
 
 export default class SevenStingsKeep extends StrongholdCard {
     static id = 'seven-stings-keep';
@@ -12,10 +14,10 @@ export default class SevenStingsKeep extends StrongholdCard {
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
+            .gameAction(menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context.event),
-                gameAction: AbilityDsl.actions.playerLastingEffect({}),
+                gameAction: playerLastingEffect({}),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
                     if(displayMessage) {
@@ -27,7 +29,7 @@ export default class SevenStingsKeep extends StrongholdCard {
                         );
                     }
                     return {
-                        effect: AbilityDsl.effects.defendersChosenFirstDuringConflict(amount)
+                        effect: defendersChosenFirstDuringConflict(amount)
                     };
                 }
             })))

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { switchConflictType } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class CaptiveAudience extends DrawCard {
@@ -9,7 +10,7 @@ class CaptiveAudience extends DrawCard {
         this.action('Change the conflict to military')
             .cost(AbilityDsl.costs.payHonor(1))
             .condition(() => this.game.isDuringConflict('political'))
-            .gameAction(AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictType.Military }));
+            .gameAction(switchConflictType({ targetConflictType: ConflictType.Military }));
     }
 }
 

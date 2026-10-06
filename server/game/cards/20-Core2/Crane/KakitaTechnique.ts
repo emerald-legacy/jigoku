@@ -2,6 +2,8 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { additionalAction, delayedEffect, modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, modifyBid, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KakitaTechnique extends DrawCard {
@@ -9,7 +11,7 @@ export default class KakitaTechnique extends DrawCard {
 
     setupCardAbilities() {
         this.duelFocus('Set bid to 0')
-            .gameAction(AbilityDsl.actions.modifyBid((context) => {
+            .gameAction(modifyBid((context) => {
                 const currentBid = context.player.honorBid;
                 return {
                     amount: currentBid,
@@ -22,9 +24,9 @@ export default class KakitaTechnique extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('duelist'))
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.delayedEffect({
+            }, sequential([
+                cardLastingEffect((context) => ({
+                    effect: delayedEffect({
                         when: {
                             onCardPlayed: (event, context) =>
                                 event.player === context.player && event.card.type === CardType.Event
@@ -32,16 +34,16 @@ export default class KakitaTechnique extends DrawCard {
                         message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',
                         messageArgs: () => [context.target, 'military', 'political', context.source],
                         multipleTrigger: true,
-                        gameAction: AbilityDsl.actions.cardLastingEffect({
+                        gameAction: cardLastingEffect({
                             target: context.target,
-                            effect: AbilityDsl.effects.modifyBothSkills(1)
+                            effect: modifyBothSkills(1)
                         })
                     })
                 })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
                     duration: Duration.UntilPassPriority,
-                    effect: AbilityDsl.effects.additionalAction(this.getExtraActionCount(context))
+                    effect: additionalAction(this.getExtraActionCount(context))
                 }))
             ]))
             .effect('give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}', (context) => {

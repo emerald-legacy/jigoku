@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Duration, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect, modifyBaseMilitarySkillMultiplier } from '../../effects.js';
+import { cardLastingEffect, multiple, sacrifice } from '../../GameActions/GameActions.js';
 
 class FuryOfTheDamned extends DrawCard {
     static id = 'fury-of-the-damned';
@@ -13,19 +14,19 @@ class FuryOfTheDamned extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi') && card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2)
+            }, multiple([
+                cardLastingEffect({
+                    effect: modifyBaseMilitarySkillMultiplier(2)
                 }),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect(context => ({
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onConflictFinished: () => true
                         },
                         message: '{1} {2} sacrificed due to {0}\'s delayed effect',
                         messageArgs: [context.source, context.targets.target, (Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'],
-                        gameAction: AbilityDsl.actions.sacrifice()
+                        gameAction: sacrifice()
                     })
                 }))
             ]))

@@ -1,6 +1,6 @@
 import type { Element } from '../../Constants.js';
 import { RoleCard } from '../../RoleCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainFate } from '../../GameActions/GameActions.js';
 
 export function createKeeperRole(id: string, element: Element) {
     return class KeeperRole extends RoleCard {
@@ -14,7 +14,7 @@ export function createKeeperRole(id: string, element: Element) {
                         event.conflict.winner === context.player &&
                         event.conflict.defendingPlayer === context.player
                 })
-                .gameAction(AbilityDsl.actions.gainFate());
+                .gameAction(gainFate());
         }
 
         getElement(): Element[] {
@@ -35,7 +35,7 @@ export function createSeekerRole(id: string, element: Element) {
                         event.card.isProvinceCard() &&
                         event.card.getElement().some((element: string) => context.source.hasTrait(element))
                 })
-                .gameAction(AbilityDsl.actions.gainFate());
+                .gameAction(gainFate());
         }
 
         getElement(): Element[] {

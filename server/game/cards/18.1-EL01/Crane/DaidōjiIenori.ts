@@ -1,5 +1,12 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import {
+    cannotReceiveDishonorToken,
+    cannotReceiveHonorToken,
+    cannotReceiveTaintedToken,
+    setMilitarySkill,
+    setPoliticalSkill
+} from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 
 class DaidojiIenori extends DrawCard {
@@ -12,15 +19,15 @@ class DaidojiIenori extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(context => {
+            }, cardLastingEffect(context => {
                 const effect = [
-                    AbilityDsl.effects.setMilitarySkill(3),
-                    AbilityDsl.effects.setPoliticalSkill(3)
+                    setMilitarySkill(3),
+                    setPoliticalSkill(3)
                 ];
                 if(context.source.isHonored) {
-                    effect.push(AbilityDsl.effects.cannotReceiveDishonorToken());
-                    effect.push(AbilityDsl.effects.cannotReceiveHonorToken());
-                    effect.push(AbilityDsl.effects.cannotReceiveTaintedToken());
+                    effect.push(cannotReceiveDishonorToken());
+                    effect.push(cannotReceiveHonorToken());
+                    effect.push(cannotReceiveTaintedToken());
                 }
                 return {
                     effect: effect

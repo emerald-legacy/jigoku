@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class BeingAndBecoming extends DrawCard {
@@ -14,7 +15,7 @@ class BeingAndBecoming extends DrawCard {
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring) => ring.isUnclaimed() && ring.fate > 0
-            }, AbilityDsl.actions.placeFate((context) => ({
+            }, placeFate((context) => ({
                 origin: context.ring,
                 amount: context.ring.fate,
                 target: context.source.parentCharacter ?? []

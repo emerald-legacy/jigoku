@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playCard } from '../../GameActions/GameActions.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
 const elementSymbol = { key: 'inventive-mirumoto-water', element: Element.Water };
@@ -15,7 +15,7 @@ class InventiveMirumoto extends DrawCard {
                 cardCondition: card => card.type === CardType.Attachment,
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self
-            }, AbilityDsl.actions.playCard(context => ({
+            }, playCard(context => ({
                 payCosts: true,
                 source: this,
                 playCardTarget: attachContext => {

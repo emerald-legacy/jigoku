@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { canPlayFromOwn } from '../../../effects.js';
 import type DrawCard from '../../../DrawCard.js';
-import { rearrangeDeck } from '../../../GameActions/GameActions.js';
+import { handler, rearrangeDeck } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 class Process {
@@ -63,7 +63,7 @@ class Process {
                             event.card === card && event.originalLocation === Location.RemovedFromGame
                     },
                     match: card,
-                    effect: [AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this.context.source)]
+                    effect: [canPlayFromOwn(Location.RemovedFromGame, [card], this.context.source)]
                 }));
             }
         }
@@ -92,7 +92,7 @@ export default class ShachihokoBay extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.game.currentConflict && Boolean(context.player.opponent)
             })
-            .gameAction(AbilityDsl.actions.handler({
+            .gameAction(handler({
                 handler: (context) => new Process(context).start()
             }));
     }

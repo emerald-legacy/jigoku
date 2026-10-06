@@ -1,5 +1,6 @@
 import { Duration, DuelType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { additionalAction, cannotContribute } from '../../../effects.js';
+import { cardLastingEffect, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class UnbridledRage extends DrawCard {
@@ -11,15 +12,15 @@ export default class UnbridledRage extends DrawCard {
                 type: DuelType.Military,
                 challengerCondition: card => card.hasTrait('berserker'),
                 message: 'prevent {0} from contributing to resolution of this conflict',
-                refuseGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.draw(context => ({
+                refuseGameAction: multiple([
+                    draw(context => ({
                         amount: 2,
                         target: context.player
                     })),
-                    AbilityDsl.actions.playerLastingEffect(context => ({
+                    playerLastingEffect(context => ({
                         targetController: context.player,
                         duration: Duration.UntilPassPriority,
-                        effect: AbilityDsl.effects.additionalAction()
+                        effect: additionalAction()
                     }))
                 ]),
                 refusalMessage: '{0} chooses to refuse the duel, allowing {1} to draw 2 cards and take an additional action',
@@ -29,9 +30,9 @@ export default class UnbridledRage extends DrawCard {
                 ],
                 messageArgs: (duel) => duel.loser,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.cardLastingEffect({
+                    cardLastingEffect({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
+                        effect: [cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
                     })
             }));
     }

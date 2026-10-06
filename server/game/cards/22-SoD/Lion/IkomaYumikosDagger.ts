@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, discardFromPlay, injure, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IkomaYumikosDagger extends DrawCard {
@@ -11,9 +11,9 @@ export default class IkomaYumikosDagger extends DrawCard {
                 onDiscardFavor: (event, context) => event.player === context.player &&
                     context.source.allowGameAction('discardFromPlay', context)
             })
-            .gameAction(AbilityDsl.actions.cancel(context => ({
+            .gameAction(cancel(context => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.discardFromPlay()
+                replacementGameAction: discardFromPlay()
             })))
             .effect('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
 
@@ -23,9 +23,9 @@ export default class IkomaYumikosDagger extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.isParticipating() && (card.printedCost ?? 0) <= (context.source.printedCost ?? 0)
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.injure(),
-                AbilityDsl.actions.injure((context) => ({ target: context.source }))
+            }, multiple([
+                injure(),
+                injure((context) => ({ target: context.source }))
             ]))
             .effect('injure itself and {0}');
     }

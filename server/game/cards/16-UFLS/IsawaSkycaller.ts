@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainPlayAction } from '../../effects.js';
 import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
 import { Element, Location, PlayType } from '../../Constants.js';
 import type Player from '../../Player.js';
@@ -34,7 +34,7 @@ class IsawaSkycaller extends DrawCard {
             condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFaceup(),
-            effect: AbilityDsl.effects.gainPlayAction(IsawaSkycallerPlayAction)
+            effect: gainPlayAction(IsawaSkycallerPlayAction)
         });
     }
 

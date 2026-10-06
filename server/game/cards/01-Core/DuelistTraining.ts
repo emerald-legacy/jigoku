@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, duel } from '../../GameActions/GameActions.js';
+import { gainAbility } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityType, CardType, DuelType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -10,7 +11,7 @@ class DuelistTraining extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+            effect: gainAbility(AbilityType.Action, {
                 title: 'Initiate a duel to bow',
                 condition: (context) => context.source.isParticipating(),
                 printedAbility: false,
@@ -18,9 +19,9 @@ class DuelistTraining extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.duel({
+                    gameAction: duel({
                         type: DuelType.Military,
-                        gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser }),
+                        gameAction: (duel) => bow({ target: duel.loser }),
                         costHandler: (context, prompt) => {
                             if(prompt instanceof HonorBidPrompt) {
                                 this.costHandler(context, prompt);

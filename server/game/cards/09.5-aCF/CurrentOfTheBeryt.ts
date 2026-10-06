@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { additionalAction } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 
@@ -13,10 +14,10 @@ class CurrentOfTheBeryt extends DrawCard {
 
         this.action('Take two actions')
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .gameAction(playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Duration.UntilPassPriority,
-                effect: AbilityDsl.effects.additionalAction(2)
+                effect: additionalAction(2)
             })))
             .effect('take two actions');
     }

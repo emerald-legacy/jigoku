@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { bow, cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 
 class KaitoNobukai extends DrawCard {
     static id = 'kaito-nobukai';
@@ -9,13 +11,13 @@ class KaitoNobukai extends DrawCard {
         this.action('Bow each participating characters')
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.bow(() => ({
+            .gameAction(multiple([
+                bow(() => ({
                     target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character && card.isParticipating())
                 })),
-                AbilityDsl.actions.cardLastingEffect(() => ({
+                cardLastingEffect(() => ({
                     target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character),
-                    effect: AbilityDsl.effects.cardCannot('moveToConflict')
+                    effect: cardCannot('moveToConflict')
                 }))
             ]))
             .effect('bow all participating characters and prevent characters from moving into this conflict');

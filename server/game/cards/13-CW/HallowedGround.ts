@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Element, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot, playerDelayedEffect } from '../../effects.js';
+import { loseHonor } from '../../GameActions/GameActions.js';
 
 const elementKeys = {
     air: 'hallowed-ground-air',
@@ -15,7 +16,7 @@ class HallowedGround extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'placeFateWhenPlayingCharacter'
             })
         });
@@ -23,14 +24,14 @@ class HallowedGround extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
-            effect: AbilityDsl.effects.playerDelayedEffect({
+            effect: playerDelayedEffect({
                 when: {
                     afterConflict: (event, context) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
                 },
                 message: '{0} loses 1 honor due to the constant effect of {1}',
                 messageArgs: (effectContext) => [effectContext.player.opponent, effectContext.source],
                 multipleTrigger: true,
-                gameAction: AbilityDsl.actions.loseHonor()
+                gameAction: loseHonor()
             })
         });
     }

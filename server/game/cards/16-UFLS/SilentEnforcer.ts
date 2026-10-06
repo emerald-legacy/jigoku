@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, sendHome } from '../../GameActions/GameActions.js';
 
 class SilentEnforcer extends DrawCard {
     static id = 'silent-enforcer';
@@ -21,8 +21,8 @@ class SilentEnforcer extends DrawCard {
                 dependsOn: 'character',
                 player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character })),
-                'Bow this character': AbilityDsl.actions.bow(context => ({ target: context.targets.character }))
+                'Move this character home': sendHome(context => ({ target: context.targets.character })),
+                'Bow this character': bow(context => ({ target: context.targets.character }))
             });
     }
 }

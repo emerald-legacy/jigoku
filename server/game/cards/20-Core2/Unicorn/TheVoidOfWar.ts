@@ -1,5 +1,5 @@
 import { CardType, ConflictType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { opponentMayResolveAgain } from '../../resolveAgain.js';
 
@@ -13,7 +13,7 @@ export default class TheVoidOfWar extends DrawCard {
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow())
+            }, bow())
             .effect('bow {0}')
             .then((context) => opponentMayResolveAgain(context, 'Resolve The Void of War\'s ability again?'));
     }

@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken, multipleContext, selectToken } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType } from '../../Constants.js';
 import { countTargetable } from '../countTargetable.js';
 
@@ -15,7 +16,7 @@ class ImbuedWithShadows extends DrawCard {
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => context.costs.variableHonorCost || this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character
-            }, AbilityDsl.actions.multipleContext((context) => {
+            }, multipleContext((context) => {
                 const targets = Object.values(context.targets).flat();
                 return {
                     gameActions: this.getStatusTokenPrompts(targets)
@@ -26,12 +27,12 @@ class ImbuedWithShadows extends DrawCard {
     }
 
     private getStatusTokenPrompts(targets: BaseCard[]) {
-        return targets.map((target) => AbilityDsl.actions.selectToken(() => ({
+        return targets.map((target) => selectToken(() => ({
             card: target,
             activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
             message: '{0} discards {1} from {2}',
             messageArgs: (token, player) => [player, token, target],
-            gameAction: AbilityDsl.actions.discardStatusToken()
+            gameAction: discardStatusToken()
         })));
     }
 

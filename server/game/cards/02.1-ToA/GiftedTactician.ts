@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class GiftedTactician extends DrawCard {
@@ -11,7 +11,7 @@ class GiftedTactician extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
-            .gameAction(AbilityDsl.actions.draw());
+            .gameAction(draw());
     }
 }
 

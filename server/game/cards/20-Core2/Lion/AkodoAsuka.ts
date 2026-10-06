@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,10 +18,10 @@ export default class AkodoAsuka extends DrawCard {
                     context.source.isParticipating() &&
                     context.player.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 amount: (context) => charactersOnYourSide(context),
                 activePromptTitle: 'Choose a card to put in your hand',
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
                 shuffle: true,

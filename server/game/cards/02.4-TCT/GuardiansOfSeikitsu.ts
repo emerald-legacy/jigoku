@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class GuardiansOfTheSeikitsu extends ProvinceCard {
     static id = 'guardians-of-the-seikitsu';
@@ -10,7 +10,7 @@ export default class GuardiansOfTheSeikitsu extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.bow(() => ({
+            .gameAction(bow(() => ({
                 target: this.game.findAnyCardsInPlay(
                     (card) => card.getType() === CardType.Character && card.costLessThan(3)
                 )

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveStatusToken, selectToken } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class ShamelessGossip extends DrawCard {
@@ -23,12 +23,12 @@ class ShamelessGossip extends DrawCard {
                 cardCondition: (card, context) =>
                     card.controller === context.targets.first.controller &&
                         card !== context.targets.first
-            }, AbilityDsl.actions.selectToken(context => ({
+            }, selectToken(context => ({
                 card: context.targets.first,
                 activePromptTitle: 'Which token do you wish to move?',
                 message: '{0} chooses to move {1}',
                 messageArgs: (token, player) => [player, token],
-                gameAction: AbilityDsl.actions.moveStatusToken(() => ({
+                gameAction: moveStatusToken(() => ({
                     recipient: context.targets.second
                 }))
             })))

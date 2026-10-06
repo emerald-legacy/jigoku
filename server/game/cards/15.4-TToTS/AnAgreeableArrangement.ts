@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { takeControl } from '../../effects.js';
+import { bow } from '../../GameActions/GameActions.js';
 import type { Cost } from '../../costs/Cost.js';
 import { CardType, Players, Duration, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -38,7 +39,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
         const card = context.costs.agreeableArrangementCost;
         const action = context.game.actions.cardLastingEffect((innerContext) => ({
             target: card,
-            effect: AbilityDsl.effects.takeControl(innerContext.player.opponent),
+            effect: takeControl(innerContext.player.opponent),
             duration: Duration.Custom
         }));
         return [action.getEvent(card, context)];
@@ -56,7 +57,7 @@ class AnAgreeableArrangement extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => !card.hasTrait('champion'),
                 activePromptTitle: 'Bow a non-champion'
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

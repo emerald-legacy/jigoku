@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken } from '../../GameActions/GameActions.js';
 
 class ExiledGuardian extends DrawCard {
     static id = 'exiled-guardian';
@@ -11,7 +12,7 @@ class ExiledGuardian extends DrawCard {
             .tokenTarget({
                 cardType: [CardType.Character, CardType.Province],
                 location: Location.Any
-            }, AbilityDsl.actions.discardStatusToken())
+            }, discardStatusToken())
             .effect('discard {1}\'s {2}', context => [context.token[0].card, context.token]);
     }
 }

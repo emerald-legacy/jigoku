@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HeirOfTheSerpent extends DrawCard {
@@ -11,9 +11,9 @@ export default class HeirOfTheSerpent extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.sendHome(),
-                AbilityDsl.actions.moveToConflict()
+            }, multiple([
+                sendHome(),
+                moveToConflict()
             ]));
     }
 }

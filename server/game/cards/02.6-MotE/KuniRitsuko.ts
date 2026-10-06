@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 class KuniRitsuko extends DrawCard {
     static id = 'kuni-ritsuko';
@@ -13,7 +13,7 @@ class KuniRitsuko extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking()
-            }, AbilityDsl.actions.removeFate());
+            }, removeFate());
     }
 }
 

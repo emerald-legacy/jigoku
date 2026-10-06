@@ -1,5 +1,6 @@
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
@@ -12,11 +13,11 @@ export default class KakitasFinalStance extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 condition: () => duelParticipants.has(context.target),
-                effect: AbilityDsl.effects.doesNotBow()
-            })), AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
+                effect: doesNotBow()
+            })), cardLastingEffect((context) => ({
+                effect: cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player

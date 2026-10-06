@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotResolveRings } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Players } from '../../Constants.js';
 
 class MountaintopVigil extends DrawCard {
@@ -7,9 +8,9 @@ class MountaintopVigil extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('cancel all ring effects')
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
+            .gameAction(playerLastingEffect({
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.cannotResolveRings()
+                effect: cannotResolveRings()
             }))
             .effect('cancel all ring effects until the end of the conflict');
     }

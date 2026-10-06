@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFateOnRing, sequential, switchConflictElement } from '../../GameActions/GameActions.js';
 
 class ElementalInversion extends DrawCard {
     static id = 'elemental-inversion';
@@ -9,13 +9,13 @@ class ElementalInversion extends DrawCard {
             .ringTarget({
                 activePromptTitle: 'Choose an uncontested ring',
                 ringCondition: ring => !ring.isContested() && !ring.isRemovedFromGame()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.placeFateOnRing(context => ({
+            }, sequential([
+                placeFateOnRing(context => ({
                     origin: context.ring,
                     target: context.game.currentConflict?.ring,
                     amount: context.ring?.fate
                 })),
-                AbilityDsl.actions.switchConflictElement()
+                switchConflictElement()
             ]))
             .effect('move all fate from the {0} and switch it with the contested ring');
     }

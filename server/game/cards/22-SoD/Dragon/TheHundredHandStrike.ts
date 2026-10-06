@@ -1,6 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function penalty(context: AbilityContext): number {
@@ -28,16 +30,16 @@ export default class TheHundredHandStrike extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: context.targets.punchee,
-                effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
+                effect: modifyBothSkills(penalty(context))
             })))
             .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.targets.punchee])
             .then((context) => ({
                 thenCondition: () => context.targets.puncher.hasTrait('tattooed') &&
                     context.game.currentConflict !== null &&
                     context.game.currentConflict.calculateSkillFor([context.targets.punchee]) === 0,
-                gameAction: AbilityDsl.actions.injure({ target: context.targets.punchee }),
+                gameAction: injure({ target: context.targets.punchee }),
                 message: '{3} is injured because it is not contributing skill to the current conflict',
                 messageArgs: () => [context.targets.punchee]
             }))

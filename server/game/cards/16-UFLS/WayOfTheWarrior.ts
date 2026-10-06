@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect, ready, sequential } from '../../GameActions/GameActions.js';
 
 class WayOfTheWarrior extends DrawCard {
     static id = 'way-of-the-warrior';
@@ -11,27 +12,27 @@ class WayOfTheWarrior extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi')
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect(context => ({
+            }, sequential([
+                cardLastingEffect(context => ({
                     effect: [
-                        AbilityDsl.effects.cardCannot({
+                        cardCannot({
                             cannot: 'sendHome',
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player
                         }),
-                        AbilityDsl.effects.cardCannot({
+                        cardCannot({
                             cannot: 'bow',
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player
                         }),
-                        AbilityDsl.effects.cardCannot({
+                        cardCannot({
                             cannot: 'dishonor',
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player
                         })
                     ]
                 })),
-                AbilityDsl.actions.ready()
+                ready()
             ]))
             .effect('ready and prevent opponent\'s card effects from bowing, sending home, or dishonoring {0}');
     }

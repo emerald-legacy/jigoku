@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 
 class AgashaSumiko extends DrawCard {
     static id = 'agasha-sumiko';
@@ -10,7 +10,7 @@ class AgashaSumiko extends DrawCard {
                 context.player.imperialFavor !== '' &&
                 context.source.isAttacking()
             ),
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

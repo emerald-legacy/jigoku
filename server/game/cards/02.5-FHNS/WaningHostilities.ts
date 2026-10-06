@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setMaxConflicts } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 class WaningHostilities extends DrawCard {
     static id = 'waning-hostilities';
@@ -10,10 +11,10 @@ class WaningHostilities extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
+            .gameAction(playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.setMaxConflicts(1)
+                effect: setMaxConflicts(1)
             }))
             .effect('limit both players to a single conflict this turn');
     }

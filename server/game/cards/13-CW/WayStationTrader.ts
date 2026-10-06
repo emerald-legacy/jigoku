@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { takeFate } from '../../GameActions/GameActions.js';
 
 class WayStationTrader extends DrawCard {
     static id = 'way-station-trader';
@@ -10,7 +10,7 @@ class WayStationTrader extends DrawCard {
             .when({
                 onCardRevealed: (event, context) => event.card.type === CardType.Province && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.takeFate());
+            .gameAction(takeFate());
     }
 }
 

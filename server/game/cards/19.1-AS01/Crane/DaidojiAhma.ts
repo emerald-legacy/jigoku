@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel } from '../../../GameActions/GameActions.js';
 import BaseCard from '../../../BaseCard.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -26,7 +26,7 @@ export default class DaidojiAhma extends DrawCard {
                 onCardReadied: (event, context) =>
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context)
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .effect('cancel the effects of {1}{2}', (context) => [
                 context.event.context.source instanceof Ring ? 'the ' : '',
                 context.event.context.source

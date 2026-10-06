@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import { Element } from '../../../Constants.js';
 import { claimsRingOf } from '../../claimedRings.js';
 
@@ -13,7 +13,7 @@ class VoidAcolyte extends DrawCard {
             .when({
                 onClaimRing: (event, context) => event.player === context.player && claimsRingOf(this, elementKey, event)
             })
-            .gameAction(AbilityDsl.actions.placeFate());
+            .gameAction(placeFate());
     }
 
     getPrintedElementSymbols() {

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class HonorableChallenger extends DrawCard {
@@ -11,9 +12,9 @@ class HonorableChallenger extends DrawCard {
                 type: DuelType.Military,
                 message: '{0} will not bow as a result of this conflict\'s resolution',
                 messageArgs: duel => duel.winner,
-                gameAction: duel => AbilityDsl.actions.cardLastingEffect({
+                gameAction: duel => cardLastingEffect({
                     target: duel.winner,
-                    effect: AbilityDsl.effects.doesNotBow()
+                    effect: doesNotBow()
                 })
             }));
     }

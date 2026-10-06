@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 import { ConflictType } from '../../Constants.js';
@@ -14,7 +14,7 @@ export default class CourtOfJustice extends DrawCard {
                     event.conflict.conflictType === ConflictType.Political &&
                     context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.lookAt((context) => ({
+            .gameAction(lookAt((context) => ({
                 target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
                 message: 'reveals {0} from {1}\'s hand',
                 messageArgs: (cards) => [cards, context.player.opponent]

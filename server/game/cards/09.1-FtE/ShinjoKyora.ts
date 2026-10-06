@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { selectRing, switchConflictElement } from '../../GameActions/GameActions.js';
 
 
 class ShinjoKyora extends DrawCard {
@@ -8,11 +8,11 @@ class ShinjoKyora extends DrawCard {
     setupCardAbilities() {
         this.action('Switch the contested ring')
             .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.selectRing({
+            .gameAction(selectRing({
                 message: '{0} switches the contested ring with {1}',
                 ringCondition: ring => ring.isUnclaimed(),
                 messageArgs: (ring, player) => [player, ring],
-                gameAction: AbilityDsl.actions.switchConflictElement()
+                gameAction: switchConflictElement()
             }))
             .effect('switch the contested ring with an unclaimed one');
     }

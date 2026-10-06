@@ -2,6 +2,7 @@ import type { AbilityLimit } from '../../../AbilityLimit.js';
 import { CardType } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SteadfastOrator extends DrawCard {
@@ -32,6 +33,6 @@ function abilityWithCost(self: SteadfastOrator, limit: AbilityLimit, cost: Cost,
         })
         .cost(cost)
         .cannotBeMirrored()
-        .gameAction(AbilityDsl.actions.moveToConflict((context) => ({ target: context.event.card })))
+        .gameAction(moveToConflict((context) => ({ target: context.event.card })))
         .limit(limit);
 }

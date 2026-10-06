@@ -1,5 +1,7 @@
 import { Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { playerCannot } from '../../../effects.js';
+import { returnRing } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DarbukaOfBanishment extends DrawCard {
@@ -8,7 +10,7 @@ export default class DarbukaOfBanishment extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'haveAffinity',
                 restricts: 'unlessMeishodo'
             })
@@ -18,6 +20,6 @@ export default class DarbukaOfBanishment extends DrawCard {
             .cost(AbilityDsl.costs.payHonor(1))
             .ringTarget({
                 ringCondition: (ring) => ring.isClaimed()
-            }, AbilityDsl.actions.returnRing());
+            }, returnRing());
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 class SecludedTemple extends DrawCard {
     static id = 'secluded-temple';
@@ -15,7 +15,7 @@ class SecludedTemple extends DrawCard {
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to remove a fate from',
                 controller: Players.Opponent
-            }, AbilityDsl.actions.removeFate());
+            }, removeFate());
     }
 }
 

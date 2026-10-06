@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,12 +22,12 @@ export default class BrokenBlades extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.removeFate((context) => ({
+            }, sequential([
+                removeFate((context) => ({
                     amount: context.target.getFate(),
                     recipient: context.target.owner
                 })),
-                AbilityDsl.actions.discardFromPlay()
+                discardFromPlay()
             ]))
             .effect('ensure {0} is gone!{1}{2}{3}', (context) => {
                 const target = context.target;

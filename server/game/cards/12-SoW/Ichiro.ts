@@ -1,5 +1,5 @@
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class Ichiro extends DrawCard {
@@ -9,7 +9,7 @@ export default class Ichiro extends DrawCard {
         this.persistentEffect({
             targetController: Players.Any,
             match: (card) => card.getType() === CardType.Character && card.attachments.length > 0,
-            effect: [AbilityDsl.effects.cardCannot('honor'), AbilityDsl.effects.cardCannot('dishonor')]
+            effect: [cardCannot('honor'), cardCannot('dishonor')]
         });
     }
 }

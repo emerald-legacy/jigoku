@@ -3,6 +3,7 @@ import { Location, Phases, PlayType, EventName, CardType } from '../../Constants
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import ThenAbility from '../../ThenAbility.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { customDetachedCard } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import DynastyCardAction from '../../DynastyCardAction.js';
 import type BaseCard from '../../BaseCard.js';
@@ -118,7 +119,7 @@ export default class BackAlleyHideaway extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.customDetachedCard(backAlleyPersistentEffect)
+            effect: customDetachedCard(backAlleyPersistentEffect)
         });
         this.interrupt('Place character in Hideaway')
             .when({

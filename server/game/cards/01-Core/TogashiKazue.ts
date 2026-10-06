@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class TogashiKazue extends DrawCard {
@@ -16,7 +16,7 @@ export default class TogashiKazue extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source.parentCharacter
-            }, AbilityDsl.actions.removeFate((context) => ({
+            }, removeFate((context) => ({
                 recipient: context.source.parentCharacter ?? undefined
             })))
             .effect('steal a fate from {0} and place it on {1}', (context) => context.source.parentCharacter ?? '')

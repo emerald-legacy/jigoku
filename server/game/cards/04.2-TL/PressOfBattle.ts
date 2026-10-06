@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
@@ -14,7 +14,7 @@ class PressOfBattle extends DrawCard {
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.isUnique()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

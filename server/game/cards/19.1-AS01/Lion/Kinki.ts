@@ -1,5 +1,6 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { removeFate, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Kinki extends DrawCard {
@@ -27,10 +28,10 @@ export default class Kinki extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Remove a fate from this character': AbilityDsl.actions.removeFate((context) => ({
+                'Remove a fate from this character': removeFate((context) => ({
                     target: context.targets.character
                 })),
-                'Move this character home': AbilityDsl.actions.sendHome((context) => ({
+                'Move this character home': sendHome((context) => ({
                     target: context.targets.character
                 }))
             })

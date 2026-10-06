@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, EventName } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, loseFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../costs/Cost.js';
 import type Player from '../../../Player.js';
@@ -33,13 +33,13 @@ class ObjectionCost implements Cost {
 
     canPay(context: AbilityContext): boolean {
         const amount = currentObjectionCost(context.player);
-        return amount === 0 || AbilityDsl.actions.loseFate({ target: context.player, amount }).hasLegalTarget(context);
+        return amount === 0 || loseFate({ target: context.player, amount }).hasLegalTarget(context);
     }
 
     pay(context: AbilityContext): void {
         const fateCost = currentObjectionCost(context.player);
         if(fateCost > 0) {
-            AbilityDsl.actions.loseFate({ target: context.player, amount: fateCost }).resolve(context.player, context);
+            loseFate({ target: context.player, amount: fateCost }).resolve(context.player, context);
         }
 
         increaseObjectionCost(context.player);
@@ -58,7 +58,7 @@ export default class Objection extends DrawCard {
                     event.card.type === CardType.Event && context.player.imperialFavor !== ''
             })
             .cost(new ObjectionCost())
-            .gameAction(AbilityDsl.actions.cancel())
+            .gameAction(cancel())
             .cannotBeMirrored();
     }
 

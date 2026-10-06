@@ -1,6 +1,7 @@
 import { Duration, DuelType, ConflictType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyDuelSkill } from '../../../effects.js';
+import { duelLastingEffect, injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MirumotoRei2 extends DrawCard {
@@ -13,9 +14,9 @@ export default class MirumotoRei2 extends DrawCard {
     setupCardAbilities() {
         this.duelChallenge('Help a character with a duel', (duel, context) =>
             duel.participants.includes(context.source) && this.getWeaponCount(context) > 0)
-            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
+            .gameAction(duelLastingEffect((context) => ({
                 target: context.event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({
+                effect: modifyDuelSkill({
                     amount: this.getWeaponCount(context),
                     player: context.player
                 }),
@@ -27,7 +28,7 @@ export default class MirumotoRei2 extends DrawCard {
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: (duel) => AbilityDsl.actions.injure({ target: duel.loser ?? [] })
+                gameAction: (duel) => injure({ target: duel.loser ?? [] })
             }));
     }
 }

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class NeverYield extends DrawCard {
@@ -10,15 +11,15 @@ class NeverYield extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
-                    AbilityDsl.effects.cardCannot({
+                    cardCannot({
                         cannot: 'sendHome',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.cardCannot({
+                    cardCannot({
                         cannot: 'bow',
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player

@@ -1,5 +1,6 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { charactersCannot } from '../../../effects.js';
+import { conflictLastingEffect } from '../../../GameActions/GameActions.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
@@ -9,14 +10,14 @@ export default class AshenFlamePlateau extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(AbilityDsl.actions.conflictLastingEffect((context) => ({
+            .gameAction(conflictLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.charactersCannot({
+                    charactersCannot({
                         cannot: 'triggerAbilities',
                         restricts: 'opponentsCharacters',
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.charactersCannot({
+                    charactersCannot({
                         cannot: 'initiateKeywords',
                         restricts: 'opponentsCharacters',
                         applyingPlayer: context.player

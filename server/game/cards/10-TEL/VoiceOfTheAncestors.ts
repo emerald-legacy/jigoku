@@ -1,6 +1,22 @@
 import DrawCard from '../../DrawCard.js';
 import { AbilityType, CardType, Location, Players, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import {
+    addTrait,
+    attachmentRestrictTraitAmount,
+    blank,
+    changeType,
+    gainAbility,
+    modifyMilitarySkill,
+    modifyPoliticalSkill,
+    reduceNextPlayedCardCost
+} from '../../effects.js';
+import {
+    cardLastingEffect,
+    playCard,
+    playerLastingEffect,
+    selectCard,
+    sequential
+} from '../../GameActions/GameActions.js';
 
 class VoiceOfTheAncestors extends DrawCard {
     static id = 'voice-of-the-ancestors';
@@ -24,34 +40,34 @@ class VoiceOfTheAncestors extends DrawCard {
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
             })
-            .gameAction(AbilityDsl.actions.selectCard({
+            .gameAction(selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 cardCondition: card => card.isFaction('lion'),
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.playerLastingEffect(context => ({
+                gameAction: sequential([
+                    playerLastingEffect(context => ({
                         targetController: context.player,
-                        effect: AbilityDsl.effects.reduceNextPlayedCardCost(1)
+                        effect: reduceNextPlayedCardCost(1)
                     })),
-                    AbilityDsl.actions.cardLastingEffect({
+                    cardLastingEffect({
                         canChangeZoneOnce: true,
                         duration: Duration.Custom,
                         effect: [
-                            AbilityDsl.effects.blank(true),
-                            AbilityDsl.effects.changeType(CardType.Attachment),
-                            AbilityDsl.effects.addTrait('spirit'),
-                            AbilityDsl.effects.attachmentRestrictTraitAmount({ spirit: 1 }),
-                            AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+                            blank(true),
+                            changeType(CardType.Attachment),
+                            addTrait('spirit'),
+                            attachmentRestrictTraitAmount({ spirit: 1 }),
+                            gainAbility(AbilityType.Persistent, {
                                 match: (card, context) => card === context?.source.parentCharacter,
                                 effect: [
-                                    AbilityDsl.effects.modifyMilitarySkill((_card, context) => (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0),
-                                    AbilityDsl.effects.modifyPoliticalSkill((_card, context) => (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0)
+                                    modifyMilitarySkill((_card, context) => (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0),
+                                    modifyPoliticalSkill((_card, context) => (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0)
                                 ]
                             })
                         ]
                     }),
-                    AbilityDsl.actions.playCard(context => ({
+                    playCard(context => ({
                         source: this,
                         playCardTarget: attachContext => {
                             attachContext.target = context.target;

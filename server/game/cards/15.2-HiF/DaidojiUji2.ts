@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { hideWhenFaceUp } from '../../effects.js';
+import { deckSearch } from '../../GameActions/GameActions.js';
 import { TargetMode, Decks } from '../../Constants.js';
 import { playableFromUnderneath } from '../cardsUnderneath.js';
 
@@ -9,7 +10,7 @@ class DaidojiUji2 extends DrawCard {
     setupCardAbilities() {
         this.reaction('Search your conflict deck')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .gameAction(deckSearch({
                 targetMode: TargetMode.UpTo,
                 numCards: 4,
                 deck: Decks.ConflictDeck,
@@ -27,7 +28,7 @@ class DaidojiUji2 extends DrawCard {
                                 },
                                 match: card,
                                 effect: [
-                                    AbilityDsl.effects.hideWhenFaceUp()
+                                    hideWhenFaceUp()
                                 ]
                             }));
                         });

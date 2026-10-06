@@ -1,6 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardStatusToken, dishonor, honor, joint, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
@@ -31,9 +31,9 @@ export default class AsakoKousuke extends DrawCard {
                 if(!targetCard.isHonored) {
                     choices.push([
                         'Turn it into Honored',
-                        AbilityDsl.actions.joint([
-                            AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                            AbilityDsl.actions.honor({ target: targetCard })
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            honor({ target: targetCard })
                         ])
                     ]);
                 }
@@ -41,9 +41,9 @@ export default class AsakoKousuke extends DrawCard {
                 if(!targetCard.isDishonored) {
                     choices.push([
                         'Turn it into Dishonored',
-                        AbilityDsl.actions.joint([
-                            AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                            AbilityDsl.actions.dishonor({ target: targetCard })
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            dishonor({ target: targetCard })
                         ])
                     ]);
                 }
@@ -51,9 +51,9 @@ export default class AsakoKousuke extends DrawCard {
                 if(!targetCard.isTainted) {
                     choices.push([
                         'Turn it into Tainted',
-                        AbilityDsl.actions.joint([
-                            AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                            AbilityDsl.actions.taint({ target: targetCard })
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            taint({ target: targetCard })
                         ])
                     ]);
                 }

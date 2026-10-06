@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
+import { cardLastingEffect, honor, multiple } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class SwellOfSeafoam extends DrawCard {
@@ -11,11 +12,11 @@ class SwellOfSeafoam extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.doesNotBow()
+            }, multiple([
+                cardLastingEffect({
+                    effect: doesNotBow()
                 }),
-                AbilityDsl.actions.honor((context) => ({
+                honor((context) => ({
                     target: context.player.isKihoPlayedThisConflict(context, this) ? context.target : []
                 }))
             ]))

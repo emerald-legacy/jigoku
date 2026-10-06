@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class MotoAriq extends DrawCard {
@@ -16,7 +16,7 @@ class MotoAriq extends DrawCard {
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to move to the conflict',
                 controller: Players.Opponent
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }
 

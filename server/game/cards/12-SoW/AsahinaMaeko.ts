@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { increaseCost } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 class AsahinaMaeko extends DrawCard {
     static id = 'asahina-maeko';
@@ -8,8 +9,8 @@ class AsahinaMaeko extends DrawCard {
     setupCardAbilities() {
         this.action('Increase cost to play cards')
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
-                effect: AbilityDsl.effects.increaseCost({
+            .gameAction(playerLastingEffect({
+                effect: increaseCost({
                     amount: 1
                 }),
                 targetController: Players.Any

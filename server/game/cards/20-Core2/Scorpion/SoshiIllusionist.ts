@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import { discardStatusToken, selectToken } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,12 +11,12 @@ export default class SoshiIllusionist extends DrawCard {
             .cost(AbilityDsl.costs.payFate(1))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.selectToken((context) => ({
+            }, selectToken((context) => ({
                 card: context.target,
                 activePromptTitle: 'Which token do you wish to discard?',
                 message: '{0} discards {1}',
                 messageArgs: (token, player) => [player, token],
-                gameAction: AbilityDsl.actions.discardStatusToken()
+                gameAction: discardStatusToken()
             })))
             .effect('discard a status token from {0}');
     }

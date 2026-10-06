@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, menuPrompt, sendHome, sequential } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
 class BayushiKachiko extends DrawCard {
@@ -11,9 +11,9 @@ class BayushiKachiko extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.sendHome(),
-                AbilityDsl.actions.menuPrompt((context) => ({
+            }, sequential([
+                sendHome(),
+                menuPrompt((context) => ({
                     activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
                     choices: ['Yes', 'No'],
                     choiceHandler: (choice, displayMessage) => {
@@ -22,7 +22,7 @@ class BayushiKachiko extends DrawCard {
                         }
                         return { target: (choice === 'Yes' ? context.target : []) };
                     },
-                    gameAction: AbilityDsl.actions.bow()
+                    gameAction: bow()
                 }))
             ]));
     }

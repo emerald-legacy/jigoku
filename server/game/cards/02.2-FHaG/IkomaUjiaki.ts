@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict, reveal, selectCards, sequential } from '../../GameActions/GameActions.js';
 
 class IkomaUjiaki extends DrawCard {
     static id = 'ikoma-ujiaki';
@@ -9,11 +10,11 @@ class IkomaUjiaki extends DrawCard {
         this.action('Put characters into play')
             .cost(AbilityDsl.costs.discardImperialFavor())
             .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.reveal(context => ({
+            .gameAction(sequential([
+                reveal(context => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
-                AbilityDsl.actions.selectCards(context => ({
+                selectCards(context => ({
                     activePromptTitle: 'Choose up to two characters',
                     numCards: 2,
                     targets: true,
@@ -25,7 +26,7 @@ class IkomaUjiaki extends DrawCard {
                     cardCondition: card => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
                     message: '{0} puts {1} into play into the conflict',
                     messageArgs: cards => [context.player, cards],
-                    gameAction: AbilityDsl.actions.putIntoConflict()
+                    gameAction: putIntoConflict()
                 }))
             ]))
             .effect('reveal their dynasty cards and put up to two of them into play');

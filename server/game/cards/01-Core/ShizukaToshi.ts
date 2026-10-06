@@ -1,6 +1,7 @@
 import { CardType, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class ShizukaToshi extends StrongholdCard {
     static id = 'shizuka-toshi';
@@ -12,6 +13,6 @@ export default class ShizukaToshi extends StrongholdCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.politicalSkill <= 2
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

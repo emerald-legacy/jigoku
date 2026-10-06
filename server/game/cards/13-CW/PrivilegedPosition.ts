@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { setMaxConflicts } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -13,10 +14,10 @@ export default class PrivilegedPosition extends DrawCard {
                     context.player.opponent !== undefined &&
                     context.player.honorBid < context.player.opponent.honorBid
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .gameAction(playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfRound,
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.setMaxConflicts(1)
+                effect: setMaxConflicts(1)
             })))
             .effect('limit {1} to a single conflict this turn', (context) => [context.player.opponent ?? context.player]);
     }

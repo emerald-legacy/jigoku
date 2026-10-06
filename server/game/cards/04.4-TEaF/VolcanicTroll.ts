@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
@@ -9,7 +9,7 @@ class VolcanicTroll extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed(),
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
     }
 

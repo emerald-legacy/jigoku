@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { bow, cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -20,11 +21,11 @@ export default class LongJourneyHome extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card === context.event.card
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.bow(),
-                AbilityDsl.actions.cardLastingEffect({
+            }, multiple([
+                bow(),
+                cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' })
+                    effect: cardCannot({ cannot: 'ready' })
                 })
             ]))
             .effect('make {1} take the long way home. {1} is bowed and cannot ready until the end of the phase', (context) => [context.event.card]);

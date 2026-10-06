@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import type { StatusToken } from '../../StatusToken.js';
 
@@ -19,7 +19,7 @@ class YasukiFuzake extends DrawCard {
                 name: 'first',
                 optional: true,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.discardStatusToken(context => ({
+            }, discardStatusToken(context => ({
                 target: statusTokensOf(context.targets.first)
             })))
             .target({
@@ -29,7 +29,7 @@ class YasukiFuzake extends DrawCard {
                 optional: true,
                 cardCondition: (card, context) =>
                     !context.targets.first || Array.isArray(context.targets.first) || card.controller !== context.targets.first.controller
-            }, AbilityDsl.actions.discardStatusToken(context => ({
+            }, discardStatusToken(context => ({
                 target: statusTokensOf(context.targets.second)
             })))
             .effect('discard all status tokens from {1}{2}{3}', context => [context.targets.first, !Array.isArray(context.targets.second) ? ' and ' : '', context.targets.second]);

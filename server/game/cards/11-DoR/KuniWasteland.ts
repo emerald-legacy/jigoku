@@ -1,6 +1,6 @@
 import { Players, Location, CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 
 export default class KuniWasteland extends ProvinceCard {
     static id = 'kuni-wasteland';
@@ -12,11 +12,11 @@ export default class KuniWasteland extends ProvinceCard {
             targetLocation: Location.PlayArea,
             match: (card) => card.type === CardType.Character,
             effect: [
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'triggerAbilities',
                     restricts: 'nonForcedAbilities'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'initiateKeywords',
                     restricts: 'keywordAbilities'
                 })

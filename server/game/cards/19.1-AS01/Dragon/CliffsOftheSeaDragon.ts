@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { playerCannot } from '../../../effects.js';
 import { Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type { ConflictRecord } from '../../../ConflictTracker.js';
@@ -12,7 +12,7 @@ export default class CliffsOfTheSeaDragon extends ProvinceCard {
             targetController: Players.Opponent,
             condition: (context) =>
                 !context.game.conflictRecord.some((conflict) => this.isTurnedOff(context, conflict)),
-            effect: AbilityDsl.effects.playerCannot('takeFateFromRings')
+            effect: playerCannot('takeFateFromRings')
         });
     }
 

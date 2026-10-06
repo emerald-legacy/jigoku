@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard } from '../../GameActions/GameActions.js';
 
 export default class RestorationOfBalance extends ProvinceCard {
     static id = 'restoration-of-balance';
@@ -10,7 +10,7 @@ export default class RestorationOfBalance extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.chosenDiscard((context) => ({
+            .gameAction(chosenDiscard((context) => ({
                 amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - 4)
             })));
     }

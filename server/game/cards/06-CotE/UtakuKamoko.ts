@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { honorStatusDoesNotModifySkill } from '../../effects.js';
+import { honor, ready } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class UtakuKamoko extends DrawCard {
@@ -8,7 +10,7 @@ class UtakuKamoko extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
-            effect: AbilityDsl.effects.honorStatusDoesNotModifySkill()
+            effect: honorStatusDoesNotModifySkill()
         });
         this.reaction('Ready and honor')
             .when({
@@ -18,7 +20,7 @@ class UtakuKamoko extends DrawCard {
                 location: Location.Hand,
                 targets: true
             }))
-            .gameAction(AbilityDsl.actions.ready(), AbilityDsl.actions.honor())
+            .gameAction(ready(), honor())
             .effect('ready and honor {0}');
     }
 }

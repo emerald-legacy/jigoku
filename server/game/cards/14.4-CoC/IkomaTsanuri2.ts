@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
 
 class IkomaTsanuri2 extends DrawCard {
     static id = 'ikoma-tsanuri-2';
@@ -9,7 +9,7 @@ class IkomaTsanuri2 extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'triggerAbilities',
                 restricts: 'attackedProvinceNonForced'
             })

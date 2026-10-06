@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class MasterOfTheSpear extends DrawCard {
     static id = 'master-of-the-spear';
@@ -13,7 +13,7 @@ class MasterOfTheSpear extends DrawCard {
                 activePromptTitle: 'Choose a character to send home',
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

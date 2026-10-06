@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot, mustBeDeclaredAsAttacker } from '../../../effects.js';
+import { cardLastingEffect, initiateConflict, ready, sequentialContext } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,20 +18,20 @@ export default class ScoutsSteed extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player
             })
-            .gameAction(AbilityDsl.actions.sequentialContext(
+            .gameAction(sequentialContext(
                 ({ player, target: province, source: { parentCharacter: character } }) => ({
                     gameActions: [
-                        AbilityDsl.actions.ready({ target: character ?? [] }),
-                        AbilityDsl.actions.cardLastingEffect({
+                        ready({ target: character ?? [] }),
+                        cardLastingEffect({
                             target: character ?? [],
-                            effect: AbilityDsl.effects.mustBeDeclaredAsAttacker()
+                            effect: mustBeDeclaredAsAttacker()
                         }),
-                        AbilityDsl.actions.cardLastingEffect({
+                        cardLastingEffect({
                             target: province,
                             targetLocation: Location.Provinces,
-                            effect: AbilityDsl.effects.cardCannot('break')
+                            effect: cardCannot('break')
                         }),
-                        AbilityDsl.actions.initiateConflict({
+                        initiateConflict({
                             target: player,
                             forceProvinceTarget: province,
                             canPass: false

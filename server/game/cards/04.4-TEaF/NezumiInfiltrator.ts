@@ -1,5 +1,7 @@
 import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { immunity, modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect, chooseAction, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class NezumiInfiltrator extends DrawCard {
@@ -8,10 +10,10 @@ export default class NezumiInfiltrator extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({
+                immunity({
                     restricts: 'maho'
                 }),
-                AbilityDsl.effects.immunity({
+                immunity({
                     restricts: 'shadowlands'
                 })
             ]
@@ -21,7 +23,7 @@ export default class NezumiInfiltrator extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .gameAction(selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -31,21 +33,21 @@ export default class NezumiInfiltrator extends DrawCard {
                     context.target = card;
                     return { target: card };
                 },
-                gameAction: AbilityDsl.actions.chooseAction(() => ({
+                gameAction: chooseAction(() => ({
                     options: {
                         'Raise attacked province\'s strength by 1': {
-                            action: AbilityDsl.actions.cardLastingEffect({
+                            action: cardLastingEffect({
                                 targetLocation: Location.Provinces,
-                                effect: AbilityDsl.effects.modifyProvinceStrength(1)
+                                effect: modifyProvinceStrength(1)
                             }),
                             message: '{0} chooses to increase {1}\'s strength by 1'
                         },
                         'Lower attacked province\'s strength by 1': {
-                            action: AbilityDsl.actions.cardLastingEffect((context) => ({
+                            action: cardLastingEffect((context) => ({
                                 targetLocation: Location.Provinces,
                                 effect:
                                     (context.target?.isProvinceCard() ? context.target.getStrength() : 0) > 1
-                                        ? AbilityDsl.effects.modifyProvinceStrength(-1)
+                                        ? modifyProvinceStrength(-1)
                                         : []
                             })),
                             message: '{0} chooses to reduce {1}\'s strength by 1'

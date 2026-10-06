@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaBodyguard extends DrawCard {
@@ -13,7 +13,7 @@ export default class ShibaBodyguard extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.hasTrait('bushi')
-            }, AbilityDsl.actions.placeFate((context) => ({
+            }, placeFate((context) => ({
                 origin: context.player
             })))
             .effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.player]);

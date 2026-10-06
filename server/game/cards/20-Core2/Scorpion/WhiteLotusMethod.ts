@@ -1,5 +1,5 @@
 import { CardType, CharacterStatus, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { conditional, draw, moveStatusToken, noAction, sequentialContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const TOKEN = 'token';
@@ -28,18 +28,18 @@ export default class WhiteLotusMethod extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isOrdinary()
-            }, AbilityDsl.actions.sequentialContext((context) => ({
+            }, sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.moveStatusToken({
+                    moveStatusToken({
                         target: context.tokens[TOKEN],
                         recipient: context.targets[RECIPIENT]
                     }),
-                    AbilityDsl.actions.conditional({
+                    conditional({
                         condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
-                        trueGameAction: AbilityDsl.actions.draw({
+                        trueGameAction: draw({
                             target: context.targets[RECIPIENT].controller
                         }),
-                        falseGameAction: AbilityDsl.actions.noAction()
+                        falseGameAction: noAction()
                     })
                 ]
             })))

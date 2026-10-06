@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { bow, removeFate } from '../../GameActions/GameActions.js';
 
 class HeavyBallista extends DrawCard {
     static id = 'heavy-ballista';
@@ -19,8 +20,8 @@ class HeavyBallista extends DrawCard {
                 dependsOn: 'character',
                 player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Bow': AbilityDsl.actions.bow(context => ({ target: context.targets.character })),
-                'Remove 1 Fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character }))
+                'Bow': bow(context => ({ target: context.targets.character })),
+                'Remove 1 Fate': removeFate(context => ({ target: context.targets.character }))
             });
     }
 }

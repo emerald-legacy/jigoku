@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class OpenWindow extends DrawCard {
     static id = 'open-window';
@@ -11,7 +11,7 @@ class OpenWindow extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('shinobi')
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }
 

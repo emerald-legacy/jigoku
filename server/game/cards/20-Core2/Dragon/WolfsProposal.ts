@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory } from '../../../effects.js';
+import { cardLastingEffect, chooseAction } from '../../../GameActions/GameActions.js';
 import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,20 +8,20 @@ export default class WolfsProposal extends DrawCard {
 
     setupCardAbilities() {
         this.action('Adjust glory')
-            .gameAction(AbilityDsl.actions.chooseAction({
+            .gameAction(chooseAction({
                 options: {
                     'Increase glory': {
-                        action: AbilityDsl.actions.cardLastingEffect((context) => ({
+                        action: cardLastingEffect((context) => ({
                             target: context.source.parentCharacter ?? [],
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.modifyGlory(2)
+                            effect: modifyGlory(2)
                         }))
                     },
                     'Decrease glory': {
-                        action: AbilityDsl.actions.cardLastingEffect((context) => ({
+                        action: cardLastingEffect((context) => ({
                             target: context.source.parentCharacter ?? [],
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.modifyGlory(-2)
+                            effect: modifyGlory(-2)
                         }))
                     }
                 }

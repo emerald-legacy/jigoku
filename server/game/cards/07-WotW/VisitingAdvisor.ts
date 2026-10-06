@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class VisitingAdvisor extends DrawCard {
     static id = 'visiting-advisor';
@@ -13,8 +13,8 @@ class VisitingAdvisor extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 cardCondition: (card, context) => card !== context.source
-            }, AbilityDsl.actions.sendHome())
-            .gameAction(AbilityDsl.actions.sendHome())
+            }, sendHome())
+            .gameAction(sendHome())
             .effect('send {0}{1}{2} home', (context) => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;

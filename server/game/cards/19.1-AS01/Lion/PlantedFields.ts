@@ -1,6 +1,15 @@
 import { EventName, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import {
+    conditional,
+    draw,
+    gainFate,
+    gainHonor,
+    handler,
+    multiple,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class PlantedFields extends DrawCard {
@@ -20,17 +29,17 @@ export default class PlantedFields extends DrawCard {
                     !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.conditional((context) => ({
+            .gameAction(sequential([
+                conditional((context) => ({
                     target: context.player,
                     condition: this.hasAnyCopyTriggered(context.player.name),
-                    trueGameAction: AbilityDsl.actions.gainHonor({ amount: 2 }),
-                    falseGameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.gainFate({ amount: 2 }),
-                        AbilityDsl.actions.draw({ amount: 2 })
+                    trueGameAction: gainHonor({ amount: 2 }),
+                    falseGameAction: multiple([
+                        gainFate({ amount: 2 }),
+                        draw({ amount: 2 })
                     ])
                 })),
-                AbilityDsl.actions.handler({
+                handler({
                     handler: (context) => this.triggeredByPlayer.add(context.player.name)
                 })
             ]))

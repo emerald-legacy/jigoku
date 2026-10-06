@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
 class FifthTowerWatch extends DrawCard {
@@ -15,7 +15,7 @@ class FifthTowerWatch extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.getMilitarySkill() < context.event.card.getMilitarySkill()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 

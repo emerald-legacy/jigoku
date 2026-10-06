@@ -1,6 +1,15 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { hideWhenFaceUp, playerDelayedEffect } from '../../effects.js';
+import {
+    chosenDiscard,
+    conditional,
+    draw,
+    handler,
+    playerLastingEffect,
+    sequential
+} from '../../GameActions/GameActions.js';
 import type Player from '../../Player.js';
 
 class UnderSiege extends DrawCard {
@@ -14,19 +23,19 @@ class UnderSiege extends DrawCard {
             .when({
                 onConflictDeclared: (_event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.playerLastingEffect(context => ({
+            .gameAction(sequential([
+                playerLastingEffect(context => ({
                     duration: Duration.UntilEndOfRound,
                     targetController: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
-                    effect: AbilityDsl.effects.playerDelayedEffect({
+                    effect: playerDelayedEffect({
                         when: {
                             onConflictFinished: () => true
                         },
-                        gameAction: AbilityDsl.actions.sequential([
-                            AbilityDsl.actions.chosenDiscard(() => ({
+                        gameAction: sequential([
+                            chosenDiscard(() => ({
                                 amount: 1000 //discard the entire hand
                             })),
-                            AbilityDsl.actions.handler({
+                            handler({
                                 handler: context => {
                                     if(this.targetPlayer && this.setAsideCards.length > 0) {
                                         const targetPlayer = this.targetPlayer;
@@ -43,13 +52,13 @@ class UnderSiege extends DrawCard {
                         ])
                     })
                 })),
-                AbilityDsl.actions.conditional({
+                conditional({
                     condition: context => {
                         const conflict = context.game.currentConflict;
                         return conflict !== null && conflict.defendingPlayer !== null && conflict.defendingPlayer.hand.length > 0;
                     },
-                    trueGameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.handler({
+                    trueGameAction: sequential([
+                        handler({
                             handler: context => {
                                 const conflict = context.game.currentConflict;
                                 if(!conflict || !conflict.defendingPlayer) {
@@ -68,18 +77,18 @@ class UnderSiege extends DrawCard {
                                                 onCardMoved: event => event.card === card && event.originalLocation === Location.RemovedFromGame
                                             },
                                             match: card,
-                                            effect: AbilityDsl.effects.hideWhenFaceUp()
+                                            effect: hideWhenFaceUp()
                                         }));
                                     });
                                 }
                             }
                         }),
-                        AbilityDsl.actions.draw(context => ({
+                        draw(context => ({
                             target: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
                             amount: 5
                         }))
                     ]),
-                    falseGameAction: AbilityDsl.actions.handler({
+                    falseGameAction: handler({
                         handler: () => {
                             this.setAsideCards = [];
                             this.targetPlayer = null;

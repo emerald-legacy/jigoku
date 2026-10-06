@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class GaijinCustoms extends DrawCard {
     static id = 'gaijin-customs';
@@ -11,7 +11,7 @@ class GaijinCustoms extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isFaction('unicorn')
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

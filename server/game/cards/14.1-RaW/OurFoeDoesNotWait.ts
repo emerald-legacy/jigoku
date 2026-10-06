@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
 
 class OurFoeDoesNotWait extends DrawCard {
     static id = 'our-foe-does-not-wait';
@@ -17,10 +18,10 @@ class OurFoeDoesNotWait extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
-            .gameAction(AbilityDsl.actions.deckSearch((context) => ({
+            .gameAction(deckSearch((context) => ({
                 amount: 8,
                 deck: Decks.DynastyDeck,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     faceup: true,
                     destination: context.target.location
                 })
