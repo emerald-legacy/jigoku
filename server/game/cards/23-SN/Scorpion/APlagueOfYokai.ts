@@ -16,13 +16,13 @@ export default class APlagueOfYokai extends DrawCard {
             effect: attachmentPoliticalSkillModifier((_card, context) => -this.getSkillModifier(context))
         });
 
-        this.action('Spread the plague')
+        this.conflictAction('Spread the plague')
             .cost(AbilityDsl.costs.dishonor({
                 controller: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('shinobi')
             }))
-            .condition(context => context.game.isDuringConflict() && this.getCopiesInDeck(context).length > 0)
+            .condition(context => this.getCopiesInDeck(context).length > 0)
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,

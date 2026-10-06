@@ -13,8 +13,7 @@ export default class DeadEyes extends DrawCard {
             effect: setGlory(0)
         });
 
-        this.action('Increase a character\'s military skill')
-            .condition(context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter))
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .gameAction(cardLastingEffect(context => ({
                 target: context.source.parentCharacter ?? [],
                 effect: [

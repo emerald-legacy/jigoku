@@ -121,5 +121,21 @@ describe('A Plague of Yokai', function () {
             expect(this.player1).not.toBeAbleToSelect(this.challenger);
             expect(this.plague2.location).toBe('conflict deck');
         });
+
+        it('cannot be used when the attached character is not participating', function () {
+            this.player1.clickCard(this.plague1);
+            this.player1.clickCard(this.kuwanan);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shadows],
+                defenders: [this.challenger]
+            });
+            this.player2.pass();
+
+            this.player1.clickCard(this.plague1);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.plague2.location).toBe('conflict deck');
+        });
     });
 });
