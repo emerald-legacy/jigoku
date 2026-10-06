@@ -1,7 +1,15 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { addToken, gainHonor, sacrifice } from '../../GameActions/GameActions.js';
-import { TargetMode, TokenType } from '../../Constants.js';
+import { TokenType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
+import { stateWhenLeftPlay } from '../stateWhenLeftPlay.js';
+
+/** One honor for each honor token on the dōjō when it was sacrificed. */
+function honorTokens(context: AbilityContext) {
+    return stateWhenLeftPlay(context)?.getTokenCount(TokenType.Honor) ?? 0;
+}
 
 class DistinguishedDojo extends DrawCard {
     static id = 'distinguished-dojo';
@@ -20,24 +28,16 @@ class DistinguishedDojo extends DrawCard {
                 }
             })
             .gameAction(addToken())
-            .then((context) => ({
-                target: {
-                    mode: TargetMode.Select,
-                    activePromptTitle: 'Sacrifice ' + context.source.name + '?',
-                    choices: {
-                        'Yes': sacrifice({ target: context.source }),
-                        'No': () => true
-                    }
-                },
-                message: '{0} chooses {3}to sacrifice {1}',
-                messageArgs: (context) => [context.select === 'No' ? 'not ' : ''],
-                then: (subThenContext) => ({
-                    gameAction: gainHonor({ amount: subThenContext.source.getTokenCount(TokenType.Honor) }),
-                    message: '{0} uses {1} to gain {3} honor',
-                    messageArgs: [subThenContext.source.getTokenCount(TokenType.Honor)]
-                })
-            }))
-            .limit(AbilityDsl.limit.perRound(3));
+            .limit(AbilityDsl.limit.perRound(3))
+            .then()
+            .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
+                Yes: sacrifice((context) => ({ target: context.source })),
+                No: () => true
+            })
+            .message((context) => msg`${context.player} chooses ${context.select === 'No' ? 'not ' : ''}to sacrifice ${context.source}`)
+            .then()
+            .gameAction(gainHonor((context) => ({ amount: honorTokens(context) })))
+            .message((context) => msg`${context.player} uses ${context.source} to gain ${honorTokens(context)} honor`);
     }
 }
 

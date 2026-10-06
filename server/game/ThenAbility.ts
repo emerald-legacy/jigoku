@@ -18,7 +18,7 @@ export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext
     /** A format with `{0}` the player, `{1}` the source and `{2}` the target, or a `msg` template. */
     message?: string | OwnContextCallback<[context: C], string | MessageArgs | undefined>;
     messageArgs?: (EffectArg | undefined)[] | OwnContextCallback<[context: C], (EffectArg | undefined)[]>;
-    /** Its context starts with the chosen targets, selects and costs of the ability it continues. */
+    /** Its context starts with the chosen targets, selects and costs of the ability it continues, and that ability's events as `previousEvents`. */
     inheritTargets?: boolean;
 }
 
@@ -64,6 +64,8 @@ class ThenAbility extends BaseCardAbility {
             context.select = parent.select;
             context.ring = parent.ring;
             context.token = parent.token;
+            context.previousEvents = [...parent.events];
+            context.deckSearchSelected = parent.deckSearchSelected;
         }
         return context;
     }

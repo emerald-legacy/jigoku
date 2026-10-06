@@ -26,22 +26,21 @@ export default class KakitaRusumi extends DrawCard {
                 gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
             }))
             .effect('search their dynasty deck for a character to put into play')
-            .then((context) => ({
-                gameAction: cardLastingEffect(() => {
-                    const target = context.deckSearchSelected[0] ?? [];
-                    return {
-                        target: target,
-                        duration: Duration.UntilEndOfPhase,
-                        effect: delayedEffect({
-                            when: {
-                                onConflictFinished: () => true
-                            },
-                            message: '{0} is discarded from play due to {1}\'s effect',
-                            messageArgs: [target, context.source],
-                            gameAction: discardFromPlay()
-                        })
-                    };
-                })
+            .then()
+            .gameAction(cardLastingEffect((context) => {
+                const target = context.deckSearchSelected[0] ?? [];
+                return {
+                    target: target,
+                    duration: Duration.UntilEndOfPhase,
+                    effect: delayedEffect({
+                        when: {
+                            onConflictFinished: () => true
+                        },
+                        message: '{0} is discarded from play due to {1}\'s effect',
+                        messageArgs: [target, context.source],
+                        gameAction: discardFromPlay()
+                    })
+                };
             }));
     }
 }

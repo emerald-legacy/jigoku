@@ -61,6 +61,8 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     elements: Record<string, ElementSymbol>;
     deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
+    /** In a `then` step that inherits targets: the events of the step before. */
+    previousEvents: Event[] = [];
     stage: Stage;
     targetAbility: CardAbility | null = null;
     /** Set by `AbilityTargetCard` when one card is chosen for a target named `'target'`; several cards stay in `targets.target`. */
@@ -135,6 +137,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         copy.choosingPlayerOverride = this.choosingPlayerOverride;
         copy.gameActionsResolutionChain = this.gameActionsResolutionChain;
         copy.playType = this.playType;
+        copy.previousEvents = this.previousEvents;
         return copy;
     }
 

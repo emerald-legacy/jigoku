@@ -1,12 +1,15 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { Location, Phases, Players, TargetMode, TokenType } from '../../../Constants.js';
+import { Location, Phases, Players, TokenType } from '../../../Constants.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import { addToken, gainFate, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import { msg } from '../../../GameChat.js';
+import { stateWhenLeftPlay } from '../../stateWhenLeftPlay.js';
 
-function amountOfFateGain(holding: DrawCard) {
-    return holding.getTokenCount(TokenType.Honor);
+/** One fate for each honor token on the market when it was sacrificed. */
+function amountOfFateGain(context: AbilityContext) {
+    return stateWhenLeftPlay(context)?.getTokenCount(TokenType.Honor) ?? 0;
 }
 
 export default class PropitiousMarket extends DrawCard {
@@ -22,23 +25,15 @@ export default class PropitiousMarket extends DrawCard {
 
         this.action('Place an honor token')
             .gameAction(addToken())
-            .then((context) => ({
-                target: {
-                    mode: TargetMode.Select,
-                    activePromptTitle: 'Sacrifice ' + context.source.name + '?',
-                    choices: {
-                        Yes: sacrifice({ target: context.source }),
-                        No: () => true
-                    }
-                },
-                message: '{0} chooses {3}to sacrifice {1}',
-                messageArgs: (context) => [context.select === 'No' ? 'not ' : ''],
-                then: (subThenContext: AbilityContext<this>) => ({
-                    gameAction: gainFate({ amount: amountOfFateGain(subThenContext.source) }),
-                    message: '{0} uses {1} to gain {3} fate',
-                    messageArgs: [amountOfFateGain(subThenContext.source)]
-                })
-            }))
-            .phase(Phases.Conflict);
+            .phase(Phases.Conflict)
+            .then()
+            .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
+                Yes: sacrifice((context) => ({ target: context.source })),
+                No: () => true
+            })
+            .message((context) => msg`${context.player} chooses ${context.select === 'No' ? 'not ' : ''}to sacrifice ${context.source}`)
+            .then()
+            .gameAction(gainFate((context) => ({ amount: amountOfFateGain(context) })))
+            .message((context) => msg`${context.player} uses ${context.source} to gain ${amountOfFateGain(context)} fate`);
     }
 }

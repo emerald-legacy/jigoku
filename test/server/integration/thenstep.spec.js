@@ -30,6 +30,18 @@ describe('then step context', function() {
             expect(context.originatingContext).toBe(this.parent);
         });
 
+        it('sees the events and deck search of the step before', function() {
+            const event = this.game.getEvent('onTestEvent', {});
+            this.parent.events.push(event);
+            this.parent.deckSearchSelected = [this.brash];
+            const context = new ThenAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
+
+            expect(context.previousEvents).toEqual([event]);
+            expect(context.events).toEqual([]);
+            expect(context.deckSearchSelected).toEqual([this.brash]);
+            expect(context.copy({}).previousEvents).toEqual([event]);
+        });
+
         it('copies the records, so its own targets stay in the step', function() {
             const context = new ThenAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
             context.targets.other = this.whisperer;
