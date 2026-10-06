@@ -132,11 +132,13 @@ interface AbilityDraft {
     cannotBeMirrored?: boolean;
     cannotTargetFirst?: boolean;
     then?: (context: AbilityContext) => ThenAbilityProperties | undefined;
+    /** From `onResolve()`: runs when the ability starts resolving its effects. */
+    onResolve?: (context: AbilityContext) => void;
     /** The next step, from `then()` or `thenIf()`. */
     thenStep?: AbilityDraft;
     /** A step's own condition, from `thenIf()`, read with the context of the step before. */
     thenCondition?: (context: AbilityContext) => boolean;
-    message?: (context: AbilityContext) => MessageArgs;
+    message?: (context: AbilityContext) => MessageArgs | undefined;
     isStep?: boolean;
     /** From `onAffinity()`: the game actions resolve only with this affinity. */
     affinity?: Element;
@@ -746,6 +748,19 @@ export class AbilityBuilder<
         return this;
     }
 
+    /** "Then, …" even when this step didn't resolve in full: the next step follows in any case. */
+    thenAlways(): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
+        const step = this.#step();
+        step.thenCondition = () => true;
+        return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(step);
+    }
+
+    /** Runs `fn` when the ability starts resolving its effects, for bookkeeping such as counting uses. */
+    onResolve(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => void): this {
+        this.draft.onResolve = this.#checked(fn, this.draft.specs);
+        return this;
+    }
+
     /** "Then, if …": the next step, when `condition` holds once this step resolved. */
     thenIf(condition: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
         const step = this.#step();
@@ -762,8 +777,8 @@ export class AbilityBuilder<
         return step;
     }
 
-    /** A then step's message, as a `msg` template. */
-    message(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => MessageArgs): this {
+    /** A then step's message, as a `msg` template; nothing is printed when it returns `undefined`. */
+    message(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => MessageArgs | undefined): this {
         if(!this.draft.isStep) {
             throw new Error(`${this.draft.title}: the ability's own message is its effect()`);
         }
@@ -910,8 +925,7 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.location ? { location: draft.location } : {}),
         ...(draft.cannotBeMirrored ? { cannotBeMirrored: true } : {}),
         ...(draft.cannotTargetFirst ? { cannotTargetFirst: true } : {}),
-        ...(draft.then ? { then: draft.then } : {}),
-        ...(draft.thenStep ? { then: stepProperties(draft.thenStep) } : {}),
+        ...thenProperties(draft),
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
         ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {}),
         ...(draft.notPrinted ? { printedAbility: false } : {})
@@ -954,6 +968,21 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
     return { gameAction: [getAbilityDsl().actions.onAffinity({ trait: draft.affinity, gameAction: oneAction(actions) })] };
 }
 
+/** The next step; with `onResolve()`, a callback that runs it first, when the ability starts resolving. */
+function thenProperties(draft: AbilityDraft): { then?: ThenAbilityProperties | ((context: AbilityContext) => ThenAbilityProperties | undefined) } {
+    const next = draft.thenStep ? stepProperties(draft.thenStep) : draft.then;
+    const hook = draft.onResolve;
+    if(!hook) {
+        return next ? { then: next } : {};
+    }
+    return {
+        then: (context) => {
+            hook(context);
+            return typeof next === 'function' ? next(context) : next;
+        }
+    };
+}
+
 /** A step from `then()` or `thenIf()`, built once. */
 function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     const step = withBranches(draft);
@@ -978,8 +1007,7 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
             const context = contextOrEvent instanceof Event ? contextOrEvent.context : contextOrEvent;
             return !!context && condition(context);
         } } : {}),
-        ...(step.then ? { then: step.then } : {}),
-        ...(step.thenStep ? { then: stepProperties(step.thenStep) } : {})
+        ...thenProperties(step)
     };
 }
 

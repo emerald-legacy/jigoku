@@ -29,7 +29,7 @@ export default class RiftToToshigoku extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, discardFromPlay())
-            .then((context) => {
+            .onResolve((context) => {
                 this.cancelRingEffectsInConflict = context.game.currentConflict?.uuid;
             });
     }

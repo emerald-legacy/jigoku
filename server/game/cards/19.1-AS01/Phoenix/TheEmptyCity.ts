@@ -48,7 +48,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 }))
             ]))
             .effect('put {0} into play')
-            .then((context) => {
+            .onResolve((context) => {
                 this.invokedSpirit = context.target;
             })
             .limit(sharedLimit)

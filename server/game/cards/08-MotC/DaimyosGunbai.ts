@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { attach, discardCard } from '../../GameActions/GameActions.js';
 import { Location, DuelType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class DaimyosGunbai extends DrawCard {
     static id = 'daimyo-s-gunbai';
@@ -17,14 +18,10 @@ class DaimyosGunbai extends DrawCard {
                     attachment: context.source
                 })
             }))
-            .then(() => ({
-                thenCondition: () => true,
-                gameAction: discardCard(context => ({
-                    target: context.source.location === Location.Hand ? context.source : []
-                })),
-                message: (context) => context.source.location === Location.Hand ? '{0} discards {1}' : ''
-            }))
-            .location(Location.Hand);
+            .location(Location.Hand)
+            .thenAlways()
+            .gameAction(discardCard((context) => ({ target: context.source.location === Location.Hand ? context.source : [] })))
+            .message((context) => context.source.location === Location.Hand ? msg`${context.player} discards ${context.source}` : undefined);
     }
 }
 

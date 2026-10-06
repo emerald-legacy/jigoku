@@ -236,7 +236,7 @@ class CardAbility extends ThenAbility {
                 : this.properties.message;
             if(Array.isArray(message)) {
                 this.game.addMessage(message[0], ...message[1]);
-            } else {
+            } else if(message !== undefined) {
                 this.game.addMessage(message, ...messageArgs);
             }
             return;

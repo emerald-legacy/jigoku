@@ -1,4 +1,5 @@
 import ThenAbility from '../../../build/server/game/ThenAbility.js';
+import { AbilityBuilder, actionProperties, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 
 describe('then step context', function() {
     integration(function() {
@@ -42,6 +43,38 @@ describe('then step context', function() {
             expect(context.targets.character).toBeUndefined();
             expect(context.target).toBeUndefined();
             expect(context.originatingContext).toBe(this.parent);
+        });
+    });
+});
+
+describe('thenAlways() and onResolve() in the ability builder', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.context = this.game.getFrameworkContext(this.player1.player);
+            this.draft = createDraft('Test', () => true);
+            this.builder = new AbilityBuilder(this.draft);
+        });
+
+        it('makes a step that follows whether or not the step before resolved', function() {
+            this.builder.draw(1).thenAlways().gainHonor(1);
+
+            expect(actionProperties(this.draft).then.thenCondition(this.context)).toBe(true);
+        });
+
+        it('runs the hook when the ability starts resolving, then hands over the next step', function() {
+            const calls = [];
+            this.builder.draw(1).onResolve(() => calls.push('hook')).then().gainHonor(1);
+
+            const then = actionProperties(this.draft).then;
+            const step = then(this.context);
+            expect(calls).toEqual(['hook']);
+            expect(step.inheritTargets).toBe(true);
         });
     });
 });

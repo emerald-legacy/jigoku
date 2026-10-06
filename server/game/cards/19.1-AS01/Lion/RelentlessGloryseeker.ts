@@ -23,10 +23,10 @@ export default class RelentlessGloryseeker extends DrawCard {
             })
             .gameAction(putIntoPlay())
             .effect('return to play - {0} is ready for more')
-            .then(() => {
+            .location(Location.DynastyDiscardPile)
+            .onResolve(() => {
                 this.ressurrectionsThisRound++;
-            })
-            .location(Location.DynastyDiscardPile);
+            });
     }
 
     public onRoundEnded() {

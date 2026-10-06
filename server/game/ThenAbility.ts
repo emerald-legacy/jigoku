@@ -16,7 +16,7 @@ export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: C | Event): boolean;
     /** A format with `{0}` the player, `{1}` the source and `{2}` the target, or a `msg` template. */
-    message?: string | OwnContextCallback<[context: C], string | MessageArgs>;
+    message?: string | OwnContextCallback<[context: C], string | MessageArgs | undefined>;
     messageArgs?: (EffectArg | undefined)[] | OwnContextCallback<[context: C], (EffectArg | undefined)[]>;
     /** Its context starts with the chosen targets, selects and costs of the ability it continues. */
     inheritTargets?: boolean;
