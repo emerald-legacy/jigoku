@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { conditional, discardFromPlay, removeFate } from '../../GameActions/GameActions.js';
+import { injure } from '../../GameActions/GameActions.js';
 
 class AkodoMakoto extends DrawCard {
     static id = 'akodo-makoto';
@@ -18,11 +18,7 @@ class AkodoMakoto extends DrawCard {
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating();
                 }
-            }, conditional({
-                condition: context => (context.target?.getFate() ?? 0) > 0,
-                trueGameAction: removeFate(),
-                falseGameAction: discardFromPlay()
-            }));
+            }, injure());
     }
 }
 

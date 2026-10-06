@@ -1,5 +1,6 @@
 import { AbilityBuilder, actionProperties, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { ConditionalAction } from '../../../build/server/game/GameActions/ConditionalAction.js';
+import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('if() and otherwise() in the ability builder', function() {
     integration(function() {
@@ -54,6 +55,34 @@ describe('if() and otherwise() in the ability builder', function() {
             this.builder.if(() => true);
             expect(() => this.builder.if(() => true)).toThrowError('Test: one if() per step');
             expect(() => this.builder.select({}, {})).toThrowError('Test: targets come before if()');
+        });
+
+        it('puts the branches on a card target declared without game actions', function() {
+            this.builder.target({ cardType: 'character' })
+                .if(() => true)
+                .gainHonor(1)
+                .otherwise()
+                .draw(1);
+
+            const properties = actionProperties(this.draft);
+            expect(properties.gameAction).toBeUndefined();
+            expect(properties.target.gameAction).toEqual(jasmine.any(ConditionalAction));
+        });
+
+        it('keeps the branches on the ability after a target with game actions', function() {
+            this.builder.target({ cardType: 'character' }, bow())
+                .if(() => true)
+                .gainHonor(1);
+
+            const properties = actionProperties(this.draft);
+            expect(properties.gameAction[0]).toEqual(jasmine.any(ConditionalAction));
+            expect(properties.target.gameAction).not.toEqual(jasmine.any(ConditionalAction));
+        });
+
+        it('rejects if() after several targets without game actions', function() {
+            this.builder.target({ name: 'first', cardType: 'character' }).target({ name: 'second', cardType: 'character' });
+
+            expect(() => this.builder.if(() => true)).toThrowError('Test: if() after several targets without game actions');
         });
 
         it('rejects a branch without game actions', function() {

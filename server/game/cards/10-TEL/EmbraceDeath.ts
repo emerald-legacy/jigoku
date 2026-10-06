@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { conditional, discardFromPlay, removeFate } from '../../GameActions/GameActions.js';
+import { injure } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class EmbraceDeath extends DrawCard {
@@ -21,11 +21,7 @@ class EmbraceDeath extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, conditional({
-                condition: (context) => (context.target?.getFate() ?? 0) > 0,
-                trueGameAction: removeFate(),
-                falseGameAction: discardFromPlay()
-            }));
+            }, injure());
     }
 }
 
