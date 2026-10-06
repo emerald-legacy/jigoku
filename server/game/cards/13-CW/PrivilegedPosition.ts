@@ -2,6 +2,7 @@ import { setMaxConflicts } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class PrivilegedPosition extends DrawCard {
     static id = 'privileged-position';
@@ -19,6 +20,6 @@ export default class PrivilegedPosition extends DrawCard {
                 targetController: context.player.opponent,
                 effect: setMaxConflicts(1)
             })))
-            .effect('limit {1} to a single conflict this turn', (context) => [context.player.opponent ?? context.player]);
+            .effect((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this turn`);
     }
 }

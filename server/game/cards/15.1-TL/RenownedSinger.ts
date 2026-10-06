@@ -29,6 +29,6 @@ export default class RenownedSinger extends DrawCard {
                 message: (assigned, context) =>
                     msg`${context.player.opponent} chooses ${assigned.hand} to be put into ${context.player}'s hand. ${assigned.bottom} is put on the bottom of ${context.player}'s conflict deck`
             }))
-            .effect('have {1} return one of {2} to {3}\'s hand', (context) => [context.player.opponent, context.targets.target, context.player]);
+            .effect((context) => msg`have ${context.player.opponent} return one of ${context.targets.target} to ${context.player}'s hand`);
     }
 }

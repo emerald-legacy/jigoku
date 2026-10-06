@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { selectRing, takeFateFromRing } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class TogashiYoshi extends DrawCard {
     static id = 'togashi-yoshi';
@@ -15,7 +16,7 @@ class TogashiYoshi extends DrawCard {
                 target: context.ring,
                 gameAction: takeFateFromRing()
             })))
-            .effect('gain 1 fate from the {1}', (context) => [context.ring]);
+            .effect((context) => msg`gain 1 fate from the ${context.ring}`);
     }
 }
 

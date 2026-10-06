@@ -4,6 +4,7 @@ import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { controlsShugenja } from '../controlsShugenja.js';
+import { msg } from '../../GameChat.js';
 
 export default class BetrayedVision extends DrawCard {
     static id = 'betrayed-vision';
@@ -27,7 +28,7 @@ export default class BetrayedVision extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: copyCard(context.targets.cardToCopy)
             })))
-            .effect('make {1} into a copy of {2}', (context) => [context.targets.myCharacter, context.targets.cardToCopy]);
+            .effect((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

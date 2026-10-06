@@ -2,6 +2,7 @@ import { CardType, Players } from '../../../Constants.js';
 import { blank, gainAllAbilities, switchBaseSkills } from '../../../effects.js';
 import { cardLastingEffect, joint, loseFate, noAction, onAffinity } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class EbbAndFlow extends DrawCard {
     static id = 'ebb-and-flow';
@@ -22,7 +23,7 @@ export default class EbbAndFlow extends DrawCard {
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .effect('switch {1}\'s military and political skill', context => [context.targets.opponents])
+            .effect((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
             .then((context) => {
                 return {
                     thenCondition: () => context.player.fate > 0 && context.game.actions.loseFate().canAffect(context.player, context),

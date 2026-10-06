@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { bow, cancel, multiple, ready, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 const elementKey = 'asako-azunami-water';
 
@@ -34,7 +35,7 @@ class AsakoAzunami extends DrawCard {
                     })
                 ])
             })))
-            .effect('replace the {1} ring effect with bowing and readying two characters', () => [this.getCurrentElementSymbol(elementKey)]);
+            .effect(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 
     getPrintedElementSymbols() {

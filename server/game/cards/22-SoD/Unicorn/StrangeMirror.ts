@@ -10,6 +10,7 @@ import {
     sequential
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';
@@ -28,7 +29,7 @@ export default class StrangeMirror extends DrawCard {
                 target: context.event.card,
                 destination: context.source.parentCharacter ?? undefined
             })))
-            .effect('put {1} facedown underneath {2}', (context) => [context.event.card, context.source.parentCharacter]);
+            .effect((context) => msg`put ${context.event.card} facedown underneath ${context.source.parentCharacter}`);
 
         this.action('Play an event from underneath attached character')
             .condition((context) => this.eventsUnderneath(context).length > 0)

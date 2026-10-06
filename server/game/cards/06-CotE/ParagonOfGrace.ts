@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { chosenDiscard, discardAtRandom, multiple } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ParagonOfGrace extends DrawCard {
     static id = 'paragon-of-grace';
@@ -13,7 +14,7 @@ class ParagonOfGrace extends DrawCard {
                 discardAtRandom((context) => ({ target: context.source.isHonored ? context.player.opponent : [] })),
                 chosenDiscard((context) => ({ target: context.source.isHonored ? [] : context.player.opponent }))
             ]))
-            .effect('make {1} discard 1 card{2}', (context) => [context.player.opponent ?? '', context.source.isHonored ? ' at random' : '']);
+            .effect((context) => msg`make ${context.player.opponent ?? ''} discard 1 card${context.source.isHonored ? ' at random' : ''}`);
     }
 }
 

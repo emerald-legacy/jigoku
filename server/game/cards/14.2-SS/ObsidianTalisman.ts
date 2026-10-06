@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { discardStatusToken, selectToken } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ObsidianTalisman extends DrawCard {
     static id = 'obsidian-talisman';
@@ -16,7 +17,7 @@ class ObsidianTalisman extends DrawCard {
                 messageArgs: (token, player) => [player, token],
                 gameAction: discardStatusToken()
             })))
-            .effect('discard a status token from {1}', context => [context.source.parentCharacter])
+            .effect((context) => msg`discard a status token from ${context.source.parentCharacter}`)
             .limit(AbilityDsl.limit.unlimited());
     }
 }

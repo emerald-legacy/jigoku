@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class StarlitSkies extends DrawCard {
     static id = 'starlit-skies';
@@ -28,7 +29,7 @@ export default class StarlitSkies extends DrawCard {
                     context.player.moveCard(card, isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
                 }));
             })
-            .effect('look at the top 3 cards of {1}\'s {2}', (context) => [context.player, (context.select ?? '').toLowerCase()])
+            .effect((context) => msg`look at the top 3 cards of ${context.player}'s ${(context.select ?? '').toLowerCase()}`)
             .evenDuringDynasty();
     }
 

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class KitsukiJusai extends DrawCard {
     static id = 'kitsuki-jusai';
@@ -19,7 +20,7 @@ class KitsukiJusai extends DrawCard {
                 messageArgs: ring => [context.player, context.player.opponent, ring],
                 gameAction: placeFateOnRing({ origin: context.player.opponent })
             })))
-            .effect('move 1 fate from {1}\'s fate pool to an unclaimed ring', context => [context.player.opponent ?? context.player]);
+            .effect((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);
     }
 }
 

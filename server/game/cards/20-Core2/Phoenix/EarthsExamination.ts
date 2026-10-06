@@ -2,6 +2,7 @@ import { CardType, ConflictType } from '../../../Constants.js';
 import { bow, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
+import { msg } from '../../../GameChat.js';
 
 export default class EarthsExamination extends DrawCard {
     static id = 'earth-s-examination';
@@ -23,6 +24,6 @@ export default class EarthsExamination extends DrawCard {
                     effectArgs: (context) => [context.target]
                 }))
             ]))
-            .effect('reveal {1}\'s corruption', (context) => [context.target ?? '']);
+            .effect((context) => msg`reveal ${context.target ?? ''}'s corruption`);
     }
 }

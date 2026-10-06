@@ -2,6 +2,7 @@ import { delayedEffect, setMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, discardFromPlay } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class ChildOfSaltlessWater extends DrawCard {
     static id = 'child-of-saltless-water';
@@ -30,6 +31,6 @@ export default class ChildOfSaltlessWater extends DrawCard {
             .gameAction(cardLastingEffect((context) => ({
                 effect: setMilitarySkill(context.target.printedStrength)
             })))
-            .effect('set its {1} to {2}', (context) => ['military', context.target.printedStrength]);
+            .effect((context) => msg`set its ${'military'} to ${context.target.printedStrength}`);
     }
 }

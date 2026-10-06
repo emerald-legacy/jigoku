@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import { Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 const ELEMENT_TO_RETURN = 'firebrand-fire-cost';
 const ELEMENT_TO_RESOLVE = 'firebrand-fire-ability';
@@ -18,7 +19,7 @@ export default class Firebrand extends DrawCard {
                 player: context.player,
                 target: context.game.rings[this.getCurrentElementSymbol(ELEMENT_TO_RESOLVE)]
             })))
-            .effect('resolve the {1} effect', (context) => [context.game.rings.fire]);
+            .effect((context) => msg`resolve the ${context.game.rings.fire} effect`);
     }
 
     public getPrintedElementSymbols() {

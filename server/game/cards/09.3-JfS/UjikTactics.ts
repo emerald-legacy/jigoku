@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class UjikTactics extends DrawCard {
     static id = 'ujik-tactics';
@@ -11,7 +12,7 @@ class UjikTactics extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),
                 effect: modifyMilitarySkill(1)
             })))
-            .effect('give all non-unique character they control +1{1}', () => (['military']));
+            .effect(() => msg`give all non-unique character they control +1${'military'}`);
     }
 }
 

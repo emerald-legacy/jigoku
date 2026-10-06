@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { increaseLimitOnAbilities } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players, Duration } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class SmugglingDeal extends DrawCard {
     static id = 'smuggling-deal';
@@ -21,7 +22,7 @@ class SmugglingDeal extends DrawCard {
                     targetAbility: context.targetAbility
                 })
             })))
-            .effect('increase the limit on {1}\'s \'{2}\' ability', context => [context.targetAbility.card, context.targetAbility.title]);
+            .effect((context) => msg`increase the limit on ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

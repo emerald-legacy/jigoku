@@ -2,6 +2,7 @@ import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
@@ -33,7 +34,7 @@ class WickedTetsubo extends DrawCard {
                     effect: setPoliticalSkill(0)
                 }))
             })
-            .effect('set {1}\'s {2} skill to 0', context => [context.targets.character, context.selects.effect.choice.toLowerCase()]);
+            .effect((context) => msg`set ${context.targets.character}'s ${context.selects.effect.choice.toLowerCase()} skill to 0`);
     }
 }
 

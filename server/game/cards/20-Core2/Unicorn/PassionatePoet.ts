@@ -1,6 +1,7 @@
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class PassionatePoet extends DrawCard {
     static id = 'passionate-poet';
@@ -12,6 +13,6 @@ export default class PassionatePoet extends DrawCard {
                 target: context.game.currentConflict?.getCharacters(context.player.opponent),
                 effect: modifyBothSkills(-1)
             })))
-            .effect('give all participating enemies -1{1}/-1{2} until the end of the conflict', () => ['military', 'political']);
+            .effect(() => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`);
     }
 }

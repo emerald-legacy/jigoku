@@ -1,6 +1,7 @@
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { cardMenu, moveCard } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 export default class BayushiTruthseeker extends DrawCard {
     static id = 'bayushi-truthseeker';
@@ -21,6 +22,6 @@ export default class BayushiTruthseeker extends DrawCard {
                 message: '{0} chooses to discard {1}',
                 messageArgs: (card, player) => [player, card]
             })))
-            .effect('look at the top two cards of {1}\'s conflict deck', (context) => [context.player.opponent]);
+            .effect((context) => msg`look at the top two cards of ${context.player.opponent}'s conflict deck`);
     }
 }

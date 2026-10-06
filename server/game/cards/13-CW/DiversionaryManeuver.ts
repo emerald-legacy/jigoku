@@ -9,6 +9,7 @@ import {
     sendHome,
     sequential
 } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class DiversionaryManeuver extends DrawCard {
     static id = 'diversionary-maneuver';
@@ -57,7 +58,7 @@ class DiversionaryManeuver extends DrawCard {
                     gameAction: moveToConflict()
                 })
             ]))
-            .effect('move the conflict to {1} and send all participating characters home bowed', context => [context.target]);
+            .effect((context) => msg`move the conflict to ${context.target} and send all participating characters home bowed`);
     }
 }
 

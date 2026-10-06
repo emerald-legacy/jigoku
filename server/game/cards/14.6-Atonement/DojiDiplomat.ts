@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
 import { reveal } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class DojiDiplomat extends DrawCard {
     static id = 'doji-diplomat';
@@ -23,7 +24,7 @@ class DojiDiplomat extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, reveal())
-            .effect('reveal {1} and {2}', context => [context.targets.myProvince, context.targets.oppProvince]);
+            .effect((context) => msg`reveal ${context.targets.myProvince} and ${context.targets.oppProvince}`);
     }
 }
 

@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { cannotDeclareRing } from '../../../effects.js';
 import { ringLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class YoungIseZumi extends DrawCard {
     static id = 'young-ise-zumi';
@@ -20,6 +21,6 @@ export default class YoungIseZumi extends DrawCard {
                 target: context.costs.placeFate || context.game.rings.air,
                 effect: cannotDeclareRing(() => true)
             })))
-            .effect('prevent conflicts from being declared with the {1}', context => [context.costs.placeFate]);
+            .effect((context) => msg`prevent conflicts from being declared with the ${context.costs.placeFate}`);
     }
 }

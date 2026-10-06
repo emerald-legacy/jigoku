@@ -1,5 +1,6 @@
 import { discardCard } from '../../GameActions/GameActions.js';
 import { BaseOni } from './_BaseOni.js';
+import { msg } from '../../GameChat.js';
 
 export default class BogHag extends BaseOni {
     static id = 'bog-hag';
@@ -17,6 +18,6 @@ export default class BogHag extends BaseOni {
             .gameAction(discardCard((context) => ({
                 target: context.player.opponent?.conflictDeck.slice(0, 8) ?? []
             })))
-            .effect('discard the top 8 cards of {1}\'s conflict deck', (context) => [context.player.opponent]);
+            .effect((context) => msg`discard the top 8 cards of ${context.player.opponent}'s conflict deck`);
     }
 }

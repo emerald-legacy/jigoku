@@ -1,6 +1,7 @@
 import { CardType, PlayType, Players } from '../../Constants.js';
 import { discardAtRandom, dishonor, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShosuroMiyako extends DrawCard {
     static id = 'shosuro-miyako';
@@ -28,6 +29,6 @@ export default class ShosuroMiyako extends DrawCard {
                     gameAction: dishonor()
                 }))
             })
-            .effect('force {1} to {2}', (context) => [context.player.opponent ?? '', context.select.toLowerCase()]);
+            .effect((context) => msg`force ${context.player.opponent ?? ''} to ${context.select.toLowerCase()}`);
     }
 }

@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { joint, moveToConflict, multiple, ready, sendHome } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 export default class SupplyOfficer extends DrawCard {
     static id = 'supply-officer';
@@ -26,7 +27,7 @@ export default class SupplyOfficer extends DrawCard {
                     moveToConflict()
                 ])
             ]))
-            .effect('switch {1} and {2}', context => [context.targets.characterInConflict, context.targets.characterAtHome])
+            .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`)
             .then((context) => {
                 const characterInConflict = context.targets.characterInConflict;
                 return {

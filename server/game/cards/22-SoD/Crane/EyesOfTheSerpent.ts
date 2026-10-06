@@ -4,6 +4,7 @@ import { CardType } from '../../../Constants.js';
 import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
+import { msg } from '../../../GameChat.js';
 
 function resourcesAvailable(context: AbilityContext) {
     return {
@@ -70,7 +71,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                     effect: 'gain 1 honor'
                 })
             ]))
-            .effect('taint {1}', (context) => [context.target]);
+            .effect((context) => msg`taint ${context.target}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

@@ -3,6 +3,7 @@ import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { setConflictDeclarationType } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class CastleOfTheForgotten extends StrongholdCard {
     static id = 'castle-of-the-forgotten';
@@ -18,6 +19,6 @@ export default class CastleOfTheForgotten extends StrongholdCard {
                 effect: setConflictDeclarationType(ConflictType.Military),
                 duration: Duration.UntilEndOfPhase
             }))
-            .effect('make all future conflicts {1} for this phase', () => (['military']));
+            .effect(() => msg`make all future conflicts ${'military'} for this phase`);
     }
 }

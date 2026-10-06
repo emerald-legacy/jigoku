@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { moveStatusToken, selectToken } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class ShamelessGossip extends DrawCard {
     static id = 'shameless-gossip';
@@ -32,7 +33,7 @@ class ShamelessGossip extends DrawCard {
                     recipient: context.targets.second
                 }))
             })))
-            .effect('move a status token from {1} to {2}', context => [context.targets.first, context.targets.second]);
+            .effect((context) => msg`move a status token from ${context.targets.first} to ${context.targets.second}`);
     }
 }
 

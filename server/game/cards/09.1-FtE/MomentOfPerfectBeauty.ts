@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { resolveConflictEarly } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class MomentOfPerfectBeauty extends DrawCard {
     static id = 'moment-of-perfect-beauty';
@@ -17,7 +18,7 @@ class MomentOfPerfectBeauty extends DrawCard {
                 targetController: context.player.opponent,
                 effect: resolveConflictEarly()
             })))
-            .effect('resolve the conflict after {1}\'s next action', context => [context.player.opponent]);
+            .effect((context) => msg`resolve the conflict after ${context.player.opponent}'s next action`);
     }
 }
 

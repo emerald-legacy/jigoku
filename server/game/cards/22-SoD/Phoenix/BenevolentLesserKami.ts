@@ -2,6 +2,7 @@ import { Duration } from '../../../Constants.js';
 import { addTrait, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, returnToDeck } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class BenevolentLesserKami extends DrawCard {
     static id = 'benevolent-lesser-kami';
@@ -39,7 +40,7 @@ export default class BenevolentLesserKami extends DrawCard {
                     effect: addTrait('void')
                 })
             })
-            .effect('gain the {1} trait', context => [context.selects.select.choice]);
+            .effect((context) => msg`gain the ${context.selects.select.choice} trait`);
 
         this.action('Shuffle into deck')
             .gameAction(returnToDeck({

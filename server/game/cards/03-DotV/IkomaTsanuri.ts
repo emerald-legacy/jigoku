@@ -1,6 +1,7 @@
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 class IkomaTsanuri extends DrawCard {
     static id = 'ikoma-tsanuri';
@@ -13,7 +14,7 @@ class IkomaTsanuri extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => card.isParticipating()),
                 effect: modifyBothSkills(1)
             })))
-            .effect('grant their participating characters +1{1}/+1{2}', () => ['military', 'political']);
+            .effect(() => msg`grant their participating characters +1${'military'}/+1${'political'}`);
     }
 }
 

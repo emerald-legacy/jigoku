@@ -3,6 +3,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyDuelSkill } from '../../../effects.js';
 import { duelLastingEffect, injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
@@ -22,7 +23,7 @@ export default class MirumotoRei2 extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add {1} to their duel total', (context) => [this.getWeaponCount(context)]);
+            .effect((context) => msg`add ${this.getWeaponCount(context)} to their duel total`);
 
         this.action('Duel an opposing character')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))

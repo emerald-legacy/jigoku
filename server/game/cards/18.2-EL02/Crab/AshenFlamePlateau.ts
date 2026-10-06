@@ -1,6 +1,7 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { charactersCannot } from '../../../effects.js';
 import { conflictLastingEffect } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
@@ -24,6 +25,6 @@ export default class AshenFlamePlateau extends ProvinceCard {
                     })
                 ]
             })))
-            .effect('prevent {1} from triggering character abilities this conflict', (context) => [context.player.opponent]);
+            .effect((context) => msg`prevent ${context.player.opponent} from triggering character abilities this conflict`);
     }
 }

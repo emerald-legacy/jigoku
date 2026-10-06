@@ -3,6 +3,7 @@ import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class StoicGunso extends DrawCard {
     static id = 'stoic-gunso';
@@ -12,7 +13,7 @@ class StoicGunso extends DrawCard {
             .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
             .condition(() => this.game.isDuringConflict())
             .gameAction(cardLastingEffect({ effect: modifyMilitarySkill(3) }))
-            .effect('give himself +3{1}/+0{2}', () => ['military', 'political']);
+            .effect(() => msg`give himself +3${'military'}/+0${'political'}`);
     }
 }
 

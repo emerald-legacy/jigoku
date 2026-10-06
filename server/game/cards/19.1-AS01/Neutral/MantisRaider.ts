@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class MantisRaider extends DrawCard {
     static id = 'mantis-raider';
@@ -23,7 +24,7 @@ export default class MantisRaider extends DrawCard {
             .gameAction(cardLastingEffect({
                 effect: modifyMilitarySkill(1)
             }))
-            .effect('give himself +1{1}', () => ['military'])
+            .effect(() => msg`give himself +1${'military'}`)
             .limit(AbilityDsl.limit.perConflict(2));
     }
 }

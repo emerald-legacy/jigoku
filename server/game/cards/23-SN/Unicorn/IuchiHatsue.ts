@@ -2,6 +2,7 @@ import { modifyBothSkills } from '../../../effects.js';
 import { joint, moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
 
 export default class IuchiHatsue extends DrawCard {
     static id = 'iuchi-hatsue';
@@ -36,6 +37,6 @@ export default class IuchiHatsue extends DrawCard {
                 sendHome(context => ({ target: context.targets.characterInConflict })),
                 moveToConflict()
             ]))
-            .effect('switch {1} and {2}', context => [context.targets.characterInConflict, context.targets.characterAtHome]);
+            .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);
     }
 }

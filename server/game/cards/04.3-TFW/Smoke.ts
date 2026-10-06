@@ -2,6 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 class Smoke extends DrawCard {
     static id = 'smoke';
@@ -15,7 +16,7 @@ class Smoke extends DrawCard {
                 target: context.game.currentConflict?.getParticipants().filter((card) => !card.isUnique()) ?? [],
                 effect: modifyMilitarySkill(-2)
             })))
-            .effect('give all non-unique participating characters -2{1}', () => ['military']);
+            .effect(() => msg`give all non-unique participating characters -2${'military'}`);
     }
 }
 

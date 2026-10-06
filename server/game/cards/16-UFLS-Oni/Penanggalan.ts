@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
 import { placeFate } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class Penanggalan extends BaseOni {
     static id = 'penanggalan';
@@ -20,6 +21,6 @@ export default class Penanggalan extends BaseOni {
                 target: context.source,
                 origin: context.target
             })))
-            .effect('take a fate from {1} and place it on {2}', (context) => [context.target, context.source]);
+            .effect((context) => msg`take a fate from ${context.target} and place it on ${context.source}`);
     }
 }

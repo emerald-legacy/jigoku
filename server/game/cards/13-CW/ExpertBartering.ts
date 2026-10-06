@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { attach, discardFromPlay, ifAble, joint } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ExpertBartering extends DrawCard {
     static id = 'expert-bartering';
@@ -37,7 +38,7 @@ class ExpertBartering extends DrawCard {
                     otherwiseAction: discardFromPlay({ target: context.source })
                 }))
             ]))
-            .effect('switch {1} with {2}', context => [context.source, context.target])
+            .effect((context) => msg`switch ${context.source} with ${context.target}`)
             .cannotTargetFirst();
     }
 }

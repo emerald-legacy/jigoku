@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class SilentSkirmisher extends DrawCard {
     static id = 'silent-skirmisher';
@@ -17,7 +18,7 @@ class SilentSkirmisher extends DrawCard {
             .gameAction(cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))
-            .effect('give itself +2{1}', () => ['military']);
+            .effect(() => msg`give itself +2${'military'}`);
     }
 }
 

@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 function bonus(context: AbilityContext): number {
     return context.player.getNumberOfOpponentsFaceupProvinces();
@@ -16,6 +17,6 @@ export default class MotoRaiju extends DrawCard {
             .gameAction(cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonus(context))
             })))
-            .effect('give itself +{1}{2} until the end of the conflict', (context) => [bonus(context), 'military']);
+            .effect((context) => msg`give itself +${bonus(context)}${'military'} until the end of the conflict`);
     }
 }

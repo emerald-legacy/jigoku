@@ -12,6 +12,7 @@ import {
     selectCard
 } from '../../../GameActions/GameActions.js';
 import { hasClaimedRing } from '../../claimedRings.js';
+import { msg } from '../../../GameChat.js';
 
 const elementKeys = {
     air: 'asako-reina-air',
@@ -65,7 +66,7 @@ class AsakoReina extends DrawCard {
                     falseGameAction: draw(() => ({ amount: 0 }))
                 })
             ]))
-            .effect('{1}', context => [this.createEffectMessage(context)]);
+            .effect((context) => msg`${this.createEffectMessage(context)}`);
     }
 
     private createEffectMessage(context: AbilityContext) {

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases, Players, CardType } from '../../Constants.js';
 import { bow } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class HigesSermon extends DrawCard {
     static id = 'hige-s-sermon';
@@ -22,7 +23,7 @@ class HigesSermon extends DrawCard {
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                 player: context => context.player.firstPlayer ? Players.Opponent : Players.Self
             }, bow())
-            .effect('bow {1} and {2}', context => [context.targets.firstCharacter, context.targets.secondCharacter])
+            .effect((context) => msg`bow ${context.targets.firstCharacter} and ${context.targets.secondCharacter}`)
             .phase(Phases.Draw);
     }
 }

@@ -4,6 +4,7 @@ import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { defendersChosenFirstDuringConflict } from '../../effects.js';
 import { menuPrompt, playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class SevenStingsKeep extends StrongholdCard {
     static id = 'seven-stings-keep';
@@ -33,7 +34,7 @@ export default class SevenStingsKeep extends StrongholdCard {
                     };
                 }
             })))
-            .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
+            .effect((context) => msg`force ${context.player.opponent} to declare defenders before attackers are chosen this conflict`);
     }
 
     private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {

@@ -1,6 +1,7 @@
 import type { CardGameAction } from '../../GameActions/CardGameAction.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { discardCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class DesertedShrine extends ProvinceCard {
     static id = 'deserted-shrine';
@@ -51,6 +52,6 @@ export default class DesertedShrine extends ProvinceCard {
 
                 return Object.fromEntries(choices);
             })
-            .effect('discard the top 10 cards of {1} deck', (context) => [context.select]);
+            .effect((context) => msg`discard the top 10 cards of ${context.select} deck`);
     }
 }

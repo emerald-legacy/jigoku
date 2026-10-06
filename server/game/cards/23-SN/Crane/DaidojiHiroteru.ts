@@ -3,6 +3,7 @@ import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFro
 import { addKeyword, canBeSeenWhenFacedown, gainPlayAction } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class DaidojiHiroteru extends DrawCard {
     static id = 'daidoji-hiroteru';
@@ -35,6 +36,6 @@ export default class DaidojiHiroteru extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: addKeyword('covert')
             })))
-            .effect('give {1} covert until the end of the phase', (context) => [context.event.card]);
+            .effect((context) => msg`give ${context.event.card} covert until the end of the phase`);
     }
 }

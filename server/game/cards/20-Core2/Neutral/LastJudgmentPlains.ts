@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { menuPrompt, placeFate } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 const DONOR = 'donor';
 const RECIPIENT = 'recipient';
@@ -32,7 +33,7 @@ export default class LastJudgmentPlains extends ProvinceCard {
                 }),
                 gameAction: placeFate()
             })))
-            .effect('move fate from {1} to {2}', ({ targets }) => [targets[DONOR], targets[RECIPIENT]]);
+            .effect(({ targets }) => msg`move fate from ${targets[DONOR]} to ${targets[RECIPIENT]}`);
     }
 
     private createChoiceArray(fate: number): string[] {

@@ -2,6 +2,7 @@ import { modifyPoliticalSkill } from '../../effects.js';
 import { moveCard, multiple, sacrifice } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class SpellScroll extends DrawCard {
     static id = 'spell-scroll';
@@ -31,6 +32,6 @@ export default class SpellScroll extends DrawCard {
                 })),
                 sacrifice((context) => ({ target: context.source }))
             ]))
-            .effect('move {1} to their hand and sacrifice {2}', (context) => [context.target, context.source]);
+            .effect((context) => msg`move ${context.target} to their hand and sacrifice ${context.source}`);
     }
 }

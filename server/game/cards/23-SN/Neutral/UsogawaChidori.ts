@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { blank } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
 
 export default class UsogawaChidori extends DrawCard {
     static id = 'usogawa-chidori';
@@ -18,6 +19,6 @@ export default class UsogawaChidori extends DrawCard {
                 effect: blank(),
                 duration: Duration.UntilEndOfPhase
             }))
-            .effect('treat {1} as if it had no printed abilities until the end of the phase', (context) => [context.target]);
+            .effect((context) => msg`treat ${context.target} as if it had no printed abilities until the end of the phase`);
     }
 }

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { controlsShugenja } from '../controlsShugenja.js';
+import { msg } from '../../GameChat.js';
 
 class EmbraceTheVoid extends DrawCard {
     static id = 'embrace-the-void';
@@ -14,7 +15,7 @@ class EmbraceTheVoid extends DrawCard {
             .handler((context) => {
                 context.event.recipient = context.player;
             })
-            .effect('take the {1} fate being removed from {2}', (context) => [context.event.fate, context.source.parentCharacter]);
+            .effect((context) => msg`take the ${context.event.fate} fate being removed from ${context.source.parentCharacter}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

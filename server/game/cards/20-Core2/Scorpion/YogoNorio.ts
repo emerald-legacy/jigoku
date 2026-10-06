@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { additionalConflict } from '../../../effects.js';
 import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class YogoNorio extends DrawCard {
     static id = 'yogo-norio';
@@ -18,6 +19,6 @@ export default class YogoNorio extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Political)
             })))
-            .effect('allow {1} to declare an additional political conflict this phase', (context) => [context.player]);
+            .effect((context) => msg`allow ${context.player} to declare an additional political conflict this phase`);
     }
 }

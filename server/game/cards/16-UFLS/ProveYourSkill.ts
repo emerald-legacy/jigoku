@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import { discardStatusToken } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ProveYourSkill extends DrawCard {
     static id = 'prove-your-skill';
@@ -11,7 +12,7 @@ class ProveYourSkill extends DrawCard {
             .tokenTarget({
                 cardType: CardType.Character
             }, discardStatusToken())
-            .effect('discard {1}\'s {2}', context => [context.token[0].card, context.token]);
+            .effect((context) => msg`discard ${context.token[0].card}'s ${context.token}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

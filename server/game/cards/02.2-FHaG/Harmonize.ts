@@ -1,6 +1,7 @@
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { sendHome } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class Harmonize extends DrawCard {
     static id = 'harmonize';
@@ -18,7 +19,7 @@ class Harmonize extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.costLessThan((context.targets.myCharacter.getCost() ?? 0) + 1)
             }, sendHome())
-            .effect('send home {1} and {2}', context => [context.targets.myCharacter, context.targets.oppCharacter])
+            .effect((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
             .cannotBeMirrored();
     }
 }

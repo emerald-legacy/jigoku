@@ -3,6 +3,7 @@ import { bow, cardLastingEffect, conditional, multiple, noAction } from '../../.
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 const TARGET_MONK = 'myMonk';
 const TARGET_TO_BOW = 'characterToBow';
@@ -43,7 +44,7 @@ export default class PalmStrike extends DrawCard {
                     })
                 })
             ]))
-            .effect('bow {1}', (context) => [context.targets[TARGET_TO_BOW]])
+            .effect((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
             .then((context) => {
                 if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
                     context.game.addMessage(

@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 import { addTrait, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class PeerlessDiscipline extends DrawCard {
     static id = 'peerless-discipline';
@@ -16,7 +17,7 @@ class PeerlessDiscipline extends DrawCard {
                 ],
                 duration: Duration.UntilEndOfPhase
             })))
-            .effect('give all characters they control +1{1} and the Bushi trait', () => (['military']));
+            .effect(() => msg`give all characters they control +1${'military'} and the Bushi trait`);
     }
 }
 

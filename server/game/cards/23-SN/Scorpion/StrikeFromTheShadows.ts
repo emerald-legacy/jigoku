@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class StrikeFromTheShadows extends DrawCard {
     static id = 'strike-from-the-shadows';
@@ -17,7 +18,7 @@ export default class StrikeFromTheShadows extends DrawCard {
                     modifyBothSkills(1)
                 ]
             })))
-            .effect('give all participating Shinobi they control +1{1}/+1{2} until the end of the conflict', () => ['military', 'political'])
+            .effect(() => msg`give all participating Shinobi they control +1${'military'}/+1${'political'} until the end of the conflict`)
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

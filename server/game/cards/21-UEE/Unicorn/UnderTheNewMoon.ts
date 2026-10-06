@@ -4,6 +4,7 @@ import { menuPrompt, playerLastingEffect } from '../../../GameActions/GameAction
 import { EventName } from '../../../Constants.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';
@@ -33,7 +34,7 @@ export default class UnderTheNewMoon extends DrawCard {
                     };
                 }
             })))
-            .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
+            .effect((context) => msg`force ${context.player.opponent} to declare defenders before attackers are chosen this conflict`);
     }
 
     private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {

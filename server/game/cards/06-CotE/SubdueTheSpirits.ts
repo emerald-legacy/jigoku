@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class SubdueTheSpirits extends DrawCard {
     static id = 'subdue-the-spirits';
@@ -12,7 +13,7 @@ class SubdueTheSpirits extends DrawCard {
                 target: context.game.requireConflict().getCharacters(context.player),
                 effect: modifyBothSkills((card) => card.glory)
             })))
-            .effect('add glory to {1} and {2} skills on participating characters they control', () => ['military', 'political']);
+            .effect(() => msg`add glory to ${'military'} and ${'political'} skills on participating characters they control`);
     }
 }
 

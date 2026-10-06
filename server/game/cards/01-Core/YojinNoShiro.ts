@@ -2,6 +2,7 @@ import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class YojinNoShiro extends StrongholdCard {
     static id = 'yojin-no-shiro';
@@ -14,6 +15,6 @@ export default class YojinNoShiro extends StrongholdCard {
                 target: context.player.cardsInPlay.filter((card) => card.isAttacking()),
                 effect: modifyMilitarySkill(1)
             })))
-            .effect('give attacking characters +1{1}/+0{2}', () => ['military', 'political']);
+            .effect(() => msg`give attacking characters +1${'military'}/+0${'political'}`);
     }
 }

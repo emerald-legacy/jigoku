@@ -5,6 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import { msg } from '../../../GameChat.js';
 
 const controlledBy = (player: Player) => (character: DrawCard) => character.controller === player;
 
@@ -57,6 +58,6 @@ export default class SanctifiedEarth extends DrawCard {
                     }))
                 })
             ]))
-            .effect('give +2{1} and +2{2} to {3}', (context) => ['military', 'political', context.target]);
+            .effect((context) => msg`give +2${'military'} and +2${'political'} to ${context.target}`);
     }
 }

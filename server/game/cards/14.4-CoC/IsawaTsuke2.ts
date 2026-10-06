@@ -4,6 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { removeFate } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType, Element } from '../../Constants.js';
 import { countTargetable } from '../countTargetable.js';
+import { msg } from '../../GameChat.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
 
@@ -30,7 +31,7 @@ class IsawaTsuke2 extends DrawCard {
             }, removeFate((context) => {
                 return { target: Object.values(context.targets).flat() };
             }))
-            .effect('lose {1} honor to discard a fate from {2}', (context) => [context.costs.variableHonorCost, context.targets.target])
+            .effect((context) => msg`lose ${context.costs.variableHonorCost} honor to discard a fate from ${context.targets.target}`)
             .cannotTargetFirst();
     }
 

@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { reduceCost } from '../../effects.js';
 import { resolveAbility } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location, AbilityType, ConflictType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';
@@ -28,7 +29,7 @@ class BattlefieldOrders extends DrawCard {
                 ignoredRequirements: ['player'],
                 choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
             })))
-            .effect('trigger {1}\'s \'{2}\' ability', (context) => [context.targetAbility.card, context.targetAbility.title]);
+            .effect((context) => msg`trigger ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

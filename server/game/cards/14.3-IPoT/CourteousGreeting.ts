@@ -1,6 +1,7 @@
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { bow } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 const elementKey = 'courteous-greeting-earth';
 
@@ -20,7 +21,7 @@ export default class CourteousGreeting extends ProvinceCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, bow())
-            .effect('bow {1} and {2}', (context) => [context.targets.myCharacter, context.targets.oppCharacter])
+            .effect((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 

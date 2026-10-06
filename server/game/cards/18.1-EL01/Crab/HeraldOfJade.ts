@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location } from '../../../Constants.js';
 import { discardStatusToken, gainHonor, multiple } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 class HeraldOfJade extends DrawCard {
     static id = 'herald-of-jade';
@@ -18,10 +19,7 @@ class HeraldOfJade extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .effect('discard {1}\'s {2} and gain 1 honor', context => [
-                context.token?.[0]?.card,
-                context.token
-            ]);
+            .effect((context) => msg`discard ${context.token?.[0]?.card}'s ${context.token} and gain 1 honor`);
     }
 }
 

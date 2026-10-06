@@ -2,6 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 class UnleashTheDjinn extends DrawCard {
     static id = 'unleash-the-djinn';
@@ -17,7 +18,7 @@ class UnleashTheDjinn extends DrawCard {
                     setPoliticalSkill(3)
                 ]
             })))
-            .effect('make all participating characters 3{1}/3{2}', () => ['military', 'political']);
+            .effect(() => msg`make all participating characters 3${'military'}/3${'political'}`);
     }
 }
 

@@ -2,6 +2,7 @@ import { ConflictType, Players, Duration } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { setConflictDeclarationType } from '../../effects.js';
 import { multiple, playerLastingEffect, switchConflictType } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class KhansOrdu extends ProvinceCard {
     static id = 'khan-s-ordu';
@@ -22,6 +23,6 @@ export default class KhansOrdu extends ProvinceCard {
                     duration: Duration.UntilEndOfPhase
                 })
             ]))
-            .effect('switch the conflict type to {1} and make all future conflicts {1} for this phase', () => (['military']));
+            .effect(() => msg`switch the conflict type to ${'military'} and make all future conflicts ${'military'} for this phase`);
     }
 }

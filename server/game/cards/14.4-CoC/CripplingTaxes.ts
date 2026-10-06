@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class CripplingTaxes extends DrawCard {
     static id = 'crippling-taxes';
@@ -15,7 +16,7 @@ class CripplingTaxes extends DrawCard {
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location)
             })))
-            .effect('discard {1}', context => [context.target.controller.getDynastyCardsInProvince(context.target.location)]);
+            .effect((context) => msg`discard ${context.target.controller.getDynastyCardsInProvince(context.target.location)}`);
     }
 }
 

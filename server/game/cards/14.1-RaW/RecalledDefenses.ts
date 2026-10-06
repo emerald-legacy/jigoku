@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType, Players } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class RecalledDefenses extends DrawCard {
     static id = 'recalled-defenses';
@@ -12,7 +13,7 @@ class RecalledDefenses extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source
             }, moveCard({ destination: Location.StrongholdProvince }))
-            .effect('move {1} to their stronghold province', context => [context.target]);
+            .effect((context) => msg`move ${context.target} to their stronghold province`);
     }
 }
 

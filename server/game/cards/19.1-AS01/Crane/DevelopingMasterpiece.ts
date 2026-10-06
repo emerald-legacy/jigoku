@@ -6,6 +6,7 @@ import { gainHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
+import { msg } from '../../../GameChat.js';
 
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
@@ -27,7 +28,7 @@ export default class DevelopingMasterpiece extends DrawCard {
             .gameAction(gainHonor((context) => ({
                 amount: capturedParent(context)?.getGlory() ?? 0
             })))
-            .effect('gain {1} honor', (context) => [capturedParent(context)?.getGlory() ?? 0])
+            .effect((context) => msg`gain ${capturedParent(context)?.getGlory() ?? 0} honor`)
             .then((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
                 context.game.addMessage('>>>> Matsuo Bashō <<<<');

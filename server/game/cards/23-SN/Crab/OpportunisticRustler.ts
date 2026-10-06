@@ -9,6 +9,7 @@ import {
 } from '../../../GameActions/GameActions.js';
 import { ConflictType, Decks, Location } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
+import { msg } from '../../../GameChat.js';
 
 export default class OpportunisticRustler extends DrawCard {
     static id = 'opportunistic-rustler';
@@ -53,6 +54,6 @@ export default class OpportunisticRustler extends DrawCard {
                     return { gameActions };
                 })
             })))
-            .effect('look at {1}\'s dynasty deck', context => [context.player.opponent]);
+            .effect((context) => msg`look at ${context.player.opponent}'s dynasty deck`);
     }
 }

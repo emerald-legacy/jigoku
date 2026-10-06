@@ -3,6 +3,7 @@ import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { additionalConflict } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class HisuMoriToride extends StrongholdCard {
     static id = 'hisu-mori-toride-unicorn';
@@ -26,6 +27,6 @@ export default class HisuMoriToride extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict('military')
             })))
-            .effect('allow {1} to declare an additional military conflict this phase', (context) => [context.player]);
+            .effect((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

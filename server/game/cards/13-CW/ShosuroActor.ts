@@ -2,6 +2,7 @@ import { copyCard } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShosuroActor extends DrawCard {
     static id = 'shosuro-actor';
@@ -18,6 +19,6 @@ export default class ShosuroActor extends DrawCard {
                 target: context.source,
                 effect: context.target ? copyCard(context.target) : []
             })))
-            .effect('become a copy of {1}', (context) => [context.target]);
+            .effect((context) => msg`become a copy of ${context.target}`);
     }
 }

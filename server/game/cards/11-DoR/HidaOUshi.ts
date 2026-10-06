@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { additionalConflict } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration, ConflictType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class HidaOUshi extends DrawCard {
     static id = 'hida-o-ushi';
@@ -15,7 +16,7 @@ class HidaOUshi extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Military)
             })))
-            .effect('allow {1} to declare an additional military conflict this phase', context => [context.player])
+            .effect((context) => msg`allow ${context.player} to declare an additional military conflict this phase`)
             .max(AbilityDsl.limit.perPhase(1));
     }
 }

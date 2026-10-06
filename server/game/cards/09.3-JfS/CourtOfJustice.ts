@@ -2,6 +2,7 @@ import { lookAt } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 import { ConflictType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 export default class CourtOfJustice extends DrawCard {
     static id = 'court-of-justice';
@@ -19,6 +20,6 @@ export default class CourtOfJustice extends DrawCard {
                 message: 'reveals {0} from {1}\'s hand',
                 messageArgs: (cards) => [cards, context.player.opponent]
             })))
-            .effect('look at 3 random cards from {1}\'s hand', (context) => [context.player.opponent]);
+            .effect((context) => msg`look at 3 random cards from ${context.player.opponent}'s hand`);
     }
 }

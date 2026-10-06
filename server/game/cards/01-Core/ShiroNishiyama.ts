@@ -2,6 +2,7 @@ import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShiroNishiyama extends StrongholdCard {
     static id = 'shiro-nishiyama';
@@ -14,6 +15,6 @@ export default class ShiroNishiyama extends StrongholdCard {
                 target: context.player.cardsInPlay.filter((card) => card.isDefending()),
                 effect: modifyBothSkills(1)
             })))
-            .effect('add +1{1}/+1{2} to all defenders they control', () => ['military', 'political']);
+            .effect(() => msg`add +1${'military'}/+1${'political'} to all defenders they control`);
     }
 }

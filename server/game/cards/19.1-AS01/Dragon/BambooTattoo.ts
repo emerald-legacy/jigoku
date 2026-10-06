@@ -5,6 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import Ring from '../../../Ring.js';
+import { msg } from '../../../GameChat.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
@@ -39,7 +40,7 @@ export default class BambooTattoo extends DrawCard {
                     falseGameAction: noAction()
                 })
             ]))
-            .effect('ready{1} {2}', (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter]);
+            .effect((context) => msg`ready${this.isSelfTrigger(context) ? ' and dishonor' : ''} ${context.source.parentCharacter}`);
     }
 
     private isSelfTrigger(context: TriggeredAbilityContext) {

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class FalseLoyalties extends DrawCard {
     static id = 'false-loyalties';
@@ -30,7 +31,7 @@ class FalseLoyalties extends DrawCard {
                 sendHome(context => ({ target: context.targets.characterInConflict })),
                 moveToConflict()
             ]))
-            .effect('switch {1} and {2}', context => [context.targets.characterInConflict, context.targets.characterAtHome]);
+            .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);
     }
 }
 

@@ -4,6 +4,7 @@ import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
+import { msg } from '../../../GameChat.js';
 
 function provinceLog(province: ProvinceCard) {
     return province.facedown ? province.location : province;
@@ -48,6 +49,6 @@ export default class TheRushingWave extends DrawCard {
                 effect: 'also set the strength of {0} to 0',
                 effectArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
             }))
-            .effect('set {1}\'s strength to 0 until the end of the phase', (context) => [provinceLog(context.target)]);
+            .effect((context) => msg`set ${provinceLog(context.target)}'s strength to 0 until the end of the phase`);
     }
 }

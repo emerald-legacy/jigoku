@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { addToken, chosenReturnToDeck, draw, sequential } from '../../GameActions/GameActions.js';
 import { EventName, TokenType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class EndlessArchives extends DrawCard {
     static id = 'endless-archives';
@@ -12,7 +13,7 @@ class EndlessArchives extends DrawCard {
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             })
             .gameAction(addToken())
-            .effect('place an honor token on {1} and exchange cards from their hand', context => [context.source])
+            .effect((context) => msg`place an honor token on ${context.source} and exchange cards from their hand`)
             .then(() => ({
                 gameAction: sequential([
                     chosenReturnToDeck(context => ({

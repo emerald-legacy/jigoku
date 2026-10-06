@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { bow, cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class SupportingCast extends DrawCard {
     static id = 'supporting-cast';
@@ -39,7 +40,7 @@ export default class SupportingCast extends DrawCard {
             })), cardLastingEffect({
                 effect: modifyMilitarySkill(3)
             }))
-            .effect('give +3 military skill to {1} - {2} was just a distraction', (context) => [context.target, context.event.cardTargets])
+            .effect((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

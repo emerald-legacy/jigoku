@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { gainHonor } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class HallOfVictories extends DrawCard {
     static id = 'hall-of-victories';
@@ -13,7 +14,7 @@ class HallOfVictories extends DrawCard {
             .gameAction(gainHonor(context => ({
                 target: context.game.currentConflict?.winner ?? undefined
             })))
-            .effect('make {1} gain 1 honor', context => [context.game.currentConflict?.winner?.name ?? ''])
+            .effect((context) => msg`make ${context.game.currentConflict?.winner?.name ?? ''} gain 1 honor`)
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

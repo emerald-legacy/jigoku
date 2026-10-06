@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { lookAt, moveCard, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { Location, Phases, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';
@@ -33,7 +34,7 @@ class PeasantsAdvice extends DrawCard {
                     })
                 }))
             ]))
-            .effect('look at {1}\'s {2}', context => [context.target.controller, context.target.location])
+            .effect((context) => msg`look at ${context.target.controller}'s ${context.target.location}`)
             .phase(Phases.Conflict);
     }
 }

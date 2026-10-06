@@ -1,6 +1,7 @@
 import { chosenDiscard, loseFate, loseHonor, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { msg } from '../../GameChat.js';
 
 export default class AgashaSumiko2 extends DrawCard {
     static id = 'agasha-sumiko-2';
@@ -25,7 +26,7 @@ export default class AgashaSumiko2 extends DrawCard {
                     amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
                 }))
             ]))
-            .effect('make {1} {2}', (context) => [context.player.opponent, this.getChatMessage(context)]);
+            .effect((context) => msg`make ${context.player.opponent} ${this.getChatMessage(context)}`);
     }
 
     private getChatMessage(context: TriggeredAbilityContext) {

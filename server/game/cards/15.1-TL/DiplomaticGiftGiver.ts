@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { loseFate, placeFate } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class DiplomaticGiftGiver extends DrawCard {
     static id = 'diplomatic-gift-giver';
@@ -26,7 +27,7 @@ class DiplomaticGiftGiver extends DrawCard {
             }, placeFate(context => ({
                 origin: context.player.firstPlayer ? context.player.opponent : context.player
             })))
-            .effect('gift a fate onto {1} and {2}', context => [context.targets.firstCharacter, context.targets.secondCharacter]);
+            .effect((context) => msg`gift a fate onto ${context.targets.firstCharacter} and ${context.targets.secondCharacter}`);
     }
 }
 

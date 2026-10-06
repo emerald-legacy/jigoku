@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { Location } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class MagnificentLighthouse extends DrawCard {
     static id = 'magnificent-lighthouse';
@@ -24,7 +25,7 @@ class MagnificentLighthouse extends DrawCard {
                     this.chooseDiscard(context, opponent, topThree);
                 }
             })
-            .effect('look at the top 3 cards of {1}\'s {2}', (context) => [context.player.opponent, context.select.toLowerCase()]);
+            .effect((context) => msg`look at the top 3 cards of ${context.player.opponent}'s ${context.select.toLowerCase()}`);
     }
 
     // With fewer than 3 cards, each step may be skipped, except the bottom card after skipping the discard of 2

@@ -3,6 +3,7 @@ import { deckSearch, moveCard, playerLastingEffect } from '../../../GameActions/
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
+import { msg } from '../../../GameChat.js';
 
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
@@ -42,6 +43,6 @@ export default class EarnestSculptor extends DrawCard {
                         card === context.event.card || card === context.event.context.source
                 )
             })))
-            .effect('reduce the cost of {1} by 1', (context) => [context.event.context.source]);
+            .effect((context) => msg`reduce the cost of ${context.event.context.source} by 1`);
     }
 }

@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import { immunity } from '../../effects.js';
 import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ThirdWhiskerSneak extends DrawCard {
     static id = 'third-whisker-sneak';
@@ -28,7 +29,7 @@ class ThirdWhiskerSneak extends DrawCard {
                     destination: Location.Hand
                 })
             }))
-            .effect('look at the top {1} cards of their conflict deck', context => [context.player.getProvinces(a => !a.isBroken).length]);
+            .effect((context) => msg`look at the top ${context.player.getProvinces(a => !a.isBroken).length} cards of their conflict deck`);
     }
 }
 

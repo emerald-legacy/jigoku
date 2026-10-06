@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Duration, Phases } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class DivineAncestry extends DrawCard {
     static id = 'divine-ancestry';
@@ -23,7 +24,7 @@ class DivineAncestry extends DrawCard {
                     })
                 ]
             })))
-            .effect('prevent {1} from losing honor this phase', context => [context.player]);
+            .effect((context) => msg`prevent ${context.player} from losing honor this phase`);
     }
 }
 

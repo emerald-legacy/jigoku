@@ -4,6 +4,7 @@ import { takeControl } from '../../effects.js';
 import { cardLastingEffect, handler } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
+import { msg } from '../../GameChat.js';
 
 export default class PerfectGuest extends DrawCard {
     static id = 'perfect-guest';
@@ -26,7 +27,7 @@ export default class PerfectGuest extends DrawCard {
                     }
                 })
             }))
-            .effect('give control of itself to {1}', (context) => [context.player.opponent ?? context.player]);
+            .effect((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 
     public onRoundEnded() {

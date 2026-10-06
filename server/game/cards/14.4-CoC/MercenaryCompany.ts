@@ -3,6 +3,7 @@ import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { takeControl } from '../../effects.js';
 import { handler, loseFate, placeFate } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
@@ -48,7 +49,7 @@ class MercenaryCompany extends DrawCard {
                     });
                 }
             }))
-            .effect('let {1} hire their services', context => [context.player.opponent])
+            .effect((context) => msg`let ${context.player.opponent} hire their services`)
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 

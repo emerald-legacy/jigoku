@@ -2,6 +2,7 @@ import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, claimRing } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
 
 export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';
@@ -21,6 +22,6 @@ export default class StrikeAsTheElements extends DrawCard {
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
             }, claimRing({ takeFate: true, type: ConflictType.Military }))
-            .effect('grant +2{1} to {2} and claim the {3}', context => ['military', context.targets.character, context.rings.ring]);
+            .effect((context) => msg`grant +2${'military'} to ${context.targets.character} and claim the ${context.rings.ring}`);
     }
 }

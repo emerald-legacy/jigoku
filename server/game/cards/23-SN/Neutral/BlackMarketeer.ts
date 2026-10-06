@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location, PlayType, Players } from '../../../Constants.js';
 import { playCard } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 export default class BlackMarketeer extends DrawCard {
     static id = 'black-marketeer';
@@ -17,6 +18,6 @@ export default class BlackMarketeer extends DrawCard {
                 playType: PlayType.PlayFromHand,
                 payFateToOpponent: true
             }))
-            .effect('buy an attachment from {1}\'s discard pile', context => [context.player.opponent]);
+            .effect((context) => msg`buy an attachment from ${context.player.opponent}'s discard pile`);
     }
 }

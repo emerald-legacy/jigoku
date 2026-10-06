@@ -3,6 +3,7 @@ import { draw, multiple, placeCardUnderneath } from '../../../GameActions/GameAc
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { countCardsUnderneath, playableFromUnderneath } from '../../cardsUnderneath.js';
+import { msg } from '../../../GameChat.js';
 
 export default class TogashiTsurumi extends DrawCard {
     static id = 'togashi-tsurumi';
@@ -26,6 +27,6 @@ export default class TogashiTsurumi extends DrawCard {
                 })),
                 placeCardUnderneath((context) => ({ destination: context.source }))
             ]))
-            .effect('place a card from their hand beneath {1} and draw a card', (context) => [context.source]);
+            .effect((context) => msg`place a card from their hand beneath ${context.source} and draw a card`);
     }
 }

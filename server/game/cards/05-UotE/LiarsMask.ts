@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { discardStatusToken, selectToken } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class LiarsMask extends DrawCard {
     static id = 'liar-s-mask';
@@ -15,7 +16,7 @@ class LiarsMask extends DrawCard {
                 messageArgs: (token, player) => [player, token],
                 gameAction: discardStatusToken()
             })))
-            .effect('discard a status token from {1}', (context) => [context.source.parentCharacter]);
+            .effect((context) => msg`discard a status token from ${context.source.parentCharacter}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

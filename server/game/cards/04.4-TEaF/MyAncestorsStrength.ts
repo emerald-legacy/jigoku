@@ -2,6 +2,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
+import { msg } from '../../GameChat.js';
 
 class MyAncestorsStrength extends DrawCard {
     static id = 'my-ancestor-s-strength';
@@ -26,7 +27,7 @@ class MyAncestorsStrength extends DrawCard {
                 target: context.targets.shugenja,
                 effect: copyBaseSkillEffects(context.targets.ancestor)
             })))
-            .effect('set {1}\'s base skills to those of {2}', context => [context.targets.shugenja, context.targets.ancestor]);
+            .effect((context) => msg`set ${context.targets.shugenja}'s base skills to those of ${context.targets.ancestor}`);
     }
 }
 

@@ -3,6 +3,7 @@ import { CardType, Players } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 function penalty(context: AbilityContext): number {
     const conflict = context.game.currentConflict;
@@ -26,7 +27,7 @@ export default class AsakoShun extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(penalty(context))
             })))
-            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target])
+            .effect((context) => msg`give ${context.target} ${penalty(context)}${'military'} and ${penalty(context)}${'political'}`)
             .then((context) => ({
                 thenCondition: () => {
                     const conflict = context.game.currentConflict;

@@ -11,6 +11,7 @@ import {
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 
 function cardsToDiscard(context: AbilityContext) {
     return context.player.dynastyDeck.slice(0, 4);
@@ -49,7 +50,7 @@ export default class SecondWind extends DrawCard {
                     messageArgs: (card) => [context.player, card, context.source]
                 }))
             ]))
-            .effect('find a character to put into play. {1} discards {2}', (context) => [context.player, cardsToDiscard(context)])
+            .effect((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
             .cannotTargetFirst();
     }
 }

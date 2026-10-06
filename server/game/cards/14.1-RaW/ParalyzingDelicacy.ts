@@ -3,6 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class ParalyzingDelicacy extends DrawCard {
     static id = 'paralyzing-delicacy';
@@ -15,7 +16,7 @@ class ParalyzingDelicacy extends DrawCard {
             }, cardLastingEffect(context => ({
                 effect: modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
             })))
-            .effect('give {1} -{2}{3}', context => [context.target, this.getFaceDownProvinceCards(context), 'military']);
+            .effect((context) => msg`give ${context.target} -${this.getFaceDownProvinceCards(context)}${'military'}`);
     }
 
     private getFaceDownProvinceCards(context: AbilityContext) {

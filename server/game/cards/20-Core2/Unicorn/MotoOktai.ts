@@ -2,6 +2,7 @@ import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 function skillBonus(card: DrawCard) {
     return card.getMilitarySkill();
@@ -28,6 +29,6 @@ export default class MotoOktai extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, discardFromPlay())
-            .effect('discard {1} - purge the weak', (context) => [context.target]);
+            .effect((context) => msg`discard ${context.target} - purge the weak`);
     }
 }

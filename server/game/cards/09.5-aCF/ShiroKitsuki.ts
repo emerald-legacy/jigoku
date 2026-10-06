@@ -3,6 +3,7 @@ import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { delayedEffect } from '../../effects.js';
 import { claimRing, playerLastingEffect, selectRing } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
@@ -31,7 +32,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                     }))
                 })
             })))
-            .effect('claim a ring whenever {1} plays a card named {2}', (context) => [context.player.opponent, context.costs.nameCardCost])
+            .effect((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.nameCardCost}`)
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

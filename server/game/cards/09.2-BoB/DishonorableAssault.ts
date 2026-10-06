@@ -3,6 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { dishonor } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class DishonorableAssault extends ProvinceCard {
     static id = 'dishonorable-assault';
@@ -16,7 +17,7 @@ export default class DishonorableAssault extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, dishonor())
-            .effect('discard {1} and dishonor {2}', (context) => [context.costs.discardCardsUpToVariableX, context.targets.target])
+            .effect((context) => msg`discard ${context.costs.discardCardsUpToVariableX} and dishonor ${context.targets.target}`)
             .cannotTargetFirst();
     }
 

@@ -3,6 +3,7 @@ import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class MotoStables extends DrawCard {
     static id = 'moto-stables';
@@ -19,7 +20,7 @@ class MotoStables extends DrawCard {
                 target: context.event.card,
                 effect: modifyMilitarySkill(2)
             })))
-            .effect('give {1} +2{2}', (context) => [context.event.card, 'military'])
+            .effect((context) => msg`give ${context.event.card} +2${'military'}`)
             .limit(AbilityDsl.limit.perRound(2));
     }
 }

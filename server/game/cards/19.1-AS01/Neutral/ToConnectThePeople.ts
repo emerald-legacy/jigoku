@@ -6,6 +6,7 @@ import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import { msg } from '../../../GameChat.js';
 
 export default class ToConnectThePeople extends DrawCard {
     static id = 'to-connect-the-people';
@@ -39,7 +40,7 @@ export default class ToConnectThePeople extends DrawCard {
                     ])
                 })
             ]))
-            .effect('discard {1} from the top of {2}\'s dynasty deck', (context) => [this.topThreeCards(context), context.player.opponent])
+            .effect((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
             .max(AbilityDsl.limit.perRound(1));
     }
 

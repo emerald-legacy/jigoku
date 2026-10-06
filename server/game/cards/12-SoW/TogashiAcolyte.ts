@@ -4,6 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class TogashiAcolyte extends DrawCard {
     static id = 'togashi-acolyte';
@@ -22,7 +23,7 @@ export default class TogashiAcolyte extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyBothSkills(1)
             })))
-            .effect('give +1{1} and +1{2} to {3}', (context) => ['political', 'military', context.source.parentCharacter])
+            .effect((context) => msg`give +1${'political'} and +1${'military'} to ${context.source.parentCharacter}`)
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

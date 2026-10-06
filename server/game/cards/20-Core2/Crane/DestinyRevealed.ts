@@ -5,6 +5,7 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import Ring from '../../../Ring.js';
+import { msg } from '../../../GameChat.js';
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
 
@@ -36,7 +37,7 @@ export default class DestinyRevealed extends DrawCard {
                 onCardReadied: targetedByOpponentRingEffect
             })
             .gameAction(cancel())
-            .effect('cancel the effects of the {1}', (context) => [context.event.context?.source]);
+            .effect((context) => msg`cancel the effects of the ${context.event.context?.source}`);
     }
 }
 

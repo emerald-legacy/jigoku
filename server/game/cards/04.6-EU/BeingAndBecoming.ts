@@ -1,6 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { placeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 class BeingAndBecoming extends DrawCard {
     static id = 'being-and-becoming';
@@ -20,7 +21,7 @@ class BeingAndBecoming extends DrawCard {
                 amount: context.ring.fate,
                 target: context.source.parentCharacter ?? []
             })))
-            .effect('move {1} fate from {2} to {3}', context => [context.ring.fate, context.ring, context.source.parentCharacter]);
+            .effect((context) => msg`move ${context.ring.fate} fate from ${context.ring} to ${context.source.parentCharacter}`);
     }
 }
 

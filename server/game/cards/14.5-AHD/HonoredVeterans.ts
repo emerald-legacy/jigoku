@@ -5,6 +5,7 @@ import { CardType, EventName, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import { msg } from '../../GameChat.js';
 
 export default class HonoredVeterans extends DrawCard {
     static id = 'honored-veterans';
@@ -33,7 +34,7 @@ export default class HonoredVeterans extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
             }, honor())
-            .effect('honor {1}', (context) => [this.getCharacters(context)]);
+            .effect((context) => msg`honor ${this.getCharacters(context)}`);
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {

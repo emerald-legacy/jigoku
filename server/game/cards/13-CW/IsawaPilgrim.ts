@@ -3,6 +3,7 @@ import { Duration, Element } from '../../Constants.js';
 import { takeControl } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
+import { msg } from '../../GameChat.js';
 
 const elementSymbol = { key: 'isawa-pilgrim-water', element: Element.Water };
 
@@ -16,7 +17,7 @@ class IsawaPilgrim extends DrawCard {
                 effect: takeControl(context.player.opponent),
                 duration: Duration.Custom
             })))
-            .effect('give control of itself to {1}', context => [context.player.opponent ?? context.player]);
+            .effect((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 
     getPrintedElementSymbols() {

@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import { additionalAttackedProvince } from '../../effects.js';
 import { conflictLastingEffect, reveal, sequential } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class AWarOnTwoFronts extends DrawCard {
     static id = 'a-war-on-two-fronts';
@@ -21,7 +22,7 @@ class AWarOnTwoFronts extends DrawCard {
                     effect: additionalAttackedProvince(context.target)
                 }))
             ]))
-            .effect('{2}also attack {1} this conflict', context => [context.target, context.target.isFacedown() ? 'reveal and ' : '']);
+            .effect((context) => msg`${context.target.isFacedown() ? 'reveal and ' : ''}also attack ${context.target} this conflict`);
     }
 }
 

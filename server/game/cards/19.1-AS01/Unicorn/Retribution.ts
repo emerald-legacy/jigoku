@@ -9,6 +9,7 @@ import {
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
+import { msg } from '../../../GameChat.js';
 
 function brokenProvinceCountForPlayer(player: Player): number {
     return player.getProvinceCards().reduce((sum, province) => (province.isBroken ? sum + 1 : sum), 0);
@@ -63,7 +64,7 @@ export default class Retribution extends DrawCard {
                     })
                 ]
             })))
-            .effect('declare a military conflict, attacking with {1}', (context) => [context.target])
+            .effect((context) => msg`declare a military conflict, attacking with ${context.target}`)
             .max(AbilityDsl.limit.perRound(1));
     }
 }

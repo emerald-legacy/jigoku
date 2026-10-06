@@ -3,6 +3,7 @@ import { Phases, CardType, ConflictType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { additionalConflict } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 const validSacrificeTraits = ['courtier', 'bushi', 'shugenja'];
 
@@ -21,7 +22,7 @@ class SufferTheConsequences extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Political)
             })))
-            .effect('allow {1} to declare an additional political conflict this phase', context => [context.player])
+            .effect((context) => msg`allow ${context.player} to declare an additional political conflict this phase`)
             .max(AbilityDsl.limit.perPhase(1));
     }
 }
