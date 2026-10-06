@@ -1,5 +1,6 @@
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { cardMenu, moveCard } from '../../../GameActions/GameActions.js';
 
 export default class BayushiTruthseeker extends DrawCard {
     static id = 'bayushi-truthseeker';
@@ -12,21 +13,14 @@ export default class BayushiTruthseeker extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking()
             })
-            .handler((context) => {
-                const opponent = context.player.opponent;
-                if(!opponent) {
-                    return;
-                }
-                this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Which card do you want to discard?',
-                    context: context,
-                    cards: opponent.conflictDeck.slice(0, 2),
-                    options: [{ text: 'Do not discard either card', handler: () => true }],
-                    cardHandler: (card) => {
-                        opponent.moveCard(card, Location.ConflictDiscardPile);
-                        context.game.addMessage('{0} chooses to discard {1}', context.player, card);
-                    }
-                });
-            });
+            .gameAction(cardMenu((context) => ({
+                activePromptTitle: 'Which card do you want to discard?',
+                cards: context.player.opponent?.conflictDeck.slice(0, 2) ?? [],
+                options: [{ text: 'Do not discard either card', handler: () => true }],
+                gameAction: moveCard({ destination: Location.ConflictDiscardPile }),
+                message: '{0} chooses to discard {1}',
+                messageArgs: (card, player) => [player, card]
+            })))
+            .effect('look at the top two cards of {1}\'s conflict deck', (context) => [context.player.opponent]);
     }
 }

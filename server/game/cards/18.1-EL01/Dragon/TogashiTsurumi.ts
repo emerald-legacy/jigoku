@@ -23,22 +23,7 @@ export default class TogashiTsurumi extends DrawCard {
                 AbilityDsl.actions.draw((context) => ({
                     target: context.player
                 })),
-                AbilityDsl.actions.handler({
-                    handler: (context) => {
-                        const card = context.target;
-                        context.player.moveCard(card, this.uuid);
-                        card.controller = context.source.controller;
-                        card.facedown = false;
-                        card.lastingEffect(() => ({
-                            until: {
-                                onCardMoved: event =>
-                                    event.card === card && event.originalLocation === this.uuid
-                            },
-                            match: card,
-                            effect: [AbilityDsl.effects.hideWhenFaceUp()]
-                        }));
-                    }
-                })
+                AbilityDsl.actions.placeCardUnderneath((context) => ({ destination: context.source }))
             ]))
             .effect('place a card from their hand beneath {1} and draw a card', (context) => [context.source]);
     }
