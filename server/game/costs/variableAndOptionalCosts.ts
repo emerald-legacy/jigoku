@@ -1,4 +1,4 @@
-import { Location, Players, PlayType, TargetMode } from '../Constants.js';
+import { EventName, Location, Players, PlayType, TargetMode } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
@@ -277,6 +277,53 @@ export function optional(cost: Cost): Cost {
             const events: Event[] = [];
             cost.addEventsToArray?.(events, context, {});
             return events;
+        }
+    };
+}
+
+/** "Pay X or Y": the player picks one of the payable costs, without a question when only one can be paid. */
+export function chooseOne(options: Record<string, Cost>): Cost<{ chosenCost: string }> {
+    const chosen = (context: AbilityContext) => {
+        const label = context.costs.chosenCost;
+        return typeof label === 'string' ? options[label] : undefined;
+    };
+    return {
+        promptsPlayer: true,
+        canPay: (context) => Object.values(options).some((cost) => cost.canPay(context)),
+        getActionName: (context) => chosen(context)?.getActionName?.(context) ?? 'chosenCost',
+        getCostMessage: (context) => chosen(context)?.getCostMessage?.(context) ?? [],
+        addEventsToArray(events, context, result = {}) {
+            const pay = (label: string) => {
+                context.costs.chosenCost = label;
+                const cost = options[label];
+                if(cost.addEventsToArray) {
+                    cost.addEventsToArray(events, context, result);
+                    return;
+                }
+                cost.resolve?.(context, result);
+                context.game.queueSimpleStep(() => {
+                    if(!result.cancelled) {
+                        const paid = cost.payEvent ? cost.payEvent(context) : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
+                        events.push(...(Array.isArray(paid) ? paid : [paid]));
+                    }
+                });
+            };
+            const payable = Object.keys(options).filter((label) => options[label].canPay(context));
+            if(payable.length === 1) {
+                pay(payable[0]);
+                return;
+            }
+            const menu: HandlerMenuOption[] = payable.map((label) => ({ text: label, handler: () => pay(label) }));
+            if(result.canCancel) {
+                menu.push({ text: 'Cancel', handler: () => {
+                    result.cancelled = true;
+                } });
+            }
+            context.game.promptWithHandlerMenu(context.player, {
+                activePromptTitle: 'Choose a cost to pay',
+                source: context.source,
+                options: menu
+            });
         }
     };
 }
