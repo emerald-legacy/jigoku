@@ -22,6 +22,9 @@ describe('Drawing the Void', function () {
         it('reveals two cards and remove one from the game, with affinity the player chooses the card', function () {
             this.player1.clickCard(this.drawingTheVoid);
             expect(this.getChatLogs(5)).toContain(
+                'player1 plays Drawing the Void to reveal 2 random cards from player2\'s hand and remove one from the game'
+            );
+            expect(this.getChatLogs(5)).toContain(
                 'player2 reveals Regal Bearing and Reprieve from their hand - the void reveals...'
             );
             expect(this.player1).toHavePrompt('Choose a card to remove from the game');

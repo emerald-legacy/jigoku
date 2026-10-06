@@ -12,6 +12,7 @@ import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
+import { msg } from '../../../GameChat.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
@@ -47,6 +48,7 @@ export default class DrawingTheVoid extends DrawCard {
                     ]
                 };
             }))
+            .effect((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
             .max(AbilityDsl.limit.perRound(1));
     }
 }
