@@ -1,6 +1,6 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Element, Players } from '../../../Constants.js';
 import { blank, gainAllAbilities, switchBaseSkills } from '../../../effects.js';
-import { cardLastingEffect, joint, loseFate, noAction, onAffinity } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, joint, loseFate, noAction } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -24,35 +24,27 @@ export default class EbbAndFlow extends DrawCard {
                 effect: switchBaseSkills()
             }))
             .effect((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
-            .then((context) => {
-                return {
-                    thenCondition: () => context.player.fate > 0 && loseFate().canAffect(context.player, context),
-                    gameAction: onAffinity({
-                        trait: 'water',
-                        promptTitleForConfirmingAffinity: 'Pay 1 fate to swap abilities?',
-                        effect: 'swap the abilities of {0} and {1}',
-                        effectArgs: () => [context.targets.mine, context.targets.opponents],
-                        gameAction: joint([
-                            loseFate({
-                                target: context.player
-                            }),
-                            cardLastingEffect({
-                                target: context.targets.mine,
-                                effect: [
-                                    blank(),
-                                    gainAllAbilities(context.targets.opponents, true)
-                                ]
-                            }),
-                            cardLastingEffect({
-                                target: context.targets.opponents,
-                                effect: [
-                                    blank(),
-                                    gainAllAbilities(context.targets.mine, true)
-                                ]
-                            })
-                        ])
-                    })
-                };
-            });
+            .thenIf((context) => context.player.fate > 0 && loseFate().canAffect(context.player, context))
+            .onAffinity(Element.Water, {
+                prompt: 'Pay 1 fate to swap abilities?',
+                effect: (context) => msg`swap the abilities of ${context.targets.mine} and ${context.targets.opponents}`
+            })
+            .gameAction(joint([
+                loseFate(),
+                cardLastingEffect((context) => ({
+                    target: context.targets.mine,
+                    effect: [
+                        blank(),
+                        gainAllAbilities(context.targets.opponents, true)
+                    ]
+                })),
+                cardLastingEffect((context) => ({
+                    target: context.targets.opponents,
+                    effect: [
+                        blank(),
+                        gainAllAbilities(context.targets.mine, true)
+                    ]
+                }))
+            ]));
     }
 }

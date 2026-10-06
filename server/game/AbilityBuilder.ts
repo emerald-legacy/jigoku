@@ -142,6 +142,8 @@ interface AbilityDraft {
     isStep?: boolean;
     /** From `onAffinity()`: the game actions resolve only with this affinity. */
     affinity?: Element;
+    /** From `onAffinity()`: a Yes/No question before using the affinity, and what the chat says it does. */
+    affinityOptions?: AffinityOptions;
     /** From `if()` / `otherwise()`: the game actions from `from` on are the branches, on `target` when they follow a card target without game actions. */
     branch?: { condition: (context: AbilityContext) => boolean; from: number; otherwiseFrom?: number; target?: string };
     /** The names of the card targets, in order. */
@@ -640,9 +642,16 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** "With [element] affinity": this step's game actions resolve only if the player has that affinity. */
-    onAffinity(element: Element): this {
+    /**
+     * "With [element] affinity": this step's game actions resolve only if the player has that affinity.
+     * `prompt` asks the player first ("Pay 1 fate to swap abilities?"); `effect` is what the chat says the affinity does.
+     */
+    onAffinity(element: Element, options: AffinityOptions<BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
         this.draft.affinity = element;
+        this.draft.affinityOptions = {
+            ...(options.prompt !== undefined ? { prompt: options.prompt } : {}),
+            ...(options.effect ? { effect: this.#checked(options.effect, this.draft.specs) } : {})
+        };
         return this;
     }
 
@@ -956,6 +965,11 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
     return { ...draft, branch: undefined, gameActions: before, targets: { ...draft.targets, [branch.target]: { ...draft.targets[branch.target], gameAction: branches } } };
 }
 
+interface AffinityOptions<Context = AbilityContext> {
+    prompt?: string;
+    effect?: (context: Context) => MessageArgs;
+}
+
 /** The game actions, inside one affinity action when the ability or step has `onAffinity()`. */
 function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] } {
     const actions = draft.gameActions;
@@ -965,7 +979,18 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
     if(!draft.affinity) {
         return { gameAction: actions };
     }
-    return { gameAction: [getAbilityDsl().actions.onAffinity({ trait: draft.affinity, gameAction: oneAction(actions) })] };
+    const trait = draft.affinity;
+    const gameAction = oneAction(actions);
+    const { prompt, effect } = draft.affinityOptions ?? {};
+    return { gameAction: [getAbilityDsl().actions.onAffinity((context) => {
+        const [format, args] = effect ? effect(context) : [undefined, undefined];
+        return {
+            trait,
+            gameAction,
+            ...(prompt !== undefined ? { promptTitleForConfirmingAffinity: prompt } : {}),
+            ...(format !== undefined ? { effect: format, effectArgs: args } : {})
+        };
+    })] };
 }
 
 /** The next step; with `onResolve()`, a callback that runs it first, when the ability starts resolving. */
