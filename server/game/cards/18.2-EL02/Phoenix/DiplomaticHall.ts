@@ -7,8 +7,7 @@ class DiplomaticHall extends DrawCard {
     static id = 'diplomatic-hall';
 
     setupCardAbilities() {
-        this.action('Select a player to draw a card')
-            .condition(context => context.game.isDuringConflict(ConflictType.Political))
+        this.conflictAction('Select a player to draw a card', { conflictType: ConflictType.Political })
             .selectFrom({
                 targets: true
             }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.draw({ target: player })))

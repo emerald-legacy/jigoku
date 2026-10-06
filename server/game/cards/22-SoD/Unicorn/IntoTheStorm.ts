@@ -6,8 +6,7 @@ export default class IntoTheStorm extends DrawCard {
     static id = 'into-the-storm';
 
     public setupCardAbilities() {
-        this.action('Increase the cost to play events')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Increase the cost to play events')
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: Players.Any,

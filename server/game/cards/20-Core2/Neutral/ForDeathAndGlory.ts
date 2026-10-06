@@ -8,8 +8,7 @@ export default class ForDeathAndGlory extends DrawCard {
     static id = 'for-death-and-glory-';
 
     setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 name: CHARACTER,
                 controller: Players.Self,

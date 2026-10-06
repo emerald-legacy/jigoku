@@ -6,8 +6,7 @@ class DirectingTheBattle extends DrawCard {
     static id = 'directing-the-battle';
 
     setupCardAbilities() {
-        this.action('Direct the Battle')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Direct the Battle')
             .target({
                 name: 'character',
                 cardType: CardType.Character,

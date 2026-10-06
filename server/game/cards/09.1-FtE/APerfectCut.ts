@@ -6,8 +6,7 @@ class APerfectCut extends DrawCard {
     static id = 'a-perfect-cut';
 
     setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

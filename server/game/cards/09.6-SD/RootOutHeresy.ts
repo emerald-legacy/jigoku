@@ -7,8 +7,7 @@ class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
 
     setupCardAbilities() {
-        this.action('Discard a card at random from your opponent\'s hand')
-            .condition(() => this.game.isDuringConflict(ConflictType.Political))
+        this.conflictAction('Discard a card at random from your opponent\'s hand', { conflictType: ConflictType.Political })
             .gameAction(AbilityDsl.actions.discardAtRandom())
             .then((context) => ({
                 gameAction: AbilityDsl.actions.selectCard({

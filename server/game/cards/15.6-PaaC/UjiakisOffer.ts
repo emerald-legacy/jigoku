@@ -6,8 +6,7 @@ class UjiakisOffer extends DrawCard {
     static id = 'ujiaki-s-offer';
 
     setupCardAbilities() {
-        this.action('Place a fate on a participating character, bow it, move it home, and dishonor it')
-            .condition(context => context.game.isDuringConflict(ConflictType.Political))
+        this.conflictAction('Place a fate on a participating character, bow it, move it home, and dishonor it', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some((myCard) => (

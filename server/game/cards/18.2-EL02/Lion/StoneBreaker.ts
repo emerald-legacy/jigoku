@@ -11,8 +11,7 @@ class StoneBreaker extends DrawCard {
             .cost(AbilityDsl.costs.sacrificeSelf())
             .gameAction(AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location ?? [] })));
 
-        this.action('Reduce province strength')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Reduce province strength')
             .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,

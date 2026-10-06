@@ -6,8 +6,7 @@ class Retreat extends DrawCard {
     static id = 'retreat';
 
     setupCardAbilities() {
-        this.action('Move a character home')
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Move a character home', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

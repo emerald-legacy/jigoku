@@ -7,8 +7,7 @@ class SpecializedDefenses extends DrawCard {
     static id = 'specialized-defenses';
 
     setupCardAbilities() {
-        this.action('Double province strength')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Double province strength')
             .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,

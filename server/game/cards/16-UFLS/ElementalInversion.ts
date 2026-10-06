@@ -5,8 +5,7 @@ class ElementalInversion extends DrawCard {
     static id = 'elemental-inversion';
 
     setupCardAbilities() {
-        this.action('Switch the contested ring')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Switch the contested ring')
             .ringTarget({
                 activePromptTitle: 'Choose an uncontested ring',
                 ringCondition: ring => !ring.isContested() && !ring.isRemovedFromGame()

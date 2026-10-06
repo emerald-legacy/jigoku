@@ -8,8 +8,7 @@ export default class CastOutTheShadow extends DrawCard {
     static id = 'cast-out-the-shadow';
 
     setupCardAbilities() {
-        this.action('Sacrifice a character or take 2 honor')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Sacrifice a character or take 2 honor')
             .target({
                 name: 'character',
                 cardType: CardType.Character,

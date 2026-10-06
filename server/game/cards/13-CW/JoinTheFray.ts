@@ -7,8 +7,7 @@ class JoinTheFray extends DrawCard {
     static id = 'join-the-fray';
 
     setupCardAbilities() {
-        this.action('Put a character into play from a province')
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Put a character into play from a province', { conflictType: ConflictType.Military })
             .target({
                 name: 'character',
                 cardType: CardType.Character,

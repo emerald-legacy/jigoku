@@ -8,8 +8,7 @@ export default class MagnificentTriumph extends DrawCard {
 
     public setupCardAbilities() {
         const duelWinners = DuelsThisConflict.winners(this.game);
-        this.action('Give a character +2/+2')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Give a character +2/+2')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

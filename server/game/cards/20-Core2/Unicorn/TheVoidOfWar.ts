@@ -7,8 +7,7 @@ export default class TheVoidOfWar extends DrawCard {
     static id = 'the-void-of-war';
 
     setupCardAbilities() {
-        this.action('Each player bows an opponent character until refused')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Each player bows an opponent character until refused', { conflictType: ConflictType.Military })
             .target({
                 controller: Players.Opponent,
                 player: Players.Opponent,

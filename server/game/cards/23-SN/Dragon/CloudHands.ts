@@ -7,8 +7,7 @@ export default class CloudHands extends DrawCard {
     static id = 'cloud-hands';
 
     setupCardAbilities() {
-        this.action('Change base skill to match another character\'s')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Change base skill to match another character\'s')
             .target({
                 name: 'myCharacter',
                 activePromptTitle: 'Choose a monk character',

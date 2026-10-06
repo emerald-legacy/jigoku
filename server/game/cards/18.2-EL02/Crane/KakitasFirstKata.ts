@@ -15,8 +15,7 @@ export default class KakitasFirstKata extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnConflictFinished, EventName.OnCardBowed]);
 
-        this.action('Prevent opponent\'s bow and move effects')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Prevent opponent\'s bow and move effects')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

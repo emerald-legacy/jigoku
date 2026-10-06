@@ -11,8 +11,7 @@ export default class TruthIsInTheKilling extends DrawCard {
     static id = 'truth-is-in-the-killing';
 
     setupCardAbilities() {
-        this.action('Initiate a military duel, discarding the loser')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Initiate a military duel, discarding the loser', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),

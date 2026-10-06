@@ -6,8 +6,7 @@ class CourtGames extends DrawCard {
     static id = 'court-games';
 
     setupCardAbilities() {
-        this.action('Honor or dishonor a character')
-            .condition(() => this.game.isDuringConflict(ConflictType.Political))
+        this.conflictAction('Honor or dishonor a character', { conflictType: ConflictType.Political })
             .select({}, {
                 'Honor a friendly character': AbilityDsl.actions.selectCard(context => ({
                     cardType: CardType.Character,

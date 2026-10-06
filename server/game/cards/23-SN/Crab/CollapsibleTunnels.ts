@@ -6,8 +6,7 @@ export default class CollapsibleTunnels extends DrawCard {
     static id = 'collapsible-tunnels';
 
     setupCardAbilities() {
-        this.action('Add Province Strength')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Add Province Strength')
             .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,

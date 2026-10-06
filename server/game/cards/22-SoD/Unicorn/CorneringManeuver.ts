@@ -6,8 +6,7 @@ export default class CorneringManeuver extends DrawCard {
     static id = 'cornering-maneuver';
 
     setupCardAbilities() {
-        this.action('Give a character +2 mil')
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Give a character +2 mil', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipatingFor(context.player)

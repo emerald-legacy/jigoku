@@ -6,8 +6,7 @@ class Charge extends DrawCard {
     static id = 'charge';
 
     setupCardAbilities() {
-        this.action('Put a character into play from a province')
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Put a character into play from a province', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,

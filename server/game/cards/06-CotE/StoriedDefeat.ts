@@ -9,8 +9,7 @@ export default class StoriedDefeat extends DrawCard {
 
     public setupCardAbilities() {
         const duelLosers = DuelsThisConflict.losers(this.game, { forgetOnEnterPlay: true });
-        this.action('Bow a character who lost a duel')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Bow a character who lost a duel')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => duelLosers.has(card)

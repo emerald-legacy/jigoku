@@ -5,8 +5,7 @@ class ExemplaryEtiquette extends DrawCard {
     static id = 'exemplary-etiquette';
 
     setupCardAbilities() {
-        this.action('Stop characters from triggering abilities')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Stop characters from triggering abilities')
             .gameAction(AbilityDsl.actions.conflictLastingEffect({
                 effect: AbilityDsl.effects.charactersCannot({
                     cannot: 'triggerAbilities'

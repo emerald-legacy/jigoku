@@ -7,8 +7,7 @@ class Blackmail extends DrawCard {
     static id = 'blackmail';
 
     setupCardAbilities() {
-        this.action('Take control of a character')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Take control of a character')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

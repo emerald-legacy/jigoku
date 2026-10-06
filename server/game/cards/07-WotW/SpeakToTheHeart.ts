@@ -6,8 +6,7 @@ class SpeakToTheHeart extends DrawCard {
     static id = 'speak-to-the-heart';
 
     setupCardAbilities() {
-        this.action('give +1 political to a character for each faceup province')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('give +1 political to a character for each faceup province')
             .target({
                 cardCondition: (card) => card.isFaction('unicorn')
             }, AbilityDsl.actions.cardLastingEffect((context) => ({

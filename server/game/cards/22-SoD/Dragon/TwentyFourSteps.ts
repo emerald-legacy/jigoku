@@ -6,8 +6,7 @@ export default class TwentyFourSteps extends DrawCard {
     static id = 'twenty-four-steps';
 
     public setupCardAbilities() {
-        this.action('Ready a character and move it to the conflict')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Ready a character and move it to the conflict', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
@@ -18,8 +17,7 @@ export default class TwentyFourSteps extends DrawCard {
             ]))
             .effect('ready {0} and move it into the conflict');
 
-        this.action('Move two monks to the conflict')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Move two monks to the conflict', { conflictType: ConflictType.Military })
             .targetCards({
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',

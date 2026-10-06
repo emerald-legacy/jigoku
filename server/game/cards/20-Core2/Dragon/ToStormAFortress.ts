@@ -6,8 +6,7 @@ export default class ToStormAFortress extends DrawCard {
     static id = 'to-storm-a-fortress';
 
     public setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

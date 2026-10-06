@@ -14,8 +14,7 @@ export default class ShosuroTechnique extends DrawCard {
             })))
             .effect('ignore printed skill when resolving this duel');
 
-        this.action('Set shinobi\'s skills to that of an enemy')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Set shinobi\'s skills to that of an enemy', { conflictType: ConflictType.Military })
             .target({
                 name: 'shinobi',
                 activePromptTitle: 'Choose a Shinobi you control',

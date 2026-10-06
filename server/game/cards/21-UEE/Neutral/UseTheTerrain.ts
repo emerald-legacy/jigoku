@@ -7,8 +7,7 @@ export default class UseTheTerrain extends DrawCard {
     static id = 'use-the-terrain';
 
     setupCardAbilities() {
-        this.action('Give each character a military bonus')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Give each character a military bonus', { conflictType: ConflictType.Military })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.hasKicker(context) ? 2 : 1)

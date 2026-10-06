@@ -5,8 +5,7 @@ class UjikTactics extends DrawCard {
     static id = 'ujik-tactics';
 
     setupCardAbilities() {
-        this.action('Give each non-unique character +1 military during this conflict')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Give each non-unique character +1 military during this conflict')
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),
                 effect: AbilityDsl.effects.modifyMilitarySkill(1)

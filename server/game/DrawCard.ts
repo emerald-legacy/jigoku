@@ -921,19 +921,36 @@ class DrawCard extends BaseCard {
         });
     }
 
+    /**
+     * "Conflict Action": only during a conflict, of `conflictType` if given. A character must be participating,
+     * as must the character an attachment in play is attached to, unless `evenFromHome`.
+     */
     conflictAction(title: string, options: ConflictActionOptions = {}): AbilityBuilder<ActionContext<this>> {
         return this.actionBuilder(title, {
             register: (properties) => {
                 const condition = properties.condition;
                 this.abilities.actions.push(this.createAction({
                     ...properties,
-                    condition: (context: AbilityContext<this>) =>
-                        context.source.game.isDuringConflict() &&
-                        (options.evenFromHome || context.source.isParticipating(options.conflictType)) &&
-                        (condition?.(context) ?? true)
+                    condition: (context: AbilityContext<this>) => {
+                        const participant = context.source.conflictActionParticipant();
+                        return context.source.game.isDuringConflict(options.conflictType ?? null) &&
+                            (options.evenFromHome || !participant || participant.isParticipating(options.conflictType)) &&
+                            (condition?.(context) ?? true);
+                    }
                 }));
             }
         });
+    }
+
+    /** The character whose participation this card's conflict actions need, if any. */
+    private conflictActionParticipant(): DrawCard | undefined {
+        if(this.type === CardType.Character) {
+            return this;
+        }
+        if(this.type === CardType.Attachment && this.location === Location.PlayArea) {
+            return this.parentCharacter ?? undefined;
+        }
+        return undefined;
     }
 }
 

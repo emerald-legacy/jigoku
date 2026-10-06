@@ -10,8 +10,7 @@ export default class ALegionOfOne extends DrawCard {
     static id = 'a-legion-of-one';
 
     setupCardAbilities() {
-        this.action('Give a solitary character +3/+0')
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Give a solitary character +3/+0', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

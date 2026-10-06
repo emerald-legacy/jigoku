@@ -15,8 +15,7 @@ export default class TheHundredHandStrike extends DrawCard {
     static id = 'the-hundred-hand-strike';
 
     setupCardAbilities() {
-        this.action('Give a skill penalty to a participating character')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Give a skill penalty to a participating character')
             .target({
                 name: 'puncher',
                 cardType: CardType.Character,
