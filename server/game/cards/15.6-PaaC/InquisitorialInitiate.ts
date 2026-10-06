@@ -1,6 +1,7 @@
 import { Location, Players, TargetMode } from '../../Constants.js';
 import { cardMenu, discardCard, lookAt, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
@@ -31,6 +32,10 @@ export default class InquisitorialInitiate extends DrawCard {
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card, player) => [player, card]
                 }))
-            ]));
+            ]))
+            .effect((context) => {
+                const count = context.targets.target.length;
+                return msg`make ${context.player.opponent} reveal ${count} card${count === 1 ? '' : 's'} and discard ${count === 1 ? 'it' : 'one of them'}`;
+            });
     }
 }

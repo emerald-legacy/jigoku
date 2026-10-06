@@ -652,22 +652,22 @@ export class AbilityBuilder<
 
     /** The player of the ability gains honor. */
     gainHonor(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.gainHonor((context) => ({ target: context.player, amount })));
+        return this.gameAction(getAbilityDsl().actions.gainHonor({ amount }));
     }
 
     /** The player of the ability loses honor. */
     loseHonor(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.loseHonor((context) => ({ target: context.player, amount })));
+        return this.gameAction(getAbilityDsl().actions.loseHonor({ amount }));
     }
 
     /** The player of the ability gains fate. */
     gainFate(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.gainFate((context) => ({ target: context.player, amount })));
+        return this.gameAction(getAbilityDsl().actions.gainFate({ amount }));
     }
 
     /** The player of the ability draws cards. */
     draw(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.draw((context) => ({ target: context.player, amount })));
+        return this.gameAction(getAbilityDsl().actions.draw({ amount }));
     }
 
     gameAction(...actions: BuilderAction<Base, TG, RG, CO, TK>[]): this {

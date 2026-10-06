@@ -45,6 +45,8 @@ function fillDefaults<T extends object>(properties: Partial<T>, defaults: Partia
 
 const baseDefaults = { cannotBeCancelled: false, optional: false };
 
+const hasTarget = (properties: object | undefined) => !!properties && 'target' in properties;
+
 /** `D` names the properties `defaultProperties` supplies, which `getProperties` returns as non-optional. */
 export class GameAction<
     P extends GameActionProperties = GameActionProperties,
@@ -82,13 +84,34 @@ export class GameAction<
     }
 
     getProperties(context: C, additionalProperties = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+        return this.#resolveProperties(context, additionalProperties).properties;
+    }
+
+    /**
+     * A composite's properties. The actions it holds target what it targets; when it has no target given
+     * (by its own properties, its caller or whoever holds it), each keeps its own default target.
+     */
+    protected getCompositeProperties(
+        context: C,
+        additionalProperties: object,
+        actions: (properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>) => (GameAction | undefined)[]
+    ): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+        const { properties, targetGiven } = this.#resolveProperties(context, additionalProperties);
+        for(const action of actions(properties)) {
+            action?.setDefaultTarget(targetGiven ? () => properties.target : undefined);
+        }
+        return properties;
+    }
+
+    #resolveProperties(context: C, additionalProperties: object) {
         const defaults = this.defaultProperties;
+        const own = this.#own.resolve(context);
         const properties = Object.assign(
             { target: this.getDefaultTargets(context) },
             baseDefaults,
             defaults,
             additionalProperties,
-            this.#own.resolve(context)
+            own
         );
         fillDefaults<GameActionProperties>(properties, baseDefaults);
         if(defaults) {
@@ -96,7 +119,8 @@ export class GameAction<
         }
         const rawTarget: GameActionTarget | GameActionTarget[] | undefined = properties.target;
         const targets = (Array.isArray(rawTarget) ? rawTarget : [rawTarget]).filter((target) => !!target);
-        return Object.assign(properties, { target: targets });
+        const targetGiven = this.#defaultTargetsOverride !== undefined || hasTarget(additionalProperties) || hasTarget(own);
+        return { properties: Object.assign(properties, { target: targets }), targetGiven };
     }
 
     getCostMessage(_context: C): undefined | MessageArgs {
@@ -119,7 +143,8 @@ export class GameAction<
         return this.getProperties(context, additionalProperties).target;
     }
 
-    setDefaultTarget(func: (context: AbilityContext) => TargetValue): void {
+    /** Without a function, the action falls back to its own default targets. */
+    setDefaultTarget(func: ((context: AbilityContext) => TargetValue) | undefined): void {
         this.#defaultTargetsOverride = func;
     }
 

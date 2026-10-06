@@ -72,7 +72,8 @@ export default class StrangeMirror extends DrawCard {
                     },
                     messageArgs: [context.source, context.source.parentCharacter]
                 }))
-            ]));
+            ]))
+            .effect((context) => msg`play an event from underneath ${context.source.parentCharacter}`);
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {

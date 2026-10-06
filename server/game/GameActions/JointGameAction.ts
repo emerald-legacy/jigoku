@@ -16,11 +16,7 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        for(const gameAction of properties.gameActions) {
-            gameAction.setDefaultTarget(() => properties.target);
-        }
-        return properties;
+        return this.getCompositeProperties(context, additionalProperties, (properties) => properties.gameActions);
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {

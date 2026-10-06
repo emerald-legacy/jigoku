@@ -31,6 +31,7 @@ describe('Drawing the Void', function () {
             this.player1.clickPrompt('Regal Bearing');
             expect(this.getChatLogs(5)).toContain('player1 removes Regal Bearing from the game - the void consumes');
             expect(this.regalBearing.location).toBe('removed from game');
+            expect(this.player1.hand.length).toBe(1);
 
             expect(this.player2).toHavePrompt('Initiate an action');
         });

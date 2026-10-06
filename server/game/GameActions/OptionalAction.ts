@@ -16,9 +16,7 @@ export interface OptionalActionProperties extends GameActionProperties {
 
 export class OptionalAction<C extends AbilityContext = AbilityContext> extends GameAction<OptionalActionProperties, EventName, C> {
     getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
-        return properties;
+        return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction]);
     }
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {

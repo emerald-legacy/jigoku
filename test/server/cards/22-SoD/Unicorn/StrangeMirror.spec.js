@@ -88,6 +88,7 @@ describe('Strange Mirror', function () {
                 expect(leavesPlayEvent).toBeDefined();
                 expect(leavesPlayEvent.isSacrifice).toBe(true);
                 expect(this.getChatLogs(5)).toContain('player1 sacrifices Strange Mirror');
+                expect(this.getChatLogs(10)).toContain('player1 uses Strange Mirror to play an event from underneath Shinjo Outrider');
             });
 
             it('resolves the replayed event\'s ability', function () {

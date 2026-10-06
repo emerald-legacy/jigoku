@@ -17,10 +17,7 @@ export interface AffinityActionProperties extends GameActionProperties {
 
 export class AffinityAction<C extends AbilityContext = AbilityContext> extends GameAction<AffinityActionProperties, EventName, C> {
     getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
-        properties.noAffinityGameAction?.setDefaultTarget(() => properties.target);
-        return properties;
+        return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction, properties.noAffinityGameAction]);
     }
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {

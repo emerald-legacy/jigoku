@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 import { Location, Players, TargetMode, ConflictType } from '../../Constants.js';
 import { cardMenu, discardCard, lookAt, multiple } from '../../GameActions/GameActions.js';
 
@@ -29,7 +30,8 @@ class DaidojiHarrier extends DrawCard {
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card, player) => [player, card]
                 }))
-            ]));
+            ]))
+            .effect((context) => msg`make ${context.player.opponent} reveal 2 cards and discard one of them`);
     }
 }
 

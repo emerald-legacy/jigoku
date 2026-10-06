@@ -22,11 +22,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
     };
 
     getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        for(const opt of Object.values(properties.options)) {
-            opt.action.setDefaultTarget(() => properties.target);
-        }
-        return properties;
+        return this.getCompositeProperties(context, additionalProperties, (properties) => Object.values(properties.options).map((option) => option.action));
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
