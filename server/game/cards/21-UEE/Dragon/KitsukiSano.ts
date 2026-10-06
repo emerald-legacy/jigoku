@@ -22,7 +22,7 @@ export default class KitsukiSano extends DrawCard {
             })))
             .effect('add 2 to their duel total');
 
-        this.action('Draw 2 cards, discard 2 cards')
+        this.conflictAction('Draw 2 cards, discard 2 cards')
             .condition((context) =>
                 context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
             .gameAction(draw({ amount: 2 }))

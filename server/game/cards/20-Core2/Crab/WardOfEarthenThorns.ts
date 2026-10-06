@@ -17,7 +17,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             effect: modifyProvinceStrength(1)
         });
 
-        this.action('Remove a fate from a character')
+        this.conflictAction('Remove a fate from a character')
             .condition((context) =>
                 context.game.currentConflict
                     ?.getConflictProvinces()

@@ -8,7 +8,7 @@ export default class KitsuSpiritcaller2 extends DrawCard {
     static id = 'kitsu-spiritcaller-2';
 
     setupCardAbilities() {
-        this.action('Resurrect a character')
+        this.conflictAction('Resurrect a character', { evenFromHome: true })
             .cost(AbilityDsl.costs.bowSelf())
             .target({
                 activePromptTitle: 'Choose a character from a discard pile',

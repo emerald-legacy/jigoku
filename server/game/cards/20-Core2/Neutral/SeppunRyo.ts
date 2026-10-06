@@ -17,7 +17,7 @@ export default class SeppunRyo extends DrawCard {
             })))
             .effect('add 1 to their duel total');
 
-        this.action('Initiate a military duel to bow')
+        this.conflictAction('Initiate a military duel to bow')
             .initiateDuel((context) => {
                 const opponentFavor = context.player.opponent?.imperialFavor;
                 return {

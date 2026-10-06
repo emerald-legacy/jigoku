@@ -11,7 +11,7 @@ export default class EminentHistorian extends DrawCard {
             effect: cannotReceiveDishonorToken()
         });
 
-        this.action('Honor a character')
+        this.conflictAction('Honor a character', { evenFromHome: true })
             .condition((context) => !context.player.opponent?.isMoreHonorable())
             .target({
                 cardType: CardType.Character,

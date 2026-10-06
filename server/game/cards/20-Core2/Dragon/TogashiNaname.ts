@@ -12,8 +12,7 @@ export default class TogashiNaname extends DrawCard {
             effect: cannotReceiveDishonorToken()
         });
 
-        this.action('Remove fate or resolve a ring')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Remove fate or resolve a ring')
             .target({
                 name: 'character',
                 cardType: CardType.Character,

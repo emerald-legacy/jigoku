@@ -7,8 +7,7 @@ export default class TravelingTinkerer extends DrawCard {
     static id = 'traveling-tinkerer';
 
     setupCardAbilities() {
-        this.action('Flip the modifiers of an attachment')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Flip the modifiers of an attachment', { evenFromHome: true })
             .target({
                 cardType: CardType.Attachment
             }, cardLastingEffect({

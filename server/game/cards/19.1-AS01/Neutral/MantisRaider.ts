@@ -18,9 +18,8 @@ export default class MantisRaider extends DrawCard {
             })))
             .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent);
 
-        this.action('Give this character +1 military')
+        this.conflictAction('Give this character +1 military')
             .cost(AbilityDsl.costs.removeFateFromSelf())
-            .condition((context) => context.source.isParticipating())
             .gameAction(cardLastingEffect({
                 effect: modifyMilitarySkill(1)
             }))

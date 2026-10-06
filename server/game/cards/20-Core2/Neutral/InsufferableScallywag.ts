@@ -14,9 +14,8 @@ export default class InsufferableScallywag extends DrawCard {
     static id = 'insufferable-scallywag';
 
     public setupCardAbilities() {
-        this.action('Dishonor or send a character home')
+        this.conflictAction('Dishonor or send a character home')
             .cost(AbilityDsl.costs.removeFateFromSelf())
-            .condition((context) => context.source.isParticipating())
             .target({
                 name: CHARACTER,
                 cardType: CardType.Character,

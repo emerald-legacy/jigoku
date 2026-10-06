@@ -12,8 +12,7 @@ export default class MotoRaiju extends DrawCard {
     static id = 'moto-raiju';
 
     setupCardAbilities() {
-        this.action('Get a military skill bonus')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Get a military skill bonus')
             .gameAction(cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonus(context))
             })))

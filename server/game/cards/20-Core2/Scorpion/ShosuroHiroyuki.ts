@@ -6,8 +6,7 @@ export default class ShosuroHiroyuki extends DrawCard {
     static id = 'shosuro-hiroyuki';
 
     setupCardAbilities() {
-        this.action('Force opponent to discard card or dishonor a character')
-            .condition((context) => context.source.isParticipating(ConflictType.Political))
+        this.conflictAction('Force opponent to discard card or dishonor a character', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

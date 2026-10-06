@@ -10,7 +10,7 @@ export default class AsakoKousuke extends DrawCard {
     static id = 'asako-kousuke';
 
     setupCardAbilities() {
-        this.action('Treat the status token on a character as if it was another status token')
+        this.conflictAction('Treat the status token on a character as if it was another status token', { evenFromHome: true })
             .tokenTarget({
                 name: ORIGINL_TOKEN,
                 cardType: CardType.Character,

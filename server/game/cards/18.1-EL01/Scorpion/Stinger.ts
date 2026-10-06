@@ -16,9 +16,8 @@ class Stinger extends DrawCard {
             })
         });
 
-        this.action('Attach this to an attacking character')
+        this.conflictAction('Attach this to an attacking character', { conflictType: ConflictType.Military })
             .cost(AbilityDsl.costs.payHonor(1))
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 player: Players.Self,
                 cardType: CardType.Character,

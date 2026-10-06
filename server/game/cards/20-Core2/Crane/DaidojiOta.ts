@@ -26,8 +26,7 @@ export default class DaidojiOta extends DrawCard {
             })
         });
 
-        this.action('Have opponent discard a card or show you their hand')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Have opponent discard a card or show you their hand')
             .select({
                 player: Players.Opponent
             }, {

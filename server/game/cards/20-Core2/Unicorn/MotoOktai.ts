@@ -23,8 +23,7 @@ export default class MotoOktai extends DrawCard {
             })))
             .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
 
-        this.action('Discard a character from play')
-            .condition((context) => context.source.isParticipatingFor(context.player))
+        this.conflictAction('Discard a character from play')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

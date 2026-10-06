@@ -6,8 +6,7 @@ class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';
 
     setupCardAbilities() {
-        this.action('Search your conflict deck')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Search your conflict deck', { evenFromHome: true })
             .gameAction(deckSearch({
                 amount: 4,
                 reveal: false,

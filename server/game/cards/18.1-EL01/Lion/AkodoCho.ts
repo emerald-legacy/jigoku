@@ -9,9 +9,8 @@ export default class AkodoCho extends DrawCard {
     static id = 'akodo-cho';
 
     setupCardAbilities() {
-        this.action('Bow a character')
+        this.conflictAction('Bow a character')
             .condition((context) =>
-                context.source.isParticipating() &&
                 context.source.attachments.some((attachment) => attachment.hasTrait('follower')))
             .target({
                 name: CHARACTER,

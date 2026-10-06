@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, conditional, injure, noAction, sequential } from '../../../GameActions/GameActions.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const enum Timing {
@@ -13,8 +13,7 @@ export default class DaidojiAmbusher extends DrawCard {
     static id = 'daidoji-ambusher';
 
     public setupCardAbilities() {
-        this.action('Give someone -2 military')
-            .condition((context) => context.game.isDuringConflict('military') && context.source.isParticipating())
+        this.conflictAction('Give someone -2 military', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

@@ -7,12 +7,11 @@ export default class DaidojiNami extends DrawCard {
     static id = 'daidoji-nami';
 
     setupCardAbilities() {
-        this.action('Send a character home')
+        this.conflictAction('Send a character home')
             .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

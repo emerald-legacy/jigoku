@@ -9,9 +9,8 @@ export default class JadeInfusedArrows extends DrawCard {
     static id = 'jade-infused-arrows';
 
     setupCardAbilities() {
-        this.action('Give attached character a skill bonus')
+        this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
             .cost(AbilityDsl.costs.payFate(1))
-            .condition((context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false)
             .gameAction(cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: modifyMilitarySkill(this.bonusAmount(context))

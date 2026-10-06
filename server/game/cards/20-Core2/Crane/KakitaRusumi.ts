@@ -12,7 +12,7 @@ export default class KakitaRusumi extends DrawCard {
     static id = 'kakita-rusumi';
 
     setupCardAbilities() {
-        this.action('Put a character into play')
+        this.conflictAction('Put a character into play', { evenFromHome: true })
             .condition((context) => context.player.isDefendingPlayer())
             .gameAction(deckSearch({
                 activePromptTitle: 'Choose a character to put into play',

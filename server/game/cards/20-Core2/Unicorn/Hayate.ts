@@ -20,7 +20,7 @@ export default class Hayate extends DrawCard {
             })
         });
 
-        this.action('Move this and another character to the conflict')
+        this.conflictAction('Move this and another character to the conflict', { evenFromHome: true })
             .target({
                 name: 'self',
                 cardType: CardType.Character,

@@ -17,8 +17,7 @@ export default class IkomaYumikosDagger extends DrawCard {
             })))
             .effect('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
 
-        this.action('Injure a character')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Injure a character')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

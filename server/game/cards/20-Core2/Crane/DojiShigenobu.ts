@@ -7,12 +7,11 @@ export default class DojiShigenobu extends DrawCard {
     static id = 'doji-shigenobu';
 
     setupCardAbilities() {
-        this.action('Bow a character')
+        this.conflictAction('Bow a character')
             .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

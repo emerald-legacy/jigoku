@@ -7,8 +7,7 @@ export default class PassionatePoet extends DrawCard {
     static id = 'passionate-poet';
 
     setupCardAbilities() {
-        this.action('Give all participating enemies -1/-1')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Give all participating enemies -1/-1')
             .gameAction(cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent),
                 effect: modifyBothSkills(-1)

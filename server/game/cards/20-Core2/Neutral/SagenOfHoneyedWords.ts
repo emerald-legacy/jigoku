@@ -11,8 +11,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
     static id = 'sagen-of-honeyed-words';
 
     public setupCardAbilities() {
-        this.action('Gain a skill bonus based on your company')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Gain a skill bonus based on your company')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

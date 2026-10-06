@@ -11,12 +11,8 @@ export default class Kinki extends DrawCard {
             myControl: true
         });
 
-        this.action('Remove a fate from or move home a character')
+        this.conflictAction('Remove a fate from or move home a character', { conflictType: ConflictType.Military })
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .condition((context) =>
-                !!(context.game.isDuringConflict(ConflictType.Military) &&
-                context.source.parentCharacter &&
-                context.source.parentCharacter.isParticipating()))
             .target({
                 name: 'character',
                 cardType: CardType.Character,

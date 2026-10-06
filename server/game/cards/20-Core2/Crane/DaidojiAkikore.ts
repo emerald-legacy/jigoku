@@ -16,7 +16,7 @@ export default class DaidojiAkikore extends DrawCard {
             })))
             .effect('add 1 to their duel total');
 
-        this.action('Military duel to add skill')
+        this.conflictAction('Military duel to add skill')
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,

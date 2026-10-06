@@ -9,7 +9,7 @@ export default class SolemnScholar extends DrawCard {
     static id = 'solemn-scholar';
 
     setupCardAbilities() {
-        this.action('Bow an attacking character')
+        this.conflictAction('Bow an attacking character', { evenFromHome: true })
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
                 cardType: CardType.Character,

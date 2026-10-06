@@ -14,8 +14,7 @@ export default class BayushiKotaro extends DrawCard {
     static id = 'bayushi-kotaro';
 
     setupCardAbilities() {
-        this.action('Put a character into play')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Put a character into play')
             .gameAction(sequential([
                 reveal((context) => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)

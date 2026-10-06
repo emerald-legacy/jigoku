@@ -8,8 +8,7 @@ export default class ZealousExorcist extends DrawCard {
 
     public setupCardAbilities() {
         const charactersEntered = new CharactersEnteredThisConflict(this.game);
-        this.action('Remove a character from play')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Remove a character from play')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => charactersEntered.has(card)

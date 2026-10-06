@@ -12,7 +12,7 @@ export default class IaijutsuSensei extends DrawCard {
             effect: modifyBothSkills(1)
         });
 
-        this.action('Military duel to stop contribution')
+        this.conflictAction('Military duel to stop contribution')
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,

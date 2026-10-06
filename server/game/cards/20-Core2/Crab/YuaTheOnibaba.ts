@@ -33,8 +33,7 @@ export default class YuaTheOnibaba extends DrawCard {
     static id = 'yua-the-onibaba';
 
     public setupCardAbilities() {
-        this.action('Weaken non-bushi, empower bushi')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Weaken non-bushi, empower bushi')
             .gameAction(multipleContext((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);
                 return {

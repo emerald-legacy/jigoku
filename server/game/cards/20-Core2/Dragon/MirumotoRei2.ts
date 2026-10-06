@@ -25,8 +25,7 @@ export default class MirumotoRei2 extends DrawCard {
             })))
             .effect((context) => msg`add ${this.getWeaponCount(context)} to their duel total`);
 
-        this.action('Duel an opposing character')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Duel an opposing character', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel) => injure({ target: duel.loser ?? [] })

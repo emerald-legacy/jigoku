@@ -19,7 +19,7 @@ export default class IchigoKun extends DrawCard {
             effect: setBaseMilitarySkill(0)
         });
 
-        this.action('Modify military skill and glory')
+        this.conflictAction('Modify military skill and glory', { evenFromHome: true })
             .target({
                 name: 'otherCharacter',
                 cardType: CardType.Character,

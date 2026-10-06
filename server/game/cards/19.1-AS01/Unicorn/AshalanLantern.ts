@@ -10,9 +10,8 @@ export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
 
     public setupCardAbilities() {
-        this.action('Play a character from your opponent\'s dynasty deck')
+        this.conflictAction('Play a character from your opponent\'s dynasty deck', { evenFromHome: true })
             .cost(AbilityDsl.costs.nameCard())
-            .condition((context) => context.game.isDuringConflict())
             .gameAction(sequential([
                 playerLastingEffect((context) => ({
                     duration: Duration.UntilPassPriority,

@@ -8,9 +8,8 @@ class NightshadeInfiltrator extends DrawCard {
     static id = 'nightshade-infiltrator';
 
     setupCardAbilities() {
-        this.action('Give a character -3/-3')
+        this.conflictAction('Give a character -3/-3')
             .cost(AbilityDsl.costs.dishonorSelf())
-            .condition(context => context.source.isParticipating())
             .target({
                 player: Players.Self,
                 cardType: CardType.Character,

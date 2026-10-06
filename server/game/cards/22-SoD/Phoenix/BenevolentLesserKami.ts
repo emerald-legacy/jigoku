@@ -16,8 +16,7 @@ export default class BenevolentLesserKami extends DrawCard {
             effect: modifyBothSkills(1)
         });
 
-        this.action('Gain an elemental trait')
-            .condition(context => context.source.isParticipating())
+        this.conflictAction('Gain an elemental trait')
             .select({ name: 'select' }, {
                 'Air': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,

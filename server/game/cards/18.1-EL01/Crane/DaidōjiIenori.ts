@@ -13,8 +13,7 @@ class DaidojiIenori extends DrawCard {
     static id = 'daidoji-ienori';
 
     setupCardAbilities() {
-        this.action('Set a participating character to 3/3')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Set a participating character to 3/3')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

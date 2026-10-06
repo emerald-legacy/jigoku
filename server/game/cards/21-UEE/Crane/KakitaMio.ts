@@ -18,8 +18,7 @@ export default class KakitaMio extends DrawCard {
                     attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])
             }));
 
-        this.action('Give Corrupt to a character')
-            .condition((context) => context.game.currentConflict !== null)
+        this.conflictAction('Give Corrupt to a character', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>

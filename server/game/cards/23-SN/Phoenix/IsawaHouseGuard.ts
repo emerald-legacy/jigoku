@@ -16,7 +16,7 @@ export default class IsawaHouseGuard extends DrawCard {
             })))
             .effect('add 1 to their duel total');
 
-        this.action('Initiate a military duel to dishonor')
+        this.conflictAction('Initiate a military duel to dishonor')
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel) => multipleContext(() => {

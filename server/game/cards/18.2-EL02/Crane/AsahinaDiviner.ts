@@ -8,7 +8,7 @@ class AsahinaDiviner extends DrawCard {
     static id = 'asahina-diviner';
 
     setupCardAbilities() {
-        this.action('Give a participating character +3 glory')
+        this.conflictAction('Give a participating character +3 glory', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
