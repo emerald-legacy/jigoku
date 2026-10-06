@@ -11,7 +11,7 @@ export default class JadeColoredRocks extends ProvinceCard {
                 player: Players.Self,
                 activePromptTitle: 'Choose an option'
             }, {
-                'Opponent loses 1 fate': loseFate(),
+                'Opponent loses 1 fate': loseFate((context) => ({ target: context.player.opponent })),
                 'Opponent loses 1 honor': loseHonor((context) => ({
                     target: (context.player.opponent?.honor ?? 0) > 6 ? context.player.opponent : []
                 })),

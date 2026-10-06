@@ -15,7 +15,7 @@ class WatchCommander extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player.opponent && context.source.parentCharacter.isParticipating()
             })
-            .gameAction(loseHonor())
+            .gameAction(loseHonor((context) => ({ target: context.player.opponent })))
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

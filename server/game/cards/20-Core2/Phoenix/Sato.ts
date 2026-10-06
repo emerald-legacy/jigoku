@@ -15,7 +15,7 @@ export default class Sato extends DrawCard {
                     event.player === context.player.opponent &&
                     context.source.parentCharacter.isParticipating()
             })
-            .gameAction(loseHonor())
+            .gameAction(loseHonor((context) => ({ target: context.player.opponent })))
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

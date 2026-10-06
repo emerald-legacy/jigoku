@@ -23,6 +23,10 @@ export class LoseFateAction<C extends AbilityContext = AbilityContext> extends P
         return ['spending {1} fate', [properties.amount]];
     }
 
+    defaultTargets(context: C): Player[] {
+        return [context.player];
+    }
+
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);

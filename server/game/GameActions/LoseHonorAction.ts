@@ -26,6 +26,10 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
         return ['make {0} lose ' + this.getProperties(context).amount + ' honor', []];
     }
 
+    defaultTargets(context: C): Player[] {
+        return [context.player];
+    }
+
     canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount === 0 ? false : super.canAffect(player, context);

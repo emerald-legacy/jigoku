@@ -6,6 +6,6 @@ export default class VassalFields extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Make opponent lose 1 fate')
-            .gameAction(loseFate());
+            .gameAction(loseFate((context) => ({ target: context.player.opponent })));
     }
 }

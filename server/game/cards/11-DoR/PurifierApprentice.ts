@@ -7,7 +7,7 @@ class PurifierApprentice extends DrawCard {
     setupCardAbilities() {
         this.reaction('Force opponent to lose 1 honor')
             .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
-            .gameAction(loseHonor());
+            .gameAction(loseHonor((context) => ({ target: context.player.opponent })));
     }
 }
 

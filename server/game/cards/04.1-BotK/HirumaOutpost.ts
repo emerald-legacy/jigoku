@@ -26,7 +26,7 @@ class HirumaOutpost extends DrawCard {
                         return !cards.some(card => card.isFaceup() && card.type === CardType.Holding);
                     }
                 },
-                gameAction: loseHonor()
+                gameAction: loseHonor((context) => ({ target: context.player.opponent }))
             })
         });
     }

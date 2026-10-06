@@ -9,7 +9,7 @@ class IntimidatingHida extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
             })
-            .gameAction(loseHonor());
+            .gameAction(loseHonor((context) => ({ target: context.player.opponent })));
     }
 }
 
