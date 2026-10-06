@@ -93,7 +93,10 @@ class CardAbility extends ThenAbility {
         this.maxIdentifier = this.card.name + this.abilityIdentifier;
 
         if(this.max) {
-            this.card.owner.registerAbilityMax(this.maxIdentifier, this.max);
+            // a max is per player, across all copies by title, whoever owns the copy they use
+            for(const player of this.game.getPlayers()) {
+                player.registerAbilityMax(this.maxIdentifier, player === this.card.owner ? this.max : this.max.clone());
+            }
         }
 
         if(card.getType() === CardType.Event && !this.isKeywordAbility()) {
