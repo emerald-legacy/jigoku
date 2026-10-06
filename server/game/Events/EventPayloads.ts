@@ -52,10 +52,8 @@ interface EventPayloadMap {
         /** The cards whose effects made it playable from out of play, as it was played. */
         playedFromOutOfPlaySource?: BaseCard[];
         resolver?: AbilityResolver;
-        /** Stamped by the card whose limited-use ability let it be played (Master Tactician). */
-        sourceOfCardPlayedFromConflictDeck?: BaseCard;
-        /** Likewise, Bayushi Kachiko (Atonement). */
-        sourceOfCardPlayedFromConflictDiscard?: BaseCard;
+        /** Stamped by the card whose limited-use permission let it be played (Master Tactician, Bayushi Kachiko). */
+        limitedPlaySource?: BaseCard;
     };
     [EventName.OnAbilityResolverInitiated]: BaseEventPayload & {
         card?: BaseCard;
