@@ -50,5 +50,44 @@ describe('Smuggler\'s Cove', function() {
                 expect(this.bayushiAramoro.isParticipating()).toBe(false);
             });
         });
+
+        describe('outside a conflict at Smuggler\'s Cove', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['akodo-gunso']
+                    },
+                    player2: {
+                        inPlay: ['bayushi-aramoro', 'shrine-maiden'],
+                        provinces: ['smuggler-s-cove'],
+                        role: 'seeker-of-air'
+                    }
+                });
+                this.akodoGunso = this.player1.findCardByName('akodo-gunso');
+                this.bayushiAramoro = this.player2.findCardByName('bayushi-aramoro');
+                this.smugglersCove = this.player2.findCardByName('smuggler-s-cove');
+                this.otherProvince = this.player2.provinces['province 2'].provinceCard;
+            });
+
+            it('cannot be used outside a conflict', function() {
+                this.player1.pass();
+                this.player2.clickCard(this.smugglersCove);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+
+            it('cannot be used during a conflict at another province', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.akodoGunso],
+                    province: this.otherProvince,
+                    defenders: [this.bayushiAramoro]
+                });
+                expect(this.smugglersCove.isConflictProvince()).toBe(false);
+                this.player2.clickCard(this.smugglersCove);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
     });
 });
