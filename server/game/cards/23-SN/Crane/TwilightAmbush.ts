@@ -1,4 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { injure } from '../../../GameActions/GameActions.js';
@@ -16,15 +17,10 @@ export default class TwilightAmbush extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
             }, injure())
-            .then((context) => ({
-                message: '{3} is injured again because {4} is a Shinobi',
-                messageArgs: () => [context.target, context.costs.sacrificeStateWhenChosen],
-                thenCondition: () => !!context.costs.sacrificeStateWhenChosen?.hasTrait('shinobi'),
-                gameAction: injure({
-                    target: context.target
-                })
-            }))
             .max(AbilityDsl.limit.perRound(1))
-            .cannotTargetFirst();
+            .cannotTargetFirst()
+            .thenIf((context) => !!context.costs.sacrificeStateWhenChosen?.hasTrait('shinobi'))
+            .gameAction(injure((context) => ({ target: context.target })))
+            .message((context) => msg`${context.target} is injured again because ${context.costs.sacrificeStateWhenChosen} is a Shinobi`);
     }
 }

@@ -13,13 +13,12 @@ class UjiakisOffer extends DrawCard {
                     myCard !== card && myCard.isParticipating() && (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)))
             }, placeFate())
             .effect('place a fate on {0} then bow, dishonor, and move them home')
-            .then(context => ({
-                gameAction: multiple([
-                    bow({target: context.target}),
-                    dishonor({target: context.target}),
-                    sendHome({target: context.target})
-                ])
-            }));
+            .then()
+            .gameAction(multiple([
+                bow((context) => ({ target: context.target })),
+                dishonor((context) => ({ target: context.target })),
+                sendHome((context) => ({ target: context.target }))
+            ]));
     }
 }
 

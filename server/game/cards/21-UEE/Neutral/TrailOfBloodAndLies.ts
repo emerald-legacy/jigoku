@@ -26,19 +26,18 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 player: Players.Opponent,
                 controller: Players.Opponent
             }, dishonor())
-            .then(() => ({
-                gameAction: conditional({
-                    condition: (context) => context.player.isCharacterTraitInPlay('magistrate'),
-                    falseGameAction: noAction(),
-                    trueGameAction: selectCard({
-                        activePromptTitle: 'Choose a character to dishonor',
-                        cardType: CardType.Character,
-                        player: Players.Opponent,
-                        controller: Players.Opponent,
-                        gameAction: dishonor()
-                    })
+            .max(AbilityDsl.limit.perPhase(1))
+            .then()
+            .gameAction(conditional({
+                condition: (context) => context.player.isCharacterTraitInPlay('magistrate'),
+                falseGameAction: noAction(),
+                trueGameAction: selectCard({
+                    activePromptTitle: 'Choose a character to dishonor',
+                    cardType: CardType.Character,
+                    player: Players.Opponent,
+                    controller: Players.Opponent,
+                    gameAction: dishonor()
                 })
-            }))
-            .max(AbilityDsl.limit.perPhase(1));
+            }));
     }
 }

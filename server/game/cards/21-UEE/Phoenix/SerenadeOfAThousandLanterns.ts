@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { gainHonor, onAffinity, sendHome } from '../../../GameActions/GameActions.js';
-import { CardType, TargetMode } from '../../../Constants.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
+import { CardType, Element, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -19,15 +19,9 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, _context) => card.isParticipating() && !card.isUnique()
             }, sendHome())
-            .then((context) => ({
-                gameAction: onAffinity({
-                    trait: 'fire',
-                    gameAction: gainHonor({
-                        target: context.player
-                    }),
-                    effect: 'gain 1 honor'
-                })
-            }))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(AbilityDsl.limit.perConflict(1))
+            .then()
+            .onAffinity(Element.Fire)
+            .gainHonor(1);
     }
 }

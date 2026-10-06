@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { discardCard, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
 import { moveHoldingAction, otherHoldingsInSameProvince } from '../../moveHolding.js';
 
@@ -12,13 +13,9 @@ export default class SongOfTheEmptyCity extends DrawCard {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         moveHoldingAction(this)
-            .then((context) => ({
-                thenCondition: () => otherHoldingsInSameProvince(context).length > 0,
-                gameAction: discardCard(() => ({
-                    target: otherHoldingsInSameProvince(context)
-                })),
-                message: '{1} discards the other holdings in the province'
-            }));
+            .thenIf((context) => otherHoldingsInSameProvince(context).length > 0)
+            .gameAction(discardCard((context) => ({ target: otherHoldingsInSameProvince(context) })))
+            .message((context) => msg`${context.source} discards the other holdings in the province`);
 
         this.reaction('Gain honor')
             .when({

@@ -25,15 +25,8 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any
             }, ready())
-            .then((context) => ({
-                gameAction: [
-                    moveCard({
-                        target: context.source,
-                        destination: Location.ConflictDeck,
-                        bottom: true
-                    })
-                ]
-            }))
-            .max(AbilityDsl.limit.perConflictOpportunity(1));
+            .max(AbilityDsl.limit.perConflictOpportunity(1))
+            .then()
+            .gameAction(moveCard({ destination: Location.ConflictDeck, bottom: true }));
     }
 }

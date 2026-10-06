@@ -1,7 +1,8 @@
 import { CardType, Duration } from '../../../Constants.js';
 import { loseFaction, playerCannot } from '../../../effects.js';
-import { cardLastingEffect, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class DisputedLineage extends DrawCard {
@@ -26,11 +27,9 @@ export default class DisputedLineage extends DrawCard {
                 }))
             ]))
             .effect('remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict', (context) => context.player.opponent ? [context.player.opponent] : [])
-            .then(context => ({
-                thenCondition: () => context.player.imperialFavor !== '',
-                message: '{0} draws a card',
-                gameAction: draw()
-            }));
+            .thenIf((context) => context.player.imperialFavor !== '')
+            .draw(1)
+            .message((context) => msg`${context.player} draws a card`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

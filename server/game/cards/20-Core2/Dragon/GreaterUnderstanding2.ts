@@ -21,16 +21,15 @@ export default class GreaterUnderstanding2 extends RingAttachment {
                 onPlaceFateOnUnclaimedRings: (_event, context) => context.source.parent instanceof Ring && context.source.parent.isUnclaimed()
             })
             .gameAction(resolveRingEffect((context) => ({ target: context.source.parent ?? [] })))
-            .then((context) => ({
-                gameAction: selectRing({
-                    activePromptTitle: 'Choose a ring to attach Greater Understanding',
-                    player: Players.Opponent,
-                    ringCondition: (ring) => ring !== context.source.parent && ring.getFate() === 0,
-                    subActionProperties: (ring) => ({ attachment: context.source, target: ring }),
-                    gameAction: attachToRing(),
-                    message: '{0} moves {1} to {2} - enlightenment is elusive',
-                    messageArgs: (ring, player) => [player, context.source, ring]
-                })
-            }));
+            .then()
+            .gameAction(selectRing((context) => ({
+                activePromptTitle: 'Choose a ring to attach Greater Understanding',
+                player: Players.Opponent,
+                ringCondition: (ring) => ring !== context.source.parent && ring.getFate() === 0,
+                subActionProperties: (ring) => ({ attachment: context.source, target: ring }),
+                gameAction: attachToRing(),
+                message: '{0} moves {1} to {2} - enlightenment is elusive',
+                messageArgs: (ring, player) => [player, context.source, ring]
+            })));
     }
 }

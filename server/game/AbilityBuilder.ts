@@ -3,7 +3,8 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import CardAbility from './CardAbility.js';
-import { type EventName, type Location, type Phases, type Players, TargetMode } from './Constants.js';
+import { type Element, type EventName, type Location, type Phases, type Players, TargetMode } from './Constants.js';
+import { getAbilityDsl } from './AbilityDslProvider.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type { GameEvent } from './Events/EventPayloads.js';
@@ -137,6 +138,8 @@ interface AbilityDraft {
     thenCondition?: (context: AbilityContext) => boolean;
     message?: (context: AbilityContext) => MessageArgs;
     isStep?: boolean;
+    /** From `onAffinity()`: the game actions resolve only with this affinity. */
+    affinity?: Element;
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
     phase?: Phases | 'any';
     evenDuringDynasty?: boolean;
@@ -618,6 +621,32 @@ export class AbilityBuilder<
         return this;
     }
 
+    /** "With [element] affinity": this step's game actions resolve only if the player has that affinity. */
+    onAffinity(element: Element): this {
+        this.draft.affinity = element;
+        return this;
+    }
+
+    /** The player of the ability gains honor. */
+    gainHonor(amount = 1): this {
+        return this.gameAction(getAbilityDsl().actions.gainHonor((context) => ({ target: context.player, amount })));
+    }
+
+    /** The player of the ability loses honor. */
+    loseHonor(amount = 1): this {
+        return this.gameAction(getAbilityDsl().actions.loseHonor((context) => ({ target: context.player, amount })));
+    }
+
+    /** The player of the ability gains fate. */
+    gainFate(amount = 1): this {
+        return this.gameAction(getAbilityDsl().actions.gainFate((context) => ({ target: context.player, amount })));
+    }
+
+    /** The player of the ability draws cards. */
+    draw(amount = 1): this {
+        return this.gameAction(getAbilityDsl().actions.draw((context) => ({ target: context.player, amount })));
+    }
+
     gameAction(...actions: BuilderAction<Base, TG, RG, CO, TK>[]): this {
         this.draft.gameActions = this.draft.gameActions.concat(actions.map((action) => toGameAction(action, `${this.draft.title}: not a game action`)));
         return this;
@@ -809,7 +838,7 @@ function commonProperties(draft: AbilityDraft) {
     return {
         ...targetProperties(draft.targets),
         ...(draft.costs.length > 0 ? { cost: draft.costs } : {}),
-        ...(draft.gameActions.length > 0 ? { gameAction: draft.gameActions } : {}),
+        ...gameActionProperties(draft),
         ...(draft.handler ? { handler: draft.handler } : {}),
         ...(draft.effect !== undefined ? { effect: draft.effect } : {}),
         ...(draft.effectArgs ? { effectArgs: draft.effectArgs } : {}),
@@ -824,6 +853,20 @@ function commonProperties(draft: AbilityDraft) {
         ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {}),
         ...(draft.notPrinted ? { printedAbility: false } : {})
     };
+}
+
+/** The game actions, inside one affinity action when the ability or step has `onAffinity()`. */
+function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] } {
+    const actions = draft.gameActions;
+    if(actions.length === 0) {
+        return {};
+    }
+    if(!draft.affinity) {
+        return { gameAction: actions };
+    }
+    const dsl = getAbilityDsl().actions;
+    const gameAction = actions.length === 1 ? actions[0] : dsl.multiple(actions);
+    return { gameAction: [dsl.onAffinity({ trait: draft.affinity, gameAction })] };
 }
 
 /** A step from `then()` or `thenIf()`, built once. */
@@ -841,7 +884,7 @@ function stepProperties(step: AbilityDraft): ThenAbilityProperties {
         inheritTargets: true,
         ...targetProperties(step.targets),
         ...(step.costs.length > 0 ? { cost: step.costs } : {}),
-        ...(step.gameActions.length > 0 ? { gameAction: step.gameActions } : {}),
+        ...gameActionProperties(step),
         ...(step.handler ? { handler: step.handler } : {}),
         ...(step.message ? { message: step.message } : {}),
         // on the event path the condition gets each event, whose context is the step before

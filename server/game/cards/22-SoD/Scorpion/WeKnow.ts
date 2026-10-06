@@ -4,6 +4,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { discardStatusToken, draw, gainStatusToken, joint, loseHonor } from '../../../GameActions/GameActions.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class WeKnow extends DrawCard {
     static id = 'we-know';
@@ -57,15 +58,9 @@ export default class WeKnow extends DrawCard {
                 ];
 
             })
-            .then(context => ({
-                thenCondition: () => !!context.player.opponent && context.player.honor > context.player.opponent.honor,
-                gameAction: loseHonor({
-                    target: context.player,
-                    amount: 2
-                }),
-                message: '{3} loses 2 honor',
-                messageArgs: () => [context.player]
-            }))
-            .cannotTargetFirst();
+            .cannotTargetFirst()
+            .thenIf((context) => !!context.player.opponent && context.player.honor > context.player.opponent.honor)
+            .loseHonor(2)
+            .message((context) => msg`${context.player} loses 2 honor`);
     }
 }

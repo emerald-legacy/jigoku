@@ -26,12 +26,7 @@ export default class KitsukiSano extends DrawCard {
             .condition((context) =>
                 context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
             .gameAction(draw({ amount: 2 }))
-            .then(() => ({
-                gameAction: chosenDiscard((context) => ({
-                    targets: false,
-                    target: context.player,
-                    amount: 2
-                }))
-            }));
+            .then()
+            .gameAction(chosenDiscard((context) => ({ targets: false, target: context.player, amount: 2 })));
     }
 }

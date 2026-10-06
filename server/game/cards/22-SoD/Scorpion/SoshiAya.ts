@@ -15,9 +15,8 @@ export default class SoshiAya extends DrawCard {
             })
             .cost(AbilityDsl.costs.putSelfIntoPlay())
             .gameAction(cancel())
-            .then(() => ({
-                gameAction: placeFate()
-            }))
-            .location(Location.Hand);
+            .location(Location.Hand)
+            .then()
+            .gameAction(placeFate());
     }
 }

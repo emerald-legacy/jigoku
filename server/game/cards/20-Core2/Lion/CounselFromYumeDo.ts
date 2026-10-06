@@ -17,14 +17,11 @@ export default class CounselFromYumeDo extends DrawCard {
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Self
             }, returnToDeck({ location: Location.ConflictDiscardPile, shuffle: true }))
-            .then((context) => ({
-                gameAction: onAffinity({
-                    trait: 'water',
-                    effect: 'draw a card',
-                    gameAction: draw({
-                        target: context.player
-                    })
-                })
+            .then()
+            .gameAction(onAffinity({
+                trait: 'water',
+                effect: 'draw a card',
+                gameAction: draw((context) => ({ target: context.player }))
             }));
     }
 }

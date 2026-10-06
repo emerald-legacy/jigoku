@@ -16,9 +16,8 @@ class BenevolentHost extends DrawCard {
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('courtier')
             }, putIntoPlay())
-            .then(context => ({
-                gameAction: placeFate({ target: context.target.costLessThan(3) ? context.target : [] })
-            }));
+            .then()
+            .gameAction(placeFate((context) => ({ target: context.target.costLessThan(3) ? context.target : [] })));
     }
 }
 

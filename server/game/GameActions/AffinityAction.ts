@@ -87,9 +87,15 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         additionalProperties = {}
     ) {
         properties.gameAction.addEventsToArray(events, context, additionalProperties);
+        if(properties.effect === undefined) {
+            // without an effect text, the action's own effect message says what the affinity does
+            const effect = context.game.gameChat.nested(properties.gameAction.getEffectMessage(context));
+            context.game.addMessage(`{0} channels their ${properties.trait} affinity to {1}`, context.player, effect);
+            return;
+        }
         const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
         const nextArg = args.length;
-        const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.effect ?? ''}`;
+        const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.effect}`;
         context.game.addMessage(affinityMsg, ...args, context.player);
     }
 }

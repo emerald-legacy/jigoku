@@ -13,17 +13,16 @@ export default class HidaHonoka extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isBroken
             }, restoreProvince())
-            .then(() => ({
-                gameAction: playerLastingEffect({
-                    targetController: Players.Self,
-                    duration: Duration.Custom,
-                    until: {
-                        // FOREVER
-                        onCardLeavesPlay: () => false
-                    },
-                    effect: playerCannot({
-                        cannot: 'restoreProvince'
-                    })
+            .then()
+            .gameAction(playerLastingEffect({
+                targetController: Players.Self,
+                duration: Duration.Custom,
+                until: {
+                    // FOREVER
+                    onCardLeavesPlay: () => false
+                },
+                effect: playerCannot({
+                    cannot: 'restoreProvince'
                 })
             }));
     }

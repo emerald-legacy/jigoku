@@ -18,18 +18,17 @@ export default class DojiShigenobu extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, bow())
-            .then(() => ({
-                gameAction: menuPrompt((context) => ({
-                    activePromptTitle: 'Do you want to move home?',
-                    choices: ['Yes', 'No'],
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage && choice === 'Yes') {
-                            context.game.addMessage('{0} chooses to move {1} home', context.player, context.source);
-                        }
-                        return { target: choice === 'Yes' ? context.source : [] };
-                    },
-                    gameAction: sendHome()
-                }))
-            }));
+            .then()
+            .gameAction(menuPrompt((context) => ({
+                activePromptTitle: 'Do you want to move home?',
+                choices: ['Yes', 'No'],
+                choiceHandler: (choice, displayMessage) => {
+                    if(displayMessage && choice === 'Yes') {
+                        context.game.addMessage('{0} chooses to move {1} home', context.player, context.source);
+                    }
+                    return { target: choice === 'Yes' ? context.source : [] };
+                },
+                gameAction: sendHome()
+            })));
     }
 }

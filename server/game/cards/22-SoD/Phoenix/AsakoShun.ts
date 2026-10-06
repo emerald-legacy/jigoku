@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, gainHonor } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -28,14 +28,11 @@ export default class AsakoShun extends DrawCard {
                 effect: modifyBothSkills(penalty(context))
             })))
             .effect((context) => msg`give ${context.target} ${penalty(context)}${'military'} and ${penalty(context)}${'political'}`)
-            .then((context) => ({
-                thenCondition: () => {
-                    const conflict = context.game.currentConflict;
-                    return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
-                },
-                gameAction: gainHonor(),
-                message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
-                messageArgs: () => [context.target, context.player]
-            }));
+            .thenIf((context) => {
+                const conflict = context.game.currentConflict;
+                return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
+            })
+            .gainHonor(1)
+            .message((context) => msg`${context.player} gains 1 honor because ${context.target} is not contributing skill to the current conflict`);
     }
 }

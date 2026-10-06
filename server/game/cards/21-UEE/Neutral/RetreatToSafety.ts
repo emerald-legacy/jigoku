@@ -14,20 +14,19 @@ export default class RetreatToSafety extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.isDefending()
             }, sendHome())
-            .then((parentContext) => ({
-                gameAction: conditional({
-                    condition: (context) => context.player.isCharacterTraitInPlay('commander'),
-                    falseGameAction: noAction(),
-                    trueGameAction: selectCard({
-                        activePromptTitle: 'Choose a character to ready',
-                        player: Players.Self,
-                        cardType: CardType.Character,
-                        cardCondition: (card) => parentContext.targets.target.includes(card),
-                        gameAction: ready(),
-                        message: '{0} is readied due to {1}\'s superior leadership',
-                        messageArgs: (card, player) => [card, player]
-                    })
+            .then()
+            .gameAction(conditional((context) => ({
+                condition: context.player.isCharacterTraitInPlay('commander'),
+                falseGameAction: noAction(),
+                trueGameAction: selectCard({
+                    activePromptTitle: 'Choose a character to ready',
+                    player: Players.Self,
+                    cardType: CardType.Character,
+                    cardCondition: (card) => context.targets.target.includes(card),
+                    gameAction: ready(),
+                    message: '{0} is readied due to {1}\'s superior leadership',
+                    messageArgs: (card, player) => [card, player]
                 })
-            }));
+            })));
     }
 }
