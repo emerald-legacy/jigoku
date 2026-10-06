@@ -127,7 +127,8 @@ module.exports = [
             'jasmine/prefer-toHaveBeenCalledWith': 'off',
 
             // Code style rules
-            'indent': ['error', 4, { SwitchCase: 1 }],
+            // builder chains indent their if() / otherwise() branches one level deeper
+            'indent': ['error', 4, { SwitchCase: 1, ignoredNodes: ['MemberExpression:has(CallExpression[callee.property.name="if"])'] }],
             'quotes': ['error', 'single'],
             'brace-style': ['error', '1tbs'],
             'no-sparse-arrays': 'error',

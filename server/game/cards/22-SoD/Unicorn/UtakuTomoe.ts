@@ -1,4 +1,4 @@
-import { conditional, gainHonor, ready } from '../../../GameActions/GameActions.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import { EventName } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,11 +18,10 @@ export default class UtakuTomoe extends DrawCard {
             .when({
                 onConflictFinished: () => this.defendingAtConflictResolution
             })
-            .gameAction(conditional((context) => ({
-                condition: context.event.conflict.winner === context.source.controller,
-                trueGameAction: gainHonor({ target: context.player, amount: 2 }),
-                falseGameAction: ready({ target: context.source })
-            })));
+            .if((context) => context.event.conflict.winner === context.source.controller)
+                .gainHonor(2)
+            .otherwise()
+                .gameAction(ready((context) => ({ target: context.source })));
     }
 
     public afterConflict() {

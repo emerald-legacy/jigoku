@@ -1,14 +1,7 @@
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import {
-    conditional,
-    discardFromPlay,
-    gainFate,
-    moveCard,
-    multiple,
-    removeFromGame
-} from '../../../GameActions/GameActions.js';
+import { discardFromPlay, moveCard, removeFromGame } from '../../../GameActions/GameActions.js';
 
 export default class PrayersOnTheEveOfBattle extends DrawCard {
     static id = 'prayers-on-the-eve-of-battle';
@@ -18,21 +11,12 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .when({
                 afterConflict: (_event, context) => !!context.source.parentCharacter
             })
-            .gameAction(conditional((context) => ({
-                condition: !!context.source.parentCharacter?.isParticipating() &&
-                    context.event.conflict.winner === context.source.parentCharacter?.controller,
-                trueGameAction: multiple([
-                    gainFate({
-                        target: context.player
-                    }),
-                    discardFromPlay({
-                        target: context.source
-                    })
-                ]),
-                falseGameAction: removeFromGame({
-                    target: context.source
-                })
-            })));
+            .if((context) => !!context.source.parentCharacter?.isParticipating() &&
+                context.event.conflict.winner === context.source.parentCharacter?.controller)
+                .gainFate(1)
+                .gameAction(discardFromPlay((context) => ({ target: context.source })))
+            .otherwise()
+                .gameAction(removeFromGame((context) => ({ target: context.source })));
 
         this.reaction('Return to hand')
             .when({

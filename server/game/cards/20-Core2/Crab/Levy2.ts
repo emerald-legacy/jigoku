@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { conditional, draw, noAction, takeFate, takeHonor } from '../../../GameActions/GameActions.js';
+import { takeFate, takeHonor } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 /** Levy is still in hand when its message prints, and has left it when the draw resolves. */
@@ -27,10 +27,7 @@ export default class Levy2 extends DrawCard {
                 const andDraw = hasFewerCards(context) ? ' and draw a card' : '';
                 return msg`take 1 ${resource} from ${context.player.opponent}${andDraw}`;
             })
-            .gameAction(conditional({
-                condition: hasFewerCards,
-                trueGameAction: draw((context) => ({ target: context.player })),
-                falseGameAction: noAction()
-            }));
+            .if(hasFewerCards)
+                .draw(1);
     }
 }

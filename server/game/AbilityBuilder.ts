@@ -140,6 +140,8 @@ interface AbilityDraft {
     isStep?: boolean;
     /** From `onAffinity()`: the game actions resolve only with this affinity. */
     affinity?: Element;
+    /** From `if()` / `otherwise()`: the game actions from `from` on are the branches. */
+    branch?: { condition: (context: AbilityContext) => boolean; from: number; otherwiseFrom?: number };
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
     phase?: Phases | 'any';
     evenDuringDynasty?: boolean;
@@ -512,6 +514,9 @@ export class AbilityBuilder<
     }
 
     #addTarget(name: string, entry: TargetEntry, own?: TargetSpec): void {
+        if(this.draft.branch) {
+            throw new Error(`${this.draft.title}: targets come before if()`);
+        }
         this.draft.targets[name] = entry;
         if(own) {
             this.draft.specs.push(own);
@@ -624,6 +629,24 @@ export class AbilityBuilder<
     /** "With [element] affinity": this step's game actions resolve only if the player has that affinity. */
     onAffinity(element: Element): this {
         this.draft.affinity = element;
+        return this;
+    }
+
+    /** "If …": the game actions after it resolve only when `condition` holds, the ones after otherwise() (if any) when it doesn't. */
+    if(condition: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean): this {
+        if(this.draft.branch) {
+            throw new Error(`${this.draft.title}: one if() per step`);
+        }
+        this.draft.branch = { condition: this.#checked(condition, this.draft.specs), from: this.draft.gameActions.length };
+        return this;
+    }
+
+    /** "Otherwise, …": the game actions after it resolve when the if() condition doesn't hold. */
+    otherwise(): this {
+        if(!this.draft.branch || this.draft.branch.otherwiseFrom !== undefined) {
+            throw new Error(`${this.draft.title}: otherwise() follows an if()`);
+        }
+        this.draft.branch.otherwiseFrom = this.draft.gameActions.length;
         return this;
     }
 
@@ -855,18 +878,28 @@ function commonProperties(draft: AbilityDraft) {
     };
 }
 
-/** The game actions, inside one affinity action when the ability or step has `onAffinity()`. */
+/** The game actions, with the if() branches in one conditional action, inside one affinity action when the ability or step has `onAffinity()`. */
 function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] } {
-    const actions = draft.gameActions;
+    const dsl = getAbilityDsl().actions;
+    const one = (actions: GameAction[]) => actions.length === 1 ? actions[0] : dsl.multiple(actions);
+    let actions = draft.gameActions;
+    const branch = draft.branch;
+    if(branch) {
+        const yes = actions.slice(branch.from, branch.otherwiseFrom);
+        const no = branch.otherwiseFrom === undefined ? [dsl.noAction()] : actions.slice(branch.otherwiseFrom);
+        if(yes.length === 0 || no.length === 0) {
+            throw new Error(`${draft.title}: if() and otherwise() each need a game action`);
+        }
+        const condition = branch.condition;
+        actions = [...actions.slice(0, branch.from), dsl.conditional({ condition: (context) => condition(context), trueGameAction: one(yes), falseGameAction: one(no) })];
+    }
     if(actions.length === 0) {
         return {};
     }
     if(!draft.affinity) {
         return { gameAction: actions };
     }
-    const dsl = getAbilityDsl().actions;
-    const gameAction = actions.length === 1 ? actions[0] : dsl.multiple(actions);
-    return { gameAction: [dsl.onAffinity({ trait: draft.affinity, gameAction })] };
+    return { gameAction: [dsl.onAffinity({ trait: draft.affinity, gameAction: one(actions) })] };
 }
 
 /** A step from `then()` or `thenIf()`, built once. */

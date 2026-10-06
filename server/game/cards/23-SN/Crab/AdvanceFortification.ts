@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, conditional, loseHonor } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, loseHonor } from '../../../GameActions/GameActions.js';
 
 export default class AdvanceFortification extends DrawCard {
     static id = 'advance-fortification';
@@ -9,18 +9,13 @@ export default class AdvanceFortification extends DrawCard {
     setupCardAbilities() {
         this.action('Take an honor from your opponent or give skill bonus')
             .condition(context => !!context.game.currentConflict && context.game.currentConflict.defendingPlayer === context.player && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken)
-            .gameAction(conditional({
-                condition: context => {
-                    return !!context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince();
-                },
-                trueGameAction: cardLastingEffect(context => ({
+            .if(context => !!context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince())
+                .gameAction(cardLastingEffect(context => ({
                     target: context.game.currentConflict?.getCharacters(context.player) ?? [],
                     effect: modifyBothSkills(1)
-                })),
-                falseGameAction: loseHonor(context => ({
-                    target: context.player.opponent
-                }))
-            }))
+                })))
+            .otherwise()
+                .gameAction(loseHonor(context => ({ target: context.player.opponent })))
             .effect('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?
                 ['give defending characters +1/+1', ''] : ['make ', context.player.opponent, ' lose 1 honor'])
             .max(AbilityDsl.limit.perConflict(1));

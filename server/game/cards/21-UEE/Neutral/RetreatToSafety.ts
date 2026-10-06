@@ -1,4 +1,4 @@
-import { conditional, noAction, ready, selectCard, sendHome } from '../../../GameActions/GameActions.js';
+import { ready, selectCard, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,18 +15,15 @@ export default class RetreatToSafety extends DrawCard {
                 cardCondition: (card) => card.isDefending()
             }, sendHome())
             .then()
-            .gameAction(conditional((context) => ({
-                condition: context.player.isCharacterTraitInPlay('commander'),
-                falseGameAction: noAction(),
-                trueGameAction: selectCard({
+            .if((context) => context.player.isCharacterTraitInPlay('commander'))
+                .gameAction(selectCard((context) => ({
                     activePromptTitle: 'Choose a character to ready',
                     player: Players.Self,
                     cardType: CardType.Character,
-                    cardCondition: (card) => context.targets.target.includes(card),
+                    cardCondition: (card) => context.targets.target.some((target) => target === card),
                     gameAction: ready(),
                     message: '{0} is readied due to {1}\'s superior leadership',
                     messageArgs: (card, player) => [card, player]
-                })
-            })));
+                })));
     }
 }
