@@ -2,6 +2,7 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
 import { AffinityAction, AffinityActionProperties } from './AffinityAction.js';
+import { AssignRolesAction, type AssignRolesProperties } from './AssignRolesAction.js';
 import { AttachAction, AttachActionProperties } from './AttachAction.js';
 import { AttachToRingAction, AttachToRingActionProperties } from './AttachToRingAction.js';
 import { BowAction, BowActionProperties } from './BowAction.js';
@@ -497,6 +498,10 @@ export function multipleContext<C extends AbilityContext = AbilityContext>(prope
 }
 export function menuPrompt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
+}
+/** Two cards, two roles: the chooser gives each card one role, whose action then resolves on it. */
+export function assignRoles<const R extends string, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AssignRolesProperties<R>, C>): AssignRolesAction<C> {
+    return new AssignRolesAction<C>(propertyFactory);
 }
 export function selectCard<C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardProperties<C, K>, C>): SelectCardAction<C> {
     return new SelectCardAction<C>(typeof propertyFactory === 'function'
