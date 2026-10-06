@@ -31,33 +31,36 @@ export default class StrangeMirror extends DrawCard {
             })))
             .effect((context) => msg`put ${context.event.card} facedown underneath ${context.source.parentCharacter}`);
 
+        const chooseEvent = selectCard((context: AbilityContext<this>) => ({
+            activePromptTitle: 'Choose an event to play',
+            cardType: CardType.Event,
+            location: Location.Any,
+            controller: Players.Any,
+            cardCondition: (card) => card.isDrawCard() && this.eventsUnderneath(context).includes(card),
+            message: '{0} plays {1} from underneath {2}',
+            messageArgs: (card) => [context.player, card, context.source.parentCharacter],
+            // the selected card becomes this action's target
+            gameAction: playCard({
+                source: this,
+                playType: PlayType.PlayFromHand,
+                // the event sits underneath a card, which is not a playable location
+                ignoredRequirements: ['location'],
+                destination: Location.ConflictDiscardPile,
+                // a played event returns to its owner's discard pile, not the pile of
+                // whoever played it out from underneath
+                postHandler: (playedContext) =>
+                    playedContext.source.owner.moveCard(
+                        playedContext.source,
+                        Location.ConflictDiscardPile
+                    )
+            })
+        }));
+
+        // only while an event underneath can be played: otherwise the cost would be paid for nothing
         this.action('Play an event from underneath attached character')
-            .condition((context) => this.eventsUnderneath(context).length > 0)
+            .condition((context) => chooseEvent.hasLegalTarget(context))
             .gameAction(sequential([
-                selectCard((context) => ({
-                    activePromptTitle: 'Choose an event to play',
-                    cardType: CardType.Event,
-                    location: Location.Any,
-                    controller: Players.Any,
-                    cardCondition: (card) => card.isDrawCard() && this.eventsUnderneath(context).includes(card),
-                    message: '{0} plays {1} from underneath {2}',
-                    messageArgs: (card) => [context.player, card, context.source.parentCharacter],
-                    // the selected card becomes this action's target
-                    gameAction: playCard({
-                        source: this,
-                        playType: PlayType.PlayFromHand,
-                        // the event sits underneath a card, which is not a playable location
-                        ignoredRequirements: ['location'],
-                        destination: Location.ConflictDiscardPile,
-                        // a played event returns to its owner's discard pile, not the pile of
-                        // whoever played it out from underneath
-                        postHandler: (playedContext) =>
-                            playedContext.source.owner.moveCard(
-                                playedContext.source,
-                                Location.ConflictDiscardPile
-                            )
-                    })
-                })),
+                chooseEvent,
                 chooseAction((context) => ({
                     activePromptTitle: 'Choose a cost for Strange Mirror',
                     options: {
