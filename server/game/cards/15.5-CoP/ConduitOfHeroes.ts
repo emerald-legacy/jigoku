@@ -2,7 +2,7 @@ import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import { modifyGlory, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { bow, cardLastingEffect, handler } from '../../GameActions/GameActions.js';
 import type { Cost } from '../../costs/Cost.js';
 
 function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
@@ -18,7 +18,7 @@ function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipCondui
         },
         canPay(context) {
             return context.player.opponent && context.player.honor >= context.player.opponent.honor + 5 ||
-                context.game.actions.bow().canAffect(context.source, context);
+                bow().canAffect(context.source, context);
         },
         resolve(context) {
             context.costs.conduitOfHeroesCost = context.source;
@@ -28,12 +28,12 @@ function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipCondui
             if(!context.costs.skipConduitCost) {
                 const events = [];
 
-                const bowAction = context.game.actions.bow({ target: context.source });
+                const bowAction = bow({ target: context.source });
                 events.push(bowAction.getEvent(context.source, context));
                 return events;
             }
 
-            const action = context.game.actions.handler({ handler: () => true }); //this is a do-nothing event to allow you to "pay" a non-payment cost
+            const action = handler({ handler: () => true }); //this is a do-nothing event to allow you to "pay" a non-payment cost
             return action.getEvent(context.player, context);
 
         }

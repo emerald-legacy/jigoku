@@ -3,6 +3,7 @@ import type Ring from '../../Ring.js';
 import type { Event } from '../../Events/Event.js';
 import DrawCard from '../../DrawCard.js';
 import { Phases } from '../../Constants.js';
+import { resolveRingEffect } from '../../GameActions/GameActions.js';
 
 class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';
@@ -33,7 +34,7 @@ class ShibaTsukune extends DrawCard {
                         onSelect: (player, secondRing) => {
                             this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
                             const events: Event[] = [];
-                            this.game.actions.resolveRingEffect({ target: [firstRing, secondRing] })
+                            resolveRingEffect({ target: [firstRing, secondRing] })
                                 .addEventsToArray(events, this.game.getFrameworkContext(player));
                             this.game.openThenEventWindow(events);
                             return true;
@@ -47,7 +48,7 @@ class ShibaTsukune extends DrawCard {
 
     private resolveRing(player: Player, ring: Ring) {
         this.game.addMessage('{0} resolves {1}', player, ring);
-        this.game.openThenEventWindow(this.game.actions.resolveRingEffect().getEvent(ring, this.game.getFrameworkContext(player)));
+        this.game.openThenEventWindow(resolveRingEffect().getEvent(ring, this.game.getFrameworkContext(player)));
     }
 }
 

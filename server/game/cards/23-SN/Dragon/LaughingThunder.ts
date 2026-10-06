@@ -24,7 +24,7 @@ export default class LaughingThunder extends DrawCard {
                 controller: Players.Self,
                 location: Location.Hand,
                 cardCondition: (card, context) => card.hasTrait('kiho') &&
-                    context.game.actions.attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
+                    attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
             })
             .gameAction(sequentialContext((context) => {
                 const gameActions: GameAction[] = [];

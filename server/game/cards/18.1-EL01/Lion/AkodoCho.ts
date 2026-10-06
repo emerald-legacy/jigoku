@@ -17,7 +17,7 @@ export default class AkodoCho extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && context.game.actions.bow().canAffect(card, context)
+                    card.isParticipating() && bow().canAffect(card, context)
             })
             .select({
                 name: SELECT,

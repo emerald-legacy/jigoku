@@ -11,6 +11,7 @@ import {
     reduceNextPlayedCardCost
 } from '../../effects.js';
 import {
+    attach,
     cardLastingEffect,
     playCard,
     playerLastingEffect,
@@ -38,7 +39,7 @@ class VoiceOfTheAncestors extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
+                    attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
             })
             .gameAction(selectCard({
                 cardType: CardType.Character,

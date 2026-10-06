@@ -160,6 +160,22 @@ module.exports = [
             'no-trailing-spaces': 'error'
         }
     },
+    // Card files: game actions and effects come from named imports
+    {
+        files: ['server/game/cards/**/*.ts'],
+        rules: {
+            'no-restricted-syntax': ['error',
+                {
+                    selector: 'MemberExpression[object.name=\'AbilityDsl\'][property.name=/^(actions|effects)$/]',
+                    message: 'Import game actions from GameActions/GameActions.js and effects from effects.js.'
+                },
+                {
+                    selector: 'MemberExpression[property.name=\'actions\'][object.type=\'MemberExpression\'][object.property.name=\'game\']',
+                    message: 'Import game actions from GameActions/GameActions.js.'
+                }
+            ]
+        }
+    },
     // TypeScript test files (without type checking project)
     {
         files: ['test/**/*.ts'],

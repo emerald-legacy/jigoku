@@ -25,7 +25,7 @@ export default class LoyalWarhound extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    context.game.actions.attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
+                    attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
             })
             .gameAction(sequentialContext(context => {
                 const gameActions: GameAction[] = [];

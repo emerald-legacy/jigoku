@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import { handler } from '../../../GameActions/GameActions.js';
+import { handler, putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -11,7 +11,7 @@ function putAshigaruTokenIntoPlay(context: AbilityContext) {
     card.owner.removeCardFromPile(card);
     card.moveTo(Location.RemovedFromGame);
     const moveEvents: Event[] = [];
-    context.game.actions.putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
+    putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
     context.game.openThenEventWindow(moveEvents);
     return true;
 }

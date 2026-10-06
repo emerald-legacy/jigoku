@@ -1,6 +1,6 @@
 import { CardType, Players, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { deckSearch } from '../../../GameActions/GameActions.js';
+import { attach, deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
 
@@ -18,7 +18,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.type === CardType.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
-                        !!context.target && context.game.actions.attach({ attachment: card }).canAffect(context.target, context) &&
+                        !!context.target && attach({ attachment: card }).canAffect(context.target, context) &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
                 shuffle: true,
                 reveal: true,

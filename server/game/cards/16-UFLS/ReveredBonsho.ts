@@ -4,6 +4,7 @@ import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { Event } from '../../Events/Event.js';
 import type Ring from '../../Ring.js';
+import { placeFateOnRing } from '../../GameActions/GameActions.js';
 
 type RingFate = { ring: Ring; fate: number };
 
@@ -66,7 +67,7 @@ class ReveredBonsho extends DrawCard {
         const moveEvents: Event[] = [];
         ringFate.forEach((obj) => {
             if(obj.fate > 0) {
-                context.game.actions.placeFateOnRing({ target: obj.ring, amount: obj.fate }).addEventsToArray(moveEvents, context);
+                placeFateOnRing({ target: obj.ring, amount: obj.fate }).addEventsToArray(moveEvents, context);
                 context.game.addMessage('{0} places {1} fate on the {2} due to the effects of {3}', targetPlayer, obj.fate, obj.ring, this);
             }
         });

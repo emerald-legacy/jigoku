@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Players, AbilityType, Location } from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
-import { placeFate } from '../../GameActions/GameActions.js';
+import { placeFate, returnToDeck } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { Cost } from '../../costs/Cost.js';
 
@@ -43,7 +43,7 @@ function ancestralSightCost(): Cost<{ ancestralSightCost: DrawCard }> {
             });
         },
         payEvent(context) {
-            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost, bottom: true, location: Location.DynastyDiscardPile });
+            const action = returnToDeck({ target: context.costs.ancestralSightCost, bottom: true, location: Location.DynastyDiscardPile });
             return action.getEvent(context.costs.ancestralSightCost, context);
         },
         promptsPlayer: true

@@ -2,7 +2,15 @@ import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { draw } from '../../GameActions/GameActions.js';
+import {
+    chosenDiscard,
+    discardCard,
+    draw,
+    gainHonor,
+    handler,
+    loseHonor,
+    takeHonor
+} from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
@@ -13,8 +21,8 @@ function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: bool
         },
         resolve(context, result) {
             const opponent = context.player.opponent;
-            const honorAvailable = !!opponent && context.game.actions.loseHonor().canAffect(opponent, context) && context.game.actions.gainHonor().canAffect(context.player, context);
-            const cardAvailable = !!opponent && context.game.actions.chosenDiscard().canAffect(opponent, context);
+            const honorAvailable = !!opponent && loseHonor().canAffect(opponent, context) && gainHonor().canAffect(context.player, context);
+            const cardAvailable = !!opponent && chosenDiscard().canAffect(opponent, context);
 
             context.costs.merchantOfCuriositiesCostPaid = false;
             if(opponent && honorAvailable && cardAvailable) {
@@ -54,17 +62,17 @@ function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: bool
             if(context.costs.merchantOfCuriositiesCostPaid) {
                 const events: Event[] = [];
 
-                const discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
+                const discardAction = discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
 
-                const honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
+                const honorAction = takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
                 context.game.addMessage('{0} chooses to discard a card and give {1} 1 honor', context.player.opponent, context.player);
 
                 return events;
             }
 
-            const action = context.game.actions.handler(); //this is a do-nothing event to allow you to opt out and not scuttle the event
+            const action = handler(); //this is a do-nothing event to allow you to opt out and not scuttle the event
             return action.getEvent(context.player, context);
 
         },

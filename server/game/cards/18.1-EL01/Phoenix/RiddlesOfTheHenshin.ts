@@ -4,6 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 import type Player from '../../../Player.js';
 import type Ring from '../../../Ring.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return context.player.cardsInPlay.reduce(
@@ -56,7 +57,7 @@ class Process {
 
     private resolveRings(player: Player) {
         this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
-        const action = this.context.game.actions.resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
+        const action = resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
         const events: Event[] = [];
         action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
         this.context.game.openThenEventWindow(events);

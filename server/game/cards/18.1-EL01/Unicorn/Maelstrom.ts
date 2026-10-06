@@ -3,7 +3,15 @@ import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import { delayedEffect } from '../../../effects.js';
-import { cardLastingEffect, honor, moveToConflict, multipleContext } from '../../../GameActions/GameActions.js';
+import {
+    cardLastingEffect,
+    chosenDiscard,
+    discardCard,
+    handler,
+    honor,
+    moveToConflict,
+    multipleContext
+} from '../../../GameActions/GameActions.js';
 
 function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
     return {
@@ -21,7 +29,7 @@ function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: Draw
         },
         resolve(context, result) {
             context.costs.maelstromCostPaid = false;
-            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
+            if(!chosenDiscard().canAffect(context.player, context)) {
                 return;
             }
             context.game.promptWithHandlerMenu(context.player, {
@@ -56,14 +64,14 @@ function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: Draw
         },
         payEvent(context) {
             if(context.costs.maelstromCostPaid) {
-                const discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
+                const discardAction = discardCard({ target: context.costs.maelstromCost });
                 const event = discardAction.getEvent(context.costs.maelstromCost, context);
                 context.game.addMessage('{0} chooses to discard a card', context.player);
                 return [event];
             }
 
             //this is a do-nothing event to allow you to opt out and not scuttle the event
-            const noop = context.game.actions.handler({ handler: () => {} });
+            const noop = handler({ handler: () => {} });
             return noop.getEvent(context.player, context);
         },
         promptsPlayer: true

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { putIntoConflict } from '../../GameActions/GameActions.js';
+import { loseHonor, putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
 import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
@@ -13,11 +13,11 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
             return ['losing {0} honor'];
         },
         canPay(context) {
-            return context.game.actions.loseHonor().canAffect(context.player, context);
+            return loseHonor().canAffect(context.player, context);
         },
         resolve(context, result) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter((card) => context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card) => putIntoConflict().canAffect(card, context));
 
             const creaturesByCost: DrawCard[][] = [[], [], [], [], []];
             creatures.forEach((creature) => {
@@ -85,7 +85,7 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
 
                 const events: Event[] = [];
                 const honorAmount = context.costs.accursedSummoningCost ?? 0;
-                const honorAction = context.game.actions.loseHonor({ target: context.player, amount: honorAmount });
+                const honorAction = loseHonor({ target: context.player, amount: honorAmount });
                 events.push(honorAction.getEvent(context.player, context));
                 return events;
             }

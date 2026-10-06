@@ -1,15 +1,15 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { CardType } from '../../../Constants.js';
-import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
+import { gainHonor, loseFate, loseHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import { msg } from '../../../GameChat.js';
 
 function resourcesAvailable(context: AbilityContext) {
     return {
-        honorAvailable: context.game.actions.loseHonor().canAffect(context.player, context),
-        fateAvailable: context.game.actions.loseFate().canAffect(context.player, context)
+        honorAvailable: loseHonor().canAffect(context.player, context),
+        fateAvailable: loseFate().canAffect(context.player, context)
     };
 }
 
@@ -44,8 +44,8 @@ function eyesOfTheSerpentCost(): Cost<{ serpentCostPaid: 'honor' | 'fate' }> {
         },
         payEvent(context) {
             const action = context.costs.serpentCostPaid === 'honor'
-                ? context.game.actions.loseHonor()
-                : context.game.actions.loseFate();
+                ? loseHonor()
+                : loseFate();
             return [action.getEvent(context.player, context)];
         },
         promptsPlayer: true

@@ -26,7 +26,7 @@ export default class EbbAndFlow extends DrawCard {
             .effect((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
             .then((context) => {
                 return {
-                    thenCondition: () => context.player.fate > 0 && context.game.actions.loseFate().canAffect(context.player, context),
+                    thenCondition: () => context.player.fate > 0 && loseFate().canAffect(context.player, context),
                     gameAction: onAffinity({
                         trait: 'water',
                         promptTitleForConfirmingAffinity: 'Pay 1 fate to swap abilities?',

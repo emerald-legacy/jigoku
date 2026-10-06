@@ -1,5 +1,5 @@
 import { takeControl } from '../../effects.js';
-import { bow } from '../../GameActions/GameActions.js';
+import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { Cost } from '../../costs/Cost.js';
 import { CardType, Players, Duration, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -37,7 +37,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
     },
     payEvent(context) {
         const card = context.costs.agreeableArrangementCost;
-        const action = context.game.actions.cardLastingEffect((innerContext) => ({
+        const action = cardLastingEffect((innerContext) => ({
             target: card,
             effect: takeControl(innerContext.player.opponent),
             duration: Duration.Custom
