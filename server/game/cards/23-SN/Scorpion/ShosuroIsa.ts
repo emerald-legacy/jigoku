@@ -1,5 +1,6 @@
 import { EventName, Players, Duration, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect, handler, putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -19,30 +20,24 @@ export default class ShosuroIsa extends DrawCard {
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
                 cardCondition: (card) => !card.isUnique()
-            }, AbilityDsl.actions.putIntoPlay())
+            }, putIntoPlay())
             .effect('manifest a shadow of {0}')
-            .then((context) => ({
-                thenCondition: () => context.target.location === Location.PlayArea,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
-                        target: context.target,
-                        duration: Duration.Custom,
-                        until: {
-                            onCardLeavesPlay: event => event.card === context.target
-                        },
-                        effect: [
-                            AbilityDsl.effects.setBaseMilitarySkill(0),
-                            AbilityDsl.effects.setBasePoliticalSkill(0),
-                            AbilityDsl.effects.addTrait('shadow')
-                        ]
-                    }),
-                    AbilityDsl.actions.handler({
-                        handler: () => {
-                            this.shadows.push(context.target);
-                        }
-                    })
-                ])
-            }));
+            .thenIf((context) => context.target.location === Location.PlayArea)
+            .gameAction(
+                cardLastingEffect((context) => ({
+                    target: context.target,
+                    duration: Duration.Custom,
+                    until: {
+                        onCardLeavesPlay: (event) => event.card === context.target
+                    },
+                    effect: [setBaseMilitarySkill(0), setBasePoliticalSkill(0), addTrait('shadow')]
+                })),
+                handler({
+                    handler: (context) => {
+                        this.shadows.push(context.target);
+                    }
+                })
+            );
     }
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {

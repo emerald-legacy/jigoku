@@ -1,4 +1,4 @@
-import type { MsgArg } from './GameChat.js';
+import type { MessageArgs, MsgArg } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type { BaseAbilityProperties, DeclaredGameAction } from './BaseAbility.js';
@@ -15,8 +15,11 @@ export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext
     then?: ThenAbilityProperties | OwnContextCallback<[context: C], ThenAbilityProperties | undefined>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: C | Event): boolean;
-    message?: string | OwnContextCallback<[context: C], string>;
+    /** A format with `{0}` the player, `{1}` the source and `{2}` the target, or a `msg` template. */
+    message?: string | OwnContextCallback<[context: C], string | MessageArgs>;
     messageArgs?: (EffectArg | undefined)[] | OwnContextCallback<[context: C], (EffectArg | undefined)[]>;
+    /** Its context starts with the chosen targets, selects and costs of the ability it continues. */
+    inheritTargets?: boolean;
 }
 
 class ThenAbility extends BaseCardAbility {
@@ -41,17 +44,36 @@ class ThenAbility extends BaseCardAbility {
                 return false;
             }
             const thenAbility = new ThenAbility(this.card, then);
-            return thenAbility.meetsRequirements(thenAbility.createContext(context.player)) === '';
+            return thenAbility.meetsRequirements(thenAbility.createThenContext(context)) === '';
         }
         return false;
     }
 
-    displayMessage(context: AbilityContext): void {
-        let message = this.properties.message;
-        if(typeof message === 'function') {
-            message = message(context);
+    /** The context of this `then`, continuing `parent`. */
+    createThenContext(parent: AbilityContext): AbilityContext {
+        const context = this.createContext(parent.player);
+        // a `then` continues the same triggering, so keep the link for chosenCardTargets
+        context.originatingContext = parent.triggeringContext;
+        if(this.properties.inheritTargets) {
+            context.targets = { ...parent.targets };
+            context.selects = { ...parent.selects };
+            context.rings = { ...parent.rings };
+            context.tokens = { ...parent.tokens };
+            context.costs = { ...parent.costs };
+            context.target = parent.target;
+            context.select = parent.select;
+            context.ring = parent.ring;
+            context.token = parent.token;
         }
-        if(message) {
+        return context;
+    }
+
+    displayMessage(context: AbilityContext): void {
+        const property = this.properties.message;
+        const message = typeof property === 'function' ? property(context) : property;
+        if(Array.isArray(message)) {
+            this.game.addMessage(message[0], ...message[1]);
+        } else if(message) {
             let messageArgs: MsgArg[] = [context.player, context.source, context.messageTarget()];
             if(this.properties.messageArgs) {
                 let args = this.properties.messageArgs;
@@ -96,11 +118,7 @@ class ThenAbility extends BaseCardAbility {
                     window.addThenAbility(new ThenAbility(this.card, then), context, then.thenCondition);
                 }
             } else if(then?.thenCondition?.(context)) {
-                const thenAbility = new ThenAbility(this.card, then);
-                const thenContext = thenAbility.createContext(context.player);
-                // a `then` continues the same triggering, so keep the link for chosenCardTargets
-                thenContext.originatingContext = context.triggeringContext;
-                this.game.resolveAbility(thenContext);
+                this.game.resolveAbility(new ThenAbility(this.card, then).createThenContext(context));
             }
         });
     }

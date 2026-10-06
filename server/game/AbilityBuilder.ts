@@ -29,7 +29,7 @@ import type {
     TriggeredAbilityWhenProps,
     WhenType
 } from './Interfaces.js';
-import type { Event } from './Events/Event.js';
+import { Event } from './Events/Event.js';
 import type { MessageArgs } from './GameChat.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import Ring from './Ring.js';
@@ -88,6 +88,9 @@ type CandidateContext<Base extends AbilityContext, TG, RG, CO, TK, D, Name exten
 
 export type ActionContext<S extends BaseCard> = AbilityContext<S> & { ability: CardAction };
 
+/** A step's context: a new one for the same card, holding the earlier steps' targets. */
+type StepContext<Base extends AbilityContext> = Base extends AbilityContext<infer S> ? AbilityContext<S> : AbilityContext;
+
 type TriggerEvent<W> = GameEvent<Extract<EventName, keyof W>>;
 
 export type TriggerContext<S extends BaseCard, W> = TriggeredAbilityContext<S> & { event: TriggerEvent<W> };
@@ -128,6 +131,12 @@ interface AbilityDraft {
     cannotBeMirrored?: boolean;
     cannotTargetFirst?: boolean;
     then?: (context: AbilityContext) => ThenAbilityProperties | undefined;
+    /** The next step, from `then()` or `thenIf()`. */
+    thenStep?: AbilityDraft;
+    /** A step's own condition, from `thenIf()`, read with the context of the step before. */
+    thenCondition?: (context: AbilityContext) => boolean;
+    message?: (context: AbilityContext) => MessageArgs;
+    isStep?: boolean;
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
     phase?: Phases | 'any';
     evenDuringDynasty?: boolean;
@@ -631,9 +640,43 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** May return nothing: some cards use it only for a side effect. */
-    then(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => ThenAbilityProperties | undefined): this {
+    /**
+     * "Then, …": the next step, declared with the same methods. It resolves when this step's events
+     * resolved in full, and its context holds the targets chosen so far.
+     */
+    then(): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>;
+    /** The next step as properties. May return nothing: some cards use it only for a side effect. */
+    then(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => ThenAbilityProperties | undefined): this;
+    then(fn?: (context: BuilderContext<Base, TG, RG, CO, TK>) => ThenAbilityProperties | undefined): this | AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
+        if(!fn) {
+            return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(this.#step());
+        }
         this.draft.then = this.#checked(fn, this.draft.specs);
+        return this;
+    }
+
+    /** "Then, if …": the next step, when `condition` holds once this step resolved. */
+    thenIf(condition: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
+        const step = this.#step();
+        step.thenCondition = this.#checked(condition, this.draft.specs);
+        return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(step);
+    }
+
+    #step(): AbilityDraft {
+        if(this.draft.then || this.draft.thenStep) {
+            throw new Error(`${this.draft.title}: a step has one next step`);
+        }
+        const step: AbilityDraft = { ...createDraft(this.draft.title, () => true), specs: [...this.draft.specs], isStep: true };
+        this.draft.thenStep = step;
+        return step;
+    }
+
+    /** A then step's message, as a `msg` template. */
+    message(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => MessageArgs): this {
+        if(!this.draft.isStep) {
+            throw new Error(`${this.draft.title}: the ability's own message is its effect()`);
+        }
+        this.draft.message = this.#checked(fn, this.draft.specs);
         return this;
     }
 
@@ -776,9 +819,38 @@ function commonProperties(draft: AbilityDraft) {
         ...(draft.cannotBeMirrored ? { cannotBeMirrored: true } : {}),
         ...(draft.cannotTargetFirst ? { cannotTargetFirst: true } : {}),
         ...(draft.then ? { then: draft.then } : {}),
+        ...(draft.thenStep ? { then: stepProperties(draft.thenStep) } : {}),
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
         ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {}),
         ...(draft.notPrinted ? { printedAbility: false } : {})
+    };
+}
+
+/** A step from `then()` or `thenIf()`, built once. */
+function stepProperties(step: AbilityDraft): ThenAbilityProperties {
+    if(step.effect !== undefined) {
+        throw new Error(`${step.title}: a then step prints its message with message()`);
+    }
+    const abilityOnly = (['condition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
+        'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger'] as const).filter((key) => step[key] !== undefined);
+    if(abilityOnly.length > 0) {
+        throw new Error(`${step.title}: ${abilityOnly.join(', ')} belong to the ability, before then()`);
+    }
+    const condition = step.thenCondition;
+    return {
+        inheritTargets: true,
+        ...targetProperties(step.targets),
+        ...(step.costs.length > 0 ? { cost: step.costs } : {}),
+        ...(step.gameActions.length > 0 ? { gameAction: step.gameActions } : {}),
+        ...(step.handler ? { handler: step.handler } : {}),
+        ...(step.message ? { message: step.message } : {}),
+        // on the event path the condition gets each event, whose context is the step before
+        ...(condition ? { thenCondition: (contextOrEvent: AbilityContext | Event) => {
+            const context = contextOrEvent instanceof Event ? contextOrEvent.context : contextOrEvent;
+            return !!context && condition(context);
+        } } : {}),
+        ...(step.then ? { then: step.then } : {}),
+        ...(step.thenStep ? { then: stepProperties(step.thenStep) } : {})
     };
 }
 

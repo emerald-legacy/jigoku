@@ -6,11 +6,10 @@ import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
 import { AbilityType } from '../Constants.js';
 import KeywordAbilityWindow from '../gamesteps/KeywordAbilityWindow.js';
 import type Game from '../Game.js';
-import type Player from '../Player.js';
 import type { Event } from './Event.js';
 
 interface ThenAbilityLike {
-    createContext(player?: Player): AbilityContext;
+    createThenContext(parent: AbilityContext): AbilityContext;
 }
 
 export default class EventWindow extends BaseStepWithPipeline {
@@ -143,10 +142,7 @@ export default class EventWindow extends BaseStepWithPipeline {
     checkThenAbilities() {
         for(const thenAbility of this.thenAbilities) {
             if(thenAbility.context.events.every((event) => thenAbility.condition(event))) {
-                const thenContext = thenAbility.ability.createContext(thenAbility.context.player);
-                // a `then` continues the same triggering, so keep the link for chosenCardTargets
-                thenContext.originatingContext = thenAbility.context.triggeringContext;
-                this.game.resolveAbility(thenContext);
+                this.game.resolveAbility(thenAbility.ability.createThenContext(thenAbility.context));
             }
         }
     }

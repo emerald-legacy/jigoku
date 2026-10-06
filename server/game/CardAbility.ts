@@ -234,7 +234,11 @@ class CardAbility extends ThenAbility {
             const message = typeof this.properties.message === 'function'
                 ? this.properties.message(context)
                 : this.properties.message;
-            this.game.addMessage(message, ...messageArgs);
+            if(Array.isArray(message)) {
+                this.game.addMessage(message[0], ...message[1]);
+            } else {
+                this.game.addMessage(message, ...messageArgs);
+            }
             return;
         }
         let origin = context.ability && context.ability.origin;
