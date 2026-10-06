@@ -4,6 +4,7 @@ import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
 import { AffinityAction, AffinityActionProperties } from './AffinityAction.js';
 import { AssignRolesAction, type AssignRolesProperties } from './AssignRolesAction.js';
 import { AttachAction, AttachActionProperties } from './AttachAction.js';
+import { RearrangeDeckAction, type RearrangeDeckProperties } from './RearrangeDeckAction.js';
 import { AttachToRingAction, AttachToRingActionProperties } from './AttachToRingAction.js';
 import { BowAction, BowActionProperties } from './BowAction.js';
 import { BreakAction, BreakProperties } from './BreakAction.js';
@@ -498,6 +499,10 @@ export function multipleContext<C extends AbilityContext = AbilityContext>(prope
 }
 export function menuPrompt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
+}
+/** The player puts the top cards of a deck (by default their own) back in the order they choose. */
+export function rearrangeDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RearrangeDeckProperties, C>): RearrangeDeckAction<C> {
+    return new RearrangeDeckAction<C>(propertyFactory);
 }
 /** Two cards, two roles: the chooser gives each card one role, whose action then resolves on it. */
 export function assignRoles<const R extends string, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AssignRolesProperties<R>, C>): AssignRolesAction<C> {

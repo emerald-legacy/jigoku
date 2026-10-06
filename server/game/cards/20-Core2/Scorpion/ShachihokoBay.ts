@@ -3,7 +3,8 @@ import { Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
-import { arrangeTopOfDeck } from '../../arrangeTopOfDeck.js';
+import { rearrangeDeck } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 class Process {
     private topCards: Set<DrawCard>;
@@ -71,15 +72,14 @@ class Process {
         if(remaining.length === 0) {
             return;
         }
-        arrangeTopOfDeck(this.context, remaining, 'Which card do you want to be on top?', (ordered) => {
-            this.context.game.addMessage(
-                '{0} returns {1} cards to the top of {2}\'s deck',
-                this.context.player,
-                ordered.length,
-                this.context.player.opponent
-            );
-            this.context.player.opponent?.conflictDeck.splice(0, ordered.length, ...ordered);
-        });
+        const opponent = this.context.player.opponent;
+        if(!opponent) {
+            return;
+        }
+        rearrangeDeck({
+            amount: remaining.length,
+            message: (ordered, context) => msg`${context.player} returns ${ordered.length} cards to the top of ${opponent}'s deck`
+        }).resolve(opponent, this.context);
     }
 }
 

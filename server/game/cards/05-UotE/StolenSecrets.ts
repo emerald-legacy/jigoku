@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { arrangeTopOfDeck } from '../arrangeTopOfDeck.js';
+import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
@@ -45,10 +45,8 @@ class StolenSecrets extends DrawCard {
             ]
         }));
         this.game.checkGameState();
-        if(remainingCards.length > 1) {
-            arrangeTopOfDeck(context, remainingCards, 'Which card do you want to be on top?', (ordered) => {
-                context.player.opponent?.conflictDeck.splice(0, 3, ...ordered);
-            });
+        if(remainingCards.length > 1 && context.player.opponent) {
+            rearrangeDeck({ amount: remainingCards.length }).resolve(context.player.opponent, context);
         }
     }
 }

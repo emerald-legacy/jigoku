@@ -1,7 +1,7 @@
 
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Decks, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import { arrangeTopOfDeck } from '../arrangeTopOfDeck.js';
+import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
@@ -10,12 +10,11 @@ class MiyaLibrary extends DrawCard {
         this.action('Replace Miya Library for a faceup imperial character')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .handler((context) => {
-                const arrange = () => arrangeTopOfDeck(
-                    context,
-                    context.player.dynastyDeck.slice(0, 4),
-                    'Select the card you would like to place on top of your dynasty deck',
-                    (ordered) => context.player.dynastyDeck.splice(0, ordered.length, ...ordered)
-                );
+                const arrange = () => rearrangeDeck({
+                    amount: 4,
+                    deck: Decks.DynastyDeck,
+                    activePromptTitle: 'Select the card you would like to place on top of your dynasty deck'
+                }).resolve(context.player, context);
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'select an imperial character to replace miya library',
                     context: context,
