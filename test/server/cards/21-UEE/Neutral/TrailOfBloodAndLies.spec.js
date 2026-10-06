@@ -35,19 +35,34 @@ describe('Trail of Blood and Lies', function () {
             expect(this.player2).toHavePrompt('Action Window');
         });
 
-        it('makes them dishonor a second character while you control a Magistrate', function () {
+        it('may resolve twice while you control a Magistrate', function () {
             setup.call(this, ['doji-whisperer', 'cunning-magistrate']);
             this.player1.clickCard(this.monoNoAware);
             this.player1.clickCard(this.trail);
             this.player2.clickCard(this.challenger);
 
-            expect(this.player2).toHavePrompt('Choose a character to dishonor');
+            expect(this.player1).toHavePrompt('Resolve this ability again?');
+            this.player1.clickPrompt('Yes');
             expect(this.player2).not.toBeAbleToSelect(this.challenger);
             expect(this.player2).toBeAbleToSelect(this.yoshi);
 
             this.player2.clickCard(this.yoshi);
             expect(this.challenger.isDishonored).toBe(true);
             expect(this.yoshi.isDishonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 chooses to resolve Trail of Blood and Lies again');
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+
+        it('resolves once when you decline', function () {
+            setup.call(this, ['doji-whisperer', 'cunning-magistrate']);
+            this.player1.clickCard(this.monoNoAware);
+            this.player1.clickCard(this.trail);
+            this.player2.clickCard(this.challenger);
+
+            this.player1.clickPrompt('No');
+            expect(this.yoshi.isDishonored).toBe(false);
+            expect(this.getChatLogs(5)).toContain('player1 chooses not to resolve Trail of Blood and Lies again');
+            expect(this.player2).toHavePrompt('Action Window');
         });
     });
 });

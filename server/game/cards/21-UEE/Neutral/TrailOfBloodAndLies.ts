@@ -1,8 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { dishonor, selectCard } from '../../../GameActions/GameActions.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import { mayResolveAgain } from '../../resolveAgain.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
     static id = 'trail-of-blood-and-lies';
@@ -27,14 +28,8 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 controller: Players.Opponent
             }, dishonor())
             .max(AbilityDsl.limit.perPhase(1))
-            .then()
-            .if((context) => context.player.isCharacterTraitInPlay('magistrate'))
-                .gameAction(selectCard({
-                    activePromptTitle: 'Choose a character to dishonor',
-                    cardType: CardType.Character,
-                    player: Players.Opponent,
-                    controller: Players.Opponent,
-                    gameAction: dishonor()
-                }));
+            .then((context) => context.subResolution || !context.player.isCharacterTraitInPlay('magistrate')
+                ? undefined
+                : mayResolveAgain(context, 'Resolve this ability again?'));
     }
 }

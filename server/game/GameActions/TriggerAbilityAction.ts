@@ -37,7 +37,9 @@ export function canResolveAbility(properties: AbilityToResolve, context: Ability
     if(!ability || (!properties.subResolution && player.isAbilityAtMax(ability.maxIdentifier))) {
         return false;
     }
-    return !ability.meetsRequirements(abilityContext(properties, context), ignoredRequirements);
+    // a sub-resolution doesn't count toward the ability's max, nor is it stopped by it
+    const ignored = properties.subResolution ? ignoredRequirements.concat('max') : ignoredRequirements;
+    return !ability.meetsRequirements(abilityContext(properties, context), ignored);
 }
 
 export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, C, 'ignoredRequirements' | 'subResolution'> {
