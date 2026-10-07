@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { handler, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
-import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -40,10 +39,7 @@ class DanceOfChikushoDo extends DrawCard {
 
     getUnbrokenProvinces(player: Player): Location[] {
         const unbrokenLocations: Location[] = [];
-        const baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
-        if(this.game.gameMode !== GameModes.Skirmish) {
-            baseLocations.push(Location.ProvinceFour);
-        }
+        const baseLocations = this.game.rules.setupNonStrongholdProvinces;
         baseLocations.forEach(p => {
             const province = player.getProvinceCardInProvince(p);
             if(province && !province.isBroken) {

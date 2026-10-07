@@ -1,7 +1,7 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Decks, EventName, Location, TargetMode } from '../Constants.js';
-import { shuffle } from '../utils/shuffle.js';
+import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameAction, ActionEvent, WithDefaults } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';

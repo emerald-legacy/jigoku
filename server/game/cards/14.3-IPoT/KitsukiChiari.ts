@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { discardMatching, lookAt, multipleContext } from '../../GameActions/GameActions.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 
 class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';

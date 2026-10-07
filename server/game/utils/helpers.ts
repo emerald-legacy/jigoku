@@ -1,10 +1,5 @@
 export type Derivable<T, C> = T | ((context: C) => T);
 
-export function randomItem<T>(array: T[]): T {
-    const j = Math.floor(Math.random() * array.length);
-    return array[j];
-}
-
 /** Values that can't be mistaken for their own factory. */
 type Derived = string | number | boolean | null | undefined | readonly unknown[];
 

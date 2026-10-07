@@ -1,7 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import CardAbility from './CardAbility.js';
 import { AbilityType, CardType, EffectName, Phases } from './Constants.js';
-import { parseGameMode } from './GameMode.js';
 import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -34,17 +33,17 @@ export class CardAction extends CardAbility {
             return true;
         }
 
-        const gameMode = parseGameMode(this.game.gameMode);
+        const rules = this.game.rules;
         switch(this.card.type) {
             case CardType.Holding:
-                return gameMode.dynastyPhaseActionsFromCardsInPlay;
+                return rules.dynastyPhaseActionsFromCardsInPlay;
 
             case CardType.Event:
-                return gameMode.dynastyPhaseCanPlayConflictEvents(this);
+                return rules.dynastyPhaseCanPlayConflictEvents(this);
 
             case CardType.Character:
             case CardType.Attachment:
-                return gameMode.dynastyPhaseActionsFromCardsInPlay;
+                return rules.dynastyPhaseActionsFromCardsInPlay;
 
             default:
                 return false;

@@ -3,7 +3,7 @@ import { perRound } from '../../../AbilityLimit.js';
 import { discardMatching, multipleContext, reveal } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { shuffle } from '../../../utils/random.js';
 
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';

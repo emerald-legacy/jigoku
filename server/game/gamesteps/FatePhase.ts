@@ -1,4 +1,3 @@
-import { GameModes } from '../../GameModes.js';
 import { Phases, CardType, Players, EffectName, EventName, Location, TargetMode } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
@@ -104,7 +103,7 @@ export class FatePhase extends Phase {
     }
 
     placeFateOnUnclaimedRings() {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(!this.game.rules.fatePhasePutFateOnRings) {
             return;
         }
         const recipients = Object.values(this.game.rings)
@@ -129,7 +128,7 @@ export class FatePhase extends Phase {
             const province = player.getSourceList(location);
             const dynastyCards = province.filter((card) => card.isDynastyCard()).filter((card) => card.isFaceup());
             if(dynastyCards.length > 0 && provinceCard) {
-                if(provinceCard.isBroken && this.game.gameMode !== GameModes.Skirmish) {
+                if(provinceCard.isBroken && this.game.rules.fatePhaseForceDiscardFromBrokenProvinces) {
                     cardsToDiscard = cardsToDiscard.concat(dynastyCards);
                 } else {
                     cardsOnUnbrokenProvinces = cardsOnUnbrokenProvinces.concat(dynastyCards);
@@ -193,7 +192,7 @@ export class FatePhase extends Phase {
         if(!firstPlayer) {
             return;
         }
-        const otherPlayer = this.game.getOtherPlayer(firstPlayer);
+        const otherPlayer = firstPlayer.opponent;
         if(otherPlayer) {
             this.game.raiseEvent(EventName.OnPassFirstPlayer, { player: otherPlayer }, () =>
                 this.game.setFirstPlayer(otherPlayer)

@@ -2,7 +2,6 @@ import * as costs from '../../../costs/index.js';
 import { handler } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { parseGameMode } from '../../../GameMode.js';
 
 const ACTIVE_LOCATIONS = [Location.Hand, Location.PlayArea];
 
@@ -31,7 +30,7 @@ export default class LuckyCoin extends DrawCard {
                         player.moveCard(card, Location.DynastyDeck, { bottom: true });
                     }
 
-                    for(const location of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
+                    for(const location of game.rules.setupNonStrongholdProvinces) {
                         player.putTopDynastyCardInProvince(location, false);
                     }
 

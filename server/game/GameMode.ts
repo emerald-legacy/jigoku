@@ -3,16 +3,17 @@ import type { CardAction } from './CardAction.js';
 import { AbilityType, Location, Phases } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
+import { GameModes } from '../GameModes.js';
 
 type RingChoices = Record<string, (context: AbilityContext) => boolean>;
 
-const AIR_CHOICE = {
+export const AIR_CHOICE = {
     GAIN_2: 'Gain 2 Honor',
     TAKE_1: 'Take 1 Honor from opponent',
     SKIP: 'Don\'t resolve'
 } as const;
 
-const EARTH_CHOICE = {
+export const EARTH_CHOICE = {
     DRAW: 'Draw a card',
     FORCE_DISCARD: 'Opponent discards a card',
     DRAW_AND_FORCE_DISCARD: 'Draw a card and opponent discards',
@@ -20,7 +21,7 @@ const EARTH_CHOICE = {
 } as const;
 
 export interface GameMode {
-    name: string;
+    name: GameModes;
     attachmentsMaxOneCopyPerName: boolean;
     conflictHaveUnopposedHonorLoss: boolean;
     conflictOneFewerOpportunity: boolean;
@@ -39,6 +40,8 @@ export interface GameMode {
     fatePhasePutFateOnRings: boolean;
     honorBidValues: string[];
     imperialFavorHasSides: boolean;
+    /** Whose favor the Imperial Favor is, as the chat says it: "the Emperor's favor". */
+    imperialFavorSovereign: string;
     ringAirChoices: (optional: boolean) => RingChoices;
     ringEarthChoices: (optional: boolean) => RingChoices;
     ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) => boolean;
@@ -53,7 +56,7 @@ export interface GameMode {
 }
 
 const Stronghold: GameMode = {
-    name: 'stronghold',
+    name: GameModes.Stronghold,
     attachmentsMaxOneCopyPerName: false,
     conflictHaveUnopposedHonorLoss: true,
     conflictOneFewerOpportunity: false,
@@ -72,6 +75,7 @@ const Stronghold: GameMode = {
     fatePhasePutFateOnRings: true,
     honorBidValues: ['1', '2', '3', '4', '5'],
     imperialFavorHasSides: true,
+    imperialFavorSovereign: 'Emperor\'s',
     setupFixedStartingHonor: undefined,
     setupHaveProvinceCards: true,
     setupHaveRoles: true,
@@ -103,7 +107,7 @@ const Stronghold: GameMode = {
 
 const Skirmish: GameMode = {
     ...Stronghold,
-    name: 'skirmish',
+    name: GameModes.Skirmish,
 
     conflictHaveUnopposedHonorLoss: false,
     conflictOneFewerOpportunity: true,
@@ -146,7 +150,8 @@ const Skirmish: GameMode = {
 
 const Emerald: GameMode = {
     ...Stronghold,
-    name: 'emerald',
+    name: GameModes.Emerald,
+    imperialFavorSovereign: 'Empress\'',
 
     attachmentsMaxOneCopyPerName: true,
     covertUnified: true,
@@ -162,11 +167,11 @@ const Emerald: GameMode = {
     dynastyPhaseActionsFromCardsInPlay: false
 };
 
-const Sanctuary: GameMode = { ...Emerald, name: 'sanctuary' };
+const Sanctuary: GameMode = { ...Emerald, name: GameModes.Sanctuary };
 
 const Obsidian: GameMode = {
     ...Stronghold,
-    name: 'obsidian',
+    name: GameModes.Obsidian,
 
     attachmentsMaxOneCopyPerName: true,
     disguiseKeepsCharactersInSameLocation: true,

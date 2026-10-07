@@ -10,7 +10,6 @@ import {
     Players,
     PlayType
 } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
@@ -30,7 +29,7 @@ export class PlayerCostManager {
             new PlayableLocation(PlayType.PlayFromProvince, player, Location.ProvinceTwo),
             new PlayableLocation(PlayType.PlayFromProvince, player, Location.ProvinceThree)
         ];
-        if(game.gameMode !== GameModes.Skirmish) {
+        if(game.rules.setupNonStrongholdProvinces.includes(Location.ProvinceFour)) {
             this.playableLocations.push(
                 new PlayableLocation(PlayType.PlayFromProvince, player, Location.ProvinceFour)
             );

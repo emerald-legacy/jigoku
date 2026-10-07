@@ -49,9 +49,9 @@ import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 import { EffectName, EventName, Location, ConflictType, Element, Players } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import { type EventHandler } from './GameEventBus.js';
+import { parseGameMode, type GameMode } from './GameMode.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
 import { isOwnKey } from './utils/helpers.js';
-import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -151,7 +151,10 @@ class Game {
     currentConflict: Conflict | null;
     currentDuel: Duel | null;
     manualMode: boolean;
-    gameMode?: string;
+    /** Set when the game is created; a game keeps its mode. */
+    readonly gameMode?: string;
+    /** The rules of `gameMode`. */
+    readonly rules: GameMode;
     currentPhase: string;
     password?: string;
     roundNumber: number;
@@ -200,6 +203,7 @@ class Game {
         this.currentDuel = null;
         this.manualMode = false;
         this.gameMode = details.gameMode;
+        this.rules = parseGameMode(details.gameMode);
         this.currentPhase = '';
         this.password = details.password;
         this.roundNumber = 0;
@@ -409,16 +413,8 @@ class Game {
     }
 
     getProvinceArray(includeStronghold: boolean = true): Location[] {
-        if(this.gameMode === GameModes.Skirmish) {
-            return [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
-        }
-        const array: Location[] = [
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour
-        ];
-        if(includeStronghold) {
+        const array = [...this.rules.setupNonStrongholdProvinces];
+        if(includeStronghold && this.rules.setupHaveStrongholds) {
             array.push(Location.StrongholdProvince);
         }
         return array;
@@ -525,7 +521,7 @@ class Game {
      * function doesn't check to see if a conquest victory has been achieved)
      */
     checkWinCondition(): void {
-        const honorRequiredToWin = this.gameMode === GameModes.Skirmish ? 12 : 25;
+        const honorRequiredToWin = this.rules.winConRequiredHonorForWin;
         for(const player of this.getPlayersInFirstPlayerOrder()) {
             if(player.honor >= honorRequiredToWin) {
                 this.recordWinner(player, 'honor');
@@ -671,7 +667,7 @@ class Game {
 
         for(const player of this.getPlayers()) {
             player.initialise();
-            if(this.gameMode !== GameModes.Skirmish && !player.stronghold) {
+            if(this.rules.setupHaveStrongholds && !player.stronghold) {
                 playerWithNoStronghold = player;
             }
         }
@@ -685,7 +681,7 @@ class Game {
         }
         this.provinceCards = this.allCards.filter((card) => card.isProvince);
 
-        if(this.gameMode !== GameModes.Skirmish) {
+        if(this.rules.setupHaveStrongholds) {
             if(playerWithNoStronghold) {
                 this.queueSimpleStep(() => {
                     this.addMessage(

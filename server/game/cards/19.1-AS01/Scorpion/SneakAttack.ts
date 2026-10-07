@@ -3,7 +3,7 @@ import * as costs from '../../../costs/index.js';
 import { gainActionPhasePriority, playerDelayedEffect } from '../../../effects.js';
 import { handler, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { shuffle } from '../../../utils/random.js';
 
 export default class SneakAttack extends DrawCard {
     static id = 'sneak-attack';

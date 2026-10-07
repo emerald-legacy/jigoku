@@ -2,7 +2,6 @@ import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
 import { EventName, EffectName } from '../Constants.js';
-import { GameModes } from '../../GameModes.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type { Duel } from '../Duel.js';
@@ -94,10 +93,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     activePrompt(player: Player) {
-        let buttons = ['1', '2', '3', '4', '5'];
-        if(this.game.gameMode === GameModes.Skirmish) {
-            buttons = ['1', '2', '3'];
-        }
+        let buttons = [...this.game.rules.honorBidValues];
 
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         buttons = buttons.filter(num => !prohibitedBids.includes(num));

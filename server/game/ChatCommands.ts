@@ -1,4 +1,4 @@
-import { randomInt } from 'crypto';
+import { rollDie } from './utils/random.js';
 import * as GameActions from './GameActions/GameActions.js';
 import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
 import { Location, CardType, Players, TargetMode } from './Constants.js';
@@ -72,7 +72,7 @@ class ChatCommands {
     random(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 4);
         if(num > 1) {
-            this.game.addMessage('{0} rolls a d{1}: {2}', player, num, randomInt(1, num + 1));
+            this.game.addMessage('{0} rolls a d{1}: {2}', player, num, rollDie(num));
         }
     }
 
@@ -88,7 +88,7 @@ class ChatCommands {
         const type = args[1] || 'military';
         this.game.addMessage('{0} uses /claim-favor to claim the emperor\'s {1} favor', player, type);
         player.claimImperialFavor(type);
-        const otherPlayer = this.game.getOtherPlayer(player);
+        const otherPlayer = player.opponent;
         if(otherPlayer) {
             otherPlayer.loseImperialFavor();
         }

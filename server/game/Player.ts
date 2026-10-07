@@ -1,5 +1,5 @@
 import { isEnumValue } from './utils/helpers.js';
-import { shuffle } from './utils/shuffle.js';
+import { shuffle } from './utils/random.js';
 import { HonorTracker } from './HonorTracker.js';
 import { PlayerZones, type AdditionalPile, type DrawCardPile } from './PlayerZones.js';
 
@@ -30,7 +30,6 @@ import {
     Players,
     PlayType
 } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
 import type Socket from '../Socket.js';
 import type BaseCard from './BaseCard.js';
@@ -481,14 +480,7 @@ class Player extends GameObject {
     }
 
     getProvinceCards(): ProvinceCard[] {
-        const gameModeProvinceCount = this.game.gameMode === GameModes.Skirmish ? 3 : 5;
-        const locations = [
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour,
-            Location.StrongholdProvince
-        ].slice(0, gameModeProvinceCount);
+        const locations = this.game.getProvinceArray();
         return locations.flatMap((location) => this.getProvinceCardInProvince(location) ?? []);
     }
 
@@ -635,13 +627,13 @@ class Player extends GameObject {
 
     deckRanOutOfCards(deck: string): void {
         const discardPile = this.getSourceList(deck + ' discard pile');
-        const action = GameActions.loseHonor({ amount: this.game.gameMode === GameModes.Skirmish ? 3 : 5 });
+        const action = GameActions.loseHonor({ amount: this.game.rules.deckoutHonorLoss });
         if(action.canAffect(this, this.game.getFrameworkContext())) {
             this.game.addMessage(
                 '{0}\'s {1} deck has run out of cards, so they lose {2} honor',
                 this,
                 deck,
-                this.game.gameMode === GameModes.Skirmish ? 3 : 5
+                this.game.rules.deckoutHonorLoss
             );
         } else {
             this.game.addMessage('{0}\'s {1} deck has run out of cards', this, deck);
@@ -1067,8 +1059,8 @@ class Player extends GameObject {
         if(this.opponent) {
             this.opponent.loseImperialFavor();
         }
-        const sovereign = (this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Sanctuary) ? 'Empress\'' : 'Emperor\'s';
-        if(this.game.gameMode === GameModes.Skirmish) {
+        const sovereign = this.game.rules.imperialFavorSovereign;
+        if(!this.game.rules.imperialFavorHasSides) {
             this.imperialFavor = 'both';
             this.game.addMessage('{0} claims the ' + sovereign + ' favor!', this);
             return;
@@ -1102,7 +1094,7 @@ class Player extends GameObject {
         this.deck = deck;
         this.deck.selected = true;
         const strongholdData = deck.stronghold?.[0]?.card;
-        if(strongholdData && this.game.gameMode !== GameModes.Skirmish) {
+        if(strongholdData && this.game.rules.setupHaveStrongholds) {
             this.stronghold = new StrongholdCard(this, strongholdData);
         }
         this.faction = deck.faction ?? {};
@@ -1191,7 +1183,7 @@ class Player extends GameObject {
     }
 
     getTotalIncome(): number {
-        return this.game.gameMode === GameModes.Skirmish ? 6 : (this.stronghold?.cardData.fate ?? 0);
+        return this.game.rules.fatePerRoundForced ?? this.stronghold?.cardData.fate ?? 0;
     }
 
     getTotalHonor(): number {

@@ -3,7 +3,6 @@ import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
-import { parseGameMode } from './GameMode.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 
@@ -22,7 +21,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
-            !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayAttachments
+            !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
             return 'phase';
         }

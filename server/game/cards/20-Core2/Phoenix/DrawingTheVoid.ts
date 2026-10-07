@@ -9,7 +9,7 @@ import {
 } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { shuffle } from '../../../utils/random.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import { msg } from '../../../GameChat.js';
 

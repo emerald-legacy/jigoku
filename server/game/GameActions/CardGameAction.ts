@@ -3,6 +3,7 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import { GameAction, type GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
 import { LoseFateAction } from './LoseFateAction.js';
+import { payAdditionalCost } from '../costs/additionalCost.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 import { Event } from '../Events/Event.js';
 
@@ -87,25 +88,10 @@ export class CardGameAction<
             if(additionalCosts.length > 0) {
                 for(const properties of additionalCosts) {
                     context.game.queueSimpleStep(() => {
-                        let cost = properties.cost;
-                        if(typeof cost === 'function') {
-                            cost = cost(card);
-                        }
-                        if(cost.hasLegalTarget(context)) {
-                            cost.resolve(card, context);
-                            context.game.addMessage(
-                                '{0} {1} in order to {2}',
-                                card.controller,
-                                context.game.gameChat.nested(cost.getEffectMessage(context)),
-                                context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties))
-                            );
-                        } else {
+                        const cost = typeof properties.cost === 'function' ? properties.cost(card) : properties.cost;
+                        const purpose = context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties));
+                        if(!payAdditionalCost(context, card.controller, cost, card, purpose)) {
                             allCostsPaid = false;
-                            context.game.addMessage(
-                                '{0} cannot pay the additional cost required to {1}',
-                                card.controller,
-                                context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties))
-                            );
                         }
                     });
                 }

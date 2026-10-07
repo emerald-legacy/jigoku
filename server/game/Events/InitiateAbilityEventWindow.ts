@@ -67,14 +67,7 @@ export default class InitiateAbilityEventWindow extends EventWindow {
     }
 
     executeHandler() {
-        this.eventsToExecute = [...this.events].sort((a, b) => a.order - b.order);
-
-        this.eventsToExecute.forEach(event => {
-            event.checkCondition();
-            if(!event.cancelled) {
-                event.executeHandler();
-            }
-        });
+        this.executeEvents();
 
         // We need to separate executing the handler and emitting events as in this window, the handler just
         // queues ability resolution steps, and we don't want the events to be emitted until step 8

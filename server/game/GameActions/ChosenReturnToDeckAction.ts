@@ -5,7 +5,7 @@ import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
-import { shuffle } from '../utils/shuffle.js';
+import { shuffle } from '../utils/random.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {

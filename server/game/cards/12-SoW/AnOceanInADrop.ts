@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { draw, moveCard, sequential } from '../../GameActions/GameActions.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 import type Player from '../../Player.js';
 import { playerChoices } from '../playerChoices.js';
 

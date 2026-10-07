@@ -1,6 +1,5 @@
-import { GameModes } from '../../GameModes.js';
 import { Location } from '../Constants.js';
-import { randomItem } from '../utils/helpers.js';
+import { randomItem } from '../utils/random.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
@@ -80,7 +79,7 @@ export class SetupPhase extends Phase {
     }
 
     attachStronghold() {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(!this.game.rules.setupHaveStrongholds) {
             return;
         }
         for(const player of this.game.getPlayers()) {
@@ -94,11 +93,11 @@ export class SetupPhase extends Phase {
     }
 
     setupProvinces() {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(!this.game.rules.setupHaveProvinceCards) {
             for(const player of this.game.getPlayers()) {
-                player.moveCard(player.provinceDeck[0], Location.ProvinceOne);
-                player.moveCard(player.provinceDeck[0], Location.ProvinceTwo);
-                player.moveCard(player.provinceDeck[0], Location.ProvinceThree);
+                for(const location of this.game.rules.setupNonStrongholdProvinces) {
+                    player.moveCard(player.provinceDeck[0], location);
+                }
                 player.hideProvinceDeck = true;
             }
         } else {
@@ -107,10 +106,7 @@ export class SetupPhase extends Phase {
     }
 
     fillProvinces() {
-        const provinces = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
-        if(this.game.gameMode !== GameModes.Skirmish) {
-            provinces.push(Location.ProvinceFour);
-        }
+        const provinces = this.game.rules.setupNonStrongholdProvinces;
         for(const player of this.game.getPlayers()) {
             for(const province of provinces) {
                 const card = player.dynastyDeck[0];
@@ -128,14 +124,14 @@ export class SetupPhase extends Phase {
 
     drawStartingHands() {
         for(const player of this.game.getPlayers()) {
-            player.drawCardsToHand(this.game.gameMode === GameModes.Skirmish ? 3 : 4);
+            player.drawCardsToHand(this.game.rules.setupStartingHandSize);
         }
     }
 
     startGame() {
         for(const player of this.game.getPlayers()) {
             const strongholdHonor = player.stronghold?.cardData.honor ?? 0;
-            player.honor = this.game.gameMode === GameModes.Skirmish ? 6 : strongholdHonor;
+            player.honor = this.game.rules.setupFixedStartingHonor ?? strongholdHonor;
             player.readyToStart = true;
         }
         this.endPhase();

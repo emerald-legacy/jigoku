@@ -2,7 +2,7 @@ import { CardType, Location, TargetMode } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cardMenu, discardCard, lookAt, multipleContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';

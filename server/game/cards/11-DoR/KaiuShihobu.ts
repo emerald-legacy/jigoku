@@ -10,7 +10,7 @@ export default class KaiuShihobu extends DrawCard {
         this.reaction('Look at your dynasty deck')
             .when({
                 onCharacterEntersPlay: (event, context) =>
-                    event.card === context.source && context.game.gameMode !== GameModes.Skirmish
+                    event.card === context.source && context.game.rules.name !== GameModes.Skirmish
             })
             .deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
@@ -38,7 +38,7 @@ export default class KaiuShihobu extends DrawCard {
             });
 
         this.action('Put a holding in a province')
-            .condition((context) => context.game.gameMode !== GameModes.Skirmish)
+            .condition((context) => context.game.rules.name !== GameModes.Skirmish)
             .target({
                 name: 'first',
                 activePromptTitle: 'Choose a holding',

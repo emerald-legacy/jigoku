@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import { shuffle } from '../utils/shuffle.js';
+import { shuffle } from '../utils/random.js';
 import type { ActionEvent } from './GameAction.js';
 
 export interface RandomDiscardProperties extends PlayerActionProperties {

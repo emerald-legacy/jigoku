@@ -3,7 +3,6 @@ import { Location, ConflictType } from '../../Constants.js';
 import AttackersMatrix from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
-import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
@@ -111,7 +110,7 @@ class InitiateConflictPrompt extends UiPrompt {
             } else if(this.conflict.attackers.length === 0) {
                 menuTitle = 'Choose attackers';
             } else {
-                if(this.covertRemaining && this.game.gameMode !== GameModes.Emerald) {
+                if(this.covertRemaining && !this.game.rules.covertUnified) {
                     menuTitle = 'Choose defenders to Covert';
                 } else {
                     menuTitle = capitalize[ring.conflictType] + ' skill: '.concat(String(this.conflict.attackerSkill));
@@ -247,7 +246,7 @@ class InitiateConflictPrompt extends UiPrompt {
             if(this.selectedDefenders.includes(card)) {
                 return true;
             }
-            if(card.isCovert() || !this.covertRemaining || this.game.gameMode === GameModes.Emerald) {
+            if(card.isCovert() || !this.covertRemaining || this.game.rules.covertUnified) {
                 return false;
             }
 

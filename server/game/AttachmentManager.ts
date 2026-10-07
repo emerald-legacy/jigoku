@@ -1,5 +1,4 @@
 import { CardType, EffectName } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -44,8 +43,7 @@ export class AttachmentManager {
             }
         }
 
-        const frameworkLimitsAttachmentsWithRepeatedNames =
-            game.gameMode === GameModes.Emerald || game.gameMode === GameModes.Obsidian || game.gameMode === GameModes.Sanctuary;
+        const frameworkLimitsAttachmentsWithRepeatedNames = game.rules.attachmentsMaxOneCopyPerName;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             for(const card of this.attachments) {
                 const matchingAttachments = this.attachments.filter(

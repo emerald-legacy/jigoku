@@ -2,6 +2,7 @@ import { blank, changeType, gainAbility, modifyMilitarySkill, modifyPoliticalSki
 import { attach, cardLastingEffect, handler, sequentialContext } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
+import { randomItem } from '../../utils/random.js';
 
 export default class UndeadHorror extends BaseOni {
     static id = 'undead-horror';
@@ -22,7 +23,7 @@ export default class UndeadHorror extends BaseOni {
                 const potentialTargets = (context.player.opponent?.dynastyDiscardPile ?? []).filter(
                     (card) => card.type === CardType.Character
                 );
-                const targetCard = potentialTargets[Math.floor(Math.random() * potentialTargets.length)];
+                const targetCard = randomItem(potentialTargets);
                 return {
                     gameActions: [
                         cardLastingEffect({

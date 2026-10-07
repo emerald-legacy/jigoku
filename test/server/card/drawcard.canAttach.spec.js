@@ -1,3 +1,4 @@
+import { parseGameMode } from '../../../build/server/game/GameMode.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
 
 describe('DrawCard', function () {
@@ -6,6 +7,7 @@ describe('DrawCard', function () {
         this.blankEffect.getValue.and.returnValue(true);
         this.blankEffect.type = 'blank';
         this.game = jasmine.createSpyObj('game', ['emitEvent', 'on']);
+        this.game.rules = parseGameMode('stronghold');
         this.owner = {
             game: this.game
         };

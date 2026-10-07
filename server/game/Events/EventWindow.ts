@@ -111,6 +111,11 @@ export default class EventWindow extends BaseStepWithPipeline {
     }
 
     executeHandler() {
+        this.executeEvents((event) => this.game.emit(event.name, event));
+    }
+
+    /** Runs the events' handlers in order; `afterEach` follows each one that ran. */
+    protected executeEvents(afterEach?: (event: Event) => void): void {
         this.eventsToExecute = [...this.events].sort((a, b) => a.order - b.order);
 
         this.eventsToExecute.forEach(event => {
@@ -121,7 +126,7 @@ export default class EventWindow extends BaseStepWithPipeline {
             // later actions can inspect context.events. Executing again applies it twice.
             if(!event.cancelled && !event.resolved) {
                 event.executeHandler();
-                this.game.emit(event.name, event);
+                afterEach?.(event);
             }
         });
     }

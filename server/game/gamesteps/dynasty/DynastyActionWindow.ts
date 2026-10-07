@@ -1,5 +1,4 @@
 import { EffectName, EventName } from '../../Constants.js';
-import { parseGameMode } from '../../GameMode.js';
 import type Game from '../../Game.js';
 import ActionWindow from '../ActionWindow.js';
 
@@ -24,7 +23,7 @@ export class DynastyActionWindow extends ActionWindow {
             return this.complete();
         }
 
-        if(parseGameMode(this.game.gameMode).dynastyPhasePassingFate) {
+        if(this.game.rules.dynastyPhasePassingFate) {
             this.#handlePassingFate();
         } else {
             this.#handleSimplePass();

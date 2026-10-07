@@ -11,7 +11,6 @@ import {
     handler,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { GameModes } from '../../../../GameModes.js';
 
 class CraftyTsukumogami extends RingAttachment {
     static id = 'crafty-tsukumogami';
@@ -58,7 +57,7 @@ class CraftyTsukumogami extends RingAttachment {
     }
 
     private checkRingCondition(ring: Ring, context: AbilityContext) {
-        const frameworkLimitsAttachmentsWithRepeatedNames = context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
+        const frameworkLimitsAttachmentsWithRepeatedNames = context.game.rules.attachmentsMaxOneCopyPerName;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             const attachment = context.source;
             if(ring.attachments.filter((a) => !a.allowDuplicatesOfAttachment).some((a) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {

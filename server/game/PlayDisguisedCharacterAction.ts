@@ -1,4 +1,3 @@
-import { GameModes } from '../GameModes.js';
 import { CardType, EffectName, EventName, Phases, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
@@ -131,8 +130,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         if(!replacedCharacter) {
             return;
         }
-        const frameworkKeepsDisguisedInCurrentLocation =
-            context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
+        const frameworkKeepsDisguisedInCurrentLocation = context.game.rules.disguiseKeepsCharactersInSameLocation;
         const conflictOnly =
             this.intoLocation === PlayDisguisedCharacterIntoLocation.Conflict ||
             (frameworkKeepsDisguisedInCurrentLocation && replacedCharacter.isParticipating());

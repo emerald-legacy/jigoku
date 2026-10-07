@@ -6,7 +6,7 @@ import type { Event } from '../Events/Event.js';
 import type { SelectCardAction } from '../GameActions/SelectCardAction.js';
 import type { SelectRingAction } from '../GameActions/SelectRingActions.js';
 import Ring from '../Ring.js';
-import { randomItem } from '../utils/helpers.js';
+import { randomItem } from '../utils/random.js';
 import { GameActionCost } from './GameActionCost.js';
 
 /** A cost paid by choosing a card or a ring, then resolving the select's game action on it. */
@@ -35,8 +35,10 @@ export class MetaActionCost extends GameActionCost implements Cost {
     addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context);
         const name = properties.gameAction.name;
-        if(properties.targets && context.choosingPlayerOverride && 'selector' in properties && properties.selector) {
-            const chosen = randomItem(properties.selector.getAllLegalTargets(context, context.player));
+        const chosen = properties.targets && context.choosingPlayerOverride && 'selector' in properties && properties.selector
+            ? randomItem(properties.selector.getAllLegalTargets(context, context.player))
+            : undefined;
+        if(chosen) {
             context.costs[name] = chosen;
             context.costs[name + 'StateWhenChosen'] = chosen.createSnapshot();
             return properties.gameAction.addEventsToArray(events, context, {

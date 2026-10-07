@@ -1,24 +1,7 @@
-import { GameModes } from '../../GameModes.js';
-import { CardType, Location } from '../Constants.js';
+import type { GameMode } from '../GameMode.js';
+import { CardType } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import BaseAbility from '../BaseAbility.js';
-import DrawCard from '../DrawCard.js';
-
-function cardConditionSkirmish<C extends DrawCard>(card: C, context: AbilityContext) {
-    return (
-        card.location === Location.PlayArea &&
-        card.getFate() <= 1 &&
-        !card.isParticipating() &&
-        ((!card.bowed && card.allowGameAction('bow', context)) || (card.bowed && card.allowGameAction('ready', context)))
-    );
-}
-
-function cardConditionDefault<C extends DrawCard>(card: C, context: AbilityContext) {
-    return (
-        card.location === Location.PlayArea &&
-        ((card.getFate() === 0 && card.allowGameAction('bow', context)) || card.bowed)
-    );
-}
 
 export class WaterRingEffect extends BaseAbility {
     public title = 'Water Ring Effect';
@@ -27,7 +10,7 @@ export class WaterRingEffect extends BaseAbility {
 
     constructor(
         optional: boolean,
-        gameMode: GameModes,
+        rules: GameMode,
         private onResolution = (_resolved: boolean) => {}
     ) {
         super({
@@ -36,7 +19,7 @@ export class WaterRingEffect extends BaseAbility {
                 source: 'Water Ring',
                 buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : [],
                 cardType: CardType.Character,
-                cardCondition: gameMode === GameModes.Skirmish ? cardConditionSkirmish : cardConditionDefault
+                cardCondition: rules.ringWaterTargetCondition
             }
         });
     }

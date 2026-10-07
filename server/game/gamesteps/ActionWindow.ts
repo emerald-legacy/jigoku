@@ -294,7 +294,7 @@ class ActionWindow extends UiPrompt {
     }
 
     nextPlayer() {
-        const otherPlayer = this.game.getOtherPlayer(this.currentPlayer);
+        const otherPlayer = this.currentPlayer.opponent;
 
         this.currentPlayer.actionPhasePriority = false;
 

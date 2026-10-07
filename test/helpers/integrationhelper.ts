@@ -170,13 +170,18 @@ globalThis.fillers = fillers;
 globalThis.integration = function (definitions: () => void): void {
     describe('integration', function (this: unknown) {
         beforeEach(function (this: Record<string, unknown>) {
-            const flow = new GameFlowWrapper();
-            this.flow = flow;
-            this.game = flow.game;
-            this.player1Object = flow.game.getPlayerByName('player1');
-            this.player2Object = flow.game.getPlayerByName('player2');
-            this.player1 = flow.player1;
-            this.player2 = flow.player2;
+            let flow = new GameFlowWrapper();
+            // a game keeps the mode it was created with, so another mode needs a new game
+            const useFlow = (next: GameFlowWrapper) => {
+                flow = next;
+                this.flow = flow;
+                this.game = flow.game;
+                this.player1Object = flow.game.getPlayerByName('player1');
+                this.player2Object = flow.game.getPlayerByName('player2');
+                this.player1 = flow.player1;
+                this.player2 = flow.player2;
+            };
+            useFlow(flow);
 
             ProxiedGameFlowWrapperMethods.forEach((method) => {
                 this[method] = (...args: unknown[]): unknown => Reflect.apply(flow[method], flow, args);
@@ -194,7 +199,9 @@ globalThis.integration = function (definitions: () => void): void {
                     options.player2 = {};
                 }
                 const gameMode = options.gameMode || GameModes.Stronghold;
-                flow.game.gameMode = gameMode;
+                if(gameMode !== flow.game.gameMode) {
+                    useFlow(new GameFlowWrapper(gameMode));
+                }
 
                 flow.player1.selectDeck(deckBuilder.customDeck(options.player1, gameMode));
                 flow.player2.selectDeck(deckBuilder.customDeck(options.player2, gameMode));

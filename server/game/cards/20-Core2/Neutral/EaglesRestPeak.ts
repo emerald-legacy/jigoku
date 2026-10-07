@@ -2,7 +2,7 @@ import { CardType, Duration, Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { playerDelayedEffect } from '../../../effects.js';
 import { handler, lookAt, playerLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { shuffle } from '../../../utils/random.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
     static id = 'eagle-s-rest-peak';

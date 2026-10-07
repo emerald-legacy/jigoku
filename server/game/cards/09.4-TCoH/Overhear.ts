@@ -1,7 +1,7 @@
 import { lookAt, moveCard, multipleContext, takeHonor } from '../../GameActions/GameActions.js';
 import { Location, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 
 export default class Overhear extends DrawCard {
     static id = 'overhear';

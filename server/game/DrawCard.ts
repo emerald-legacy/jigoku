@@ -17,7 +17,6 @@ import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
 import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import type Player from './Player.js';
@@ -66,7 +65,6 @@ const SKILL_EFFECTS: Set<string> = new Set([
     EffectName.SetGlory
 ]);
 
-const MODES_LIMITING_REPEATED_ATTACHMENTS = new Set<string | undefined>([GameModes.Emerald, GameModes.Obsidian, GameModes.Sanctuary]);
 
 function sumModifiers(modifiers: StatModifier[]): number {
     return modifiers.reduce((total, modifier) => total + modifier.amount, 0);
@@ -828,7 +826,7 @@ class DrawCard extends BaseCard {
 
     allowAttachment(attachment: BaseCard): boolean {
         if(
-            MODES_LIMITING_REPEATED_ATTACHMENTS.has(this.game.gameMode) &&
+            this.game.rules.attachmentsMaxOneCopyPerName &&
             this.type === CardType.Character &&
             this.attachments.some(
                 (a) =>

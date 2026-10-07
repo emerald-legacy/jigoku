@@ -14,12 +14,12 @@ import InitiateCardAbilityEvent from '../../Events/InitiateCardAbilityEvent.js';
 import AttackersMatrix from './AttackersMatrix.js';
 
 import { Players, CardType, EventName, EffectName, Location, ConflictType } from '../../Constants.js';
-import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
 import type { Conflict } from '../../Conflict.js';
 import type { ParticipantCostEffect } from '../../Effects/EffectValueMap.js';
+import { payAdditionalCost } from '../../costs/additionalCost.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { AnyEvent } from '../../TriggeredAbilityContext.js';
@@ -264,36 +264,10 @@ class ConflictFlow extends BaseStepWithPipeline {
                 this.game.openEventWindow(costEvents);
             }
             this.conflict.attackerDeclarationFailed = false;
-            const additionalCosts = this.conflict.attackingPlayer
-                .getEffects(EffectName.CostToDeclareAnyParticipants)
-                .filter((properties: ParticipantCostEffect) => properties.type === 'attackers');
-            if(additionalCosts.length > 0) {
-                for(const properties of additionalCosts) {
-                    this.game.queueSimpleStep(() => {
-                        const player = this.conflict.attackingPlayer;
-                        const context = this.game.getFrameworkContext(player);
-                        let cost = properties.cost;
-                        if(typeof cost === 'function') {
-                            cost = cost(player);
-                        }
-                        if(cost.hasLegalTarget(context)) {
-                            cost.resolve(player, context);
-                            this.game.addMessage(
-                                '{0} {1} in order to declare attacking characters',
-                                player,
-                                this.game.gameChat.nested(cost.getEffectMessage(context))
-                            );
-                        } else {
-                            this.conflict.attackerDeclarationFailed = true;
-                            this.conflict.conflictFailedToInitiate = true;
-                            this.game.addMessage(
-                                '{0} cannot pay the additional cost required to declare attacking characters',
-                                player
-                            );
-                        }
-                    });
-                }
-            }
+            this.queueParticipantCosts('attackers', () => this.conflict.attackingPlayer, 'declare attacking characters', () => {
+                this.conflict.attackerDeclarationFailed = true;
+                this.conflict.conflictFailedToInitiate = true;
+            });
         }
     }
 
@@ -422,7 +396,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     promptForCovert(): void {
-        if(this.game.gameMode === GameModes.Emerald) {
+        if(this.game.rules.covertUnified) {
             this.promptForCovertEmerald();
             return;
         }
@@ -561,7 +535,7 @@ class ConflictFlow extends BaseStepWithPipeline {
 
         let events: Event[] = [];
 
-        if(this.game.gameMode === GameModes.Emerald) {
+        if(this.game.rules.covertUnified) {
             let goodContext: AbilityContext | undefined = undefined;
             this.covert.forEach((context) => {
                 if(events.length === 0 && context.source && context.target) {
@@ -654,38 +628,28 @@ class ConflictFlow extends BaseStepWithPipeline {
         this.game.queueStep(new SelectDefendersPrompt(this.game, this.conflict.defendingPlayer, this.conflict));
     }
 
+    /** The declaring player's additional costs to declare `side` (CostToDeclareAnyParticipants), each in its own step; `failed` when one can't be paid. */
+    private queueParticipantCosts(side: 'attackers' | 'defenders', declaringPlayer: () => Player, purpose: string, failed: () => void): void {
+        const additionalCosts = declaringPlayer()
+            .getEffects(EffectName.CostToDeclareAnyParticipants)
+            .filter((properties: ParticipantCostEffect) => properties.type === side);
+        for(const properties of additionalCosts) {
+            this.game.queueSimpleStep(() => {
+                const player = declaringPlayer();
+                const cost = typeof properties.cost === 'function' ? properties.cost(player) : properties.cost;
+                if(!payAdditionalCost(this.game.getFrameworkContext(player), player, cost, player, purpose, properties.message)) {
+                    failed();
+                }
+            });
+        }
+    }
+
     payDefendersCost(): void {
         if(this.conflict.defenders.length > 0) {
             this.conflict.defenderDeclarationFailed = false;
-            const additionalCosts = this.conflict.defendingPlayer
-                .getEffects(EffectName.CostToDeclareAnyParticipants)
-                .filter((properties: ParticipantCostEffect) => properties.type === 'defenders');
-            if(additionalCosts.length > 0) {
-                for(const properties of additionalCosts) {
-                    this.game.queueSimpleStep(() => {
-                        const player = this.conflict.defendingPlayer;
-                        const context = this.game.getFrameworkContext(player);
-                        let cost = properties.cost;
-                        if(typeof cost === 'function') {
-                            cost = cost(player);
-                        }
-                        if(cost.hasLegalTarget(context)) {
-                            cost.resolve(player, context);
-                            this.game.addMessage(
-                                '{0} {1} in order to declare defending characters',
-                                player,
-                                properties.message || this.game.gameChat.nested(cost.getEffectMessage(context))
-                            );
-                        } else {
-                            this.conflict.defenderDeclarationFailed = true;
-                            this.game.addMessage(
-                                '{0} cannot pay the additional cost required to declare defending characters',
-                                player
-                            );
-                        }
-                    });
-                }
-            }
+            this.queueParticipantCosts('defenders', () => this.conflict.defendingPlayer, 'declare defending characters', () => {
+                this.conflict.defenderDeclarationFailed = true;
+            });
 
             const totalHonorCost = this.conflict.defenders.reduce(
                 (total: number, card: DrawCard) => {
@@ -847,7 +811,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(!this.game.rules.conflictHaveUnopposedHonorLoss) {
             if(this.conflict.conflictUnopposed) {
                 this.game.addMessage('{0} has won an unopposed conflict', this.conflict.winner);
             }

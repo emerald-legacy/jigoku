@@ -1,31 +1,8 @@
-import { GameModes } from '../../GameModes.js';
 import { TargetMode } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
 import BaseAbility from '../BaseAbility.js';
-import type { ChoicesInterface } from '../Interfaces.js';
-
-const GAIN_2 = 'Gain 2 Honor';
-const TAKE_1 = 'Take 1 Honor from opponent';
-const SKIP = 'Don\'t resolve';
-
-function choices(optional: boolean, gameMode: GameModes): ChoicesInterface {
-    switch(gameMode) {
-        case GameModes.Skirmish:
-            return {
-                [TAKE_1]: (context: AbilityContext) =>
-                    context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context),
-                [SKIP]: () => optional
-            };
-        default:
-            return {
-                [GAIN_2]: () => true,
-                [TAKE_1]: (context: AbilityContext) =>
-                    context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context),
-                [SKIP]: () => optional
-            };
-    }
-}
+import { AIR_CHOICE, type GameMode } from '../GameMode.js';
 
 export class AirRingEffect extends BaseAbility {
     public title = 'Air Ring Effect';
@@ -34,7 +11,7 @@ export class AirRingEffect extends BaseAbility {
 
     public constructor(
         optional: boolean,
-        gameMode: GameModes,
+        rules: GameMode,
         private onResolution = (_resolved: boolean) => {}
     ) {
         super({
@@ -42,13 +19,13 @@ export class AirRingEffect extends BaseAbility {
                 mode: TargetMode.Select,
                 activePromptTitle: 'Choose an effect to resolve',
                 source: 'Air Ring',
-                choices: choices(optional, gameMode)
+                choices: rules.ringAirChoices(optional)
             }
         });
     }
 
     public executeHandler(context: AbilityContext): void {
-        if(context.select === GAIN_2) {
+        if(context.select === AIR_CHOICE.GAIN_2) {
             const [, amountToTransfer] = CalculateHonorLimit(
                 context.player,
                 context.game.roundNumber,
@@ -65,7 +42,7 @@ export class AirRingEffect extends BaseAbility {
             context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'gain-honor' });
             return context.game.actions.gainHonor({ amount: 2 }).resolve(context.player, context);
         }
-        if(context.select === TAKE_1) {
+        if(context.select === AIR_CHOICE.TAKE_1) {
             context.game.addMessage(
                 '{0} resolves the {1} ring, taking 1 honor from {2}',
                 context.player,

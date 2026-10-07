@@ -3,7 +3,6 @@ import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { CardType, EventName, Location, Phases } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
-import { parseGameMode } from './GameMode.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 
@@ -26,7 +25,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
         if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
-            !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayAttachments
+            !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
             return 'phase';
         }

@@ -4,7 +4,6 @@ import { EffectName, EventName, Location, Phases, PlayType, Players } from './Co
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
-import { parseGameMode } from './GameMode.js';
 import type DrawCard from './DrawCard.js';
 
 export enum PlayCharacterIntoLocation {
@@ -24,7 +23,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
-            !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayConflictCharacters
+            !context.game.rules.dynastyPhaseCanPlayConflictCharacters
         ) {
             return 'phase';
         }

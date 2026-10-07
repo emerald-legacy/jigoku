@@ -1,9 +1,11 @@
+import { parseGameMode } from '../../../build/server/game/GameMode.js';
 import MenuPrompt from '../../../build/server/game/gamesteps/MenuPrompt.js';
 import Player from '../../../build/server/game/Player.js';
 
 describe('the MenuPrompt', function() {
     beforeEach(function() {
         var game = new jasmine.createSpyObj('game', ['playerDecked', 'emitEvent', 'addMessage', 'getOtherPlayer']);
+        game.rules = parseGameMode('stronghold');
 
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, game);
         this.player.initialise();

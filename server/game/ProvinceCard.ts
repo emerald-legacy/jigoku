@@ -1,4 +1,3 @@
-import { GameModes } from '../GameModes.js';
 import { CardType, EffectName, Element, Location } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
 import { cardCannot } from './effects.js';
@@ -222,11 +221,7 @@ export class ProvinceCard extends BaseCard {
 
         this.game.addMessage('{0} has broken {1}!', this.controller.opponent, this);
 
-        if(
-            this.location === Location.StrongholdProvince ||
-            (this.game.gameMode === GameModes.Skirmish &&
-                this.controller.getProvinces((card) => card.isBroken).length > 2)
-        ) {
+        if(this.game.rules.winConReachedConquestVictory(this)) {
             this.game.recordWinner(this.controller.opponent, 'conquest');
             return;
         }
@@ -313,11 +308,11 @@ export class ProvinceCard extends BaseCard {
     }
 
     isFaceup(): boolean {
-        return this.game.gameMode !== GameModes.Skirmish && super.isFaceup();
+        return this.game.rules.setupHaveProvinceCards && super.isFaceup();
     }
 
     isFacedown(): boolean {
-        return this.game.gameMode !== GameModes.Skirmish && super.isFacedown();
+        return this.game.rules.setupHaveProvinceCards && super.isFacedown();
     }
 
     cardsInSelf(): DrawCard[] {

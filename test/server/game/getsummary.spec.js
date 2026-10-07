@@ -1,10 +1,11 @@
+import { parseGameMode } from '../../../build/server/game/GameMode.js';
 
 import Game from '../../../build/server/game/Game.js';
 import Player from '../../../build/server/game/Player.js';
 import { Spectator } from '../../../build/server/game/Spectator.js';
 
 describe('the Game', () => {
-    var game = {};
+    var game = { rules: parseGameMode('stronghold') };
     var player1 = new Player('1', { username: 'Player 1', settings: {} }, true, game);
     var player2 = new Player('2', { username: 'Player 2', settings: {} }, false, game);
     var spectator = new Spectator('3', 'Spectator 1');

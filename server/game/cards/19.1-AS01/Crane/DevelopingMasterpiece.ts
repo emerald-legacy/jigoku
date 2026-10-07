@@ -6,6 +6,7 @@ import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
 import { msg } from '../../../GameChat.js';
+import { randomItem } from '../../../utils/random.js';
 
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
@@ -79,5 +80,5 @@ const haikus = [
     ['The summer grasses—', 'Of the brave soldiers\' dreams', 'The aftermath.']
 ];
 function randomHaiku(): string[] {
-    return haikus[Math.floor(haikus.length * Math.random())];
+    return randomItem(haikus) ?? [];
 }

@@ -1,7 +1,7 @@
 import { cardMenu, discardCard } from '../GameActions/GameActions.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import { shuffle } from '../utils/shuffle.js';
+import { shuffle } from '../utils/random.js';
 
 export function randomHandCards(player: Player | undefined, amount: number): DrawCard[] {
     return shuffle(player?.hand ?? []).slice(0, amount).sort((a, b) => a.name.localeCompare(b.name));

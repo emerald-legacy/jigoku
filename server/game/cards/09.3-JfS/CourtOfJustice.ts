@@ -1,6 +1,6 @@
 import { lookAt } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 import { ConflictType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
