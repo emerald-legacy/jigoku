@@ -19,6 +19,6 @@ export default class ALegionOfOne extends DrawCard {
                 effect: modifyMilitarySkill(3)
             }))
             .effect('give {0} +3/+0')
-            .mayResolveTwice({ cost: removeFate((context) => ({ target: context.target })), label: 'Remove 1 fate' });
+            .mayResolveAgain({ cost: removeFate((context) => ({ target: context.target })), label: 'Remove 1 fate' });
     }
 }

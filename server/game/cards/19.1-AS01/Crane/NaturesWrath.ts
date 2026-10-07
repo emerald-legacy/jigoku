@@ -40,7 +40,7 @@ export default class NaturesWrath extends DrawCard {
                     target: context.targets[TARGET_CHARACTER]
                 }))
             })
-            .mayResolveTwice({ cost: selfDishonorSelect(), label: 'Dishonor a participating character' })
+            .mayResolveAgain({ cost: selfDishonorSelect(), label: 'Dishonor a participating character' })
             .cannotTargetFirst()
             .max(perConflict(1));
     }

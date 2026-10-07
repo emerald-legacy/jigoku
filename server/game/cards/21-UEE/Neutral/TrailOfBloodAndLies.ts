@@ -27,6 +27,6 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 controller: Players.Opponent
             }, dishonor())
             .max(perPhase(1))
-            .mayResolveTwice({ condition: (context) => context.player.isCharacterTraitInPlay('magistrate') });
+            .mayResolveAgain({ condition: (context) => context.player.isCharacterTraitInPlay('magistrate') });
     }
 }

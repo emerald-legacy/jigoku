@@ -26,7 +26,7 @@ export default class Overhear extends DrawCard {
                 };
             }))
             .effect('reveal a random card from {1}\'s hand and place it on top of {1}\'s deck', (context) => (context.player.opponent ? [context.player.opponent] : []))
-            .mayResolveTwice({
+            .mayResolveAgain({
                 cost: takeHonor((context) => ({ target: context.player })),
                 label: 'Give 1 honor',
                 condition: (context) => !!context.game.currentConflict?.getCharacters(context.player).some((card) => card.hasTrait('courtier'))

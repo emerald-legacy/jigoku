@@ -878,10 +878,10 @@ export class AbilityBuilder<
     }
 
     /**
-     * "You may [pay] to resolve this ability twice": once it resolved, the player may pay `cost` (`label` names it on the button)
-     * to resolve it again; on that second resolution they may pay it again, for no effect. Without a cost, a Yes/No question.
+     * "Then, you may [pay] to resolve this ability again": once it resolved, the player may pay `cost` (`label` names it on the button)
+     * to resolve it once more; on that second resolution they may pay it again, for no effect. Without a cost, a Yes/No question.
      */
-    mayResolveTwice(options: {
+    mayResolveAgain(options: {
         cost?: BuilderAction<Base, TG, RG, CO, TK>;
         label?: string;
         condition?: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean;
@@ -889,7 +889,7 @@ export class AbilityBuilder<
         const cost = options.cost && toGameAction(options.cost, `${this.draft.title}: not a game action`);
         const label = options.label;
         if(cost && !label) {
-            throw new Error(`${this.draft.title}: mayResolveTwice() with a cost needs a label`);
+            throw new Error(`${this.draft.title}: mayResolveAgain() with a cost needs a label`);
         }
         const condition = options.condition && this.#checked(options.condition, this.draft.specs);
         return this.#resolveAgain((context) => {
@@ -897,7 +897,7 @@ export class AbilityBuilder<
                 return undefined;
             }
             if(!cost || !label) {
-                return context.subResolution ? undefined : mayResolveAgain(context, 'Resolve this ability again?', Players.Self);
+                return context.subResolution ? undefined : resolveAgainPrompt(context, 'Resolve this ability again?', Players.Self);
             }
             const verb = label.charAt(0).toLowerCase() + label.slice(1);
             if(context.subResolution) {
@@ -924,7 +924,7 @@ export class AbilityBuilder<
 
     /** "Then, your opponent may resolve this ability": they are asked, and resolve it as if it were theirs (so they may hand it back). */
     opponentMayResolveAgain(activePromptTitle: string): this {
-        return this.#resolveAgain((context) => mayResolveAgain(context, activePromptTitle, Players.Opponent));
+        return this.#resolveAgain((context) => resolveAgainPrompt(context, activePromptTitle, Players.Opponent));
     }
 
     #resolveAgain(then: (context: AbilityContext) => ThenAbilityProperties | undefined): this {
@@ -1145,7 +1145,7 @@ function resolveAgain(context: AbilityContext, player?: Player): GameAction {
 }
 
 /** "May resolve this ability again": `chooser` (the opponent resolves it as theirs, or the player in a solo game) answers Yes or No; No is offered only when Yes can resolve. */
-function mayResolveAgain(context: AbilityContext, activePromptTitle: string, chooser: Players.Self | Players.Opponent): ThenAbilityProperties {
+function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, chooser: Players.Self | Players.Opponent): ThenAbilityProperties {
     const opponent = chooser === Players.Opponent ? context.player.opponent : undefined;
     const again = resolveAgain(context, opponent);
     const player = opponent ?? context.player;

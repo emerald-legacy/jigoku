@@ -16,7 +16,7 @@ class Banzai extends DrawCard {
                 effect: modifyMilitarySkill(2)
             }))
             .effect('grant 2 military skill to {0}')
-            .mayResolveTwice({ cost: loseHonor(), label: 'Lose 1 honor' })
+            .mayResolveAgain({ cost: loseHonor(), label: 'Lose 1 honor' })
             .max(perConflict(1));
     }
 }
