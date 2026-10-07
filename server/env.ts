@@ -9,7 +9,7 @@ const parsedEnv = z
         GAME_NODE_NAME: z.string(),
         GAME_NODE_PROXY_PORT: z.coerce.number().int().optional(),
         GAME_NODE_SOCKET_IO_PORT: z.coerce.number().int(),
-        HTTPS: z.string(),
+        HTTPS: z.string().transform((value) => value === 'true'),
         LOBBY_PORT: z.coerce.number().int(),
         MAX_GAMES: z.coerce.number().int().positive().default(20),
         LOBBY_WS_URL: z.string(),

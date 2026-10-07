@@ -509,12 +509,7 @@ export class AbilityBuilder<
         const { tokenCondition } = props;
         if(tokenCondition) {
             const checked = this.#checked((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => context, earlier, others);
-            entry.tokenCondition = (token, context) => {
-                if(!context) {
-                    throw new Error(`${this.draft.title}: token condition without a context`);
-                }
-                return tokenCondition(token, checked(context));
-            };
+            entry.tokenCondition = (token, context) => tokenCondition(token, checked(context));
         }
         if(props.cardCondition) {
             entry.cardCondition = this.#cardCondition(holdsCard, props.cardCondition, earlier, others);
@@ -590,7 +585,7 @@ export class AbilityBuilder<
         const entry: RingEntry = {
             mode: TargetMode.Ring,
             ringCondition: (ring, context) => {
-                if(!context || !this.#isContext<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>>(context, required, optional)) {
+                if(!this.#isContext<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>>(context, required, optional)) {
                     throw this.#contextError();
                 }
                 return props.ringCondition(ring, context);

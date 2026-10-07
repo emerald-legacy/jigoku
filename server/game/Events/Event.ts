@@ -24,7 +24,7 @@ export class Event {
     private static readonly RESERVED_PARAM_KEYS = new Set(['cancelled', 'resolved', 'handler', 'window']);
 
     constructor(
-        public name: string,
+        public name: EventName,
         params: Record<string, unknown>,
         private handler?: (event: Event) => void
     ) {

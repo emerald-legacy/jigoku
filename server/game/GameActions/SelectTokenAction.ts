@@ -114,7 +114,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
                         if(properties.message && messageArgs) {
                             context.game.addMessage(properties.message, ...messageArgs(token, player));
                         }
-                        context.tokens[this.name] = token;
+                        context.tokens[this.name] = [token];
                         properties.gameAction.addEventsToArray(
                             events,
                             context,

@@ -519,10 +519,11 @@ class PlayerInteractionWrapper {
         if(!element) {
             return;
         }
-        if(!['fire', 'earth', 'water', 'air', 'void'].includes(element)) {
+        const ring = this.game.ringFor(element);
+        if(!ring) {
             throw new Error(`${element} is not a valid ring selection`);
         }
-        this.game.rings[element].claimRing(this.player);
+        ring.claimRing(this.player);
         this.game.checkGameState(true);
         this.game.continue();
     }

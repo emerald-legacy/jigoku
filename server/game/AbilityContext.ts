@@ -22,7 +22,7 @@ export interface AbilityContextProperties {
     targets?: Record<string, BaseCard | BaseCard[]>;
     rings?: Record<string, Ring | Ring[]>;
     selects?: Record<string, SelectChoice>;
-    tokens?: Record<string, StatusToken | StatusToken[]>;
+    tokens?: Record<string, StatusToken[]>;
     elements?: Record<string, ElementSymbol>;
     stage?: Stage;
     targetAbility?: CardAbility | null;
@@ -58,7 +58,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     targets: Record<string, BaseCard | BaseCard[]>;
     rings: Record<string, Ring | Ring[]>;
     selects: Record<string, SelectChoice>;
-    tokens: Record<string, StatusToken | StatusToken[]>;
+    tokens: Record<string, StatusToken[]>;
     elements: Record<string, ElementSymbol>;
     deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
@@ -70,7 +70,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     target: T | undefined;
     select: string = '';
     ring: Ring | undefined;
-    token: StatusToken | StatusToken[] | undefined;
+    token: StatusToken[] | undefined;
     element: ElementSymbol | null = null;
     elementCard: BaseCard | undefined;
     provincesToRefill: { player: Player; location: Location }[] = [];

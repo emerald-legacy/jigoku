@@ -52,7 +52,7 @@ export interface TargetSelect extends BaseTarget {
 export interface TargetRing extends BaseTarget {
     mode: TargetMode.Ring;
     optional?: boolean;
-    ringCondition: (ring: Ring, context?: AbilityContext) => boolean;
+    ringCondition: (ring: Ring, context: AbilityContext) => boolean;
 }
 
 export interface TargetAbility extends BaseTarget {
@@ -68,7 +68,7 @@ export interface TargetToken extends BaseTarget {
     location?: Location | Location[];
     cardType?: CardType | CardType[];
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
-    tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
+    tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
 }
 
 export interface TargetElementSymbol extends BaseTarget {
@@ -123,7 +123,7 @@ export interface ActionCardTarget {
 }
 
 export interface ActionRingTarget {
-    ringCondition?: (ring: Ring, context?: AbilityContext) => boolean;
+    ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
 }
 
 type ActionTarget = (TargetCard & ActionCardTarget) | (TargetRing & ActionRingTarget) | TargetSelect | TargetAbility;
@@ -200,7 +200,7 @@ interface TriggeredAbilityCardTarget {
 }
 
 interface TriggeredAbilityRingTarget {
-    ringCondition?: (ring: Ring, context?: TriggeredAbilityContext) => boolean;
+    ringCondition?: (ring: Ring, context: TriggeredAbilityContext) => boolean;
 }
 
 type TriggeredAbilityTarget =
@@ -209,7 +209,7 @@ type TriggeredAbilityTarget =
     | TargetSelect;
 
 interface TriggeredAbilityTargets {
-    [propName: string]: TriggeredAbilityTarget & SubTarget & TriggeredAbilityTarget;
+    [propName: string]: TriggeredAbilityTarget & SubTarget;
 }
 
 export type TargetPropertiesInput = (ActionTarget | TriggeredAbilityTarget) & SubTarget;

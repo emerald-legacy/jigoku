@@ -65,7 +65,7 @@ export class GameServer implements GameRouter {
         } catch{
             // No local certs — if HTTPS is enabled (e.g. via nginx proxy), still
             // advertise https to clients so they connect over the proxy.
-            this.protocol = env.https === 'true' ? 'https' : 'http';
+            this.protocol = env.https ? 'https' : 'http';
         }
 
         this.wsSocket = new WsSocket(this.host, this.protocol);

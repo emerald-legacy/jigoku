@@ -104,7 +104,7 @@ const customMatchers: jasmine.CustomMatcherFactories = {
             compare: function (player: PlayerInteractionWrapper, ring: unknown) {
                 let resolvedRing = ring;
                 if(typeof ring === 'string') {
-                    resolvedRing = player.player.game.rings[ring];
+                    resolvedRing = player.player.game.ringFor(ring);
                 }
                 const pass = resolvedRing instanceof Ring && player.currentActionRingTargets.includes(resolvedRing);
                 const ringElement = resolvedRing instanceof Ring ? resolvedRing.element : String(resolvedRing);

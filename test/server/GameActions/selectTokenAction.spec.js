@@ -147,7 +147,7 @@ describe('SelectTokenAction', function() {
             action.addEventsToArray(events, this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).options[0].handler();
             expect(this.gameAction.addEventsToArray).toHaveBeenCalledWith(events, this.context, jasmine.objectContaining({ name: 'token-a' }));
-            expect(this.context.tokens.selectToken).toBe(this.tokenA);
+            expect(this.context.tokens.selectToken).toEqual([this.tokenA]);
         });
 
         it('should add a message via messageArgs when a single-token handler fires and message is configured', function() {
