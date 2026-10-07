@@ -34,8 +34,6 @@
     },
     "dependencies": {
         "axios": "1.20.0",
-        "bcrypt": "6.0.0",
-        "cross-env": "10.1.0",
         "jsonwebtoken": "9.0.3",
         "socket.io": "4.8.3",
         "uuid": "14.0.2",
@@ -46,13 +44,13 @@
     },
     "devDependencies": {
         "@eslint/js": "10.0.1",
-        "@types/bcrypt": "6.0.0",
         "@types/jasmine": "6.0.0",
         "@types/jsonwebtoken": "9.0.10",
         "@types/node": "26.6.1",
         "@types/ws": "8.18.1",
         "@typescript-eslint/eslint-plugin": "8.70.0",
         "@typescript-eslint/parser": "8.70.0",
+        "cross-env": "10.1.0",
         "eslint": "10.10.0",
         "eslint-plugin-jasmine": "4.2.2",
         "globals": "17.12.0",

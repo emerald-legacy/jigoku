@@ -99,7 +99,6 @@ class Effect<T extends GameObject = GameObject> {
         this.targets = [];
         this.refreshContext();
         this.effect.duration = this.duration;
-        this.effect.isConditional = !!properties.condition;
         this.endingMessage = properties.endingMessage || undefined;
     }
 

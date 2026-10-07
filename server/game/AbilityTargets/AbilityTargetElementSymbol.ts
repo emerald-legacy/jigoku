@@ -50,19 +50,7 @@ class AbilityTargetElementSymbol {
             if(elements.length === 0) {
                 return false;
             }
-            return true; // cheating, this is only used for Twin Soul Temple and the action is always valid if it has an element
-
-            // let contextCopy = context.copy();
-            // contextCopy.elements[this.name] = elements;
-            // if(this.name === 'target') {
-            //     contextCopy.element = elements;
-            // }
-            // if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
-            //     return false;
-            // }
-
-            // return (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-            //         (properties.gameAction.length === 0 || properties.gameAction.some(gameAction => gameAction.hasLegalTarget(contextCopy)));
+            return true; // only Twin Soul Temple uses this, and its action is valid whenever the card has an element
         };
         const cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));

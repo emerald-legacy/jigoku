@@ -88,16 +88,6 @@ class AbilityTargetCard {
             targetResults.delayTargeting = this;
             return;
         }
-        if(this.properties.mode === TargetMode.AutoSingle) {
-            const legalTargets = this.selector.getAllLegalTargets(context, player);
-            if(legalTargets.length === 1) {
-                context.targets[this.name] = legalTargets[0];
-                if(this.name === 'target') {
-                    context.target = legalTargets[0];
-                }
-                return;
-            }
-        }
         const { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
 
         const buttons: PromptButton[] = [];

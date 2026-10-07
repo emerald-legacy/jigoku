@@ -76,17 +76,7 @@ export class GameServer implements GameRouter {
         this.wsSocket.on('onCloseGame', this.onCloseGame.bind(this));
         this.wsSocket.on('onCardData', this.onCardData.bind(this));
 
-        // HTTP request handler for health checks
-        const requestHandler = (req: http.IncomingMessage, res: http.ServerResponse) => {
-            if(req.url === '/health') {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    status: 'ok',
-                    timestamp: Date.now(),
-                    games: this.games.size
-                }));
-            }
-        };
+        const requestHandler = this.onHttpRequest.bind(this);
 
         const server =
             !privateKey || !certificate
@@ -114,6 +104,21 @@ export class GameServer implements GameRouter {
         });
         this.io.use(this.handshake.bind(this));
         this.io.on('connection', this.onConnection.bind(this));
+    }
+
+    // socket.io answers its own path before this handler is called
+    onHttpRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
+        if(req.url === '/health') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                status: 'ok',
+                timestamp: Date.now(),
+                games: this.games.size
+            }));
+            return;
+        }
+        res.writeHead(404);
+        res.end();
     }
 
     handleError(game: Game, e: Error) {
@@ -309,12 +314,11 @@ export class GameServer implements GameRouter {
         const saveState = game.getSaveState();
         this.wsSocket.send('GAMEWIN', { game: saveState, winner: winner.name, reason: reason });
 
-        void axios
-            .post(
-                `https://l5r-analytics-engine-production.up.railway.app/api/game-report/${env.environment}`,
-                saveState
-            )
-            .catch(() => {});
+        if(env.analyticsUrl) {
+            void axios
+                .post(`${env.analyticsUrl}/${env.environment}`, saveState)
+                .catch((err: unknown) => logger.warn(`Game report failed: ${err instanceof Error ? err.message : String(err)}`));
+        }
 
         // Send hidden info log (hands + provinces) to both players for replay enrichment
         const hiddenInfoLog = game.hiddenInfoLog;

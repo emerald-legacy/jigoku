@@ -20,7 +20,7 @@ export interface CardSelectorProperties extends BaseCardSelectorProperties {
 }
 
 /** Modes whose selector passes the chosen card on its own. */
-export type SingleCardMode = TargetMode.Single | TargetMode.AutoSingle | TargetMode.Ability | TargetMode.Token | TargetMode.ElementSymbol;
+export type SingleCardMode = TargetMode.Single | TargetMode.Ability | TargetMode.Token | TargetMode.ElementSymbol;
 export type MultiCardMode = TargetMode.Exactly | TargetMode.ExactlyVariable | TargetMode.MaxStat | TargetMode.Unlimited | TargetMode.UpTo | TargetMode.UpToVariable;
 
 const MULTI_CARD_MODES: readonly TargetMode[] = [
@@ -57,7 +57,6 @@ const defaultProperties: CardSelectorProperties = {
 
 const ModeToSelector: Record<string, (p: CardSelectorProperties) => BaseSelector> = {
     ability: (p) => new SingleCardSelector(p),
-    autoSingle: (p) => new SingleCardSelector(p),
     exactly: (p) => new ExactlyXCardSelector(p.numCards ?? 1, p),
     exactlyVariable: (p) => new ExactlyVariableXCardSelector(p.numCardsFunc ?? (() => 1), p),
     maxStat: (p) => {

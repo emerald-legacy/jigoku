@@ -60,7 +60,6 @@ export abstract class EffectBase<N extends EffectName = EffectName, T extends Ga
     type: N;
     context!: AbilityContext;
     duration?: Duration | null;
-    isConditional?: boolean;
     abstract value: unknown;
 
     constructor(type: N) {

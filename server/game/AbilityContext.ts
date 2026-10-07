@@ -38,8 +38,9 @@ export interface AbilityContextProperties {
  * and must not be a multi-card mode; either leaves `target` unset. Today no card
  * combines either with a `context.target` read from a property factory.
  *
- * Annotate a property factory with this ONLY from inside such an ability:
- *   target: { cardType: ..., gameAction: AbilityDsl.actions.x(
+ * Builder abilities type their targets themselves. Annotate a property factory with this
+ * ONLY from inside such an ability in object form (a gained ability):
+ *   target: { cardType: ..., gameAction: injure(
  *       (context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ ... })) }
  */
 export type ResolvedAbilityContext<S extends EffectSource = BaseCard, T extends BaseCard = BaseCard> =
