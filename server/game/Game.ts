@@ -976,7 +976,7 @@ class Game {
                     }
                 });
 
-                if(!player.checkRestrictions('haveImperialFavor') && player.imperialFavor !== '') {
+                if(!player.checkRestrictions('haveImperialFavor', this.getFrameworkContext(player)) && player.imperialFavor !== '') {
                     this.addMessage('The imperial favor is discarded as {0} cannot have it', player.name);
                     player.loseImperialFavor();
                 }

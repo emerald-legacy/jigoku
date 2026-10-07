@@ -1032,7 +1032,7 @@ class Player extends GameObject {
     }
 
     hasAffinity(trait: string, context?: AbilityContext): boolean {
-        if(!this.checkRestrictions('haveAffinity', context)) {
+        if(!this.checkRestrictions('haveAffinity', context ?? this.game.getFrameworkContext(this))) {
             return false;
         }
 

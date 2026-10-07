@@ -311,9 +311,9 @@ export class AbilityBuilder<
                 case 'tokens':
                     return context.tokens[spec.name];
                 case 'targetAbility':
-                    return context.targetAbility ?? undefined;
+                    return context.targetAbility;
                 case 'element':
-                    return context.element ?? undefined;
+                    return context.element;
             }
         };
         const mirror = (spec: TargetSpec) => {

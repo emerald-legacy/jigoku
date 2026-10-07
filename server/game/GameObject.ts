@@ -114,7 +114,7 @@ export class GameObject {
         return gameAction.canAffect(this, context);
     }
 
-    public checkRestrictions(actionType: string, context?: AbilityContext) {
+    public checkRestrictions(actionType: string, context: AbilityContext) {
         return !this.getEffects(EffectName.AbilityRestrictions).some((restriction) =>
             restriction.isMatch(actionType, context, this)
         );

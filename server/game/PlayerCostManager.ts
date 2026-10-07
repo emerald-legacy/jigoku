@@ -104,7 +104,7 @@ export class PlayerCostManager {
         const rings = alternateFatePools.filter((a) => a.printedType === 'ring');
         const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
         if(
-            !this.player.checkRestrictions('takeFateFromRings', context) ||
+            !this.player.checkRestrictions('takeFateFromRings', context ?? this.player.game.getFrameworkContext(this.player)) ||
             maho
         ) {
             rings.forEach((ring) => {

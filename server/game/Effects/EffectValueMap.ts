@@ -24,7 +24,7 @@ import type { DynamicMatch } from './GainAllAbilitiesDynamic.js';
 // Structural view of Restriction (consumers only call `.isMatch`); `card?: GameObject` so the
 // base GameObject.checkRestrictions can pass `this` without a downcast (isMatch's method params
 // are bivariant, so a real Restriction still satisfies this).
-type RestrictionLike = { isMatch(type: string, context: AbilityContext | undefined, card?: GameObject): boolean };
+type RestrictionLike = { isMatch(type: string, context: AbilityContext, card?: GameObject): boolean };
 
 export type FatePool = DrawCard | Ring;
 

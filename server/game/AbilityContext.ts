@@ -25,7 +25,7 @@ export interface AbilityContextProperties {
     tokens?: Record<string, StatusToken[]>;
     elements?: Record<string, ElementSymbol>;
     stage?: Stage;
-    targetAbility?: CardAbility | null;
+    targetAbility?: CardAbility;
 }
 
 /**
@@ -65,13 +65,13 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     /** In a `then` step that inherits targets: the events of the step before. */
     previousEvents: Event[] = [];
     stage: Stage;
-    targetAbility: CardAbility | null = null;
+    targetAbility: CardAbility | undefined;
     /** Set by `AbilityTargetCard` when one card is chosen for a target named `'target'`; several cards stay in `targets.target`. */
     target: T | undefined;
-    select: string = '';
+    select: string | undefined;
     ring: Ring | undefined;
     token: StatusToken[] | undefined;
-    element: ElementSymbol | null = null;
+    element: ElementSymbol | undefined;
     elementCard: BaseCard | undefined;
     provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;
@@ -110,7 +110,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         this.tokens = properties.tokens || {};
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stage.Effect;
-        this.targetAbility = properties.targetAbility ?? null;
+        this.targetAbility = properties.targetAbility;
         const source: EffectSource = this.source;
         this.playType = this.player && source.isCard() ? this.player.findPlayType(source) : undefined;
     }
