@@ -10,7 +10,7 @@ class FuSuiDisciple extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .selectIf({
+            .select({
                 name: 'player',
                 activePromptTitle: 'Choose a player',
                 targets: true

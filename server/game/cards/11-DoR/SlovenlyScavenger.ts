@@ -12,7 +12,7 @@ class SlovenlyScavenger extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
             .cost(costs.sacrificeSelf())
-            .selectIf({
+            .select({
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:'
             }, {
