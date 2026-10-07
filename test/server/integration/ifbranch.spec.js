@@ -79,10 +79,16 @@ describe('if() and otherwise() in the ability builder', function() {
             expect(properties.target.gameAction).not.toEqual(jasmine.any(ConditionalAction));
         });
 
-        it('rejects if() after several targets without game actions', function() {
-            this.builder.target({ name: 'first', cardType: 'character' }).target({ name: 'second', cardType: 'character' });
+        it('keeps the branches on the ability after several targets without game actions', function() {
+            this.builder.target({ name: 'first', cardType: 'character' })
+                .target({ name: 'second', cardType: 'character' })
+                .if(() => true)
+                .gainHonor(1);
 
-            expect(() => this.builder.if(() => true)).toThrowError('Test: if() after several targets without game actions');
+            const properties = actionProperties(this.draft);
+            expect(properties.gameAction[0]).toEqual(jasmine.any(ConditionalAction));
+            expect(properties.targets.first.gameAction).toBeUndefined();
+            expect(properties.targets.second.gameAction).toBeUndefined();
         });
 
         it('rejects a branch without game actions', function() {

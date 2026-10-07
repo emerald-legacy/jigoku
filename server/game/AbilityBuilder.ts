@@ -674,7 +674,8 @@ export class AbilityBuilder<
 
     /**
      * "If …": the game actions after it resolve only when `condition` holds, the ones after otherwise() (if any) when it doesn't.
-     * Right after a card target without game actions, they are that target's: they resolve on the chosen card.
+     * Right after a card target without game actions, they are that target's: they resolve on the chosen card
+     * (after several such targets, they stay on the ability).
      */
     if(condition: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean): this {
         if(this.draft.branch) {
@@ -695,15 +696,15 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** The card target the branches belong to: the last target, when it is a card target without game actions. */
+    /**
+     * The card target the branches belong to: the last target, when it is the only card target without game actions.
+     * With several, none is meant more than another, so the branches stay on the ability.
+     */
     #branchTarget(): string | undefined {
         const bare = (this.draft.cardTargets ?? []).filter((name) => {
             const entry = this.draft.targets[name];
             return !('gameAction' in entry) || entry.gameAction === undefined;
         });
-        if(bare.length > 1) {
-            throw new Error(`${this.draft.title}: if() after several targets without game actions`);
-        }
         const names = Object.keys(this.draft.targets);
         return bare.length === 1 && bare[0] === names[names.length - 1] ? bare[0] : undefined;
     }
