@@ -3,10 +3,11 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import CardAbility from './CardAbility.js';
-import { type Element, type EventName, type Location, type Phases, type Players, TargetMode } from './Constants.js';
+import { type Element, type EventName, type Location, type Phases, Players, TargetMode } from './Constants.js';
 import { getAbilityDsl } from './AbilityDslProvider.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
@@ -764,6 +765,64 @@ export class AbilityBuilder<
         return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(step);
     }
 
+    /**
+     * "You may [pay] to resolve this ability twice": once it resolved, the player may pay `cost` (`label` names it on the button)
+     * to resolve it again; on that second resolution they may pay it again, for no effect. Without a cost, a Yes/No question.
+     */
+    mayResolveTwice(options: {
+        cost?: BuilderAction<Base, TG, RG, CO, TK>;
+        label?: string;
+        condition?: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean;
+    } = {}): this {
+        const cost = options.cost && toGameAction(options.cost, `${this.draft.title}: not a game action`);
+        const label = options.label;
+        if(cost && !label) {
+            throw new Error(`${this.draft.title}: mayResolveTwice() with a cost needs a label`);
+        }
+        const condition = options.condition && this.#checked(options.condition, this.draft.specs);
+        return this.#resolveAgain((context) => {
+            if(condition && !condition(context)) {
+                return undefined;
+            }
+            if(!cost || !label) {
+                return context.subResolution ? undefined : mayResolveAgain(context, 'Resolve this ability again?', Players.Self);
+            }
+            const verb = label.charAt(0).toLowerCase() + label.slice(1);
+            if(context.subResolution) {
+                return {
+                    inheritTargets: true,
+                    target: { mode: TargetMode.Select, choices: { [`${label} for no effect`]: cost, Done: () => true } },
+                    message: '{0} chooses {3}to {4} for no effect',
+                    messageArgs: (choiceContext: AbilityContext) => [choiceContext.select === 'Done' ? 'not ' : '', verb]
+                };
+            }
+            return {
+                inheritTargets: true,
+                target: { mode: TargetMode.Select, choices: { [`${label} to resolve this ability again`]: cost, Done: () => true } },
+                message: '{0} chooses {3}to {4} to resolve {1} again',
+                messageArgs: (choiceContext: AbilityContext) => [choiceContext.select === 'Done' ? 'not ' : '', verb],
+                // paid even when changed on the way (Embrace the Void takes the fate), but not when cancelled or declined
+                then: {
+                    thenCondition: (contextOrEvent: AbilityContext | Event) => contextOrEvent instanceof Event && !contextOrEvent.cancelled,
+                    gameAction: resolveAgain(context)
+                }
+            };
+        });
+    }
+
+    /** "Then, your opponent may resolve this ability": they are asked, and resolve it as if it were theirs (so they may hand it back). */
+    opponentMayResolveAgain(activePromptTitle: string): this {
+        return this.#resolveAgain((context) => mayResolveAgain(context, activePromptTitle, Players.Opponent));
+    }
+
+    #resolveAgain(then: (context: AbilityContext) => ThenAbilityProperties | undefined): this {
+        if(this.draft.then || this.draft.thenStep) {
+            throw new Error(`${this.draft.title}: a step has one next step`);
+        }
+        this.draft.then = then;
+        return this;
+    }
+
     /** Runs `fn` when the ability starts resolving its effects, for bookkeeping such as counting uses. */
     onResolve(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => void): this {
         this.draft.onResolve = this.#checked(fn, this.draft.specs);
@@ -938,6 +997,44 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
         ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {}),
         ...(draft.notPrinted ? { printedAbility: false } : {})
+    };
+}
+
+/** The ability of `context` once more, as a sub-resolution: it doesn't ask again, nor count toward its max. */
+function resolveAgain(context: AbilityContext, player?: Player): GameAction {
+    const ability = context.ability;
+    if(!ability.isCardAbilityInstance()) {
+        throw new Error('only a card ability resolves again');
+    }
+    return getAbilityDsl().actions.resolveAbility({
+        ability,
+        ...(player ? { player } : {}),
+        ...('event' in context && context.event instanceof Event ? { event: context.event } : {}),
+        subResolution: true,
+        choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
+    });
+}
+
+/** "May resolve this ability again": `chooser` (the opponent resolves it as theirs, or the player in a solo game) answers Yes or No; No is offered only when Yes can resolve. */
+function mayResolveAgain(context: AbilityContext, activePromptTitle: string, chooser: Players.Self | Players.Opponent): ThenAbilityProperties {
+    const opponent = chooser === Players.Opponent ? context.player.opponent : undefined;
+    const again = resolveAgain(context, opponent);
+    const player = opponent ?? context.player;
+    return {
+        inheritTargets: true,
+        target: {
+            ...(opponent ? { player: Players.Opponent } : {}),
+            mode: TargetMode.Select,
+            activePromptTitle,
+            choices: {
+                Yes: again,
+                No: (choiceContext: AbilityContext) => again.hasLegalTarget(choiceContext)
+            }
+        },
+        message: opponent ? '{3} chooses {4}to resolve {1}\'s ability again' : '{0} chooses {3}to resolve {1} again',
+        messageArgs: (choiceContext: AbilityContext) => opponent
+            ? [player, choiceContext.select === 'No' ? 'not ' : '']
+            : [choiceContext.select === 'No' ? 'not ' : '']
     };
 }
 

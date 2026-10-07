@@ -1,11 +1,7 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import type BaseCard from '../../../BaseCard.js';
-import type { Event } from '../../../Events/Event.js';
-import { CardType, Players, TargetMode, EventName, ConflictType } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { resolveAbilityAgain } from '../../resolveAgain.js';
 
 export default class ALegionOfOne extends DrawCard {
     static id = 'a-legion-of-one';
@@ -23,40 +19,6 @@ export default class ALegionOfOne extends DrawCard {
                 effect: modifyMilitarySkill(3)
             }))
             .effect('give {0} +3/+0')
-            .then((context) => {
-                if(context.subResolution) {
-                    return {
-                        target: {
-                            mode: TargetMode.Select,
-                            choices: {
-                                'Remove 1 fate for no effect': removeFate({
-                                    target: context.target
-                                }),
-                                Done: () => true
-                            }
-                        },
-                        message: '{0} chooses {3}to remove a fate for no effect',
-                        messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : '']
-                    };
-                }
-                return {
-                    target: {
-                        mode: TargetMode.Select,
-                        choices: {
-                            'Remove 1 fate to resolve this ability again': removeFate({
-                                target: context.target
-                            }),
-                            Done: () => true
-                        }
-                    },
-                    message: '{0} chooses {3}to remove a fate to resolve {1} again',
-                    messageArgs: (innerContext: AbilityContext) => [innerContext.select === 'Done' ? 'not ' : ''],
-                    then: {
-                        thenCondition: (event: Event & { origin?: BaseCard }) =>
-                            event.origin === context.target && !event.cancelled && event.name === EventName.OnMoveFate,
-                        gameAction: resolveAbilityAgain(context)
-                    }
-                };
-            });
+            .mayResolveTwice({ cost: removeFate((context) => ({ target: context.target })), label: 'Remove 1 fate' });
     }
 }

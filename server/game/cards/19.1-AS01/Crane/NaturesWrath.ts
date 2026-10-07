@@ -1,21 +1,19 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { dishonor, selectCard, sendHome } from '../../../GameActions/GameActions.js';
-import { CardType, ConflictType, EventName, Players, TargetMode } from '../../../Constants.js';
+import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Event } from '../../../Events/Event.js';
-import { resolveAbilityAgain } from '../../resolveAgain.js';
 
 const TARGET_CHARACTER = 'character';
 
-function selfDishonorSelect(message: string) {
+function selfDishonorSelect() {
     return selectCard((context: AbilityContext) => ({
         cardType: CardType.Character,
         controller: Players.Self,
         cardCondition: (card) => card.isParticipating(),
         gameAction: dishonor(),
-        message: message,
-        messageArgs: (card) => [context.player, card, context.source]
+        message: '{0} dishonors {1}',
+        messageArgs: (card) => [context.player, card]
     }));
 }
 
@@ -42,36 +40,7 @@ export default class NaturesWrath extends DrawCard {
                     target: context.targets[TARGET_CHARACTER]
                 }))
             })
-            .then((context) => {
-                if(!context.subResolution) {
-                    return {
-                        target: {
-                            mode: TargetMode.Select,
-                            choices: {
-                                'Dishonor a participating character to resolve this ability again': selfDishonorSelect(
-                                    '{0} chooses to dishonor {1} to resolve {2} again'
-                                ),
-                                Done: () => true
-                            }
-                        },
-                        then: {
-                            thenCondition: (event: Event) => !event.cancelled && event.name === EventName.OnCardDishonored,
-                            gameAction: resolveAbilityAgain(context)
-                        }
-                    };
-                }
-                return {
-                    target: {
-                        mode: TargetMode.Select,
-                        choices: {
-                            'Dishonor a participating character for no effect': selfDishonorSelect(
-                                '{0} chooses to dishonor {1} for no effect'
-                            ),
-                            Done: () => true
-                        }
-                    }
-                };
-            })
+            .mayResolveTwice({ cost: selfDishonorSelect(), label: 'Dishonor a participating character' })
             .cannotTargetFirst()
             .max(AbilityDsl.limit.perConflict(1));
     }
