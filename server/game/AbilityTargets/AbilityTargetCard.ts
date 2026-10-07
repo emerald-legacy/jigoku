@@ -1,10 +1,11 @@
+import { AbilityTargetBase } from './AbilityTargetBase.js';
 import CardSelector from '../CardSelector.js';
 import { Stage, Players, EffectName, TargetMode } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
 
@@ -16,28 +17,15 @@ interface AbilityTargetCardProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetCard {
-    name: string;
-    properties: AbilityTargetCardProperties;
+class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProperties> {
     selector: CardSelectorInstance;
-    dependentTarget: DependentTarget | null;
-    dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetCardProperties, ability: OwningAbility) {
-        this.name = name;
-        this.properties = properties;
+        super(name, properties, ability);
         for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.targets[name]);
         }
         this.selector = this.getSelector(properties);
-        this.dependentTarget = null;
-        this.dependentCost = null;
-        if(this.properties.dependsOn) {
-            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
-            if(dependsOnTarget) {
-                dependsOnTarget.dependentTarget = this;
-            }
-        }
     }
 
     getSelector(properties: AbilityTargetCardProperties): CardSelectorInstance {
@@ -62,11 +50,6 @@ class AbilityTargetCard {
         return contextCopy;
     }
 
-    canResolve(context: AbilityContext): boolean {
-        // if this depends on another target, that will check hasLegalTarget already
-        return !!this.properties.dependsOn || this.hasLegalTarget(context);
-    }
-
     hasLegalTarget(context: AbilityContext): boolean {
         return this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
     }
@@ -80,14 +63,11 @@ class AbilityTargetCard {
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
+        const chooser = this.chooserNow(context, targetResults);
+        if(!chooser) {
             return;
         }
-        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
-            targetResults.delayTargeting = this;
-            return;
-        }
+        const { player } = chooser;
         const { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
 
         const buttons: PromptButton[] = [];
@@ -140,14 +120,6 @@ class AbilityTargetCard {
         const cards: BaseCard[] = Array.isArray(slot) ? slot : [slot];
         return (cards.every((card) => this.selector.canTarget(card, context, context.choosingPlayerOverride || this.getChoosingPlayer(context))) &&
                 this.selector.hasEnoughSelected(cards, context) && !this.selector.hasExceededLimit(cards, context));
-    }
-
-    getChoosingPlayer(context: AbilityContext): Player | undefined {
-        let playerProp = this.properties.player;
-        if(typeof playerProp === 'function') {
-            playerProp = playerProp(context);
-        }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {

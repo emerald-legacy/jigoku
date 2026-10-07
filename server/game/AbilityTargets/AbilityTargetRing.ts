@@ -1,9 +1,10 @@
+import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { Stage, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { waitingPromptTitle } from './TargetPrompt.js';
 
@@ -15,16 +16,11 @@ interface AbilityTargetRingProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetRing {
-    name: string;
-    properties: AbilityTargetRingProperties;
+class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProperties> {
     ringCondition: (ring: Ring, context: AbilityContext) => boolean;
-    dependentTarget: DependentTarget | null;
-    dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetRingProperties, ability: OwningAbility) {
-        this.name = name;
-        this.properties = properties;
+        super(name, properties, ability);
         this.ringCondition = (ring: Ring, context: AbilityContext) => {
             const contextCopy = context.copy({});
             contextCopy.rings[this.name] = ring;
@@ -40,18 +36,6 @@ class AbilityTargetRing {
         for(const gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.rings[name]);
         }
-        this.dependentTarget = null;
-        this.dependentCost = null;
-        if(this.properties.dependsOn) {
-            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
-            if(dependsOnTarget) {
-                dependsOnTarget.dependentTarget = this;
-            }
-        }
-    }
-
-    canResolve(context: AbilityContext): boolean {
-        return !!this.properties.dependsOn || this.hasLegalTarget(context);
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
@@ -67,14 +51,11 @@ class AbilityTargetRing {
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
+        const chooser = this.chooserNow(context, targetResults);
+        if(!chooser) {
             return;
         }
-        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
-            targetResults.delayTargeting = this;
-            return;
-        }
+        const { player } = chooser;
         const buttons: PromptButton[] = [];
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
@@ -120,14 +101,6 @@ class AbilityTargetRing {
             return !!this.properties.optional && selected.length === 0;
         }
         return this.properties.ringCondition(selected, context);
-    }
-
-    getChoosingPlayer(context: AbilityContext): Player | undefined {
-        let playerProp = this.properties.player;
-        if(typeof playerProp === 'function') {
-            playerProp = playerProp(context);
-        }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
