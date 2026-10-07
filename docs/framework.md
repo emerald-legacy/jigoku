@@ -18,7 +18,7 @@ Cards are defined in `server/game/cards/<set>/` as TypeScript classes extending 
 | Method | When it fires |
 |--------|--------------|
 | `this.action(title)` | Active player chooses to trigger |
-| `this.conflictAction(title, options?)` | Action usable only during a conflict, while this card participates (`DrawCard` only) |
+| `this.conflictAction(title, options?)` | Action usable only during a conflict: a character must participate, an attachment's character must participate; events, holdings and attachments in hand only need the conflict (`DrawCard` only) |
 | `this.reaction(title)` | Triggered after an event |
 | `this.interrupt(title)` | Triggered before an event resolves |
 | `this.wouldInterrupt(title)` | Triggered when an event would happen (can cancel) |
@@ -63,7 +63,7 @@ cardCondition: (card, context) => card.militarySkill >= context.source.militaryS
 
 ```typescript
 // OK — getNumberOfLegalTargets is defined in this file
-.cost(AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
+.cost(costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
 ```
 
 **Use `context.game` as a shortcut** instead of `context.source.game`:
@@ -93,11 +93,11 @@ Province card Conflict Actions **do not need** `.condition(() => this.isConflict
 // WRONG — redundant condition
 this.action('Gain 1 fate')
     .condition(() => this.isConflictProvince())   // unnecessary
-    .gameAction(gainFate());
+    .gainFate();
 
 // CORRECT
 this.action('Gain 1 fate')
-    .gameAction(gainFate());
+    .gainFate();
 ```
 
 **`persistentEffect` DOES need the condition** — it has no built-in province check. Use `context.source`:
@@ -130,11 +130,11 @@ this.action('...')
 // WRONG — condition is redundant
 this.action('Move this character into the conflict')
     .condition(() => this.game.isDuringConflict())
-    .gameAction(ability.actions.moveToConflict(...));
+    .gameAction(moveToConflict(...));
 
 // CORRECT
 this.action('Move this character into the conflict')
-    .gameAction(ability.actions.moveToConflict(...));
+    .gameAction(moveToConflict(...));
 ```
 
 Keep the condition when it serves a distinct purpose beyond the presence of a conflict (e.g. conflict type, player state, card counts):
@@ -215,14 +215,14 @@ this.action('Bow an attacking character')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
-    }, ability.actions.bow());
+    }, bow());
 
 // CORRECT
 this.action('Bow an attacking character')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
-    }, ability.actions.bow());
+    }, bow());
 ```
 
 **Exceptions — keep `isDuringConflict()` when:**
@@ -261,7 +261,7 @@ this.action('Human-readable title')
     .condition((context) => context.game.isDuringConflict())
 
     // Cost
-    .cost(AbilityDsl.costs.payHonor(1))
+    .cost(costs.payHonor(1))
 
     // Single target; its game actions follow the properties
     .target({
@@ -276,8 +276,8 @@ this.action('Human-readable title')
     .effect('bow {0}')
 
     // Usage limits
-    .limit(AbilityDsl.limit.perConflict(1))
-    .max(AbilityDsl.limit.perRound(1));
+    .limit(perConflict(1))
+    .max(perRound(1));
 ```
 
 Types flow left to right: a call sees the targets and costs declared before it.
@@ -452,7 +452,7 @@ messageArgs: (duel) => [
 
 ### When NOT to use `initiateDuel`
 
-`initiateDuel` hardcodes `controller: Players.Self` for the challenger. If a card explicitly requires `Players.Any` or non-standard controller selection for the challenger, declare the targets yourself and use `AbilityDsl.actions.duel(...)` instead.
+`initiateDuel` hardcodes `controller: Players.Self` for the challenger. If a card explicitly requires `Players.Any` or non-standard controller selection for the challenger, declare the targets yourself and use `duel(...)` instead.
 
 ---
 
@@ -557,10 +557,10 @@ setApparentFate(0)
 ## Costs
 
 ```typescript
-AbilityDsl.costs.payHonor(1)
-AbilityDsl.costs.bowSelf()
-AbilityDsl.costs.sacrifice(predicate)
-AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context))
+costs.payHonor(1)
+costs.bowSelf()
+costs.sacrifice(predicate)
+costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context))
 ```
 
 ---
@@ -568,9 +568,9 @@ AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTar
 ## Limits
 
 ```typescript
-AbilityDsl.limit.perRound(1)
-AbilityDsl.limit.perConflict(1)
-AbilityDsl.limit.perPhase(1)
+perRound(1)
+perConflict(1)
+perPhase(1)
 ```
 
 ---
