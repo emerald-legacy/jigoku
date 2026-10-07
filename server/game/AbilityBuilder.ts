@@ -1092,7 +1092,24 @@ function targetProperties(targets: AbilityDraft['targets']) {
     return names.length > 0 ? { targets } : {};
 }
 
+/** A handler replaces the step's resolution, so what it would skip is a mistake. Target actions only decide what can be chosen. */
+function checkHandler(draft: AbilityDraft): void {
+    if(!draft.handler) {
+        return;
+    }
+    const skipped = [
+        draft.gameActions.length > 0 && (draft.branch ? 'if()' : 'game actions'),
+        draft.affinity && 'onAffinity()',
+        draft.onResolve && 'onResolve()',
+        (draft.thenStep || draft.then) && 'a following step or resolving again'
+    ].filter(Boolean);
+    if(skipped.length > 0) {
+        throw new Error(`${draft.title}: handler() replaces the step's resolution, so ${skipped.join(', ')} would never run`);
+    }
+}
+
 function commonProperties(ability: AbilityDraft) {
+    checkHandler(ability);
     const draft = withBranches(ability);
     return {
         ...targetProperties(draft.targets),
@@ -1220,6 +1237,7 @@ function thenProperties(draft: AbilityDraft): { then?: ThenAbilityProperties | (
 
 /** A step from `then()`, `thenIf()`, `afterwards()` or `afterwardsIf()`, built once. */
 function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
+    checkHandler(draft);
     const step = withBranches(draft);
     if(step.effect !== undefined) {
         throw new Error(`${step.title}: a then step prints its message with message()`);
