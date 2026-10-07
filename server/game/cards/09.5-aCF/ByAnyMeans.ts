@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, SkillType } from '../../Constants.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
@@ -25,7 +25,7 @@ class ByAnyMeans extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect(context => ({
                 target: context.targets.myCharacter,
-                effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: ['military'] })
+                effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: [SkillType.Military] })
             })))
             .effect('set {1}\'s base military skill to equal {2}\'s current military skill', context => [context.targets.myCharacter, context.targets.oppCharacter]);
     }

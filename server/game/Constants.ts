@@ -1,5 +1,5 @@
 export { Location } from './Constants/Location.js';
-export { CharacterStatus } from './Constants/CharacterStatus.js';
+export { CharacterStatus, type EntersPlayStatus } from './Constants/CharacterStatus.js';
 export { Decks } from './Constants/Decks.js';
 export { EffectName } from './Constants/EffectName.js';
 export { Duration } from './Constants/Duration.js';

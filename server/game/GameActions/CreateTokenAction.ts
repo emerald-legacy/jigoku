@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { CardType, Duration, EventName, Location } from '../Constants.js';
+import { CardType, Duration, EventName, Location, ConflictType } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
@@ -10,7 +10,7 @@ import type { ActionEvent } from './GameAction.js';
 export interface CreateTokenProperties extends CardActionProperties {
     token: new (card: DrawCard) => DrawCard;
     leavingPlayMessage?: string;
-    canEnterConflict: (type: 'military' | 'political') => boolean;
+    canEnterConflict: (type: ConflictType) => boolean;
 }
 
 export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
@@ -34,9 +34,9 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
             return false;
-        } else if(context.game.isDuringConflict('military') && !canEnterConflict('military')) {
+        } else if(context.game.isDuringConflict(ConflictType.Military) && !canEnterConflict(ConflictType.Military)) {
             return false;
-        } else if(context.game.isDuringConflict('political') && !canEnterConflict('political')) {
+        } else if(context.game.isDuringConflict(ConflictType.Political) && !canEnterConflict(ConflictType.Political)) {
             return false;
         }
         return super.canAffect(card, context);

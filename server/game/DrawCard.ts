@@ -16,7 +16,7 @@ import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import type Player from './Player.js';
@@ -345,19 +345,19 @@ class DrawCard extends BaseCard {
         return !!this.game.currentConflict?.isCardInConflictProvince(this);
     }
 
-    isAttacking(conflictType?: 'military' | 'political'): boolean {
+    isAttacking(conflictType?: ConflictType): boolean {
         return !!this.game.currentConflict?.isAttacking(this) && this.isConflictOfType(conflictType);
     }
 
-    isDefending(conflictType?: 'military' | 'political'): boolean {
+    isDefending(conflictType?: ConflictType): boolean {
         return !!this.game.currentConflict?.isDefending(this) && this.isConflictOfType(conflictType);
     }
 
-    isParticipating(conflictType?: 'military' | 'political'): boolean {
+    isParticipating(conflictType?: ConflictType): boolean {
         return !!this.game.currentConflict?.isParticipating(this) && this.isConflictOfType(conflictType);
     }
 
-    private isConflictOfType(conflictType?: 'military' | 'political'): boolean {
+    private isConflictOfType(conflictType?: ConflictType): boolean {
         return !conflictType || this.game.isDuringConflict(conflictType);
     }
 
@@ -488,11 +488,11 @@ class DrawCard extends BaseCard {
     }
 
     get militarySkillSummary(): StatSummary {
-        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers('military'), formatSkill) : {};
+        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers(SkillType.Military), formatSkill) : {};
     }
 
     get politicalSkillSummary(): StatSummary {
-        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers('political'), formatSkill) : {};
+        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers(SkillType.Political), formatSkill) : {};
     }
 
     get glorySummary(): StatSummary {
@@ -517,11 +517,11 @@ class DrawCard extends BaseCard {
     }
 
     getMilitaryModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getSkillModifiers('military', exclusions);
+        return this.skillCalculator.getSkillModifiers(SkillType.Military, exclusions);
     }
 
     getPoliticalModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getSkillModifiers('political', exclusions);
+        return this.skillCalculator.getSkillModifiers(SkillType.Political, exclusions);
     }
 
     get militarySkill(): number {
@@ -529,11 +529,11 @@ class DrawCard extends BaseCard {
     }
 
     getMilitarySkill(floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('military')), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Military)), floor);
     }
 
     getMilitarySkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('military', toExclusions(exclusions))), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Military, toExclusions(exclusions))), floor);
     }
 
     get politicalSkill(): number {
@@ -541,11 +541,11 @@ class DrawCard extends BaseCard {
     }
 
     getPoliticalSkill(floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('political')), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Political)), floor);
     }
 
     getPoliticalSkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('political', toExclusions(exclusions))), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Political, toExclusions(exclusions))), floor);
     }
 
     get baseMilitarySkill(): number {
@@ -717,8 +717,8 @@ class DrawCard extends BaseCard {
 
         if(
             elementsAdded.some((element: string) =>
-                this.game.rings[element]
-                    .getEffects(EffectName.CannotDeclareRing)
+                this.game.ringFor(element)
+                    ?.getEffects(EffectName.CannotDeclareRing)
                     .some((match) => match(this.controller))
             )
         ) {
@@ -804,7 +804,7 @@ class DrawCard extends BaseCard {
     getModifiedController(): Player {
         if(
             this.location === Location.PlayArea ||
-            (this.type === CardType.Holding && this.location.includes('province'))
+            (this.type === CardType.Holding && this.isInProvince())
         ) {
             return this.mostRecentEffect(EffectName.TakeControl) || this.defaultController;
         }

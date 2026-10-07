@@ -28,7 +28,7 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
             if(this.name === 'sacrifice' && card.facedown) {
                 return false;
             }
-            if(!card.location.includes('province')) {
+            if(!card.isInProvince()) {
                 return false;
             }
         } else if(card.location !== Location.PlayArea) {

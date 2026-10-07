@@ -46,12 +46,12 @@ import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectName, EventName, Location, ConflictType, Element, Players } from './Constants.js';
+import { EffectName, EventName, Location, ConflictType, Element, Players, Phases } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import { type EventHandler } from './GameEventBus.js';
 import { parseGameMode, type GameMode } from './GameMode.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
-import { isOwnKey } from './utils/helpers.js';
+import { isEnumValue, isOwnKey } from './utils/helpers.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -155,7 +155,8 @@ class Game {
     readonly gameMode?: string;
     /** The rules of `gameMode`. */
     readonly rules: GameMode;
-    currentPhase: string;
+    /** Between phases: `''`. */
+    currentPhase: Phases | '';
     password?: string;
     roundNumber: number;
     initialFirstPlayer: string | null;
@@ -164,7 +165,7 @@ class Game {
     private readonly input: GameInputHandler;
     private readonly serializer: GameStateSerializer;
     private readonly connections: GameConnectionManager;
-    rings: Record<string, Ring>;
+    rings: Record<Element, Ring>;
     shortCardData: ShortCardData[];
     cardLibrary: CardLibrary;
     router?: GameRouter;
@@ -412,6 +413,11 @@ class Game {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
 
+    /** The ring of an element named by a string; `undefined` for any other name (one from the client may be anything). */
+    ringFor(element: string): Ring | undefined {
+        return isEnumValue(Element, element) ? this.rings[element] : undefined;
+    }
+
     getProvinceArray(includeStronghold: boolean = true): Location[] {
         const array = [...this.rules.setupNonStrongholdProvinces];
         if(includeStronghold && this.rules.setupHaveStrongholds) {
@@ -443,7 +449,8 @@ class Game {
         return this.currentConflict;
     }
 
-    isDuringConflict(types: string | string[] | null = null): boolean {
+    /** Whether a conflict is going on, of every type and element given. */
+    isDuringConflict(types: ConflictType | Element | Array<ConflictType | Element> | null = null): boolean {
         const conflict = this.currentConflict;
         if(!conflict) {
             return false;

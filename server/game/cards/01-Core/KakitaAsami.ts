@@ -1,10 +1,11 @@
+import { ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class KakitaAsami extends DrawCard {
     static id = 'kakita-asami';
 
     setupCardAbilities() {
-        this.conflictAction('Take one honor from your opponent', { conflictType: 'political' })
+        this.conflictAction('Take one honor from your opponent', { conflictType: ConflictType.Political })
             .condition((context) => {
                 if(!context.game.currentConflict) {
                     return false;

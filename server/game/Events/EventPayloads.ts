@@ -1,3 +1,4 @@
+import type { EntersPlayStatus } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type ActionWindow from '../gamesteps/ActionWindow.js';
 import type AttackersMatrix from '../gamesteps/conflict/AttackersMatrix.js';
@@ -83,7 +84,7 @@ interface EventPayloadMap {
         card: DrawCard;
         originalLocation: Location;
         fate?: number;
-        status?: 'honored' | 'ordinary' | 'dishonored';
+        status?: EntersPlayStatus;
         controller?: Players;
         intoConflict: boolean;
         side: Player;

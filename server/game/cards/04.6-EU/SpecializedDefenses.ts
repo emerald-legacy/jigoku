@@ -18,7 +18,7 @@ class SpecializedDefenses extends DrawCard {
                     if(element === 'all') {
                         return true;
                     }
-                    return this.game.rings[element].isConsideredClaimed(context.player) ||
+                    return this.game.ringFor(element)?.isConsideredClaimed(context.player) ||
                            (isEnumValue(Element, element) && (this.game.currentConflict?.ring?.getElements().includes(element) ?? false));
                 }),
                 message: '{0} doubles the province strength of {1}',

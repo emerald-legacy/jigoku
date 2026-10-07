@@ -1,5 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { CardType } from '../Constants.js';
+import { CardType, Element } from '../Constants.js';
 import BaseAbility from '../BaseAbility.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import DrawCard from '../DrawCard.js';
@@ -68,7 +68,7 @@ export class FireRingEffect extends BaseAbility {
             });
         }
 
-        options.push({ text: 'Back', handler: () => context.player.resolveRingEffects(['fire'], this.optional) });
+        options.push({ text: 'Back', handler: () => context.player.resolveRingEffects([Element.Fire], this.optional) });
 
         if(this.optional) {
             options.push({

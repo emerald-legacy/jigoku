@@ -18,7 +18,7 @@ class EtherealAlignment extends DrawCard {
                         if(element === 'all') {
                             return true;
                         }
-                        return this.game.rings[element].isConsideredClaimed(context.player);
+                        return this.game.ringFor(element)?.isConsideredClaimed(context.player) ?? false;
                     });
                 }
             }, multiple([

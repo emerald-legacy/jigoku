@@ -1,3 +1,4 @@
+import type { EntersPlayStatus } from '../Constants.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location, Players } from '../Constants.js';
@@ -8,7 +9,7 @@ import type { ActionEvent, Defaults } from './GameAction.js';
 
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
-    status?: 'honored' | 'ordinary' | 'dishonored';
+    status?: EntersPlayStatus;
     controller?: Players;
     side?: Player;
     overrideLocation?: Location;

@@ -1,5 +1,5 @@
 import { modifyProvinceStrength } from '../../effects.js';
-import { Location } from '../../Constants.js';
+import { Location, ConflictType } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
 class InventiveButtressing extends ProvinceAttachment {
@@ -7,7 +7,7 @@ class InventiveButtressing extends ProvinceAttachment {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.isDuringConflict('military'),
+            condition: () => this.game.isDuringConflict(ConflictType.Military),
             targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
             effect: modifyProvinceStrength(3)

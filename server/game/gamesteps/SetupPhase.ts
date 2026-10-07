@@ -1,4 +1,4 @@
-import { Location } from '../Constants.js';
+import { Location, Phases } from '../Constants.js';
 import { randomItem } from '../utils/random.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
@@ -9,9 +9,8 @@ import SetupProvincesPrompt from './setup/SetupProvincesPrompt.js';
 
 export class SetupPhase extends Phase {
     constructor(game: Game) {
-        const name = 'setup';
-        super(game, name);
-        this.game.currentPhase = name;
+        super(game, Phases.Setup);
+        this.game.currentPhase = Phases.Setup;
         this.pipeline.initialise([
             new SimpleStep(game, () => this.setupBegin()),
             new SimpleStep(game, () => this.chooseFirstPlayer()),

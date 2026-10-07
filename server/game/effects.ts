@@ -31,10 +31,9 @@ import type { EffectBase } from './Effects/EffectBase.js';
 import type { Conflict } from './Conflict.js';
 import type { Faction } from './BaseCard.js';
 import type { Duel } from './Duel.js';
-import type { ConflictType, Element } from './Constants.js';
+import type { ConflictType, Element, SkillType } from './Constants.js';
 import type {
     AbilityLimitIncrease,
-    DashSkillType,
     DelayedEffectValue,
     EffectValueMap,
     ICanOnlyBeDeclaredAsAttackerWithCondition,
@@ -194,11 +193,11 @@ const Effects = {
     mustBeDeclaredAsDefender: (type: string = 'both') => EffectBuilder.card.static(EffectName.MustBeDeclaredAsDefender, type),
     refillProvinceTo: (refillAmount: FlexibleValue<number>) => EffectBuilder.card.flexible(EffectName.RefillProvinceTo, refillAmount),
     setApparentFate: (value: number) => EffectBuilder.card.static(EffectName.SetApparentFate, value),
-    setBaseDash: (type: DashSkillType) => EffectBuilder.card.static(EffectName.SetBaseDash, type),
+    setBaseDash: (type: SkillType) => EffectBuilder.card.static(EffectName.SetBaseDash, type),
     setBaseMilitarySkill: (value: number) => EffectBuilder.card.static(EffectName.SetBaseMilitarySkill, value),
     setBasePoliticalSkill: (value: number) => EffectBuilder.card.static(EffectName.SetBasePoliticalSkill, value),
     setBaseProvinceStrength: (value: number) => EffectBuilder.card.static(EffectName.SetBaseProvinceStrength, value),
-    setDash: (type: DashSkillType) => EffectBuilder.card.static(EffectName.SetDash, type),
+    setDash: (type: SkillType) => EffectBuilder.card.static(EffectName.SetDash, type),
     setGlory: (value: number) => EffectBuilder.card.static(EffectName.SetGlory, value),
     setBaseGlory: (value: number) => EffectBuilder.card.static(EffectName.SetBaseGlory, value),
     setMilitarySkill: (value: number) => EffectBuilder.card.static(EffectName.SetMilitarySkill, value),

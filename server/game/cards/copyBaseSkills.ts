@@ -1,9 +1,9 @@
 import { setBaseDash, setBaseMilitarySkill, setBasePoliticalSkill } from '../effects.js';
 import type DrawCard from '../DrawCard.js';
-import type { DashSkillType } from '../Effects/EffectValueMap.js';
+import { SkillType } from '../Constants.js';
 
 /** Effects that set a character's base `skills` to `card`'s current (or `base`) skills, keeping a dash as a dash. */
-export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = ['military', 'political'] }: { base?: boolean; skills?: DashSkillType[] } = {}) {
+export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [SkillType.Military, SkillType.Political] }: { base?: boolean; skills?: SkillType[] } = {}) {
     return skills.map((type) => {
         if(card.hasDash(type)) {
             return setBaseDash(type);

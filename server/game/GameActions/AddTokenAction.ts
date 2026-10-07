@@ -28,7 +28,7 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
             return false;
         }
         if([CardType.Holding, CardType.Province].includes(card.type)) {
-            if(!card.location.includes('province')) {
+            if(!card.isInProvince()) {
                 return false;
             }
         } else if(card.location !== Location.PlayArea) {

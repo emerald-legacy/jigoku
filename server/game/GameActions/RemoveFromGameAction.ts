@@ -34,7 +34,7 @@ export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> ext
         }
 
         if(card.type === CardType.Holding) {
-            if(!card.location.includes('province')) {
+            if(!card.isInProvince()) {
                 return false;
             }
         } else if(card.location !== Location.PlayArea) {

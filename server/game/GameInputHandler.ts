@@ -71,7 +71,7 @@ export class GameInputHandler {
     }
 
     ringClicked(sourcePlayer: string, ringindex: string): void {
-        const ring = this.game.rings[ringindex];
+        const ring = this.game.ringFor(ringindex);
         const player = this.game.getPlayerByName(sourcePlayer);
 
         if(!player || !ring) {
@@ -111,7 +111,7 @@ export class GameInputHandler {
 
     ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
-        const ring = this.game.rings[sourceRing.element];
+        const ring = this.game.ringFor(sourceRing.element);
         if(!player || !ring) {
             return;
         }

@@ -118,7 +118,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
     }
 
     resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
-        const rings = elements.map((element) => player.game.rings[element]);
+        const rings = elements.flatMap((element) => player.game.ringFor(element) ?? []);
         const action = new ResolveElementAction({
             target: rings,
             optional: optional,

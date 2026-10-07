@@ -12,7 +12,7 @@ export class CardAction extends CardAbility {
     anyPlayer: boolean;
     canTriggerOutsideConflict: boolean;
     conflictProvinceCondition: (province: ProvinceCard, context: AbilityContext) => boolean;
-    phase: string;
+    phase: Phases | 'any';
     evenDuringDynasty: boolean;
 
     condition?: (context: AbilityContext) => boolean;

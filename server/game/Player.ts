@@ -24,6 +24,7 @@ import {
     ConflictType,
     Decks,
     EffectName,
+    Element,
     EventName,
     FavorType,
     Location,
@@ -1290,7 +1291,7 @@ class Player extends GameObject {
         return this.anyEffect(EffectName.ShowTopDynastyCard);
     }
 
-    resolveRingEffects(elements: string | string[], optional: boolean = true): void {
+    resolveRingEffects(elements: Element | Element[], optional: boolean = true): void {
         if(!Array.isArray(elements)) {
             elements = [elements];
         }

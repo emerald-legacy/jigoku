@@ -1,3 +1,4 @@
+import { Phases } from './Constants.js';
 import { AnonymousSpectator } from './AnonymousSpectator.js';
 import type Game from './Game.js';
 import type { GameState, SharedGameState } from './Game.js';
@@ -103,7 +104,7 @@ export class GameStateSerializer {
         }
 
         let conflictState: Record<string, unknown> = {};
-        if(game.currentPhase === 'conflict' && game.currentConflict) {
+        if(game.currentPhase === Phases.Conflict && game.currentConflict) {
             conflictState = game.currentConflict.getSummary();
         }
 

@@ -1,3 +1,4 @@
+import { ConflictType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
@@ -190,7 +191,7 @@ export interface ActionProps<Source extends EffectSource = BaseCard, Target exte
 }
 
 export interface ConflictActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
-    conflictType?: 'military' | 'political';
+    conflictType?: ConflictType;
     evenFromHome?: boolean;
 }
 

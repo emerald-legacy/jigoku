@@ -8,7 +8,7 @@ class ShrewdYasuki extends DrawCard {
     setupCardAbilities() {
         this.action('Look at top 2 cards of conflict deck')
             .condition(context => context.player.conflictDeck.length > 0 && context.source.isParticipating() &&
-                                  this.game.allCards.some(card => card.type === CardType.Holding && card.location.includes('province') && card.isFaceup()))
+                                  this.game.allCards.some(card => card.type === CardType.Holding && card.isInProvince() && card.isFaceup()))
             .deckSearch({
                 amount: 2,
                 gameAction: moveCard({

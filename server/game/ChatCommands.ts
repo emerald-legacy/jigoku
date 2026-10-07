@@ -327,8 +327,8 @@ class ChatCommands {
         const ringElement = args[1];
         const num = this.getNumberOrDefault(args[2], 1);
 
-        if(['air', 'earth', 'fire', 'void', 'water'].includes(ringElement)) {
-            const ring = this.game.rings[ringElement];
+        const ring = this.game.ringFor(ringElement);
+        if(ring) {
 
             ring.modifyFate(num);
             this.game.addMessage(
@@ -359,8 +359,8 @@ class ChatCommands {
         const ringElement = args[1];
         const num = this.getNumberOrDefault(args[2], 1);
 
-        if(['air', 'earth', 'fire', 'void', 'water'].includes(ringElement)) {
-            const ring = this.game.rings[ringElement];
+        const ring = this.game.ringFor(ringElement);
+        if(ring) {
 
             ring.modifyFate(-num);
             this.game.addMessage(
@@ -390,8 +390,8 @@ class ChatCommands {
     claimRing(player: Player, args: string[]): boolean {
         const ringElement = args[1];
 
-        if(['air', 'earth', 'fire', 'void', 'water'].includes(ringElement)) {
-            const ring = this.game.rings[ringElement];
+        const ring = this.game.ringFor(ringElement);
+        if(ring) {
 
             ring.claimRing(player);
             this.game.addMessage(
@@ -419,8 +419,8 @@ class ChatCommands {
     unclaimRing(player: Player, args: string[]): boolean {
         const ringElement = args[1];
 
-        if(['air', 'earth', 'fire', 'void', 'water'].includes(ringElement)) {
-            const ring = this.game.rings[ringElement];
+        const ring = this.game.ringFor(ringElement);
+        if(ring) {
 
             ring.resetRing();
             this.game.addMessage(

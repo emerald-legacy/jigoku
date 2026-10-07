@@ -1,4 +1,5 @@
-import type { CardType, ConflictType, Element, EventName, Players, PlayType } from '../Constants.js';
+import type { EntersPlayStatus } from '../Constants.js';
+import type { CardType, ConflictType, Element, EventName, Players, PlayType, SkillType } from '../Constants.js';
 import { EffectName } from '../Constants.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -39,7 +40,6 @@ export interface ParticipantCostEffect {
     message?: string;
 }
 
-export type DashSkillType = 'military' | 'political';
 
 // Method syntax on purpose: cards narrow the context and event types.
 interface DelayedEffectCallbacks<N extends EventName, S extends BaseCard> {
@@ -122,7 +122,7 @@ export interface EffectValueMap {
     [EffectName.DelayedEffect]: DelayedEffectValue;
     [EffectName.DoesNotBow]: boolean;
     [EffectName.DoesNotReady]: boolean;
-    [EffectName.EntersPlayWithStatus]: 'honored' | 'ordinary' | 'dishonored';
+    [EffectName.EntersPlayWithStatus]: EntersPlayStatus;
     [EffectName.EntersPlayForOpponent]: boolean;
     [EffectName.FateCostToAttack]: number;
     [EffectName.HonorCostToDeclare]: { amount: number, dueToStatusToken?: boolean };
@@ -165,7 +165,7 @@ export interface EffectValueMap {
     [EffectName.MustBeDeclaredAsAttackerIfType]: string;
     [EffectName.MustBeDeclaredAsDefender]: string;
     [EffectName.SetApparentFate]: number;
-    [EffectName.SetBaseDash]: DashSkillType;
+    [EffectName.SetBaseDash]: SkillType;
     [EffectName.SetBaseMilitarySkill]: number;
     [EffectName.SetBasePoliticalSkill]: number;
     [EffectName.SetBaseProvinceStrength]: number;
@@ -174,7 +174,7 @@ export interface EffectValueMap {
     [EffectName.ProvideConflictDeclarationType]: ConflictType;
     [EffectName.ForceConflictDeclarationType]: ConflictType;
     [EffectName.SetConflictTotalSkill]: number;
-    [EffectName.SetDash]: DashSkillType;
+    [EffectName.SetDash]: SkillType;
     [EffectName.SetGlory]: number;
     [EffectName.SetMilitarySkill]: number;
     [EffectName.SetPoliticalSkill]: number;

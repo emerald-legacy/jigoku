@@ -7,6 +7,7 @@ import { AbilityContext } from './AbilityContext.js';
 import BaseAbility from './BaseAbility.js';
 import Player from './Player.js';
 import type { GameMode } from './GameMode.js';
+import { Element } from './Constants.js';
 
 interface RingAbility extends BaseAbility {
     title: string;
@@ -17,21 +18,21 @@ interface RingAbility extends BaseAbility {
 
 type ResolutionCb = (resolved: boolean) => void;
 
-function ringForElement(element: string) {
+function ringForElement(element: Element) {
     switch(element) {
-        case 'air':
+        case Element.Air:
             return (optional: boolean, rules: GameMode, onResolution: ResolutionCb) =>
                 new AirRingEffect(optional, rules, onResolution);
-        case 'earth':
+        case Element.Earth:
             return (optional: boolean, rules: GameMode, onResolution: ResolutionCb) =>
                 new EarthRingEffect(optional, rules, onResolution);
-        case 'fire':
+        case Element.Fire:
             return (optional: boolean, _rules: GameMode, onResolution: ResolutionCb) =>
                 new FireRingEffect(optional, onResolution);
-        case 'void':
+        case Element.Void:
             return (optional: boolean, _rules: GameMode, onResolution: ResolutionCb) =>
                 new VoidRingEffect(optional, onResolution);
-        case 'water':
+        case Element.Water:
             return (optional: boolean, rules: GameMode, onResolution: ResolutionCb) =>
                 new WaterRingEffect(optional, rules, onResolution);
         default:
@@ -42,7 +43,7 @@ function ringForElement(element: string) {
 export class RingEffects {
     static contextFor(
         player: Player,
-        element: string,
+        element: Element,
         optional = true,
         onResolution: ResolutionCb = () => {}
     ): AbilityContext & { ability: RingAbility } {

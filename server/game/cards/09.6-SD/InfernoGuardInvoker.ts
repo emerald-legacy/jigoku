@@ -1,4 +1,4 @@
-import { CardType, Duration, EventName, Players } from '../../Constants.js';
+import { CardType, Duration, EventName, Players, ConflictType } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { delayedEffect } from '../../effects.js';
 import { cardLastingEffect, honor, sacrifice } from '../../GameActions/GameActions.js';
@@ -15,7 +15,7 @@ export default class InfernoGuardInvoker extends DrawCard {
         this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictDeclared]);
 
         this.action('honor this character')
-            .condition((context) => context.game.isDuringConflict('military'))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

@@ -35,8 +35,9 @@ export default class OnsenQuarters extends ProvinceCard {
             return undefined;
         }
         for(const trait of role.traits) {
-            if(trait in context.game.rings) {
-                return context.game.rings[trait];
+            const ring = context.game.ringFor(trait);
+            if(ring) {
+                return ring;
             }
         }
         return undefined;

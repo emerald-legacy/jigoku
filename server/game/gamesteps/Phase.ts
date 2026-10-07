@@ -9,7 +9,7 @@ export class Phase extends BaseStepWithPipeline {
 
     constructor(
         game: Game,
-        private name: Phases | 'setup'
+        private name: Phases
     ) {
         super(game);
     }
@@ -32,7 +32,7 @@ export class Phase extends BaseStepWithPipeline {
     startPhase(): void {
         this.game.raiseEvent(EventName.OnPhaseStarted, { phase: this.name }, () => {
             this.game.currentPhase = this.name;
-            if(this.name !== 'setup') {
+            if(this.name !== Phases.Setup) {
                 this.game.addAlert('endofround', 'Round {0} - {1} phase', this.game.roundNumber, this.name);
             }
         });
