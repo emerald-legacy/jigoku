@@ -40,6 +40,7 @@ import Ring from './Ring.js';
 import { ElementSymbol } from './ElementSymbol.js';
 import { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
+import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from './types/CardOfType.js';
 
@@ -184,6 +185,15 @@ export function createDraft(title: string, holdsBase: (context: AbilityContext) 
 
 /** A target's name in `context.targets` (or `context.selects`); 'target' is also `context.target` and `{0}` in the effect message. */
 type Named<Name extends string> = { name?: Name };
+
+/** A select's choice: a game action, or a condition for a choice without game actions. */
+type SelectChoiceValue<Base extends AbilityContext, Targets, Rings, Costs, Tokens, D> =
+    | BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>
+    | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => boolean);
+
+/** The label chosen in a select: `context.selects[name].choice`, and `context.select` for the select named 'target'. */
+type Selected<Name extends string, L extends string> =
+    { selects: { [P in Name]: SelectChoice<L> } } & ('target' extends Name ? { select: L } : unknown);
 
 /** A target given no name is named 'target'. */
 type TargetName<Name> = [Name] extends [never] ? 'target' : Name;
@@ -598,16 +608,14 @@ export class AbilityBuilder<
     }
 
     /** The choice lands in `context.selects`, not in `targets`. A choice is a game action, or a condition (no game action) offered while it holds. */
-    select<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never>(
+    select<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const L extends string = string>(
         props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, D>,
-        choices: NoInfer<Record<string,
-            | BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>
-            | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => boolean)>>
-    ): AbilityBuilder<Base, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>> {
+        choices: Record<L, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, D>>>
+    ): AbilityBuilder<Base & Selected<TargetName<Name>, L>, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>> {
         const name = props.name ?? 'target';
         const [required, optional] = this.#earlier(props.dependsOn);
         const entries: Record<string, GameAction | ((context: AbilityContext) => boolean)> = {};
-        for(const [label, choice] of Object.entries(choices)) {
+        for(const [label, choice] of Object.entries<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, D>>(choices)) {
             // a condition is a choice without game actions ("No"), available while it holds
             entries[label] = typeof choice === 'function' ? this.#checked(choice, required, optional) : this.#toAction(choice);
         }
