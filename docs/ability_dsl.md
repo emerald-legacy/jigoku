@@ -97,7 +97,7 @@ Builder methods shared by actions and triggered abilities:
 | `onAffinity(element, { prompt?, effect? })` | "With [element] affinity": the ability's or step's game actions resolve only with that affinity. `prompt` asks Yes/No first; `effect(context)` is a `msg` template for the chat line "{player} channels their {element} affinity to …" (by default the actions' own text) |
 | `if(fn)`, `otherwise()` | "If …, otherwise …": the game actions after `if()` resolve when `fn(context)` holds, the ones after `otherwise()` (optional) when it doesn't. Targets go before `if()`; right after a card target without game actions, the branches are that target's (they resolve on the chosen card). Branch lines are indented one level deeper |
 | `gainHonor(n)`, `loseHonor(n)`, `gainFate(n)`, `draw(n)` | The player of the ability gains honor, loses honor, gains fate, draws cards; `n` defaults to 1 |
-| `ready(props?)`, `bow`, `honor`, `dishonor`, `placeFate`, `removeFate`, `sendHome`, `moveToConflict`, `discardFromPlay`, `sacrifice`, `takeHonor`, `takeFate`, `refillFaceup(props)`, `cardLastingEffect(props)`, `playerLastingEffect(props)` | Shortcuts for `gameAction(x(props))`: the same properties as the factory, or a function of the context returning them; `gameAction()` takes any other action |
+| `ready(props?)`, `bow`, `honor`, `dishonor`, `placeFate`, `removeFate`, `sendHome`, `moveToConflict`, `discardFromPlay`, `sacrifice`, `takeHonor`, `takeFate`, `refillFaceup(props)`, `cardLastingEffect(props)`, `playerLastingEffect(props)`, `selectCard(props)`, `deckSearch(props)`, `cancel(props?)` (interrupts) | Shortcuts for `gameAction(x(props))`: the same properties as the factory, or a function of the context returning them; `gameAction()` takes any other action |
 | `initiateDuel(fn)` | Wires a duel as the ability's effect (see [Duels](#duels)) |
 | `limit(limit)` / `max(limit)` | Usage limit (see [Limits](#limits)) |
 | `location(location)` | Where the card must be to use the ability. Default: the hand for events, the provinces for provinces and holdings, the stronghold province for strongholds, otherwise the play area |
@@ -111,7 +111,7 @@ Action-only methods:
 
 | Method | Description |
 |--------|-------------|
-| `condition(fn)` | Extra gate — the ability only appears if `fn(context)` returns `true` |
+| `condition(fn)` | Extra gate — the ability (action or triggered) can only be used while `fn(context)` returns `true` |
 | `phase(phase)` | Phase restriction. Default `'any'`. During the Dynasty phase, only Holding/Character/Attachment cards (or `evenDuringDynasty()`, or events allowed by `dynastyPhaseCanPlayConflictEvents`) may trigger |
 | `canTriggerOutsideConflict()` | Province actions can fire when no conflict is active |
 | `conflictProvinceCondition(fn)` | Which conflict provinces allow the action (default: `province === this.card`) |
