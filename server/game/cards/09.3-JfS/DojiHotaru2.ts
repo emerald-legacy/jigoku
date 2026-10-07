@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
-import { discardFromPlay, gainHonor } from '../../GameActions/GameActions.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class DojiHotaru2 extends DrawCard {
     static id = 'doji-hotaru-2';
@@ -24,7 +24,7 @@ class DojiHotaru2 extends DrawCard {
                         event.player === context.player.opponent;
                 }
             })
-            .gameAction(gainHonor())
+            .gainHonor()
             .effect('gain 1 honor')
             .limit(unlimitedPerConflict());
     }

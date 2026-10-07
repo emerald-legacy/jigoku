@@ -1,6 +1,6 @@
 import { CardType, Element } from '../../Constants.js';
 import { reduceCost } from '../../effects.js';
-import { draw, playerLastingEffect } from '../../GameActions/GameActions.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfVoid extends DrawCard {
@@ -24,7 +24,7 @@ export default class MantraOfVoid extends DrawCard {
                     targetCondition: (target) => target === context.target
                 })
             })))
-            .gameAction(draw())
+            .draw()
             .effect('reduce the cost of attachments they play on {0} this conflict by 1 and draw a card');
     }
 }

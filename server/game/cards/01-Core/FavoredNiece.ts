@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { perRound } from '../../AbilityLimit.js';
-import { draw } from '../../GameActions/GameActions.js';
 
 class FavoredNiece extends DrawCard {
     static id = 'favored-niece';
@@ -13,7 +12,7 @@ class FavoredNiece extends DrawCard {
                 location: Location.Hand,
                 targets: true
             }))
-            .gameAction(draw())
+            .draw()
             .limit(perRound(2));
     }
 }

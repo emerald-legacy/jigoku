@@ -711,24 +711,44 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** The player of the ability gains honor. */
-    gainHonor(amount = 1): this {
-        return this.gameAction(GameActions.gainHonor({ amount }));
+    /** The player of the ability gains honor; `amount` defaults to 1. */
+    gainHonor(amount?: number): this;
+    /** With the factory's properties (another target, a computed amount), or a function of the context returning them. */
+    gainHonor(properties: ActionProperties<'gainHonor', BuilderContext<Base, TG, RG, CO, TK>>): this;
+    gainHonor(properties: number | ActionProperties<'gainHonor', BuilderContext<Base, TG, RG, CO, TK>> = 1): this {
+        return this.gameAction(GameActions.gainHonor(amountProperties(properties)));
     }
 
-    /** The player of the ability loses honor. */
-    loseHonor(amount = 1): this {
-        return this.gameAction(GameActions.loseHonor({ amount }));
+    /** The player of the ability loses honor; `amount` defaults to 1. */
+    loseHonor(amount?: number): this;
+    /** With the factory's properties (another target, a computed amount), or a function of the context returning them. */
+    loseHonor(properties: ActionProperties<'loseHonor', BuilderContext<Base, TG, RG, CO, TK>>): this;
+    loseHonor(properties: number | ActionProperties<'loseHonor', BuilderContext<Base, TG, RG, CO, TK>> = 1): this {
+        return this.gameAction(GameActions.loseHonor(amountProperties(properties)));
     }
 
-    /** The player of the ability gains fate. */
-    gainFate(amount = 1): this {
-        return this.gameAction(GameActions.gainFate({ amount }));
+    /** The player of the ability gains fate; `amount` defaults to 1. */
+    gainFate(amount?: number): this;
+    /** With the factory's properties (another target, a computed amount), or a function of the context returning them. */
+    gainFate(properties: ActionProperties<'gainFate', BuilderContext<Base, TG, RG, CO, TK>>): this;
+    gainFate(properties: number | ActionProperties<'gainFate', BuilderContext<Base, TG, RG, CO, TK>> = 1): this {
+        return this.gameAction(GameActions.gainFate(amountProperties(properties)));
     }
 
-    /** The player of the ability draws cards. */
-    draw(amount = 1): this {
-        return this.gameAction(GameActions.draw({ amount }));
+    /** The player of the ability loses fate; `amount` defaults to 1. */
+    loseFate(amount?: number): this;
+    /** With the factory's properties (another target, a computed amount), or a function of the context returning them. */
+    loseFate(properties: ActionProperties<'loseFate', BuilderContext<Base, TG, RG, CO, TK>>): this;
+    loseFate(properties: number | ActionProperties<'loseFate', BuilderContext<Base, TG, RG, CO, TK>> = 1): this {
+        return this.gameAction(GameActions.loseFate(amountProperties(properties)));
+    }
+
+    /** The player of the ability draws cards; `amount` defaults to 1. */
+    draw(amount?: number): this;
+    /** With the factory's properties (another target, a computed amount), or a function of the context returning them. */
+    draw(properties: ActionProperties<'draw', BuilderContext<Base, TG, RG, CO, TK>>): this;
+    draw(properties: number | ActionProperties<'draw', BuilderContext<Base, TG, RG, CO, TK>> = 1): this {
+        return this.gameAction(GameActions.draw(amountProperties(properties)));
     }
 
     /** Readies the target (the source by default). */
@@ -1166,6 +1186,9 @@ function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, 
             : [choiceContext.select === 'No' ? 'not ' : '']
     };
 }
+
+/** A number is the action's `amount`. */
+const amountProperties = <P>(properties: number | P): P | { amount: number } => typeof properties === 'number' ? { amount: properties } : properties;
 
 const oneAction = (actions: GameAction[]) => actions.length === 1 ? actions[0] : GameActions.multiple(actions);
 

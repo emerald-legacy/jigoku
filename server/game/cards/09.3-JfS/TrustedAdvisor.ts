@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { draw } from '../../GameActions/GameActions.js';
 
 class TrustedAdvisor extends DrawCard {
     static id = 'trusted-advisor';
@@ -11,7 +10,7 @@ class TrustedAdvisor extends DrawCard {
                     event.origin && event.origin.type === 'ring' &&
                     event.recipient === context.player
             })
-            .gameAction(draw())
+            .draw()
             .effect('draw a card');
     }
 }

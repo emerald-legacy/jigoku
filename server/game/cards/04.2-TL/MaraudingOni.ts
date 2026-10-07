@@ -1,6 +1,5 @@
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { cardCannot } from '../../effects.js';
-import { loseHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class MaraudingOni extends DrawCard {
@@ -19,7 +18,7 @@ class MaraudingOni extends DrawCard {
                 onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source),
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source)
             })
-            .gameAction(loseHonor((context) => ({ target: context.player })))
+            .loseHonor((context) => ({ target: context.player }))
             .effect('lose an honor')
             .limit(unlimitedPerConflict());
     }

@@ -1,5 +1,4 @@
 import * as costs from '../../../costs/index.js';
-import { draw } from '../../../GameActions/GameActions.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class TheatreOfHonestLies extends StrongholdCard {
@@ -12,7 +11,7 @@ export default class TheatreOfHonestLies extends StrongholdCard {
                 onTransferHonor: (event, context) => event.player === context.player.opponent && event.amount > 0
             })
             .cost(costs.bowSelf())
-            .gameAction(draw());
+            .draw();
 
         this.reaction('Take 1 honor')
             .when({

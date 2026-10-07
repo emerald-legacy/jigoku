@@ -1,5 +1,4 @@
 import { setGlory } from '../../../effects.js';
-import { gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AncestralKabuto extends DrawCard {
@@ -18,6 +17,6 @@ export default class AncestralKabuto extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     event.conflict.winner === context.source.parentCharacter.controller && context.source.parentCharacter.isDishonored
             })
-            .gameAction(gainHonor());
+            .gainHonor();
     }
 }

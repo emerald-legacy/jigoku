@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel, draw, resolveRingEffect } from '../../GameActions/GameActions.js';
+import { cancel, resolveRingEffect } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 
 class AllAndNothing extends DrawCard {
@@ -22,7 +22,7 @@ class AllAndNothing extends DrawCard {
                     physicalRing: context.ring
                 })
             })))
-            .gameAction(draw())
+            .draw()
             .effect('resolve {0} effect instead of the void effect');
     }
 }

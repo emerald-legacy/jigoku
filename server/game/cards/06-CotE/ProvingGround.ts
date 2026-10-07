@@ -1,5 +1,4 @@
 import { perRound } from '../../AbilityLimit.js';
-import { draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class ProvingGround extends DrawCard {
@@ -15,7 +14,7 @@ class ProvingGround extends DrawCard {
                     return event.winner.some((card) => card.controller === context.player);
                 }
             })
-            .gameAction(draw())
+            .draw()
             .limit(perRound(2));
     }
 }

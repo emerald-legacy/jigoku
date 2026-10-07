@@ -1,6 +1,5 @@
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import { draw } from '../../GameActions/GameActions.js';
 
 class AdornedTemple extends DrawCard {
     static id = 'adorned-temple';
@@ -17,9 +16,9 @@ class AdornedTemple extends DrawCard {
                     );
                 }
             })
-            .gameAction(draw((context) => ({
+            .draw((context) => ({
                 amount: context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? 2 : 1
-            })))
+            }))
             .effect('draw {1} card{2}', (context) => (context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']));
     }
 }

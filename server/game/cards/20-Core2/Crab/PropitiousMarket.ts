@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location, Phases, Players, TokenType } from '../../../Constants.js';
 import { modifyProvinceStrength } from '../../../effects.js';
-import { addToken, gainFate, sacrifice } from '../../../GameActions/GameActions.js';
+import { addToken, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { msg } from '../../../GameChat.js';
@@ -33,7 +33,7 @@ export default class PropitiousMarket extends DrawCard {
             })
             .message((context) => msg`${context.player} chooses ${context.select === 'No' ? 'not ' : ''}to sacrifice ${context.source}`)
             .then()
-            .gameAction(gainFate((context) => ({ amount: amountOfFateGain(context) })))
+            .gainFate((context) => ({ amount: amountOfFateGain(context) }))
             .message((context) => msg`${context.player} uses ${context.source} to gain ${amountOfFateGain(context)} fate`);
     }
 }

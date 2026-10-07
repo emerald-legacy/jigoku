@@ -1,5 +1,4 @@
 import { unlimited } from '../../../AbilityLimit.js';
-import { loseHonor } from '../../../GameActions/GameActions.js';
 import { Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
@@ -24,9 +23,9 @@ export default class YasukiYoshi extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
-            .gameAction(loseHonor((context) => ({
+            .loseHonor((context) => ({
                 target: context.event.conflict.loser
-            })))
+            }))
             .limit(unlimited());
     }
 }

@@ -1,4 +1,3 @@
-import { draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class SeppunTruthseeker extends DrawCard {
@@ -9,10 +8,10 @@ class SeppunTruthseeker extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .gameAction(draw((context) => ({
+            .draw((context) => ({
                 target: context.game.getPlayers(),
                 amount: 2
-            })))
+            }))
             .effect('make both players draw 2 cards');
     }
 }

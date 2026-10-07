@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases } from '../../Constants.js';
-import { gainHonor } from '../../GameActions/GameActions.js';
 
 class PiousGuardian extends DrawCard {
     static id = 'pious-guardian';
@@ -10,7 +9,7 @@ class PiousGuardian extends DrawCard {
             .when({
                 onPhaseEnded: (event, context) => event.phase === Phases.Conflict && context.player.getProvinces(a => a.isBroken).length < 2
             })
-            .gameAction(gainHonor());
+            .gainHonor();
     }
 }
 

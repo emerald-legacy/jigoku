@@ -1,5 +1,4 @@
 import { modifyPoliticalSkill } from '../../effects.js';
-import { gainHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaBlade extends DrawCard {
@@ -15,6 +14,6 @@ export default class KakitaBlade extends DrawCard {
             .when({
                 afterDuel: (event, context) => event.winner?.some((card) => card === context.source.parentCharacter) ?? false
             })
-            .gameAction(gainHonor());
+            .gainHonor();
     }
 }

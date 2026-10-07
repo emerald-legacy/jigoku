@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import { draw, honor } from '../../GameActions/GameActions.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class BushidoAdherent extends DrawCard {
     static id = 'bushido-adherent';
@@ -12,7 +12,7 @@ class BushidoAdherent extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, honor())
-            .gameAction(draw(context => ({ target: context.player.opponent })))
+            .draw(context => ({ target: context.player.opponent }))
             .effect('honor {0} and have {1} draw 1 card', context => [context.player.opponent ?? context.player]);
     }
 }

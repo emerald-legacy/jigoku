@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases } from '../../Constants.js';
-import { draw } from '../../GameActions/GameActions.js';
 
 class ForgottenLibrary extends DrawCard {
     static id = 'forgotten-library';
@@ -10,7 +9,7 @@ class ForgottenLibrary extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Draw
             })
-            .gameAction(draw());
+            .draw();
     }
 }
 

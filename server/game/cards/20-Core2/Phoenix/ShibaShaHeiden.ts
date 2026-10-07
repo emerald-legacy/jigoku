@@ -1,6 +1,5 @@
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { draw, gainFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaShaHeiden extends DrawCard {
@@ -15,15 +14,15 @@ export default class ShibaShaHeiden extends DrawCard {
         const sharedLimit = perRound(1);
         this.action('Pay 1 fate to draw a card')
             .cost(costs.payFate(1))
-            .gameAction(draw())
+            .draw()
             .limit(sharedLimit);
         this.action('Discard a card to gain 1 fate')
             .cost(costs.discardCard())
-            .gameAction(gainFate())
+            .gainFate()
             .limit(sharedLimit);
         this.action('Discard a card to draw a card')
             .cost(costs.discardCard())
-            .gameAction(draw())
+            .draw()
             .limit(sharedLimit);
     }
 }

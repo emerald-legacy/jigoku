@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
-import { addToken, gainHonor, sacrifice } from '../../GameActions/GameActions.js';
+import { addToken, sacrifice } from '../../GameActions/GameActions.js';
 import { TokenType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { msg } from '../../GameChat.js';
@@ -36,7 +36,7 @@ class DistinguishedDojo extends DrawCard {
             })
             .message((context) => msg`${context.player} chooses ${context.select === 'No' ? 'not ' : ''}to sacrifice ${context.source}`)
             .then()
-            .gameAction(gainHonor((context) => ({ amount: honorTokens(context) })))
+            .gainHonor((context) => ({ amount: honorTokens(context) }))
             .message((context) => msg`${context.player} uses ${context.source} to gain ${honorTokens(context)} honor`);
     }
 }

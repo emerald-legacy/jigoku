@@ -1,7 +1,6 @@
 import { Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { draw, gainFate } from '../../GameActions/GameActions.js';
 
 export default class DemonstratingExcellence extends ProvinceCard {
     static id = 'demonstrating-excellence';
@@ -17,7 +16,7 @@ export default class DemonstratingExcellence extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .gameAction(gainFate(), draw())
+            .gainFate().draw()
             .effect('gain 1 fate and draw a card');
     }
 }

@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { gainFate } from '../../GameActions/GameActions.js';
 
 class GallantQuartermaster extends DrawCard {
     static id = 'gallant-quartermaster';
@@ -9,7 +8,7 @@ class GallantQuartermaster extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source
             })
-            .gameAction(gainFate({ amount: 2 }));
+            .gainFate(2);
     }
 }
 

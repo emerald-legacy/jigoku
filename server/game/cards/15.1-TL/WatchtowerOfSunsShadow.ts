@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
-import { loseFate } from '../../GameActions/GameActions.js';
 import { Players } from '../../Constants.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
 
@@ -19,10 +18,10 @@ class WatchtowerOfSunsShadow extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
             })
-            .gameAction(loseFate(context => ({
+            .loseFate(context => ({
                 amount: 2,
                 target: context.player
-            })));
+            }));
     }
 }
 

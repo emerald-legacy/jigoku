@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
-import { draw } from '../../GameActions/GameActions.js';
 
 class FourTemplesAdvisor extends DrawCard {
     static id = 'four-temples-advisor';
@@ -10,7 +9,7 @@ class FourTemplesAdvisor extends DrawCard {
             .when({
                 onMoveFate: (event, context) => event.origin && event.origin.type === 'ring' && event.recipient === context.player
             })
-            .gameAction(draw())
+            .draw()
             .effect('draw a card')
             .limit(unlimitedPerConflict());
     }

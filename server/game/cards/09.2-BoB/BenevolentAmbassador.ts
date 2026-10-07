@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { gainHonor } from '../../GameActions/GameActions.js';
 
 class BenevolentAmbassador extends DrawCard {
     static id = 'benevolent-ambassador';
@@ -9,9 +8,9 @@ class BenevolentAmbassador extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
             })
-            .gameAction(gainHonor(context => ({
+            .gainHonor(context => ({
                 target: context.game.getPlayers()
-            })));
+            }));
     }
 }
 

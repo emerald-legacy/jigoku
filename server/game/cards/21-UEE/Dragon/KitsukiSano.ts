@@ -1,6 +1,6 @@
 import { Duration } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
-import { chosenDiscard, draw, duelLastingEffect } from '../../../GameActions/GameActions.js';
+import { chosenDiscard, duelLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KitsukiSano extends DrawCard {
@@ -25,7 +25,7 @@ export default class KitsukiSano extends DrawCard {
         this.conflictAction('Draw 2 cards, discard 2 cards')
             .condition((context) =>
                 context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
-            .gameAction(draw({ amount: 2 }))
+            .draw(2)
             .then()
             .gameAction(chosenDiscard((context) => ({ targets: false, target: context.player, amount: 2 })));
     }

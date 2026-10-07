@@ -1,6 +1,5 @@
 import * as costs from '../../costs/index.js';
 import { reduceCost } from '../../effects.js';
-import { draw, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -11,13 +10,14 @@ class KakitaYoshi extends DrawCard {
         this.action('Draw 3 cards')
             .cost(costs.discardImperialFavor())
             .condition(context => context.source.isParticipating())
-            .gameAction(draw({ amount: 3 }), playerLastingEffect((context) => ({
+            .draw(3)
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: reduceCost({
                     amount: 2,
                     match: (card) => card.type === CardType.Event
                 })
-            })))
+            }))
             .effect('draw 3 cards, and reduce the cost of events this conflict');
     }
 }

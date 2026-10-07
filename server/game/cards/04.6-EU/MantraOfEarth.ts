@@ -1,6 +1,6 @@
 import { CardType, Element } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
-import { cardLastingEffect, draw } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfEarth extends DrawCard {
@@ -23,7 +23,7 @@ export default class MantraOfEarth extends DrawCard {
                     applyingPlayer: context.player
                 })
             })))
-            .gameAction(draw())
+            .draw()
             .effect('make {0} untargetable by opponents\' card effects and draw a card');
     }
 }

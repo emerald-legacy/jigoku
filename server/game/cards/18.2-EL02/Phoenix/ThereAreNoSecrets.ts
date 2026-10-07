@@ -1,4 +1,3 @@
-import { gainFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -12,7 +11,7 @@ export default class ThereAreNoSecrets extends DrawCard {
                 onMoveFate: (event, context) =>
                     context.source.parentCharacter && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0
             })
-            .gameAction(gainFate());
+            .gainFate();
     }
 
     canPlay(context: AbilityContext, playType: string) {

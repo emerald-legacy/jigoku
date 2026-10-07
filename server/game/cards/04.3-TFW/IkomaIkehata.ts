@@ -1,4 +1,4 @@
-import { draw, honor } from '../../GameActions/GameActions.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 
@@ -15,7 +15,7 @@ class IkomaIkehata extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, honor())
-            .gameAction(draw());
+            .draw();
     }
 }
 

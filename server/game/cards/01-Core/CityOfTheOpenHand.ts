@@ -1,6 +1,5 @@
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
-import { gainHonor } from '../../GameActions/GameActions.js';
 
 export default class CityOfTheOpenHand extends StrongholdCard {
     static id = 'city-of-the-open-hand';
@@ -9,7 +8,7 @@ export default class CityOfTheOpenHand extends StrongholdCard {
         this.action('Gain an honor')
             .cost(costs.bowSelf())
             .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
-            .gameAction(gainHonor());
+            .gainHonor();
     }
 
     //Needed for testing some cards

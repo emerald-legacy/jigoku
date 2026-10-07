@@ -5,7 +5,6 @@ import * as costs from '../../costs/index.js';
 import {
     chosenDiscard,
     discardCard,
-    draw,
     gainHonor,
     handler,
     loseHonor,
@@ -88,9 +87,9 @@ class MerchantOfCuriosities extends DrawCard {
         this.action('Discard a card to draw a card')
             .cost(costs.discardCard())
             .cost(merchantOfCuriositiesCost())
-            .gameAction(draw(context => ({
+            .draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
-            })))
+            }))
             // the card is chosen only once the opponent agreed to pay
             .effect('draw a card{2}', context => [
                 context.costs.discardCard,

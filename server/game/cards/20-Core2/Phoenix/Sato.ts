@@ -1,5 +1,4 @@
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
-import { loseHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Sato extends DrawCard {
@@ -15,7 +14,7 @@ export default class Sato extends DrawCard {
                     event.player === context.player.opponent &&
                     context.source.parentCharacter.isParticipating()
             })
-            .gameAction(loseHonor((context) => ({ target: context.player.opponent })))
+            .loseHonor((context) => ({ target: context.player.opponent }))
             .limit(unlimitedPerConflict());
     }
 }

@@ -1,5 +1,5 @@
 import { CardType, Element } from '../../Constants.js';
-import { draw, placeFate } from '../../GameActions/GameActions.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfFire extends DrawCard {
@@ -16,7 +16,7 @@ export default class MantraOfFire extends DrawCard {
                 cardCondition: card =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, placeFate())
-            .gameAction(draw())
+            .draw()
             .effect('add a fate to {0} and draw a card');
     }
 }

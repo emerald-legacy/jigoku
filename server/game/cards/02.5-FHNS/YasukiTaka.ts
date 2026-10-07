@@ -1,5 +1,4 @@
 import { unlimited } from '../../AbilityLimit.js';
-import { gainFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Phases, CardType, Location } from '../../Constants.js';
 
@@ -15,7 +14,7 @@ class YasukiTaka extends DrawCard {
                         state.type === CardType.Character && state.location === Location.PlayArea;
                 }
             })
-            .gameAction(gainFate())
+            .gainFate()
             .limit(unlimited());
     }
 }

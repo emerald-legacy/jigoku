@@ -1,5 +1,5 @@
 import { CardType, Element } from '../../Constants.js';
-import { draw, ready } from '../../GameActions/GameActions.js';
+import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfWater extends DrawCard {
@@ -16,7 +16,7 @@ export default class MantraOfWater extends DrawCard {
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, ready())
-            .gameAction(draw())
+            .draw()
             .effect('ready {0} and draw a card');
     }
 }

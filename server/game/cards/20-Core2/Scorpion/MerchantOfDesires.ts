@@ -1,5 +1,4 @@
 import * as costs from '../../../costs/index.js';
-import { draw } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MerchantOfDesires extends DrawCard {
@@ -9,11 +8,11 @@ export default class MerchantOfDesires extends DrawCard {
         this.action('Draw a card')
             .cost(costs.payHonor(1))
             .cost(costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))
-            .gameAction(draw((context) => ({
+            .draw((context) => ({
                 target: context.costs.optionalOpponentLoseHonorPaid && context.player.opponent
                     ? [context.player, context.player.opponent]
                     : context.player
-            })))
+            }))
             .effect('draw a card. {1} {2}', (context) => [
                 context.player.opponent,
                 context.costs.optionalOpponentLoseHonorPaid

@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
-import { gainHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
@@ -25,9 +24,9 @@ export default class DevelopingMasterpiece extends DrawCard {
             .cost(captureParentCost())
             .cost(costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
-            .gameAction(gainHonor((context) => ({
+            .gainHonor((context) => ({
                 amount: capturedParent(context)?.getGlory() ?? 0
-            })))
+            }))
             .effect((context) => msg`gain ${capturedParent(context)?.getGlory() ?? 0} honor`)
             .onResolve((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));

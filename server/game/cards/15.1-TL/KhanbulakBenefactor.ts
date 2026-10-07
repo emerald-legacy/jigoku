@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { reduceCost } from '../../effects.js';
-import { draw } from '../../GameActions/GameActions.js';
 import { PlayType } from '../../Constants.js';
 
 class KhanbulakBenefactor extends DrawCard {
@@ -19,7 +18,7 @@ class KhanbulakBenefactor extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(draw({ amount: 2 }));
+            .draw(2);
     }
 }
 

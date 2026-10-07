@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { delayedEffect } from '../../effects.js';
-import { discardFromPlay, gainHonor } from '../../GameActions/GameActions.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class SolitaryStrength extends DrawCard {
     static id = 'solitary-strength';
@@ -30,7 +30,7 @@ class SolitaryStrength extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller
             })
-            .gameAction(gainHonor());
+            .gainHonor();
     }
 }
 

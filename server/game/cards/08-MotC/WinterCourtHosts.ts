@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
-import { draw } from '../../GameActions/GameActions.js';
 
 class WinterCourtHosts extends DrawCard {
     static id = 'winter-court-hosts';
@@ -14,7 +13,7 @@ class WinterCourtHosts extends DrawCard {
                         context.player.isMoreHonorable();
                 }
             })
-            .gameAction(draw())
+            .draw()
             .limit(unlimitedPerConflict());
     }
 }

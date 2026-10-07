@@ -1,7 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { loseHonor } from '../../../GameActions/GameActions.js';
 
 export default class AdvanceFortification extends DrawCard {
     static id = 'advance-fortification';
@@ -15,7 +14,7 @@ export default class AdvanceFortification extends DrawCard {
                     effect: modifyBothSkills(1)
                 }))
             .otherwise()
-                .gameAction(loseHonor(context => ({ target: context.player.opponent })))
+                .loseHonor(context => ({ target: context.player.opponent }))
             .effect('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?
                 ['give defending characters +1/+1', ''] : ['make ', context.player.opponent, ' lose 1 honor'])
             .max(perConflict(1));
