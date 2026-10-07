@@ -167,6 +167,8 @@ export default class GainAbility extends EffectValue<GainedAbilityValue, BaseCar
         if(!this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid] = granted.limit;
         } else {
+            // the uses so far count on: the new ability's own limit is dropped, so it stops listening
+            granted.limit.unregisterEvents(target.game);
             granted.limit = this.grantedAbilityLimits[target.uuid];
         }
         this.grantedAbilityLimits[target.uuid].currentUser = target.uuid;
