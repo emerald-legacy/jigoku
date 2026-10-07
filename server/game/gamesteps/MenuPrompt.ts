@@ -53,6 +53,9 @@ class MenuPrompt extends UiPrompt {
     }
 
     menuCommand(player: Player, arg: string, method: string): boolean {
+        if(!this.offers(method, arg)) {
+            return false;
+        }
         const context = this.context;
         // a method on the context object, named by the button
         const handler: unknown = Reflect.get(context, method);
@@ -67,6 +70,18 @@ class MenuPrompt extends UiPrompt {
         return true;
     }
 
+    /**
+     * Whether a button or control of this prompt sends `method` (with `arg`, where every such button fixes it):
+     * the client names the method, and the context object has many more than the prompt offers.
+     */
+    private offers(method: string, arg: string): boolean {
+        const { buttons = [], controls = [] } = this.properties.activePrompt;
+        const buttonArgs = buttons.filter((button) => button.method === method).map((button) => button.arg);
+        if(controls.some((control) => control.method === method) || buttonArgs.some((buttonArg) => buttonArg === undefined)) {
+            return true;
+        }
+        return buttonArgs.some((buttonArg) => String(buttonArg) === String(arg));
+    }
 }
 
 export default MenuPrompt;
