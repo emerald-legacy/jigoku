@@ -6,7 +6,6 @@ import {
     cardLastingEffect,
     conditional,
     multiple,
-    noAction,
     placeFate,
     selectRing
 } from '../../GameActions/GameActions.js';
@@ -39,8 +38,7 @@ export default class HighHouseOfLight extends StrongholdCard {
                         messageArgs: (ring) => [context.player, ring, context.target],
                         subActionProperties: (ring) => ({ origin: ring }),
                         gameAction: placeFate({ target: context.target })
-                    })),
-                    falseGameAction: noAction()
+                    }))
                 })
             ]))
             .effect('make {0} unable to be targeted by opponent\'s events');

@@ -37,3 +37,10 @@ export class HandlerAction<C extends AbilityContext = AbilityContext> extends Ga
         return this.getProperties(context, additionalProperties).hasTargetsChosenByInitiatingPlayer;
     }
 }
+
+/** An action that does nothing, such as the branch of a choice that resolves no effect. */
+export function noAction(): GameAction {
+    const action = new HandlerAction({});
+    action.isNoAction = true;
+    return action;
+}

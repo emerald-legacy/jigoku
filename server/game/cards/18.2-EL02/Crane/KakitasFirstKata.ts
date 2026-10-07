@@ -1,7 +1,7 @@
 import { CardType, EventName, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { cardCannot } from '../../../effects.js';
-import { cardLastingEffect, conditional, multiple, noAction, ready } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, conditional, multiple, ready } from '../../../GameActions/GameActions.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -45,8 +45,7 @@ export default class KakitasFirstKata extends DrawCard {
                 })),
                 conditional({
                     condition: (context) => context.target !== undefined && this.bowedCharactersThisConflict.has(context.target),
-                    trueGameAction: ready((context) => ({ target: context.target })),
-                    falseGameAction: noAction()
+                    trueGameAction: ready((context) => ({ target: context.target }))
                 })
             ]))
             .effect('{1}prevent opponents\' actions from bowing or moving {0}', (context) => (context.target && this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : ''));

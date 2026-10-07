@@ -5,7 +5,6 @@ import {
     draw,
     lookAt,
     moveCard,
-    noAction,
     sequentialContext
 } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
@@ -42,8 +41,7 @@ export default class DrawingTheVoid extends DrawCard {
                         })),
                         conditional((context) => ({
                             condition: context.player.hasAffinity('void', context),
-                            trueGameAction: draw(),
-                            falseGameAction: noAction()
+                            trueGameAction: draw()
                         }))
                     ]
                 };

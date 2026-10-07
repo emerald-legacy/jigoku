@@ -1,4 +1,4 @@
-import { cardMenu, conditional, dishonor } from '../../GameActions/GameActions.js';
+import { cardMenu, dishonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InsultToInjury extends DrawCard {
@@ -12,20 +12,6 @@ export default class InsultToInjury extends DrawCard {
                         (card) => card.controller === context.player && card.hasTrait('duelist')
                     ) ?? false
             })
-            .gameAction(conditional((context) => {
-                const losers = context.event.loser ?? [];
-                return {
-                    condition: losers.length > 1,
-                    trueGameAction: cardMenu({
-                        activePromptTitle: 'Choose a character to dishonor',
-                        cards: losers,
-                        gameAction: dishonor(),
-                        message: '{0} chooses to dishonor {1}',
-                        messageArgs: (card, player) => [player, card]
-                    }),
-                    falseGameAction: dishonor({ target: losers[0] })
-                };
-            }))
             .effect('{1}', (context) => {
                 const loser = context.event.loser;
                 return [
@@ -33,6 +19,16 @@ export default class InsultToInjury extends DrawCard {
                         ? 'choose to dishonor a loser of the duel'
                         : ['dishonor {0}', loser ?? []]
                 ];
-            });
+            })
+            .if((context) => (context.event.loser ?? []).length > 1)
+                .gameAction(cardMenu((context) => ({
+                    activePromptTitle: 'Choose a character to dishonor',
+                    cards: context.event.loser ?? [],
+                    gameAction: dishonor(),
+                    message: '{0} chooses to dishonor {1}',
+                    messageArgs: (card, player) => [player, card]
+                })))
+            .otherwise()
+                .dishonor((context) => ({ target: context.event.loser?.[0] }));
     }
 }

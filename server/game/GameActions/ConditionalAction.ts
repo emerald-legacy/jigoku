@@ -3,15 +3,19 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
+import { noAction } from './HandlerAction.js';
 import type { EventName } from '../Constants.js';
 
 export interface ConditionalActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     condition: ((context: C, properties: ConditionalActionProperties<C>) => boolean) | boolean;
     trueGameAction: GameAction;
-    falseGameAction: GameAction;
+    /** Defaults to doing nothing. */
+    falseGameAction?: GameAction;
 }
 
-export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties<C>, EventName, C> {
+export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties<C>, EventName, C, 'falseGameAction'> {
+    defaultProperties = { falseGameAction: noAction() };
+
     getProperties(context: C, additionalProperties = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.trueGameAction, properties.falseGameAction]);
     }

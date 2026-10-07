@@ -1,6 +1,6 @@
 import { DuelType, Duration, ConflictType } from '../../../Constants.js';
 import { changePlayerSkillModifier, modifyDuelSkill } from '../../../effects.js';
-import { conditional, duelLastingEffect, noAction, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { conditional, duelLastingEffect, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaidojiAkikore extends DrawCard {
@@ -31,8 +31,7 @@ export default class DaidojiAkikore extends DrawCard {
                         trueGameAction: playerLastingEffect({
                             targetController: duel.winningPlayer,
                             effect: changePlayerSkillModifier(3)
-                        }),
-                        falseGameAction: noAction()
+                        })
                     })
             }));
     }

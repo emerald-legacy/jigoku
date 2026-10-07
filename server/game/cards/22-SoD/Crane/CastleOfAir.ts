@@ -6,7 +6,6 @@ import {
     conditional,
     handler,
     multiple,
-    noAction,
     selectCard
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -54,8 +53,7 @@ export default class CastleOfAir extends DrawCard {
                         handler: context => {
                             this.playersTriggered.add(context.player.uuid);
                         }
-                    }),
-                    falseGameAction: noAction()
+                    })
                 }))
             ]))
             .effect('increase the strength of an attacked province by 4{1}', context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);

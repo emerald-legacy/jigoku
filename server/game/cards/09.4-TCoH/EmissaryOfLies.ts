@@ -50,8 +50,7 @@ class EmissaryOfLies extends DrawCard {
                         }),
                         conditional({
                             condition: () => !context.player.hand.some((card) => card.name === cardName),
-                            trueGameAction: sendHome({ target: character }),
-                            falseGameAction: noAction()
+                            trueGameAction: sendHome({ target: character })
                         })
                     ])
                 },

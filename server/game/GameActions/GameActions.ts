@@ -447,11 +447,7 @@ export function cancel<C extends CancellingContext = TriggeredAbilityContext>(pr
 export function handler<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, C> = {}): HandlerAction<C> {
     return new HandlerAction<C>(propertyFactory);
 }
-export function noAction(): GameAction {
-    const action = new HandlerAction({});
-    action.isNoAction = true;
-    return action;
-}
+export { noAction } from './HandlerAction.js';
 
 //////////////
 // CONFLICT

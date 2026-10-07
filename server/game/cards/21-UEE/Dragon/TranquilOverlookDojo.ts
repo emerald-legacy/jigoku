@@ -4,7 +4,6 @@ import {
     conditional,
     discardCard,
     lookAt,
-    noAction,
     sequentialContext
 } from '../../../GameActions/GameActions.js';
 import { DuelType, Players } from '../../../Constants.js';
@@ -32,7 +31,6 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
             gameAction: (duel) =>
                 conditional({
                     condition: (context) => duel.winningPlayer === context.player,
-                    falseGameAction: noAction(),
                     trueGameAction: sequentialContext((context) => {
                         const revealedCards = randomHandCards(context.player.opponent, 2);
                         return {

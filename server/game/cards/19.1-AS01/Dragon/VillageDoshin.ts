@@ -1,5 +1,5 @@
 import * as costs from '../../../costs/index.js';
-import { cancel, chooseAction, conditional, discardAtRandom } from '../../../GameActions/GameActions.js';
+import { cancel, chooseAction, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,15 +21,15 @@ export default class VillageDoshin extends DrawCard {
                     })
             })
             .cost(costs.discardSelf())
-            .gameAction(conditional((context) => ({
-                condition: () => {
-                    const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
-                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && discardAtRandom({ amount: 2 })
-                        .canAffect(context.player.opponent, context);
-                    return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
-                },
-                falseGameAction: cancel(),
-                trueGameAction: chooseAction({
+            .effect('protect {1}', (context) => context.event.cardTargets)
+            .location(Location.Hand)
+            .if((context) => {
+                const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
+                const opponentIsAllowedToDiscardCards = !!context.player.opponent && discardAtRandom({ amount: 2 })
+                    .canAffect(context.player.opponent, context);
+                return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
+            })
+                .gameAction(chooseAction((context) => ({
                     player: Players.Opponent,
                     activePromptTitle: 'Select one',
                     options: {
@@ -46,9 +46,8 @@ export default class VillageDoshin extends DrawCard {
                         }
                     },
                     messageArgs: [context.event.card]
-                })
-            })))
-            .effect('protect {1}', (context) => context.event.cardTargets)
-            .location(Location.Hand);
+                })))
+            .otherwise()
+                .cancel();
     }
 }

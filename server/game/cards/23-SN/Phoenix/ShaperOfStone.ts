@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
-import { conditional, gainHonor, noAction, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { conditional, gainHonor, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, Phases, Duration } from '../../../Constants.js';
 
 export default class ShaperOfStone extends DrawCard {
@@ -40,8 +40,7 @@ export default class ShaperOfStone extends DrawCard {
                         condition: () => !context.target.isBroken,
                         trueGameAction: gainHonor({
                             target: context.player
-                        }),
-                        falseGameAction: noAction()
+                        })
                     })
                 }),
                 duration: Duration.UntilEndOfRound

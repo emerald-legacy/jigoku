@@ -1,5 +1,5 @@
 import { increaseCost } from '../../../effects.js';
-import { conditional, gainFate, multiple, noAction, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { conditional, gainFate, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -26,8 +26,7 @@ export default class IntoTheStorm extends DrawCard {
                     condition: context => context.player.isCharacterTraitInPlay('scout'),
                     trueGameAction: gainFate({
                         target: context.player
-                    }),
-                    falseGameAction: noAction()
+                    })
                 }))
             ]))
             .effect('increase the cost of events this conflict by 1{1}', context => [

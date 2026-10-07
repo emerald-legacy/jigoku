@@ -1,5 +1,5 @@
 import { addTrait, reduceCost } from '../../../effects.js';
-import { conditional, dishonor, multiple, noAction, ready } from '../../../GameActions/GameActions.js';
+import { conditional, dishonor, multiple, ready } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -36,8 +36,7 @@ export default class BambooTattoo extends DrawCard {
                 ready((context) => ({ target: context.source.parentCharacter ?? [] })),
                 conditional({
                     condition: (context) => this.isSelfTrigger(context),
-                    trueGameAction: dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
-                    falseGameAction: noAction()
+                    trueGameAction: dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
                 })
             ]))
             .effect((context) => msg`ready${this.isSelfTrigger(context) ? ' and dishonor' : ''} ${context.source.parentCharacter}`);

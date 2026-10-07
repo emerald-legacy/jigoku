@@ -1,5 +1,5 @@
 import { CardType, CharacterStatus, Players } from '../../../Constants.js';
-import { conditional, draw, moveStatusToken, noAction, sequentialContext } from '../../../GameActions/GameActions.js';
+import { conditional, draw, moveStatusToken, sequentialContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const TOKEN = 'token';
@@ -38,8 +38,7 @@ export default class WhiteLotusMethod extends DrawCard {
                         condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
                         trueGameAction: draw({
                             target: context.targets[RECIPIENT].controller
-                        }),
-                        falseGameAction: noAction()
+                        })
                     })
                 ]
             })))
