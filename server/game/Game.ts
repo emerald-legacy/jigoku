@@ -839,10 +839,13 @@ class Game {
                 }
             }
         }
-        if(events.length > 0) {
-            this.openEventWindow(events);
-            this.queueSimpleStep(() => resolvedContext.refill());
-        }
+        // an action may still add its event in a queued step (after an "unless" cost), so the window opens after those
+        this.queueSimpleStep(() => {
+            if(events.length > 0) {
+                this.openEventWindow(events);
+                this.queueSimpleStep(() => resolvedContext.refill());
+            }
+        });
         return events;
     }
 
