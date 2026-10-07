@@ -193,7 +193,7 @@ class CardAbility extends ThenAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        return this.reducibleCost(context);
+        return this.reducedFateCost(context);
     }
 
     isInValidLocation(context: AbilityContext): boolean {

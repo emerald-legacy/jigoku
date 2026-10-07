@@ -29,7 +29,7 @@ class BaseAction extends BaseCardAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        return this.reducibleCost(context);
+        return this.reducedFateCost(context);
     }
 
     isAction(): boolean {

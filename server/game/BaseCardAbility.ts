@@ -29,8 +29,8 @@ abstract class BaseCardAbility extends BaseAbility {
         return this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited;
     }
 
-    /** The fate cost after reductions, from the first cost that can be reduced. */
-    protected reducibleCost(context: AbilityContext): number {
+    /** The fate this costs after reductions ("costs 1 fate less"), as its fate cost works it out; 0 without a fate cost. */
+    protected reducedFateCost(context: AbilityContext): number {
         for(const cost of this.cost) {
             if(cost.getReducedCost) {
                 return cost.getReducedCost(context);
