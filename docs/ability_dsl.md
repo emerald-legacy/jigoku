@@ -1,6 +1,6 @@
 # Ability DSL Reference
 
-This document describes the ability DSL used to implement card effects. All APIs live under `AbilityDsl`, which is imported from `server/game/abilitydsl.ts`.
+This document describes the ability DSL used to implement card effects. All APIs are grouped under `AbilityDsl` (`server/game/abilitydsl.ts`). Cards import game actions and effects by name (see below) and use `AbilityDsl` for costs and limits.
 
 ```typescript
 import AbilityDsl from '../../abilitydsl';
@@ -31,9 +31,10 @@ Prefer the named imports in new code. Costs and limits stay under `AbilityDsl` (
 Every card extends `DrawCard` (characters, attachments, events), `ProvinceCard` or `StrongholdCard`. Abilities are declared in `setupCardAbilities()`.
 
 ```typescript
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class MyCard extends DrawCard {
     static id = 'my-card';
@@ -66,7 +67,7 @@ this.action('Bow a character')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
-    }, AbilityDsl.actions.bow())
+    }, bow())
     .limit(AbilityDsl.limit.perConflict(1))
     .effect('bow {0}');
 ```
@@ -81,12 +82,22 @@ Builder methods shared by actions and triggered abilities:
 | `target(props, ...actions)` | A card target (see [Targets](#targets)) |
 | `targetCards(props, ...actions)` | Several cards, by `mode` |
 | `ringTarget(props, ...actions)` | A ring target |
-| `select(props, choices)` / `selectIf` / `selectFrom` | A choice between labelled options |
+| `select(props, choices)` / `selectIf` / `selectFrom` | A choice between labelled options; a `select` choice is a game action, or a condition for a choice that does nothing (`No: () => true`) |
 | `tokenTarget` / `abilityTarget` / `elementTarget` | Status tokens, a printed ability, an element symbol on a chosen card |
 | `gameAction(...actions)` | Action(s) to resolve (see [Game Actions](#game-actions)) |
 | `handler(fn)` | Low-level handler called after costs are paid (use `gameAction` when possible) |
 | `effect(message, args?)` | Chat log message. `{0}` = the target (or source), `{1}` onwards = the entries of `args(context)` |
-| `then(fn)` | Chains a follow-up ability after this one resolves. `fn(context)` returns its properties, or nothing |
+| `then()` | Starts the next step ("Then, …"), declared with the same methods; its context holds the targets chosen so far |
+| `thenIf(fn)` | Starts the next step when `fn(context)` holds once this step resolved ("Then, if …") |
+| `thenAlways()` | Starts the next step even when this step didn't resolve in full |
+| `message(fn)` | A step's message: `fn(context)` returns a `msg` template, or `undefined` for none |
+| `mayResolveTwice({ cost?, label?, condition? })` | "You may [pay] to resolve this ability twice": the player may pay `cost` (button "{label} to resolve this ability again") to resolve it again; on the second resolution the cost is offered "for no effect". Without a cost, a Yes/No question |
+| `opponentMayResolveAgain(prompt)` | "Then, your opponent may resolve this ability" |
+| `onResolve(fn)` | Runs `fn(context)` when the ability starts resolving its effects (bookkeeping: counting uses, remembering a target) |
+| `onAffinity(element, { prompt?, effect? })` | "With [element] affinity": the ability's or step's game actions resolve only with that affinity. `prompt` asks Yes/No first; `effect(context)` is a `msg` template for the chat line "{player} channels their {element} affinity to …" (by default the actions' own text) |
+| `if(fn)`, `otherwise()` | "If …, otherwise …": the game actions after `if()` resolve when `fn(context)` holds, the ones after `otherwise()` (optional) when it doesn't. Targets go before `if()`; right after a card target without game actions, the branches are that target's (they resolve on the chosen card). Branch lines are indented one level deeper |
+| `gainHonor(n)`, `loseHonor(n)`, `gainFate(n)`, `draw(n)` | The player of the ability gains honor, loses honor, gains fate, draws cards; `n` defaults to 1 |
+| `ready(props?)`, `bow`, `honor`, `dishonor`, `placeFate`, `removeFate`, `sendHome`, `moveToConflict`, `discardFromPlay`, `sacrifice`, `takeHonor`, `takeFate`, `refillFaceup(props)`, `cardLastingEffect(props)`, `playerLastingEffect(props)` | Shortcuts for `gameAction(x(props))`: the same properties as the factory, or a function of the context returning them; `gameAction()` takes any other action |
 | `initiateDuel(fn)` | Wires a duel as the ability's effect (see [Duels](#duels)) |
 | `limit(limit)` / `max(limit)` | Usage limit (see [Limits](#limits)) |
 | `location(location)` | Where the card must be to use the ability. Default: the hand for events, the provinces for provinces and holdings, the stronghold province for strongholds, otherwise the play area |
@@ -105,7 +116,7 @@ Action-only methods:
 | `canTriggerOutsideConflict()` | Province actions can fire when no conflict is active |
 | `conflictProvinceCondition(fn)` | Which conflict provinces allow the action (default: `province === this.card`) |
 
-`this.conflictAction(title, { conflictType?, evenFromHome? })` is an action that can only be used during a conflict, while the card is participating (in a conflict of that type), unless `evenFromHome` is set.
+`this.conflictAction(title, { conflictType?, evenFromHome? })` is an action that can only be used during a conflict (of that type). On a character the character must be participating, on an attachment in play its character must be; `evenFromHome` drops that. Events and holdings only need the conflict.
 
 ### `this.reaction(title)`
 
@@ -117,7 +128,7 @@ this.reaction('Gain 1 honor')
         onCharacterEntersPlay: (event, context) =>
             event.card.controller === context.player
     })
-    .gameAction(AbilityDsl.actions.gainHonor())
+    .gameAction(gainHonor())
     .limit(AbilityDsl.limit.perRound(1));
 ```
 
@@ -132,7 +143,7 @@ this.interrupt('Gain 1 fate')
     .when({
         onCardLeavesPlay: (event, context) => event.card === context.source
     })
-    .gameAction(AbilityDsl.actions.gainFate());
+    .gameAction(gainFate());
 ```
 
 ### Forced variants
@@ -188,7 +199,7 @@ A continuous effect active while the card is in play (or in the specified `locat
 this.persistentEffect({
     condition: (context) => context.source.isParticipating(),
     match: (card) => card.hasTrait('cavalry'),
-    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+    effect: modifyMilitarySkill(2)
 });
 ```
 
@@ -207,7 +218,7 @@ Sugar for `persistentEffect` with `condition: context.player.hasComposure()`. Ac
 
 ```typescript
 this.composure({
-    effect: AbilityDsl.effects.gainAbility(AbilityType.Action, { ... })
+    effect: gainAbility(AbilityType.Action, { ... })
 });
 ```
 
@@ -246,7 +257,7 @@ Each target method takes the target's properties and the game actions that resol
     controller: Players.Opponent,       // whose cards
     location: Location.PlayArea,       // where the card must be
     cardCondition: (card, context) => card.isParticipating()   // card: DrawCard here
-}, AbilityDsl.actions.bow())
+}, bow())
 ```
 
 With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt was hidden (`hideIfNoLegalTargets: true`).
@@ -258,7 +269,7 @@ With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt
     mode: TargetMode.UpTo,
     numCards: 3,
     cardType: CardType.Character
-}, AbilityDsl.actions.bow())
+}, bow())
 ```
 
 `context.targets[name]` is then an array of cards.
@@ -277,7 +288,7 @@ With `optional: true`, a skipped target holds `[]`, or `undefined` if its prompt
 ```typescript
 .ringTarget({
     ringCondition: (ring, context) => ring.isUnclaimed()
-}, AbilityDsl.actions.claimRing())
+}, claimRing())
 ```
 
 ### Select target (prompt with labeled choices)
@@ -293,8 +304,8 @@ this.action('Bow or honor a character')
         dependsOn: 'character',
         player: Players.Self
     }, {
-        'Bow': AbilityDsl.actions.bow((context) => ({ target: context.targets.character })),
-        'Honor': AbilityDsl.actions.honor((context) => ({ target: context.targets.character }))
+        'Bow': bow((context) => ({ target: context.targets.character })),
+        'Honor': honor((context) => ({ target: context.targets.character }))
     });
 ```
 
@@ -314,7 +325,7 @@ this.action('Detach an attachment')
         dependsOn: 'attacker',
         cardType: CardType.Attachment,
         cardCondition: (card, context) => card.parent === context.targets.attacker
-    }, AbilityDsl.actions.discardFromPlay());
+    }, discardFromPlay());
 ```
 
 In a dependent target's callbacks, the target it depends on is set; other earlier targets may not be chosen yet, so they are optional there.
@@ -332,7 +343,7 @@ Inside any ability callback (`condition`, `handler`, `effect` arguments, `when`,
 ```typescript
 this.action('Move to the conflict')
     .condition((context) => context.source.isParticipating())   // DrawCard member, no cast
-    .gameAction(AbilityDsl.actions.moveToConflict());
+    .gameAction(moveToConflict());
 ```
 
 The same applies to `AbilityDsl.effects.gainAbility(...)`: the granted ability's `context.source` defaults to `DrawCard`.
@@ -364,7 +375,7 @@ this.reaction('Gain 1 fate')
         afterConflict: (event, context) =>
             event.conflict.loser === context.player && context.source.isAttacking()
     })
-    .gameAction(AbilityDsl.actions.gainFate());
+    .gameAction(gainFate());
 ```
 
 Narrow on `context.event.name` (or `context.event.is(EventName.X)`) when you need a field specific to one event.
@@ -446,6 +457,7 @@ These prompt the player to pick a card, then perform the action as the cost.
 | `costs.optional(cost)` | Wraps any cost to make it optional (Yes/No prompt) |
 | `costs.optionalOpponentLoseHonor(prompt)` | Opponent is asked to lose 1 honor |
 | `costs.discardImperialFavor()` | Discard the Imperial Favor |
+| `costs.chooseOne({ label: cost, … })` | "Pay X or Y": the player picks one of the payable costs by its label (no question when only one can be paid) |
 | `costs.chooseFate(playType)` | Standard "how much extra fate" prompt for playing characters |
 
 The `props` parameter for selection costs takes the same properties as `target:` on an ability (e.g., `cardType`, `controller`, `cardCondition`, `location`, `mode`, `numCards`).
@@ -482,9 +494,9 @@ When no `target` is provided, card actions target `context.source`, player actio
 Every factory also takes an optional `<Target extends BaseCard>` type parameter, so the `context` inside a `(context) => properties` factory is typed the same way as the ability's target (see [Typed Targets & Events](#typed-targets--events-typescript)):
 
 ```typescript
-gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
+gameAction: cardLastingEffect<DrawCard>((context) => ({
     target: context.target,   // DrawCard | undefined — no cast
-    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+    effect: modifyMilitarySkill(2)
 }))
 ```
 
@@ -533,7 +545,7 @@ The tables below cover the most-used factories; the authoritative list lives in 
 
 ### Player actions
 
-These target the ability's player, except `loseFate`, `loseHonor`, `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom` and `discardMatching`, which target the opponent.
+These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom` and `discardMatching`, which target the opponent.
 
 | Function | Notes |
 |----------|-------|
@@ -582,6 +594,8 @@ These target the ability's player, except `loseFate`, `loseHonor`, `takeFate`, `
 | `actions.ifAble({ gameAction, fallbackGameAction? })` | Do `gameAction` if legal, else `fallbackGameAction` |
 | `actions.chooseAction({ options, activePromptTitle? })` | Prompt player to choose between actions; `options` maps each label to `{ action, message? }` |
 | `actions.menuPrompt({ ... })` | Show a free-form menu prompt |
+| `actions.rearrangeDeck({ amount, deck?, activePromptTitle?, message? })` | The player of the ability puts the top `amount` cards of the target player's `deck` (default: their own conflict deck) back in the order they choose, one prompt per position |
+| `actions.assignRoles({ roles, player?, pick?, activePromptTitle?, message? })` | Two cards, two roles (`{ Honor: honor(), Dishonor: dishonor() }`): the chooser gives each card a role, by role then card, or with `pick` by picking that role's card from card buttons; each role's action resolves on its card, in this action's window. `message(assigned, context)` returns a `msg` template |
 | `actions.selectCard({ cardCondition?, gameAction, ... })` | Prompt to select one card, then apply `gameAction`; `messageArgs` and `subActionProperties` get that card |
 | `actions.selectCards({ mode, cardCondition?, gameAction, ... })` | Several cards, by `mode`; `messageArgs` gets the chosen cards, `subActionProperties` one candidate or all of them |
 | `actions.cancel()` | Cancel the triggering event (for interrupts) |
@@ -597,14 +611,14 @@ These target the ability's player, except `loseFate`, `loseHonor`, `takeFate`, `
 `actions.deckSearch` is one of the most configurable actions.
 
 ```typescript
-AbilityDsl.actions.deckSearch({
+deckSearch({
     amount: -1,                    // -1 = entire deck (default), or a number to look at top N
     numCards: 1,                   // how many cards to select
     targetMode: TargetMode.UpTo,  // Single, UpTo, Exactly, Unlimited
     deck: Decks.ConflictDeck,      // ConflictDeck or DynastyDeck
     cardCondition: (card) => card.hasTrait('spell'),
-    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand }),
-    takesNothingGameAction: AbilityDsl.actions.draw(),
+    gameAction: moveCard({ destination: Location.Hand }),
+    takesNothingGameAction: draw(),
     message: '{0} takes {1}',
     messageArgs: (context, cards) => [context.player, cards],
     shuffle: true,                 // shuffle deck afterwards (default true)
@@ -622,9 +636,9 @@ AbilityDsl.actions.deckSearch({
 Lasting effects are applied via `actions.cardLastingEffect`, `actions.playerLastingEffect`, or `actions.ringLastingEffect`. They take `effect` (one or more `AbilityDsl.effects` values) and `duration`, which defaults to `Duration.UntilEndOfConflict`.
 
 ```typescript
-gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+gameAction: cardLastingEffect((context) => ({
     target: context.targets.target,
-    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+    effect: modifyMilitarySkill(2)
 }))
 ```
 
@@ -645,8 +659,8 @@ Multiple effects can be combined as an array:
 
 ```typescript
 effect: [
-    AbilityDsl.effects.modifyMilitarySkill(3),
-    AbilityDsl.effects.doesNotBow()
+    modifyMilitarySkill(3),
+    doesNotBow()
 ]
 ```
 
@@ -836,7 +850,7 @@ this.action('Duel target character')
         requiresConflict: true,   // default true — source and target must be participating
         challengerCondition: (card, context) => card === context.source,
         targetCondition: (card) => card.isParticipating(),
-        gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
+        gameAction: (duel) => discardFromPlay({ target: duel.loser }),
         message: 'discard {0}',
         messageArgs: (duel) => [duel.loser]
     }));
@@ -952,20 +966,20 @@ Key events used in `when:` clauses:
 ### Bow something and honor something else
 
 ```typescript
-gameAction: AbilityDsl.actions.multiple([
-    AbilityDsl.actions.bow((context) => ({ target: context.targets.bow })),
-    AbilityDsl.actions.honor((context) => ({ target: context.targets.honor }))
+gameAction: multiple([
+    bow((context) => ({ target: context.targets.bow })),
+    honor((context) => ({ target: context.targets.honor }))
 ])
 ```
 
 ### Give a card a lasting effect for the conflict
 
 ```typescript
-gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+gameAction: cardLastingEffect((context) => ({
     target: context.targets.target,
     effect: [
-        AbilityDsl.effects.modifyMilitarySkill(3),
-        AbilityDsl.effects.doesNotBow()
+        modifyMilitarySkill(3),
+        doesNotBow()
     ]
 }))
 ```
@@ -973,20 +987,20 @@ gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
 ### Search a deck and put selected card into hand
 
 ```typescript
-gameAction: AbilityDsl.actions.deckSearch({
+gameAction: deckSearch({
     deck: Decks.ConflictDeck,
     cardCondition: (card) => card.hasTrait('spell'),
-    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
+    gameAction: moveCard({ destination: Location.Hand })
 })
 ```
 
 ### Conditional effect (if X then bow, else dishonor)
 
 ```typescript
-gameAction: AbilityDsl.actions.conditional({
+gameAction: conditional({
     condition: (context) => context.targets.target.isHonored,
-    trueGameAction: AbilityDsl.actions.bow(),
-    falseGameAction: AbilityDsl.actions.dishonor()
+    trueGameAction: bow(),
+    falseGameAction: dishonor()
 })
 ```
 
@@ -994,10 +1008,10 @@ gameAction: AbilityDsl.actions.conditional({
 
 ```typescript
 this.composure({
-    effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
+    effect: gainAbility(AbilityType.Action, {
         title: 'Draw a card',
         condition: (context) => context.source.isParticipating(),
-        gameAction: AbilityDsl.actions.draw()
+        gameAction: draw()
     })
 });
 ```
@@ -1005,9 +1019,9 @@ this.composure({
 ### Reduce cost of next matching card
 
 ```typescript
-gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+gameAction: playerLastingEffect((context) => ({
     targetController: context.player,
-    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card) => card.hasTrait('shugenja'))
+    effect: reduceNextPlayedCardCost(1, (card) => card.hasTrait('shugenja'))
 }))
 ```
 
@@ -1019,7 +1033,7 @@ this.reaction('Shuffle back into deck')
         onCardLeavesPlay: (event, context) => event.card === context.source
     })
     .location(Location.DynastyDiscardPile)   // fire from discard, not play
-    .gameAction(AbilityDsl.actions.moveCard({
+    .gameAction(moveCard({
         destination: Location.DynastyDeck,
         shuffle: true
     }));
@@ -1033,13 +1047,13 @@ The follow-up ability is a properties object (`gameAction`, `target`, `handler`,
 this.action('Bow, then choose an effect')
     .target({
         cardType: CardType.Character
-    }, AbilityDsl.actions.bow())
+    }, bow())
     .then(() => ({
         target: {
             mode: TargetMode.Select,
             choices: {
-                'Gain 1 honor': AbilityDsl.actions.gainHonor(),
-                'Draw 1 card': AbilityDsl.actions.draw()
+                'Gain 1 honor': gainHonor(),
+                'Draw 1 card': draw()
             }
         }
     }));

@@ -93,11 +93,11 @@ Province card Conflict Actions **do not need** `.condition(() => this.isConflict
 // WRONG — redundant condition
 this.action('Gain 1 fate')
     .condition(() => this.isConflictProvince())   // unnecessary
-    .gameAction(AbilityDsl.actions.gainFate());
+    .gameAction(gainFate());
 
 // CORRECT
 this.action('Gain 1 fate')
-    .gameAction(AbilityDsl.actions.gainFate());
+    .gameAction(gainFate());
 ```
 
 **`persistentEffect` DOES need the condition** — it has no built-in province check. Use `context.source`:
@@ -106,7 +106,7 @@ this.action('Gain 1 fate')
 // CORRECT
 this.persistentEffect({
     condition: (context) => context.source.isConflictProvince(),
-    effect: AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
+    effect: changeConflictSkillFunction((card) => card.getGlory())
 });
 ```
 
@@ -159,13 +159,13 @@ Keep the condition when it serves a distinct purpose beyond the presence of a co
 .target({
     cardType: CardType.Character,
     cardCondition: (card) => card.isParticipating()
-}, AbilityDsl.actions.sendHome())
+}, sendHome())
 
 // WRONG — !isParticipating already enforced by moveToConflict.canAffect
 .target({
     cardType: CardType.Character,
     cardCondition: (card) => !card.isParticipating()
-}, AbilityDsl.actions.moveToConflict())
+}, moveToConflict())
 ```
 
 **Exception — multi-target selection:** In a two-target pattern where one target selects the card (no game action of its own) and the other's gameAction references it via `context.targets.X`, the first target has no gameAction to enforce the check. Its `cardCondition: card => card.isParticipating()` is NOT redundant — it is the only filter.
@@ -176,7 +176,7 @@ Compound conditions keep the non-redundant part:
 .target({
     cardType: CardType.Character,
     cardCondition: (card) => (card.printedCost ?? 0) <= 2  // was: !isParticipating() && printedCost <= 2
-}, AbilityDsl.actions.moveToConflict())
+}, moveToConflict())
 ```
 
 ### `isParticipating()` in any cardCondition implies conflict
@@ -190,14 +190,14 @@ this.action('Dishonor a character')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
-    }, AbilityDsl.actions.dishonor());
+    }, dishonor());
 
 // CORRECT
 this.action('Dishonor a character')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
-    }, AbilityDsl.actions.dishonor());
+    }, dishonor());
 ```
 
 The same applies when `condition` uses `anyCardsInPlay(card => card.isParticipating() && ...)` — if any participating card exists, a conflict is ongoing.
@@ -270,7 +270,7 @@ this.action('Human-readable title')
         player: Players.Self,                   // who makes the selection
         location: Location.PlayArea,           // filter by location
         cardCondition: (card, context) => card.isParticipating()
-    }, AbilityDsl.actions.bow())
+    }, bow())
 
     // Chat message — see "Effect Formatting" section
     .effect('bow {0}')
@@ -305,8 +305,8 @@ Use when the card text says "Select one —":
 
 ```typescript
 .select({}, {
-    'Move into conflict': AbilityDsl.actions.moveToConflict(),
-    'Move home': AbilityDsl.actions.sendHome()
+    'Move into conflict': moveToConflict(),
+    'Move home': sendHome()
 })
 ```
 
@@ -377,7 +377,7 @@ For cards that initiate a duel, call `initiateDuel` on the action with a functio
 this.action('Initiate a military duel')
     .initiateDuel(() => ({
         type: DuelType.Military,
-        gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser })
+        gameAction: (duel) => discardFromPlay({ target: duel.loser })
     }));
 ```
 
@@ -461,53 +461,53 @@ messageArgs: (duel) => [
 Without a `target`, card actions target the source, player actions the ability's player (the opponent for lose, take and discard actions), lasting effects last until the end of the conflict, `amount` is 1, and a target's own action targets the chosen card (inside `multiple`, `sequential`, `conditional` and other composites, the composite's target).
 
 ```typescript
-AbilityDsl.actions.bow()
-AbilityDsl.actions.bow((context) => ({ target: context.targets.something }))
-AbilityDsl.actions.sendHome()
-AbilityDsl.actions.moveToConflict()
-AbilityDsl.actions.dishonor()
-AbilityDsl.actions.honor()
-AbilityDsl.actions.placeFate()
-AbilityDsl.actions.removeFate()
-AbilityDsl.actions.gainFate()
-AbilityDsl.actions.loseFate()
-AbilityDsl.actions.draw()
-AbilityDsl.actions.discardFromPlay()
-AbilityDsl.actions.reveal()
-AbilityDsl.actions.cancel()
-AbilityDsl.actions.moveCard((context) => ({ target: context.target, destination: Location.ConflictDeck }))
-AbilityDsl.actions.resolveRingEffect()
-AbilityDsl.actions.switchConflictType()
-AbilityDsl.actions.switchConflictElement()
-AbilityDsl.actions.turnFacedown()
-AbilityDsl.actions.moveConflict()
+bow()
+bow((context) => ({ target: context.targets.something }))
+sendHome()
+moveToConflict()
+dishonor()
+honor()
+placeFate()
+removeFate()
+gainFate()
+loseFate()
+draw()
+discardFromPlay()
+reveal()
+cancel()
+moveCard((context) => ({ target: context.target, destination: Location.ConflictDeck }))
+resolveRingEffect()
+switchConflictType()
+switchConflictElement()
+turnFacedown()
+moveConflict()
 
 // Apply multiple actions
-AbilityDsl.actions.multiple([action1, action2])
+multiple([action1, action2])
 // or as several arguments
-.gameAction(AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
-.target({ ... }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
+.gameAction(bow(), dishonor())
+.target({ ... }, bow(), dishonor())
 
 // Conditional action (silent — no player prompt)
-AbilityDsl.actions.conditional({
+conditional({
     condition: (context) => context.target.isParticipating(),
-    trueGameAction: AbilityDsl.actions.sendHome(),
-    falseGameAction: AbilityDsl.actions.moveToConflict()
+    trueGameAction: sendHome(),
+    falseGameAction: moveToConflict()
 })
 
 // Lasting effects
-AbilityDsl.actions.cardLastingEffect((context) => ({
+cardLastingEffect((context) => ({
     target: context.target,
-    effect: AbilityDsl.effects.doesNotBow()
+    effect: doesNotBow()
 }))
 
-AbilityDsl.actions.playerLastingEffect((context) => ({
+playerLastingEffect((context) => ({
     targetController: context.player,
-    effect: AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
+    effect: increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
 }))
 
 // Resolve another card's ability (used by Keeper of Secret Names: the action of its province target)
-AbilityDsl.actions.resolveAbility((context) => ({
+resolveAbility((context) => ({
     ability: context.target.abilities.actions[0],
     ignoredRequirements: ['province'],
     choosingPlayerOverride: context.choosingPlayerOverride
@@ -533,23 +533,23 @@ AbilityDsl.actions.resolveAbility((context) => ({
 ## Lasting Effects
 
 ```typescript
-AbilityDsl.effects.doesNotBow()
-AbilityDsl.effects.cardCannot({ cannot: 'ready', restricts: 'cardEffects' })
-AbilityDsl.effects.cardCannot({ cannot: 'target', restricts: 'opponentsCardEffects' })
-AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
-AbilityDsl.effects.modifyMilitarySkill(2)
-AbilityDsl.effects.modifyPoliticalSkill(2)
-AbilityDsl.effects.modifyBothSkills(1)
-AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
-AbilityDsl.effects.gainAbility(AbilityType.Action, { ... })   // a granted ability is still a properties object
-AbilityDsl.effects.switchBaseSkills()
-AbilityDsl.effects.cannotContribute(() => (card) => condition)
-AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
-AbilityDsl.effects.playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })  // preferred
-AbilityDsl.effects.playerCannot('takeFateFromRings')                                     // legacy short form (string)
-AbilityDsl.effects.suppressEffects((effect) => condition)
-AbilityDsl.effects.gainPlayAction(SomePlayClass)
-AbilityDsl.effects.setApparentFate(0)
+doesNotBow()
+cardCannot({ cannot: 'ready', restricts: 'cardEffects' })
+cardCannot({ cannot: 'target', restricts: 'opponentsCardEffects' })
+cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
+modifyMilitarySkill(2)
+modifyPoliticalSkill(2)
+modifyBothSkills(1)
+increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
+gainAbility(AbilityType.Action, { ... })   // a granted ability is still a properties object
+switchBaseSkills()
+cannotContribute(() => (card) => condition)
+changeConflictSkillFunction((card) => card.getGlory())
+playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })  // preferred
+playerCannot('takeFateFromRings')                                     // legacy short form (string)
+suppressEffects((effect) => condition)
+gainPlayAction(SomePlayClass)
+setApparentFate(0)
 ```
 
 ---
@@ -663,7 +663,7 @@ this.reaction('Place a fate on this character')
     .when({
         onCharacterEntersPlay: (event, context) => event.card === context.source
     })
-    .gameAction(AbilityDsl.actions.placeFate());
+    .gameAction(placeFate());
 
 this.wouldInterrupt('Cancel an event')
     .when({
@@ -671,14 +671,14 @@ this.wouldInterrupt('Cancel an event')
     })
     .cannotBeMirrored()
     .gameAction(
-        AbilityDsl.actions.cancel(),
-        AbilityDsl.actions.conditional({
+        cancel(),
+        conditional({
             condition: (context) => context.event.card.isConflict,
-            trueGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext) => ({
+            trueGameAction: moveCard((context: TriggeredAbilityContext) => ({
                 target: context.event.card,
                 destination: Location.ConflictDeck
             })),
-            falseGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext) => ({
+            falseGameAction: moveCard((context: TriggeredAbilityContext) => ({
                 target: context.event.card,
                 destination: Location.DynastyDiscardPile
             }))
@@ -782,7 +782,8 @@ Stage.Cost / Effect / PreTarget / Target
 ### Province Conflict Action (simple)
 ```typescript
 import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardType } from '../../Constants';
+import { bow } from '../../GameActions/GameActions';
 
 export default class Example extends ProvinceCard {
     static id = 'example';
@@ -793,7 +794,7 @@ export default class Example extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }
 ```
@@ -802,7 +803,7 @@ export default class Example extends ProvinceCard {
 ```typescript
 this.persistentEffect({
     condition: (context) => context.source.isConflictProvince(),
-    effect: AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
+    effect: changeConflictSkillFunction((card) => card.getGlory())
 });
 ```
 
@@ -813,7 +814,7 @@ this.conflictAction('Bow a participating character')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
-    }, AbilityDsl.actions.bow());
+    }, bow());
 ```
 
 A Conflict Action on a card that can't participate (a stronghold) uses an explicit condition:
@@ -829,7 +830,7 @@ this.action('Initiate a military duel')
     .initiateDuel(() => ({
         type: DuelType.Military,
         targetCondition: (card) => card.isParticipating() && !card.bowed,
-        gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
+        gameAction: (duel) => discardFromPlay({ target: duel.loser }),
         message: 'discard {0}',
         messageArgs: (duel) => [duel.loser]
     }));
@@ -842,6 +843,6 @@ this.action('Initiate a duel')
         type: DuelType.Political,
         // source card is automatically the challenger
         opponentChoosesDuelTarget: true,
-        gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser })
+        gameAction: (duel) => bow({ target: duel.loser })
     }));
 ```
