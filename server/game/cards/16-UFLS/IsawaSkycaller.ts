@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { gainPlayAction } from '../../effects.js';
-import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
+import { PlayIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
 import { Element, Location, PlayType } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -11,7 +11,7 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
     static id = 'isawa-skycaller';
 
     constructor(card: DrawCard) {
-        super(card, PlayCharacterIntoLocation.Conflict);
+        super(card, PlayIntoLocation.Conflict);
     }
 
     createContext(player: Player = this.card.controller) {

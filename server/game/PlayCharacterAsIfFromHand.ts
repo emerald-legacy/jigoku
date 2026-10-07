@@ -1,11 +1,11 @@
 import { AbilityContext } from './AbilityContext.js';
 import { PlayType } from './Constants.js';
-import { PlayCharacterAction, PlayCharacterIntoLocation } from './PlayCharacterAction.js';
+import { PlayCharacterAction, PlayIntoLocation } from './PlayCharacterAction.js';
 import DrawCard from './DrawCard.js';
 import Player from './Player.js';
 
 export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
-    constructor(card: DrawCard, intoLocation = PlayCharacterIntoLocation.Any) {
+    constructor(card: DrawCard, intoLocation = PlayIntoLocation.Any) {
         super(card, intoLocation);
     }
 
@@ -25,13 +25,13 @@ export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
 
 export class PlayCharacterAsIfFromHandIntoConflict extends PlayCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayCharacterIntoLocation.Conflict);
+        super(card, PlayIntoLocation.Conflict);
     }
 }
 
 export class PlayCharacterAsIfFromHandAtHome extends PlayCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayCharacterIntoLocation.Home);
+        super(card, PlayIntoLocation.Home);
     }
 }
 

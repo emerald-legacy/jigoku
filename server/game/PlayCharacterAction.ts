@@ -1,12 +1,14 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EffectName, EventName, Location, Phases, PlayType, Players } from './Constants.js';
+import { EffectName, Location, Phases, PlayType, Players } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import type DrawCard from './DrawCard.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 
-export enum PlayCharacterIntoLocation {
+/** Where a played character enters play: the player chooses (Any), or only one of them. */
+export enum PlayIntoLocation {
     Any,
     Conflict,
     Home
@@ -15,7 +17,7 @@ export enum PlayCharacterIntoLocation {
 export class PlayCharacterAction extends PlayCardSourceAction {
     public title = 'Play this character';
 
-    public constructor(card: DrawCard, private intoLocation = PlayCharacterIntoLocation.Any) {
+    public constructor(card: DrawCard, private intoLocation = PlayIntoLocation.Any) {
         super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);
     }
 
@@ -58,17 +60,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
-        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            context: context,
-            originalLocation: context.source.location,
-            originallyOnTopOfConflictDeck:
-                context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
-            onPlayCardSource: context.onPlayCardSource,
-            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
-            playType: PlayType.PlayFromHand
-        });
+        const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         const atHomeHandler = () => {
             context.game.addMessage(
                 '{0} plays {1} at home with {2} additional fate',
@@ -101,9 +93,9 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         };
         if(
             context.source.allowGameAction('putIntoConflict', context) &&
-            this.intoLocation !== PlayCharacterIntoLocation.Home
+            this.intoLocation !== PlayIntoLocation.Home
         ) {
-            if(this.intoLocation === PlayCharacterIntoLocation.Conflict) {
+            if(this.intoLocation === PlayIntoLocation.Conflict) {
                 return intoConflictHandler();
             }
 

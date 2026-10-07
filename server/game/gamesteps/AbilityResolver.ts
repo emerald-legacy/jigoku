@@ -1,3 +1,4 @@
+import { createCardPlayedEvent } from '../Events/cardPlayedEvent.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
@@ -86,17 +87,7 @@ class AbilityResolver extends BaseStepWithPipeline {
         if(this.context.ability.isCardAbility()) {
             const source = this.context.source;
             if(this.context.ability.isCardPlayed() && source.isDrawCard()) {
-                this.events.push(this.game.getEvent(EventName.OnCardPlayed, {
-                    player: this.context.player,
-                    card: source,
-                    context: this.context,
-                    originalLocation: source.location,
-                    originallyOnTopOfConflictDeck: this.context.player && this.context.player.conflictDeck && this.context.player.conflictDeck[0] === source,
-                    onPlayCardSource: this.context.onPlayCardSource,
-                    playedFromOutOfPlaySource: source.fromOutOfPlaySource?.slice(),
-                    playType: this.context.playType,
-                    resolver: this
-                }));
+                this.events.push(createCardPlayedEvent(this.context, source, this.context.playType, this));
             }
             const ability = this.context.ability;
             if(ability.isTriggeredAbility() && ability.isCardAbilityInstance()) {

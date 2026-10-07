@@ -24,6 +24,21 @@ abstract class BaseCardAbility extends BaseAbility {
         return this.card.game;
     }
 
+    /** Playing this card would break the limited rule: its player already played as many limited cards as they may. */
+    protected breaksLimitedRule(context: AbilityContext): boolean {
+        return this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited;
+    }
+
+    /** The fate cost after reductions, from the first cost that can be reduced. */
+    protected reducibleCost(context: AbilityContext): number {
+        for(const cost of this.cost) {
+            if(cost.getReducedCost) {
+                return cost.getReducedCost(context);
+            }
+        }
+        return 0;
+    }
+
     createContext(player: Player = this.card.controller): AbilityContext {
         return new AbilityContext({
             ability: this,

@@ -21,7 +21,7 @@ class BaseAction extends BaseCardAbility {
     }
 
     meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
-        if(this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.breaksLimitedRule(context)) {
             return 'limited';
         }
 
@@ -29,12 +29,7 @@ class BaseAction extends BaseCardAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        for(const cost of this.cost) {
-            if(cost.getReducedCost) {
-                return cost.getReducedCost(context);
-            }
-        }
-        return 0;
+        return this.reducibleCost(context);
     }
 
     isAction(): boolean {

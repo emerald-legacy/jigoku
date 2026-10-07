@@ -3,6 +3,8 @@ import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { PlayIntoLocation } from './PlayCharacterAction.js';
 import { AbilityContext } from './AbilityContext.js';
 import Player from './Player.js';
 import type { Cost, Result } from './costs/Cost.js';
@@ -14,7 +16,7 @@ function chosenCharacter(context: AbilityContext): DrawCard | undefined {
     return card instanceof BaseCard && card.isDrawCard() ? card : undefined;
 }
 
-function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
+function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {
     return {
         canPay(context: AbilityContext<DrawCard>) {
             return context.player.cardsInPlay.some((card) =>
@@ -66,18 +68,12 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
     }
 }
 
-export enum PlayDisguisedCharacterIntoLocation {
-    Any,
-    Conflict,
-    Home
-}
-
 export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     public title = 'Play this character with Disguise';
 
     constructor(
         card: DrawCard,
-        private intoLocation = PlayDisguisedCharacterIntoLocation.Any
+        private intoLocation = PlayIntoLocation.Any
     ) {
         super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
     }
@@ -111,31 +107,17 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         }
         extraFate = extraFate + legendaryFate;
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const events: Event[] = [
-            context.game.getEvent(EventName.OnCardPlayed, {
-                player: context.player,
-                card: context.source,
-                context: context,
-                originalLocation: context.source.location,
-                originallyOnTopOfConflictDeck:
-                    context.player &&
-                    context.player.conflictDeck &&
-                    context.player.conflictDeck[0] === context.source,
-                onPlayCardSource: context.onPlayCardSource,
-                playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
-                playType: context.playType
-            })
-        ];
+        const events: Event[] = [createCardPlayedEvent(context, context.source, context.playType)];
         const replacedCharacter = chosenCharacter(context);
         if(!replacedCharacter) {
             return;
         }
         const frameworkKeepsDisguisedInCurrentLocation = context.game.rules.disguiseKeepsCharactersInSameLocation;
         const conflictOnly =
-            this.intoLocation === PlayDisguisedCharacterIntoLocation.Conflict ||
+            this.intoLocation === PlayIntoLocation.Conflict ||
             (frameworkKeepsDisguisedInCurrentLocation && replacedCharacter.isParticipating());
 
-        let intoConflict = conflictOnly && this.intoLocation !== PlayDisguisedCharacterIntoLocation.Home;
+        let intoConflict = conflictOnly && this.intoLocation !== PlayIntoLocation.Home;
         if(replacedCharacter.inConflict && !conflictOnly) {
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',

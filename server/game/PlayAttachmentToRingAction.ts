@@ -1,10 +1,11 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
+import { Phases, PlayType, TargetMode } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 
 export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     title = 'Play this attachment';
@@ -53,17 +54,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     }
 
     executeHandler(context: AbilityContext<DrawCard>) {
-        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            context: context,
-            originalLocation: context.source.location,
-            originallyOnTopOfConflictDeck:
-                context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
-            onPlayCardSource: context.onPlayCardSource,
-            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
-            playType: PlayType.PlayFromHand
-        });
+        const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         context.game.openEventWindow([
             context.game.actions.attachToRing({ attachment: context.source }).getEvent(context.ring, context),
             cardPlayedEvent
