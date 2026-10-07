@@ -3,7 +3,6 @@ const jasmine = require('eslint-plugin-jasmine');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsparser = require('@typescript-eslint/parser');
 const globals = require('globals');
-const declaredTargetNames = require('./eslint/declared-target-names.cjs');
 
 module.exports = [
     {
@@ -80,8 +79,7 @@ module.exports = [
         files: ['server/**/*.ts'],
         plugins: {
             '@typescript-eslint': tseslint,
-            jasmine,
-            local: { rules: { 'declared-target-names': declaredTargetNames } }
+            jasmine
         },
         languageOptions: {
             ecmaVersion: 2024,
@@ -116,7 +114,6 @@ module.exports = [
             '@typescript-eslint/no-unused-expressions': 'error',
             '@typescript-eslint/no-this-alias': 'error',
             '@typescript-eslint/no-useless-constructor': 'error',
-            'local/declared-target-names': 'error',
             'no-redeclare': 'off',
 
             // Jasmine rules

@@ -747,15 +747,8 @@ export class AbilityBuilder<
      * "Then, …": the next step, declared with the same methods. It resolves when this step's events
      * resolved in full, and its context holds the targets chosen so far.
      */
-    then(): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>;
-    /** The next step as properties. May return nothing: some cards use it only for a side effect. */
-    then(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => ThenAbilityProperties | undefined): this;
-    then(fn?: (context: BuilderContext<Base, TG, RG, CO, TK>) => ThenAbilityProperties | undefined): this | AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
-        if(!fn) {
-            return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(this.#step());
-        }
-        this.draft.then = this.#checked(fn, this.draft.specs);
-        return this;
+    then(): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
+        return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(this.#step());
     }
 
     /** "Then, …" even when this step didn't resolve in full: the next step follows in any case. */
