@@ -18,6 +18,7 @@ export default class CardEffect extends Effect<BaseCard> {
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<BaseCard>, effect: EffectBase<EffectName, BaseCard>) {
         if(!properties.match) {
+            properties = { ...properties };
             properties.match = (card: GameObject, context?: AbilityContext) => card === context?.source;
             if(properties.location === Location.Any) {
                 properties.targetLocation = Location.Any;

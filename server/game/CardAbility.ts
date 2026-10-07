@@ -53,6 +53,15 @@ const DefaultLocationForType: Record<string, Location> = {
     stronghold: Location.StrongholdProvince
 };
 
+const printedAbilityCounts = new WeakMap<BaseCard, number>();
+
+/** Numbers a card's printed abilities in the order they are created: the same for every copy of the card. */
+function nextPrintedAbilityNumber(card: BaseCard): number {
+    const number = (printedAbilityCounts.get(card) ?? 0) + 1;
+    printedAbilityCounts.set(card, number);
+    return number;
+}
+
 class CardAbility extends ThenAbility {
     declare properties: CardAbilityProperties;
     title?: string;
@@ -88,7 +97,7 @@ class CardAbility extends ThenAbility {
         this.abilityIdentifier = properties.abilityIdentifier || '';
         this.origin = properties.origin;
         if(!this.abilityIdentifier) {
-            this.abilityIdentifier = this.printedAbility ? this.card.id + '1' : '';
+            this.abilityIdentifier = this.printedAbility ? this.card.id + nextPrintedAbilityNumber(this.card) : '';
         }
         this.maxIdentifier = this.card.name + this.abilityIdentifier;
 

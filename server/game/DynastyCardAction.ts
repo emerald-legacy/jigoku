@@ -36,7 +36,7 @@ class DynastyCardAction extends BaseAction {
         } else if(this.card.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     displayMessage(context: AbilityContext): void {

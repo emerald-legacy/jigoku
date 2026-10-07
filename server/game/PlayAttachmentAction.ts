@@ -43,7 +43,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
         if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     displayMessage(context: AbilityContext) {

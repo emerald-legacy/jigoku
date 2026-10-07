@@ -26,7 +26,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             this.ignoreType
         );
 
-        if(reducedCost !== 0 && this.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context))) {
+        if(reducedCost !== 0 && context.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context))) {
             return false;
         }
 
@@ -39,7 +39,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
     public payEvent(context: AbilityContext<DrawCard>): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
 
-        if(this.payFateCostToOpponent) {
+        if(context.payFateCostToOpponent) {
             return context.game.getEvent(EventName.OnMoveFate, { amount, context }, () => {
                 context.player.markUsedReducers(
                     context.playType,

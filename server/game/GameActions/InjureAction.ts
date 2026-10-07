@@ -25,6 +25,10 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         this.discardGameAction = new DiscardFromPlayAction({});
     }
 
+    defaultTargets(context: C): GameObject[] {
+        return [context.source];
+    }
+
     getProperties(context: C, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
         this.removeFateGameAction.setDefaultTarget(() => properties.target);

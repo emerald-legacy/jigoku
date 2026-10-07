@@ -45,10 +45,10 @@ export class ResolveElementAction<C extends AbilityContext = AbilityContext> ext
                           (RingEffects.contextFor(context.player, a.element).ability.defaultPriority -
                               RingEffects.contextFor(context.player, b.element).ability.defaultPriority)
                 );
-            additionalProperties.optional = false;
+            const ringProperties = { ...additionalProperties, optional: false };
             const effectObjects = sortedRings.map((ring) => ({
                 title: RingEffects.getRingName(ring.element) + ' Effect',
-                handler: () => context.game.openEventWindow(this.getEvent(ring, context, additionalProperties))
+                handler: () => context.game.openEventWindow(this.getEvent(ring, context, ringProperties))
             }));
             events.push(
                 new Event(EventName.Unnamed, {}, () => context.game.openSimultaneousEffectWindow(effectObjects))

@@ -24,7 +24,6 @@ export interface Cost<Results extends object = object, C extends AbilityContext 
     dependsOn?: string;
     isPrintedFateCost?: boolean;
     isPlayCost?: boolean;
-    payFateCostToOpponent?: boolean;
 
     getActionName?(context: AbilityContext): string;
     getCostMessage?(context: CostContext<Results, C>): CostMessage;

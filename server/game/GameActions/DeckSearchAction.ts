@@ -152,7 +152,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
             }
         }
 
-        if(properties.shuffle) {
+        if(derive(properties.shuffle, context)) {
             cards.sort((a, b) => a.name.localeCompare(b.name));
         }
 

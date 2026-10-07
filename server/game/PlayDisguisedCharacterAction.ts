@@ -101,7 +101,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         } else if(!context.player.checkRestrictions('enterPlay', context)) {
             return 'restriction';
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     public executeHandler(context: AbilityContext<DrawCard>) {

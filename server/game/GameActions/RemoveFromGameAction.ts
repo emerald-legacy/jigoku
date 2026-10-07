@@ -45,7 +45,6 @@ export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> ext
     }
 
     updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
-        additionalProperties.destination = Location.RemovedFromGame;
-        super.updateEvent(event, card, context, additionalProperties);
+        super.updateEvent(event, card, context, { ...additionalProperties, destination: Location.RemovedFromGame });
     }
 }

@@ -405,6 +405,14 @@ class DrawCard extends BaseCard {
         clone.printedType = this.printedType;
         clone.printedFaction = this.printedFaction;
         clone.uuid = this.uuid;
+        clone.isProvince = this.isProvince;
+        clone.isConflict = this.isConflict;
+        clone.isDynasty = this.isDynasty;
+        clone.isStronghold = this.isStronghold;
+        clone.defaultController = this.defaultController;
+        clone.allowedAttachmentTraits = this.allowedAttachmentTraits;
+        clone.disguisedKeywordTraits = this.disguisedKeywordTraits;
+        clone.allowDuplicatesOfAttachment = this.allowDuplicatesOfAttachment;
 
         // Copy game state
         clone.controller = this.controller;

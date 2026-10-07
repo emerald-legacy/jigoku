@@ -9,7 +9,7 @@ import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
-import { targetList, type WithDefaults } from './GameAction.js';
+import { type ActionEvent, targetList, type WithDefaults } from './GameAction.js';
 
 class PlayCardResolver extends AbilityResolver {
     playGameAction: PlayCardAction;
@@ -221,7 +221,8 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    addPropertiesToEvent(event: Event, _card: DrawCard, context: C): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.Unnamed, C>, card: DrawCard, context: C): void {
+        super.addPropertiesToEvent(event, card, context);
         event.onPlayCardSource = context.source;
     }
 

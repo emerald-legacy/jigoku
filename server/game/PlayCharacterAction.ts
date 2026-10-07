@@ -49,7 +49,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         ) {
             return 'restriction';
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     public executeHandler(context: AbilityContext<DrawCard>): void {

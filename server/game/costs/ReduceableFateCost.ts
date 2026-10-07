@@ -27,7 +27,6 @@ type Props = {
 export class ReduceableFateCost implements Cost {
     public isPlayCost = true;
     public isPrintedFateCost = true;
-    public payFateCostToOpponent = false;
     constructor(public ignoreType: boolean) { }
 
     public canPay(context: AbilityContext<DrawCard>): boolean {

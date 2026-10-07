@@ -146,19 +146,19 @@ export class EffectEngine {
     }
 
     onConflictFinished() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfConflict);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfConflict) || this.newEffect;
     }
 
     onDuelFinished() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfDuel);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfDuel) || this.newEffect;
     }
 
     onPhaseEnded() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfPhase);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfPhase) || this.newEffect;
     }
 
     onRoundEnded() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfRound);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfRound) || this.newEffect;
     }
 
     onPassActionPhasePriority(event: GameEvent<EventName.OnPassActionPhasePriority>) {
@@ -171,7 +171,7 @@ export class EffectEngine {
             }
         }
 
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilPassPriority);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilPassPriority) || this.newEffect;
         for(const effect of this.effects) {
             if(
                 effect.duration === Duration.UntilOpponentPassPriority ||

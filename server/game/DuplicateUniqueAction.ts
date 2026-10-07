@@ -26,7 +26,7 @@ class DuplicateUniqueAction extends PlayCardSourceAction {
         if(!this.card.checkRestrictions('placeFate', context)) {
             return 'restriction';
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     displayMessage(context: AbilityContext): void {
