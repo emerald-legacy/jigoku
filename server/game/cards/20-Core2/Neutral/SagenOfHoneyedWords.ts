@@ -1,6 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function skillBonus(companion: DrawCard): number {
@@ -17,9 +16,9 @@ export default class SagenOfHoneyedWords extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 effect: modifyBothSkills(skillBonus(context.target))
-            })))
+            }))
             .effect('get +{1}{2} and +{3}{4}', (context) => {
                 const bonus = skillBonus(context.target);
                 return [bonus, 'military', bonus, 'political'];

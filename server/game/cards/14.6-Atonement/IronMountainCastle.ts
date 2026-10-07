@@ -3,7 +3,6 @@ import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyRestrictedAttachmentAmount, reduceNextPlayedCardCost } from '../../effects.js';
-import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';
@@ -36,13 +35,13 @@ export default class IronMountainCastle extends StrongholdCard {
                 }
             })
             .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.context?.source
                 )
-            })))
+            }))
             .effect('reduce the cost of their next attachment by 1');
     }
 }

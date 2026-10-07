@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { ready } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class MotoOutrider extends DrawCard {
@@ -8,7 +7,7 @@ class MotoOutrider extends DrawCard {
     setupCardAbilities() {
         this.action('Ready this character')
             .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
-            .gameAction(ready());
+            .ready();
     }
 }
 

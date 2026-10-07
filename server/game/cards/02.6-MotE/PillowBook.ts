@@ -1,5 +1,4 @@
 import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
-import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Decks, Duration } from '../../Constants.js';
 
@@ -9,7 +8,7 @@ class PillowBook extends DrawCard {
     setupCardAbilities() {
         this.action('Make top card of your conflict deck playable')
             .condition((context) => !!context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.player.conflictDeck.length > 0)
-            .gameAction(playerLastingEffect((context) => {
+            .playerLastingEffect((context) => {
                 const topCard = context.player.conflictDeck[0];
                 return {
                     targetController: context.player,
@@ -24,7 +23,7 @@ class PillowBook extends DrawCard {
                         canPlayFromOwn(Location.ConflictDeck, [topCard], this)
                     ]
                 };
-            }))
+            })
             .effect('make the top card of their deck playable until the end of the conflict');
     }
 }

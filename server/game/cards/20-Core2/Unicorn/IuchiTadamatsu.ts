@@ -1,6 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { reduceCost } from '../../../effects.js';
-import { ready } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,6 +19,6 @@ export default class IuchiTadamatsu extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter === context.source
             }))
-            .gameAction(ready());
+            .ready();
     }
 }

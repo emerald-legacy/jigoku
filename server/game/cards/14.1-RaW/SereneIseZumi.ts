@@ -1,7 +1,6 @@
 import { CardType, Location, Players } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import { loseKeyword, reduceCost } from '../../effects.js';
-import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class SereneIseZumi extends DrawCard {
@@ -18,9 +17,9 @@ export default class SereneIseZumi extends DrawCard {
                 context.game.isDuringConflict() &&
                 context.source.type === CardType.Attachment &&
                 context.source.parentCharacter.isParticipating()))
-            .gameAction(sendHome((context) => ({
+            .sendHome((context) => ({
                 target: context.source.parentCharacter ?? []
-            })))
+            }))
             .notPrinted();
         this.persistentEffect({
             location: Location.Any,

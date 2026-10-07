@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { placeFate, reveal, selectCards } from '../../GameActions/GameActions.js';
+import { reveal, selectCards } from '../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -25,7 +25,7 @@ class Aranat extends DrawCard {
             }))
             .effect('give {1} the opportunity to reveal provinces', (context) => context.player.opponent ?? '')
             .thenAlways()
-            .gameAction(placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() })))
+            .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))
             .message((context) => {
                 const facedown = context.player.getNumberOfOpponentsFacedownProvinces();
                 return msg`${context.player.opponent} has ${facedown} facedown provinces so ${facedown} fate is placed on ${context.source}`;

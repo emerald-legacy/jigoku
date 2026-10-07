@@ -1,5 +1,4 @@
 import { cardCannot } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KitsukiYuikimi extends DrawCard {
@@ -15,13 +14,13 @@ export default class KitsukiYuikimi extends DrawCard {
                     event.recipient === context.player &&
                     context.player.opponent !== undefined
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: 'target',
                     restricts: 'opponentsTriggeredAbilities',
                     applyingPlayer: context.player
                 })
-            })))
+            }))
             .effect('prevent {0} from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', (context) => [context.player.opponent]);
     }
 }

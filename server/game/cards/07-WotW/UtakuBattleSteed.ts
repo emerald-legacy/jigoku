@@ -1,5 +1,4 @@
 import { addTrait } from '../../effects.js';
-import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -21,9 +20,9 @@ class UtakuBattleSteed extends DrawCard {
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
-            .gameAction(honor((context) => ({
+            .honor((context) => ({
                 target: context.source.parentCharacter ?? []
-            })));
+            }));
     }
 }
 

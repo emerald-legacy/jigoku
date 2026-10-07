@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { ready } from '../../GameActions/GameActions.js';
 
 class IkomaKiyono extends DrawCard {
     static id = 'ikoma-kiyono';
@@ -11,7 +10,7 @@ class IkomaKiyono extends DrawCard {
                     return context.player.isMoreHonorable();
                 }
             })
-            .gameAction(ready());
+            .ready();
     }
 }
 

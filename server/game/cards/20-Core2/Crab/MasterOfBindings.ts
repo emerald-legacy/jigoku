@@ -1,4 +1,3 @@
-import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MasterOfBindings extends DrawCard {
@@ -12,6 +11,6 @@ export default class MasterOfBindings extends DrawCard {
                     card.controller === context.player.opponent &&
                     (card.printedCost ?? 0) <= 3
             })
-            .gameAction(bow((context) => ({ target: context.event.card })));
+            .bow((context) => ({ target: context.event.card }));
     }
 }

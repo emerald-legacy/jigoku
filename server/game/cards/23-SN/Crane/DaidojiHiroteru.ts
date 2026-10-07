@@ -1,7 +1,6 @@
 import { CardType, Duration, Location, Phases, Players } from '../../../Constants.js';
 import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { addKeyword, canBeSeenWhenFacedown, gainPlayAction } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -31,11 +30,11 @@ export default class DaidojiHiroteru extends DrawCard {
                     event.card.type === CardType.Character &&
                     event.card.hasSomeTrait('scout', 'shinobi')
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.event.card,
                 duration: Duration.UntilEndOfPhase,
                 effect: addKeyword('covert')
-            })))
+            }))
             .effect((context) => msg`give ${context.event.card} covert until the end of the phase`);
     }
 }

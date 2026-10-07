@@ -1,5 +1,4 @@
 import { modifyBothSkills } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class WarriorPoet extends DrawCard {
@@ -8,10 +7,10 @@ class WarriorPoet extends DrawCard {
     setupCardAbilities() {
         this.action('Reduce skill of opponent\'s characters')
             .condition((context) => context.source.isParticipating())
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)
-            })))
+            }))
             .effect('reduce the skill of all opposing characters');
     }
 }

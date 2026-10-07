@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { joint, moveToConflict, multiple, ready, sendHome } from '../../../GameActions/GameActions.js';
+import { joint, moveToConflict, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 export default class SupplyOfficer extends DrawCard {
@@ -29,7 +29,7 @@ export default class SupplyOfficer extends DrawCard {
             ]))
             .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`)
             .thenIf((context) => !context.targets.characterInConflict.isParticipating())
-            .gameAction(ready((context) => ({ target: context.targets.characterInConflict })))
+            .ready((context) => ({ target: context.targets.characterInConflict }))
             .message((context) => msg`${context.targets.characterInConflict} is readied`);
     }
 }

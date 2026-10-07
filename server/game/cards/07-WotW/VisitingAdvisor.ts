@@ -14,7 +14,7 @@ class VisitingAdvisor extends DrawCard {
                 optional: true,
                 cardCondition: (card, context) => card !== context.source
             }, sendHome())
-            .gameAction(sendHome())
+            .sendHome()
             .effect('send {0}{1}{2} home', (context) => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;

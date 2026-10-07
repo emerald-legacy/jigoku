@@ -1,7 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType } from '../../../Constants.js';
 
@@ -13,10 +12,10 @@ export default class ArrowsFromTheWoods extends DrawCard {
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) &&
                 context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('bushi')))
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyMilitarySkill(this.penaltyValue(context))
-            })))
+            }))
             .effect('give {1}\'s participating characters {2}{3}', (context) => [context.player.opponent, this.penaltyValue(context), 'military'])
             .max(AbilityDsl.limit.perConflict(1));
     }

@@ -8,6 +8,7 @@ import { getAbilityDsl } from './AbilityDslProvider.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
+import type * as GameActions from './GameActions/GameActions.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
@@ -115,6 +116,12 @@ type AbilityEntry = TargetAbility & SubTarget;
 type RingEntry = TargetRing & ActionRingTarget & SubTarget;
 type SelectEntry = TargetSelect & SubTarget;
 type TargetEntry = SingleCardEntry | MultiCardEntry | TokenEntry | AbilityEntry | ElementEntry | RingEntry | SelectEntry;
+
+/** The properties a game action factory takes, or a function of the builder's context returning them. */
+type ActionProperties<K extends keyof typeof GameActions, Context> =
+    (typeof GameActions)[K] extends (factory: infer F) => unknown
+        ? Exclude<NonNullable<F>, (...args: never[]) => unknown> | ((context: Context) => Exclude<NonNullable<F>, (...args: never[]) => unknown>)
+        : never;
 
 interface AbilityDraft {
     readonly title: string;
@@ -719,6 +726,81 @@ export class AbilityBuilder<
     /** The player of the ability draws cards. */
     draw(amount = 1): this {
         return this.gameAction(getAbilityDsl().actions.draw({ amount }));
+    }
+
+    /** Readies the target (the source by default). */
+    ready(properties: ActionProperties<'ready', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.ready(properties));
+    }
+
+    /** Bows the target (the source by default). */
+    bow(properties: ActionProperties<'bow', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.bow(properties));
+    }
+
+    /** Honors the target (the source by default). */
+    honor(properties: ActionProperties<'honor', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.honor(properties));
+    }
+
+    /** Dishonors the target (the source by default). */
+    dishonor(properties: ActionProperties<'dishonor', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.dishonor(properties));
+    }
+
+    /** Places fate on the target (the source by default). */
+    placeFate(properties: ActionProperties<'placeFate', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.placeFate(properties));
+    }
+
+    /** Removes fate from the target (the source by default). */
+    removeFate(properties: ActionProperties<'removeFate', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.removeFate(properties));
+    }
+
+    /** Sends the target home (the source by default). */
+    sendHome(properties: ActionProperties<'sendHome', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.sendHome(properties));
+    }
+
+    /** Moves the target to the conflict (the source by default). */
+    moveToConflict(properties: ActionProperties<'moveToConflict', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.moveToConflict(properties));
+    }
+
+    /** Discards the target from play (the source by default). */
+    discardFromPlay(properties: ActionProperties<'discardFromPlay', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.discardFromPlay(properties));
+    }
+
+    /** Sacrifices the target (the source by default). */
+    sacrifice(properties: ActionProperties<'sacrifice', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.sacrifice(properties));
+    }
+
+    /** Takes honor from the target (the opponent by default). */
+    takeHonor(properties: ActionProperties<'takeHonor', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.takeHonor(properties));
+    }
+
+    /** Takes fate from the target (the opponent by default). */
+    takeFate(properties: ActionProperties<'takeFate', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
+        return this.gameAction(getAbilityDsl().actions.takeFate(properties));
+    }
+
+    /** Refills a province faceup. */
+    refillFaceup(properties: ActionProperties<'refillFaceup', BuilderContext<Base, TG, RG, CO, TK>>): this {
+        return this.gameAction(getAbilityDsl().actions.refillFaceup(properties));
+    }
+
+    /** A lasting effect on cards (the source by default). */
+    cardLastingEffect(properties: ActionProperties<'cardLastingEffect', BuilderContext<Base, TG, RG, CO, TK>>): this {
+        return this.gameAction(getAbilityDsl().actions.cardLastingEffect(properties));
+    }
+
+    /** A lasting effect on players. */
+    playerLastingEffect(properties: ActionProperties<'playerLastingEffect', BuilderContext<Base, TG, RG, CO, TK>>): this {
+        return this.gameAction(getAbilityDsl().actions.playerLastingEffect(properties));
     }
 
     gameAction(...actions: BuilderAction<Base, TG, RG, CO, TK>[]): this {

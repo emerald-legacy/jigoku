@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Element } from '../../Constants.js';
 import { takeControl } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 import { msg } from '../../GameChat.js';
 
@@ -13,10 +12,10 @@ class IsawaPilgrim extends DrawCard {
     setupCardAbilities() {
         this.action('Give control of this character')
             .condition(context => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
-            .gameAction(cardLastingEffect(context => ({
+            .cardLastingEffect(context => ({
                 effect: takeControl(context.player.opponent),
                 duration: Duration.Custom
-            })))
+            }))
             .effect((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 

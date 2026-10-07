@@ -1,5 +1,4 @@
 import DrawCard from '../../../DrawCard.js';
-import { honor } from '../../../GameActions/GameActions.js';
 
 class DojiAspirant extends DrawCard {
     static id = 'doji-aspirant';
@@ -9,7 +8,7 @@ class DojiAspirant extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(honor());
+            .honor();
     }
 }
 

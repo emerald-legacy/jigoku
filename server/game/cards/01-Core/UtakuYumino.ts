@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyBothSkills } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class UtakuYumino extends DrawCard {
     static id = 'utaku-yumino';
@@ -11,7 +10,7 @@ class UtakuYumino extends DrawCard {
         this.action('Discard a card for +2/+2')
             .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(cardLastingEffect({ effect: modifyBothSkills(2) }))
+            .cardLastingEffect({ effect: modifyBothSkills(2) })
             .effect('give {0} +2/+2')
             .limit(AbilityDsl.limit.perConflict(1));
     }

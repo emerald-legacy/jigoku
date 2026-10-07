@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { delayedEffect } from '../../effects.js';
-import { cardLastingEffect, putIntoConflict, returnToDeck } from '../../GameActions/GameActions.js';
+import { putIntoConflict, returnToDeck } from '../../GameActions/GameActions.js';
 import { Duration, Location, Players } from '../../Constants.js';
 
 class KitsuSpiritcaller extends DrawCard {
@@ -17,7 +17,7 @@ class KitsuSpiritcaller extends DrawCard {
             }, putIntoConflict())
             .effect('call {0} back from the dead until the end of the conflict')
             .then()
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.target,
                 duration: Duration.UntilEndOfPhase,
                 effect: delayedEffect({
@@ -28,7 +28,7 @@ class KitsuSpiritcaller extends DrawCard {
                     messageArgs: [context.target, context.source],
                     gameAction: returnToDeck({ bottom: true })
                 })
-            })));
+            }));
     }
 }
 

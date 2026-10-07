@@ -1,6 +1,5 @@
 import { CardType } from '../../../Constants.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
-import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RediscoveredShrine extends DrawCard {
@@ -17,13 +16,13 @@ export default class RediscoveredShrine extends DrawCard {
                         !!event.context && event.context.ability.getReducedCost(event.context) > 0;
                 }
             })
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.card
                 )
-            })))
+            }))
             .effect('reduce the cost of their next event by 1');
     }
 }

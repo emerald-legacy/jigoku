@@ -1,7 +1,7 @@
 import CardAbility from '../../../CardAbility.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { cancel, placeFate } from '../../../GameActions/GameActions.js';
+import { cancel } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiAya extends DrawCard {
@@ -17,6 +17,6 @@ export default class SoshiAya extends DrawCard {
             .gameAction(cancel())
             .location(Location.Hand)
             .then()
-            .gameAction(placeFate());
+            .placeFate();
     }
 }

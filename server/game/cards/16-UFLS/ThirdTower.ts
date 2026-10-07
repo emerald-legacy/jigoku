@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { takeHonor } from '../../GameActions/GameActions.js';
 
 class ThirdTower extends DrawCard {
     static id = 'third-tower';
@@ -20,7 +19,7 @@ class ThirdTower extends DrawCard {
                     return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
                 }
             })
-            .gameAction(takeHonor())
+            .takeHonor()
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

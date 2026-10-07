@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import { bow, ready, selectCard } from '../../GameActions/GameActions.js';
+import { bow, selectCard } from '../../GameActions/GameActions.js';
 
 class IdeRyoma extends DrawCard {
     static id = 'ide-ryoma';
@@ -28,9 +28,9 @@ class IdeRyoma extends DrawCard {
                 gameAction: bow()
             })))
             .then()
-            .gameAction(ready((context) => ({
+            .ready((context) => ({
                 target: [context.targets.unicorn, context.targets.nonunicorn].filter((card) => context.previousEvents.every((event) => !('card' in event) || event.card !== card))
-            })));
+            }));
     }
 }
 

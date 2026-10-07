@@ -2,7 +2,6 @@ import { CardType, Duration, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { additionalConflict } from '../../effects.js';
-import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 export default class HisuMoriToride extends StrongholdCard {
@@ -21,11 +20,11 @@ export default class HisuMoriToride extends StrongholdCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi')
             }))
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict('military')
-            })))
+            }))
             .effect((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

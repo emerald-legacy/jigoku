@@ -1,4 +1,3 @@
-import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -13,9 +12,9 @@ class SageOfGiseiToshi extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('sendHome', context)
             })
-            .gameAction(sendHome())
+            .sendHome()
             .then()
-            .gameAction(sendHome((context) => ({ target: context.target })));
+            .sendHome((context) => ({ target: context.target }));
     }
 }
 

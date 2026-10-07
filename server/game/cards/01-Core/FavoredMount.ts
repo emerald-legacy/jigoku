@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { addTrait } from '../../effects.js';
-import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class FavoredMount extends DrawCard {
     static id = 'favored-mount';
@@ -17,7 +16,7 @@ class FavoredMount extends DrawCard {
 
         this.action('Move this character into the conflict')
             .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })));
+            .moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { gainAbility } from '../../../effects.js';
-import { cancel, honor, moveCard, multiple } from '../../../GameActions/GameActions.js';
+import { cancel, moveCard, multiple } from '../../../GameActions/GameActions.js';
 import { AbilityType, CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,9 +18,9 @@ export default class ShibasOath extends DrawCard {
                 onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .gameAction(honor((context) => ({
+            .honor((context) => ({
                 target: context.source.parentCharacter ?? []
-            })))
+            }))
             .effect('honor {1}', (context) => context.source.parentCharacter);
 
         this.whileAttached({

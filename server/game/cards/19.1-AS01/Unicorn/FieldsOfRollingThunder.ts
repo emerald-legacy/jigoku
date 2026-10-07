@@ -1,5 +1,5 @@
 import { delayedEffect } from '../../../effects.js';
-import { cardLastingEffect, discardFromPlay, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class FieldsOfRollingThunder extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player && event.conflict.conflictUnopposed
             })
-            .gameAction(discardFromPlay());
+            .discardFromPlay();
 
         this.action('Honor a character')
             .target({

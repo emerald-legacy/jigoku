@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType } from '../../../Constants.js';
 
@@ -12,11 +11,11 @@ export default class ForGreaterGlory extends DrawCard {
                 onBreakProvince: (event, context) =>
                     this.game.isDuringConflict(ConflictType.Military) && event.conflict?.attackingPlayer === context.player
             })
-            .gameAction(placeFate((context) => ({
+            .placeFate((context) => ({
                 target: context.event.conflict
                     ?.getCharacters(context.player)
                     .filter((card) => card.hasTrait('bushi')) ?? []
-            })))
+            }))
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

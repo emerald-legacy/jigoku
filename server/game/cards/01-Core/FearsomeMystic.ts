@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyGlory } from '../../effects.js';
-import { removeFate } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'fearsome-mystic-air';
@@ -16,9 +15,9 @@ class FearsomeMystic extends DrawCard {
 
         this.action('Remove fate from characters')
             .condition(context => context.source.isParticipating())
-            .gameAction(removeFate((context) => ({
+            .removeFate((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent).filter(card => card.getGlory() < context.source.getGlory()) ?? []
-            })));
+            }));
     }
 
     getPrintedElementSymbols() {

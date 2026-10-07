@@ -1,5 +1,4 @@
 import { cardCannot, doesNotBow } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MasterOfTheBlade extends DrawCard {
@@ -7,7 +6,7 @@ export default class MasterOfTheBlade extends DrawCard {
 
     public setupCardAbilities() {
         this.duelStrike('Don\'t bow during resolution', (duel, context) => duel.participants.includes(context.source))
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 condition: (context) => context.game.isDuringConflict(),
                 effect: [
                     doesNotBow(),
@@ -17,7 +16,7 @@ export default class MasterOfTheBlade extends DrawCard {
                         applyingPlayer: context.player
                     })
                 ]
-            })))
+            }))
             .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict');
     }
 }

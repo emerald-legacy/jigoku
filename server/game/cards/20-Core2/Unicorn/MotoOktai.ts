@@ -1,6 +1,6 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, discardFromPlay } from '../../../GameActions/GameActions.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -17,10 +17,10 @@ export default class MotoOktai extends DrawCard {
                 onCardLeavesPlay: ({ card }, _context) =>
                     card.location === Location.PlayArea && card.type === CardType.Character
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyMilitarySkill(skillBonus(context.event.card))
-            })))
+            }))
             .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
 
         this.conflictAction('Discard a character from play')

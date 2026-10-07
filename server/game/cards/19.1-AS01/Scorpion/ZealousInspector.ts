@@ -1,6 +1,5 @@
 import { CardType, Duration } from '../../../Constants.js';
 import { additionalAction } from '../../../effects.js';
-import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import Ring from '../../../Ring.js';
 
@@ -19,11 +18,11 @@ export default class ZealousInspector extends DrawCard {
                     context.player === event.context?.player &&
                     !(event.context?.source instanceof Ring)
             })
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(1)
-            })))
+            }))
             .effect('gain an additional action — time to deliver swift punishment for the wicked');
     }
 }

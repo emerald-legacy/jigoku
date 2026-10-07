@@ -1,4 +1,3 @@
-import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TattooedMan extends DrawCard {
@@ -14,6 +13,6 @@ export default class TattooedMan extends DrawCard {
                     context.player === event.context.player &&
                     event.context.ability.isCardAbility()
             })
-            .gameAction(ready());
+            .ready();
     }
 }

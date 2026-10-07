@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import { bow, moveToConflict } from '../../GameActions/GameActions.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class AdornedBarcha extends DrawCard {
     static id = 'adorned-barcha';
@@ -17,7 +17,7 @@ class AdornedBarcha extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, bow())
-            .gameAction(moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })));
+            .moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

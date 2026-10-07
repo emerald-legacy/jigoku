@@ -1,5 +1,5 @@
 import { reduceNextPlayedCardCost } from '../../../effects.js';
-import { deckSearch, moveCard, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
@@ -35,14 +35,14 @@ export default class EarnestSculptor extends DrawCard {
                     event.context.source.hasTrait('jade') &&
                     event.context.ability.getReducedCost(event.context) > 0
             })
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) =>
                         card === context.event.card || card === context.event.context.source
                 )
-            })))
+            }))
             .effect((context) => msg`reduce the cost of ${context.event.context.source} by 1`);
     }
 }

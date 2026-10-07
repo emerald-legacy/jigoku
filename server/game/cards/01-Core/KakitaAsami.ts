@@ -1,4 +1,3 @@
-import { takeHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class KakitaAsami extends DrawCard {
@@ -13,7 +12,7 @@ class KakitaAsami extends DrawCard {
                 const diff = context.game.currentConflict.attackerSkill - context.game.currentConflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
             })
-            .gameAction(takeHonor());
+            .takeHonor();
     }
 }
 

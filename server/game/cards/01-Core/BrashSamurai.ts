@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { honor } from '../../GameActions/GameActions.js';
 
 class BrashSamurai extends DrawCard {
     static id = 'brash-samurai';
@@ -9,7 +8,7 @@ class BrashSamurai extends DrawCard {
             .condition(context =>
                 context.source.isParticipatingFor(context.player) &&
                 this.game.currentConflict?.getNumberOfParticipantsFor(context.player) === 1)
-            .gameAction(honor());
+            .honor();
     }
 }
 

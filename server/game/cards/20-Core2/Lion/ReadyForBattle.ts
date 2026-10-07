@@ -1,4 +1,3 @@
-import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import Ring from '../../../Ring.js';
 
@@ -14,6 +13,6 @@ export default class ReadyForBattle extends DrawCard {
                         (context.player.opponent && event.context?.player === context.player.opponent))
             })
             .cannotBeMirrored()
-            .gameAction(ready((context) => ({ target: context.event.card })));
+            .ready((context) => ({ target: context.event.card }));
     }
 }

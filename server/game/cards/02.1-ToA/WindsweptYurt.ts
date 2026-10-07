@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { gainFate, gainHonor, refillFaceup } from '../../GameActions/GameActions.js';
+import { gainFate, gainHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class WindsweptYurt extends DrawCard {
@@ -18,7 +18,7 @@ class WindsweptYurt extends DrawCard {
                     target: context.game.getPlayers()
                 }))
             })
-            .gameAction(refillFaceup((context) => ({ location: context.cardStateWhenInitiated?.location ?? [] })))
+            .refillFaceup((context) => ({ location: context.cardStateWhenInitiated?.location ?? [] }))
             .effect('give each player 2 {1}', context => context.select === 'Each player gains 2 fate' ? 'fate' : 'honor');
     }
 }

@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import { ready } from '../../GameActions/GameActions.js';
 
 class TogashiGaijutsu extends DrawCard {
     static id = 'togashi-gaijutsu';
@@ -14,7 +13,7 @@ class TogashiGaijutsu extends DrawCard {
                     event.card.hasTrait('tattoo') &&
                     event.card.controller === context.player
             })
-            .gameAction(ready((context) => ({ target: context.event.card.parentCharacter ?? [] })));
+            .ready((context) => ({ target: context.event.card.parentCharacter ?? [] }));
     }
 }
 

@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -17,9 +16,9 @@ class StrideTheWaves extends DrawCard {
         this.action('Move attached character in or out of the conflict')
             .condition(context => context.game.isDuringConflict() && hasClaimedRing(this, elementSymbol.key, context.player))
             .if(context => !!context.source.parentCharacter?.inConflict)
-                .gameAction(sendHome(context => ({ target: context.source.parentCharacter ?? [] })))
+                .sendHome(context => ({ target: context.source.parentCharacter ?? [] }))
             .otherwise()
-                .gameAction(moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })))
+                .moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }))
             .effect('{3} {1} {2}', context => {
                 const parent = context.source.parentCharacter;
                 return [

@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, loseHonor } from '../../../GameActions/GameActions.js';
+import { loseHonor } from '../../../GameActions/GameActions.js';
 
 export default class AdvanceFortification extends DrawCard {
     static id = 'advance-fortification';
@@ -10,10 +10,10 @@ export default class AdvanceFortification extends DrawCard {
         this.action('Take an honor from your opponent or give skill bonus')
             .condition(context => !!context.game.currentConflict && context.game.currentConflict.defendingPlayer === context.player && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken)
             .if(context => !!context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince())
-                .gameAction(cardLastingEffect(context => ({
+                .cardLastingEffect(context => ({
                     target: context.game.currentConflict?.getCharacters(context.player) ?? [],
                     effect: modifyBothSkills(1)
-                })))
+                }))
             .otherwise()
                 .gameAction(loseHonor(context => ({ target: context.player.opponent })))
             .effect('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?

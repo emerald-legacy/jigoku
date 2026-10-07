@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Phases, Players } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
-import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';
@@ -14,7 +13,7 @@ class MasterOfGiseiToshi extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(playerLastingEffect(context => ({
+            .playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict?.ring === context.ring,
@@ -22,7 +21,7 @@ class MasterOfGiseiToshi extends DrawCard {
                     cannot: 'play',
                     restricts: 'nonSpellEvents'
                 })
-            })))
+            }))
             .effect('prevent non-spell events from being played while {0} is contested');
     }
 }

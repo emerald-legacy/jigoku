@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class NeverYield extends DrawCard {
@@ -11,7 +10,7 @@ class NeverYield extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .gameAction(cardLastingEffect(context => ({
+            .cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
                     cardCannot({
@@ -25,7 +24,7 @@ class NeverYield extends DrawCard {
                         applyingPlayer: context.player
                     })
                 ]
-            })))
+            }))
             .effect('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', context => [context.player.opponent, context.player]);
     }
 }

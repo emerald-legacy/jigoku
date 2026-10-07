@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { placeFate } from '../../GameActions/GameActions.js';
 
 class EnlightenedWarrior extends DrawCard {
     static id = 'enlightened-warrior';
@@ -9,7 +8,7 @@ class EnlightenedWarrior extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => (event.ringFate ?? 0) > 0 && event.conflict.attackingPlayer === context.player.opponent
             })
-            .gameAction(placeFate());
+            .placeFate();
     }
 }
 

@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyGlory } from '../../effects.js';
-import { honor } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'icon-of-favor-fire';
@@ -19,9 +18,9 @@ class IconOfFavor extends DrawCard {
                     event.conflict.hasElement(this.getCurrentElementSymbol(elementKey)) &&
                     event.conflict.winner === context.player
             })
-            .gameAction(honor(context => ({
+            .honor(context => ({
                 target: context.source.parentCharacter ?? []
-            })));
+            }));
     }
 
     getPrintedElementSymbols() {

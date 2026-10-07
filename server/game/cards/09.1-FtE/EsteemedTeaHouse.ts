@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
-import { playerLastingEffect, returnToHand } from '../../GameActions/GameActions.js';
+import { returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../Constants.js';
 
 class EsteemedTeaHouse extends DrawCard {
@@ -13,7 +13,7 @@ class EsteemedTeaHouse extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: card => Boolean(card.parentCharacter?.isParticipating())
             }, returnToHand())
-            .gameAction(playerLastingEffect(context => ({
+            .playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: context.target?.owner,
                 effect: playerCannot({
@@ -21,7 +21,7 @@ class EsteemedTeaHouse extends DrawCard {
                     restricts: 'copiesOfX',
                     params: context.target?.name
                 })
-            })))
+            }))
             .effect('return {0} to {1}\'s hand and prevent them from playing copies this phase', context => [context.target.owner]);
     }
 }

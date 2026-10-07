@@ -1,6 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
 
@@ -12,10 +11,10 @@ class Smoke extends DrawCard {
             .cost(AbilityDsl.costs.bowSelf())
             .cost(AbilityDsl.costs.sacrificeSelf())
             .condition(context => !!(this.game.isDuringConflict() && context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants().filter((card) => !card.isUnique()) ?? [],
                 effect: modifyMilitarySkill(-2)
-            })))
+            }))
             .effect(() => msg`give all non-unique participating characters -2${'military'}`);
     }
 }

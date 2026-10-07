@@ -2,7 +2,7 @@ import { ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { delayedEffect } from '../../effects.js';
-import { claimRing, playerLastingEffect, selectRing } from '../../GameActions/GameActions.js';
+import { claimRing, selectRing } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 export default class ShiroKitsuki extends StrongholdCard {
@@ -14,7 +14,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                 onConflictDeclared: () => true
             })
             .cost(AbilityDsl.costs.nameCard())
-            .gameAction(playerLastingEffect((playerLastingEffectContext) => ({
+            .playerLastingEffect((playerLastingEffectContext) => ({
                 targetController: playerLastingEffectContext.player,
                 effect: delayedEffect({
                     when: {
@@ -31,7 +31,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                         gameAction: claimRing({ takeFate: true, type: ConflictType.Political })
                     }))
                 })
-            })))
+            }))
             .effect((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.nameCardCost}`)
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }

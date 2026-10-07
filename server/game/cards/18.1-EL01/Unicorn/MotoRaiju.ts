@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -13,9 +12,9 @@ export default class MotoRaiju extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Get a military skill bonus')
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonus(context))
-            })))
+            }))
             .effect((context) => msg`give itself +${bonus(context)}${'military'} until the end of the conflict`);
     }
 }

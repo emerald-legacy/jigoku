@@ -1,4 +1,3 @@
-import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class CurryFavor extends DrawCard {
@@ -14,7 +13,7 @@ class CurryFavor extends DrawCard {
                     return event.conflict.attackingPlayer === context.player && event.card.controller === context.player && !event.bowEvent.cancelled;
                 }
             })
-            .gameAction(ready((context) => ({ target: context.event.card })))
+            .ready((context) => ({ target: context.event.card }))
             .cannotBeMirrored();
     }
 }

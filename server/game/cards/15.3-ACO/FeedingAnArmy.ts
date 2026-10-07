@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { placeFate } from '../../GameActions/GameActions.js';
 import { Phases } from '../../Constants.js';
 
 class FeedingAnArmy extends DrawCard {
@@ -12,9 +11,9 @@ class FeedingAnArmy extends DrawCard {
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
             })
             .cost(AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
-            .gameAction(placeFate((context) => ({
+            .placeFate((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.costLessThan(4))
-            })));
+            }));
     }
 }
 

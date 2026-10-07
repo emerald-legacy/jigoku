@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { reduceCost } from '../../effects.js';
-import { playerLastingEffect } from '../../GameActions/GameActions.js';
 
 import { Duration, Players } from '../../Constants.js';
 
@@ -10,13 +9,13 @@ class CourtMusician extends DrawCard {
     setupCardAbilities() {
         this.action('Decrease cost to play cards')
             .condition(context => context.source.isParticipating())
-            .gameAction(playerLastingEffect({
+            .playerLastingEffect({
                 targetController: Players.Any,
                 duration: Duration.UntilNextPassPriority,
                 effect: reduceCost({
                     amount: 1
                 })
-            }))
+            })
             .effect('decrease the cost of cards played by 1 for each player\'s next action opportunity');
     }
 }

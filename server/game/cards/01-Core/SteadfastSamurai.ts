@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Phases } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class SteadfastSamurai extends DrawCard {
     static id = 'steadfast-samurai';
@@ -12,13 +11,13 @@ class SteadfastSamurai extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === Phases.Fate && context.player.opponent &&
                                                     context.player.honor >= context.player.opponent.honor + 5
             })
-            .gameAction(cardLastingEffect({
+            .cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: [
                     cardCannot('removeFate'),
                     cardCannot('discardFromPlay')
                 ]
-            }))
+            })
             .effect('stop him being discarded or losing fate in this phase');
     }
 }

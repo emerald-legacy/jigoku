@@ -1,4 +1,3 @@
-import { moveToConflict } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
@@ -8,7 +7,7 @@ class FormalInvitation extends DrawCard {
     setupCardAbilities() {
         this.action('Move attached character into the conflict')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
-            .gameAction(moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] })));
+            .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 
     canAttach(card: DrawCard) {

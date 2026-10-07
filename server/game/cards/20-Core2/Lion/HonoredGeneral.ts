@@ -1,5 +1,4 @@
 import { modifyMilitarySkill } from '../../../effects.js';
-import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HonoredGeneral extends DrawCard {
@@ -16,6 +15,6 @@ export default class HonoredGeneral extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(honor());
+            .honor();
     }
 }

@@ -1,6 +1,6 @@
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import { delayedEffect } from '../../../effects.js';
-import { cardLastingEffect, deckSearch, discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
+import { deckSearch, discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -27,7 +27,7 @@ export default class KakitaRusumi extends DrawCard {
             }))
             .effect('search their dynasty deck for a character to put into play')
             .then()
-            .gameAction(cardLastingEffect((context) => {
+            .cardLastingEffect((context) => {
                 const target = context.deckSearchSelected[0] ?? [];
                 return {
                     target: target,
@@ -41,6 +41,6 @@ export default class KakitaRusumi extends DrawCard {
                         gameAction: discardFromPlay()
                     })
                 };
-            }));
+            });
     }
 }

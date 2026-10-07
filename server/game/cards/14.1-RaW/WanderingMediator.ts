@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Element } from '../../Constants.js';
-import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 const elementKey = 'seeker-of-knowledge-air';
 
@@ -11,9 +10,9 @@ class WanderingMediator extends DrawCard {
         this.action('Move in/out the conflict')
             .condition(context => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
             .if(context => context.source.isDrawCard() && context.source.isParticipating())
-                .gameAction(sendHome(context => ({ target: context.source })))
+                .sendHome(context => ({ target: context.source }))
             .otherwise()
-                .gameAction(moveToConflict(context => ({ target: context.source })));
+                .moveToConflict(context => ({ target: context.source }));
     }
 
     getPrintedElementSymbols() {

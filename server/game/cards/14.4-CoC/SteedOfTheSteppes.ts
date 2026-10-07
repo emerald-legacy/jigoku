@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { addTrait } from '../../effects.js';
-import { ready } from '../../GameActions/GameActions.js';
 import { captureParentCost } from '../captureParentCost.js';
 
 class SteedOfTheSteppes extends DrawCard {
@@ -18,7 +17,7 @@ class SteedOfTheSteppes extends DrawCard {
             .condition(context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
             //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.captureParentCost is for the actual stand
 
-            .gameAction(ready(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
+            .ready(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) }));
     }
 }
 

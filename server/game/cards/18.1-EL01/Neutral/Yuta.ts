@@ -1,5 +1,4 @@
 import DrawCard from '../../../DrawCard.js';
-import { takeFate } from '../../../GameActions/GameActions.js';
 
 class Yuta extends DrawCard {
     static id = 'yuta';
@@ -9,7 +8,7 @@ class Yuta extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isAttacking()
             })
-            .gameAction(takeFate());
+            .takeFate();
     }
 }
 

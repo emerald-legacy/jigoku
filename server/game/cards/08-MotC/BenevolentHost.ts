@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { placeFate, putIntoPlay } from '../../GameActions/GameActions.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
 
 class BenevolentHost extends DrawCard {
@@ -17,7 +17,7 @@ class BenevolentHost extends DrawCard {
                 cardCondition: card => card.hasTrait('courtier')
             }, putIntoPlay())
             .then()
-            .gameAction(placeFate((context) => ({ target: context.target.costLessThan(3) ? context.target : [] })));
+            .placeFate((context) => ({ target: context.target.costLessThan(3) ? context.target : [] }));
     }
 }
 

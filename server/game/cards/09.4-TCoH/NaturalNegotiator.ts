@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { switchBaseSkills } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class NaturalNegotiator extends DrawCard {
@@ -16,10 +15,10 @@ class NaturalNegotiator extends DrawCard {
         this.action('Switch attached characters base skills')
             .cost(AbilityDsl.costs.giveHonorToOpponent())
             .condition((context) => context.game.isDuringConflict())
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: switchBaseSkills()
-            })))
+            }))
             .effect((context) => msg`switch ${context.source.parentCharacter}'s base ${'military'} and ${'political'} skill`);
     }
 }

@@ -1,6 +1,6 @@
 import { CardType, Duration, Location } from '../../../Constants.js';
 import { addTrait } from '../../../effects.js';
-import { cancel, cardLastingEffect, moveToConflict, taint } from '../../../GameActions/GameActions.js';
+import { cancel, moveToConflict, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaYohana extends DrawCard {
@@ -18,14 +18,14 @@ export default class ShibaYohana extends DrawCard {
             })))
             .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
             .then()
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.source,
                 duration: Duration.Custom,
                 until: {
                     onCardLeavesPlay: (event) => event.card === context.source
                 },
                 effect: addTrait('spirit')
-            })));
+            }));
 
         this.conflictAction('Move a character into the conflict')
             .target({

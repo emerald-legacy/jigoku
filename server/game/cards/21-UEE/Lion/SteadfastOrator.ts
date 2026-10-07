@@ -1,6 +1,5 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SteadfastOrator extends DrawCard {
@@ -17,7 +16,7 @@ export default class SteadfastOrator extends DrawCard {
                 'Discard the Imperial Favor': AbilityDsl.costs.discardImperialFavor()
             }))
             .cannotBeMirrored()
-            .gameAction(moveToConflict((context) => ({ target: context.event.card })))
+            .moveToConflict((context) => ({ target: context.event.card }))
             .limit(AbilityDsl.limit.perRound(1));
     }
 }

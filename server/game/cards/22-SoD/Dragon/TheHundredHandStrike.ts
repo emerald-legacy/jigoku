@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, injure } from '../../../GameActions/GameActions.js';
+import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -31,10 +31,10 @@ export default class TheHundredHandStrike extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.targets.punchee,
                 effect: modifyBothSkills(penalty(context))
-            })))
+            }))
             .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.targets.punchee])
             .max(AbilityDsl.limit.perConflict(1))
             .thenIf((context) => context.targets.puncher.hasTrait('tattooed') &&

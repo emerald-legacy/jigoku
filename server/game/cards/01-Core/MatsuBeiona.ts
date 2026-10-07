@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { placeFate } from '../../GameActions/GameActions.js';
 
 class MatsuBeiona extends DrawCard {
     static id = 'matsu-beiona';
@@ -15,7 +14,7 @@ class MatsuBeiona extends DrawCard {
                     )).length >= 3
                 )
             })
-            .gameAction(placeFate({ amount: 2 }));
+            .placeFate({ amount: 2 });
     }
 }
 

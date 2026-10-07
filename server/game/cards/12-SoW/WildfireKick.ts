@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class WildfireKick extends DrawCard {
@@ -16,10 +15,10 @@ class WildfireKick extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.getMilitarySkill() <= (context.target?.getMilitarySkill() ?? 0) && card !== context.source) ?? [],
                 effect: modifyBothSkills(-2)
-            })))
+            }))
             .effect('give {1}\'s participating characters -2{2}/-2{3} if their military skill is equal to or lower than {4}. This affects: {5}', context => {
                 const targetMs = context.target.getMilitarySkill();
                 return [context.player.opponent, 'military', 'political', targetMs, this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.getMilitarySkill() <= targetMs && card !== context.source) ?? []];

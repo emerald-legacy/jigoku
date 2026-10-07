@@ -1,5 +1,5 @@
 import { cardCannot, delayedEffect, modifyMilitarySkill, setGlory } from '../../../effects.js';
-import { cardLastingEffect, sacrifice } from '../../../GameActions/GameActions.js';
+import { sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType } from '../../../Constants.js';
 
@@ -14,7 +14,7 @@ export default class DeadEyes extends DrawCard {
         });
 
         this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
-            .gameAction(cardLastingEffect(context => ({
+            .cardLastingEffect(context => ({
                 target: context.source.parentCharacter ?? [],
                 effect: [
                     modifyMilitarySkill(2),
@@ -43,7 +43,7 @@ export default class DeadEyes extends DrawCard {
                         messageArgs: [context.source.parentCharacter, context.source]
                     })
                 ]
-            })))
+            }))
             .effect('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
     }
 }

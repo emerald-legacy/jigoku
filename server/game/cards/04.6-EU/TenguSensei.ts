@@ -1,5 +1,4 @@
 import { cannotBeDeclaredAsAttacker } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 
@@ -14,11 +13,11 @@ class TenguSensei extends DrawCard {
                 }
             })
             .effect('prevent {1} from attacking this phase', (context) => context.event.context.target)
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.event.context.target ?? [],
                 duration: Duration.UntilEndOfPhase,
                 effect: cannotBeDeclaredAsAttacker()
-            })));
+            }));
     }
 }
 

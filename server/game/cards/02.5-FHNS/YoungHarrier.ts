@@ -1,6 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { cardCannot } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 
@@ -10,11 +9,11 @@ class YoungHarrier extends DrawCard {
     setupCardAbilities() {
         this.action('Prevent other characters from being dishonored')
             .cost(AbilityDsl.costs.dishonorSelf())
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.player.cardsInPlay.filter((card) => card.isFaction('crane')),
                 effect: cardCannot('dishonor')
-            })))
+            }))
             .effect('prevent Crane characters from being dishonored this phase');
     }
 }

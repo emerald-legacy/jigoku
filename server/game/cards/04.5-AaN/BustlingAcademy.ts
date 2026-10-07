@@ -1,5 +1,5 @@
 import { CardType, EventName, Location } from '../../Constants.js';
-import { moveCard, refillFaceup } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class BustlingAcademy extends DrawCard {
@@ -16,12 +16,12 @@ export default class BustlingAcademy extends DrawCard {
             }, moveCard({ destination: Location.DynastyDiscardPile }))
             .effect('discard {0} and refill it faceup')
             .then()
-            .gameAction(refillFaceup((context) => {
+            .refillFaceup((context) => {
                 const moveEvent = context.previousEvents[0];
                 const discarded = moveEvent?.is(EventName.Unnamed) ? moveEvent.cardStateWhenMoved : undefined;
                 return discarded
                     ? { target: discarded.controller, location: discarded.location }
                     : { target: [], location: [] };
-            }));
+            });
     }
 }

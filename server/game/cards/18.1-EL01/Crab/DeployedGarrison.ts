@@ -3,7 +3,6 @@ import type { Conflict } from '../../../Conflict.js';
 import { CardType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import { cardCannot, doesNotBow } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DeployedGarrison extends DrawCard {
@@ -25,9 +24,9 @@ export default class DeployedGarrison extends DrawCard {
                     context.source.isParticipating() &&
                     this.conflictNearHolding(context, event.conflict)
             })
-            .gameAction(cardLastingEffect({
+            .cardLastingEffect({
                 effect: doesNotBow()
-            }))
+            })
             .effect('not bow during the conflict resolution');
     }
 

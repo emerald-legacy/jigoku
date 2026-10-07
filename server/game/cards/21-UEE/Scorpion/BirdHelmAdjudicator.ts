@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { takeHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BirdHelmAdjudicator extends DrawCard {
@@ -11,7 +10,7 @@ export default class BirdHelmAdjudicator extends DrawCard {
                 onConflictPass: (event, context) =>
                     event.conflict.attackingPlayer === context.player && !!context.player.opponent
             })
-            .gameAction(takeHonor())
+            .takeHonor()
             .max(AbilityDsl.limit.perRound(1));
     }
 }

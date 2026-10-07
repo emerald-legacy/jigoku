@@ -1,7 +1,6 @@
 import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { additionalConflict } from '../../../effects.js';
-import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TheSunWillRiseAgain extends DrawCard {
@@ -15,11 +14,11 @@ export default class TheSunWillRiseAgain extends DrawCard {
                     event.conflict.winner === context.player.opponent &&
                     (event.conflict.skillDifference ?? 0) >= 4
             })
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(context.event.conflict.conflictType)
-            })))
+            }))
             .effect('gain an additional {1} conflict this round. They will not forget this defeat', (context) => [context.event.conflict.conflictType])
             .max(AbilityDsl.limit.perConflict(1));
     }

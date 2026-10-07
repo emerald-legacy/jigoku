@@ -1,4 +1,3 @@
-import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -12,7 +11,7 @@ class KireiKo extends DrawCard {
                     event.card.type === CardType.Character && event.card.controller === context.player.opponent &&
                     event.ability.isTriggeredAbility()
             })
-            .gameAction(bow((context) => ({ target: context.event.card })))
+            .bow((context) => ({ target: context.event.card }))
             .cannotBeMirrored();
     }
 }

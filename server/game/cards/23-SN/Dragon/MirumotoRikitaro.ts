@@ -2,7 +2,7 @@ import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 import { reduceNextPlayedCardCost, modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, discardFromPlay, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 export default class MirumotoRikitaro extends DrawCard {
@@ -29,13 +29,13 @@ export default class MirumotoRikitaro extends DrawCard {
                     );
                 }
             })
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.context?.source
                 )
-            })))
+            }))
             .effect('reduce the cost of their next attachment by 1');
 
         this.conflictAction('Discard an attachment')
@@ -44,7 +44,7 @@ export default class MirumotoRikitaro extends DrawCard {
                 cardType: CardType.Attachment
             }, discardFromPlay())
             .thenIf((context) => context.target.hasTrait('weapon'))
-            .gameAction(cardLastingEffect({ effect: modifyMilitarySkill(2) }))
+            .cardLastingEffect({ effect: modifyMilitarySkill(2) })
             .message((context) => msg`${context.source} gains +2${'military'} due to discarding a weapon`);
     }
 }

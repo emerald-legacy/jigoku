@@ -1,5 +1,4 @@
 import { modifyBothSkills } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
 
@@ -10,10 +9,10 @@ class Misinformation extends DrawCard {
         this.action('Give opponent\'s participating cards -1/-1')
             .condition(context => this.game.isDuringConflict() &&
                                   !!context.player.opponent && context.player.showBid > context.player.opponent.showBid + 1)
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)
-            })))
+            }))
             .effect(() => msg`give all opposing characters -1${'military'}/-1${'political'}`);
     }
 }

@@ -1,7 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -21,10 +20,10 @@ export default class EarthsStagnation extends DrawCard {
                     event.card.type === CardType.Event &&
                     context.source.parentCharacter.isParticipating()
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: modifyBothSkills(penaltyAmount(context))
-            })))
+            }))
             .effect('give {1}{2} and {3}{4} to {5}', (context) => {
                 const penalty = penaltyAmount(context);
                 return [penalty, 'military', penalty, 'political', context.source.parentCharacter];

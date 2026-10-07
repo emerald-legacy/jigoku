@@ -1,7 +1,7 @@
 import { DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { bow, cardLastingEffect } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LetHimGoBy extends DrawCard {
@@ -17,9 +17,9 @@ export default class LetHimGoBy extends DrawCard {
                     event.card.controller === context.player.opponent &&
                     event.card.isParticipating()
             })
-            .gameAction(bow((context) => ({
+            .bow((context) => ({
                 target: context.event.card
-            })));
+            }));
 
         this.action('Challenge a character anywhere to a duel')
             .initiateDuel(() => ({

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { moveCard, refillFaceup } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -23,7 +23,7 @@ class IsawaEju extends DrawCard {
             .effect('discard {1} and refill the province faceup', context => [context.target.controller.getDynastyCardsInProvince(context.target.location)])
             .limit(AbilityDsl.limit.perRound(3))
             .then()
-            .gameAction(refillFaceup((context) => ({ target: context.target.controller, location: context.target.location })));
+            .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));
     }
 
     getPrintedElementSymbols() {

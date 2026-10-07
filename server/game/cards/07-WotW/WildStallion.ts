@@ -14,7 +14,7 @@ class WildStallion extends DrawCard {
                 cardCondition: (card, context) => card !== context.source,
                 optional: true
             }, moveToConflict())
-            .gameAction(moveToConflict())
+            .moveToConflict()
             .effect('move {0}{1}{2} into the conflict', context => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;

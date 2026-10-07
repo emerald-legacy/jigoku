@@ -1,5 +1,4 @@
 import { cannotBeDeclaredAsDefender } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { attacksAloneWithTrait } from '../../attacksAlone.js';
@@ -12,10 +11,10 @@ export default class RecklessAssault extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'berserker')
             })
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: this.getCharacters(context),
                 effect: cannotBeDeclaredAsDefender()
-            })))
+            }))
             .effect('prevent characters with less than 3{1} from defending (this affects {2})', (context) => ['military', this.getCharacters(context)]);
     }
 

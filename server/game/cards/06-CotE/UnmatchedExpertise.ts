@@ -1,5 +1,4 @@
 import { cannotReceiveDishonorToken } from '../../effects.js';
-import { discardFromPlay } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class UnmatchedExpertise extends DrawCard {
@@ -14,7 +13,7 @@ class UnmatchedExpertise extends DrawCard {
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.loser === context.source.parentCharacter.controller
             })
-            .gameAction(discardFromPlay());
+            .discardFromPlay();
     }
 }
 

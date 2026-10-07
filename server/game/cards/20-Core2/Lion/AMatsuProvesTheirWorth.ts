@@ -1,14 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { delayedEffect } from '../../../effects.js';
-import {
-    cardLastingEffect,
-    discardFromPlay,
-    draw,
-    gainHonor,
-    honor,
-    multiple,
-    placeFate
-} from '../../../GameActions/GameActions.js';
+import { discardFromPlay, draw, gainHonor, honor, multiple, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { attacksAloneWithTrait } from '../../attacksAlone.js';
 
@@ -20,7 +12,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'bushi')
             })
-            .gameAction(cardLastingEffect((context) => {
+            .cardLastingEffect((context) => {
                 const target = context.game.requireConflict().getParticipants(
                     (participant) => participant.controller === context.player
                 )[0];
@@ -54,7 +46,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         })
                     ]
                 };
-            }))
+            })
             .max(AbilityDsl.limit.perConflict(1));
     }
 }

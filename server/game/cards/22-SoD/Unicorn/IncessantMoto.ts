@@ -1,6 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
 import { canContributeWhileBowed } from '../../../effects.js';
-import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IncessantMoto extends DrawCard {
@@ -18,6 +17,6 @@ export default class IncessantMoto extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player
             })
-            .gameAction(moveToConflict());
+            .moveToConflict();
     }
 }

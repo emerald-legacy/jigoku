@@ -1,6 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function bonusSize(cards: DrawCard[]) {
@@ -24,9 +23,9 @@ export default class YoungBeastmaster extends DrawCard {
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false
             })
             .cost(AbilityDsl.costs.discardCardSpecific((context) => context.player.dynastyDeck.slice(0, 2)))
-            .gameAction(cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonusSize(context.costs.discardCard ?? []))
-            })))
+            }))
             .effect('give {0} +{1}{2}', (context) => [bonusSize(context.costs.discardCard ?? []), 'military']);
     }
 }

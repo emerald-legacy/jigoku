@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { addTrait } from '../../effects.js';
-import { ready } from '../../GameActions/GameActions.js';
 
 class WaterfallTattoo extends DrawCard {
     static id = 'waterfall-tattoo';
@@ -18,7 +17,7 @@ class WaterfallTattoo extends DrawCard {
             .when({
                 onCardRevealed: (event, context) => context.source.parentCharacter && event.card.isProvince && event.card.controller === context.source.parentCharacter.controller
             })
-            .gameAction(ready(context => ({ target: context.source.parentCharacter ?? [] })));
+            .ready(context => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 
