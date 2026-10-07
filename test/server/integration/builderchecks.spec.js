@@ -1,4 +1,4 @@
-import { AbilityBuilder, actionProperties, aggregateProperties, createDraft } from '../../../build/server/game/AbilityBuilder.js';
+import { AbilityBuilder, toActionProps, toAggregateProps, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 import { perRound } from '../../../build/server/game/AbilityLimit.js';
 
@@ -38,19 +38,19 @@ describe('ability builder checks for settings the engine would ignore', function
         it('rejects onAffinity() when only a target has game actions', function() {
             this.builder.target({ cardType: 'character' }, bow()).onAffinity('air');
 
-            expect(() => actionProperties(this.draft)).toThrowError(/Test: onAffinity\(\) covers the ability's or step's own game actions/);
+            expect(() => toActionProps(this.draft)).toThrowError(/Test: onAffinity\(\) covers the ability's or step's own game actions/);
         });
 
         it('rejects initiateDuel() with a target', function() {
             this.builder.target({ cardType: 'character' }).initiateDuel(() => ({}));
 
-            expect(() => actionProperties(this.draft)).toThrowError(/Test: initiateDuel\(\) chooses the duel's targets itself/);
+            expect(() => toActionProps(this.draft)).toThrowError(/Test: initiateDuel\(\) chooses the duel's targets itself/);
         });
 
         it('rejects anyPlayer() with aggregateWhen', function() {
             this.builder.anyPlayer().draw();
 
-            expect(() => aggregateProperties(this.draft, () => true)).toThrowError('Test: anyPlayer() doesn\'t work with aggregateWhen');
+            expect(() => toAggregateProps(this.draft, () => true)).toThrowError('Test: anyPlayer() doesn\'t work with aggregateWhen');
         });
     });
 });

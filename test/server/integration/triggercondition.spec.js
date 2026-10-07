@@ -1,6 +1,6 @@
 import TriggeredAbility from '../../../build/server/game/TriggeredAbility.js';
 import { AbilityType } from '../../../build/server/game/Constants.js';
-import { createDraft, triggeredProperties } from '../../../build/server/game/AbilityBuilder.js';
+import { createDraft, toTriggerProps } from '../../../build/server/game/AbilityBuilder.js';
 
 describe('a triggered ability\'s condition', function() {
     integration(function() {
@@ -33,7 +33,7 @@ describe('a triggered ability\'s condition', function() {
             const draft = createDraft('Test', () => true);
             draft.condition = () => false;
 
-            expect(triggeredProperties(draft, this.when).condition).toBe(draft.condition);
+            expect(toTriggerProps(draft, this.when).condition).toBe(draft.condition);
         });
     });
 });

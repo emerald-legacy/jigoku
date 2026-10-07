@@ -1,4 +1,4 @@
-import { AbilityBuilder, actionProperties, createDraft } from '../../../build/server/game/AbilityBuilder.js';
+import { AbilityBuilder, toActionProps, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { ConditionalAction } from '../../../build/server/game/GameActions/ConditionalAction.js';
 import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 
@@ -25,7 +25,7 @@ describe('if() and otherwise() in the ability builder', function() {
                 .gainFate(2)
                 .draw(2);
 
-            const [draw, branches] = actionProperties(this.draft).gameAction;
+            const [draw, branches] = toActionProps(this.draft).gameAction;
             expect(draw).not.toEqual(jasmine.any(ConditionalAction));
             expect(branches).toEqual(jasmine.any(ConditionalAction));
             expect(branches.getGameAction(this.context).name).toBe('gainHonor');
@@ -38,7 +38,7 @@ describe('if() and otherwise() in the ability builder', function() {
                 .gainFate(2)
                 .draw(2);
 
-            const [branches] = actionProperties(this.draft).gameAction;
+            const [branches] = toActionProps(this.draft).gameAction;
             const otherwise = branches.getGameAction(this.context);
             expect(otherwise.getProperties(this.context).gameActions.map((action) => action.name)).toEqual(['gainFate', 'draw']);
         });
@@ -46,7 +46,7 @@ describe('if() and otherwise() in the ability builder', function() {
         it('does nothing without otherwise() when the condition fails', function() {
             this.builder.if(() => false).gainHonor(2);
 
-            const [branches] = actionProperties(this.draft).gameAction;
+            const [branches] = toActionProps(this.draft).gameAction;
             expect(branches.getGameAction(this.context).isNoAction).toBe(true);
         });
 
@@ -64,7 +64,7 @@ describe('if() and otherwise() in the ability builder', function() {
                 .otherwise()
                 .draw(1);
 
-            const properties = actionProperties(this.draft);
+            const properties = toActionProps(this.draft);
             expect(properties.gameAction).toBeUndefined();
             expect(properties.target.gameAction).toEqual(jasmine.any(ConditionalAction));
         });
@@ -74,7 +74,7 @@ describe('if() and otherwise() in the ability builder', function() {
                 .if(() => true)
                 .gainHonor(1);
 
-            const properties = actionProperties(this.draft);
+            const properties = toActionProps(this.draft);
             expect(properties.gameAction[0]).toEqual(jasmine.any(ConditionalAction));
             expect(properties.target.gameAction).not.toEqual(jasmine.any(ConditionalAction));
         });
@@ -85,7 +85,7 @@ describe('if() and otherwise() in the ability builder', function() {
                 .if(() => true)
                 .gainHonor(1);
 
-            const properties = actionProperties(this.draft);
+            const properties = toActionProps(this.draft);
             expect(properties.gameAction[0]).toEqual(jasmine.any(ConditionalAction));
             expect(properties.targets.first.gameAction).toBeUndefined();
             expect(properties.targets.second.gameAction).toBeUndefined();
@@ -94,7 +94,7 @@ describe('if() and otherwise() in the ability builder', function() {
         it('rejects a branch without game actions', function() {
             this.builder.if(() => true).otherwise().gainFate(1);
 
-            expect(() => actionProperties(this.draft)).toThrowError('Test: if() and otherwise() each need a game action');
+            expect(() => toActionProps(this.draft)).toThrowError('Test: if() and otherwise() each need a game action');
         });
     });
 });

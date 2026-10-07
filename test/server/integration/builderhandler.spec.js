@@ -1,4 +1,4 @@
-import { AbilityBuilder, actionProperties, createDraft } from '../../../build/server/game/AbilityBuilder.js';
+import { AbilityBuilder, toActionProps, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('handler() in the ability builder', function() {
@@ -25,23 +25,23 @@ describe('handler() in the ability builder', function() {
             for(const [skipped, add] of Object.entries(skips)) {
                 const draft = createDraft('Test', () => true);
                 add(new AbilityBuilder(draft).handler(this.handler));
-                expect(() => actionProperties(draft)).toThrowError(new RegExp(`handler\\(\\) replaces the step's resolution, so .*${skipped.replace(/[()]/g, '\\$&')}.* would never run`));
+                expect(() => toActionProps(draft)).toThrowError(new RegExp(`handler\\(\\) replaces the step's resolution, so .*${skipped.replace(/[()]/g, '\\$&')}.* would never run`));
             }
         });
 
         it('rejects game actions next to a handler in a then step', function() {
             this.builder.draw(1).then().handler(this.handler).gainHonor(1);
 
-            expect(() => actionProperties(this.draft)).toThrowError('Test: handler() replaces the step\'s resolution, so game actions would never run');
+            expect(() => toActionProps(this.draft)).toThrowError('Test: handler() replaces the step\'s resolution, so game actions would never run');
         });
 
         it('allows target actions, which only decide what can be chosen, and a handler in the next step', function() {
             this.builder.target({ cardType: 'character' }, bow()).handler(this.handler);
-            expect(() => actionProperties(this.draft)).not.toThrow();
+            expect(() => toActionProps(this.draft)).not.toThrow();
 
             const draft = createDraft('Test', () => true);
             new AbilityBuilder(draft).draw(1).then().handler(this.handler);
-            expect(() => actionProperties(draft)).not.toThrow();
+            expect(() => toActionProps(draft)).not.toThrow();
         });
     });
 });
