@@ -24,6 +24,12 @@ class SimultaneousEffectWindow extends BaseStep {
         this.currentPlayer = this.game.getFirstPlayer();
     }
 
+    abort(): void {
+        if(this.game.currentAbilityWindow === this) {
+            this.game.currentAbilityWindow = null;
+        }
+    }
+
     continue(): boolean {
         this.game.currentAbilityWindow = this;
         if(this.filterChoices()) {

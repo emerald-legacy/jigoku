@@ -36,8 +36,13 @@ export class BaseStepWithPipeline extends BaseStep implements Step {
         try {
             return this.pipeline.continue();
         } catch(e) {
+            this.abort();
             this.game.reportError(e instanceof Error ? e : new Error(String(e)));
             return true;
         }
+    }
+
+    abort(): void {
+        this.pipeline.abort();
     }
 }

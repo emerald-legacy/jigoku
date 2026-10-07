@@ -46,6 +46,12 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return this.currentPlayer;
     }
 
+    abort(): void {
+        if(this.game.currentAbilityWindow === this) {
+            this.game.currentAbilityWindow = null;
+        }
+    }
+
     continue() {
         this.game.currentAbilityWindow = this;
         if(this.eventWindow) {

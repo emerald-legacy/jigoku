@@ -114,6 +114,12 @@ class ActionWindow extends UiPrompt {
         return completed;
     }
 
+    abort(): void {
+        if(this.game.currentActionWindow === this) {
+            this.game.currentActionWindow = null;
+        }
+    }
+
     activePrompt() {
         const buttons: Array<{ text: string; arg: string }> = [
             { text: 'Pass', arg: 'pass' }

@@ -147,6 +147,13 @@ export default class EventWindow extends BaseStepWithPipeline {
         }
     }
 
+    abort(): void {
+        super.abort();
+        if(this.game.currentEventWindow === this) {
+            this.game.currentEventWindow = this.previousEventWindow;
+        }
+    }
+
     resetCurrentEventWindow() {
         if(this.previousEventWindow) {
             this.previousEventWindow.checkEventCondition();

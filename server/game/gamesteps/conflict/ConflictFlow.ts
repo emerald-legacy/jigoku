@@ -973,6 +973,13 @@ class ConflictFlow extends BaseStepWithPipeline {
         this.game.openEventWindow(events);
     }
 
+    abort(): void {
+        super.abort();
+        if(this.game.currentConflict === this.conflict) {
+            this.game.currentConflict = null;
+        }
+    }
+
     completeConflict(): void {
         if(this.conflict.conflictPassed) {
             return;
