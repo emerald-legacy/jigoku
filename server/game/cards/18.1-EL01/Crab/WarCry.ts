@@ -1,5 +1,5 @@
 import { ConflictType, CardType, Location } from '../../../Constants.js';
-import { breakProvince, selectCard } from '../../../GameActions/GameActions.js';
+import { breakProvince } from '../../../GameActions/GameActions.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,7 +20,7 @@ export default class WarCry extends DrawCard {
                     !event.conflict.isAtStrongholdProvince() &&
                     areAllAttackersBerserker(event.conflict)
             })
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -29,7 +29,7 @@ export default class WarCry extends DrawCard {
                 message: '{0} breaks {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: breakProvince()
-            })))
+            }))
             .effect('break an attacked province');
     }
 }

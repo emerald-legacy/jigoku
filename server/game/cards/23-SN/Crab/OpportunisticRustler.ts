@@ -1,12 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import {
-    cardLastingEffect,
-    deckSearch,
-    moveCard,
-    multipleContext,
-    noAction
-} from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, moveCard, multipleContext, noAction } from '../../../GameActions/GameActions.js';
 import { ConflictType, Decks, Location } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { msg } from '../../../GameChat.js';
@@ -19,7 +13,7 @@ export default class OpportunisticRustler extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military
             })
-            .gameAction(deckSearch(context => ({
+            .deckSearch(context => ({
                 amount: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
                 player: context.player.opponent,
                 choosingPlayer: context.player,
@@ -53,7 +47,7 @@ export default class OpportunisticRustler extends DrawCard {
 
                     return { gameActions };
                 })
-            })))
+            }))
             .effect((context) => msg`look at ${context.player.opponent}'s dynasty deck`);
     }
 }

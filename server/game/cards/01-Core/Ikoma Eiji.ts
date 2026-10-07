@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { putIntoPlay, selectCard } from '../../GameActions/GameActions.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 
 class IkomaEiji extends DrawCard {
@@ -10,7 +10,7 @@ class IkomaEiji extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === ConflictType.Political
             })
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.DynastyDiscardPile],
                 controller: Players.Self,
@@ -18,7 +18,7 @@ class IkomaEiji extends DrawCard {
                 message: '{0} puts {1} into play with {2}\'s ability',
                 messageArgs: card => [context.player, card, context.source],
                 gameAction: putIntoPlay()
-            })))
+            }))
             .effect('put a character into play');
     }
 }

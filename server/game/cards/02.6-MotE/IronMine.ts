@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import { cancel, sacrifice } from '../../GameActions/GameActions.js';
+import { sacrifice } from '../../GameActions/GameActions.js';
 
 class IronMine extends DrawCard {
     static id = 'iron-mine';
@@ -10,9 +10,9 @@ class IronMine extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea
             })
-            .gameAction(cancel({
+            .cancel({
                 replacementGameAction: sacrifice(context => ({ target: context.source }))
-            }))
+            })
             .effect('prevent {1} from leaving play', context => context.event.card);
     }
 }

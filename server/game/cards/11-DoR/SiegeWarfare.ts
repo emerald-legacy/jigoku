@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class SiegeWarfare extends DrawCard {
     static id = 'siege-warfare';
@@ -9,7 +9,7 @@ class SiegeWarfare extends DrawCard {
     setupCardAbilities() {
         this.action('Give attacked province -2 strength')
             .condition(context => context.player.isAttackingPlayer() && context.player.getNumberOfHoldingsInPlay() > 0)
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -21,7 +21,7 @@ class SiegeWarfare extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(-2)
                 }))
-            })))
+            }))
             .effect('reduce the province strength of an attacked province by 2');
     }
 }

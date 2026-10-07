@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel, multiple, putIntoProvince, returnToHand } from '../../GameActions/GameActions.js';
+import { multiple, putIntoProvince, returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location } from '../../Constants.js';
 
 class MasterOfManyLifetimes extends DrawCard {
@@ -22,7 +22,7 @@ class MasterOfManyLifetimes extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.facedown
             })
-            .gameAction(cancel((context) => ({
+            .cancel((context) => ({
                 replacementGameAction: multiple([
                     returnToHand({
                         target: context.event.card?.attachments ?? []
@@ -32,7 +32,7 @@ class MasterOfManyLifetimes extends DrawCard {
                         destination: context.target?.location
                     })
                 ])
-            })))
+            }))
             .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [context.event.card ?? '', context.target?.location ?? '']);
     }
 }

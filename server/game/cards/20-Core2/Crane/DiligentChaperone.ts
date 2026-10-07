@@ -1,6 +1,6 @@
 import { Location, CardType, CharacterStatus, EventName } from '../../../Constants.js';
 import { cannotParticipateAsAttacker } from '../../../effects.js';
-import { honor, selectCard } from '../../../GameActions/GameActions.js';
+import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -47,14 +47,14 @@ export default class DiligentChaperone extends DrawCard {
                     event.token.grantedStatus === CharacterStatus.Honored &&
                     event.cards.some(isFriendlyCharacter.bind(null, context))
             })
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => targetsFromEvent(context.event).has(card),
                 gameAction: honor(),
                 message: '{0} honors {1}',
                 messageArgs: (card, player) => [player, card]
-            })))
+            }))
             .effect('protect the honor of the Crane');
     }
 }

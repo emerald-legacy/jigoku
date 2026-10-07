@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import { modifyGlory } from '../../effects.js';
-import { handler, selectCard } from '../../GameActions/GameActions.js';
+import { handler } from '../../GameActions/GameActions.js';
 
 class FrontlineEngineer extends DrawCard {
     static id = 'frontline-engineer';
@@ -13,7 +13,7 @@ class FrontlineEngineer extends DrawCard {
 
         this.action('Place a holding from your deck faceup in the defending province')
             .condition(context => context.player.dynastyDeck.length > 0 && context.source.isDefending())
-            .gameAction(selectCard({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -50,7 +50,7 @@ class FrontlineEngineer extends DrawCard {
                         }
                     })
                 })
-            }))
+            })
             .effect('look at the top five cards of their dynasty deck');
     }
 

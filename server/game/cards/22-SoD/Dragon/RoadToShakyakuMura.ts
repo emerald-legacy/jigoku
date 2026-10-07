@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { cancel, multiple, putIntoProvince, returnToHand } from '../../../GameActions/GameActions.js';
+import { multiple, putIntoProvince, returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
 
@@ -22,7 +22,7 @@ export default class RoadToShakyakuMura extends DrawCard {
             })
             .cost(captureCost('captureLocationCost', (context) => context.source.location))
             .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(cancel((context) => ({
+            .cancel((context) => ({
                 replacementGameAction: multiple([
                     returnToHand(() => ({
                         target: context.event.card?.attachments ?? []
@@ -32,7 +32,7 @@ export default class RoadToShakyakuMura extends DrawCard {
                         destination: context.costs.captureLocationCost
                     })
                 ])
-            })))
+            }))
             .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [
                 context.event.card ?? '',
                 context.costs.captureLocationCost ?? ''

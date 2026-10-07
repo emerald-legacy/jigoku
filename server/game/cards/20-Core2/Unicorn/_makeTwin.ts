@@ -2,7 +2,6 @@ import { blank } from '../../../effects.js';
 import {
     attach,
     cardLastingEffect,
-    deckSearch,
     discardFromPlay,
     ifAble,
     moveStatusToken,
@@ -22,7 +21,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
 
         setupCardAbilities() {
             this.action(opt.title)
-                .gameAction(deckSearch({
+                .deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,
                     deck: Decks.DynastyDeck,
                     shuffle: false,
@@ -80,7 +79,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                             newCharacter
                         );
                     }
-                }))
+                })
                 .effect(opt.effect);
         }
     };

@@ -1,5 +1,5 @@
 import { reduceNextPlayedCardCost } from '../../../effects.js';
-import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
@@ -10,13 +10,13 @@ export default class EarnestSculptor extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Search top 8 card for a spell')
-            .gameAction(deckSearch({
+            .deckSearch({
                 amount: 8,
                 cardCondition: (card) => card.hasTrait('spell'),
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
+            })
             .effect('look at the top 8 cards of their deck');
 
         this.interrupt('Reduce cost of next Jade card')

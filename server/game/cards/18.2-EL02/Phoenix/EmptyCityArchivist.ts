@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 
 class EmptyCityArchivist extends DrawCard {
@@ -10,7 +10,7 @@ class EmptyCityArchivist extends DrawCard {
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .gameAction(deckSearch({
+            .deckSearch({
                 amount: 4,
                 cardCondition: (card, context) => {
                     const parent = context.source.parentCharacter;
@@ -21,7 +21,7 @@ class EmptyCityArchivist extends DrawCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }));
+            });
     }
 }
 

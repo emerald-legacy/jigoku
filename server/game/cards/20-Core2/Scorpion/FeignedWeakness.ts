@@ -1,6 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { cancel } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
@@ -19,7 +18,7 @@ export default class FeignedWeakness extends DrawCard {
                 location: Location.Hand,
                 cardCondition: (card, context) => card !== context.source
             }))
-            .gameAction(cancel());
+            .cancel();
     }
 
     private hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {

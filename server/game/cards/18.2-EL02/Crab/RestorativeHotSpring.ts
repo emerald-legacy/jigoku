@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { cancel, removeFromGame } from '../../../GameActions/GameActions.js';
+import { removeFromGame } from '../../../GameActions/GameActions.js';
 
 class RestorativeHotSpring extends DrawCard {
     static id = 'restorative-hot-spring';
@@ -12,9 +12,9 @@ class RestorativeHotSpring extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea
             })
             .cost(AbilityDsl.costs.payFate(1))
-            .gameAction(cancel({
+            .cancel({
                 replacementGameAction: removeFromGame(context => ({ target: context.source }))
-            }))
+            })
             .effect('prevent {1} from leaving play, removing itself from the game instead', context => context.event.card);
     }
 }

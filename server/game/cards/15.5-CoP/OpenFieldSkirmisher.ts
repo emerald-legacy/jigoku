@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class OpenFieldSkirmisher extends DrawCard {
     static id = 'open-field-skirmisher';
@@ -11,7 +11,7 @@ class OpenFieldSkirmisher extends DrawCard {
         this.action('Reduce Province Strength')
             .cost(AbilityDsl.costs.removeFateFromSelf())
             .condition(context => context.source.isAttacking())
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,7 +23,7 @@ class OpenFieldSkirmisher extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(-3)
                 }))
-            })))
+            }))
             .effect('reduce the strength of an attacked province by 3');
     }
 }

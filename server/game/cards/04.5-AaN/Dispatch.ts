@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { conditional, moveToConflict, selectCard, sendHome } from '../../GameActions/GameActions.js';
+import { conditional, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 class Dispatch extends DrawCard {
     static id = 'dispatch';
 
     setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
-            .gameAction(selectCard({
+            .selectCard({
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('unicorn'),
                 controller: Players.Self,
@@ -30,7 +30,7 @@ class Dispatch extends DrawCard {
                     card.inConflict ? 'home' : 'into the conflict',
                     card.inConflict ? 'send' : 'move'
                 ]
-            }))
+            })
             .effect('choose a unicorn character they control to move into a conflict or home');
     }
 }

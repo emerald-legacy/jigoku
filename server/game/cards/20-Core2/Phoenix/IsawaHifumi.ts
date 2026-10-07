@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { playCard, selectCard } from '../../../GameActions/GameActions.js';
+import { playCard } from '../../../GameActions/GameActions.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
@@ -75,7 +75,7 @@ export default class IsawaHifumi extends DrawCard {
 
         this.action('Play an event from discard')
             .cost(hifumiCost)
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
                 controller: Players.Self,
@@ -90,7 +90,7 @@ export default class IsawaHifumi extends DrawCard {
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })
-            })))
+            }))
             .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [hifumiCost.currentCost(context.player), context.player])
             .limit(AbilityDsl.limit.unlimited())
             .cannotTargetFirst();

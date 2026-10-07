@@ -1,7 +1,7 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
-import { cardLastingEffect, multiple, selectCard, sendHome } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Pressure extends DrawCard {
@@ -14,7 +14,7 @@ export default class Pressure extends DrawCard {
                 onDefendersDeclared: (_event, _context) => true,
                 onMoveToConflict: (_event, _context) => true
             })
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -36,7 +36,7 @@ export default class Pressure extends DrawCard {
                 ]),
                 message: '{0} chooses {1}',
                 messageArgs: (cards) => [context.player, cards]
-            })))
+            }))
             .effect('move a character home and prevent it from participating in the conflict')
             .max(AbilityDsl.limit.perConflict(1));
     }

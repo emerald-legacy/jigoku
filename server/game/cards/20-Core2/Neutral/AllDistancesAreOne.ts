@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import { moveConflict, onAffinity, selectCard, turnFacedown } from '../../../GameActions/GameActions.js';
+import { moveConflict, onAffinity, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
 
@@ -16,13 +16,13 @@ export default class AllDistancesAreOne extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 )))
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 gameAction: moveConflict(),
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card) => [context.player, card]
-            })))
+            }))
             .effect('move the conflict to another eligible province')
             .thenIf((context) => !context.costs.originalProvince?.isBroken)
             .gameAction(onAffinity((context) => ({

@@ -1,5 +1,5 @@
 import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
-import { cancel, joint, noAction, placeFate, placeFateOnRing } from '../../../GameActions/GameActions.js';
+import { joint, noAction, placeFate, placeFateOnRing } from '../../../GameActions/GameActions.js';
 import { Element, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -28,7 +28,7 @@ export default class KitsukiSeiji extends DrawCard {
                 onPlaceFateOnUnclaimedRings: (event) =>
                     event.recipients.some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             })
-            .gameAction(cancel((context) => {
+            .cancel((context) => {
                 const event = context.event;
                 switch(event.name) {
                     case EventName.OnPlaceFateOnUnclaimedRings:
@@ -38,7 +38,7 @@ export default class KitsukiSeiji extends DrawCard {
                     default:
                         return { replacementGameAction: noAction() };
                 }
-            }))
+            })
             .effect('put the fate that would go on the {1} ring on {0} instead', () => [this.getCurrentElementSymbol(ELEMENT_KEY)]);
     }
 

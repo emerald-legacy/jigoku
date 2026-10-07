@@ -1,6 +1,6 @@
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { sacrifice, selectCard, sendHome } from '../../../GameActions/GameActions.js';
+import { sacrifice, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OurDuty extends DrawCard {
@@ -13,7 +13,7 @@ export default class OurDuty extends DrawCard {
                 cardCondition: (card) => card.isFaction('crab')
             }))
             .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
@@ -21,7 +21,7 @@ export default class OurDuty extends DrawCard {
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.player.opponent, card, context.source],
                 gameAction: sacrifice()
-            })))
+            }))
             .effect('force {1} to sacrifice a character', (context) => context.player.opponent)
             .max(AbilityDsl.limit.perGame(1));
 

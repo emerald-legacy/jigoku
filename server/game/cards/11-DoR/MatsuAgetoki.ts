@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import { moveConflict, selectCard } from '../../GameActions/GameActions.js';
+import { moveConflict } from '../../GameActions/GameActions.js';
 
 class MatsuAgetoki extends DrawCard {
     static id = 'matsu-agetoki';
@@ -8,13 +8,13 @@ class MatsuAgetoki extends DrawCard {
     setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
             .condition(context => context.player.isMoreHonorable() && context.source.isAttacking())
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 gameAction: moveConflict(),
                 message: '{0} moves the conflict to {1}',
                 messageArgs: card => [context.player, card]
-            })))
+            }))
             .effect('move the conflict to another eligible province');
     }
 }

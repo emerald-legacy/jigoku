@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, Location, Decks } from '../../Constants.js';
-import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
@@ -13,7 +13,7 @@ class UnyieldingSensei extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
             })
-            .gameAction(deckSearch({
+            .deckSearch({
                 activePromptTitle: 'Choose a character',
                 amount: 2,
                 deck: Decks.DynastyDeck,
@@ -28,7 +28,7 @@ class UnyieldingSensei extends DrawCard {
                     destination: context.target?.location,
                     faceup: true
                 }))
-            }))
+            })
             .effect('look at the top two cards of their dynasty deck');
     }
 }

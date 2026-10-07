@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class OurFoeDoesNotWait extends DrawCard {
     static id = 'our-foe-does-not-wait';
@@ -18,14 +18,14 @@ class OurFoeDoesNotWait extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
-            .gameAction(deckSearch((context) => ({
+            .deckSearch((context) => ({
                 amount: 8,
                 deck: Decks.DynastyDeck,
                 gameAction: moveCard({
                     faceup: true,
                     destination: context.target.location
                 })
-            })))
+            }))
             .effect('look at the top eight cards of their dynasty deck')
             .max(AbilityDsl.limit.perConflictOpportunity(1));
     }

@@ -1,6 +1,6 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, moveToConflict, multiple, selectCard, sendHome } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, moveToConflict, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CorneringManeuver extends DrawCard {
@@ -16,7 +16,7 @@ export default class CorneringManeuver extends DrawCard {
             }))
             .effect('give {0} +2{1}', () => ['military'])
             .then()
-            .gameAction(selectCard({
+            .selectCard({
                 activePromptTitle: 'Choose a character to move',
                 targets: true,
                 optional: true,
@@ -28,6 +28,6 @@ export default class CorneringManeuver extends DrawCard {
                     sendHome(),
                     moveToConflict()
                 ])
-            }));
+            });
     }
 }

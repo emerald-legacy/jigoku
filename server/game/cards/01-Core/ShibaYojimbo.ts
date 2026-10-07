@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class ShibaYojimbo extends DrawCard {
@@ -12,7 +11,7 @@ class ShibaYojimbo extends DrawCard {
                     card.hasTrait('shugenja') && card.controller === context.player && card.location === Location.PlayArea)
                 )
             })
-            .gameAction(cancel());
+            .cancel();
     }
 }
 

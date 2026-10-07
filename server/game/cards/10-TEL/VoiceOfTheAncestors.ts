@@ -10,14 +10,7 @@ import {
     modifyPoliticalSkill,
     reduceNextPlayedCardCost
 } from '../../effects.js';
-import {
-    attach,
-    cardLastingEffect,
-    playCard,
-    playerLastingEffect,
-    selectCard,
-    sequential
-} from '../../GameActions/GameActions.js';
+import { attach, cardLastingEffect, playCard, playerLastingEffect, sequential } from '../../GameActions/GameActions.js';
 
 class VoiceOfTheAncestors extends DrawCard {
     static id = 'voice-of-the-ancestors';
@@ -41,7 +34,7 @@ class VoiceOfTheAncestors extends DrawCard {
                 cardCondition: (card, context) =>
                     attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
             })
-            .gameAction(selectCard({
+            .selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 cardCondition: card => card.isFaction('lion'),
@@ -76,7 +69,7 @@ class VoiceOfTheAncestors extends DrawCard {
                         }
                     }))
                 ])
-            }));
+            });
     }
 }
 

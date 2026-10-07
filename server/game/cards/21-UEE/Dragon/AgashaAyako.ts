@@ -1,5 +1,5 @@
 import { reduceCost } from '../../../effects.js';
-import { deckSearch, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
+import { playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, Decks, Duration, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
@@ -12,7 +12,7 @@ export default class AgashaAyako extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .gameAction(deckSearch({
+            .deckSearch({
                 activePromptTitle: 'Choose a character to play',
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && !card.isUnique(),
@@ -37,7 +37,7 @@ export default class AgashaAyako extends DrawCard {
                         };
                     })
                 ])
-            }))
+            })
             .effect('search their dynasty deck for a character');
     }
 }

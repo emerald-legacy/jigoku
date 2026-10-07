@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import { cannotTriggerAbilities } from '../../../effects.js';
-import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoScout2 extends DrawCard {
@@ -12,7 +12,7 @@ export default class ShinjoScout2 extends DrawCard {
                 onCardRevealed: (event, context) =>
                     event.card.type === CardType.Province && context.source.isAttacking()
             })
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -24,7 +24,7 @@ export default class ShinjoScout2 extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: cannotTriggerAbilities()
                 })
-            })))
+            }))
             .effect('avoid the dangers of their exploration');
     }
 }

@@ -1,7 +1,7 @@
 import { CardType, Decks, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
-import { deckSearch, playCard } from '../../../GameActions/GameActions.js';
+import { playCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { article } from '../../article.js';
 
@@ -10,7 +10,7 @@ export default class UtakuTakeko extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Play a character from your dynasty deck')
-            .gameAction(deckSearch(() => ({
+            .deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
                 amount: 8,
                 deck: Decks.DynastyDeck,
@@ -44,7 +44,7 @@ export default class UtakuTakeko extends DrawCard {
                     this.msgArticle(cards[0]),
                     cards[0]
                 ]
-            })));
+            }));
     }
 
     private msgDistance(card: DrawCard): string {

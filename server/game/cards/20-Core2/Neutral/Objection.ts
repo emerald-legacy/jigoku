@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, EventName } from '../../../Constants.js';
-import { cancel, loseFate } from '../../../GameActions/GameActions.js';
+import { loseFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../costs/Cost.js';
 import type Player from '../../../Player.js';
@@ -58,7 +58,7 @@ export default class Objection extends DrawCard {
                     event.card.type === CardType.Event && context.player.imperialFavor !== ''
             })
             .cost(new ObjectionCost())
-            .gameAction(cancel())
+            .cancel()
             .cannotBeMirrored();
     }
 

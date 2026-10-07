@@ -9,6 +9,8 @@ import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 import type * as GameActions from './GameActions/GameActions.js';
+import type { SelectCardProperties } from './GameActions/SelectCardAction.js';
+import type { CancellingContext } from './GameActions/CancelAction.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
@@ -801,6 +803,26 @@ export class AbilityBuilder<
     /** A lasting effect on players. */
     playerLastingEffect(properties: ActionProperties<'playerLastingEffect', BuilderContext<Base, TG, RG, CO, TK>>): this {
         return this.gameAction(getAbilityDsl().actions.playerLastingEffect(properties));
+    }
+
+    /** The player (or `player`) chooses a card when the ability resolves, and `gameAction` resolves on it. */
+    selectCard<const K extends CardTypes = CardTypes>(
+        properties: SelectCardProperties<BuilderContext<Base, TG, RG, CO, TK>, K> | ((context: BuilderContext<Base, TG, RG, CO, TK>) => SelectCardProperties<BuilderContext<Base, TG, RG, CO, TK>, K>)
+    ): this {
+        return this.gameAction(getAbilityDsl().actions.selectCard<BuilderContext<Base, TG, RG, CO, TK>, K>(properties));
+    }
+
+    /** Searches a deck: look at its top cards, choose some, and resolve `gameAction` on them. */
+    deckSearch(properties: ActionProperties<'deckSearch', BuilderContext<Base, TG, RG, CO, TK>>): this {
+        return this.gameAction(getAbilityDsl().actions.deckSearch(properties));
+    }
+
+    /** Cancels the triggering event (interrupts only), optionally replacing it with `replacementGameAction`. */
+    cancel<B extends Base & CancellingContext>(
+        this: AbilityBuilder<B, TG, RG, CO, TK, SL>,
+        properties: ActionProperties<'cancel', BuilderContext<B, TG, RG, CO, TK>> = {}
+    ): AbilityBuilder<B, TG, RG, CO, TK, SL> {
+        return this.gameAction(getAbilityDsl().actions.cancel(properties));
     }
 
     gameAction(...actions: BuilderAction<Base, TG, RG, CO, TK>[]): this {

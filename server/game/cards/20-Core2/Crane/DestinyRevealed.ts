@@ -1,5 +1,5 @@
 import { CardType, EventName, Players } from '../../../Constants.js';
-import { cancel, placeFate, selectCard } from '../../../GameActions/GameActions.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -11,7 +11,7 @@ export default class DestinyRevealed extends DrawCard {
 
     setupCardAbilities() {
         this.duelStrike('Place a fate on a character', (duel, context) => duel.winnerController === context.player)
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
@@ -22,7 +22,7 @@ export default class DestinyRevealed extends DrawCard {
                 gameAction: placeFate((context) => ({
                     origin: context.player
                 }))
-            })));
+            }));
 
         this.wouldInterrupt('Cancel a ring effect')
             .when({
@@ -36,7 +36,7 @@ export default class DestinyRevealed extends DrawCard {
                 onCardBowed: targetedByOpponentRingEffect,
                 onCardReadied: targetedByOpponentRingEffect
             })
-            .gameAction(cancel())
+            .cancel()
             .effect((context) => msg`cancel the effects of the ${context.event.context?.source}`);
     }
 }

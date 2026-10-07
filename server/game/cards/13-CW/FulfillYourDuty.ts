@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class FulfillYourDuty extends DrawCard {
     static id = 'fulfill-your-duty';
@@ -11,7 +11,7 @@ class FulfillYourDuty extends DrawCard {
         this.action('Add Province Strength')
             .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,7 +23,7 @@ class FulfillYourDuty extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.getMilitarySkill() : 0)
                 }))
-            })))
+            }))
             .effect('add {1} to an attacked province\'s strength', context => context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.getMilitarySkill() : 0);
     }
 }

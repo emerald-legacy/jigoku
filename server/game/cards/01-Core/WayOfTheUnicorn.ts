@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel } from '../../GameActions/GameActions.js';
 
 class WayOfTheUnicorn extends DrawCard {
     static id = 'way-of-the-unicorn';
@@ -9,7 +8,7 @@ class WayOfTheUnicorn extends DrawCard {
             .when({
                 onPassFirstPlayer: (event, context) => event.player === context.player.opponent
             })
-            .gameAction(cancel())
+            .cancel()
             .effect('keep the first player token')
             .cannotBeMirrored();
     }

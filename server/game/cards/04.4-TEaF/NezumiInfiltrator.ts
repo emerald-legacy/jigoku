@@ -1,7 +1,7 @@
 import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { immunity, modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, chooseAction, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class NezumiInfiltrator extends DrawCard {
@@ -23,7 +23,7 @@ export default class NezumiInfiltrator extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
             })
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -54,7 +54,7 @@ export default class NezumiInfiltrator extends DrawCard {
                         }
                     }
                 }))
-            })))
+            }))
             .effect('change the province strength of an attacked province')
             .max(AbilityDsl.limit.perConflict(1));
     }

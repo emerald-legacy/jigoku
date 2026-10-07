@@ -1,5 +1,5 @@
 import { addTrait, modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, deckSearch } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
@@ -10,13 +10,13 @@ export default class KakitaMio extends DrawCard {
     setupCardAbilities() {
         this.reaction('Search for Writ of Sanctification')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
-            .gameAction(deckSearch({
+            .deckSearch({
                 activePromptTitle: 'Choose a Writ of Sanctification',
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Sanctification',
                 selectedCardsHandler: (context, _, [card]) =>
                     attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])
-            }));
+            });
 
         this.conflictAction('Give Corrupt to a character', { evenFromHome: true })
             .target({

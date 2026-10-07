@@ -1,6 +1,6 @@
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import { delayedEffect } from '../../../effects.js';
-import { deckSearch, discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
+import { discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -14,7 +14,7 @@ export default class KakitaRusumi extends DrawCard {
     setupCardAbilities() {
         this.conflictAction('Put a character into play', { evenFromHome: true })
             .condition((context) => context.player.isDefendingPlayer())
-            .gameAction(deckSearch({
+            .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
                 amount: 4,
                 deck: Decks.DynastyDeck,
@@ -24,7 +24,7 @@ export default class KakitaRusumi extends DrawCard {
                 messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
                 shuffle: true,
                 gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
-            }))
+            })
             .effect('search their dynasty deck for a character to put into play')
             .then()
             .cardLastingEffect((context) => {

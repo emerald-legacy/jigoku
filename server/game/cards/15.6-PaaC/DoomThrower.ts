@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class DoomThrower extends DrawCard {
     static id = 'doom-thrower';
@@ -11,7 +11,7 @@ class DoomThrower extends DrawCard {
         this.action('Reduce Province Strength')
             .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
             .condition(context => context.game.isDuringConflict())
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,7 +23,7 @@ class DoomThrower extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)
                 })
-            })))
+            }))
             .effect('reduce an attacked province\'s strength by {1}', context => (context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2);
     }
 }

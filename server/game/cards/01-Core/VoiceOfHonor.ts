@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class VoiceOfHonor extends DrawCard {
@@ -12,7 +11,7 @@ class VoiceOfHonor extends DrawCard {
                                                             context.player.getNumberOfCardsInPlay(card => card.isHonored) >
                                                             context.player.opponent.getNumberOfCardsInPlay(card => card.isHonored)
             })
-            .gameAction(cancel())
+            .cancel()
             .cannotBeMirrored();
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class YasukiHatsu extends DrawCard {
     static id = 'yasuki-hatsu';
@@ -8,13 +8,13 @@ class YasukiHatsu extends DrawCard {
     setupCardAbilities() {
         this.action('Search top 5 cards for attachment')
             .condition(context => !!(context.source.isParticipating() && context.player.opponent && context.player.isLessHonorable()))
-            .gameAction(deckSearch({
+            .deckSearch({
                 amount: 5,
                 cardCondition: card => card.type === CardType.Attachment,
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
+            })
             .effect('look at the top five cards of their deck');
     }
 }

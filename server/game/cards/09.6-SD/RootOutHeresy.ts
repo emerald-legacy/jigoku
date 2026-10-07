@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location, ConflictType } from '../../Constants.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, discardAtRandom, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, discardAtRandom } from '../../GameActions/GameActions.js';
 
 class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
@@ -11,7 +11,7 @@ class RootOutHeresy extends DrawCard {
         this.conflictAction('Discard a card at random from your opponent\'s hand', { conflictType: ConflictType.Political })
             .gameAction(discardAtRandom())
             .then()
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -22,7 +22,7 @@ class RootOutHeresy extends DrawCard {
                 gameAction: cardLastingEffect(() => ({
                     effect: modifyProvinceStrength(this.getStrengthModifier(context))
                 }))
-            })));
+            }));
     }
 
     /** The printed cost of the card discarded in the step before, as a strength reduction. */

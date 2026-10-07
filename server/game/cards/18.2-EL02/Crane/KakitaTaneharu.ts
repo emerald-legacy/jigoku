@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { deckSearch, placeCardUnderneath } from '../../../GameActions/GameActions.js';
+import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
 class KakitaTaneharu extends DrawCard {
@@ -7,7 +7,7 @@ class KakitaTaneharu extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Search your conflict deck', { evenFromHome: true })
-            .gameAction(deckSearch({
+            .deckSearch({
                 amount: 4,
                 reveal: false,
                 placeOnBottomInRandomOrder: true,
@@ -19,7 +19,7 @@ class KakitaTaneharu extends DrawCard {
                 gameAction: placeCardUnderneath({
                     destination: this
                 })
-            }));
+            });
 
         this.persistentEffect(playableFromUnderneath(this));
     }

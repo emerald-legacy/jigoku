@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class JewelOfTheKhamasin extends DrawCard {
     static id = 'jewel-of-the-khamasin';
@@ -11,7 +11,7 @@ class JewelOfTheKhamasin extends DrawCard {
         this.action('Reduce province strength')
             .cost(AbilityDsl.costs.payHonor(1))
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
-            .gameAction(selectCard(context => ({
+            .selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,7 +23,7 @@ class JewelOfTheKhamasin extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(-1)
                 }))
-            })))
+            }))
             .effect('reduce an attacked province strength by 1')
             .limit(AbilityDsl.limit.unlimitedPerConflict());
     }

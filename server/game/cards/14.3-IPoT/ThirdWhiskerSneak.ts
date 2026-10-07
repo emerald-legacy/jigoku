@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import { immunity } from '../../effects.js';
-import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class ThirdWhiskerSneak extends DrawCard {
@@ -22,13 +22,13 @@ class ThirdWhiskerSneak extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && event.conflict.conflictUnopposed && context.source.isParticipating()
             })
-            .gameAction(deckSearch({
+            .deckSearch({
                 amount: (context) => context.player.getProvinces(a => !a.isBroken).length,
                 reveal: false,
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
+            })
             .effect((context) => msg`look at the top ${context.player.getProvinces(a => !a.isBroken).length} cards of their conflict deck`);
     }
 }

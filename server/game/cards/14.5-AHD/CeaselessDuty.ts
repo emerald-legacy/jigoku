@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class CeaselessDuty extends DrawCard {
@@ -10,7 +9,7 @@ class CeaselessDuty extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces(a => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
             })
-            .gameAction(cancel())
+            .cancel()
             .effect('prevent {1} from leaving play', context => context.event.card)
             .cannotBeMirrored();
     }

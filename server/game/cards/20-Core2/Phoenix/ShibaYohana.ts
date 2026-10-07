@@ -1,6 +1,6 @@
 import { CardType, Duration, Location } from '../../../Constants.js';
 import { addTrait } from '../../../effects.js';
-import { cancel, moveToConflict, taint } from '../../../GameActions/GameActions.js';
+import { moveToConflict, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaYohana extends DrawCard {
@@ -12,10 +12,10 @@ export default class ShibaYohana extends DrawCard {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && event.card.location === Location.PlayArea
             })
-            .gameAction(cancel((context) => ({
+            .cancel((context) => ({
                 target: context.source,
                 replacementGameAction: taint()
-            })))
+            }))
             .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
             .then()
             .cardLastingEffect((context) => ({

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { deckSearch, moveCard } from '../../../GameActions/GameActions.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,7 +18,7 @@ export default class AkodoAsuka extends DrawCard {
                     context.source.isParticipating() &&
                     context.player.conflictDeck.length > 0
             })
-            .gameAction(deckSearch({
+            .deckSearch({
                 amount: (context) => charactersOnYourSide(context),
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: moveCard({
@@ -26,7 +26,7 @@ export default class AkodoAsuka extends DrawCard {
                 }),
                 shuffle: true,
                 reveal: false
-            }))
+            })
             .effect('look at the top {1} cards of their conflict deck', (context) => charactersOnYourSide(context));
     }
 }

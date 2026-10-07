@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { bow, cancel, multiple, ready, selectCard } from '../../GameActions/GameActions.js';
+import { bow, multiple, ready, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -13,7 +13,7 @@ class AsakoAzunami extends DrawCard {
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
-            .gameAction(cancel(context => ({
+            .cancel(context => ({
                 replacementGameAction: multiple([
                     selectCard({
                         activePromptTitle: 'Choose a character to bow',
@@ -34,7 +34,7 @@ class AsakoAzunami extends DrawCard {
                         messageArgs: (card, player) => [player, card, context.source]
                     })
                 ])
-            })))
+            }))
             .effect(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 

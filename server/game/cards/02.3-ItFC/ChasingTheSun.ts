@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import { moveConflict, selectCard } from '../../GameActions/GameActions.js';
+import { moveConflict } from '../../GameActions/GameActions.js';
 
 class ChasingTheSun extends DrawCard {
     static id = 'chasing-the-sun';
@@ -8,13 +8,13 @@ class ChasingTheSun extends DrawCard {
     setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
             .condition(context => context.player.isAttackingPlayer())
-            .gameAction(selectCard({
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card, player) => [player, card],
                 gameAction: moveConflict()
-            }))
+            })
             .effect('move the conflict to another eligible province')
             .cannotBeMirrored();
     }

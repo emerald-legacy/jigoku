@@ -1,7 +1,6 @@
 import { GameModes } from '../../../GameModes.js';
 import { CardType, TargetMode, Decks, Location, Players } from '../../Constants.js';
 import { hideWhenFaceUp } from '../../effects.js';
-import { deckSearch } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KaiuShihobu extends DrawCard {
@@ -13,7 +12,7 @@ export default class KaiuShihobu extends DrawCard {
                 onCharacterEntersPlay: (event, context) =>
                     event.card === context.source && context.game.gameMode !== GameModes.Skirmish
             })
-            .gameAction(deckSearch({
+            .deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
                 targetMode: TargetMode.Unlimited,
                 deck: Decks.DynastyDeck,
@@ -36,7 +35,7 @@ export default class KaiuShihobu extends DrawCard {
                         this.game.addMessage('{0} selects no holdings', event.player);
                     }
                 }
-            }));
+            });
 
         this.action('Put a holding in a province')
             .condition((context) => context.game.gameMode !== GameModes.Skirmish)

@@ -1,5 +1,5 @@
 import { CardType, Location, Players } from '../../../Constants.js';
-import { lookAt, selectCard } from '../../../GameActions/GameActions.js';
+import { lookAt } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HirumaPathfinder extends DrawCard {
@@ -10,7 +10,7 @@ export default class HirumaPathfinder extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(selectCard({
+            .selectCard({
                 activePromptTitle: 'Choose a province to look at',
                 cardType: CardType.Province,
                 location: Location.Provinces,
@@ -19,7 +19,7 @@ export default class HirumaPathfinder extends DrawCard {
                     message: '{0} sees {1} in {2}',
                     messageArgs: (cards) => [context.source, cards[0], cards[0].location]
                 }))
-            }))
+            })
             .effect('look at a province');
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel, discardFromPlay } from '../../GameActions/GameActions.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class Reprieve extends DrawCard {
@@ -11,10 +11,10 @@ class Reprieve extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter && event.card.location === Location.PlayArea &&
                                                       context.source.allowGameAction('discardFromPlay', context)
             })
-            .gameAction(cancel(context => ({
+            .cancel(context => ({
                 target: context.source,
                 replacementGameAction: discardFromPlay()
-            })))
+            }))
             .effect('prevent {1} from leaving play', context => context.event.card);
     }
 }

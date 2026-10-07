@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -11,7 +10,7 @@ class Censure extends DrawCard {
             .when({
                 onInitiateAbilityEffects: event => event.card.type === CardType.Event
             })
-            .gameAction(cancel())
+            .cancel()
             .cannotBeMirrored();
     }
 

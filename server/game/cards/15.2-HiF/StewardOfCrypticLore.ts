@@ -1,6 +1,6 @@
 import { CardType, Element, Location } from '../../Constants.js';
 import { modifyPoliticalSkill, modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, chooseAction, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 const ELEMENT = 'courteous-greeting-earth';
@@ -15,7 +15,7 @@ export default class StewardOfCrypticLore extends DrawCard {
 
         this.action('Changes the strength of the attacked province')
             .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(ELEMENT)))
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -43,7 +43,7 @@ export default class StewardOfCrypticLore extends DrawCard {
                         }
                     }
                 }))
-            })))
+            }))
             .effect('change the province strength of an attacked province');
     }
 

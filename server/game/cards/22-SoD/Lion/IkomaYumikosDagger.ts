@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import { cancel, discardFromPlay, injure, multiple } from '../../../GameActions/GameActions.js';
+import { discardFromPlay, injure, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IkomaYumikosDagger extends DrawCard {
@@ -11,10 +11,10 @@ export default class IkomaYumikosDagger extends DrawCard {
                 onDiscardFavor: (event, context) => event.player === context.player &&
                     context.source.allowGameAction('discardFromPlay', context)
             })
-            .gameAction(cancel(context => ({
+            .cancel(context => ({
                 target: context.source,
                 replacementGameAction: discardFromPlay()
-            })))
+            }))
             .effect('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
 
         this.conflictAction('Injure a character')

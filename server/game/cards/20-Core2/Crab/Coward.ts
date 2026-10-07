@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import { dishonor, selectCard } from '../../../GameActions/GameActions.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Coward extends DrawCard {
@@ -7,7 +7,7 @@ export default class Coward extends DrawCard {
 
     public setupCardAbilities() {
         this.duelChallenge('Dishonor a character')
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 cardType: CardType.Character,
                 controller: Players.Any,
@@ -28,7 +28,7 @@ export default class Coward extends DrawCard {
                 message: '{0} dishonors {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: dishonor()
-            })))
+            }))
             .effect('dishonor a duel challenger');
 
         this.reaction('Dishonor a character')

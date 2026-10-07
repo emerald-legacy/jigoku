@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import { modifyProvinceStrengthMultiplier } from '../../effects.js';
-import { cardLastingEffect, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { isEnumValue } from '../../utils/helpers.js';
 
 class SpecializedDefenses extends DrawCard {
@@ -9,7 +9,7 @@ class SpecializedDefenses extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Double province strength')
-            .gameAction(selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -27,7 +27,7 @@ class SpecializedDefenses extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrengthMultiplier(2)
                 })
-            })))
+            }))
             .effect('double the province strength of an attacked province');
     }
 }

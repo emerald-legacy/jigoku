@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel, discardCard, draw, handler, sequentialContext } from '../../GameActions/GameActions.js';
+import { discardCard, draw, handler, sequentialContext } from '../../GameActions/GameActions.js';
 import { Phases } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
@@ -17,7 +17,7 @@ class Subterfuge extends DrawCard {
                     );
                 }
             })
-            .gameAction(cancel((context) => ({
+            .cancel((context) => ({
                 replacementGameAction: sequentialContext(() => {
                     const eventAmount = context.event.amount ?? 0;
                     const discardAmount = Math.min(eventAmount, 3);
@@ -52,7 +52,7 @@ class Subterfuge extends DrawCard {
                         ]
                     };
                 })
-            })))
+            }))
             .effect('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
                 const amount = context.event.amount ?? 0;
                 return [

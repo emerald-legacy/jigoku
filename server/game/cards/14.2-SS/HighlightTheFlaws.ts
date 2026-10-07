@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class HighlightTheFlaws extends DrawCard {
@@ -10,7 +9,7 @@ class HighlightTheFlaws extends DrawCard {
             .when({
                 onInitiateAbilityEffects: event => event.card.type === CardType.Province
             })
-            .gameAction(cancel())
+            .cancel()
             .effect('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }

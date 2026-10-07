@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { changeType, setBaseGlory, setBaseMilitarySkill, setBasePoliticalSkill } from '../../effects.js';
-import { cardLastingEffect, detach, multiple, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, detach, multiple } from '../../GameActions/GameActions.js';
 
 import { CardType, Duration } from '../../Constants.js';
 
@@ -9,7 +9,7 @@ class TogashiHoshi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Turn attachment into character')
-            .gameAction(selectCard({
+            .selectCard({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player,
                 subActionProperties: (card) => ({
@@ -26,7 +26,7 @@ class TogashiHoshi extends DrawCard {
                     detach(),
                     cardLastingEffect({ duration: Duration.Custom })
                 ])
-            }));
+            });
     }
 }
 

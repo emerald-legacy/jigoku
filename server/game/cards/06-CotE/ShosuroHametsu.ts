@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class ShosuroHametsu extends DrawCard {
     static id = 'shosuro-hametsu';
@@ -9,12 +9,12 @@ class ShosuroHametsu extends DrawCard {
     setupCardAbilities() {
         this.action('Search conflict deck for a poison card')
             .cost(AbilityDsl.costs.payHonor(1))
-            .gameAction(deckSearch({
+            .deckSearch({
                 cardCondition: card => card.hasTrait('poison'),
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
+            })
             .effect('search conflict deck to reveal a poison card and add it to their hand');
     }
 }
