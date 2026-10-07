@@ -144,10 +144,12 @@ interface AbilityDraft {
     then?: (context: AbilityContext) => ThenAbilityProperties | undefined;
     /** From `onResolve()`: runs when the ability starts resolving its effects. */
     onResolve?: (context: AbilityContext) => void;
-    /** The next step, from `then()` or `thenIf()`. */
+    /** The next step, from `then()`, `thenIf()`, `afterwards()` or `afterwardsIf()`. */
     thenStep?: AbilityDraft;
-    /** A step's own condition, from `thenIf()`, read with the context of the step before. */
+    /** A step's own condition, from `thenIf()` or `afterwardsIf()`, read with the context of the step before. */
     thenCondition?: (context: AbilityContext) => boolean;
+    /** From `afterwards()`/`afterwardsIf()`: the step follows whether or not the step before resolved in full. */
+    afterwards?: boolean;
     message?: (context: AbilityContext) => MessageArgs | undefined;
     isStep?: boolean;
     /** From `onAffinity()`: the game actions resolve only with this affinity. */
@@ -855,10 +857,24 @@ export class AbilityBuilder<
         return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(this.#step());
     }
 
-    /** "Then, …" even when this step didn't resolve in full: the next step follows in any case. */
-    thenAlways(): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
+    /**
+     * A next step read after this one, without "then" on the card ("… now at home"): it follows
+     * whether or not this step resolved in full.
+     */
+    afterwards(): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
         const step = this.#step();
-        step.thenCondition = () => true;
+        step.afterwards = true;
+        return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(step);
+    }
+
+    /**
+     * "If …", read after this step, without "then" on the card ("If it is now in a province …"):
+     * the next step follows when `condition` holds, whether or not this step resolved in full.
+     */
+    afterwardsIf(condition: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
+        const step = this.#step();
+        step.afterwards = true;
+        step.thenCondition = this.#checked(condition, this.draft.specs);
         return new AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL>(step);
     }
 
@@ -926,7 +942,7 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** "Then, if …": the next step, when `condition` holds once this step resolved. */
+    /** "Then, if …": the next step, when this step resolved in full and `condition` holds. */
     thenIf(condition: (context: BuilderContext<Base, TG, RG, CO, TK>) => boolean): AbilityBuilder<StepContext<Base>, TG, RG, CO, TK, SL> {
         const step = this.#step();
         step.thenCondition = this.#checked(condition, this.draft.specs);
@@ -1202,7 +1218,7 @@ function thenProperties(draft: AbilityDraft): { then?: ThenAbilityProperties | (
     };
 }
 
-/** A step from `then()` or `thenIf()`, built once. */
+/** A step from `then()`, `thenIf()`, `afterwards()` or `afterwardsIf()`, built once. */
 function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     const step = withBranches(draft);
     if(step.effect !== undefined) {
@@ -1213,7 +1229,6 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     if(abilityOnly.length > 0) {
         throw new Error(`${step.title}: ${abilityOnly.join(', ')} belong to the ability, before then()`);
     }
-    const condition = step.thenCondition;
     return {
         inheritTargets: true,
         ...targetProperties(step.targets),
@@ -1221,13 +1236,29 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
         ...gameActionProperties(step),
         ...(step.handler ? { handler: step.handler } : {}),
         ...(step.message ? { message: step.message } : {}),
-        // on the event path the condition gets each event, whose context is the step before
-        ...(condition ? { thenCondition: (contextOrEvent: AbilityContext | Event) => {
-            const context = contextOrEvent instanceof Event ? contextOrEvent.context : contextOrEvent;
-            return !!context && condition(context);
-        } } : {}),
+        ...stepCondition(step),
         ...thenProperties(step)
     };
+}
+
+/**
+ * When a step follows. `then()`: the engine's default, every event of the step before resolved in full.
+ * `thenIf()`: that, and its condition. `afterwards()`/`afterwardsIf()`: only the condition, also when the step
+ * before raised no events. On the event path the condition gets each event, whose context is the step before.
+ */
+function stepCondition(step: AbilityDraft): Pick<ThenAbilityProperties, 'thenCondition'> {
+    const condition = step.thenCondition;
+    if(step.afterwards) {
+        return { thenCondition: (contextOrEvent: AbilityContext | Event) => {
+            const context = contextOrEvent instanceof Event ? contextOrEvent.context : contextOrEvent;
+            return !!context && (!condition || condition(context));
+        } };
+    }
+    if(!condition) {
+        return {};
+    }
+    return { thenCondition: (contextOrEvent: AbilityContext | Event) =>
+        contextOrEvent instanceof Event && contextOrEvent.isFullyResolved() && !!contextOrEvent.context && condition(contextOrEvent.context) };
 }
 
 export function actionProperties<S extends BaseCard>(draft: AbilityDraft): ActionProps<S> {

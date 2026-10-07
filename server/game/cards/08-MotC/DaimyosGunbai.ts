@@ -19,7 +19,7 @@ class DaimyosGunbai extends DrawCard {
                 })
             }))
             .location(Location.Hand)
-            .thenAlways()
+            .afterwards()
             .gameAction(discardCard((context) => ({ target: context.source.location === Location.Hand ? context.source : [] })))
             .message((context) => context.source.location === Location.Hand ? msg`${context.player} discards ${context.source}` : undefined);
     }

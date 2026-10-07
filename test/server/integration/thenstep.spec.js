@@ -59,7 +59,7 @@ describe('then step context', function() {
     });
 });
 
-describe('thenAlways() and onResolve() in the ability builder', function() {
+describe('afterwards(), thenIf() and onResolve() in the ability builder', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -71,12 +71,45 @@ describe('thenAlways() and onResolve() in the ability builder', function() {
             this.context = this.game.getFrameworkContext(this.player1.player);
             this.draft = createDraft('Test', () => true);
             this.builder = new AbilityBuilder(this.draft);
+            this.resolvedEvent = () => {
+                const event = this.game.getEvent('onTestEvent', { context: this.context }, () => true);
+                event.resolved = true;
+                return event;
+            };
+            this.cancelledEvent = () => {
+                const event = this.game.getEvent('onTestEvent', { context: this.context }, () => true);
+                event.cancel();
+                return event;
+            };
         });
 
-        it('makes a step that follows whether or not the step before resolved', function() {
-            this.builder.draw(1).thenAlways().gainHonor(1);
+        it('afterwards(): the step follows whether or not the step before resolved', function() {
+            this.builder.draw(1).afterwards().gainHonor(1);
+            const condition = actionProperties(this.draft).then.thenCondition;
+
+            expect(condition(this.context)).toBe(true);
+            expect(condition(this.cancelledEvent())).toBe(true);
+        });
+
+        it('afterwardsIf(): only the condition decides', function() {
+            this.builder.draw(1).afterwardsIf(() => true).gainHonor(1);
 
             expect(actionProperties(this.draft).then.thenCondition(this.context)).toBe(true);
+        });
+
+        it('thenIf(): the step before must have resolved in full, and the condition hold', function() {
+            this.builder.draw(1).thenIf(() => true).gainHonor(1);
+            const condition = actionProperties(this.draft).then.thenCondition;
+
+            expect(condition(this.context)).toBe(false);
+            expect(condition(this.cancelledEvent())).toBe(false);
+            expect(condition(this.resolvedEvent())).toBe(true);
+        });
+
+        it('thenIf(): a condition that fails stops the step', function() {
+            this.builder.draw(1).thenIf(() => false).gainHonor(1);
+
+            expect(actionProperties(this.draft).then.thenCondition(this.resolvedEvent())).toBe(false);
         });
 
         it('runs the hook when the ability starts resolving, then hands over the next step', function() {

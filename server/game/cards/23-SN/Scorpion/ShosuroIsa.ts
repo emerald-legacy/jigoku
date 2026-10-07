@@ -22,7 +22,7 @@ export default class ShosuroIsa extends DrawCard {
                 cardCondition: (card) => !card.isUnique()
             }, putIntoPlay())
             .effect('manifest a shadow of {0}')
-            .thenIf((context) => context.target.location === Location.PlayArea)
+            .afterwardsIf((context) => context.target.location === Location.PlayArea)
             .gameAction(
                 cardLastingEffect((context) => ({
                     target: context.target,

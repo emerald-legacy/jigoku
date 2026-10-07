@@ -24,7 +24,7 @@ class Aranat extends DrawCard {
                 gameAction: reveal()
             }))
             .effect('give {1} the opportunity to reveal provinces', (context) => context.player.opponent ?? '')
-            .thenAlways()
+            .afterwards()
             .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))
             .message((context) => {
                 const facedown = context.player.getNumberOfOpponentsFacedownProvinces();

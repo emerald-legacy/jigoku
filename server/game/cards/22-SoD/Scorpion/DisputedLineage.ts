@@ -27,7 +27,7 @@ export default class DisputedLineage extends DrawCard {
                 }))
             ]))
             .effect('remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict', (context) => context.player.opponent ? [context.player.opponent] : [])
-            .thenIf((context) => context.player.imperialFavor !== '')
+            .afterwardsIf((context) => context.player.imperialFavor !== '')
             .draw(1)
             .message((context) => msg`${context.player} draws a card`);
     }

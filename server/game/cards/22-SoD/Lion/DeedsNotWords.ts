@@ -38,7 +38,7 @@ export default class DeedsNotWords extends DrawCard {
                 }))
             ]))
             .effect('give {0} +2{1}', () => ['military'])
-            .thenIf((context) => context.player.imperialFavor !== '')
+            .afterwardsIf((context) => context.player.imperialFavor !== '')
             .select({}, {
                 'Discard the Imperial Favor': joint([
                     loseImperialFavor((context) => ({ target: context.player })),

@@ -43,7 +43,7 @@ export default class MirumotoRikitaro extends DrawCard {
                 cardCondition: (card, context) => !!(card.hasSomeTrait('item', 'weapon', 'armor') && card.parentCharacter && context.player.opponent && card.parentCharacter.isParticipatingFor(context.player.opponent)),
                 cardType: CardType.Attachment
             }, discardFromPlay())
-            .thenIf((context) => context.target.hasTrait('weapon'))
+            .afterwardsIf((context) => context.target.hasTrait('weapon'))
             .cardLastingEffect({ effect: modifyMilitarySkill(2) })
             .message((context) => msg`${context.source} gains +2${'military'} due to discarding a weapon`);
     }

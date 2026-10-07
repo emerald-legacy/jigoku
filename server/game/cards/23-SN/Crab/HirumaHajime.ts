@@ -8,7 +8,7 @@ export default class HirumaHajime extends DrawCard {
 
     setupCardAbilities() {
         moveCardInProvinceAction(this)
-            .thenIf((context) => context.targets.province.isConflictProvince() &&
+            .afterwardsIf((context) => context.targets.province.isConflictProvince() &&
                 context.targets.cardInProvince.type !== CardType.Attachment &&
                 context.targets.cardInProvince.isFaceup())
             .gameAction(optional((context) => ({

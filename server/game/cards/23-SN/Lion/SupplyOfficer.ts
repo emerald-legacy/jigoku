@@ -28,7 +28,7 @@ export default class SupplyOfficer extends DrawCard {
                 ])
             ]))
             .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`)
-            .thenIf((context) => !context.targets.characterInConflict.isParticipating())
+            .afterwardsIf((context) => !context.targets.characterInConflict.isParticipating())
             .ready((context) => ({ target: context.targets.characterInConflict }))
             .message((context) => msg`${context.targets.characterInConflict} is readied`);
     }
