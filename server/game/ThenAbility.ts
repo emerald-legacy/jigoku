@@ -12,6 +12,8 @@ import type { EffectArg, OwnContextCallback } from './Interfaces.js';
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
     gameAction?: DeclaredGameAction<C> | DeclaredGameAction<C>[];
     handler?: OwnContextCallback<[context: C], void>;
+    /** Runs when the ability starts resolving, before its handler or game actions. */
+    onResolve?: OwnContextCallback<[context: C], void>;
     then?: ThenAbilityProperties | OwnContextCallback<[context: C], ThenAbilityProperties | undefined>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: C | Event): boolean;
@@ -96,6 +98,7 @@ class ThenAbility extends BaseCardAbility {
     }
 
     executeHandler(context: AbilityContext): void {
+        this.properties.onResolve?.(context);
         this.handler(context);
         this.game.queueSimpleStep(() => this.game.checkGameState());
     }

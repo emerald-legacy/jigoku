@@ -1100,7 +1100,6 @@ function checkHandler(draft: AbilityDraft): void {
     const skipped = [
         draft.gameActions.length > 0 && (draft.branch ? 'if()' : 'game actions'),
         draft.affinity && 'onAffinity()',
-        draft.onResolve && 'onResolve()',
         (draft.thenStep || draft.then) && 'a following step or resolving again'
     ].filter(Boolean);
     if(skipped.length > 0) {
@@ -1116,6 +1115,7 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.costs.length > 0 ? { cost: draft.costs } : {}),
         ...gameActionProperties(draft),
         ...(draft.handler ? { handler: draft.handler } : {}),
+        ...(draft.onResolve ? { onResolve: draft.onResolve } : {}),
         ...(draft.effect !== undefined ? { effect: draft.effect } : {}),
         ...(draft.effectArgs ? { effectArgs: draft.effectArgs } : {}),
         ...(draft.limit ? { limit: draft.limit } : {}),
@@ -1220,19 +1220,10 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
     })] };
 }
 
-/** The next step; with `onResolve()`, a callback that runs it first, when the ability starts resolving. */
+/** The next step. */
 function thenProperties(draft: AbilityDraft): { then?: ThenAbilityProperties | ((context: AbilityContext) => ThenAbilityProperties | undefined) } {
     const next = draft.thenStep ? stepProperties(draft.thenStep) : draft.then;
-    const hook = draft.onResolve;
-    if(!hook) {
-        return next ? { then: next } : {};
-    }
-    return {
-        then: (context) => {
-            hook(context);
-            return typeof next === 'function' ? next(context) : next;
-        }
-    };
+    return next ? { then: next } : {};
 }
 
 /** A step from `then()`, `thenIf()`, `afterwards()` or `afterwardsIf()`, built once. */
@@ -1253,6 +1244,7 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
         ...(step.costs.length > 0 ? { cost: step.costs } : {}),
         ...gameActionProperties(step),
         ...(step.handler ? { handler: step.handler } : {}),
+        ...(step.onResolve ? { onResolve: step.onResolve } : {}),
         ...(step.message ? { message: step.message } : {}),
         ...stepCondition(step),
         ...thenProperties(step)

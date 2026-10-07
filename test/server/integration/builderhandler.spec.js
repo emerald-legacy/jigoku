@@ -20,7 +20,6 @@ describe('handler() in the ability builder', function() {
                 'game actions': (builder) => builder.draw(1),
                 'if()': (builder) => builder.if(() => true).draw(1),
                 'onAffinity()': (builder) => builder.onAffinity('air').draw(1),
-                'onResolve()': (builder) => builder.onResolve(() => undefined),
                 'a following step or resolving again': (builder) => builder.then().draw(1)
             };
             for(const [skipped, add] of Object.entries(skips)) {

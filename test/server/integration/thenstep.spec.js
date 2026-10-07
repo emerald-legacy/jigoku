@@ -1,5 +1,6 @@
 import ThenAbility from '../../../build/server/game/ThenAbility.js';
 import { AbilityBuilder, actionProperties, createDraft } from '../../../build/server/game/AbilityBuilder.js';
+import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('then step context', function() {
     integration(function() {
@@ -112,14 +113,22 @@ describe('afterwards(), thenIf() and onResolve() in the ability builder', functi
             expect(actionProperties(this.draft).then.thenCondition(this.resolvedEvent())).toBe(false);
         });
 
-        it('runs the hook when the ability starts resolving, then hands over the next step', function() {
+        it('onResolve(): runs when the ability starts resolving, before a handler too', function() {
             const calls = [];
-            this.builder.draw(1).onResolve(() => calls.push('hook')).then().gainHonor(1);
+            this.builder.onResolve(() => calls.push('hook')).handler(() => calls.push('handler'));
+            const ability = new ThenAbility(this.player1.findCardByName('doji-whisperer'), actionProperties(this.draft));
 
-            const then = actionProperties(this.draft).then;
-            const step = then(this.context);
-            expect(calls).toEqual(['hook']);
-            expect(step.inheritTargets).toBe(true);
+            ability.executeHandler(this.context);
+            expect(calls).toEqual(['hook', 'handler']);
+        });
+
+        it('onResolve(): not run when the ability is only checked for legality', function() {
+            const calls = [];
+            this.builder.gameAction(bow({ target: [], optional: true })).onResolve(() => calls.push('hook')).then().gainHonor(1);
+            const ability = new ThenAbility(this.player1.findCardByName('doji-whisperer'), actionProperties(this.draft));
+
+            expect(ability.checkGameActionsForPotential(this.context)).toBe(true);
+            expect(calls).toEqual([]);
         });
     });
 });
