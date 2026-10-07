@@ -1,5 +1,5 @@
 import { ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { switchConflictType } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Change the conflict to military', { conflictType: ConflictType.Political })
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .condition((context) => {
                 const conflict = this.game.currentConflict;
                 if(!conflict) {

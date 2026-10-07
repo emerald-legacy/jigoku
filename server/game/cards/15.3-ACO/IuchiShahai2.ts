@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { addKeyword } from '../../effects.js';
 
 class IuchiShahai2 extends DrawCard {
@@ -15,7 +15,7 @@ class IuchiShahai2 extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => (event.card.hasTrait('meishodo') || event.card.hasTrait('maho')) && event.player === context.player
             })
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .placeFate();
     }
 }

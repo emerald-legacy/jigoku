@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -18,7 +18,7 @@ class SpoilsOfWar extends DrawCard {
                 chosenDiscard(context => ({ target: context.player }))
             ]))
             .effect('draw 3 cards, then discard 1')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

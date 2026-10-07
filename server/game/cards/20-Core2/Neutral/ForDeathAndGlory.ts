@@ -1,5 +1,5 @@
 import { CardType, Players, Duration, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, multiple, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -56,6 +56,6 @@ export default class ForDeathAndGlory extends DrawCard {
                     ', sacrificing them at the end of the conflict'
                 ];
             })
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

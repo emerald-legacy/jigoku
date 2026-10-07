@@ -1,7 +1,7 @@
 import { Location } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 export default class ShiroGisu extends StrongholdCard {
@@ -9,7 +9,7 @@ export default class ShiroGisu extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Draw a card')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => !!(this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0))
             .deckSearch({
                 amount: (context) => this.getCharactersWithoutFate(context),

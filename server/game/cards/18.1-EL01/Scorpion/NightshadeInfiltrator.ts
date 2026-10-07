@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -9,7 +9,7 @@ class NightshadeInfiltrator extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Give a character -3/-3')
-            .cost(AbilityDsl.costs.dishonorSelf())
+            .cost(costs.dishonorSelf())
             .target({
                 player: Players.Self,
                 cardType: CardType.Character,

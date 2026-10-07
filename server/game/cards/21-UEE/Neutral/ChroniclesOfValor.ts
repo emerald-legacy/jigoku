@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ChroniclesOfValor extends DrawCard {
@@ -13,6 +13,6 @@ export default class ChroniclesOfValor extends DrawCard {
             .takeHonor((context) => ({
                 amount: context.player.isCharacterTraitInPlay('storyteller') ? 2 : 1
             }))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

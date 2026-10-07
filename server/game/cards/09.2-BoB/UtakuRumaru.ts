@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyGlory } from '../../effects.js';
 import { honor } from '../../GameActions/GameActions.js';
 
@@ -24,7 +24,7 @@ class UtakuRumaru extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
             })
-            .cost(AbilityDsl.costs.discardCard({
+            .cost(costs.discardCard({
                 location: Location.Hand
             }))
             .target({

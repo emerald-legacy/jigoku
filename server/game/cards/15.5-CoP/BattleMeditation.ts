@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class BattleMeditation extends DrawCard {
@@ -14,7 +14,7 @@ class BattleMeditation extends DrawCard {
             .gameAction(draw({
                 amount: 3
             }))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

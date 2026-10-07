@@ -1,6 +1,5 @@
 import { Phases, EffectName } from '../Constants.js';
-import { initiateConflict } from '../GameActions/GameActions.js';
-import AbilityDsl from '../abilitydsl.js';
+import { claimImperialFavor, initiateConflict, performGloryCount } from '../GameActions/GameActions.js';
 import { Conflict } from '../Conflict.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
@@ -75,11 +74,10 @@ export class ConflictPhase extends Phase {
     }
 
     claimImperialFavor() {
-        AbilityDsl.actions
-            .performGloryCount({
-                gameAction: (winner: Player | null) =>
-                    winner ? AbilityDsl.actions.claimImperialFavor({ target: winner }) : null
-            })
+        performGloryCount({
+            gameAction: (winner: Player | null) =>
+                winner ? claimImperialFavor({ target: winner }) : null
+        })
             .resolve(undefined, this.game.getFrameworkContext());
     }
 }

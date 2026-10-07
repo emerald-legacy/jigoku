@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { discardFromPlay, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,7 +15,7 @@ export default class BrokenBlades extends DrawCard {
                     event.conflict.winner === context.player &&
                     event.conflict.conflictType === ConflictType.Military
             })
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('berserker')
             }))
@@ -35,6 +36,6 @@ export default class BrokenBlades extends DrawCard {
                     ? []
                     : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
             })
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

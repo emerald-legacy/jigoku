@@ -1,6 +1,6 @@
 import { CardType, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { bow } from '../../GameActions/GameActions.js';
 
 export default class ShizukaToshi extends StrongholdCard {
@@ -8,7 +8,7 @@ export default class ShizukaToshi extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .target({
                 cardType: CardType.Character,

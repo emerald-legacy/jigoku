@@ -1,6 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { handler } from '../../../GameActions/GameActions.js';
 
@@ -24,8 +24,8 @@ export default class MiokosSong extends StrongholdCard {
                     event.player === context.player &&
                     event.card.type === CardType.Character
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .cost(AbilityDsl.costs.dishonor({ cardCondition: (card, context) => card === context.event.card }))
+            .cost(costs.bowSelf())
+            .cost(costs.dishonor({ cardCondition: (card, context) => card === context.event.card }))
             .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,

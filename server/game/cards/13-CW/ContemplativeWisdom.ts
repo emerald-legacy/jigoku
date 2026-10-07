@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainAbility, gainAllAbilities } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType } from '../../Constants.js';
@@ -12,7 +12,7 @@ export default class ContemplativeWisdom extends DrawCard {
             effect: gainAbility(AbilityType.Action, {
                 title: 'Give all abilities to another character',
 
-                cost: AbilityDsl.costs.returnRings(1),
+                cost: costs.returnRings(1),
                 target: {
                     cardType: CardType.Character,
                     cardCondition: card => card.isParticipating(),

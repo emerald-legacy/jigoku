@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
 
 export default class InquisitorsGrove extends StrongholdCard {
@@ -8,7 +8,7 @@ export default class InquisitorsGrove extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Attacker moves a character home')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => context.player.honor >= 9 && context.player.isDefendingPlayer())
             .target({
                 cardType: CardType.Character,

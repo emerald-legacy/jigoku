@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { discardStatusToken, multipleContext, selectToken } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType } from '../../Constants.js';
 import { countTargetable } from '../countTargetable.js';
@@ -11,7 +11,7 @@ class ImbuedWithShadows extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lose honor to discard status tokens')
-            .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
+            .cost(costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => context.costs.variableHonorCost || this.getNumberOfLegalTargets(context),

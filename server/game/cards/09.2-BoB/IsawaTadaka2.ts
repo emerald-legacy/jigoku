@@ -1,5 +1,5 @@
 import { CardType, Location, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cardMenu, discardCard, lookAt, multipleContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
@@ -9,7 +9,7 @@ export default class IsawaTadaka2 extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Remove discarded characters to discard a card')
-            .cost(AbilityDsl.costs.removeFromGame({
+            .cost(costs.removeFromGame({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 mode: TargetMode.Unlimited

@@ -1,7 +1,8 @@
 import { CardType, Players, Location } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { gainPlayAction } from '../../../effects.js';
 import { cardLastingEffect, playCard, sequential, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -31,7 +32,7 @@ export default class ToSowTheEarth extends DrawCard {
             .effect('play {0} from their discard pile');
 
         this.action('Place a province facedown')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardCondition: (card) => card.hasTrait('peasant')
             }))
             .target({
@@ -40,6 +41,6 @@ export default class ToSowTheEarth extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card) => card.isBroken === false
             }, turnFacedown())
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

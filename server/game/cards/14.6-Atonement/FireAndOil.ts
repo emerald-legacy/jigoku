@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainAbility } from '../../effects.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType } from '../../Constants.js';
@@ -15,7 +15,7 @@ export default class FireAndOil extends DrawCard {
                 condition: (context) =>
                     !!context.game.currentConflict &&
                     context.game.currentConflict.getConflictProvinces().some(a => a.controller === context.player),
-                cost: AbilityDsl.costs.payHonor(1),
+                cost: costs.payHonor(1),
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card) => card.isAttacking(),

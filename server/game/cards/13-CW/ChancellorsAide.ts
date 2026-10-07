@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { chosenDiscard } from '../../GameActions/GameActions.js';
 import { Players } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
@@ -12,7 +12,7 @@ class ChancellorsAide extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalHonorTransferFromOpponentCost())
             .selectFrom({
                 name: 'myPlayer',
                 targets: true

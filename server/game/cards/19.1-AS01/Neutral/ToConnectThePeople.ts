@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { gainPlayAction } from '../../../effects.js';
 import { cardLastingEffect, discardCard, playCard, selectCard, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
@@ -41,7 +41,7 @@ export default class ToConnectThePeople extends DrawCard {
                 })
             ]))
             .effect((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 
     private topThreeCards(context: AbilityContext) {

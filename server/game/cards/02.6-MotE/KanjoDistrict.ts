@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { bow, sendHome } from '../../GameActions/GameActions.js';
 
 class KanjoDistrict extends DrawCard {
@@ -8,7 +8,7 @@ class KanjoDistrict extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow and send home a participating character')
-            .cost(AbilityDsl.costs.discardImperialFavor())
+            .cost(costs.discardImperialFavor())
             .target({
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()

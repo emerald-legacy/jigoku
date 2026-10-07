@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 
 class WholenessOfTheWorld extends DrawCard {
     static id = 'wholeness-of-the-world';
@@ -11,7 +11,7 @@ class WholenessOfTheWorld extends DrawCard {
             })
             .cancel()
             .effect('prevent {1} from returning to the unclaimed pool', context => context.event.ring)
-            .max(AbilityDsl.limit.perRound(1))
+            .max(perRound(1))
             .cannotBeMirrored();
     }
 }

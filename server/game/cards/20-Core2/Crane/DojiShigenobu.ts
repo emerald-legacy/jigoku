@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { bow, menuPrompt, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class DojiShigenobu extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Bow a character')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))

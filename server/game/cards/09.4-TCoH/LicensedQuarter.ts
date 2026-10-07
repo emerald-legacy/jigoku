@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { discardCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
@@ -15,7 +15,7 @@ class LicensedQuarter extends DrawCard {
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })))
             .effect((context) => msg`discard the top card of ${context.player.opponent}'s conflict deck`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

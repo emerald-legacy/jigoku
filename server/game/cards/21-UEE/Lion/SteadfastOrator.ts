@@ -1,5 +1,6 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SteadfastOrator extends DrawCard {
@@ -11,12 +12,12 @@ export default class SteadfastOrator extends DrawCard {
                 onSendHome: (event, context) =>
                     event.card.type === CardType.Character && event.card.controller === context.player
             })
-            .cost(AbilityDsl.costs.chooseOne({
-                'Discard a card from your hand': AbilityDsl.costs.discardCard(),
-                'Discard the Imperial Favor': AbilityDsl.costs.discardImperialFavor()
+            .cost(costs.chooseOne({
+                'Discard a card from your hand': costs.discardCard(),
+                'Discard the Imperial Favor': costs.discardImperialFavor()
             }))
             .cannotBeMirrored()
             .moveToConflict((context) => ({ target: context.event.card }))
-            .limit(AbilityDsl.limit.perRound(1));
+            .limit(perRound(1));
     }
 }

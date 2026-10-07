@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { gainHonor } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
@@ -15,7 +15,7 @@ class HallOfVictories extends DrawCard {
                 target: context.game.currentConflict?.winner ?? undefined
             })))
             .effect((context) => msg`make ${context.game.currentConflict?.winner?.name ?? ''} gain 1 honor`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

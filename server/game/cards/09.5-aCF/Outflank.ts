@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { cannotBeDeclaredAsDefender } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -20,7 +20,7 @@ class Outflank extends DrawCard {
                 effect: cannotBeDeclaredAsDefender()
             }))
             .effect('prevent {0} from declaring as a defender this conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { bow } from '../../GameActions/GameActions.js';
 
 export default class KyudenIkoma extends StrongholdCard {
@@ -14,7 +14,7 @@ export default class KyudenIkoma extends StrongholdCard {
                     event.conflict.defendingPlayer !== context.player &&
                     event.conflict.getAttackers().length !== 0
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.hasTrait('champion'),

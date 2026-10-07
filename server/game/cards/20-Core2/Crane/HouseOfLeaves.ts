@@ -1,6 +1,6 @@
 import { CardType, Duration, Phases, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyGlory } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ export default class HouseOfLeaves extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Bow this stronghold')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating(),

@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import {
     chooseAction,
     dishonor,
@@ -59,6 +59,6 @@ export default class ChroniclerOfCalamities extends DrawCard {
                 }
             })))
             .effect('dishonor or send home {0}')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

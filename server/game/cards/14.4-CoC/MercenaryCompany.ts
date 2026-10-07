@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { takeControl } from '../../effects.js';
 import { handler, loseFate, placeFate } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
@@ -31,10 +31,10 @@ class MercenaryCompany extends DrawCard {
                                 handler: () => {
                                     placeFate({ origin: opponent }).resolve(source, context);
                                     context.game.queueSimpleStep(() => {
-                                        context.source.lastingEffect(() => ({
+                                        context.source.lastingEffect({
                                             duration: Duration.Custom,
                                             effect: takeControl(opponent)
-                                        }));
+                                        });
                                         this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
                                     });
                                 }
@@ -50,7 +50,7 @@ class MercenaryCompany extends DrawCard {
                 }
             }))
             .effect((context) => msg`let ${context.player.opponent} hire their services`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 
 }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
 import { cancel, moveCard, multiple } from '../../../GameActions/GameActions.js';
 import { AbilityType, CardType, Location } from '../../../Constants.js';
@@ -40,7 +40,7 @@ export default class ShibasOath extends DrawCard {
                                 !card.hasTrait('bushi')
                         )
                 },
-                cost: AbilityDsl.costs.sacrificeSelf(),
+                cost: costs.sacrificeSelf(),
                 gameAction: multiple([
                     cancel(),
                     moveCard({

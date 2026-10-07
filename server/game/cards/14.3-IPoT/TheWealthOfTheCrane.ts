@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perPhase } from '../../AbilityLimit.js';
 import { reduceCost } from '../../effects.js';
 import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -24,7 +24,7 @@ class TheWealthOfTheCrane extends DrawCard {
             .condition((context) => context.player.dynastyDeck.length > 0)
             .handler((context) => placeInProvinces(context, context.player.dynastyDeck.slice(0, 10)))
             .effect('look at the top ten cards of their dynasty deck')
-            .max(AbilityDsl.limit.perPhase(1));
+            .max(perPhase(1));
     }
 }
 

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -9,7 +9,7 @@ class SpreadingTheDarkness extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +4/+0')
-            .cost(AbilityDsl.costs.payHonor(2))
+            .cost(costs.payHonor(2))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

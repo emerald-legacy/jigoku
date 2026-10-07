@@ -1,5 +1,5 @@
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -12,7 +12,7 @@ export default class ABadDeath extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && !!context.player.opponent
             })
-            .cost(AbilityDsl.costs.dishonorAndSacrifice({
+            .cost(costs.dishonorAndSacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))

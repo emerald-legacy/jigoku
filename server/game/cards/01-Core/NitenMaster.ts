@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 
 class NitenMaster extends DrawCard {
     static id = 'niten-master';
@@ -14,7 +14,7 @@ class NitenMaster extends DrawCard {
                 )
             })
             .ready()
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 }
 

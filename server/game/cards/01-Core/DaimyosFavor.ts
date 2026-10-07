@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { fixed } from '../../AbilityLimit.js';
 import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
@@ -12,7 +13,7 @@ class DaimyosFavor extends DrawCard {
         });
 
         this.action('Bow to reduce attachment cost')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
@@ -20,7 +21,7 @@ class DaimyosFavor extends DrawCard {
                     amount: 1,
                     cardType: CardType.Attachment,
                     targetCondition: target => target === context.source.parentCharacter,
-                    limit: AbilityDsl.limit.fixed(1)
+                    limit: fixed(1)
                 })
             }))
             .effect('reduce the cost of the next attachment they play on {1} by 1', context => context.source.parentCharacter);

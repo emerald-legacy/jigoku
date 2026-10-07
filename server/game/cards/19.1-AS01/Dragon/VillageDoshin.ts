@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { cancel, chooseAction, conditional, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -20,7 +20,7 @@ export default class VillageDoshin extends DrawCard {
                         return attachment && onCharacterYouControl && inPlay;
                     })
             })
-            .cost(AbilityDsl.costs.discardSelf())
+            .cost(costs.discardSelf())
             .gameAction(conditional((context) => ({
                 condition: () => {
                     const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;

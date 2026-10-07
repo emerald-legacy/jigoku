@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
@@ -15,7 +15,7 @@ class SpeakToTheHeart extends DrawCard {
                 effect: modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))
             })))
             .effect('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

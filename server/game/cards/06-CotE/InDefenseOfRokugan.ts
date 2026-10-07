@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { setMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -9,7 +9,7 @@ class InDefenseOfRokugan extends DrawCard {
 
     setupCardAbilities() {
         this.action('Set an attacking character to 0 military skill')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }))

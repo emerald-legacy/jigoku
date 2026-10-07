@@ -1,5 +1,6 @@
 import { CardType, ConflictType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perGame } from '../../../AbilityLimit.js';
 import { sacrifice, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +9,7 @@ export default class OurDuty extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Make your opponent sacrifice a character')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('crab')
             }))
@@ -23,10 +24,10 @@ export default class OurDuty extends DrawCard {
                 gameAction: sacrifice()
             }))
             .effect('force {1} to sacrifice a character', (context) => context.player.opponent)
-            .max(AbilityDsl.limit.perGame(1));
+            .max(perGame(1));
 
         this.action('Move an attacker home')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }))

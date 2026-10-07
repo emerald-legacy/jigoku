@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { returnToDeck } from '../../GameActions/GameActions.js';
 
 class HidaTomonatsu extends DrawCard {
@@ -11,7 +11,7 @@ class HidaTomonatsu extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

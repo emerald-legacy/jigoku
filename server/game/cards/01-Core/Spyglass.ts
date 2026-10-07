@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class Spyglass extends DrawCard {
@@ -13,7 +13,7 @@ class Spyglass extends DrawCard {
                 onMoveToConflict: (event, context) => event.card === context.source.parentCharacter
             })
             .gameAction(draw())
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 }
 

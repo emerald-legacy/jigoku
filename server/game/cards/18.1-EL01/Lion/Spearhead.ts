@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { bow } from '../../../GameActions/GameActions.js';
 
 class Spearhead extends DrawCard {
@@ -8,7 +8,7 @@ class Spearhead extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Attachment,
                 // `parentCharacter` is null when attached to a province or ring, which does not participate.
                 cardCondition: (card, context) => !!card.parentCharacter &&

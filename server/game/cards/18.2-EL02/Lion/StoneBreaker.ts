@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { moveCardInProvinceAction } from '../../moveCardInProvince.js';
@@ -10,7 +10,7 @@ class StoneBreaker extends DrawCard {
 
     setupCardAbilities() {
         moveCardInProvinceAction(this)
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location ?? [] }));
 
         this.conflictAction('Reduce province strength')

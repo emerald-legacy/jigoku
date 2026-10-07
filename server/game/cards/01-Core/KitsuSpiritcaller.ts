@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { delayedEffect } from '../../effects.js';
 import { putIntoConflict, returnToDeck } from '../../GameActions/GameActions.js';
 import { Duration, Location, Players } from '../../Constants.js';
@@ -9,7 +9,7 @@ class KitsuSpiritcaller extends DrawCard {
 
     setupCardAbilities() {
         this.action('Resurrect a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],

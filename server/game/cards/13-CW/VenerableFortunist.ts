@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainFate } from '../../GameActions/GameActions.js';
 
 class VenerableFortunist extends DrawCard {
@@ -7,7 +7,7 @@ class VenerableFortunist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain 2 fate')
-            .cost(AbilityDsl.costs.returnRings(1, (ring, context) => (context.player.role?.getElement() ?? []).some(a => ring.hasElement(a))))
+            .cost(costs.returnRings(1, (ring, context) => (context.player.role?.getElement() ?? []).some(a => ring.hasElement(a))))
             .condition(context => !!context.player.role)
             .gameAction(gainFate({ amount: 2}))
             .effect('gain 2 fate');

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { bow } from '../../GameActions/GameActions.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class TheSpearRushesForth extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a participating character')
-            .cost(AbilityDsl.costs.discardStatusToken({
+            .cost(costs.discardStatusToken({
                 cardCondition: card => card.isHonored && card.isDrawCard() && card.isParticipating()
             }))
             .condition(() => this.game.isDuringConflict(ConflictType.Military))

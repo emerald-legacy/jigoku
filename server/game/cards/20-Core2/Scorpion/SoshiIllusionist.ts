@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { discardStatusToken, selectToken } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -8,7 +8,7 @@ export default class SoshiIllusionist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard status from character')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .target({
                 cardType: CardType.Character
             }, selectToken((context) => ({

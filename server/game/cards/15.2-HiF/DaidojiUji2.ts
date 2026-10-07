@@ -21,7 +21,7 @@ class DaidojiUji2 extends DrawCard {
                             context.player.moveCard(card, this.uuid);
                             card.controller = context.source.controller;
                             card.facedown = false;
-                            card.lastingEffect(() => ({
+                            card.lastingEffect({
                                 until: {
                                     onCardMoved: event => event.card === card && event.originalLocation === this.uuid
                                 },
@@ -29,7 +29,7 @@ class DaidojiUji2 extends DrawCard {
                                 effect: [
                                     hideWhenFaceUp()
                                 ]
-                            }));
+                            });
                         });
                     } else {
                         this.game.addMessage('{0} selects no cards', event.player);

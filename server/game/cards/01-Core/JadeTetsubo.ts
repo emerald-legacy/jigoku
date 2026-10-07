@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { removeFate } from '../../GameActions/GameActions.js';
 
 class JadeTetsubo extends DrawCard {
@@ -12,7 +12,7 @@ class JadeTetsubo extends DrawCard {
         });
 
         this.action('Return all fate from a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .target({
                 cardType: CardType.Character,

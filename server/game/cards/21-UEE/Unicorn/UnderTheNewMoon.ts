@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { defendersChosenFirstDuringConflict } from '../../../effects.js';
 import { menuPrompt, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { EventName } from '../../../Constants.js';
@@ -14,7 +14,7 @@ export default class UnderTheNewMoon extends DrawCard {
             .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player
             })
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .gameAction(menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context.event),

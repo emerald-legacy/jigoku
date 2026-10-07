@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { RingAttachment } from '../../RingAttachment.js';
 import type Ring from '../../../Ring.js';
 import { CardType, AbilityType, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { changeType, gainAbility } from '../../../effects.js';
 import {
     attachToRing,
@@ -30,7 +30,7 @@ class CraftyTsukumogami extends RingAttachment {
                         changeType(CardType.Attachment),
                         gainAbility(AbilityType.ForcedReaction, {
                             title: 'Discard a card',
-                            limit: AbilityDsl.limit.unlimitedPerConflict(),
+                            limit: unlimitedPerConflict(),
                             when: {
                                 onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
                             },

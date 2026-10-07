@@ -1,5 +1,5 @@
 import { CardType, Players, Decks } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { attach, deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
@@ -9,7 +9,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Return rings to fetch an attachment')
-            .cost(AbilityDsl.costs.returnRings())
+            .cost(costs.returnRings())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

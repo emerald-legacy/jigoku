@@ -1,6 +1,6 @@
 import { CardType, Location, Phases, PlayType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cardMenu, moveCard, multiple, playCard, sequentialContext } from '../../GameActions/GameActions.js';
 
 export default class KyudenHida extends StrongholdCard {
@@ -8,7 +8,7 @@ export default class KyudenHida extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Play a Character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => context.player.dynastyDeck.length > 0)
             .gameAction(sequentialContext((context) => {
                 const topCards = context.player.dynastyDeck.slice(0, 3);

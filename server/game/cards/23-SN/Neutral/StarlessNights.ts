@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { placeFateOnRing } from '../../../GameActions/GameActions.js';
 import { Phases } from '../../../Constants.js';
 
@@ -14,6 +14,6 @@ export default class StarlessNights extends DrawCard {
             .gameAction(placeFateOnRing((context) => ({
                 target: Object.values(context.game.rings).filter(ring => ring.isUnclaimed())
             })))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

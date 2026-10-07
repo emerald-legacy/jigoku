@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import DrawCard from '../../DrawCard.js';
 
 class MotoJuro extends DrawCard {
@@ -10,7 +10,7 @@ class MotoJuro extends DrawCard {
                 .sendHome((context) => ({ target: context.source }))
             .otherwise()
                 .moveToConflict((context) => ({ target: context.source }))
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 }
 

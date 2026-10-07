@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { resolveConflictRing } from '../../GameActions/GameActions.js';
 
 class StaunchHida extends DrawCard {
@@ -11,7 +11,7 @@ class StaunchHida extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             })
             .gameAction(resolveConflictRing())
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

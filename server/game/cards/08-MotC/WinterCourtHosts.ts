@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class WinterCourtHosts extends DrawCard {
@@ -15,7 +15,7 @@ class WinterCourtHosts extends DrawCard {
                 }
             })
             .gameAction(draw())
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

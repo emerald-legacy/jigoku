@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import { Location, CardType, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { bow } from '../../GameActions/GameActions.js';
 
 class AkodoMastermind extends DrawCard {
@@ -10,7 +10,7 @@ class AkodoMastermind extends DrawCard {
 
     setupCardAbilities() {
         this.action('Remove tactics to bow a character')
-            .cost(AbilityDsl.costs.removeFromGame({
+            .cost(costs.removeFromGame({
                 cardType: [CardType.Event, CardType.Character, CardType.Attachment],
                 location: Location.ConflictDiscardPile,
                 mode: TargetMode.Unlimited,

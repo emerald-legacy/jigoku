@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { attach, removeFate, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class InvocationOfAsh extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move to another character')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

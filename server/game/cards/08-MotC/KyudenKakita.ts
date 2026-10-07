@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { honor } from '../../GameActions/GameActions.js';
 
 export default class KyudenKakita extends StrongholdCard {
@@ -9,7 +9,7 @@ export default class KyudenKakita extends StrongholdCard {
     setupCardAbilities() {
         this.reaction('Honor a Character')
             .when({ onDuelFinished: () => true })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

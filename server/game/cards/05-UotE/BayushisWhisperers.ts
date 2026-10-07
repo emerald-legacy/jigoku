@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { handler, lookAt, sequential } from '../../GameActions/GameActions.js';
+import { playerCannot } from '../../effects.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -28,14 +29,14 @@ class BayushisWhisperers extends DrawCard {
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {
         this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
-        context.source.untilEndOfPhase((ability) => ({
+        context.source.untilEndOfPhase({
             targetController: context.player.opponent,
-            effect: ability.effects.playerCannot({
+            effect: playerCannot({
                 cannot: 'play',
                 restricts: 'copiesOfX',
                 params: cardName
             })
-        }));
+        });
         return true;
     }
 }

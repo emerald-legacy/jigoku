@@ -1,5 +1,5 @@
 import { AbilityType, EventName, CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -29,7 +29,7 @@ export default class CastleOfAir extends DrawCard {
         eventRegistrar.register([EventName.OnConflictFinished]);
 
         this.action('Add Province Strength')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))

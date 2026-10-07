@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class NitenAdept extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Bow character')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter === context.source
             }))

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { removeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class ParanoidHososhi extends DrawCard {
         this.legendary(2);
 
         this.action('Steal fate from a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,

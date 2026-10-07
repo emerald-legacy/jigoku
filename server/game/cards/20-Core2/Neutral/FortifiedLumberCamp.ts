@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { discardFromPlay, moveCard, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -10,7 +10,7 @@ export default class FortifiedLumberCamp extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard all cards in and attached to a province')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province

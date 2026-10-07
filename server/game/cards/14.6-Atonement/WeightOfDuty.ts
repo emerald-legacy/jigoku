@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { bow, dishonor, multiple } from '../../GameActions/GameActions.js';
 import type DrawCard from '../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class WeightOfDuty extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Bow & dishonor a character')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && this.hasValidTarget(card, context)

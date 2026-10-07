@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { draw } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,8 +7,8 @@ export default class MerchantOfDesires extends DrawCard {
 
     setupCardAbilities() {
         this.action('Draw a card')
-            .cost(AbilityDsl.costs.payHonor(1))
-            .cost(AbilityDsl.costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))
+            .cost(costs.payHonor(1))
+            .cost(costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))
             .gameAction(draw((context) => ({
                 target: context.costs.optionalOpponentLoseHonorPaid && context.player.opponent
                     ? [context.player, context.player.opponent]

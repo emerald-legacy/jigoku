@@ -48,13 +48,13 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
         card.controller = context.source.controller;
         card.facedown = false;
         if(properties.hideWhenFaceup) {
-            card.lastingEffect(() => ({
+            card.lastingEffect({
                 until: {
                     onCardMoved: (event: GameEvent<EventName.OnCardMoved>) => event.card === card && event.originalLocation === destination
                 },
                 match: card,
                 effect: Effects.hideWhenFaceUp()
-            }));
+            });
         }
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainAbility } from '../../effects.js';
 import { cardLastingEffect, resolveRingEffect } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Players } from '../../Constants.js';
@@ -19,7 +19,7 @@ class MediumOfTheLivingSoul extends DrawCard {
                     when: {
                         onResolveRingElement: (event, context) => event.player === context.player && context.source.isParticipating()
                     },
-                    cost: AbilityDsl.costs.removeFateFromSelf(),
+                    cost: costs.removeFateFromSelf(),
                     gameAction: resolveRingEffect((context) => ({ target: context.event.ring }))
                 })
             })))

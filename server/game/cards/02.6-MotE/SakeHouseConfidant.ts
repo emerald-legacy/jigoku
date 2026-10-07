@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -7,7 +7,7 @@ class SakeHouseConfidant extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give Shinobi +2 political')
-            .cost(AbilityDsl.costs.discardImperialFavor())
+            .cost(costs.discardImperialFavor())
             .condition(context => context.source.isParticipating())
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.hasTrait('shinobi')),

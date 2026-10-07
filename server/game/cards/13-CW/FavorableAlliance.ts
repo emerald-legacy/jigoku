@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { canPlayFromOwn } from '../../effects.js';
 import { handler, lookAt, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
@@ -9,7 +9,7 @@ class FavorableAlliance extends DrawCard {
 
     setupCardAbilities() {
         this.action('Draw cards')
-            .cost(AbilityDsl.costs.variableFateCost({
+            .cost(costs.variableFateCost({
                 minAmount: 1,
                 maxAmount: (context) => context.player.conflictDeck.length,
                 activePromptTitle: 'Choose a value for X'
@@ -27,14 +27,14 @@ class FavorableAlliance extends DrawCard {
                             card.owner.removeCardFromPile(card);
                             card.moveTo(Location.RemovedFromGame);
                             context.player.removedFromGame.unshift(card);
-                            context.source.lastingEffect(() => ({
+                            context.source.lastingEffect({
                                 until: {
                                     onCardMoved: event =>
                                         event.card === card && event.originalLocation === Location.RemovedFromGame
                                 },
                                 match: card,
                                 effect: [canPlayFromOwn(Location.RemovedFromGame, [card], this)]
-                            }));
+                            });
                         });
                     }
                 })

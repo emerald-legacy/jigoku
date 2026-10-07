@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perPhase } from '../../../AbilityLimit.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
@@ -26,7 +26,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 player: Players.Opponent,
                 controller: Players.Opponent
             }, dishonor())
-            .max(AbilityDsl.limit.perPhase(1))
+            .max(perPhase(1))
             .mayResolveTwice({ condition: (context) => context.player.isCharacterTraitInPlay('magistrate') });
     }
 }

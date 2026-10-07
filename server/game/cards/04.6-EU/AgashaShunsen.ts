@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { attach, cardMenu, shuffleDeck } from '../../GameActions/GameActions.js';
 import { Players, CardType, Location } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class AgashaShunsen extends DrawCard {
 
     setupCardAbilities() {
         this.action('Return rings to fetch an attachment')
-            .cost(AbilityDsl.costs.returnRings())
+            .cost(costs.returnRings())
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class ContemplateTheEternal extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Return rings to put fate on character')
-            .cost(AbilityDsl.costs.returnRings())
+            .cost(costs.returnRings())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

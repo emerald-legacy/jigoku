@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
 
 function discardedCost(discarded: DrawCard[] | undefined): number {
@@ -14,7 +14,7 @@ class WarDogMaster extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source)
             })
-            .cost(AbilityDsl.costs.discardCardSpecific(context => context.player.dynastyDeck[0]))
+            .cost(costs.discardCardSpecific(context => context.player.dynastyDeck[0]))
             .cardLastingEffect(context => ({
                 effect: modifyMilitarySkill(discardedCost(context.costs.discardCard))
             }))

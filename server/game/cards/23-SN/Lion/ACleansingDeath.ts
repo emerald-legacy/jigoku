@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location, Players, Stage } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { gainHonor, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
 
 export default class ACleansingDeath extends DrawCard {
@@ -8,7 +8,7 @@ export default class ACleansingDeath extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put a character into play')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     const cardsInProvinces = [

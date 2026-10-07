@@ -1,5 +1,5 @@
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 
 export default class PalaceOfKnowledge extends StrongholdCard {
@@ -11,8 +11,8 @@ export default class PalaceOfKnowledge extends StrongholdCard {
                 onResolveRingElement: (event, context) =>
                     event.player === context.player && event.effectivellyResolvedEffect
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .cost(AbilityDsl.costs.discardCard())
+            .cost(costs.bowSelf())
+            .cost(costs.discardCard())
             .ringTarget({
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring, context) =>

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { discardMatching, lookAt, multipleContext } from '../../GameActions/GameActions.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -12,7 +12,7 @@ class KitsukiChiari extends DrawCard {
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player &&
                     context.player.opponent && context.player.opponent.hand.length > 0
             })
-            .cost(AbilityDsl.costs.nameCard())
+            .cost(costs.nameCard())
             .gameAction(multipleContext(context => {
                 const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({

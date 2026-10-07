@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -8,7 +8,7 @@ export default class ShosuroActress extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put an opponent\'s character into play')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Character,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],

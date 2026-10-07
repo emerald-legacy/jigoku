@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { AbilityType, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainAbility } from '../../effects.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 
@@ -11,7 +11,7 @@ class YogoParamour extends DrawCard {
         this.dire({
             effect: gainAbility(AbilityType.Action, {
                 title: 'Dishonor any character',
-                cost: AbilityDsl.costs.bowSelf(),
+                cost: costs.bowSelf(),
                 target: {
                     cardType: CardType.Character,
                     gameAction: dishonor()

@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class BreezeOfDawnLodge extends StrongholdCard {
@@ -9,7 +9,7 @@ export default class BreezeOfDawnLodge extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

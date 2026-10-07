@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import {
     cardMenu,
     conditional,
@@ -9,14 +9,14 @@ import {
 } from '../../../GameActions/GameActions.js';
 import { DuelType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import type { AbilityLimit } from '../../../AbilityLimit.js';
+import { perRound, type AbilityLimit } from '../../../AbilityLimit.js';
 import { randomHandCards } from '../../randomHandCards.js';
 
 export default class TranquilOverlookDojo extends StrongholdCard {
     static id = 'tranquil-overlook-dojo';
 
     setupCardAbilities() {
-        const limit = AbilityDsl.limit.perRound(1);
+        const limit = perRound(1);
         actionVersion(this, limit, DuelType.Military, 'Initiate a Military duel');
         actionVersion(this, limit, DuelType.Political, 'Initiate a Political duel');
     }
@@ -25,7 +25,7 @@ export default class TranquilOverlookDojo extends StrongholdCard {
 function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: DuelType, title: string) {
     self.action(title)
         .condition((context) => context.game.isDuringConflict())
-        .cost(AbilityDsl.costs.bowSelf())
+        .cost(costs.bowSelf())
         .initiateDuel(() => ({
             type,
             opponentChoosesDuelTarget: true,

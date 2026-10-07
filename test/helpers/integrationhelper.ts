@@ -1,5 +1,6 @@
 /* eslint no-invalid-this: 0 */
 
+import '../../server/game/setupGameActions.js';
 import { GameModes } from '../../server/GameModes.js';
 import './objectformatters.js';
 import DeckBuilder, { fillers } from './deckbuilder.js';

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { additionalConflict, cannotBeDeclaredAsAttacker, mustBeDeclaredAsAttacker } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -65,6 +65,6 @@ export default class Retribution extends DrawCard {
                 ]
             })))
             .effect((context) => msg`declare a military conflict, attacking with ${context.target}`)
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

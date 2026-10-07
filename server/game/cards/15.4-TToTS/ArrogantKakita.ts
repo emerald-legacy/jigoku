@@ -1,5 +1,5 @@
 import { DuelType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -17,6 +17,6 @@ export default class ArrogantKakita extends DrawCard {
                     target: duel.loser?.includes(context.source) ? context.source : []
                 })
             }))
-            .limit(AbilityDsl.limit.unlimited());
+            .limit(unlimited());
     }
 }

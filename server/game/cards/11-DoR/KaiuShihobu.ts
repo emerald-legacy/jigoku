@@ -22,14 +22,14 @@ export default class KaiuShihobu extends DrawCard {
                         cards.forEach((card) => {
                             event.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
                             event.player.moveCard(card, Location.UnderneathStronghold);
-                            card.lastingEffect(() => ({
+                            card.lastingEffect({
                                 until: {
                                     onCardMoved: event =>
                                         event.card === card && event.originalLocation === Location.UnderneathStronghold
                                 },
                                 match: card,
                                 effect: [hideWhenFaceUp()]
-                            }));
+                            });
                         });
                     } else {
                         this.game.addMessage('{0} selects no holdings', event.player);

@@ -1,5 +1,5 @@
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class BlatantSwindler extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Move home a character')
-            .cost(AbilityDsl.costs.giveHonorToOpponent(1))
+            .cost(costs.giveHonorToOpponent(1))
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .target({
                 player: Players.Opponent,

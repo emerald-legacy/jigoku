@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflictOpportunity } from '../../../AbilityLimit.js';
 import { moveCard, removeFromGame } from '../../../GameActions/GameActions.js';
 
 export default class PrayersOnTheEveOfBattle extends DrawCard {
@@ -23,7 +23,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
                 onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.cardsInPlay.some(card => card.type === CardType.Character && !card.bowed)
             })
             .gameAction(moveCard(context => ({ target: context.source, destination: Location.Hand })))
-            .max(AbilityDsl.limit.perConflictOpportunity(1))
+            .max(perConflictOpportunity(1))
             .location(Location.ConflictDiscardPile);
     }
 }

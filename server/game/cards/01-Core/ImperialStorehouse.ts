@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class ImperialStorehouse extends DrawCard {
@@ -7,7 +7,7 @@ class ImperialStorehouse extends DrawCard {
 
     setupCardAbilities() {
         this.action('Draw a card')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .gameAction(draw());
     }
 }

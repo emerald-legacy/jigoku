@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
 
 class JadeMasterpiece extends DrawCard {
@@ -7,7 +7,7 @@ class JadeMasterpiece extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a fate to an unclaimed ring')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: ring => ring.isUnclaimed() && ring.fate > 0

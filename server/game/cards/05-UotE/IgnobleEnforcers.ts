@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import DrawCard from '../../DrawCard.js';
 
 class IgnobleEnforcers extends DrawCard {
@@ -9,7 +9,7 @@ class IgnobleEnforcers extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .cost(AbilityDsl.costs.variableHonorCost(() => 3))
+            .cost(costs.variableHonorCost(() => 3))
             .placeFate((context) => ({ amount: context.costs.variableHonorCost }))
             .effect('place {1} fate on {0}', (context) => context.costs.variableHonorCost);
     }

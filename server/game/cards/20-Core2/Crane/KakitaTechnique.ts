@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { additionalAction, delayedEffect, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, modifyBid, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -60,7 +60,7 @@ export default class KakitaTechnique extends DrawCard {
                 }
                 return ['military', 'political', '', '', '', ''];
             })
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 
     private getExtraActionCount(context: AbilityContext) {

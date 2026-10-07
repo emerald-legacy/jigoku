@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
@@ -8,7 +8,7 @@ class Rebuild extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put a holding into play from your discard')
-            .cost(AbilityDsl.costs.shuffleIntoDeck({
+            .cost(costs.shuffleIntoDeck({
                 location: Location.Provinces,
                 cardCondition: card => !!card.controller.getProvinceCardInProvince(card.location) && !card.controller.getProvinceCardInProvince(card.location)?.isBroken
             }))

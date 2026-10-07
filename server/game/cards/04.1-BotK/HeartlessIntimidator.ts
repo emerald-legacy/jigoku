@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { discardCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,7 +15,7 @@ class HeartlessIntimidator extends DrawCard {
                 target: context.player.opponent ? context.player.opponent.conflictDeck[0] : []
             })))
             .effect('discard the top card of {1}\'s conflict deck', context => context.player.opponent ?? context.player)
-            .limit(AbilityDsl.limit.unlimited());
+            .limit(unlimited());
     }
 }
 

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import { msg } from '../../../GameChat.js';
@@ -11,9 +11,9 @@ export default class EyesOfTheSerpent extends DrawCard {
 
     setupCardAbilities() {
         this.action('Taint a character')
-            .cost(AbilityDsl.costs.chooseOne({
-                'Spend 1 honor': AbilityDsl.costs.payHonor(1),
-                'Spend 1 fate': AbilityDsl.costs.payFate(1)
+            .cost(costs.chooseOne({
+                'Spend 1 honor': costs.payHonor(1),
+                'Spend 1 fate': costs.payFate(1)
             }))
             .target({
                 cardType: CardType.Character,

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { addToken, gainHonor, sacrifice } from '../../GameActions/GameActions.js';
 import { TokenType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -28,7 +28,7 @@ class DistinguishedDojo extends DrawCard {
                 }
             })
             .gameAction(addToken())
-            .limit(AbilityDsl.limit.perRound(3))
+            .limit(perRound(3))
             .then()
             .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
                 Yes: sacrifice((context) => ({ target: context.source })),

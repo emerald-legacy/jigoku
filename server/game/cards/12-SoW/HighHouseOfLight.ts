@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
 import {
     cardLastingEffect,
@@ -16,7 +16,7 @@ export default class HighHouseOfLight extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Prevent a monk from being targeted by opponent\'s events')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

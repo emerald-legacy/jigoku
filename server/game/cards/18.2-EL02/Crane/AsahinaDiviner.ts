@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { modifyGlory } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 
@@ -16,7 +16,7 @@ class AsahinaDiviner extends DrawCard {
                 effect: modifyGlory(3)
             }))
             .effect('give {0} +3 glory until the end of the conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

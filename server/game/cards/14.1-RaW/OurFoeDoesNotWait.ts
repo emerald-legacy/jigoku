@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, Decks } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflictOpportunity } from '../../AbilityLimit.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class OurFoeDoesNotWait extends DrawCard {
@@ -27,7 +27,7 @@ class OurFoeDoesNotWait extends DrawCard {
                 })
             }))
             .effect('look at the top eight cards of their dynasty deck')
-            .max(AbilityDsl.limit.perConflictOpportunity(1));
+            .max(perConflictOpportunity(1));
     }
 }
 

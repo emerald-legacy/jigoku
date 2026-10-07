@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { delayedEffect } from '../../../effects.js';
 import { discardFromPlay, draw, gainHonor, honor, multiple, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -47,6 +47,6 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                     ]
                 };
             })
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

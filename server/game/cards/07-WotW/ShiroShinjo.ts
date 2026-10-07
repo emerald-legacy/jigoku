@@ -1,6 +1,6 @@
 import { Location } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainFate } from '../../GameActions/GameActions.js';
 
 export default class ShiroShinjo extends StrongholdCard {
@@ -11,7 +11,7 @@ export default class ShiroShinjo extends StrongholdCard {
             .when({
                 onFateCollected: (event, context) => event.player === context.player
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .gameAction(gainFate((context) => ({
                 amount: context.player.getNumberOfOpponentsFaceupProvinces(
                     (province) => province.location !== Location.StrongholdProvince

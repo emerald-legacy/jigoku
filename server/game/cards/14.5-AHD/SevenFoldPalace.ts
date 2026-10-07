@@ -1,5 +1,5 @@
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { gainHonor } from '../../GameActions/GameActions.js';
 
 export default class SevenFoldPalace extends StrongholdCard {
@@ -13,7 +13,7 @@ export default class SevenFoldPalace extends StrongholdCard {
                     context.player.isAttackingPlayer() &&
                     event.conflict.getAttackers().some((card) => card.isHonored && card.controller === context.player)
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .gameAction(gainHonor({ amount: 2 }));
     }
 }

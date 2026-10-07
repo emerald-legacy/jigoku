@@ -1,6 +1,6 @@
 import { CardType, Players, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { moveToConflict } from '../../GameActions/GameActions.js';
 
 export default class GoldenPlainsOutpost extends StrongholdCard {
@@ -8,7 +8,7 @@ export default class GoldenPlainsOutpost extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Move a cavalry character to the conflict')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,

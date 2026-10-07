@@ -1,5 +1,5 @@
 import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import {
     chooseAction,
     multiple,
@@ -39,7 +39,7 @@ export default class IllusionaryDecoy extends DrawCard {
                 })
             ]))
             .effect('put {0} into play in the conflict')
-            .max(AbilityDsl.limit.perConflict(1))
+            .max(perConflict(1))
             .location(Location.Hand);
 
         this.action('Return to hand')

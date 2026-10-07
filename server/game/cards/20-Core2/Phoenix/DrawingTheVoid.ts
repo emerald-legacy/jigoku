@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import {
     cardMenu,
     conditional,
@@ -49,6 +49,6 @@ export default class DrawingTheVoid extends DrawCard {
                 };
             }))
             .effect((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

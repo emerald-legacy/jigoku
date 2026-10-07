@@ -1,6 +1,6 @@
 import { Players, ConflictType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { setConflictDeclarationType } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -12,7 +12,7 @@ export default class CastleOfTheForgotten extends StrongholdCard {
             .when({
                 onBreakProvince: (event, context) => event.card.owner !== context.player
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .playerLastingEffect({
                 targetController: Players.Any,
                 effect: setConflictDeclarationType(ConflictType.Military),

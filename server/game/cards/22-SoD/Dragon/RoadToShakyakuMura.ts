@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { multiple, putIntoProvince, returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
@@ -21,7 +21,7 @@ export default class RoadToShakyakuMura extends DrawCard {
                 }
             })
             .cost(captureCost('captureLocationCost', (context) => context.source.location))
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .cancel((context) => ({
                 replacementGameAction: multiple([
                     returnToHand(() => ({

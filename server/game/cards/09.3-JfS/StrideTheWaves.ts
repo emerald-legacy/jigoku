@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -27,7 +27,7 @@ class StrideTheWaves extends DrawCard {
                     parent && parent.inConflict ? 'send' : 'move'
                 ];
             })
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 
     getPrintedElementSymbols() {

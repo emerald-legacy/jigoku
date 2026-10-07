@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { sendHome } from '../../GameActions/GameActions.js';
 
 class BondsOfBlood extends DrawCard {
@@ -8,7 +8,7 @@ class BondsOfBlood extends DrawCard {
 
     setupCardAbilities() {
         this.action('Send a character home')
-            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: card => card.isParticipating() }))
+            .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: card => card.isParticipating() }))
             .target({
                 cardType: CardType.Character
             }, sendHome())

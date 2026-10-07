@@ -1,6 +1,6 @@
 import { Players, CardType, EventName, AbilityType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { Event } from '../../../Events/Event.js';
@@ -21,7 +21,7 @@ export default class RiftToToshigoku extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .cost(AbilityDsl.costs.breakSelf())
+            .cost(costs.breakSelf())
             .target({
                 activePromptTitle: 'Choose a character to discard',
                 player: Players.Opponent,

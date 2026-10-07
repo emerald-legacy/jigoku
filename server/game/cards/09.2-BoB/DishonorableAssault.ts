@@ -1,7 +1,7 @@
 import { TargetMode, CardType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
@@ -10,7 +10,7 @@ export default class DishonorableAssault extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Discard cards to dishonor attackers')
-            .cost(AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
+            .cost(costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => context.costs.discardCardsUpToVariableX?.length ?? this.getNumberOfLegalTargets(context),

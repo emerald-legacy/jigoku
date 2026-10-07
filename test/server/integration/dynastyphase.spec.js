@@ -1,4 +1,5 @@
 import { Duration, Location } from '../../../build/server/game/Constants.js';
+import { gainExtraFateWhenPlayed } from '../../../build/server/game/effects.js';
 
 describe('dynasty phase', function() {
     integration(function() {
@@ -233,11 +234,11 @@ describe('dynasty phase', function() {
                     }
                 });
                 this.akodoGunso = this.player1.placeCardInProvince('akodo-gunso', 'province 1');
-                this.akodoGunso.applyDurationEffect(Duration.UntilEndOfPhase, (dsl) => ({
+                this.akodoGunso.applyDurationEffect(Duration.UntilEndOfPhase, {
                     match: this.akodoGunso,
                     targetLocation: Location.Provinces,
-                    effect: dsl.effects.gainExtraFateWhenPlayed(() => 2)
-                }));
+                    effect: gainExtraFateWhenPlayed(() => 2)
+                });
                 this.game.checkGameState(true);
             });
 

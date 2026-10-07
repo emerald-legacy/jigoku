@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { turnFacedown } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class SaadiyahAlMozedu extends DrawCard {
 
     setupCardAbilities() {
         this.action('Flip province facedown')
-            .cost(AbilityDsl.costs.discardCard({
+            .cost(costs.discardCard({
                 location: Location.Hand
             }))
             .target({

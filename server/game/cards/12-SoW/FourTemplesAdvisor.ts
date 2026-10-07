@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class FourTemplesAdvisor extends DrawCard {
@@ -12,7 +12,7 @@ class FourTemplesAdvisor extends DrawCard {
             })
             .gameAction(draw())
             .effect('draw a card')
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

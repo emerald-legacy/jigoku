@@ -1,7 +1,7 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import {
     chosenDiscard,
     discardCard,
@@ -86,7 +86,7 @@ class MerchantOfCuriosities extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a card to draw a card')
-            .cost(AbilityDsl.costs.discardCard())
+            .cost(costs.discardCard())
             .cost(merchantOfCuriositiesCost())
             .gameAction(draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player

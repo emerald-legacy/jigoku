@@ -60,6 +60,6 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration, () => properties);
+        event.context.source.applyDurationEffect(properties.duration, properties);
     }
 }

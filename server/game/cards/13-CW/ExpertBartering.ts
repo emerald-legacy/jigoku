@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { attach, discardFromPlay, ifAble, joint } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
@@ -9,7 +9,7 @@ class ExpertBartering extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch this attachment with another')
-            .cost(AbilityDsl.costs.optionalFateCost(1, context => {
+            .cost(costs.optionalFateCost(1, context => {
                 const contextCopy = context.copy({});
                 contextCopy.costs.optionalFateCost = 0;
 

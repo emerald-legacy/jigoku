@@ -1,5 +1,5 @@
 import { CardType, Duration, ConflictType, Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { additionalConflict } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -9,7 +9,7 @@ export default class YogoNorio extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain another political conflict')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character
             }))
             .condition((context) => context.game.currentPhase === Phases.Conflict)

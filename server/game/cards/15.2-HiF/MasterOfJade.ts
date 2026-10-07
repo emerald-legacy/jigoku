@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { placeFate } from '../../GameActions/GameActions.js';
 
 class MasterOfJade extends DrawCard {
@@ -8,7 +8,7 @@ class MasterOfJade extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lose 2 honor to put a fate on a character')
-            .cost(AbilityDsl.costs.payHonor(2))
+            .cost(costs.payHonor(2))
             .target({
                 cardType: CardType.Character
             }, placeFate());

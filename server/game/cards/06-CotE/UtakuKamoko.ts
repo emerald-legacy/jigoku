@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { honorStatusDoesNotModifySkill } from '../../effects.js';
 import { honor, ready } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
@@ -16,7 +16,7 @@ class UtakuKamoko extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => !!event.conflict && event.conflict.attackingPlayer === context.player.opponent
             })
-            .cost(AbilityDsl.costs.discardCard({
+            .cost(costs.discardCard({
                 location: Location.Hand,
                 targets: true
             }))

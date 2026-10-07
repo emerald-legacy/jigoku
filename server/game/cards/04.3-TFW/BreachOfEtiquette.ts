@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
 import { loseHonor, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
@@ -38,7 +38,7 @@ class BreachOfEtiquette extends DrawCard {
                 }))
             ]))
             .effect('force honor loss on players when their non-courtier characters use abilities during this conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

@@ -2,13 +2,12 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Phases, PlayType, EventName, CardType } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import ThenAbility from '../../ThenAbility.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { customDetachedCard } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import DynastyCardAction from '../../DynastyCardAction.js';
 import type BaseCard from '../../BaseCard.js';
 import type { Event } from '../../Events/Event.js';
-import type { AbilityLimit } from '../../AbilityLimit.js';
+import { perRound, type AbilityLimit } from '../../AbilityLimit.js';
 import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 
 const backAlleyPersistentEffect = {
@@ -115,7 +114,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
 export default class BackAlleyHideaway extends DrawCard {
     static id = 'back-alley-hideaway';
 
-    backAlleyActionLimit = AbilityDsl.limit.perRound(1);
+    backAlleyActionLimit = perRound(1);
 
     setupCardAbilities() {
         this.persistentEffect({

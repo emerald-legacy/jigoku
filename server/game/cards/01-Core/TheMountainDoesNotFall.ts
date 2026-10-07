@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { doesNotBow } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -17,7 +17,7 @@ class TheMountainDoesNotFall extends DrawCard {
                 effect: doesNotBow()
             })))
             .effect('make {0} not bow as a defender')
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }
 

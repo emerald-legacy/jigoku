@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
@@ -17,7 +17,7 @@ class YogoAsami extends DrawCard {
             })
         });
         this.action('Give a character -2/-0')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,

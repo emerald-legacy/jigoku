@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.js';
 
 class HidaSukune extends DrawCard {
@@ -16,7 +16,7 @@ class HidaSukune extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .limit(AbilityDsl.limit.perConflict(1));
+            .limit(perConflict(1));
     }
 }
 

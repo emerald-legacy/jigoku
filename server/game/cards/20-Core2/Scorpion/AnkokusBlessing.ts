@@ -1,5 +1,6 @@
 import { Location, Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { draw, gainFate, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +9,7 @@ export default class AnkokusBlessing extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain 2 fate and draw 2 cards')
-            .cost(AbilityDsl.costs.discardCard({
+            .cost(costs.discardCard({
                 location: Location.Hand,
                 cardCondition: (card) => !card.hasTrait('blessing')
             }))
@@ -19,7 +20,7 @@ export default class AnkokusBlessing extends DrawCard {
                 ]
             })))
             .effect('draw 2 cards and gain 2 fate')
-            .max(AbilityDsl.limit.perRound(1))
+            .max(perRound(1))
             .phase(Phases.Fate);
     }
 }

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { AbilityType, CardType, Location, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class ArmorOfTheFallen extends DrawCard {
             effect: gainAbility(AbilityType.Action, {
                 title: 'Remove characters from your discard pile to bow a character',
                 condition: (context) => context.source.isParticipating(),
-                cost: AbilityDsl.costs.removeFromGame({
+                cost: costs.removeFromGame({
                     cardType: CardType.Character,
                     location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                     mode: TargetMode.Unlimited

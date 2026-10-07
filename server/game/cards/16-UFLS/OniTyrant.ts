@@ -1,6 +1,6 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { handler, putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
@@ -50,7 +50,7 @@ class OniTyrant extends DrawCard {
 
     setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .cost(oniTyrantCost())
             .condition(context => context.source.isParticipating())
             .gameAction(putIntoConflict(context => ({

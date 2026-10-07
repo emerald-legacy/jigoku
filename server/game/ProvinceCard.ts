@@ -1,7 +1,7 @@
 import { GameModes } from '../GameModes.js';
 import { CardType, EffectName, Element, Location } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
-import AbilityDsl from './abilitydsl.js';
+import { cardCannot } from './effects.js';
 import BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
@@ -38,7 +38,7 @@ export class ProvinceCard extends BaseCard {
         this.persistentEffect({
             condition: (context) => context.source.hasEminent(),
             location: Location.Any,
-            effect: AbilityDsl.effects.cardCannot('turnFacedown')
+            effect: cardCannot('turnFacedown')
         });
     }
 

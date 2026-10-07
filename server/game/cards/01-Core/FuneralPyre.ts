@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class FuneralPyre extends DrawCard {
@@ -8,7 +8,7 @@ class FuneralPyre extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice a character to draw')
-            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .gameAction(draw());
     }
 }

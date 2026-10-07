@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -20,7 +20,7 @@ class MotoStables extends DrawCard {
                 effect: modifyMilitarySkill(2)
             }))
             .effect((context) => msg`give ${context.event.card} +2${'military'}`)
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 }
 

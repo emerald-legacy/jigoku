@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../../effects.js';
 import { chosenDiscard, draw, ringLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
 import { Duration } from '../../../Constants.js';
@@ -50,6 +50,6 @@ export default class DayOfBrotherHorse extends DrawCard {
                 ]
             })))
             .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

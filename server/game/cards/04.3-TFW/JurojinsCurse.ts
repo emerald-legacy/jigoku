@@ -1,5 +1,5 @@
 import { Duration, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
 import { handler } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -28,6 +28,6 @@ export default class JurojinsCurse extends DrawCard {
                 })
             })
             .effect('resolve a second fate phase after this')
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

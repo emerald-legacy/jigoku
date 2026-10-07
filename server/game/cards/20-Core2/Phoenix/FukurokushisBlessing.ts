@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -12,6 +12,6 @@ export default class FukurokushisBlessing extends DrawCard {
             })
             .cancel()
             .effect('cancel the effects of {1}\'s ability', (context) => context.event.card)
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

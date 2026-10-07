@@ -1,6 +1,6 @@
 import { AttachmentManager } from './AttachmentManager.js';
 import type DrawCard from './DrawCard.js';
-import AbilityDsl from './abilitydsl.js';
+import { addKeyword, cardCannot, legendaryFate, playerCannot } from './effects.js';
 import Effects from './effects.js';
 import EffectSource from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
@@ -484,25 +484,25 @@ class BaseCard extends EffectSource {
             location: Location.Any,
             targetLocation: Location.Any,
             effect: [
-                AbilityDsl.effects.playerCannot({
+                playerCannot({
                     cannot: 'placeFateWhenPlayingCharacterFromProvince',
                     restricts: 'source'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'putIntoPlay',
                     restricts: 'cardEffects'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'placeFate'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'preventedFromLeavingPlay'
                 }),
-                AbilityDsl.effects.cardCannot({
+                cardCannot({
                     cannot: 'enterPlay',
                     restricts: 'nonDynastyPhase'
                 }),
-                AbilityDsl.effects.legendaryFate(fate)
+                legendaryFate(fate)
             ]
         });
     }
@@ -893,7 +893,7 @@ class BaseCard extends EffectSource {
         this.allowedAttachmentTraits = parsed.allowedAttachmentTraits;
 
         for(const keyword of this.printedKeywords) {
-            this.persistentEffect({ effect: AbilityDsl.effects.addKeyword(keyword) });
+            this.persistentEffect({ effect: addKeyword(keyword) });
         }
     }
 

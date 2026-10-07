@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, PlayType, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { canPlayFromOutOfPlay, showTopConflictCard } from '../../effects.js';
 import { cardLastingEffect, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class CallingTheStorm extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make top card of conflict deck playable')
-            .cost(AbilityDsl.costs.discardHand())
+            .cost(costs.discardHand())
             .gameAction(multiple([
                 cardLastingEffect(context => ({
                     target: context.player.getAllConflictCards(), //since this applies in one shot, apply it to all conflict cards

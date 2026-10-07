@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { loseHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +15,7 @@ export default class DarkSecret extends DrawCard {
                 target: this.targetPlayer(context.source.parentCharacter)
             })))
             .effect('make {1} lose 1 honor - {2}', (context) => [this.targetPlayer(context.source.parentCharacter), this.quote(context.source.parentCharacter)])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 
     private targetPlayer(character: DrawCard | null) {

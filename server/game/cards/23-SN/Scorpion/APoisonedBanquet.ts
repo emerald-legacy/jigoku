@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { injure } from '../../../GameActions/GameActions.js';
 
 export default class APoisonedBanquet extends DrawCard {
@@ -14,6 +14,6 @@ export default class APoisonedBanquet extends DrawCard {
             .gameAction(injure((context) => ({
                 target: context.game.findAnyCardsInPlay(card => card.attachments.some(attachment => attachment.hasTrait('poison')))
             })))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

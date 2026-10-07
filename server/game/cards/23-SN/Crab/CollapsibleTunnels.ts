@@ -1,6 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import { bow, cardLastingEffect } from '../../../GameActions/GameActions.js';
 
@@ -25,7 +25,7 @@ export default class CollapsibleTunnels extends DrawCard {
             .effect('increase the strength of an attacked province by 2');
 
         this.action('Bow a character')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

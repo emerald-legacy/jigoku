@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { draw, removeFate } from '../../GameActions/GameActions.js';
 
 class MonoNoAware extends DrawCard {
@@ -11,7 +11,7 @@ class MonoNoAware extends DrawCard {
                 target: this.game.findAnyCardsInPlay(card => card.getFate() > 0)
             })))
             .effect('remove a fate from each character and draw a card')
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }
 

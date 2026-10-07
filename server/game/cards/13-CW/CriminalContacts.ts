@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { removeFate } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
@@ -9,7 +9,7 @@ class CriminalContacts extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a fate from a character')
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalHonorTransferFromOpponentCost())
             .condition(context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({
                 name: 'myCharacter',

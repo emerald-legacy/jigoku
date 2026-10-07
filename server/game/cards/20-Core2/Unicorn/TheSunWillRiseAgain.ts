@@ -1,5 +1,5 @@
 import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { additionalConflict } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,6 +20,6 @@ export default class TheSunWillRiseAgain extends DrawCard {
                 effect: additionalConflict(context.event.conflict.conflictType)
             }))
             .effect('gain an additional {1} conflict this round. They will not forget this defeat', (context) => [context.event.conflict.conflictType])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

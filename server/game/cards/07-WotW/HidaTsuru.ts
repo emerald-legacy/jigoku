@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { modifyBothSkills } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -13,7 +13,7 @@ class HidaTsuru extends DrawCard {
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
             .effect(() => msg`give him +1${'military'}/+1${'political'}`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
 
         this.reaction('Give this character +1/+1')
             .when({
@@ -21,7 +21,7 @@ class HidaTsuru extends DrawCard {
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
             .effect(() => msg`give him +1${'military'}/+1${'political'}`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

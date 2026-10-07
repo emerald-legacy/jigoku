@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { gainAllAbilities, reduceCost } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
@@ -21,7 +21,7 @@ export default class SpiritOfValor extends DrawCard {
 
         this.action('Gain abilities from a character in your discard pile')
             .cost(captureParentCost())
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],

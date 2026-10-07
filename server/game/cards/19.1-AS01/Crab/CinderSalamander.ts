@@ -1,5 +1,5 @@
 import { CardType, Decks, Element, Location, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { deckSearch, moveCard, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -49,7 +49,7 @@ export default class CinderSalamander extends DrawCard {
                 })
             ]))
             .effect('search their deck and provinces for other copies of {0} and put them into play')
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 
     public getPrintedElementSymbols() {

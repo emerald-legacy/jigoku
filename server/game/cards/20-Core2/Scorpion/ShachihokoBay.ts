@@ -57,14 +57,14 @@ class Process {
             for(const card of this.cardsToSteal) {
                 this.context.player.moveCard(card, Location.RemovedFromGame);
                 card.controller = this.context.player;
-                this.context.source.lastingEffect(() => ({
+                this.context.source.lastingEffect({
                     until: {
                         onCardMoved: event =>
                             event.card === card && event.originalLocation === Location.RemovedFromGame
                     },
                     match: card,
                     effect: [canPlayFromOwn(Location.RemovedFromGame, [card], this.context.source)]
-                }));
+                });
             }
         }
 

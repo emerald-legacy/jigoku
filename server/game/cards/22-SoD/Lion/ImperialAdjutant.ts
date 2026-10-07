@@ -1,5 +1,5 @@
 import { Players, CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { dishonor, moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class ImperialAdjutant extends DrawCard {
         });
 
         this.conflictAction('Move or dishonor a character')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
             .target({
                 name: 'character',

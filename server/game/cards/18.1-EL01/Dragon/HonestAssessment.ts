@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { discardMatching, multipleContext, reveal } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +16,7 @@ export default class HonestAssessment extends DrawCard {
                 onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .cost(AbilityDsl.costs.nameCard())
+            .cost(costs.nameCard())
             .gameAction(multipleContext((context) => {
                 const hand = shuffle(context.player.opponent?.hand ?? []);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
@@ -33,6 +34,6 @@ export default class HonestAssessment extends DrawCard {
                 };
             }))
             .effect('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.nameCardCost])
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

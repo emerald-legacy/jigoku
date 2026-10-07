@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
@@ -9,7 +9,7 @@ export default class ShinjoArcher extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Move and give -2/-2')
-            .cost(AbilityDsl.costs.switchLocation())
+            .cost(costs.switchLocation())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

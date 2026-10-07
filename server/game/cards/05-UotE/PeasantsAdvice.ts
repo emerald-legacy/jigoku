@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { lookAt, moveCard, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { Location, Phases, CardType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
@@ -9,7 +9,7 @@ class PeasantsAdvice extends DrawCard {
 
     setupCardAbilities() {
         this.action('look at a province and return its dynasty card to deck')
-            .cost(AbilityDsl.costs.dishonor())
+            .cost(costs.dishonor())
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces

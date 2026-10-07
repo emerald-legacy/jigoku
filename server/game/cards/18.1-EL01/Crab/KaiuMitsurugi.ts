@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location, Players, CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { addKeyword } from '../../../effects.js';
 import { draw, gainFate, sequential } from '../../../GameActions/GameActions.js';
 
@@ -16,7 +16,7 @@ class KaiuMitsurugi extends DrawCard {
         });
 
         this.action('Draw a card and gain a fate')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Holding
             }))
             .gameAction(sequential([

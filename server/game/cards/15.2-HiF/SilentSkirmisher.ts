@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { CardType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
@@ -9,7 +9,7 @@ class SilentSkirmisher extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice another for +2 military')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source
             }))

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { reduceCost } from '../../../effects.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class IuchiTadamatsu extends DrawCard {
         });
 
         this.action('Ready this character')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter === context.source
             }))

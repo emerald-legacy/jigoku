@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { gainAbility } from '../../effects.js';
 import { chosenDiscard } from '../../GameActions/GameActions.js';
 import { AbilityType } from '../../Constants.js';
@@ -11,7 +11,7 @@ export default class SturdyTetsubo extends DrawCard {
         this.whileAttached({
             effect: gainAbility(AbilityType.Reaction, {
                 title: 'Make opponent discard 1 card',
-                limit: AbilityDsl.limit.perRound(2),
+                limit: perRound(2),
                 printedAbility: false,
                 when: {
                     afterConflict: (event, context) =>

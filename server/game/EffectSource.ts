@@ -1,4 +1,3 @@
-import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
 import { GameObject } from './GameObject.js';
 import { Location, Duration } from './Constants.js';
 import type Game from './Game.js';
@@ -8,8 +7,6 @@ import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import type { EffectProperties } from './Effects/Effect.js';
 
 type EffectSourceProperties = EffectProperties<EffectTarget> & { effect?: EffectFactory | EffectFactory[] };
-
-type PropertyFactory = (dsl: AbilityDslType) => EffectSourceProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
 
@@ -65,8 +62,7 @@ class EffectSource extends GameObject {
         return [];
     }
 
-    public applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(getAbilityDsl());
+    public applyDurationEffect(duration: Duration, properties: EffectSourceProperties): void {
         this.addEffectToEngine(Object.assign({ duration, location: Location.Any }, properties));
     }
 
@@ -74,54 +70,54 @@ class EffectSource extends GameObject {
      * Applies an immediate effect which lasts until the end of the current
      * duel.
      */
-    untilEndOfDuel(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfDuel, propertyFactory);
+    untilEndOfDuel(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilEndOfDuel, properties);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the current
      * conflict.
      */
-    untilEndOfConflict(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfConflict, propertyFactory);
+    untilEndOfConflict(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilEndOfConflict, properties);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the phase.
      */
-    untilEndOfPhase(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfPhase, propertyFactory);
+    untilEndOfPhase(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilEndOfPhase, properties);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the round.
      */
-    untilEndOfRound(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfRound, propertyFactory);
+    untilEndOfRound(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilEndOfRound, properties);
     }
 
-    untilPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilPassPriority, propertyFactory);
+    untilPassPriority(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilPassPriority, properties);
     }
 
-    untilOpponentPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilOpponentPassPriority, propertyFactory);
+    untilOpponentPassPriority(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilOpponentPassPriority, properties);
     }
 
-    untilNextPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilNextPassPriority, propertyFactory);
+    untilNextPassPriority(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilNextPassPriority, properties);
     }
 
-    untilSelfPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilSelfPassPriority, propertyFactory);
+    untilSelfPassPriority(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.UntilSelfPassPriority, properties);
     }
 
     /**
      * Applies a lasting effect which lasts until an event contained in the
      * `until` property for the effect has occurred.
      */
-    lastingEffect(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.Custom, propertyFactory);
+    lastingEffect(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.Custom, properties);
     }
 
     /*

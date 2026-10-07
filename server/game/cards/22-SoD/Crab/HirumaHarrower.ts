@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -16,6 +16,6 @@ export default class HirumaHarrower extends DrawCard {
                 effect: modifyMilitarySkill(2)
             })
             .effect(() => msg`give itself +2${'military'}`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }

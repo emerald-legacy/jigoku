@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { copyCard } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -16,7 +16,7 @@ export default class FloatingFortress extends DrawCard {
 
     setupCardAbilities() {
         this.action('Become another holding')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .condition((context) => context.player.isDefendingPlayer())
             .target({
                 cardType: CardType.Holding,

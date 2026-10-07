@@ -1,5 +1,5 @@
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perPhase } from '../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../effects.js';
 import { ringLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -19,6 +19,6 @@ export default class WayOfThePhoenix extends DrawCard {
                 effect: cannotDeclareRing((player) => player === context.player.opponent)
             })))
             .effect('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent ?? '')
-            .max(AbilityDsl.limit.perPhase(1));
+            .max(perPhase(1));
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perPhase } from '../../../AbilityLimit.js';
 import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
@@ -17,6 +17,6 @@ export default class AsahinaPurifier extends DrawCard {
                 gainHonor(context => ({ target: context.player }))
             ]))
             .effect((context) => msg`gain 1 honor rather than having ${context.event.player} lose 1 honor from a status token`)
-            .limit(AbilityDsl.limit.perPhase(1));
+            .limit(perPhase(1));
     }
 }

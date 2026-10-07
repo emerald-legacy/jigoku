@@ -1,6 +1,6 @@
 import { Players, CardType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { injure, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class AppeasingTheRestless extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place fates on spirits')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))

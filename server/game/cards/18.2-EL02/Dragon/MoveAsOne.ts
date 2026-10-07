@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 
 class MoveAsOne extends DrawCard {
@@ -22,7 +22,7 @@ class MoveAsOne extends DrawCard {
                 })
             })
             .effect('look at the top eight cards of their deck for a kiho')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

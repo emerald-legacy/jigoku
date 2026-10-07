@@ -1,6 +1,6 @@
 import { DuelType } from '../../../Constants.js';
 import type { Duel } from '../../../Duel.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { bow, chosenDiscard, multiple, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,7 +30,7 @@ export default class UnyieldingTerms extends DrawCard {
                 message: 'bow{1} {0}',
                 messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : '']
             }))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 
     wonByDuelist(duel: Duel): boolean {

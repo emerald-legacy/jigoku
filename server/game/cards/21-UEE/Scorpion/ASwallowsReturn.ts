@@ -1,5 +1,5 @@
 import { Location, PlayType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { cardMenu, discardCard, playCard, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class ASwallowsReturn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(AbilityDsl.costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
+            .cost(costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
             .condition((context) =>
                 context.game.currentConflict !== null &&
         context.player.opponent !== undefined &&

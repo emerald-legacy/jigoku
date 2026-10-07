@@ -1,7 +1,7 @@
 import { CardType, Decks, Duration, Location, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import { deckSearch, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class AshalanLantern extends DrawCard {
 
     public setupCardAbilities() {
         this.conflictAction('Play a character from your opponent\'s dynasty deck', { evenFromHome: true })
-            .cost(AbilityDsl.costs.nameCard())
+            .cost(costs.nameCard())
             .gameAction(sequential([
                 playerLastingEffect((context) => ({
                     duration: Duration.UntilPassPriority,

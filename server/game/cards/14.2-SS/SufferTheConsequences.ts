@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases, CardType, ConflictType, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perPhase } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -11,7 +12,7 @@ class SufferTheConsequences extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain another political conflict')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.traits.some((trait) => validSacrificeTraits.includes(trait)) && card.bowed
             }))
@@ -22,7 +23,7 @@ class SufferTheConsequences extends DrawCard {
                 effect: additionalConflict(ConflictType.Political)
             }))
             .effect((context) => msg`allow ${context.player} to declare an additional political conflict this phase`)
-            .max(AbilityDsl.limit.perPhase(1));
+            .max(perPhase(1));
     }
 }
 

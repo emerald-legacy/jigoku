@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { cardMenu, discardCard, lookAt } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class KitsukiInvestigator extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at opponent\'s hand')
-            .cost(AbilityDsl.costs.payFateToRing())
+            .cost(costs.payFateToRing())
             .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political) &&
                                   !!context.player.opponent && context.player.opponent.hand.length > 0)
             .gameAction(lookAt((context) => ({
@@ -21,7 +22,7 @@ class KitsukiInvestigator extends DrawCard {
                 gameAction: discardCard()
             })))
             .effect('reveal {1}\'s hand and discard a card from it', context => context.player.opponent ?? context.player)
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

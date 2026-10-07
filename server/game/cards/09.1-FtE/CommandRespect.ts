@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { additionalPlayCost } from '../../effects.js';
 
 class CommandRespect extends DrawCard {
@@ -13,11 +14,11 @@ class CommandRespect extends DrawCard {
             .playerLastingEffect(context => ({
                 targetController: context.player.opponent,
                 effect: additionalPlayCost((sourceContext) =>
-                    sourceContext.source.type === CardType.Event ? [AbilityDsl.costs.giveHonorToOpponent(1)] : []
+                    sourceContext.source.type === CardType.Event ? [costs.giveHonorToOpponent(1)] : []
                 )
             }))
             .effect('force {1} to give them an honor as an additional cost to play an event until the end of the conflict', context => [context.player.opponent])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

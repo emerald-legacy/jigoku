@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
 import { bow, cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class KaitoNobukai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow each participating characters')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition(context => context.source.isParticipating())
             .gameAction(multiple([
                 bow(() => ({

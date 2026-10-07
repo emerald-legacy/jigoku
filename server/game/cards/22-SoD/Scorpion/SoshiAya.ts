@@ -1,6 +1,6 @@
 import CardAbility from '../../../CardAbility.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiAya extends DrawCard {
@@ -12,7 +12,7 @@ export default class SoshiAya extends DrawCard {
                     event.card.hasTrait('courtier') && event.card.controller === context.player.opponent &&
                     event.context.ability instanceof CardAbility && event.context.ability.printedAbility
             })
-            .cost(AbilityDsl.costs.putSelfIntoPlay())
+            .cost(costs.putSelfIntoPlay())
             .cancel()
             .location(Location.Hand)
             .then()

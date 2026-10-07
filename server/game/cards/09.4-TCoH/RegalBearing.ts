@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { draw, sequential, setHonorDial } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -23,7 +23,7 @@ class RegalBearing extends DrawCard {
                 }))
             ]))
             .effect('set their bid dial to 1 and draw {1} cards', context => this.getHonorDialDifference(context))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 
     private getHonorDialDifference(context: AbilityContext) {

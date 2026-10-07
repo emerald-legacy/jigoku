@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { attach, discardCard, discardFromPlay, ifAble, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType, EventName } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
@@ -10,7 +10,7 @@ class AgashaProdigys extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a card to try and attach it to a character')
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
+            .cost(costs.optionalHonorTransferFromOpponentCost((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character

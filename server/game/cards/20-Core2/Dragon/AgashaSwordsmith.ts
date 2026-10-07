@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,6 +16,6 @@ export default class AgashaSwordsmith extends DrawCard {
                 })
             })
             .effect('look at the top five cards of their deck')
-            .limit(AbilityDsl.limit.perRound(1));
+            .limit(perRound(1));
     }
 }

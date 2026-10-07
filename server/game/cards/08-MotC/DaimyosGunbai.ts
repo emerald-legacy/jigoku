@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { attach, discardCard } from '../../GameActions/GameActions.js';
 import { Location, DuelType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
@@ -9,7 +9,7 @@ class DaimyosGunbai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Initiate a military duel and attach this to the winner')
-            .cost(AbilityDsl.costs.reveal(context => [context.source]))
+            .cost(costs.reveal(context => [context.source]))
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,

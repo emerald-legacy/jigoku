@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { moveConflict } from '../../GameActions/GameActions.js';
 
 class TalismanOfTheSun extends DrawCard {
@@ -8,7 +8,7 @@ class TalismanOfTheSun extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move conflict to a different province')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(context => context.player.isDefendingPlayer())
             .selectCard(context => ({
                 cardType: CardType.Province,

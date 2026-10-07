@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
 import { Duration, PlayType, Players } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class Gossip extends DrawCard {
 
     setupCardAbilities() {
         this.action('Name a card that your opponent cannot play for the phase')
-            .cost(AbilityDsl.costs.nameCard())
+            .cost(costs.nameCard())
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Opponent,

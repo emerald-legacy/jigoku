@@ -1,6 +1,6 @@
 import { Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { replacePrintedElement } from '../../effects.js';
 import { cardLastingEffect, menuPrompt } from '../../GameActions/GameActions.js';
 import type { ElementSymbol } from '../../ElementSymbol.js';
@@ -11,7 +11,7 @@ export default class TwinSoulTemple extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Bow this stronghold')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .elementTarget({
                 activePromptTitle: 'Choose an element to replace',
                 location: [Location.PlayArea, Location.Provinces]

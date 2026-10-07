@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { honor, multiple, ready } from '../../GameActions/GameActions.js';
 
 class CommonCause extends DrawCard {
@@ -8,7 +8,7 @@ class CommonCause extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready character')
-            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .target({
                 activePromptTitle: 'Choose a character to ready',
                 cardType: CardType.Character

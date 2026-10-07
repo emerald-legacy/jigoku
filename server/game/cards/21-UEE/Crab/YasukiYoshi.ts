@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import { loseHonor } from '../../../GameActions/GameActions.js';
 import { Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -27,6 +27,6 @@ export default class YasukiYoshi extends DrawCard {
             .gameAction(loseHonor((context) => ({
                 target: context.event.conflict.loser
             })))
-            .limit(AbilityDsl.limit.unlimited());
+            .limit(unlimited());
     }
 }

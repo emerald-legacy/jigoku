@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { removeFate } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType, Element } from '../../Constants.js';
 import { countTargetable } from '../countTargetable.js';
@@ -13,7 +13,7 @@ class IsawaTsuke2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lose honor to discard fate')
-            .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
+            .cost(costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
             .condition((context) =>
                 context.game.isDuringConflict() &&
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())

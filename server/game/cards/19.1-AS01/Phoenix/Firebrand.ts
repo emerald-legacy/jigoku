@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import { Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,7 +12,7 @@ export default class Firebrand extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Resolve the fire ring')
-            .cost(AbilityDsl.costs.returnRings(1, (ring) =>
+            .cost(costs.returnRings(1, (ring) =>
                 ring.hasElement(this.getCurrentElementSymbol(ELEMENT_TO_RETURN))
             ))
             .gameAction(resolveRingEffect((context) => ({

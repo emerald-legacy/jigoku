@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perPhase } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
 import { Duration, ConflictType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
@@ -16,7 +16,7 @@ class HidaOUshi extends DrawCard {
                 effect: additionalConflict(ConflictType.Military)
             }))
             .effect((context) => msg`allow ${context.player} to declare an additional military conflict this phase`)
-            .max(AbilityDsl.limit.perPhase(1));
+            .max(perPhase(1));
     }
 }
 

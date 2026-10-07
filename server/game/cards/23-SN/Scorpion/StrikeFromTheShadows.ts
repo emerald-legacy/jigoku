@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -18,6 +18,6 @@ export default class StrikeFromTheShadows extends DrawCard {
                 ]
             }))
             .effect(() => msg`give all participating Shinobi they control +1${'military'}/+1${'political'} until the end of the conflict`)
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

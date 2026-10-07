@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { additionalActionAfterWindowCompleted } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,6 +13,6 @@ export default class WaitUntilItSings extends DrawCard {
                 effect: additionalActionAfterWindowCompleted(1)
             }))
             .effect('take an action before conflict resolution')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

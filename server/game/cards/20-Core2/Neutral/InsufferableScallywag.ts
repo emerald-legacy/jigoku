@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { dishonor, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class InsufferableScallywag extends DrawCard {
 
     public setupCardAbilities() {
         this.conflictAction('Dishonor or send a character home')
-            .cost(AbilityDsl.costs.removeFateFromSelf())
+            .cost(costs.removeFateFromSelf())
             .target({
                 name: CHARACTER,
                 cardType: CardType.Character,

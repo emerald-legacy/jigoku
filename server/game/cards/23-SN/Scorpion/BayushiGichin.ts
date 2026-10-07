@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, DuelType, Players, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { attach, noAction, selectCard, sequentialContext, takeHonor } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -61,7 +61,7 @@ export default class BayushiGichin extends DrawCard {
                     ]
                 };
             }))
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
 
         this.conflictAction('Military duel to steal honor')
             .initiateDuel(() => ({

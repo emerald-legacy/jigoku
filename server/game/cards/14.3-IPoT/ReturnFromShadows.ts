@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { dishonorProvince, reveal, sequential } from '../../GameActions/GameActions.js';
 
 class ReturnFromShadows extends DrawCard {
@@ -19,7 +19,7 @@ class ReturnFromShadows extends DrawCard {
                 dishonorProvince(),
                 reveal({ chatMessage: true })
             ]))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

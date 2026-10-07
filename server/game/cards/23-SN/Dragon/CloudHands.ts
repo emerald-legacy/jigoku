@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
 
@@ -33,6 +33,6 @@ export default class CloudHands extends DrawCard {
                 }))
             ]))
             .effect('honor {1} and set their base skills to equal {2}\'s base skills', context => [context.targets.myCharacter, context.targets.oppCharacter])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

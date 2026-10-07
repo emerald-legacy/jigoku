@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Phases, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 class InspiredVisionary extends DrawCard {
@@ -11,7 +11,7 @@ class InspiredVisionary extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Fate
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Attachment
             }, sequential([

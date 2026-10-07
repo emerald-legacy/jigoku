@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, TargetMode, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { putIntoConflict, reveal, selectCards, sequential } from '../../GameActions/GameActions.js';
 
 class IkomaUjiaki extends DrawCard {
@@ -8,7 +8,7 @@ class IkomaUjiaki extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put characters into play')
-            .cost(AbilityDsl.costs.discardImperialFavor())
+            .cost(costs.discardImperialFavor())
             .condition(context => context.source.isParticipating())
             .gameAction(sequential([
                 reveal(context => ({

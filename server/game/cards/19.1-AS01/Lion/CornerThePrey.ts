@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
@@ -10,7 +10,7 @@ export default class CornerThePrey extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Sacrifice followers to kill')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: [CardType.Character, CardType.Attachment],
                 mode: TargetMode.Unlimited,
                 // A follower can be attached to a province, which does not participate.

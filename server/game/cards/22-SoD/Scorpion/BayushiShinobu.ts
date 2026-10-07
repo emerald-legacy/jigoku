@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { delayedEffect, entersPlayWithStatus, takeControl } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -36,7 +36,7 @@ export default class BayushiShinobu extends DrawCard {
         });
 
         this.action('Take control of a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

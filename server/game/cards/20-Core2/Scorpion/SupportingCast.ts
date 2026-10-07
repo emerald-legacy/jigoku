@@ -1,5 +1,5 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { bow, cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -41,6 +41,6 @@ export default class SupportingCast extends DrawCard {
                 effect: modifyMilitarySkill(3)
             }))
             .effect((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

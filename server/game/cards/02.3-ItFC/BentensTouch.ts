@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { honor } from '../../GameActions/GameActions.js';
 
 class BentensTouch extends DrawCard {
@@ -8,7 +8,7 @@ class BentensTouch extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow and Honor a character')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('phoenix') && card.hasTrait('shugenja')
             }))

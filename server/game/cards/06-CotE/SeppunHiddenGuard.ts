@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cancel, discardAtRandom, multiple } from '../../GameActions/GameActions.js';
 
 class SeppunHiddenGuard extends DrawCard {
@@ -18,7 +18,7 @@ class SeppunHiddenGuard extends DrawCard {
                             card.location === Location.PlayArea
                     )
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .gameAction(multiple([
                 cancel(),
                 discardAtRandom((context) => ({ target: context.event.context.player }))

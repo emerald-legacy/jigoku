@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
@@ -8,7 +9,7 @@ class WrathOfTheKami extends DrawCard {
 
     setupCardAbilities() {
         this.action('Add Province Strength')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .condition(context => this.game.isDuringConflict() && context.source.isInConflictProvince())
             .cardLastingEffect(context => ({
                 target: context.source.controller.getProvinceCardInProvince(context.source.location),
@@ -16,7 +17,7 @@ class WrathOfTheKami extends DrawCard {
                 effect: modifyProvinceStrength(1)
             }))
             .effect('add 1 to the province strength of {1}', context => [context.source.controller.getProvinceCardInProvince(context.source.location)])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

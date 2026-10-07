@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { setBaseProvinceStrength } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -9,8 +9,8 @@ class CommandByName extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce province strength')
-            .cost(AbilityDsl.costs.payHonor(1))
-            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .cost(costs.payHonor(1))
+            .cost(costs.discardCard({ location: Location.Hand }))
             .condition((context) => context.game.isDuringConflict())
             .selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',

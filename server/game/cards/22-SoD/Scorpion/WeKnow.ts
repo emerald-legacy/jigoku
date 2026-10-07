@@ -1,6 +1,6 @@
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { discardStatusToken, draw, gainStatusToken, joint, loseHonor } from '../../../GameActions/GameActions.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class WeKnow extends DrawCard {
 
     setupCardAbilities() {
         this.action('Choose an honored status token')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('courtier')
             }))

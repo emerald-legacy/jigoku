@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { draw, moveCard, sequential } from '../../GameActions/GameActions.js';
 import { shuffle } from '../../utils/shuffle.js';
 import type Player from '../../Player.js';
@@ -11,7 +11,7 @@ class AnOceanInADrop extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place hand on bottom of deck and draw cards')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .selectFrom({
                 targets: true

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { deckChoiceName } from '../deckChoiceName.js';
 
 class SlovenlyScavenger extends DrawCard {
@@ -11,7 +11,7 @@ class SlovenlyScavenger extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .selectIf({
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:'

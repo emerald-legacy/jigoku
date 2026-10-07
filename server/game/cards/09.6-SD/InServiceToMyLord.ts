@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { canPlayFromOwn } from '../../effects.js';
 import { moveCard, multiple, ready } from '../../GameActions/GameActions.js';
 import { Location, PlayType, CardType } from '../../Constants.js';
@@ -13,7 +13,7 @@ class InServiceToMyLord extends DrawCard {
             effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
         this.action('Ready a character')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique()
             }))

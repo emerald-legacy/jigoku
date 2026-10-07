@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { cardCannot } from '../../../effects.js';
 import { attach } from '../../../GameActions/GameActions.js';
 import { Location, Players, CardType, Phases, ConflictType } from '../../../Constants.js';
@@ -17,7 +17,7 @@ class Stinger extends DrawCard {
         });
 
         this.conflictAction('Attach this to an attacking character', { conflictType: ConflictType.Military })
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .target({
                 player: Players.Self,
                 cardType: CardType.Character,

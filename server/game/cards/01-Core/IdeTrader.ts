@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { draw, gainFate } from '../../GameActions/GameActions.js';
 
 class IdeTrader extends DrawCard {
@@ -14,7 +14,7 @@ class IdeTrader extends DrawCard {
                 'Gain 1 fate': gainFate(),
                 'Draw 1 card': draw()
             })
-            .limit(AbilityDsl.limit.perConflict(1))
+            .limit(perConflict(1))
             .collectiveTrigger();
     }
 }

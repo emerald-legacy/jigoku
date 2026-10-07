@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { blank } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Duration, Phases } from '../../Constants.js';
@@ -12,7 +12,7 @@ class AgashaHiyori extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase !== Phases.Setup
             })
-            .cost(AbilityDsl.costs.payFateToRing(1))
+            .cost(costs.payFateToRing(1))
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter)

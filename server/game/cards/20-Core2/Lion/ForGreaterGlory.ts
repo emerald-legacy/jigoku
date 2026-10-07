@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType } from '../../../Constants.js';
 
@@ -16,6 +16,6 @@ export default class ForGreaterGlory extends DrawCard {
                     ?.getCharacters(context.player)
                     .filter((card) => card.hasTrait('bushi')) ?? []
             }))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

@@ -4,11 +4,10 @@ import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import CardAbility from './CardAbility.js';
 import { type Element, type EventName, type Location, type Phases, Players, TargetMode } from './Constants.js';
-import { getAbilityDsl } from './AbilityDslProvider.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
-import type * as GameActions from './GameActions/GameActions.js';
+import * as GameActions from './GameActions/GameActions.js';
 import type { SelectCardProperties } from './GameActions/SelectCardAction.js';
 import type { CancellingContext } from './GameActions/CancelAction.js';
 import type { GameEvent } from './Events/EventPayloads.js';
@@ -714,109 +713,109 @@ export class AbilityBuilder<
 
     /** The player of the ability gains honor. */
     gainHonor(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.gainHonor({ amount }));
+        return this.gameAction(GameActions.gainHonor({ amount }));
     }
 
     /** The player of the ability loses honor. */
     loseHonor(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.loseHonor({ amount }));
+        return this.gameAction(GameActions.loseHonor({ amount }));
     }
 
     /** The player of the ability gains fate. */
     gainFate(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.gainFate({ amount }));
+        return this.gameAction(GameActions.gainFate({ amount }));
     }
 
     /** The player of the ability draws cards. */
     draw(amount = 1): this {
-        return this.gameAction(getAbilityDsl().actions.draw({ amount }));
+        return this.gameAction(GameActions.draw({ amount }));
     }
 
     /** Readies the target (the source by default). */
     ready(properties: ActionProperties<'ready', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.ready(properties));
+        return this.gameAction(GameActions.ready(properties));
     }
 
     /** Bows the target (the source by default). */
     bow(properties: ActionProperties<'bow', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.bow(properties));
+        return this.gameAction(GameActions.bow(properties));
     }
 
     /** Honors the target (the source by default). */
     honor(properties: ActionProperties<'honor', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.honor(properties));
+        return this.gameAction(GameActions.honor(properties));
     }
 
     /** Dishonors the target (the source by default). */
     dishonor(properties: ActionProperties<'dishonor', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.dishonor(properties));
+        return this.gameAction(GameActions.dishonor(properties));
     }
 
     /** Places fate on the target (the source by default). */
     placeFate(properties: ActionProperties<'placeFate', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.placeFate(properties));
+        return this.gameAction(GameActions.placeFate(properties));
     }
 
     /** Removes fate from the target (the source by default). */
     removeFate(properties: ActionProperties<'removeFate', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.removeFate(properties));
+        return this.gameAction(GameActions.removeFate(properties));
     }
 
     /** Sends the target home (the source by default). */
     sendHome(properties: ActionProperties<'sendHome', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.sendHome(properties));
+        return this.gameAction(GameActions.sendHome(properties));
     }
 
     /** Moves the target to the conflict (the source by default). */
     moveToConflict(properties: ActionProperties<'moveToConflict', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.moveToConflict(properties));
+        return this.gameAction(GameActions.moveToConflict(properties));
     }
 
     /** Discards the target from play (the source by default). */
     discardFromPlay(properties: ActionProperties<'discardFromPlay', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.discardFromPlay(properties));
+        return this.gameAction(GameActions.discardFromPlay(properties));
     }
 
     /** Sacrifices the target (the source by default). */
     sacrifice(properties: ActionProperties<'sacrifice', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.sacrifice(properties));
+        return this.gameAction(GameActions.sacrifice(properties));
     }
 
     /** Takes honor from the target (the opponent by default). */
     takeHonor(properties: ActionProperties<'takeHonor', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.takeHonor(properties));
+        return this.gameAction(GameActions.takeHonor(properties));
     }
 
     /** Takes fate from the target (the opponent by default). */
     takeFate(properties: ActionProperties<'takeFate', BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        return this.gameAction(getAbilityDsl().actions.takeFate(properties));
+        return this.gameAction(GameActions.takeFate(properties));
     }
 
     /** Refills a province faceup. */
     refillFaceup(properties: ActionProperties<'refillFaceup', BuilderContext<Base, TG, RG, CO, TK>>): this {
-        return this.gameAction(getAbilityDsl().actions.refillFaceup(properties));
+        return this.gameAction(GameActions.refillFaceup(properties));
     }
 
     /** A lasting effect on cards (the source by default). */
     cardLastingEffect(properties: ActionProperties<'cardLastingEffect', BuilderContext<Base, TG, RG, CO, TK>>): this {
-        return this.gameAction(getAbilityDsl().actions.cardLastingEffect(properties));
+        return this.gameAction(GameActions.cardLastingEffect(properties));
     }
 
     /** A lasting effect on players. */
     playerLastingEffect(properties: ActionProperties<'playerLastingEffect', BuilderContext<Base, TG, RG, CO, TK>>): this {
-        return this.gameAction(getAbilityDsl().actions.playerLastingEffect(properties));
+        return this.gameAction(GameActions.playerLastingEffect(properties));
     }
 
     /** The player (or `player`) chooses a card when the ability resolves, and `gameAction` resolves on it. */
     selectCard<const K extends CardTypes = CardTypes>(
         properties: SelectCardProperties<BuilderContext<Base, TG, RG, CO, TK>, K> | ((context: BuilderContext<Base, TG, RG, CO, TK>) => SelectCardProperties<BuilderContext<Base, TG, RG, CO, TK>, K>)
     ): this {
-        return this.gameAction(getAbilityDsl().actions.selectCard<BuilderContext<Base, TG, RG, CO, TK>, K>(properties));
+        return this.gameAction(GameActions.selectCard<BuilderContext<Base, TG, RG, CO, TK>, K>(properties));
     }
 
     /** Searches a deck: look at its top cards, choose some, and resolve `gameAction` on them. */
     deckSearch(properties: ActionProperties<'deckSearch', BuilderContext<Base, TG, RG, CO, TK>>): this {
-        return this.gameAction(getAbilityDsl().actions.deckSearch(properties));
+        return this.gameAction(GameActions.deckSearch(properties));
     }
 
     /** Cancels the triggering event (interrupts only), optionally replacing it with `replacementGameAction`. */
@@ -824,7 +823,7 @@ export class AbilityBuilder<
         this: AbilityBuilder<B, TG, RG, CO, TK, SL>,
         properties: ActionProperties<'cancel', BuilderContext<B, TG, RG, CO, TK>> = {}
     ): AbilityBuilder<B, TG, RG, CO, TK, SL> {
-        return this.gameAction(getAbilityDsl().actions.cancel(properties));
+        return this.gameAction(GameActions.cancel(properties));
     }
 
     gameAction(...actions: BuilderAction<Base, TG, RG, CO, TK>[]): this {
@@ -1136,7 +1135,7 @@ function resolveAgain(context: AbilityContext, player?: Player): GameAction {
     if(!ability.isCardAbilityInstance()) {
         throw new Error('only a card ability resolves again');
     }
-    return getAbilityDsl().actions.resolveAbility({
+    return GameActions.resolveAbility({
         ability,
         ...(player ? { player } : {}),
         ...('event' in context && context.event instanceof Event ? { event: context.event } : {}),
@@ -1168,7 +1167,7 @@ function mayResolveAgain(context: AbilityContext, activePromptTitle: string, cho
     };
 }
 
-const oneAction = (actions: GameAction[]) => actions.length === 1 ? actions[0] : getAbilityDsl().actions.multiple(actions);
+const oneAction = (actions: GameAction[]) => actions.length === 1 ? actions[0] : GameActions.multiple(actions);
 
 /** The draft with its if() branches in one conditional action: on the ability, or on the card target they follow. */
 function withBranches(draft: AbilityDraft): AbilityDraft {
@@ -1176,15 +1175,14 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
     if(!branch) {
         return draft;
     }
-    const dsl = getAbilityDsl().actions;
     const actions = draft.gameActions;
     const yes = actions.slice(branch.from, branch.otherwiseFrom);
-    const no = branch.otherwiseFrom === undefined ? [dsl.noAction()] : actions.slice(branch.otherwiseFrom);
+    const no = branch.otherwiseFrom === undefined ? [GameActions.noAction()] : actions.slice(branch.otherwiseFrom);
     if(yes.length === 0 || no.length === 0) {
         throw new Error(`${draft.title}: if() and otherwise() each need a game action`);
     }
     const condition = branch.condition;
-    const branches = dsl.conditional({ condition: (context) => condition(context), trueGameAction: oneAction(yes), falseGameAction: oneAction(no) });
+    const branches = GameActions.conditional({ condition: (context) => condition(context), trueGameAction: oneAction(yes), falseGameAction: oneAction(no) });
     const before = actions.slice(0, branch.from);
     if(branch.target === undefined) {
         return { ...draft, branch: undefined, gameActions: [...before, branches] };
@@ -1209,7 +1207,7 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
     const trait = draft.affinity;
     const gameAction = oneAction(actions);
     const { prompt, effect } = draft.affinityOptions ?? {};
-    return { gameAction: [getAbilityDsl().actions.onAffinity((context) => {
+    return { gameAction: [GameActions.onAffinity((context) => {
         const [format, args] = effect ? effect(context) : [undefined, undefined];
         return {
             trait,

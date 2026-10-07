@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { moveCard, multiple, refillFaceup, sequential } from '../../GameActions/GameActions.js';
 
 import { Location, Players, CardType } from '../../Constants.js';
@@ -49,7 +49,7 @@ class CycleOfRebirth extends DrawCard {
                     context.source.controller
                 ];
             })
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }
 

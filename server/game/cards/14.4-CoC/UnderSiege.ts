@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { hideWhenFaceUp, playerDelayedEffect } from '../../effects.js';
 import {
     chosenDiscard,
@@ -72,13 +72,13 @@ class UnderSiege extends DrawCard {
                                 if(setAsideCards.length > 0) {
                                     setAsideCards.forEach((card) => {
                                         player.moveCard(card, Location.RemovedFromGame);
-                                        card.lastingEffect(() => ({
+                                        card.lastingEffect({
                                             until: {
                                                 onCardMoved: event => event.card === card && event.originalLocation === Location.RemovedFromGame
                                             },
                                             match: card,
                                             effect: hideWhenFaceUp()
-                                        }));
+                                        });
                                     });
                                 }
                             }
@@ -97,7 +97,7 @@ class UnderSiege extends DrawCard {
                 })
             ]))
             .effect('place {1} under siege', context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -28,7 +28,7 @@ export default class EarthsStagnation extends DrawCard {
                 const penalty = penaltyAmount(context);
                 return [penalty, 'military', penalty, 'political', context.source.parentCharacter];
             })
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 
     public canPlay(context: AbilityContext, playType: string) {

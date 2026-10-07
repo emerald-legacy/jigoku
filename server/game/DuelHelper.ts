@@ -1,4 +1,4 @@
-import AbilityDsl from './abilitydsl.js';
+import { duel } from './GameActions/GameActions.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import { CardType, Players } from './Constants.js';
@@ -51,7 +51,7 @@ const initiateDuelFromCharacter = (card: DrawCard, properties: InitiateDuelHelpe
     };
     properties.target = {
         ...getBaselineDuelTargetProperties(source, card),
-        gameAction: AbilityDsl.actions.duel((context: AbilityContext) => {
+        gameAction: duel((context: AbilityContext) => {
             return Object.assign({ challenger: context.source }, duelProperties(source, context));
         })
     };
@@ -70,7 +70,7 @@ const initiateDuelFromOther = (properties: InitiateDuelHelperProps, source: Duel
         duelTarget: {
             dependsOn: 'challenger',
             ...getBaselineDuelTargetProperties(source),
-            gameAction: AbilityDsl.actions.duel((context: AbilityContext) => {
+            gameAction: duel((context: AbilityContext) => {
                 return Object.assign({ challenger: context.targets.challenger }, duelProperties(source, context));
             })
         }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perPhase } from '../../AbilityLimit.js';
 import { draw } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,6 +15,6 @@ export default class TacticiansApprentice extends DrawCard {
             })
             .gameAction(draw())
             .effect('draw a card')
-            .limit(AbilityDsl.limit.perPhase(1));
+            .limit(perPhase(1));
     }
 }

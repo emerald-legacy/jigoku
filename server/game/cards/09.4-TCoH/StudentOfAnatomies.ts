@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { blank } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../Constants.js';
@@ -9,7 +9,7 @@ class StudentOfAnatomies extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice a character to blank an enemy')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character
             }))
             .target({

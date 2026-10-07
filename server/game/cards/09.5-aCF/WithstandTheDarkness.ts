@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perPhase } from '../../AbilityLimit.js';
 import { placeFate } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
@@ -32,7 +32,7 @@ export default class WithstandTheDarkness extends DrawCard {
                 cardCondition: (card, context) =>
                     this.currentTargets.has(card) && this.isValidTargetForWithstand(card, context)
             }, placeFate())
-            .max(AbilityDsl.limit.perPhase(1));
+            .max(perPhase(1));
     }
 
     private isValidTargetForWithstand(card: BaseCard, context: TriggeredAbilityContext) {

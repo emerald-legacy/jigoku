@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { doesNotBow } from '../../effects.js';
 import { CardType } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class MasashigisSacrifice extends DrawCard {
 
     setupCardAbilities() {
         this.action('Defending characters do not bow as a result of conflict resolution')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens
             }))

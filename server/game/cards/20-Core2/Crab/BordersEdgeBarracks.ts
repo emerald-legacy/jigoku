@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,6 +13,6 @@ export default class BordersEdgeBarracks extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, moveToConflict())
-            .limit(AbilityDsl.limit.perConflict(1));
+            .limit(perConflict(1));
     }
 }

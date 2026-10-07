@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { lookAt, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
@@ -30,6 +30,6 @@ export default class LoyalAttendant extends DrawCard {
                 context.player.opponent,
                 context.target.attachments.length
             ])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

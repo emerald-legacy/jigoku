@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { cannotReceiveDishonorToken } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType } from '../../../Constants.js';
@@ -17,7 +17,7 @@ export default class GrizzledStrategist extends DrawCard {
                     context.source.isParticipating() &&
                     event.card.type === CardType.Event
             })
-            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .cancel();
     }
 }

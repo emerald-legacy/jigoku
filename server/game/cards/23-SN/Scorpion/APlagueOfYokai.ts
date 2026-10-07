@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from '../../../effects.js';
 import { attach, multipleContext, shuffleDeck } from '../../../GameActions/GameActions.js';
 
@@ -17,7 +17,7 @@ export default class APlagueOfYokai extends DrawCard {
         });
 
         this.conflictAction('Spread the plague')
-            .cost(AbilityDsl.costs.dishonor({
+            .cost(costs.dishonor({
                 controller: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('shinobi')

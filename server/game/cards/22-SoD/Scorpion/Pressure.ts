@@ -1,5 +1,5 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import { cardLastingEffect, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -38,6 +38,6 @@ export default class Pressure extends DrawCard {
                 messageArgs: (cards) => [context.player, cards]
             }))
             .effect('move a character home and prevent it from participating in the conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

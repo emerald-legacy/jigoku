@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
@@ -9,7 +10,7 @@ export default class InLadyDojisService extends DrawCard {
 
     setupCardAbilities() {
         this.action('Pacify a character')
-            .cost(AbilityDsl.costs.bow({ cardType: CardType.Character }))
+            .cost(costs.bow({ cardType: CardType.Character }))
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -34,6 +35,6 @@ export default class InLadyDojisService extends DrawCard {
                 context.targets.character,
                 context.selects.select.choice === 'Prevent Attacking' ? 'an attacker' : 'a defender'
             ])
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

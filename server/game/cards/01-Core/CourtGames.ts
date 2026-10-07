@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { dishonor, honor, selectCard } from '../../GameActions/GameActions.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 
@@ -30,7 +30,7 @@ class CourtGames extends DrawCard {
                 }))
             })
             .effect('{1}', context => context.select.toLowerCase())
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

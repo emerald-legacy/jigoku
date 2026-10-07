@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import { gainHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -23,7 +23,7 @@ export default class DevelopingMasterpiece extends DrawCard {
 
         this.action('Gain honor')
             .cost(captureParentCost())
-            .cost(AbilityDsl.costs.removeSelfFromGame())
+            .cost(costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
             .gameAction(gainHonor((context) => ({
                 amount: capturedParent(context)?.getGlory() ?? 0

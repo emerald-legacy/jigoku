@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { chosenDiscard, draw, handler, multipleContext } from '../../../GameActions/GameActions.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
@@ -41,6 +41,6 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 return { gameActions };
             }))
             .effect('cause {1} to draw a card and {2} to discard a card', context => [context.event.conflict?.winner, context.event.conflict?.loser])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }

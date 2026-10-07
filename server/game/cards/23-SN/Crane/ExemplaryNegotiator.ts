@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { discardAtRandom } from '../../../GameActions/GameActions.js';
 
 export default class ExemplaryNegotiator extends DrawCard {
@@ -7,7 +7,7 @@ export default class ExemplaryNegotiator extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard cards to cause opponent to discard')
-            .cost(AbilityDsl.costs.discardCardsUpToVariableX(() => 2))
+            .cost(costs.discardCardsUpToVariableX(() => 2))
             .condition(context => context.player.anyCardsInPlay(card => card.isDishonored))
             .gameAction(discardAtRandom(context => ({
                 amount: context.costs.discardCardsUpToVariableX?.length || 1

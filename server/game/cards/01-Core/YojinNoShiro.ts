@@ -1,5 +1,5 @@
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -8,7 +8,7 @@ export default class YojinNoShiro extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Give attacking characters +1/+0')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.isAttacking()),

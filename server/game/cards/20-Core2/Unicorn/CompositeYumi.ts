@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -20,7 +20,7 @@ export default class CompositeYumi extends DrawCard {
                 effect: modifyMilitarySkill(1)
             }))
             .effect((context) => msg`give +1${'military'} to ${context.source.parentCharacter}`)
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 
     private matchCondition(context: TriggeredAbilityContext<this>) {

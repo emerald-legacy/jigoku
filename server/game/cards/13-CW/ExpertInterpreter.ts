@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
 import { ringLastingEffect } from '../../GameActions/GameActions.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
@@ -13,7 +13,7 @@ class ExpertInterpreter extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalHonorTransferFromOpponentCost())
             .ringTarget({
                 name: 'myRing',
                 ringCondition: () => true

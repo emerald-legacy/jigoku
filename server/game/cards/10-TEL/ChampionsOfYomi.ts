@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { delayedEffect } from '../../effects.js';
 import { cardLastingEffect, putIntoPlay, removeFromGame, sequential } from '../../GameActions/GameActions.js';
 import {CardType, Duration, Location} from '../../Constants.js';
@@ -14,7 +14,7 @@ class ChampionsOfYomi extends DrawCard {
                     && event.conflict.defendingPlayer !== context.player
                     && event.conflict.getAttackers().length !== 0
             })
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Stronghold
             }))
             .gameAction(sequential([

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { additionalAction } from '../../effects.js';
 
 class AustereExemplar extends DrawCard {
@@ -8,7 +9,7 @@ class AustereExemplar extends DrawCard {
 
     setupCardAbilities() {
         this.action('Take three actions')
-            .cost(AbilityDsl.costs.payFateToRing())
+            .cost(costs.payFateToRing())
             .condition((context) => context.source.isAttacking())
             .playerLastingEffect(context => ({
                 targetController: context.player,
@@ -16,7 +17,7 @@ class AustereExemplar extends DrawCard {
                 effect: additionalAction(3)
             }))
             .effect('take three actions')
-            .limit(AbilityDsl.limit.perConflict(1));
+            .limit(perConflict(1));
     }
 }
 

@@ -1,6 +1,6 @@
 import { CardType, Location, PlayType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { playCard } from '../../GameActions/GameActions.js';
 
 export default class KyudenIsawa extends StrongholdCard {
@@ -8,8 +8,8 @@ export default class KyudenIsawa extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Play a spell event from discard')
-            .cost(AbilityDsl.costs.bowSelf())
-            .cost(AbilityDsl.costs.discardCard({
+            .cost(costs.bowSelf())
+            .cost(costs.discardCard({
                 cardCondition: (card) => card.hasTrait('spell') && card.type === CardType.Event
             }))
             .condition(() => this.game.isDuringConflict())

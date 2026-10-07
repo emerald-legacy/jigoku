@@ -1,6 +1,6 @@
 import { CardType, Duration, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ export default class KyudenBayushi extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Ready a dishonored character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

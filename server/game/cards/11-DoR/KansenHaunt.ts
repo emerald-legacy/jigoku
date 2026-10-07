@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { resolveRingEffect } from '../../GameActions/GameActions.js';
 
 class KansenHaunt extends DrawCard {
@@ -14,7 +14,7 @@ class KansenHaunt extends DrawCard {
                     context.player.isDefendingPlayer() &&
                     event.player === context.player
             })
-            .cost(AbilityDsl.costs.payHonor(2))
+            .cost(costs.payHonor(2))
             .gameAction(resolveRingEffect((context) => ({
                 player: context.player,
                 target: context.event.ring

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class IdeMessenger extends DrawCard {
@@ -8,7 +8,7 @@ class IdeMessenger extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move an ally to a conflict')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

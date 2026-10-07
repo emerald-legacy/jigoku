@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { delayedEffect, modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect, discardFromPlay } from '../../GameActions/GameActions.js';
 
@@ -26,7 +26,7 @@ class BayushiShoju extends DrawCard {
                 ]
             })))
             .effect('reduce {0}\'s political skill by 1 - they will die if they reach 0')
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 }
 

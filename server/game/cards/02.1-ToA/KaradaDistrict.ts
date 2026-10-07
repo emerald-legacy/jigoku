@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { attach, discardFromPlay, ifAble, selectCard } from '../../GameActions/GameActions.js';
 
 class KaradaDistrict extends DrawCard {
@@ -8,7 +8,7 @@ class KaradaDistrict extends DrawCard {
 
     setupCardAbilities() {
         this.action('Take control of an attachment')
-            .cost(AbilityDsl.costs.giveFateToOpponent(1))
+            .cost(costs.giveFateToOpponent(1))
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => Boolean(card.parentCharacter && card.parentCharacter.controller === context.player.opponent)

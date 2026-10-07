@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { reduceCost } from '../../../effects.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, EventName } from '../../../Constants.js';
@@ -25,7 +25,7 @@ export default class CraneIndustry extends DrawCard {
                 })
             }))
             .effect('reduce the cost of the first copy of each event they play this conflict by 1')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 
     public onConflictFinished() {

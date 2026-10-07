@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import { playCard } from '../../../GameActions/GameActions.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -92,7 +92,7 @@ export default class IsawaHifumi extends DrawCard {
                 })
             }))
             .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [hifumiCost.currentCost(context.player), context.player])
-            .limit(AbilityDsl.limit.unlimited())
+            .limit(unlimited())
             .cannotTargetFirst();
     }
 

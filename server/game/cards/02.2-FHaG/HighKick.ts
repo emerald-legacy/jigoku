@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { cannotTriggerAbilities } from '../../effects.js';
 import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class HighKick extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow and Disable a character')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('monk') && card.isParticipating()
             }))

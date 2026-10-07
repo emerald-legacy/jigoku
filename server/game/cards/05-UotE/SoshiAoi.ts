@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { addTrait, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -9,7 +9,7 @@ class SoshiAoi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +1/+0 and the Bushi trait or +0/+1 and the Courtier trait')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .target({
                 name: 'character',
                 cardType: CardType.Character,

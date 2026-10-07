@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { injure } from '../../GameActions/GameActions.js';
 
 class Deathseeker extends DrawCard {
@@ -11,7 +11,7 @@ class Deathseeker extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && context.source.isAttacking()
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent

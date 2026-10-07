@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { resolveAbility } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class CountrysideTrader extends DrawCard {
 
     setupCardAbilities() {
         this.action('Resolve the attacked province ability')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .condition(context => context.game.isDuringConflict() && context.source.isAttacking())
             .abilityTarget({
                 activePromptTitle: 'Select a province to trigger from',

@@ -1,6 +1,6 @@
 import { CardType, EventName, Location, Phases } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { returnToHand } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -16,7 +16,7 @@ export default class SoshiShadowshaper extends DrawCard {
         eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCharacterEntersPlay]);
 
         this.action('Return a character to owner\'s hand')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card)

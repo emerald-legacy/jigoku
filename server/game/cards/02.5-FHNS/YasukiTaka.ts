@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { gainFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Phases, CardType, Location } from '../../Constants.js';
@@ -16,7 +16,7 @@ class YasukiTaka extends DrawCard {
                 }
             })
             .gameAction(gainFate())
-            .limit(AbilityDsl.limit.unlimited());
+            .limit(unlimited());
     }
 }
 

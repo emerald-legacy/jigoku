@@ -1,5 +1,5 @@
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -20,6 +20,6 @@ export default class RisingStarsKata extends DrawCard {
                     : modifyMilitarySkill(3)
             })))
             .effect('give {0} +{1} {2} skill until the end of the conflict', (context) => [duelWinners.has(context.target) ? 5 : 3, 'military'])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

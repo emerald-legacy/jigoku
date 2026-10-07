@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 
 class ThirdTower extends DrawCard {
     static id = 'third-tower';
@@ -20,7 +20,7 @@ class ThirdTower extends DrawCard {
                 }
             })
             .takeHonor()
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';
@@ -10,7 +10,7 @@ class ShrineMaiden extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .cost(AbilityDsl.costs.reveal((context) => context.player.conflictDeck.slice(0, 3)))
+            .cost(costs.reveal((context) => context.player.conflictDeck.slice(0, 3)))
             .handler((context) => {
                 const cards = context.player.conflictDeck.slice(0, 3);
                 const toHand = cards.filter((card) => card.hasTrait('kiho') || card.hasTrait('spell'));

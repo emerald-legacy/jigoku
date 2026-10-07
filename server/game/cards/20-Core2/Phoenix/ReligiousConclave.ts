@@ -1,5 +1,5 @@
 import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { cannotDeclareRing } from '../../../effects.js';
 import { ringLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,7 +9,7 @@ export default class ReligiousConclave extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Prevent an opponent contesting a ring')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition((context) => context.player.opponent !== undefined)
             .ringTarget({
                 ringCondition: () => true

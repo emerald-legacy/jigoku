@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +10,7 @@ export default class JadeInfusedArrows extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: modifyMilitarySkill(this.bonusAmount(context))
@@ -20,7 +21,7 @@ export default class JadeInfusedArrows extends DrawCard {
                 context.source.parentCharacter ?? '',
                 this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku' : ''
             ])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 
     private isAgainstEvil(context: AbilityContext): boolean {

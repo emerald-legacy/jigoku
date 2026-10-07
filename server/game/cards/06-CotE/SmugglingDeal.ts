@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { increaseLimitOnAbilities } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players, Duration } from '../../Constants.js';
@@ -10,7 +10,7 @@ class SmugglingDeal extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase an ability\'s limit')
-            .cost(AbilityDsl.costs.giveHonorToOpponent())
+            .cost(costs.giveHonorToOpponent())
             .abilityTarget({
                 activePromptTitle: 'Select an ability to increase limits on',
                 cardType: CardType.Character,

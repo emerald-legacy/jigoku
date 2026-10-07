@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { gainFate } from '../../GameActions/GameActions.js';
 
 class PacifistPhilosopher extends DrawCard {
@@ -11,7 +11,7 @@ class PacifistPhilosopher extends DrawCard {
                 onConflictPass: () => true
             })
             .gameAction(gainFate())
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 }
 

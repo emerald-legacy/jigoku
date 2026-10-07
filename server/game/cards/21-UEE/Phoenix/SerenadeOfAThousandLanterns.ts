@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, Element, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -19,7 +19,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, _context) => card.isParticipating() && !card.isUnique()
             }, sendHome())
-            .max(AbilityDsl.limit.perConflict(1))
+            .max(perConflict(1))
             .then()
             .onAffinity(Element.Fire)
             .gainHonor(1);

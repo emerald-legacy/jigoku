@@ -1,5 +1,5 @@
 import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { cannotDeclareRing } from '../../../effects.js';
 import { ringLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class YoungIseZumi extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
-            .cost(AbilityDsl.costs.payFateToRing(1, () => true))
+            .cost(costs.payFateToRing(1, () => true))
             .gameAction(ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.costs.placeFate || context.game.rings.air,

@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
 import { sendHome } from '../../GameActions/GameActions.js';
 
 export default class BrothersGiftDojo extends ProvinceCard {
@@ -8,13 +9,13 @@ export default class BrothersGiftDojo extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Move a character home')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
             }, sendHome())
-            .limit(AbilityDsl.limit.perRound(2))
+            .limit(perRound(2))
             .conflictProvinceCondition(() => true);
     }
 }

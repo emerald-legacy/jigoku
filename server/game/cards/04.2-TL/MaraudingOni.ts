@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { cardCannot } from '../../effects.js';
 import { loseHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -21,7 +21,7 @@ class MaraudingOni extends DrawCard {
             })
             .gameAction(loseHonor((context) => ({ target: context.player })))
             .effect('lose an honor')
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

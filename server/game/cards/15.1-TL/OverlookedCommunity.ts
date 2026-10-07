@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { discardStatusToken } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class OverlookedCommunity extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a status token')
-            .cost(AbilityDsl.costs.returnRings(1))
+            .cost(costs.returnRings(1))
             .tokenTarget({
                 cardType: CardType.Character,
                 location: Location.PlayArea

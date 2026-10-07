@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 import { nameCardType, revealCount, takeUpToTwoOfNamedType } from '../../nameCardTypeAndTake.js';
 
@@ -7,7 +7,7 @@ export default class WorkInProgress extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(AbilityDsl.costs.reveal((context) => context.player.conflictDeck.slice(0, revealCount(context, 'artisan'))))
+            .cost(costs.reveal((context) => context.player.conflictDeck.slice(0, revealCount(context, 'artisan'))))
             .cost(nameCardType())
             .condition((context) => context.player.conflictDeck.length >= revealCount(context, 'artisan'))
             .handler((context) => takeUpToTwoOfNamedType(context, context.costs.reveal ?? [], context.costs.namedCardType))

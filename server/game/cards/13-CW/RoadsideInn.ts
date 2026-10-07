@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { placeFate } from '../../GameActions/GameActions.js';
 import { Players, CardType, Phases } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
@@ -12,7 +12,7 @@ class RoadsideInn extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Fate
             })
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
+            .cost(costs.optionalHonorTransferFromOpponentCost(context => {
                 return (context.player.opponent?.fate ?? 0) > 0;
             }))
             .target({

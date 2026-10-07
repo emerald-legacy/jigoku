@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { ready } from '../../GameActions/GameActions.js';
 
 export default class HayakenNoShiro extends StrongholdCard {
@@ -8,7 +8,7 @@ export default class HayakenNoShiro extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.costLessThan(3)

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
 import { resolveRingEffect, selectRing } from '../../GameActions/GameActions.js';
 
 class GanzuWarrior extends DrawCard {
@@ -23,7 +23,7 @@ class GanzuWarrior extends DrawCard {
                 gameAction: resolveRingEffect({ player: context.player })
             })))
             .effect('resolve a ring effect')
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }
 

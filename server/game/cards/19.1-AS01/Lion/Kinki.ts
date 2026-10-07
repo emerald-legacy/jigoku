@@ -1,5 +1,6 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { removeFate, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +13,7 @@ export default class Kinki extends DrawCard {
         });
 
         this.conflictAction('Remove a fate from or move home a character', { conflictType: ConflictType.Military })
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -31,6 +32,6 @@ export default class Kinki extends DrawCard {
                     target: context.targets.character
                 }))
             })
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

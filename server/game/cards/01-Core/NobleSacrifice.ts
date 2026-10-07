@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class NobleSacrifice extends DrawCard {
@@ -8,7 +8,7 @@ class NobleSacrifice extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice honored character to discard dishonored one')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: card => card.isHonored
             }))

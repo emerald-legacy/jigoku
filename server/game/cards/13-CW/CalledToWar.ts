@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { placeFate } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
@@ -9,7 +9,7 @@ class CalledToWar extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place a fate on a bushi')
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalHonorTransferFromOpponentCost())
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,

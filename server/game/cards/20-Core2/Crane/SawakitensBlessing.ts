@@ -1,5 +1,5 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { cardCannot, doesNotBow } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -23,6 +23,6 @@ export default class SawakitensBlessing extends DrawCard {
                 })
             })))
             .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict')
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

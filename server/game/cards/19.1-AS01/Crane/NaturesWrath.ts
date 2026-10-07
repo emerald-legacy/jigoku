@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { dishonor, selectCard, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -42,6 +42,6 @@ export default class NaturesWrath extends DrawCard {
             })
             .mayResolveTwice({ cost: selfDishonorSelect(), label: 'Dishonor a participating character' })
             .cannotTargetFirst()
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

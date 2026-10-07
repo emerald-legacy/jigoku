@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { Location } from '../../../Constants.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -9,7 +10,7 @@ export default class PurveyorOfRarities extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Discard a card for bonuses')
-            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .cost(costs.discardCard({ location: Location.Hand }))
             .if((context) => this.cardCondition(context.costs.discardCard))
                 .cardLastingEffect((context) => ({ target: context.source, effect: modifyBothSkills(1) }))
                 .gainFate(1)
@@ -18,7 +19,7 @@ export default class PurveyorOfRarities extends DrawCard {
             .effect('give +{1}{2}/+{1}{3} to {4}{5}', context => this.cardCondition(context.costs.discardCard) ?
                 [1, 'military', 'political', context.source, ' and gain 1 fate'] :
                 [3, 'military', 'political', context.source, ''])
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 
     private cardCondition(discarded: BaseCard | BaseCard[] | undefined) {

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { chooseAction, conditional, discardAtRandom, discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,7 +17,7 @@ export default class SpiderwebPassage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a participating character with 0 skill')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition((context) => shinobiCount(context) > 0)
             .target({
                 cardType: CardType.Character,

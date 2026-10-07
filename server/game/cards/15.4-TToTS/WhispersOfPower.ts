@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -10,7 +10,7 @@ class WhispersOfPower extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain political power according to fateless characters')
-            .cost(AbilityDsl.costs.payHonor())
+            .cost(costs.payHonor())
             .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
 import { attach } from '../../GameActions/GameActions.js';
 import { captureParentCost } from '../captureParentCost.js';
 
@@ -14,7 +15,7 @@ class Niten extends DrawCard {
 
         this.action('Put an attachment into play')
             .cost(captureParentCost())
-            .cost(AbilityDsl.costs.returnSelfToHand())
+            .cost(costs.returnSelfToHand())
             .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .target({
                 cardType: CardType.Attachment,
@@ -26,7 +27,7 @@ class Niten extends DrawCard {
                 target: context.costs.captureParentCost ?? [],
                 attachment: context.target
             })))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }
 

@@ -1,6 +1,6 @@
 import { Location } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { gainFate, moveCard } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 
@@ -13,7 +13,7 @@ export default class TheEastWind extends StrongholdCard {
                 onCardPlayed: (event, context) =>
                     event.player === context.player && (event.card.hasTrait('gaijin') || this.isOutOfClan(event.card))
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .deckSearch((context) => {
                 const playedCardTraits = context.event.card.getTraits();
                 return {

@@ -1,5 +1,5 @@
 import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { chooseAction, dishonor, honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class MasterAlchemist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .cost(AbilityDsl.costs.payFateToRing(1, (ring) => ring.hasElement(this.getCurrentElementSymbol(ELEMENT))))
+            .cost(costs.payFateToRing(1, (ring) => ring.hasElement(this.getCurrentElementSymbol(ELEMENT))))
             .condition(() => this.game.isDuringConflict())
             .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',

@@ -1,7 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { injure } from '../../../GameActions/GameActions.js';
 
 export default class TwilightAmbush extends DrawCard {
@@ -9,7 +10,7 @@ export default class TwilightAmbush extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice dishonored character to injure dishonored one')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
             }))
@@ -17,7 +18,7 @@ export default class TwilightAmbush extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isDishonored
             }, injure())
-            .max(AbilityDsl.limit.perRound(1))
+            .max(perRound(1))
             .cannotTargetFirst()
             .thenIf((context) => !!context.costs.sacrificeStateWhenChosen?.hasTrait('shinobi'))
             .gameAction(injure((context) => ({ target: context.target })))

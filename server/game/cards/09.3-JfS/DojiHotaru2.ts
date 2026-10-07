@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay, gainHonor } from '../../GameActions/GameActions.js';
 
@@ -26,7 +26,7 @@ class DojiHotaru2 extends DrawCard {
             })
             .gameAction(gainHonor())
             .effect('gain 1 honor')
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
 

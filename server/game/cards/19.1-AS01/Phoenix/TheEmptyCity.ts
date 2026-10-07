@@ -1,7 +1,8 @@
 import { CardType, ConflictType, Duration, EventName, Location, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { cannotTriggerAbilities } from '../../../effects.js';
 import { cardLastingEffect, claimRing, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -15,10 +16,10 @@ export default class TheEmptyCity extends ProvinceCard {
     public setupCardAbilities() {
         new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
-        const sharedLimit = AbilityDsl.limit.perRound(1);
+        const sharedLimit = perRound(1);
 
         this.action('Claim a ring')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('spirit')
             }))

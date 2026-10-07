@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { immunity } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
@@ -9,7 +9,7 @@ class ScholarOfOldRempet extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make character immune to events')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

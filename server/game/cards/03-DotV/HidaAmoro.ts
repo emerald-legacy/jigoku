@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { sacrifice } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
@@ -21,7 +21,7 @@ class HidaAmoro extends DrawCard {
                 gameAction: sacrifice()
             }))
             .effect('force {1} to sacrifice a character', (context) => context.event.conflict.attackingPlayer)
-            .limit(AbilityDsl.limit.unlimited());
+            .limit(unlimited());
     }
 }
 

@@ -1,5 +1,5 @@
 import { ConflictType, DuelType, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
 import { noAction, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -23,6 +23,6 @@ export default class CourteousScheming extends DrawCard {
                         })
                         : noAction()
             }))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

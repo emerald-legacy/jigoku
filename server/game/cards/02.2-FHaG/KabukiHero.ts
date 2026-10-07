@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
 
 class KabukiHero extends DrawCard {
@@ -7,7 +7,7 @@ class KabukiHero extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain military bonus')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .condition(() => this.game.isDuringConflict())
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(context.source.politicalSkill)

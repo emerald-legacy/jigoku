@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { moveCard, sendHome } from '../../GameActions/GameActions.js';
 
 class MountaintopStatuary extends DrawCard {
@@ -14,7 +14,7 @@ class MountaintopStatuary extends DrawCard {
             .gameAction(moveCard({ destination: Location.StrongholdProvince }))
             .effect('move it to their stronghold province');
         this.action('Send a 2 or lower cost character home')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition(context => context.source.isInConflictProvince())
             .target({
                 cardType: CardType.Character,

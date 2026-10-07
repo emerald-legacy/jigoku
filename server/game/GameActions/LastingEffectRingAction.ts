@@ -20,6 +20,6 @@ export class LastingEffectRingAction<C extends AbilityContext = AbilityContext> 
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration, () => Object.assign({ match: event.ring }, properties));
+        event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.ring }, properties));
     }
 }

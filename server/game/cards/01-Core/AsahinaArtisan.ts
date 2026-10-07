@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class AsahinaArtisan extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +0/+3')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

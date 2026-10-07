@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { handler } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -22,7 +22,7 @@ export default class LuckyCoin extends DrawCard {
                     return totalCost < 6 || totalCost > 12;
                 }
             })
-            .cost(AbilityDsl.costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
+            .cost(costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
             .gameAction(handler({
                 handler: ({ player, game }) => {
                     const cardsToMulligan = player.getDynastyCardsInProvince(Location.Provinces);

@@ -1,5 +1,5 @@
 import { Duration, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { gainActionPhasePriority, playerDelayedEffect } from '../../../effects.js';
 import { handler, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class SneakAttack extends DrawCard {
             .when({
                 onConflictStarted: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .gameAction(sequential([
                 handler({
                     handler: (context) => {

@@ -1,5 +1,5 @@
 import { Location, Duration, Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { delayedEffect } from '../../../effects.js';
 import { cardLastingEffect, putIntoPlay, removeFromGame, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,7 +13,7 @@ export default class MirumotoHitori extends DrawCard {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.game.currentPhase === Phases.Fate
             })
-            .cost(AbilityDsl.costs.returnRings(1))
+            .cost(costs.returnRings(1))
             .cancel((context) => ({
                 target: context.source,
                 replacementGameAction: sequential([

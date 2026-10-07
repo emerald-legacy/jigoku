@@ -1,5 +1,5 @@
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import { discardFromPlay, placeFate, selectCards, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,6 +30,6 @@ export default class KotobukisBlessing extends DrawCard {
                     ]
                 }))
             ]))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

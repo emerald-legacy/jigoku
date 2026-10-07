@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ export default class MountainsAnvilCastle extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Give a character with attachments bonus skill')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => Boolean(this.game.currentConflict))
             .target({
                 cardType: CardType.Character,

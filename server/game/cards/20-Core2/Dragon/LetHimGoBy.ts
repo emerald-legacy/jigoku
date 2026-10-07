@@ -1,5 +1,5 @@
 import { DuelType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -39,6 +39,6 @@ export default class LetHimGoBy extends DrawCard {
                     'military'
                 ]
             }))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

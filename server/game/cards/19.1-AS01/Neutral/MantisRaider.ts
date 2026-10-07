@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -18,11 +19,11 @@ export default class MantisRaider extends DrawCard {
             .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent);
 
         this.conflictAction('Give this character +1 military')
-            .cost(AbilityDsl.costs.removeFateFromSelf())
+            .cost(costs.removeFateFromSelf())
             .cardLastingEffect({
                 effect: modifyMilitarySkill(1)
             })
             .effect(() => msg`give himself +1${'military'}`)
-            .limit(AbilityDsl.limit.perConflict(2));
+            .limit(perConflict(2));
     }
 }

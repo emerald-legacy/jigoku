@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
@@ -8,7 +8,7 @@ class IAmReady extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .cost(AbilityDsl.costs.removeFate({
+            .cost(costs.removeFate({
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('unicorn') && card.bowed
             }))

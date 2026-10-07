@@ -1,7 +1,7 @@
 import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
-import AbilityDsl from './abilitydsl.js';
+import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from './effects.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
 import type { StatModifierSummary } from './StatModifier.js';
@@ -234,7 +234,7 @@ class DrawCard extends BaseCard {
             this.persistentEffect({
                 match: (card) => card === this.parent,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.attachmentMilitarySkillModifier(() =>
+                effect: attachmentMilitarySkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? politicalBonus : militaryBonus
                 )
             });
@@ -243,7 +243,7 @@ class DrawCard extends BaseCard {
             this.persistentEffect({
                 match: (card) => card === this.parent,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.attachmentPoliticalSkillModifier(() =>
+                effect: attachmentPoliticalSkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? militaryBonus : politicalBonus
                 )
             });

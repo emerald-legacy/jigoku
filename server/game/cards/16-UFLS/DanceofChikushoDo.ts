@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { handler, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
@@ -23,7 +23,7 @@ class DanceOfChikushoDo extends DrawCard {
                 ])
             ))
             .effect('have {1} place 2 cards in each unbroken province they control', context => context.select)
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 
     fillProvinces(player: Player) {

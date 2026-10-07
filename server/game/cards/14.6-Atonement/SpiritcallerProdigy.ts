@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class SpiritcallerProdigy extends DrawCard {
 
     setupCardAbilities() {
         this.action('Resurrect a character')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: [Location.DynastyDiscardPile],

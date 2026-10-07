@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { discardCard, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -24,6 +24,6 @@ export default class SongOfTheEmptyCity extends DrawCard {
             .gameAction(gainHonor(context => ({
                 amount: declaredConflicts.countAgainst(context.player.getProvinceCardInProvince(context.source.location))
             })))
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 }
