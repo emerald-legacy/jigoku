@@ -169,6 +169,13 @@ interface AbilityDraft {
     collectiveTrigger?: boolean;
 }
 
+/** Settings of the ability itself: a then step can't have them. */
+const ABILITY_ONLY = ['condition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
+    'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger'] as const;
+
+/** What only an action's context has; a trigger's or a step's `ability` isn't a `CardAction`. */
+type ActionOnly = { ability: CardAction };
+
 export function createDraft(title: string, holdsBase: (context: AbilityContext) => boolean): AbilityDraft {
     return { title, holdsBase, targets: {}, specs: [], costs: [], gameActions: [] };
 }
@@ -254,6 +261,17 @@ export class AbilityBuilder<
     SL extends string = never
 > {
     constructor(protected readonly draft: AbilityDraft) {}
+
+    /** Sets a setting of the ability or step: once, and an ability's own only before then(). */
+    #once<K extends keyof AbilityDraft>(key: K, value: AbilityDraft[K], call: string): void {
+        if(this.draft[key] !== undefined) {
+            throw new Error(`${this.draft.title}: ${call} is already set`);
+        }
+        if(this.draft.isStep && ABILITY_ONLY.some((name) => name === key)) {
+            throw new Error(`${this.draft.title}: ${call} belongs to the ability, before then()`);
+        }
+        this.draft[key] = value;
+    }
 
     /** The runtime check behind `BuilderContext`. */
     #isContext<V extends BuilderContext<Base, object, object, CO>>(context: AbilityContext, required: readonly TargetSpec[], optional: readonly TargetSpec[] = []): context is V {
@@ -491,12 +509,12 @@ export class AbilityBuilder<
     }
 
     /** A triggered ability printed on a chosen card, in `context.targetAbility`. */
+    /** The chosen ability is always `context.targetAbility`, so this target takes no name. */
     abilityTarget<
-        const Name extends string = never,
         const K extends CardTypes = undefined,
         D extends Dependency<TG, RG, TK, SL> = never
     >(
-        props: Named<Name> & AbilityTargetProps<
+        props: AbilityTargetProps<
             EarlierContext<Base & { targetAbility: CardAbility }, TG, RG, CO, TK, D>,
             EarlierContext<Base, TG, RG, CO, TK, D>,
             K,
@@ -504,7 +522,7 @@ export class AbilityBuilder<
         >,
         ...gameActions: NoInfer<BuilderAction<Base & { targetAbility: CardAbility }, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO, Earlier<TK, D & keyof TK>>>[]
     ): AbilityBuilder<Base & { targetAbility: CardAbility }, TG, RG, CO, TK, SL> {
-        const name = props.name ?? 'target';
+        const name = 'target';
         const holdsCard = holdsCardOf<K>(props.cardType);
         const own: TargetSpec = { bag: 'targetAbility', name: 'targetAbility', holds: holdsAbility };
         const [earlier, others] = this.#earlier(props.dependsOn);
@@ -535,6 +553,9 @@ export class AbilityBuilder<
     #addTarget(name: string, entry: TargetEntry, own?: TargetSpec): void {
         if(this.draft.branch) {
             throw new Error(`${this.draft.title}: targets come before if()`);
+        }
+        if(name in this.draft.targets) {
+            throw new Error(`${this.draft.title}: two targets named ${name}`);
         }
         this.draft.targets[name] = entry;
         if(own) {
@@ -634,7 +655,7 @@ export class AbilityBuilder<
     }
 
     condition(condition: (context: Base) => boolean): this {
-        this.draft.condition = this.#checked(condition, []);
+        this.#once('condition', this.#checked(condition, []), 'condition()');
         return this;
     }
 
@@ -643,7 +664,7 @@ export class AbilityBuilder<
      * `prompt` asks the player first ("Pay 1 fate to swap abilities?"); `effect` is what the chat says the affinity does.
      */
     onAffinity(element: Element, options: AffinityOptions<BuilderContext<Base, TG, RG, CO, TK>> = {}): this {
-        this.draft.affinity = element;
+        this.#once('affinity', element, 'onAffinity()');
         this.draft.affinityOptions = {
             ...(options.prompt !== undefined ? { prompt: options.prompt } : {}),
             ...(options.effect ? { effect: this.#checked(options.effect, this.draft.specs) } : {})
@@ -837,7 +858,7 @@ export class AbilityBuilder<
     }
 
     handler(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => void): this {
-        this.draft.handler = this.#checked(fn, this.draft.specs);
+        this.#once('handler', this.#checked(fn, this.draft.specs), 'handler()');
         return this;
     }
 
@@ -848,7 +869,10 @@ export class AbilityBuilder<
         message: string | ((context: BuilderContext<Base, TG, RG, CO, TK>) => MessageArgs),
         args?: (context: BuilderContext<Base, TG, RG, CO, TK>) => EffectArg
     ): this {
-        this.draft.effect = typeof message === 'string' ? message : this.#checked(message, this.draft.specs);
+        if(this.draft.isStep) {
+            throw new Error(`${this.draft.title}: a then step prints its message with message()`);
+        }
+        this.#once('effect', typeof message === 'string' ? message : this.#checked(message, this.draft.specs), 'effect()');
         this.draft.effectArgs = args && this.#checked(args, this.draft.specs);
         return this;
     }
@@ -942,7 +966,7 @@ export class AbilityBuilder<
 
     /** Runs `fn` when the ability starts resolving its effects, for bookkeeping such as counting uses. */
     onResolve(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => void): this {
-        this.draft.onResolve = this.#checked(fn, this.draft.specs);
+        this.#once('onResolve', this.#checked(fn, this.draft.specs), 'onResolve()');
         return this;
     }
 
@@ -967,76 +991,84 @@ export class AbilityBuilder<
         if(!this.draft.isStep) {
             throw new Error(`${this.draft.title}: the ability's own message is its effect()`);
         }
-        this.draft.message = this.#checked(fn, this.draft.specs);
+        this.#once('message', this.#checked(fn, this.draft.specs), 'message()');
         return this;
     }
 
+    /** The duel is the ability's effect and chooses its own targets, so the ability has no target() (checked at setup). */
     initiateDuel(fn: (context: BuilderContext<Base, TG, RG, CO, TK>) => InitiateDuel): this {
-        this.draft.initiateDuel = this.#checked(fn, this.draft.specs);
+        this.#once('initiateDuel', this.#checked(fn, this.draft.specs), 'initiateDuel()');
         return this;
     }
 
-    phase(phase: Phases | 'any'): this {
-        this.draft.phase = phase;
+    /** Actions only: the phase the action can be used in. */
+    phase<B extends Base & ActionOnly>(this: AbilityBuilder<B, TG, RG, CO, TK, SL>, phase: Phases | 'any'): AbilityBuilder<B, TG, RG, CO, TK, SL> {
+        this.#once('phase', phase, 'phase()');
         return this;
     }
 
-    evenDuringDynasty(): this {
-        this.draft.evenDuringDynasty = true;
+    /** Actions only: usable in the Dynasty phase without the per-type restrictions. */
+    evenDuringDynasty<B extends Base & ActionOnly>(this: AbilityBuilder<B, TG, RG, CO, TK, SL>): AbilityBuilder<B, TG, RG, CO, TK, SL> {
+        this.#once('evenDuringDynasty', true, 'evenDuringDynasty()');
         return this;
     }
 
-    canTriggerOutsideConflict(): this {
-        this.draft.canTriggerOutsideConflict = true;
+    /** Province actions only: usable when no conflict is at a province. */
+    canTriggerOutsideConflict<B extends Base & ActionOnly & { source: ProvinceCard }>(this: AbilityBuilder<B, TG, RG, CO, TK, SL>): AbilityBuilder<B, TG, RG, CO, TK, SL> {
+        this.#once('canTriggerOutsideConflict', true, 'canTriggerOutsideConflict()');
         return this;
     }
 
-    conflictProvinceCondition(condition: (province: ProvinceCard, context: Base) => boolean): this {
-        const checked = this.#checked((context: Base) => context, []);
-        this.draft.conflictProvinceCondition = (province, context) => condition(province, checked(context));
+    /** Province actions only: which conflict provinces allow the action (by default this one). */
+    conflictProvinceCondition<B extends Base & ActionOnly & { source: ProvinceCard }>(
+        this: AbilityBuilder<B, TG, RG, CO, TK, SL>,
+        condition: (province: ProvinceCard, context: B) => boolean
+    ): AbilityBuilder<B, TG, RG, CO, TK, SL> {
+        const checked = this.#checked((context: B) => context, []);
+        this.#once('conflictProvinceCondition', (province, context) => condition(province, checked(context)), 'conflictProvinceCondition()');
         return this;
     }
 
     limit(limit: AbilityLimit): this {
-        this.draft.limit = limit;
+        this.#once('limit', limit, 'limit()');
         return this;
     }
 
     max(max: AbilityLimit): this {
-        this.draft.max = max;
+        this.#once('max', max, 'max()');
         return this;
     }
 
     location(location: Location | Location[]): this {
-        this.draft.location = location;
+        this.#once('location', location, 'location()');
         return this;
     }
 
     cannotBeMirrored(): this {
-        this.draft.cannotBeMirrored = true;
+        this.#once('cannotBeMirrored', true, 'cannotBeMirrored()');
         return this;
     }
 
     cannotTargetFirst(): this {
-        this.draft.cannotTargetFirst = true;
+        this.#once('cannotTargetFirst', true, 'cannotTargetFirst()');
         return this;
     }
 
     /** Not printed on the card, so effects that copy or count printed abilities skip it. */
     notPrinted(): this {
-        this.draft.notPrinted = true;
+        this.#once('notPrinted', true, 'notPrinted()');
         return this;
     }
 
-    /** Any player may trigger it, not only the card's controller. */
+    /** Any player may trigger it, not only the card's controller (not with aggregateWhen; checked at setup). */
     anyPlayer(): this {
-        this.draft.anyPlayer = true;
+        this.#once('anyPlayer', true, 'anyPlayer()');
         return this;
     }
 
-    /** Triggers once for events that happen together. */
-    collectiveTrigger(): this {
-        this.draft.collectiveTrigger = true;
+    /** Triggers only: triggers once for events that happen together. */
+    collectiveTrigger<B extends Base & CancellingContext>(this: AbilityBuilder<B, TG, RG, CO, TK, SL>): AbilityBuilder<B, TG, RG, CO, TK, SL> {
+        this.#once('collectiveTrigger', true, 'collectiveTrigger()');
         return this;
     }
 }
@@ -1111,9 +1143,20 @@ function checkHandler(draft: AbilityDraft): void {
     }
 }
 
+/** Settings that would be ignored by what they are combined with. */
+function checkCombinations(draft: AbilityDraft): void {
+    if(draft.affinity && draft.gameActions.length === 0) {
+        throw new Error(`${draft.title}: onAffinity() covers the ability's or step's own game actions, and there are none (a target's aren't covered)`);
+    }
+    if(draft.initiateDuel && Object.keys(draft.targets).length > 0) {
+        throw new Error(`${draft.title}: initiateDuel() chooses the duel's targets itself, so the ability has no target()`);
+    }
+}
+
 function commonProperties(ability: AbilityDraft) {
     checkHandler(ability);
     const draft = withBranches(ability);
+    checkCombinations(draft);
     return {
         ...targetProperties(draft.targets),
         ...(draft.costs.length > 0 ? { cost: draft.costs } : {}),
@@ -1129,7 +1172,6 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.cannotTargetFirst ? { cannotTargetFirst: true } : {}),
         ...thenProperties(draft),
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
-        ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {}),
         ...(draft.notPrinted ? { printedAbility: false } : {})
     };
 }
@@ -1236,11 +1278,11 @@ function thenProperties(draft: AbilityDraft): { then?: ThenAbilityProperties | (
 function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     checkHandler(draft);
     const step = withBranches(draft);
+    checkCombinations(step);
     if(step.effect !== undefined) {
         throw new Error(`${step.title}: a then step prints its message with message()`);
     }
-    const abilityOnly = (['condition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
-        'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger'] as const).filter((key) => step[key] !== undefined);
+    const abilityOnly = ABILITY_ONLY.filter((key) => step[key] !== undefined);
     if(abilityOnly.length > 0) {
         throw new Error(`${step.title}: ${abilityOnly.join(', ')} belong to the ability, before then()`);
     }
@@ -1283,6 +1325,7 @@ export function actionProperties<S extends BaseCard>(draft: AbilityDraft): Actio
         ...commonProperties(draft),
         ...(draft.condition ? { condition: draft.condition } : {}),
         ...(draft.phase ? { phase: draft.phase } : {}),
+        ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {}),
         ...(draft.conflictProvinceCondition ? { conflictProvinceCondition: draft.conflictProvinceCondition } : {}),
         ...(draft.canTriggerOutsideConflict ? { canTriggerOutsideConflict: true } : {}),
         ...(draft.anyPlayer ? { anyPlayer: true } : {})
@@ -1301,6 +1344,9 @@ export function triggeredProperties<S extends BaseCard>(draft: AbilityDraft, whe
 }
 
 export function aggregateProperties<S extends BaseCard>(draft: AbilityDraft, aggregateWhen: AggregateWhen<S>): TriggeredAbilityAggregateWhenProps<S> {
+    if(draft.anyPlayer) {
+        throw new Error(`${draft.title}: anyPlayer() doesn't work with aggregateWhen`);
+    }
     return {
         title: draft.title,
         aggregateWhen,
