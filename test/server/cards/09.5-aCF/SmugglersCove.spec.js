@@ -24,7 +24,7 @@ describe('Smuggler\'s Cove', function() {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.akodoGunso],
-                    provinces: this.smugglersCove,
+                    province: this.smugglersCove,
                     defenders: [this.bayushiAramoro]
                 });
                 this.player2.clickCard(this.smugglersCove);

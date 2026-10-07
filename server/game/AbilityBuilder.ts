@@ -1225,6 +1225,7 @@ export function triggeredProperties<S extends BaseCard>(draft: AbilityDraft, whe
         title: draft.title,
         when,
         ...commonProperties(draft),
+        ...(draft.condition ? { condition: draft.condition } : {}),
         ...(draft.anyPlayer ? { anyPlayer: true } : {}),
         ...(draft.collectiveTrigger ? { collectiveTrigger: true } : {})
     };
@@ -1235,6 +1236,7 @@ export function aggregateProperties<S extends BaseCard>(draft: AbilityDraft, agg
         title: draft.title,
         aggregateWhen,
         ...commonProperties(draft),
+        ...(draft.condition ? { condition: draft.condition } : {}),
         ...(draft.collectiveTrigger ? { collectiveTrigger: true } : {})
     };
 }

@@ -38,6 +38,7 @@ export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> exten
     aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext<S>], boolean>;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
+    condition?: (context: AbilityContext) => boolean;
 }
 
 interface RegisteredEvent {
@@ -51,6 +52,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext], boolean>;
     anyPlayer: boolean;
     collectiveTrigger: boolean;
+    condition?: (context: AbilityContext) => boolean;
     events: RegisteredEvent[] | null = null;
 
     constructor(card: S, abilityType: AbilityType, properties: TriggeredAbilityProperties<S>) {
@@ -60,6 +62,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         this.anyPlayer = !!properties.anyPlayer;
         this.abilityType = abilityType;
         this.collectiveTrigger = !!properties.collectiveTrigger;
+        this.condition = properties.condition;
     }
 
     meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
@@ -76,6 +79,10 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
             ) {
                 return 'player';
             }
+        }
+
+        if(!ignoredRequirements.includes('condition') && this.condition && !this.condition(context)) {
+            return 'condition';
         }
 
         return super.meetsRequirements(context, ignoredRequirements);

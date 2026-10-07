@@ -221,6 +221,7 @@ export interface TriggeredAbilityWhenProps<Source extends EffectSource = BaseCar
     when: WhenType<Source>;
     collectiveTrigger?: boolean;
     anyPlayer?: boolean;
+    condition?: (context: AbilityContext) => boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
     handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
@@ -230,6 +231,7 @@ export interface TriggeredAbilityWhenProps<Source extends EffectSource = BaseCar
 export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
     aggregateWhen: OwnContextCallback<[events: Event[], context: TriggeredAbilityContext<Source, Target, Event[]>], boolean>;
     collectiveTrigger?: boolean;
+    condition?: (context: AbilityContext) => boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
     handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
