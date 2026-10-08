@@ -1,4 +1,4 @@
-import { parseGameMode } from '../../../build/server/game/GameMode.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 import { shuffle } from '../../../build/server/game/utils/random.js';
 
@@ -10,7 +10,7 @@ describe('Player zone initialisation', function() {
             'addMessage',
             'getProvinceArray'
         ]);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([
             'province 1', 'province 2', 'province 3', 'province 4', 'stronghold province'
         ]);
@@ -79,7 +79,7 @@ describe('Player getSourceList', function() {
             'addMessage',
             'getProvinceArray'
         ]);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([
             'province 1', 'province 2', 'province 3', 'province 4', 'stronghold province'
         ]);
@@ -152,7 +152,7 @@ describe('Player zone card operations', function() {
             'queueSimpleStep',
             'isDuringConflict'
         ]);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([
             'province 1', 'province 2', 'province 3', 'province 4', 'stronghold province'
         ]);
@@ -207,7 +207,7 @@ describe('Player removeCardByUuid', function() {
             'addMessage',
             'getProvinceArray'
         ]);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([]);
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
         this.cardA = { uuid: 'a', name: 'A' };
@@ -244,7 +244,7 @@ describe('Player findCards', function() {
             'addMessage',
             'getProvinceArray'
         ]);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([]);
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
     });

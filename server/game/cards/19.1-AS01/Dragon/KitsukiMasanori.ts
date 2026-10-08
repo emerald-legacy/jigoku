@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Decks, Duration } from '../../../Constants.js';
+import { CardType, DeckType, Duration } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import {
     attach,
@@ -57,7 +57,7 @@ export default class KitsukiMasanori extends DrawCard {
                         'Search conflict deck': {
                             action: deckSearch({
                                 activePromptTitle: selectAttachmentPrompt,
-                                deck: Decks.ConflictDeck,
+                                deck: DeckType.Conflict,
                                 reveal: true,
                                 cardCondition: (card, context) => isSearchableCard(card, context),
                                 selectedCardsHandler: (context, event, [card]) =>

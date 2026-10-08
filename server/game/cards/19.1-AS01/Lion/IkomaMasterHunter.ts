@@ -1,4 +1,4 @@
-import { CardType, Duration, Phases, Players } from '../../../Constants.js';
+import { CardType, Duration, Phase, Players } from '../../../Constants.js';
 import { delayedEffect } from '../../../effects.js';
 import { cardLastingEffect, moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,7 +9,7 @@ export default class IkomaMasterHunter extends DrawCard {
     public setupCardAbilities() {
         this.reaction('move in and ready when target joins')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .target({
                 controller: Players.Opponent,

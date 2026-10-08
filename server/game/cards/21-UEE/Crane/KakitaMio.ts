@@ -1,6 +1,6 @@
 import { addTrait, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Decks } from '../../../Constants.js';
+import { CardType, DeckType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
 
@@ -12,7 +12,7 @@ export default class KakitaMio extends DrawCard {
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
             .deckSearch({
                 activePromptTitle: 'Choose a Writ of Sanctification',
-                deck: Decks.ConflictDeck,
+                deck: DeckType.Conflict,
                 cardCondition: (card) => card.name === 'Writ of Sanctification',
                 selectedCardsHandler: (context, _, [card]) =>
                     attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { discardCard, draw, handler, sequentialContext } from '../../GameActions/GameActions.js';
-import { Phases } from '../../Constants.js';
+import { Phase } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
     static id = 'subterfuge';
@@ -12,7 +12,7 @@ class Subterfuge extends DrawCard {
                     return (
                         context.player.opponent &&
                         context.player.isLessHonorable() &&
-                        context.game.currentPhase !== Phases.Draw &&
+                        context.game.currentPhase !== Phase.Draw &&
                         event.player === context.player.opponent
                     );
                 }

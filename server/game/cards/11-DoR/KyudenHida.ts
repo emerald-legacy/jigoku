@@ -1,4 +1,4 @@
-import { CardType, Location, Phases, PlayType } from '../../Constants.js';
+import { CardType, Location, Phase, PlayType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { cardMenu, moveCard, multiple, playCard, sequentialContext } from '../../GameActions/GameActions.js';
@@ -55,6 +55,6 @@ export default class KyudenHida extends StrongholdCard {
                 };
             }))
             .effect('look at the top three cards of their dynasty deck')
-            .phase(Phases.Dynasty);
+            .phase(Phase.Dynasty);
     }
 }

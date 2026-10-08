@@ -1,4 +1,4 @@
-import { parseGameMode } from '../../../build/server/game/GameMode.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import { Conflict } from '../../../build/server/game/Conflict.js';
 import Player from '../../../build/server/game/Player.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
@@ -13,7 +13,7 @@ describe('Conflict', function () {
             'reapplyStateDependentEffects',
             'getFrameworkContext'
         ]);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.applyGameAction.and.callFake((type, card, handler) => {
             handler(card);
         });

@@ -1,11 +1,11 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('A Plague of Yokai', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
-                gameMode: GameModes.Emerald,
+                gameMode: GameMode.Emerald,
                 player1: {
                     inPlay: ['adept-of-shadows', 'heir-of-the-serpent'],
                     conflictDeck: ['a-plague-of-yokai'],

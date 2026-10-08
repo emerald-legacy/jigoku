@@ -1,4 +1,4 @@
-import { parseGameMode } from '../../../build/server/game/GameMode.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
 
@@ -15,7 +15,7 @@ describe('Player - moveCard', function () {
                 'isDuringConflict',
                 'getProvinceArray'
             ]);
-            this.gameSpy.rules = parseGameMode('stronghold');
+            this.gameSpy.rules = rulesFor('stronghold');
             this.gameSpy.effectEngine = jasmine.createSpyObj('effectEngine', ['removeLastingEffects']);
             this.gameSpy.getProvinceArray.and.returnValue([
                 'province 1',

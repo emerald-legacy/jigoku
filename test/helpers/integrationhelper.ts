@@ -1,7 +1,7 @@
 /* eslint no-invalid-this: 0 */
 
 import '../../server/game/setupGameActions.js';
-import { GameModes } from '../../server/GameModes.js';
+import { GameMode } from '../../server/GameMode.js';
 import './objectformatters.js';
 import DeckBuilder, { fillers } from './deckbuilder.js';
 import type { PlayerDeckOptions } from './deckbuilder.js';
@@ -140,7 +140,7 @@ interface IntegrationDeckOptions {
 interface IntegrationSetupOptions {
     player1?: IntegrationDeckOptions;
     player2?: IntegrationDeckOptions;
-    gameMode?: GameModes;
+    gameMode?: GameMode;
     phase?: string;
     skipAutoSetup?: boolean;
     skipAutoFirstPlayer?: boolean;
@@ -198,7 +198,7 @@ globalThis.integration = function (definitions: () => void): void {
                 if(!options.player2) {
                     options.player2 = {};
                 }
-                const gameMode = options.gameMode || GameModes.Stronghold;
+                const gameMode = options.gameMode || GameMode.Stronghold;
                 if(gameMode !== flow.game.gameMode) {
                     useFlow(new GameFlowWrapper(gameMode));
                 }
@@ -219,7 +219,7 @@ globalThis.integration = function (definitions: () => void): void {
                     });
                 }
 
-                if(flow.game.gameMode === GameModes.Skirmish) {
+                if(flow.game.gameMode === GameMode.Skirmish) {
                     flow.player1.setupSkirmishProvinces();
                     flow.player2.setupSkirmishProvinces();
                 }

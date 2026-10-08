@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { CardType, Location, Phases } from './Constants.js';
+import { CardType, Location, Phase } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
 import type BaseCard from './BaseCard.js';
@@ -25,7 +25,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         if(
             !ignoredRequirements.includes('phase') &&
-            context.game.currentPhase === Phases.Dynasty &&
+            context.game.currentPhase === Phase.Dynasty &&
             !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
             return 'phase';

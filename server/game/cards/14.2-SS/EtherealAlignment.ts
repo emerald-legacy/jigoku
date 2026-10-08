@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
+import { Phase, CardType, Location } from '../../Constants.js';
 import { moveCard, multiple, restoreProvince } from '../../GameActions/GameActions.js';
 
 class EtherealAlignment extends DrawCard {
@@ -8,7 +8,7 @@ class EtherealAlignment extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Restore a province')
             .when({
-                onPhaseEnded: event => event.phase === Phases.Conflict
+                onPhaseEnded: event => event.phase === Phase.Conflict
             })
             .target({
                 location: Location.Provinces,

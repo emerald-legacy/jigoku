@@ -1,4 +1,4 @@
-export enum Phases {
+export enum Phase {
     Setup = 'setup',
     Dynasty = 'dynasty',
     Draw = 'draw',

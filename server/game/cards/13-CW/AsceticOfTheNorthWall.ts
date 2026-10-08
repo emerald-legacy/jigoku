@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Element } from '../../Constants.js';
+import { Phase, Element } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -10,7 +10,7 @@ class AsceticOfTheNorthWall extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phases.Fate,
+            condition: context => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phase.Fate,
             effect: [
                 cardCannot('removeFate'),
                 cardCannot('discardFromPlay')

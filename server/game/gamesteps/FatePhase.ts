@@ -1,8 +1,8 @@
-import { Phases, CardType, Players, EffectName, EventName, Location, TargetMode } from '../Constants.js';
+import { Phase, CardType, Players, EffectName, EventName, Location, TargetMode } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
 import { ActionWindow } from './ActionWindow.js';
 
@@ -24,9 +24,9 @@ function characterShouldBeDiscarded(character: DrawCard) {
  * 4.8 Pass first player token.
  * 4.9 Fate phase ends
  */
-export class FatePhase extends Phase {
+export class FatePhase extends PhaseStep {
     constructor(game: Game) {
-        super(game, Phases.Fate);
+        super(game, Phase.Fate);
         this.initialise([
             new SimpleStep(game, () => this.discardCharactersWithNoFate()),
             new SimpleStep(game, () => this.removeFateFromCharacters()),

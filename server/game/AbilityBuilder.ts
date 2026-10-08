@@ -3,7 +3,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import { CardAbility } from './CardAbility.js';
-import { type EventName, type Location, type Phases, Players, TargetMode } from './Constants.js';
+import { type EventName, type Location, type Phase, Players, TargetMode } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -163,7 +163,7 @@ interface AbilityDraft {
     /** The names of the card targets, in order. */
     cardTargets?: string[];
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
-    phase?: Phases | 'any';
+    phase?: Phase | 'any';
     evenDuringDynasty?: boolean;
     conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext) => boolean;
     canTriggerOutsideConflict?: boolean;
@@ -1013,7 +1013,7 @@ export class AbilityBuilder<
     }
 
     /** Actions only: the phase the action can be used in. */
-    phase<B extends Base & ActionOnly>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>, phase: Phases | 'any'): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    phase<B extends Base & ActionOnly>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>, phase: Phase | 'any'): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('phase', phase, 'phase()');
         return this;
     }

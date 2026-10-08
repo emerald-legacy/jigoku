@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Phases, Players, PlayType } from '../../Constants.js';
+import { CardType, Location, Phase, Players, PlayType } from '../../Constants.js';
 import { flipDynasty, playCard, selectCard, sequential } from '../../GameActions/GameActions.js';
 
 class WayfarersCamp extends DrawCard {
@@ -32,7 +32,7 @@ class WayfarersCamp extends DrawCard {
                 })
             ]))
             .effect('play two cards from their provinces')
-            .phase(Phases.Dynasty);
+            .phase(Phase.Dynasty);
     }
 }
 

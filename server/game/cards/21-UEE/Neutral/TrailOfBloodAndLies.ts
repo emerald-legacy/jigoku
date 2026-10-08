@@ -1,6 +1,6 @@
 import { perPhase } from '../../../AbilityLimit.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 onMoveFate: (event, context) => {
                     const origin = event.origin;
                     return (
-                        context.game.currentPhase !== Phases.Fate &&
+                        context.game.currentPhase !== Phase.Fate &&
                         (event.fate ?? 0) > 0 &&
                         origin instanceof BaseCard &&
                         origin.type === CardType.Character &&

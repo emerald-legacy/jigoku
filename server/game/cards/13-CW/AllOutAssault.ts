@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, Phases } from '../../Constants.js';
+import { Duration, Players, Phase } from '../../Constants.js';
 import { mustDeclareMaximumAttackers } from '../../effects.js';
 
 class AllOutAssault extends DrawCard {
@@ -8,7 +8,7 @@ class AllOutAssault extends DrawCard {
     setupCardAbilities() {
         this.reaction('Both players must attack with as many characters as they can every conflict')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

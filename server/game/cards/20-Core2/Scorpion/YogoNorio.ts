@@ -1,4 +1,4 @@
-import { CardType, Duration, ConflictType, Phases } from '../../../Constants.js';
+import { CardType, Duration, ConflictType, Phase } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { additionalConflict } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,7 +12,7 @@ export default class YogoNorio extends DrawCard {
             .cost(costs.sacrifice({
                 cardType: CardType.Character
             }))
-            .condition((context) => context.game.currentPhase === Phases.Conflict)
+            .condition((context) => context.game.currentPhase === Phase.Conflict)
             .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,

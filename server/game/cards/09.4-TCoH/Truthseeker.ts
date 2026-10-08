@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
-import { Decks } from '../../Constants.js';
+import { DeckType } from '../../Constants.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 import { deckChoiceName } from '../deckChoiceName.js';
 
@@ -17,10 +17,10 @@ class Truthseeker extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Choose which deck to look at:'
             }, {
-                [deckChoiceName(this.owner, 'OppDynasty')]: this.rearrange(() => this.owner.opponent, Decks.DynastyDeck),
-                [deckChoiceName(this.owner, 'OppConflict')]: this.rearrange(() => this.owner.opponent, Decks.ConflictDeck),
-                [deckChoiceName(this.owner, 'MyDynasty')]: this.rearrange(() => this.owner, Decks.DynastyDeck),
-                [deckChoiceName(this.owner, 'MyConflict')]: this.rearrange(() => this.owner, Decks.ConflictDeck)
+                [deckChoiceName(this.owner, 'OppDynasty')]: this.rearrange(() => this.owner.opponent, DeckType.Dynasty),
+                [deckChoiceName(this.owner, 'OppConflict')]: this.rearrange(() => this.owner.opponent, DeckType.Conflict),
+                [deckChoiceName(this.owner, 'MyDynasty')]: this.rearrange(() => this.owner, DeckType.Dynasty),
+                [deckChoiceName(this.owner, 'MyConflict')]: this.rearrange(() => this.owner, DeckType.Conflict)
             })
             .effect('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
     }
@@ -41,7 +41,7 @@ class Truthseeker extends DrawCard {
         }
     }
 
-    private rearrange(player: () => Player | undefined, deck: Decks) {
+    private rearrange(player: () => Player | undefined, deck: DeckType) {
         return rearrangeDeck(() => ({
             target: player() ?? [],
             deck,

@@ -1,6 +1,6 @@
 import * as costs from '../../../costs/index.js';
 import { additionalConflict } from '../../../effects.js';
-import { CardType, ConflictType, Duration, Phases } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, Phase } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -10,7 +10,7 @@ export default class HeraldOfJustice extends DrawCard {
     setupCardAbilities() {
         this.action('Gain another military conflict')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
-            .condition((context) => context.game.currentPhase === Phases.Conflict)
+            .condition((context) => context.game.currentPhase === Phase.Conflict)
             .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,

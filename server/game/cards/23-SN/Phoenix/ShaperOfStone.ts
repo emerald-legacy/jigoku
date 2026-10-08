@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
 import { conditional, gainHonor, playerLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players, Phases, Duration } from '../../../Constants.js';
+import { CardType, Location, Players, Phase, Duration } from '../../../Constants.js';
 
 export default class ShaperOfStone extends DrawCard {
     static id = 'shaper-of-stone';
@@ -22,7 +22,7 @@ export default class ShaperOfStone extends DrawCard {
 
         this.reaction('Mark a province')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .target({
                 cardType: CardType.Province,
@@ -32,7 +32,7 @@ export default class ShaperOfStone extends DrawCard {
             }, playerLastingEffect((context) => ({
                 effect: delayedEffect({
                     when: {
-                        onPhaseEnded: (event) => event.phase === Phases.Conflict
+                        onPhaseEnded: (event) => event.phase === Phase.Conflict
                     },
                     message: '{0}{1}{2}',
                     messageArgs: () => context.target.isBroken ? ['', '', ''] : [context.player, ' gains 1 honor due to the delayed effect of ', context.source],

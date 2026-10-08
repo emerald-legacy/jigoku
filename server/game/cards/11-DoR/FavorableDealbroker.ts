@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Decks, CardType } from '../../Constants.js';
+import { DeckType, CardType } from '../../Constants.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
 
 class FavorableDealbroker extends DrawCard {
@@ -12,7 +12,7 @@ class FavorableDealbroker extends DrawCard {
             })
             .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 cardCondition: (card) => card.type === CardType.Character && card.printedCost === 1,
                 gameAction: putIntoPlay()
             })

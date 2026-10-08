@@ -11,7 +11,7 @@ import {
     returnToDeck,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { Decks, Duration } from '../../../Constants.js';
+import { DeckType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -23,7 +23,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
             this.action(opt.title)
                 .deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,
-                    deck: Decks.DynastyDeck,
+                    deck: DeckType.Dynasty,
                     shuffle: false,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {

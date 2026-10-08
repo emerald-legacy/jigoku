@@ -2,7 +2,7 @@ import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { EffectName, Phases, PlayType, EventName } from './Constants.js';
+import { EffectName, Phase, PlayType, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -21,7 +21,7 @@ export class DynastyCardAction extends BaseAction {
             return 'facedown';
         } else if(!ignoredRequirements.includes('player') && context.player !== this.card.controller) {
             return 'player';
-        } else if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Dynasty) {
+        } else if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phase.Dynasty) {
             return 'phase';
         } else if(
             !ignoredRequirements.includes('location') &&

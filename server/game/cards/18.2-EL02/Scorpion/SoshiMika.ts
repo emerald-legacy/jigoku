@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Phases } from '../../../Constants.js';
+import { Phase } from '../../../Constants.js';
 import { draw, flipImperialFavor, loseHonor, multiple } from '../../../GameActions/GameActions.js';
 
 class SoshiMika extends DrawCard {
@@ -8,7 +8,7 @@ class SoshiMika extends DrawCard {
     setupCardAbilities() {
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .gameAction(multiple([
                 loseHonor(context => ({

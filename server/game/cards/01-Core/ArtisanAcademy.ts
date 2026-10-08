@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Decks, Phases, Duration } from '../../Constants.js';
+import { Location, DeckType, Phase, Duration } from '../../Constants.js';
 import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
 
 class ArtisanAcademy extends DrawCard {
@@ -16,7 +16,7 @@ class ArtisanAcademy extends DrawCard {
                     until: {
                         onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                         onPhaseEnded: () => true,
-                        onDeckShuffled: event => event.player === context.player && event.deck === Decks.ConflictDeck
+                        onDeckShuffled: event => event.player === context.player && event.deck === DeckType.Conflict
                     },
                     effect: [
                         showTopConflictCard(),
@@ -25,7 +25,7 @@ class ArtisanAcademy extends DrawCard {
                 };
             })
             .effect('reveal the top card of their conflict deck')
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }
 

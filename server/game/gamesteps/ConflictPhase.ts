@@ -1,9 +1,9 @@
-import { Phases, EffectName } from '../Constants.js';
+import { Phase, EffectName } from '../Constants.js';
 import { claimImperialFavor, initiateConflict, performGloryCount } from '../GameActions/GameActions.js';
 import { Conflict } from '../Conflict.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
 import { ActionWindow } from './ActionWindow.js';
 
@@ -23,11 +23,11 @@ import { ActionWindow } from './ActionWindow.js';
  * 3.4.2 Claim Imperial Favor.
  * 3.5 Conflict phase ends.
  */
-export class ConflictPhase extends Phase {
+export class ConflictPhase extends PhaseStep {
     currentPlayer?: Player;
 
     constructor(game: Game) {
-        super(game, Phases.Conflict);
+        super(game, Phase.Conflict);
         this.initialise([
             new SimpleStep(this.game, () => this.beginPhase()),
             new SimpleStep(this.game, () => this.queueSteps())

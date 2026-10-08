@@ -1,4 +1,4 @@
-import { Duration, Phases } from '../../Constants.js';
+import { Duration, Phase } from '../../Constants.js';
 import { perRound } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
 import { handler } from '../../GameActions/GameActions.js';
@@ -12,13 +12,13 @@ export default class JurojinsCurse extends DrawCard {
         this.forcedInterrupt('Resolve a second fate phase')
             .when({
                 onPhaseEnded: (event, context) =>
-                    context.source.parentCharacter && event.phase === Phases.Fate && !context.source.parentCharacter.bowed
+                    context.source.parentCharacter && event.phase === Phase.Fate && !context.source.parentCharacter.bowed
             })
             .playerLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 effect: playerDelayedEffect({
                     when: {
-                        onPhaseEnded: (event) => event.phase === Phases.Fate
+                        onPhaseEnded: (event) => event.phase === Phase.Fate
                     },
                     message: '{0} takes hold',
                     messageArgs: (context) => [context.source],

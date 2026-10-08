@@ -1,5 +1,5 @@
 import { deckSearch } from '../../../GameActions/GameActions.js';
-import { CardType, Decks, Location, Players } from '../../../Constants.js';
+import { CardType, DeckType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AsahinaEnvoy extends DrawCard {
@@ -19,7 +19,7 @@ export default class AsahinaEnvoy extends DrawCard {
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
                 cardsToLookAt: 6,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 shuffle: true,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length === 0) {

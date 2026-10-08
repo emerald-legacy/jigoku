@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Players, Phases, Location, TargetMode } from '../../Constants.js';
+import { CardType, Players, Phase, Location, TargetMode } from '../../Constants.js';
 import { conditional, lookAt, moveCard, selectCards, sequential } from '../../GameActions/GameActions.js';
 
 class Reconnaissance extends DrawCard {
@@ -9,7 +9,7 @@ class Reconnaissance extends DrawCard {
     setupCardAbilities() {
         this.reaction('Look at provinces')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .targetCards({
                 mode: TargetMode.Exactly,

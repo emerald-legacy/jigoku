@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phases, Players } from '../../Constants.js';
+import { Duration, Phase, Players } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class MasterOfGiseiToshi extends DrawCard {
@@ -8,7 +8,7 @@ class MasterOfGiseiToshi extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prevent non-spell events from being played while contesting a ring')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .ringTarget({
                 ringCondition: () => true

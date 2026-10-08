@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, Location, Decks } from '../../Constants.js';
+import { CardType, Players, Location, DeckType } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class UnyieldingSensei extends DrawCard {
@@ -16,7 +16,7 @@ class UnyieldingSensei extends DrawCard {
             .deckSearch({
                 activePromptTitle: 'Choose a character',
                 cardsToLookAt: 2,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 cardCondition: card => card.type === CardType.Character,
                 shuffle: false,
                 message: '{0} puts {1} into {2}',

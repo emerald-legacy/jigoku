@@ -1,4 +1,4 @@
-import { EventName, Phases } from '../../../Constants.js';
+import { EventName, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import * as costs from '../../../costs/index.js';
 import {
@@ -25,7 +25,7 @@ export default class PlantedFields extends DrawCard {
         this.interrupt('Sacrifice Planted Fields')
             .when({
                 onPhaseEnded: (event, context) =>
-                    event.phase === Phases.Conflict &&
+                    event.phase === Phase.Conflict &&
                     !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             })
             .cost(costs.sacrificeSelf())

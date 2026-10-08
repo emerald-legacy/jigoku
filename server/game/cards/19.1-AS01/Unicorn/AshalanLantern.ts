@@ -1,4 +1,4 @@
-import { CardType, Decks, Duration, Location, PlayType } from '../../../Constants.js';
+import { CardType, DeckType, Duration, Location, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
@@ -23,7 +23,7 @@ export default class AshalanLantern extends DrawCard {
                 })),
                 deckSearch((context) => ({
                     cardsToLookAt: 3,
-                    deck: Decks.DynastyDeck,
+                    deck: DeckType.Dynasty,
                     player: context.player.opponent,
                     choosingPlayer: context.player,
                     shuffle: false,

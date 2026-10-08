@@ -1,6 +1,6 @@
 import { reduceCost } from '../../effects.js';
 import { discardCard } from '../../GameActions/GameActions.js';
-import { Location, Phases, Players } from '../../Constants.js';
+import { Location, Phase, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class FieldOfRuin extends BattlefieldAttachment {
@@ -21,7 +21,7 @@ export default class FieldOfRuin extends BattlefieldAttachment {
 
         this.reaction('discard each card in attached province')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .gameAction(discardCard((context) => ({
                 target:

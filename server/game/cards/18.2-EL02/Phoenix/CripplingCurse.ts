@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { discardFromPlay, multiple, removeFate } from '../../../GameActions/GameActions.js';
-import { Phases } from '../../../Constants.js';
+import { Phase } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 function cardsInPlay(context: AbilityContext, predicate: (card: DrawCard) => boolean) {
@@ -16,7 +16,7 @@ export default class CripplingCurse extends DrawCard {
         this.forcedReaction('Discard fate and characters')
             .when({
                 onPhaseStarted: (event, context) =>
-                    event.phase === Phases.Fate &&
+                    event.phase === Phase.Fate &&
                     context.source.parentCharacter &&
                     !context.source.parentCharacter.bowed &&
                     context.source.parentCharacter.getFate() > 0

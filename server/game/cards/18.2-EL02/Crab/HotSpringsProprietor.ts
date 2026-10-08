@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Decks, CardType } from '../../../Constants.js';
+import { DeckType, CardType } from '../../../Constants.js';
 import { putIntoPlay } from '../../../GameActions/GameActions.js';
 
 class HotSpringsProprietor extends DrawCard {
@@ -12,7 +12,7 @@ class HotSpringsProprietor extends DrawCard {
             })
             .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 1,
                 gameAction: putIntoPlay()
             })

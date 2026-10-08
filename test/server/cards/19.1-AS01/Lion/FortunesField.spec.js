@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Fortunes Field', function () {
     integration(function () {
@@ -11,7 +11,7 @@ describe('Fortunes Field', function () {
                     hand: ['ageless-crone', 'dutiful-assistant', 'watch-commander'],
                     provinces: ['fortune-s-field', 'manicured-garden']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.field = this.player1.findCardByName('fortune-s-field', 'province 1');

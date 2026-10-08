@@ -1,5 +1,5 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Location, Phases, Stage } from '../Constants.js';
+import { AbilityType, CardType, Location, Phase, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -60,7 +60,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
     nonMonstrousEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('monstrous'),
-    nonDynastyPhase: (context) => context.game.currentPhase !== Phases.Dynasty,
+    nonDynastyPhase: (context) => context.game.currentPhase !== Phase.Dynasty,
     nonSpellEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('spell'),
     opponentsAttachments: (context, effect) =>
         context.player &&

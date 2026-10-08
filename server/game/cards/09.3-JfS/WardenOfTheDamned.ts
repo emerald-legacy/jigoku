@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Phases, Players } from '../../Constants.js';
+import { CardType, Phase, Players } from '../../Constants.js';
 import { multiple, sacrifice, selectCard } from '../../GameActions/GameActions.js';
 
 class WardenOfTheDamned extends DrawCard {
@@ -8,7 +8,7 @@ class WardenOfTheDamned extends DrawCard {
     setupCardAbilities() {
         this.forcedInterrupt('Each player sacrifices a dishonored character')
             .when({
-                onPhaseEnded: event => event.phase === Phases.Conflict
+                onPhaseEnded: event => event.phase === Phase.Conflict
             })
             .gameAction(multiple([
                 selectCard(context => ({

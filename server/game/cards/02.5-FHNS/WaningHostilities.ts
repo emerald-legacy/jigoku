@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, Phases } from '../../Constants.js';
+import { Duration, Players, Phase } from '../../Constants.js';
 import { setMaxConflicts } from '../../effects.js';
 
 class WaningHostilities extends DrawCard {
@@ -8,7 +8,7 @@ class WaningHostilities extends DrawCard {
     setupCardAbilities() {
         this.reaction('Both players may only declare 1 conflict opportunity this turn')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

@@ -3,7 +3,7 @@ import { FireRingEffect } from '../../../build/server/game/Rings/FireRingEffect.
 import { VoidRingEffect } from '../../../build/server/game/Rings/VoidRingEffect.js';
 import { EarthRingEffect } from '../../../build/server/game/Rings/EarthRingEffect.js';
 import { AirRingEffect } from '../../../build/server/game/Rings/AirRingEffect.js';
-import { parseGameMode } from '../../../build/server/game/GameMode.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 
 function makeContext(overrides = {}) {
     return Object.assign({
@@ -40,7 +40,7 @@ function makeContext(overrides = {}) {
 describe('Ring effect animations', function() {
     describe('WaterRingEffect', function() {
         beforeEach(function() {
-            this.effect = new WaterRingEffect(true, parseGameMode('stronghold'));
+            this.effect = new WaterRingEffect(true, rulesFor('stronghold'));
         });
 
         it('adds a ready animation when target is bowed', function() {
@@ -112,14 +112,14 @@ describe('Ring effect animations', function() {
 
     describe('EarthRingEffect', function() {
         it('adds a draw-discard animation for DRAW_AND_FORCE_DISCARD', function() {
-            const effect = new EarthRingEffect(false, parseGameMode('stronghold'));
+            const effect = new EarthRingEffect(false, rulesFor('stronghold'));
             const context = makeContext({ select: 'Draw a card and opponent discards' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'earth', playerName: 'player1', effect: 'draw-discard' });
         });
 
         it('adds a draw animation for DRAW (skirmish, no opponent)', function() {
-            const effect = new EarthRingEffect(false, parseGameMode('skirmish'));
+            const effect = new EarthRingEffect(false, rulesFor('skirmish'));
             const context = makeContext({ select: 'Draw a card' });
             context.player.opponent = null;
             effect.executeHandler(context);
@@ -127,14 +127,14 @@ describe('Ring effect animations', function() {
         });
 
         it('adds a force-discard animation for FORCE_DISCARD', function() {
-            const effect = new EarthRingEffect(false, parseGameMode('skirmish'));
+            const effect = new EarthRingEffect(false, rulesFor('skirmish'));
             const context = makeContext({ select: 'Opponent discards a card' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'earth', playerName: 'player1', effect: 'force-discard' });
         });
 
         it('does not add an animation when player skips', function() {
-            const effect = new EarthRingEffect(true, parseGameMode('stronghold'));
+            const effect = new EarthRingEffect(true, rulesFor('stronghold'));
             const context = makeContext({ select: 'Don\'t resolve' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).not.toHaveBeenCalled();
@@ -143,7 +143,7 @@ describe('Ring effect animations', function() {
 
     describe('AirRingEffect', function() {
         it('adds a gain-honor animation for GAIN_2', function() {
-            const effect = new AirRingEffect(false, parseGameMode('stronghold'));
+            const effect = new AirRingEffect(false, rulesFor('stronghold'));
             const context = makeContext({ select: 'Gain 2 Honor' });
             context.game.roundNumber = 1;
             context.game.currentPhase = 'conflict';
@@ -153,14 +153,14 @@ describe('Ring effect animations', function() {
         });
 
         it('adds a take-honor animation for TAKE_1', function() {
-            const effect = new AirRingEffect(false, parseGameMode('stronghold'));
+            const effect = new AirRingEffect(false, rulesFor('stronghold'));
             const context = makeContext({ select: 'Take 1 Honor from opponent' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'air', playerName: 'player1', effect: 'take-honor' });
         });
 
         it('does not add an animation when player skips', function() {
-            const effect = new AirRingEffect(true, parseGameMode('stronghold'));
+            const effect = new AirRingEffect(true, rulesFor('stronghold'));
             const context = makeContext({ select: 'Don\'t resolve' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).not.toHaveBeenCalled();

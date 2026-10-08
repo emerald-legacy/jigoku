@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phases } from '../../Constants.js';
+import { Duration, Phase } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 
 class SteadfastSamurai extends DrawCard {
@@ -8,7 +8,7 @@ class SteadfastSamurai extends DrawCard {
     setupCardAbilities() {
         this.forcedReaction('Can\'t be discarded or remove fate')
             .when({
-                onPhaseStarted: (event, context) => event.phase === Phases.Fate && context.player.opponent &&
+                onPhaseStarted: (event, context) => event.phase === Phase.Fate && context.player.opponent &&
                                                     context.player.honor >= context.player.opponent.honor + 5
             })
             .cardLastingEffect({

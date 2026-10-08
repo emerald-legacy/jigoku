@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, Phases } from '../../Constants.js';
+import { Players, CardType, Phase } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 
 class DaidojiNetsu extends DrawCard {
@@ -7,7 +7,7 @@ class DaidojiNetsu extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.currentPhase === Phases.Conflict,
+            condition: () => this.game.currentPhase === Phase.Conflict,
             targetController: Players.Any,
             match: (card, context) => card.getType() === CardType.Character && card !== context?.source,
             effect: [

@@ -1,16 +1,16 @@
-import { Location, Phases } from '../Constants.js';
+import { Location, Phase } from '../Constants.js';
 import { randomItem } from '../utils/random.js';
 import type Game from '../Game.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
 import { MulliganConflictPrompt } from './setup/MulliganConflictPrompt.js';
 import { MulliganDynastyPrompt } from './setup/MulliganDynastyPrompt.js';
 import { SetupProvincesPrompt } from './setup/SetupProvincesPrompt.js';
 
-export class SetupPhase extends Phase {
+export class SetupPhase extends PhaseStep {
     constructor(game: Game) {
-        super(game, Phases.Setup);
-        this.game.currentPhase = Phases.Setup;
+        super(game, Phase.Setup);
+        this.game.currentPhase = Phase.Setup;
         this.pipeline.initialise([
             new SimpleStep(game, () => this.setupBegin()),
             new SimpleStep(game, () => this.chooseFirstPlayer()),

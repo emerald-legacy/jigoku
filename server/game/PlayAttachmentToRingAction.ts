@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { Phases, PlayType, TargetMode } from './Constants.js';
+import { Phase, PlayType, TargetMode } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import type Ring from './Ring.js';
@@ -21,7 +21,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         if(
             !ignoredRequirements.includes('phase') &&
-            context.game.currentPhase === Phases.Dynasty &&
+            context.game.currentPhase === Phase.Dynasty &&
             !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
             return 'phase';

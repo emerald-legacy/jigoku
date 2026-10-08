@@ -2,7 +2,7 @@ import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
 import type { Event } from '../../Events/Event.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
+import { Phase } from '../../Constants.js';
 import { resolveRingEffect } from '../../GameActions/GameActions.js';
 
 class ShibaTsukune extends DrawCard {
@@ -11,7 +11,7 @@ class ShibaTsukune extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Resolve 2 rings')
             .when({
-                onPhaseEnded: (event) => event.phase === Phases.Conflict
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
             })
             .handler((context) => this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',

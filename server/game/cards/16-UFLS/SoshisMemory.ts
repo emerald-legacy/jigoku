@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { deckSearch, moveCard } from '../../GameActions/GameActions.js';
-import { Location, Decks } from '../../Constants.js';
+import { Location, DeckType } from '../../Constants.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -24,7 +24,7 @@ class SoshisMemory extends DrawCard {
             activePromptTitle: 'Choose a card to put into your hand',
             reveal: false,
             cardsToLookAt: (context) => context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
-            deck: Decks.ConflictDeck,
+            deck: DeckType.Conflict,
             gameAction: moveCard({
                 destination: Location.Hand
             })

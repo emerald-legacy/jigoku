@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, Phases } from '../../Constants.js';
+import { Players, Phase } from '../../Constants.js';
 import { removeFate } from '../../GameActions/GameActions.js';
 
 class SecludedTemple extends DrawCard {
@@ -8,7 +8,7 @@ class SecludedTemple extends DrawCard {
     setupCardAbilities() {
         this.reaction('Remove a fate from opponent\'s characters')
             .when({
-                onPhaseStarted: (event, context) => event.phase === Phases.Conflict && context.player.opponent &&
+                onPhaseStarted: (event, context) => event.phase === Phase.Conflict && context.player.opponent &&
                                                     context.player.cardsInPlay.length < context.player.opponent.cardsInPlay.length
             })
             .target({

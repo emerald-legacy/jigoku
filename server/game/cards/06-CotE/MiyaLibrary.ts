@@ -1,5 +1,5 @@
 
-import { CardType, Decks, Location } from '../../Constants.js';
+import { CardType, DeckType, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
@@ -12,7 +12,7 @@ class MiyaLibrary extends DrawCard {
             .handler((context) => {
                 const arrange = () => rearrangeDeck({
                     amount: 4,
-                    deck: Decks.DynastyDeck,
+                    deck: DeckType.Dynasty,
                     activePromptTitle: 'Select the card you would like to place on top of your dynasty deck'
                 }).resolve(context.player, context);
                 this.game.promptWithHandlerMenu(context.player, {

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, EventName } from '../../Constants.js';
+import { Phase, EventName } from '../../Constants.js';
 
 class StarryHeavenSanctuary extends DrawCard {
     static id = 'starry-heaven-sanctuary';
@@ -7,7 +7,7 @@ class StarryHeavenSanctuary extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain 2 fate')
             .aggregateWhen((events, context) =>
-                context.game.currentPhase === Phases.Fate &&
+                context.game.currentPhase === Phase.Fate &&
                 events.reduce((total, event) => total + (event.is(EventName.OnMoveFate) ? event.fate ?? 0 : 0), 0) >=
                     4)
             .gainFate(2)

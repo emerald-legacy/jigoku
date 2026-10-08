@@ -2,14 +2,14 @@ import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { cardCannot } from '../../../effects.js';
 import { attach } from '../../../GameActions/GameActions.js';
-import { Location, Players, CardType, Phases, ConflictType } from '../../../Constants.js';
+import { Location, Players, CardType, Phase, ConflictType } from '../../../Constants.js';
 
 class Stinger extends DrawCard {
     static id = 'stinger';
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => context.game.currentPhase !== Phases.Fate,
+            condition: context => context.game.currentPhase !== Phase.Fate,
             effect: cardCannot({
                 cannot: 'ready',
                 source: this

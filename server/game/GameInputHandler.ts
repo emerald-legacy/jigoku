@@ -1,6 +1,6 @@
 import * as MenuCommands from './MenuCommands.js';
 import type { MenuItem } from './MenuCommands.js';
-import { Phases } from './Constants.js';
+import { Phase } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
 import type BaseCard from './BaseCard.js';
@@ -84,7 +84,7 @@ export class GameInputHandler {
         }
 
         // If it's not the conflict phase and the ring hasn't been claimed, flip it
-        if(this.game.currentPhase !== Phases.Conflict && !ring.claimed) {
+        if(this.game.currentPhase !== Phase.Conflict && !ring.claimed) {
             ring.flipConflictType();
         }
     }

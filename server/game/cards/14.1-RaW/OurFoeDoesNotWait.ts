@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType, Decks } from '../../Constants.js';
+import { Location, Players, CardType, DeckType } from '../../Constants.js';
 import { perConflictOpportunity } from '../../AbilityLimit.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
@@ -20,7 +20,7 @@ class OurFoeDoesNotWait extends DrawCard {
             })
             .deckSearch((context) => ({
                 cardsToLookAt: 8,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 gameAction: moveCard({
                     faceup: true,
                     destination: context.target.location

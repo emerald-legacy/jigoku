@@ -1,6 +1,6 @@
 import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import {CardType, Duration, Phases} from '../../Constants.js';
+import {CardType, Duration, Phase} from '../../Constants.js';
 
 class ThoseWhoServe extends DrawCard {
     static id = 'those-who-serve';
@@ -17,7 +17,7 @@ class ThoseWhoServe extends DrawCard {
                 })
             }))
             .effect('reduce the cost of their characters by 1 this phase')
-            .phase(Phases.Dynasty);
+            .phase(Phase.Dynasty);
     }
 }
 

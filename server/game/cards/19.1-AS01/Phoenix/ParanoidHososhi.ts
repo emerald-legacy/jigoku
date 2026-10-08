@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
 import { removeFate } from '../../../GameActions/GameActions.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ParanoidHososhi extends DrawCard {
@@ -20,7 +20,7 @@ export default class ParanoidHososhi extends DrawCard {
                 recipient: context.player
             })))
             .effect('take 1 fate from {0} — evil begone')
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {

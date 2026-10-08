@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { Phases } from '../../Constants.js';
+import { Phase } from '../../Constants.js';
 
 class FeedingAnArmy extends DrawCard {
     static id = 'feeding-an-army';
@@ -8,7 +8,7 @@ class FeedingAnArmy extends DrawCard {
     setupCardAbilities() {
         this.reaction('Put fate on characters')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .cost(costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
             .placeFate((context) => ({

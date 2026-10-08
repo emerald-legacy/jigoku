@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Mioko\'s Song', function () {
     integration(function () {
@@ -34,7 +34,7 @@ describe('Mioko\'s Song', function () {
         describe('Reaction', function () {
             beforeEach(function () {
                 this.setupTest({
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     phase: 'dynasty',
                     player1: {
                         stronghold: ['mioko-s-song'],

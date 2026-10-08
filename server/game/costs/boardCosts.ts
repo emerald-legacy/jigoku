@@ -1,4 +1,4 @@
-import { CharacterStatus, Decks, Location, TargetMode } from '../Constants.js';
+import { CharacterStatus, DeckType, Location, TargetMode } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
 import { eraseSelectCardsProperties, SelectCardAction } from '../GameActions/SelectCardAction.js';
 import { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
@@ -129,13 +129,13 @@ export function discardCard<const K extends CardTypes = undefined, const M exten
     );
 }
 
-export function discardTopCardsFromDeck(properties: { amount: number; deck: Decks }): Cost<{ discardTopCardsFromDeck: DrawCard[] }> {
+export function discardTopCardsFromDeck(properties: { amount: number; deck: DeckType }): Cost<{ discardTopCardsFromDeck: DrawCard[] }> {
     const getDeck =
-        properties.deck === Decks.DynastyDeck
+        properties.deck === DeckType.Dynasty
             ? (context: AbilityContext) => context.player.dynastyDeck
             : (context: AbilityContext) => context.player.conflictDeck;
     const destination =
-        properties.deck === Decks.DynastyDeck ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
+        properties.deck === DeckType.Dynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
     return {
         getActionName: (_context) => 'discardTopCardsFromDeck',
         getCostMessage: (_context) => ['discarding {0}'],

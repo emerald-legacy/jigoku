@@ -1,10 +1,10 @@
-import { parseGameMode } from '../../../build/server/game/GameMode.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import { InitiateConflictPrompt as InitateConflictPrompt } from '../../../build/server/game/gamesteps/conflict/InitiateConflictPrompt.js';
 
 describe('InitateConflictPrompt: ', function() {
     beforeEach(function() {
         this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'raiseEvent', 'promptWithHandlerMenu', 'getFrameworkContext']);
-        this.gameSpy.rules = parseGameMode('stronghold');
+        this.gameSpy.rules = rulesFor('stronghold');
         this.airRing = { element: 'air' };
         this.earthRing = { element: 'earth' };
         this.fireRing = { element: 'fire' };

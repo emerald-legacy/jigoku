@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Fate Phase', function() {
     integration(function() {
@@ -11,7 +11,7 @@ describe('Skirmish Fate Phase', function() {
                 player2: {
                     inPlay: ['doji-whisperer']
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.player1.claimRing('air');

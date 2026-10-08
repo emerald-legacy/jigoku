@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Crafty Tsukumogami', function() {
     integration(function() {
@@ -13,7 +13,7 @@ describe('Crafty Tsukumogami', function() {
                     inPlay: ['doji-whisperer', 'crafty-tsukumogami'],
                     hand: ['a-fate-worse-than-death', 'way-of-the-crane']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.crafty = this.player1.filterCardsByName('crafty-tsukumogami')[0];

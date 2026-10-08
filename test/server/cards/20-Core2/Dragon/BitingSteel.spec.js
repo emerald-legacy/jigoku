@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Biting Steel', function () {
     integration(function () {
@@ -13,7 +13,7 @@ describe('Biting Steel', function () {
                         inPlay: ['mirumoto-raitsugu', 'miya-mystic'],
                         hand: ['biting-steel', 'fine-katana']
                     },
-                    gameMode: GameModes.Emerald
+                    gameMode: GameMode.Emerald
                 });
 
                 this.makoto = this.player1.findCardByName('akodo-makoto');

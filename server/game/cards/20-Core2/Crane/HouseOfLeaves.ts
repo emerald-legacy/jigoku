@@ -1,4 +1,4 @@
-import { CardType, Duration, Phases, Players } from '../../../Constants.js';
+import { CardType, Duration, Phase, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
 import { modifyGlory } from '../../../effects.js';
@@ -19,6 +19,6 @@ export default class HouseOfLeaves extends StrongholdCard {
                 effect: modifyGlory(2)
             }))
             .effect('give +2 glory to {0} for this phase')
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }

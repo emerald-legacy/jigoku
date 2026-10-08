@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
+import { Phase } from '../../Constants.js';
 import { turnFacedown } from '../../GameActions/GameActions.js';
 
 class HiddenMountainPass extends DrawCard {
@@ -8,7 +8,7 @@ class HiddenMountainPass extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Flip this holding\'s province facedown')
             .when({
-                onPhaseEnded: (event, context) => event.phase === Phases.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
+                onPhaseEnded: (event, context) => event.phase === Phase.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             })
             .gameAction(turnFacedown(context => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)

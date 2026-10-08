@@ -1,4 +1,4 @@
-import { CardType, Decks, Location, EventName } from '../../../Constants.js';
+import { CardType, DeckType, Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../../GameActions/GameActions.js';
 
@@ -17,7 +17,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                         deckSearch({
                             activePromptTitle: 'Choose a character to put into play',
                             cardsToLookAt: 5,
-                            deck: Decks.DynastyDeck,
+                            deck: DeckType.Dynasty,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
                             message: '{0} puts {1} into play{2}{3}',
                             shuffle: false,

@@ -1,7 +1,7 @@
 import { TargetMode } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
-import { EARTH_CHOICE, type GameMode } from '../GameMode.js';
+import { EARTH_CHOICE, type GameRules } from '../GameRules.js';
 
 export class EarthRingEffect extends BaseAbility {
     public title = 'Earth Ring Effect';
@@ -10,7 +10,7 @@ export class EarthRingEffect extends BaseAbility {
 
     public constructor(
         optional: boolean,
-        rules: GameMode,
+        rules: GameRules,
         private onResolution = (_resolved: boolean) => {}
     ) {
         super({

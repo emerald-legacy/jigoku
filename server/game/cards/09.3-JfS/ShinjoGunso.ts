@@ -1,4 +1,4 @@
-import { PlayType, Decks, CardType, EventName, Location } from '../../Constants.js';
+import { PlayType, DeckType, CardType, EventName, Location } from '../../Constants.js';
 import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
@@ -23,7 +23,7 @@ export default class ShinjoGunso extends DrawCard {
                         deckSearch(() => ({
                             activePromptTitle: 'Choose a character to put into play',
                             cardsToLookAt: 5,
-                            deck: Decks.DynastyDeck,
+                            deck: DeckType.Dynasty,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
                             message: '{0} puts {1} into play{2}{3}',
                             shuffle: false,

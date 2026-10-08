@@ -1,4 +1,4 @@
-import { CardType, Decks, Duration } from '../../../Constants.js';
+import { CardType, DeckType, Duration } from '../../../Constants.js';
 import { delayedEffect } from '../../../effects.js';
 import { discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class KakitaRusumi extends DrawCard {
             .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
                 cardsToLookAt: 4,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),
                 message: '{0} puts {1} into play {2}',

@@ -1,4 +1,4 @@
-import { CardType, Decks, Element, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, DeckType, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { deckSearch, moveCard, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -26,7 +26,7 @@ export default class CinderSalamander extends DrawCard {
             .gameAction(multiple([
                 deckSearch({
                     activePromptTitle: 'Select characters to put into play from your deck',
-                    deck: Decks.DynastyDeck,
+                    deck: DeckType.Dynasty,
                     mode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
+import { Phase, CardType, Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class InspiredVisionary extends DrawCard {
     setupCardAbilities() {
         this.reaction('Bow to discard an attachment')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Fate
+                onPhaseStarted: event => event.phase === Phase.Fate
             })
             .cost(costs.bowSelf())
             .target({

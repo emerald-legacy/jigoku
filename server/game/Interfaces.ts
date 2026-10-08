@@ -16,7 +16,7 @@ import type { EffectSource } from './EffectSource.js';
 import type { CardAbility } from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
-import type { Players, TargetMode, CardType, Location, EventName, Phases } from './Constants.js';
+import type { Players, TargetMode, CardType, Location, EventName, Phase } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import type Player from './Player.js';
@@ -184,7 +184,7 @@ interface AbilityProps<Context> {
 
 export interface ActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
     condition?: OwnContextCallback<[context: AbilityContext<Source, Target>], boolean>;
-    phase?: Phases | 'any';
+    phase?: Phase | 'any';
     anyPlayer?: boolean;
     conflictProvinceCondition?: OwnContextCallback<[province: ProvinceCard, context: AbilityContext<Source, Target>], boolean>;
     canTriggerOutsideConflict?: boolean;

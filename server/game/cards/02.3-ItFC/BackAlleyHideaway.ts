@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Location, Phases, PlayType, EventName, CardType } from '../../Constants.js';
+import { Location, Phase, PlayType, EventName, CardType } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import { ThenAbility } from '../../ThenAbility.js';
 import { customDetachedCard } from '../../effects.js';
@@ -53,7 +53,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
     }
 
     meetsRequirements(context = this.createContext()) {
-        if(context.game.currentPhase !== Phases.Dynasty) {
+        if(context.game.currentPhase !== Phase.Dynasty) {
             return 'phase';
         }
         if(context.source.location !== this.backAlleyCard.uuid) {

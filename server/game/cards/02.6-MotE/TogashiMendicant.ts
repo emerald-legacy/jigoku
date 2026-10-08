@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Decks, Phases } from '../../Constants.js';
+import { DeckType, Phase } from '../../Constants.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
 class TogashiMendicant extends DrawCard {
@@ -8,9 +8,9 @@ class TogashiMendicant extends DrawCard {
     setupCardAbilities() {
         this.reaction('Rearrange top 3 cards of dynasty deck')
             .when({
-                onPhaseStarted: (event, context) => event.phase === Phases.Fate && context.player.dynastyDeck.length > 0
+                onPhaseStarted: (event, context) => event.phase === Phase.Fate && context.player.dynastyDeck.length > 0
             })
-            .gameAction(rearrangeDeck({ amount: 3, deck: Decks.DynastyDeck }))
+            .gameAction(rearrangeDeck({ amount: 3, deck: DeckType.Dynasty }))
             .effect('rearrange the top 3 cards of their dynasty deck');
     }
 }

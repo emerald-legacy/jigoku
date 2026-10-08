@@ -1,6 +1,6 @@
 import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType } from '../../Constants.js';
+import { Phase, CardType } from '../../Constants.js';
 
 class KuniLaboratory extends DrawCard {
     static id = 'kuni-laboratory';
@@ -13,7 +13,7 @@ class KuniLaboratory extends DrawCard {
 
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .loseHonor(context => ({ target: context.player }))
             .effect('lose an honor');

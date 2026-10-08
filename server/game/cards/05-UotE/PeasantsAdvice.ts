@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { lookAt, moveCard, selectCard, sequential } from '../../GameActions/GameActions.js';
-import { Location, Phases, CardType } from '../../Constants.js';
+import { Location, Phase, CardType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
 class PeasantsAdvice extends DrawCard {
@@ -35,7 +35,7 @@ class PeasantsAdvice extends DrawCard {
                 }))
             ]))
             .effect((context) => msg`look at ${context.target.controller}'s ${context.target.location}`)
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }
 

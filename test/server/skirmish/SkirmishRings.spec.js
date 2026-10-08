@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Ring Effects', function() {
     integration(function() {
@@ -13,7 +13,7 @@ describe('Skirmish Ring Effects', function() {
                     inPlay: ['matsu-tsuko-2', 'akodo-toturi'],
                     hand: ['let-go']
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.scout = this.player1.findCardByName('eager-scout');

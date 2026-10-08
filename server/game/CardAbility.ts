@@ -4,7 +4,7 @@ import type { CardAction } from './CardAction.js';
 import { ThenAbility } from './ThenAbility.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
-import { Location, CardType, EffectName, Phases } from './Constants.js';
+import { Location, CardType, EffectName, Phase } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -161,7 +161,7 @@ export class CardAbility extends ThenAbility {
             !this.isKeywordAbility() &&
             this.card.isDynasty &&
             this.card.type === CardType.Event &&
-            context.game.currentPhase !== Phases.Dynasty
+            context.game.currentPhase !== Phase.Dynasty
         ) {
             return 'phase';
         }

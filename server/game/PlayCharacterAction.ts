@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EffectName, Location, Phases, PlayType, Players } from './Constants.js';
+import { EffectName, Location, Phase, PlayType, Players } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
@@ -24,7 +24,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
     public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
         if(
             !ignoredRequirements.includes('phase') &&
-            context.game.currentPhase === Phases.Dynasty &&
+            context.game.currentPhase === Phase.Dynasty &&
             !context.game.rules.dynastyPhaseCanPlayConflictCharacters
         ) {
             return 'phase';

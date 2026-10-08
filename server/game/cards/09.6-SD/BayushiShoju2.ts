@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Players } from '../../Constants.js';
+import { Phase, Players } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { draw, loseHonor, multiple } from '../../GameActions/GameActions.js';
 
@@ -14,7 +14,7 @@ class BayushiShoju2 extends DrawCard {
 
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .gameAction(multiple([
                 loseHonor(context => ({

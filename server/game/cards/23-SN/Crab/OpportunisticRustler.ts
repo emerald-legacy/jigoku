@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, moveCard, multipleContext, noAction } from '../../../GameActions/GameActions.js';
-import { ConflictType, Decks, Location } from '../../../Constants.js';
+import { ConflictType, DeckType, Location } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { msg } from '../../../GameChat.js';
 
@@ -17,7 +17,7 @@ export default class OpportunisticRustler extends DrawCard {
                 cardsToLookAt: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
                 player: context.player.opponent,
                 choosingPlayer: context.player,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 placeOnBottomInRandomOrder: true,
                 shuffle: false,
                 // [player] puts [card] faceup into the attacked province and gives [source] +XMIL

@@ -1,5 +1,5 @@
 import { Deck } from '../../server/game/Deck.js';
-import { parseGameMode } from '../../server/game/GameMode.js';
+import { rulesFor } from '../../server/game/GameRules.js';
 import DrawCard from '../../server/game/DrawCard.js';
 import { ProvinceCard } from '../../server/game/ProvinceCard.js';
 import { CardType, Location } from '../../server/game/Constants.js';
@@ -11,7 +11,7 @@ function makePlayer(cardLibrary: Map<string, CardClass>): Player {
     game.getFrameworkContext.and.returnValue(null);
     game.cardLibrary = cardLibrary;
     game.gameMode = 'stronghold';
-    game.rules = parseGameMode('stronghold');
+    game.rules = rulesFor('stronghold');
     const player = jasmine.createSpyObj('player', ['getCardSelectionState', 'allowGameAction', 'getShortSummary', 'checkRestrictions']);
     player.game = game;
     return player;

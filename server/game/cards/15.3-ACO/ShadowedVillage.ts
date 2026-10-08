@@ -1,6 +1,6 @@
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Phases } from '../../Constants.js';
+import { CardType, Phase } from '../../Constants.js';
 
 class ShadowedVillage extends DrawCard {
     static id = 'shadowed-village';
@@ -9,7 +9,7 @@ class ShadowedVillage extends DrawCard {
         this.reaction('Draw cards')
             .when({
                 onMoveFate: (event, context) =>
-                    context.game.currentPhase !== Phases.Fate &&
+                    context.game.currentPhase !== Phase.Fate &&
                     event.origin &&
                     event.origin.type === CardType.Character &&
                     'controller' in event.origin &&

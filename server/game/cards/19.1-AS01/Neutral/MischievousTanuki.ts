@@ -1,4 +1,4 @@
-import { Phases } from '../../../Constants.js';
+import { Phase } from '../../../Constants.js';
 import {
     conditional,
     draw,
@@ -57,6 +57,6 @@ export default class MischievousTanuki extends DrawCard {
                 })
             }))
             .effect('play a game')
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }

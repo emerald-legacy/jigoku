@@ -1,4 +1,4 @@
-import { CardType, Duration, Phases } from '../../../Constants.js';
+import { CardType, Duration, Phase } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class ObstinateWitchHunter extends DrawCard {
         this.forcedReaction('Can\'t be discarded or remove fate')
             .when({
                 onPhaseStarted: (event, context) =>
-                    event.phase === Phases.Fate &&
+                    event.phase === Phase.Fate &&
                     context.game.findAnyCardsInPlay(
                         (card) =>
                             card.type === CardType.Character &&

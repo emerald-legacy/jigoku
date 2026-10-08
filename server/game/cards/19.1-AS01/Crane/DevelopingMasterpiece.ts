@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
+import { CardType, Location, Phase, PlayType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -33,7 +33,7 @@ export default class DevelopingMasterpiece extends DrawCard {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
                 context.game.addMessage('>>>> Matsuo Bashō <<<<');
             })
-            .phase(Phases.Fate);
+            .phase(Phase.Fate);
     }
 
     public canAttach(card: BaseCard): boolean {
@@ -46,7 +46,7 @@ export default class DevelopingMasterpiece extends DrawCard {
     }
 
     public canPlay(context: AbilityContext, playType: string): boolean {
-        return context.game.currentPhase === Phases.Draw && super.canPlay(context, playType);
+        return context.game.currentPhase === Phase.Draw && super.canPlay(context, playType);
     }
 }
 

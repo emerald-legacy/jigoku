@@ -1,4 +1,4 @@
-import { parseGameMode } from '../../../build/server/game/GameMode.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
 
@@ -12,7 +12,7 @@ describe('Player - getDuplicateInPlay', function () {
                 'addMessage',
                 'on'
             ]);
-            this.game.rules = parseGameMode('stronghold');
+            this.game.rules = rulesFor('stronghold');
             this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.game);
             this.player.initialise();
 

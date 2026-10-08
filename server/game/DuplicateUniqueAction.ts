@@ -1,5 +1,5 @@
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { Phases, PlayType } from './Constants.js';
+import { Phase, PlayType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type DrawCard from './DrawCard.js';
 
@@ -11,7 +11,7 @@ export class DuplicateUniqueAction extends PlayCardSourceAction {
             return 'facedown';
         }
 
-        if(!ignoredRequirements.includes('phase') && this.card.game.currentPhase !== Phases.Dynasty) {
+        if(!ignoredRequirements.includes('phase') && this.card.game.currentPhase !== Phase.Dynasty) {
             return 'phase';
         }
 

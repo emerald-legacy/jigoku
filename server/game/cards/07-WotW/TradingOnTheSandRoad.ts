@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOpponents, canPlayFromOwn } from '../../effects.js';
 import { cancel, lookAt, moveCard, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
-import { Location, Duration, Phases } from '../../Constants.js';
+import { Location, Duration, Phase } from '../../Constants.js';
 
 class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
@@ -9,7 +9,7 @@ class TradingOnTheSandRoad extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Take top 4 cards from both players\' decks')
             .when({
-                onPhaseCreated: event => event.phase === Phases.Draw
+                onPhaseCreated: event => event.phase === Phase.Draw
             })
             .gameAction(multiple([
                 cancel(),

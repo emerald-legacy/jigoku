@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
+import { Phase } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 
 class RingOfBinding extends DrawCard {
@@ -7,7 +7,7 @@ class RingOfBinding extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: (context) => context.game.currentPhase === Phases.Fate && context.player.firstPlayer,
+            condition: (context) => context.game.currentPhase === Phase.Fate && context.player.firstPlayer,
             effect: [
                 cardCannot('removeFate'),
                 cardCannot('discardFromPlay')

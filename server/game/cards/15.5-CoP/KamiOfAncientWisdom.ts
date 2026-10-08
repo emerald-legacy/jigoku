@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Phases, Players } from '../../Constants.js';
+import { CardType, Phase, Players } from '../../Constants.js';
 import { placeFate, removeFate } from '../../GameActions/GameActions.js';
 
 class KamiOfAncientWisdom extends DrawCard {
@@ -8,7 +8,7 @@ class KamiOfAncientWisdom extends DrawCard {
     setupCardAbilities() {
         this.reaction('Give or take fate')
             .when({
-                onMoveFate: (event, context) => context.game.currentPhase !== Phases.Fate &&
+                onMoveFate: (event, context) => context.game.currentPhase !== Phase.Fate &&
                     event.origin && event.origin.type === CardType.Character && (event.fate ?? 0) > 0
             })
             .target({

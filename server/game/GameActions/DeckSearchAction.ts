@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { Decks, EventName, Location, TargetMode } from '../Constants.js';
+import { DeckType, EventName, Location, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameAction, ActionEvent, WithDefaults } from './GameAction.js';
@@ -17,7 +17,7 @@ export interface DeckSearchProperties extends PlayerActionProperties {
     cardsToLookAt?: Derivable<number, AbilityContext>;
     numCards?: Derivable<number, AbilityContext>;
     reveal?: boolean;
-    deck?: Decks;
+    deck?: DeckType;
     shuffle?: Derivable<boolean, AbilityContext>;
     gameAction?: GameAction;
     message?: string;
@@ -53,7 +53,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         cardsToLookAt: -1,
         numCards: 1,
         mode: TargetMode.Single,
-        deck: Decks.ConflictDeck,
+        deck: DeckType.Conflict,
         shuffle: true,
         reveal: true,
         uniqueNames: false,
@@ -114,9 +114,9 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     #getDeck(player: Player, properties: ResolvedDeckSearchProperties): DrawCard[] {
         switch(properties.deck) {
-            case Decks.DynastyDeck:
+            case DeckType.Dynasty:
                 return player.dynastyDeck.slice();
-            case Decks.ConflictDeck:
+            case DeckType.Conflict:
                 return player.conflictDeck.slice();
             default:
                 return [];
@@ -215,9 +215,9 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         const player = event.player;
         if(derive(properties.shuffle, context)) {
             switch(properties.deck) {
-                case Decks.ConflictDeck:
+                case DeckType.Conflict:
                     return player.shuffleConflictDeck();
-                case Decks.DynastyDeck:
+                case DeckType.Dynasty:
                     return player.shuffleDynastyDeck();
                 default:
                     return;
@@ -227,7 +227,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         if(properties.placeOnBottomInRandomOrder) {
             const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
             if(cardsToMove.length > 0) {
-                const isDynasty = properties.deck === Decks.DynastyDeck;
+                const isDynasty = properties.deck === DeckType.Dynasty;
                 const deckLocation = isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
                 for(const card of shuffle(cardsToMove)) {
                     player.moveCard(card, deckLocation, { bottom: true });

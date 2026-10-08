@@ -22,7 +22,7 @@ import { StrongholdCard } from './StrongholdCard.js';
 import {
     CardType,
     ConflictType,
-    Decks,
+    DeckType,
     EffectName,
     Element,
     EventName,
@@ -712,7 +712,7 @@ export class Player extends GameObject {
         if(this.name !== 'Dummy Player') {
             this.game.addMessage('{0} is shuffling their conflict deck', this);
         }
-        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: Decks.ConflictDeck });
+        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Conflict });
         this.conflictDeck = shuffle(this.conflictDeck);
     }
 
@@ -720,7 +720,7 @@ export class Player extends GameObject {
         if(this.name !== 'Dummy Player') {
             this.game.addMessage('{0} is shuffling their dynasty deck', this);
         }
-        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: Decks.DynastyDeck });
+        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Dynasty });
         this.dynastyDeck = shuffle(this.dynastyDeck);
     }
 

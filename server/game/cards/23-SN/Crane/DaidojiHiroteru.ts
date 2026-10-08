@@ -1,4 +1,4 @@
-import { CardType, Duration, Location, Phases, Players } from '../../../Constants.js';
+import { CardType, Duration, Location, Phase, Players } from '../../../Constants.js';
 import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { addKeyword, canBeSeenWhenFacedown, gainPlayAction } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,7 +25,7 @@ export default class DaidojiHiroteru extends DrawCard {
         this.reaction('Give a Scout or Shinobi covert')
             .when({
                 onCardPlayed: (event, context) =>
-                    context.game.currentPhase === Phases.Conflict &&
+                    context.game.currentPhase === Phase.Conflict &&
                     event.player === context.player &&
                     event.card.type === CardType.Character &&
                     event.card.hasSomeTrait('scout', 'shinobi')

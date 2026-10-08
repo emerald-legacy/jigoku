@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { blank } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { CardType, Duration, Phases } from '../../Constants.js';
+import { CardType, Duration, Phase } from '../../Constants.js';
 
 class AgashaHiyori extends DrawCard {
     static id = 'agasha-hiyori';
@@ -10,7 +10,7 @@ class AgashaHiyori extends DrawCard {
     setupCardAbilities() {
         this.reaction('Blank an attachment')
             .when({
-                onPhaseStarted: (event) => event.phase !== Phases.Setup
+                onPhaseStarted: (event) => event.phase !== Phase.Setup
             })
             .cost(costs.payFateToRing(1))
             .target({

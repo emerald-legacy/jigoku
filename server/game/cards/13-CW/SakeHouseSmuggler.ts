@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, CardType, Phases } from '../../Constants.js';
+import { Duration, CardType, Phase } from '../../Constants.js';
 import { reduceNextPlayedCardCost } from '../../effects.js';
 import { multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -21,7 +21,7 @@ class SakeHouseSmuggler extends DrawCard {
                 }))
             ]))
             .effect('reduce the cost of each player\'s next non-event card by 1')
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }
 

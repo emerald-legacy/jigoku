@@ -1,4 +1,4 @@
-import { CardType, EffectName, EventName, Phases, Players } from './Constants.js';
+import { CardType, EffectName, EventName, Phase, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import BaseCard from './BaseCard.js';
@@ -79,7 +79,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     }
 
     public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Conflict) {
+        if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phase.Conflict) {
             return 'phase';
         } else if(
             !ignoredRequirements.includes('location') &&

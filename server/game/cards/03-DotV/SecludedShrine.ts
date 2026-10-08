@@ -1,7 +1,7 @@
 import { considerRingAsClaimed } from '../../effects.js';
 import { ringLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phases } from '../../Constants.js';
+import { Duration, Phase } from '../../Constants.js';
 
 class SecludedShrine extends DrawCard {
     static id = 'secluded-shrine';
@@ -9,7 +9,7 @@ class SecludedShrine extends DrawCard {
     setupCardAbilities() {
         this.reaction('Count a ring as claimed')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .ringTarget({
                 ringCondition: () => true

@@ -46,10 +46,10 @@ import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectName, EventName, Location, ConflictType, Element, Players, Phases } from './Constants.js';
+import { EffectName, EventName, Location, ConflictType, Element, Players, Phase } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import { type EventHandler } from './GameEventBus.js';
-import { parseGameMode, type GameMode } from './GameMode.js';
+import { rulesFor, type GameRules } from './GameRules.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
 import { isEnumValue, isOwnKey } from './utils/helpers.js';
 import type BaseCard from './BaseCard.js';
@@ -154,9 +154,9 @@ export class Game {
     /** Set when the game is created; a game keeps its mode. */
     readonly gameMode?: string;
     /** The rules of `gameMode`. */
-    readonly rules: GameMode;
+    readonly rules: GameRules;
     /** Between phases: `''`. */
-    currentPhase: Phases | '';
+    currentPhase: Phase | '';
     password?: string;
     roundNumber: number;
     initialFirstPlayer: string | null;
@@ -204,7 +204,7 @@ export class Game {
         this.currentDuel = null;
         this.manualMode = false;
         this.gameMode = details.gameMode;
-        this.rules = parseGameMode(details.gameMode);
+        this.rules = rulesFor(details.gameMode);
         this.currentPhase = '';
         this.password = details.password;
         this.roundNumber = 0;

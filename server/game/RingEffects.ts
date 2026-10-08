@@ -6,7 +6,7 @@ import { WaterRingEffect } from './Rings/WaterRingEffect.js';
 import { AbilityContext } from './AbilityContext.js';
 import { BaseAbility } from './BaseAbility.js';
 import Player from './Player.js';
-import type { GameMode } from './GameMode.js';
+import type { GameRules } from './GameRules.js';
 import { Element } from './Constants.js';
 
 interface RingAbility extends BaseAbility {
@@ -21,19 +21,19 @@ type ResolutionCb = (resolved: boolean) => void;
 function ringForElement(element: Element) {
     switch(element) {
         case Element.Air:
-            return (optional: boolean, rules: GameMode, onResolution: ResolutionCb) =>
+            return (optional: boolean, rules: GameRules, onResolution: ResolutionCb) =>
                 new AirRingEffect(optional, rules, onResolution);
         case Element.Earth:
-            return (optional: boolean, rules: GameMode, onResolution: ResolutionCb) =>
+            return (optional: boolean, rules: GameRules, onResolution: ResolutionCb) =>
                 new EarthRingEffect(optional, rules, onResolution);
         case Element.Fire:
-            return (optional: boolean, _rules: GameMode, onResolution: ResolutionCb) =>
+            return (optional: boolean, _rules: GameRules, onResolution: ResolutionCb) =>
                 new FireRingEffect(optional, onResolution);
         case Element.Void:
-            return (optional: boolean, _rules: GameMode, onResolution: ResolutionCb) =>
+            return (optional: boolean, _rules: GameRules, onResolution: ResolutionCb) =>
                 new VoidRingEffect(optional, onResolution);
         case Element.Water:
-            return (optional: boolean, rules: GameMode, onResolution: ResolutionCb) =>
+            return (optional: boolean, rules: GameRules, onResolution: ResolutionCb) =>
                 new WaterRingEffect(optional, rules, onResolution);
         default:
             throw new Error(`Unknown ring effect of ${element}`);

@@ -1,9 +1,9 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { CardAction } from './CardAction.js';
-import { AbilityType, Location, Phases } from './Constants.js';
+import { AbilityType, Location, Phase } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
-import { GameModes } from '../GameModes.js';
+import { GameMode } from '../GameMode.js';
 
 type RingChoices = Record<string, (context: AbilityContext) => boolean>;
 
@@ -20,8 +20,8 @@ export const EARTH_CHOICE = {
     SKIP: 'Don\'t resolve'
 } as const;
 
-export interface GameMode {
-    name: GameModes;
+export interface GameRules {
+    name: GameMode;
     attachmentsMaxOneCopyPerName: boolean;
     conflictHaveUnopposedHonorLoss: boolean;
     conflictOneFewerOpportunity: boolean;
@@ -55,8 +55,8 @@ export interface GameMode {
     winConRequiredHonorForWin: number;
 }
 
-const Stronghold: GameMode = {
-    name: GameModes.Stronghold,
+const Stronghold: GameRules = {
+    name: GameMode.Stronghold,
     attachmentsMaxOneCopyPerName: false,
     conflictHaveUnopposedHonorLoss: true,
     conflictOneFewerOpportunity: false,
@@ -105,9 +105,9 @@ const Stronghold: GameMode = {
     winConRequiredHonorForWin: 25
 };
 
-const Skirmish: GameMode = {
+const Skirmish: GameRules = {
     ...Stronghold,
-    name: GameModes.Skirmish,
+    name: GameMode.Skirmish,
 
     conflictHaveUnopposedHonorLoss: false,
     conflictOneFewerOpportunity: true,
@@ -148,9 +148,9 @@ const Skirmish: GameMode = {
     winConRequiredHonorForWin: 12
 };
 
-const Emerald: GameMode = {
+const Emerald: GameRules = {
     ...Stronghold,
-    name: GameModes.Emerald,
+    name: GameMode.Emerald,
     imperialFavorSovereign: 'Empress\'',
 
     attachmentsMaxOneCopyPerName: true,
@@ -160,18 +160,18 @@ const Emerald: GameMode = {
     dynastyPhaseCanPlayAttachments: false,
     dynastyPhaseCanPlayConflictEvents: (action) =>
         action.abilityType !== AbilityType.Action ||
-        action.phase === Phases.Dynasty ||
+        action.phase === Phase.Dynasty ||
         action.card.isDynasty,
     dynastyPhaseCanPlayConflictCharacters: false,
     dynastyPhasePassingFate: false,
     dynastyPhaseActionsFromCardsInPlay: false
 };
 
-const Sanctuary: GameMode = { ...Emerald, name: GameModes.Sanctuary };
+const Sanctuary: GameRules = { ...Emerald, name: GameMode.Sanctuary };
 
-const Obsidian: GameMode = {
+const Obsidian: GameRules = {
     ...Stronghold,
-    name: GameModes.Obsidian,
+    name: GameMode.Obsidian,
 
     attachmentsMaxOneCopyPerName: true,
     disguiseKeepsCharactersInSameLocation: true,
@@ -179,7 +179,7 @@ const Obsidian: GameMode = {
     dynastyPhaseCanPlayConflictCharacters: true
 };
 
-export function parseGameMode(candidateStr: string | undefined): GameMode {
+export function rulesFor(candidateStr: string | undefined): GameRules {
     switch(candidateStr) {
         case 'skirmish':
             return Skirmish;

@@ -1,4 +1,4 @@
-import { CardType, Decks, PlayType } from '../../../Constants.js';
+import { CardType, DeckType, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import { playCard } from '../../../GameActions/GameActions.js';
@@ -13,7 +13,7 @@ export default class UtakuTakeko extends DrawCard {
             .deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
                 cardsToLookAt: 8,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 cardCondition: (card) =>
                     card.type === CardType.Character &&
                     card.glory >= 1 &&

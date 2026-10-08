@@ -1,4 +1,4 @@
-import { CardType, EventName, Location, Phases } from '../../Constants.js';
+import { CardType, EventName, Location, Phase } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import * as costs from '../../costs/index.js';
 import { returnToHand } from '../../GameActions/GameActions.js';
@@ -21,7 +21,7 @@ export default class SoshiShadowshaper extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card)
             }, returnToHand())
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 
     public onPhaseStarted() {

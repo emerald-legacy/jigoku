@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Conflict Phase', function() {
     integration(function() {
@@ -11,7 +11,7 @@ describe('Skirmish Conflict Phase', function() {
                 player2: {
                     inPlay: ['matsu-tsuko-2']
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.scout = this.player1.findCardByName('eager-scout');

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Duration, Phases } from '../../Constants.js';
+import { Location, Duration, Phase } from '../../Constants.js';
 import { restartDynastyPhase } from '../../effects.js';
 import { discardCard, playerLastingEffect, refillFaceup, sequential } from '../../GameActions/GameActions.js';
 
@@ -24,7 +24,7 @@ class ASeasonOfWar extends DrawCard {
                 playerLastingEffect(context => ({
                     duration: Duration.Custom,
                     until: {
-                        onPhaseStarted: event => event.phase === Phases.Dynasty
+                        onPhaseStarted: event => event.phase === Phase.Dynasty
                     },
                     effect: restartDynastyPhase(context.source)
                 }))

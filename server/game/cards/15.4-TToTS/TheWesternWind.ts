@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { deckSearch } from '../../GameActions/GameActions.js';
-import { Location, CardType, Players, TargetMode, Decks } from '../../Constants.js';
+import { Location, CardType, Players, TargetMode, DeckType } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
     static id = 'the-western-wind';
@@ -20,7 +20,7 @@ class TheWesternWind extends DrawCard {
                 mode: TargetMode.UpToVariable,
                 numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
                 cardsToLookAt: 8,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 selectedCardsHandler: (context, event, cards) => {
                     const target = context.target;
                     if(!target) {

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, Phases } from '../../Constants.js';
+import { Duration, Players, Phase } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
 import { ringLastingEffect } from '../../GameActions/GameActions.js';
@@ -11,7 +11,7 @@ class ExpertInterpreter extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prevent characters from entering play while contesting a ring')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .cost(costs.optionalTakeHonorFromOpponent())
             .ringTarget({

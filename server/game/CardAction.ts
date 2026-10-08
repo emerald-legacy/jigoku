@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { CardAbility } from './CardAbility.js';
-import { AbilityType, CardType, EffectName, Phases } from './Constants.js';
+import { AbilityType, CardType, EffectName, Phase } from './Constants.js';
 import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -12,7 +12,7 @@ export class CardAction extends CardAbility {
     anyPlayer: boolean;
     canTriggerOutsideConflict: boolean;
     conflictProvinceCondition: (province: ProvinceCard, context: AbilityContext) => boolean;
-    phase: Phases | 'any';
+    phase: Phase | 'any';
     evenDuringDynasty: boolean;
 
     condition?: (context: AbilityContext) => boolean;
@@ -29,7 +29,7 @@ export class CardAction extends CardAbility {
     }
 
     #passDynastyPhaseRequirements() {
-        if(this.phase === Phases.Dynasty || this.evenDuringDynasty) {
+        if(this.phase === Phase.Dynasty || this.evenDuringDynasty) {
             return true;
         }
 
@@ -65,7 +65,7 @@ export class CardAction extends CardAbility {
 
         if(
             !ignoredRequirements.includes('phase') &&
-            this.game.currentPhase === Phases.Dynasty &&
+            this.game.currentPhase === Phase.Dynasty &&
             !this.#passDynastyPhaseRequirements()
         ) {
             return 'phase';

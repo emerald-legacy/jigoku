@@ -5,7 +5,7 @@ import {
     playerCannot
 } from '../../../effects.js';
 import { taint } from '../../../GameActions/GameActions.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
@@ -27,7 +27,7 @@ export default class KuniJuurou extends DrawCard {
                 cardType: CardType.Character
             }, taint())
             .effect('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted')
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 
     private controllerCannotPayHonorCostsEffect() {

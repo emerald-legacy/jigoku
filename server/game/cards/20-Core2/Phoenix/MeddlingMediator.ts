@@ -1,4 +1,4 @@
-import { Phases } from '../../../Constants.js';
+import { Phase } from '../../../Constants.js';
 import { takeFate, takeHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,6 +14,6 @@ export default class MeddlingMediator extends DrawCard {
                 'Take 1 fate': takeFate(),
                 'Take 1 honor': takeHonor()
             })
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }

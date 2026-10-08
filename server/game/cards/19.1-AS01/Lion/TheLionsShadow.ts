@@ -1,5 +1,5 @@
 import { addKeyword, honorStatusDoesNotModifySkill } from '../../../effects.js';
-import { Phases } from '../../../Constants.js';
+import { Phase } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TheLionsShadow extends DrawCard {
@@ -12,7 +12,7 @@ export default class TheLionsShadow extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: (context) => context.game.currentPhase === Phases.Fate,
+            condition: (context) => context.game.currentPhase === Phase.Fate,
             effect: addKeyword('ancestral')
         });
 

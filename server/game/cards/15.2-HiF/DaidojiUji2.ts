@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { hideWhenFaceUp } from '../../effects.js';
-import { TargetMode, Decks } from '../../Constants.js';
+import { TargetMode, DeckType } from '../../Constants.js';
 import { playableFromUnderneath } from '../cardsUnderneath.js';
 
 class DaidojiUji2 extends DrawCard {
@@ -12,7 +12,7 @@ class DaidojiUji2 extends DrawCard {
             .deckSearch({
                 mode: TargetMode.UpTo,
                 numCards: 4,
-                deck: Decks.ConflictDeck,
+                deck: DeckType.Conflict,
                 reveal: false,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {

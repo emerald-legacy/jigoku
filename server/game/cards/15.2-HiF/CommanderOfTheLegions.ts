@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
-import { CardType, Phases } from '../../Constants.js';
+import { CardType, Phase } from '../../Constants.js';
 
 class CommanderOfTheLegions extends DrawCard {
     static id = 'commander-of-the-legions';
@@ -15,7 +15,7 @@ class CommanderOfTheLegions extends DrawCard {
 
         this.persistentEffect({
             condition: context =>
-                !!(context.game.currentPhase === Phases.Fate && context.player.opponent
+                !!(context.game.currentPhase === Phase.Fate && context.player.opponent
                 && context.player.honor >= context.player.opponent.honor + 5),
             match: (card, context) =>
                 card.type === CardType.Character

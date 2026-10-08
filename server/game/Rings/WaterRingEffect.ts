@@ -1,4 +1,4 @@
-import type { GameMode } from '../GameMode.js';
+import type { GameRules } from '../GameRules.js';
 import { CardType } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
@@ -10,7 +10,7 @@ export class WaterRingEffect extends BaseAbility {
 
     constructor(
         optional: boolean,
-        rules: GameMode,
+        rules: GameRules,
         private onResolution = (_resolved: boolean) => {}
     ) {
         super({

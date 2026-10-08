@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Decks, Phases } from '../../Constants.js';
+import { DeckType, Phase } from '../../Constants.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
 class HirumaKogoe extends DrawCard {
@@ -8,9 +8,9 @@ class HirumaKogoe extends DrawCard {
     setupCardAbilities() {
         this.reaction('Rearrange top 3 cards of your conflict deck')
             .when({
-                onPhaseStarted: (event, context) => event.phase === Phases.Draw && context.player.opponent && context.player.honor < context.player.opponent.honor
+                onPhaseStarted: (event, context) => event.phase === Phase.Draw && context.player.opponent && context.player.honor < context.player.opponent.honor
             })
-            .gameAction(rearrangeDeck({ amount: 3, deck: Decks.ConflictDeck }))
+            .gameAction(rearrangeDeck({ amount: 3, deck: DeckType.Conflict }))
             .effect('rearrange the top 3 cards of their conflict deck');
     }
 }

@@ -1,4 +1,4 @@
-import { CardType, Players, Location, TargetMode, Decks } from '../../../Constants.js';
+import { CardType, Players, Location, TargetMode, DeckType } from '../../../Constants.js';
 import { deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,7 +17,7 @@ export default class TennyosBlessing extends DrawCard {
                 numCards: 2,
                 cardsToLookAt: 4,
                 shuffle: true,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {
                         const target = context.target;

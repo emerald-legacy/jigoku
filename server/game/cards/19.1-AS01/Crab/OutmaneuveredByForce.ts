@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { initiateConflict } from '../../../GameActions/GameActions.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredByForce extends DrawCard {
@@ -10,7 +10,7 @@ export default class OutmaneuveredByForce extends DrawCard {
         this.action('Declare a conflict right now')
             .condition((context) => context.game.getConflicts(Players.All).every((conflict) => conflict.passed))
             .gameAction(initiateConflict({ canPass: false }))
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 
     public canPlay(context: AbilityContext, playType: string): boolean {

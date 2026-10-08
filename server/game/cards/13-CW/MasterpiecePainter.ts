@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
 import { multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
-import { Duration, Location, Decks } from '../../Constants.js';
+import { Duration, Location, DeckType } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
 
 class MasterpiecePainter extends DrawCard {
@@ -34,7 +34,7 @@ class MasterpiecePainter extends DrawCard {
                 until: {
                     onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                     onPhaseEnded: () => true,
-                    onDeckShuffled: event => event.player === player && event.deck === Decks.ConflictDeck
+                    onDeckShuffled: event => event.player === player && event.deck === DeckType.Conflict
                 },
                 effect: [
                     showTopConflictCard(),

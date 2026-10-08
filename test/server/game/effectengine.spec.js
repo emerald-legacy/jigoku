@@ -148,7 +148,7 @@ describe('EffectEngine', function () {
         });
 
         it('should register custom duration events when duration is Custom', function () {
-            const effect = makeEffect({ duration: 'lastingEffect', until: { onSomething: () => true } });
+            const effect = makeEffect({ duration: 'custom', until: { onSomething: () => true } });
             this.engine.add(effect);
             expect(this.mockGame.on).toHaveBeenCalledWith('onSomething', jasmine.any(Function));
         });
@@ -204,7 +204,7 @@ describe('EffectEngine', function () {
         });
 
         it('should unregister custom duration events for removed custom-duration effects', function () {
-            const effect = makeEffect({ duration: 'lastingEffect', until: { onSomething: () => true } });
+            const effect = makeEffect({ duration: 'custom', until: { onSomething: () => true } });
             this.engine.add(effect);
 
             this.engine.unapplyAndRemove((e) => e === effect);

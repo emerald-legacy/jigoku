@@ -1,5 +1,5 @@
-import { GameModes } from '../../../GameModes.js';
-import { CardType, TargetMode, Decks, Location, Players } from '../../Constants.js';
+import { GameMode } from '../../../GameMode.js';
+import { CardType, TargetMode, DeckType, Location, Players } from '../../Constants.js';
 import { hideWhenFaceUp } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,12 +10,12 @@ export default class KaiuShihobu extends DrawCard {
         this.reaction('Look at your dynasty deck')
             .when({
                 onCharacterEntersPlay: (event, context) =>
-                    event.card === context.source && context.game.rules.name !== GameModes.Skirmish
+                    event.card === context.source && context.game.rules.name !== GameMode.Skirmish
             })
             .deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
                 mode: TargetMode.Unlimited,
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 selectedCardsHandler: (_context, event, cards) => {
                     if(cards.length > 0) {
                         this.game.addMessage('{0} selects {1}', event.player, cards);
@@ -38,7 +38,7 @@ export default class KaiuShihobu extends DrawCard {
             });
 
         this.action('Put a holding in a province')
-            .condition((context) => context.game.rules.name !== GameModes.Skirmish)
+            .condition((context) => context.game.rules.name !== GameMode.Skirmish)
             .target({
                 name: 'first',
                 activePromptTitle: 'Choose a holding',

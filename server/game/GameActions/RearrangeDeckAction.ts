@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { Decks, EventName } from '../Constants.js';
+import { DeckType, EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
@@ -14,7 +14,7 @@ const ORDINALS = ['first', 'second', 'third'];
 export interface RearrangeDeckProperties extends PlayerActionProperties {
     /** How many cards from the top of the deck. */
     amount: Derivable<number, AbilityContext>;
-    deck?: Decks;
+    deck?: DeckType;
     /** The title of the first prompt; the later ones ask for the second, third… card. */
     activePromptTitle?: string;
     /** Printed once the cards are back, with the cards top card first. Method syntax, so a narrower context fits. */
@@ -25,7 +25,7 @@ export interface RearrangeDeckProperties extends PlayerActionProperties {
 export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RearrangeDeckProperties, EventName.Unnamed, C, 'deck' | 'activePromptTitle'> {
     name = 'rearrangeDeck';
     defaultProperties = {
-        deck: Decks.ConflictDeck,
+        deck: DeckType.Conflict,
         activePromptTitle: 'Which card do you want to be on top?'
     };
 
@@ -38,8 +38,8 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         return ['rearrange the top {1} cards of {0}\'s {2}', [derive(amount, context), deck]];
     }
 
-    #deck(player: Player, deck: Decks): DrawCard[] {
-        return deck === Decks.DynastyDeck ? player.dynastyDeck : player.conflictDeck;
+    #deck(player: Player, deck: DeckType): DrawCard[] {
+        return deck === DeckType.Dynasty ? player.dynastyDeck : player.conflictDeck;
     }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {

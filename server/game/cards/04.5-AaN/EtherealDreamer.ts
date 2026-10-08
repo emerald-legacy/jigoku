@@ -1,6 +1,6 @@
 import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phases } from '../../Constants.js';
+import { Duration, Phase } from '../../Constants.js';
 
 class EtherealDreamer extends DrawCard {
     static id = 'ethereal-dreamer';
@@ -8,7 +8,7 @@ class EtherealDreamer extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain +2/+2 while contesting the target ring')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .ringTarget({
                 ringCondition: () => true

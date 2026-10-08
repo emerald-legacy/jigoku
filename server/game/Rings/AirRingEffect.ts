@@ -2,7 +2,7 @@ import { TargetMode } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
-import { AIR_CHOICE, type GameMode } from '../GameMode.js';
+import { AIR_CHOICE, type GameRules } from '../GameRules.js';
 
 export class AirRingEffect extends BaseAbility {
     public title = 'Air Ring Effect';
@@ -11,7 +11,7 @@ export class AirRingEffect extends BaseAbility {
 
     public constructor(
         optional: boolean,
-        rules: GameMode,
+        rules: GameRules,
         private onResolution = (_resolved: boolean) => {}
     ) {
         super({

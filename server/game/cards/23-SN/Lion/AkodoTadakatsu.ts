@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import { bow, injure } from '../../../GameActions/GameActions.js';
 import Ring from '../../../Ring.js';
 
@@ -10,7 +10,7 @@ export default class AkodoTadakatsu extends DrawCard {
         this.reaction('Injure a character')
             .when({
                 onMoveFate: (event, context) => {
-                    if(context.game.currentPhase === Phases.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {
+                    if(context.game.currentPhase === Phase.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {
                         return false;
                     }
                     const cause = event.context;

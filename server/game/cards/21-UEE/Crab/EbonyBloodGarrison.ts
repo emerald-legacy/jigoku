@@ -1,4 +1,4 @@
-import { CardType, Location, Phases, Players } from '../../../Constants.js';
+import { CardType, Location, Phase, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
 import { breakProvince, reveal } from '../../../GameActions/GameActions.js';
@@ -12,7 +12,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
     setupCardAbilities() {
         this.reaction('Break a province from each player')
             .when({
-                onPhaseEnded: (event, context) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
+                onPhaseEnded: (event, context) => event.phase === Phase.Dynasty && context.game.roundNumber === 1
             })
             .cost(costs.bowSelf())
             .target({

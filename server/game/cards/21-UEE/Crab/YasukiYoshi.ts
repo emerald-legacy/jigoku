@@ -1,5 +1,5 @@
 import { unlimited } from '../../../AbilityLimit.js';
-import { Decks } from '../../../Constants.js';
+import { DeckType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { attachSearchedCard } from '../../attachSearchedCard.js';
 
@@ -11,7 +11,7 @@ export default class YasukiYoshi extends DrawCard {
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
             .deckSearch({
                 activePromptTitle: 'Choose a Writ of Survey',
-                deck: Decks.ConflictDeck,
+                deck: DeckType.Conflict,
                 cardCondition: (card) => card.name === 'Writ of Survey',
                 selectedCardsHandler: (context, _, [card]) =>
                     attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])

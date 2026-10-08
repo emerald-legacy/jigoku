@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
-import { CardType, Decks} from '../../Constants.js';
+import { CardType, DeckType} from '../../Constants.js';
 
 class DaughterOfWar extends DrawCard {
     static id = 'daughter-of-war';
@@ -15,7 +15,7 @@ class DaughterOfWar extends DrawCard {
             })
             .deckSearch(context => ({
                 activePromptTitle: 'Choose a character to put into play',
-                deck: Decks.DynastyDeck,
+                deck: DeckType.Dynasty,
                 cardCondition: card => card.type === CardType.Character && card.costLessThan(context.source.parentCharacter?.getCost() ?? 0),
                 gameAction: putIntoPlay()
             }))
