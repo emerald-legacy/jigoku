@@ -45,7 +45,8 @@ export default class SpectralVisitation extends ProvinceCard {
                             })
                         }))
                     ]),
-                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the phase`})
+                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the phase`
+                })
             ]))
             .chatText('put a dynasty character into play')
             .cannotTargetFirst();

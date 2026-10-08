@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOpponents, canPlayFromOwn } from '../../effects.js';
 import { cancel, lookAt, moveCard, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
@@ -15,13 +16,11 @@ class TradingOnTheSandRoad extends DrawCard {
                 cancel(),
                 lookAt((context)=> ({
                     target: context.player.conflictDeck.slice(0, 4),
-                    message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
-                    messageArgs: (cards) => [context.player, cards.length, cards]
+                    message: (context, cards) => msg`${context.player} removes the top ${cards.length} cards from their conflict deck from the game: ${cards}`
                 })),
                 lookAt((context)=> ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
-                    message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
-                    messageArgs: (cards) => [context.player.opponent, cards.length, cards]
+                    message: (context, cards) => msg`${context.player.opponent} removes the top ${cards.length} cards from their conflict deck from the game: ${cards}`
                 })),
                 playerLastingEffect((context) => ({
                     targetController: context.player,

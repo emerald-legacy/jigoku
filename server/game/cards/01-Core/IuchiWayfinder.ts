@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { lookAt } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
@@ -15,10 +16,9 @@ class IuchiWayfinder extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Opponent,
-                gameAction: lookAt((context) => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                }))
+                gameAction: lookAt({
+                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                })
             })
             .chatText('look at a province');
     }

@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -9,8 +9,7 @@ import { targetList, type ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface LookAtProperties extends CardActionProperties {
-    message?: string | ((context: AbilityContext) => string);
-    messageArgs?: (cards: BaseCard[]) => MsgArg[];
+    message?: (context: AbilityContext, cards: BaseCard[]) => MessageArgs;
 }
 
 export class LookAtAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LookAtProperties, EventName.OnLookAtCards, C, 'message'> {
@@ -18,7 +17,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
     eventName = EventName.OnLookAtCards;
     effect = 'look at a facedown card';
     defaultProperties = {
-        message: '{0} sees {1}'
+        message: (context: AbilityContext, cards: BaseCard[]) => msg`${context.source} sees ${cards}`
     };
 
     canAffect(card: BaseCard, context: C) {
@@ -51,16 +50,8 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
     eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
-        const cards = event.cards;
-        const messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
-        context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
-    }
-
-    getMessage(message: string | ((context: C) => string), context: C): string {
-        if(typeof message === 'function') {
-            return message(context);
-        }
-        return message;
+        const [format, args] = properties.message(context, event.cards);
+        context.game.addMessage(format, ...args);
     }
 
     isEventFullyResolved(event: AnyEvent): boolean {

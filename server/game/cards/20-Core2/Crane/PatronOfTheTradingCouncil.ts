@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Location } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardMenu, lookAt, moveCard, sequential, shuffleDeck } from '../../../GameActions/GameActions.js';
@@ -19,13 +20,11 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
             .gameAction(sequential([
                 lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, 2),
-                    message: '{0} reveals the top {1} from their conflict deck: {2}',
-                    messageArgs: (cards) => [context.player, cards.length, cards]
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
                 lookAt((context) => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
-                    message: '{0} reveals the top {1} from their conflict deck: {2}',
-                    messageArgs: (cards) => [context.player.opponent, cards.length, cards]
+                    message: (context, cards) => msg`${context.player.opponent} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
                 cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give to yourself',

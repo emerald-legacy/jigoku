@@ -23,7 +23,8 @@ class KaradaDistrict extends DrawCard {
                         attachment: context.target,
                         takeControl: true
                     }),
-                    message: (context, cards, player) => msg`${player} chooses to attach ${context.target} to ${cards}`}),
+                    message: (context, cards, player) => msg`${player} chooses to attach ${context.target} to ${cards}`
+                }),
                 otherwiseAction: discardFromPlay({ target: context.target })
             })));
     }

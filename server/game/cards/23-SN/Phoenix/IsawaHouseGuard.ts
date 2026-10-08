@@ -35,6 +35,7 @@ export default class IsawaHouseGuard extends DrawCard {
                     });
                     return { gameActions };
                 }),
-                chatText: (_context, duel) => msg`${duel.loser} is dishonored and injured if tainted`}));
+                chatText: (_context, duel) => msg`${duel.loser} is dishonored and injured if tainted`
+            }));
     }
 }

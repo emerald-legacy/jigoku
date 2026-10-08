@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import { lookAt } from '../../GameActions/GameActions.js';
@@ -14,10 +15,9 @@ class HuntingFalcon extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isFacedown()
-            }, lookAt((context) => ({
-                message: '{0} sees {1} in {2}',
-                messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-            })));
+            }, lookAt({
+                message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+            }));
     }
 }
 

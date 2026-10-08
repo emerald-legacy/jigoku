@@ -20,7 +20,8 @@ export default class SoshiYuka extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isCharacter() && context.targets.target.includes(card),
                 gameAction: bow(),
-                message: (_context, card, _player) => msg`${card} is bowed, as they are dragged into a web of intrigue`}))
+                message: (_context, card, _player) => msg`${card} is bowed, as they are dragged into a web of intrigue`
+            }))
             .chatText('sow discord between {0}');
     }
 }

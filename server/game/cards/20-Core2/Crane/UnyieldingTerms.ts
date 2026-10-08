@@ -28,7 +28,8 @@ export default class UnyieldingTerms extends DrawCard {
                         bow({ target: duel.loser }),
                         removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ]),
-                chatText: (_context, duel) => msg`bow${this.wonByDuelist(duel) ? ' and remove 1 fate from' : ''} ${duel.loser}`}))
+                chatText: (_context, duel) => msg`bow${this.wonByDuelist(duel) ? ' and remove 1 fate from' : ''} ${duel.loser}`
+            }))
             .max(perRound(1));
     }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { canPlayFromOwn } from '../../effects.js';
@@ -17,8 +18,7 @@ class FavorableAlliance extends DrawCard {
             .gameAction(multiple([
                 lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, context.costs.fatePaid),
-                    message: '{0} sets aside the top {1} card{3} from their conflict deck: {2}',
-                    messageArgs: (cards) => [context.player, cards.length, cards, cards.length > 1 ? 's' : '']
+                    message: (context, cards) => msg`${context.player} sets aside the top ${cards.length} card${cards.length > 1 ? 's' : ''} from their conflict deck: ${cards}`
                 })),
                 handler({
                     handler: (context) => {

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { lookAt, moveCard, multipleContext, takeHonor } from '../../GameActions/GameActions.js';
 import { Location, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -15,8 +16,7 @@ export default class Overhear extends DrawCard {
                     gameActions: [
                         lookAt(() => ({
                             target: card,
-                            message: '{0} sees {1}',
-                            messageArgs: (cards) => [context.player, cards]
+                            message: (context, cards) => msg`${context.player} sees ${cards}`
                         })),
                         moveCard(() => ({
                             target: card,

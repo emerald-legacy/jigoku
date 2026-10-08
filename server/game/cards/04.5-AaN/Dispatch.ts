@@ -24,7 +24,8 @@ class Dispatch extends DrawCard {
                     trueGameAction: sendHome(),
                     falseGameAction: moveToConflict()
                 }),
-                message: (_context, card, player) => msg`${player} chooses to ${card.inConflict ? 'send' : 'move'} ${card} ${card.inConflict ? 'home' : 'into the conflict'}`})
+                message: (_context, card, player) => msg`${player} chooses to ${card.inConflict ? 'send' : 'move'} ${card} ${card.inConflict ? 'home' : 'into the conflict'}`
+            })
             .chatText('choose a unicorn character they control to move into a conflict or home');
     }
 }

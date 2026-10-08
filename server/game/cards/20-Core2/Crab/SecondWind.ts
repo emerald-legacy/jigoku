@@ -45,7 +45,8 @@ export default class SecondWind extends DrawCard {
                             })
                         }))
                     ]),
-                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`})
+                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`
+                })
             ]))
             .chatText((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
             .cannotTargetFirst();

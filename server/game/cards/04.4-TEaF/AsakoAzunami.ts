@@ -21,14 +21,16 @@ class AsakoAzunami extends DrawCard {
                         optional: true,
                         gameAction: bow(),
                         targets: true,
-                        message: (context, card, player) => msg`${player} chooses to bow ${card} with ${context.source}'s effect`}),
+                        message: (context, card, player) => msg`${player} chooses to bow ${card} with ${context.source}'s effect`
+                    }),
                     selectCard({
                         activePromptTitle: 'Choose a character to ready',
                         cardType: CardType.Character,
                         optional: true,
                         gameAction: ready(),
                         targets: true,
-                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`})
+                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`
+                    })
                 ])
             })
             .chatText(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);

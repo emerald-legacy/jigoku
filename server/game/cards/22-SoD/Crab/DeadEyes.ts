@@ -40,7 +40,8 @@ export default class DeadEyes extends DrawCard {
                             }
                         },
                         gameAction: sacrifice(),
-                        message: () => msg`${context.source.parentCharacter} is sacrificed due to the delayed effect of ${context.source}`})
+                        message: () => msg`${context.source.parentCharacter} is sacrificed due to the delayed effect of ${context.source}`
+                    })
                 ]
             }))
             .chatText('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', (context) => [context.source.parentCharacter ?? '', 'military']);

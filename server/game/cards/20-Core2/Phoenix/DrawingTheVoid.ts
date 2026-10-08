@@ -25,11 +25,10 @@ export default class DrawingTheVoid extends DrawCard {
                     .sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [
-                        lookAt((context) => ({
+                        lookAt({
                             target: revealedCards,
-                            message: '{0} reveals {1} from their hand - the void reveals...',
-                            messageArgs: (cards) => [context.player.opponent, cards]
-                        })),
+                            message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand - the void reveals...`
+                        }),
                         cardMenu((_context) => ({
                             activePromptTitle: 'Choose a card to remove from the game',
                             cards: revealedCards,

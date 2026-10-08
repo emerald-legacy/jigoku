@@ -87,7 +87,8 @@ class ExposedCourtyard extends DrawCard {
                             })
                         }))
                     ]),
-                    message: (context, card) => msg`${context.player} can play ${card} this conflict. It will be put on the bottom of the deck if it's played this conflict`}))
+                    message: (context, card) => msg`${context.player} can play ${card} this conflict. It will be put on the bottom of the deck if it's played this conflict`
+                }))
             ]))
             .chatText('pick an event to make playable this conflict')
             .cannotTargetFirst();

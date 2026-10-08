@@ -27,7 +27,8 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                                     event.conflict.winner !== target.controller || !target.isParticipating()
                             },
                             gameAction: discardFromPlay(),
-                            message: (context) => msg`${target} is discarded from play due to failing at ${context.source}`}),
+                            message: (context) => msg`${target} is discarded from play due to failing at ${context.source}`
+                        }),
                         delayedEffect({
                             when: {
                                 afterConflict: (event) =>
@@ -39,7 +40,8 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                                 gainHonor({ target: context.source.controller }),
                                 draw({ target: context.source.controller })
                             ]),
-                            message: (context) => msg`${target} is honored and receives 1 fate, and ${context.source.controller} gains 1 honor and draws 1 card due to ${target} succeeding at ${context.source}`})
+                            message: (context) => msg`${target} is honored and receives 1 fate, and ${context.source.controller} gains 1 honor and draws 1 card due to ${target} succeeding at ${context.source}`
+                        })
                     ]
                 };
             })

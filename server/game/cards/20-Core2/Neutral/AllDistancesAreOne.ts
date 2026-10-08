@@ -21,7 +21,8 @@ export default class AllDistancesAreOne extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 gameAction: moveConflict(),
-                message: (context, card) => msg`${context.player} moves the conflict to ${card}`})
+                message: (context, card) => msg`${context.player} moves the conflict to ${card}`
+            })
             .chatText('move the conflict to another eligible province')
             .thenIf((context) => !context.costs.originalProvince?.isBroken)
             .gameAction(onAffinity((context) => ({

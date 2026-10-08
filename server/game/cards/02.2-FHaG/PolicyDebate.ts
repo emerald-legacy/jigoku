@@ -29,8 +29,7 @@ export default class PolicyDebate extends DrawCard {
                     sequential([
                         lookAt({
                             target: this.losersHand(duel),
-                            message: '{0} reveals their hand: {1}',
-                            messageArgs: (cards) => [duel.loserController, cards]
+                            message: (_context, cards) => msg`${duel.loserController} reveals their hand: ${cards}`
                         }),
                         cardMenu({
                             activePromptTitle: 'Choose card to discard',

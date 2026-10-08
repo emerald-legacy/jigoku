@@ -23,7 +23,8 @@ class APerfectCut extends DrawCard {
                                     context.target.controller === event.conflict.winner
                         },
                         gameAction: honor(),
-                        message: () => msg`${context.target} is honored due to the delayed effect of ${context.source}`})
+                        message: () => msg`${context.target} is honored due to the delayed effect of ${context.source}`
+                    })
                 ]
             })))
             .chatText('grant +2{1} to {0} and honor them, if they win the current conflict', () => (['military']));

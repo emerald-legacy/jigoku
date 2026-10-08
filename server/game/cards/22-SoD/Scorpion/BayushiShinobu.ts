@@ -58,7 +58,8 @@ export default class BayushiShinobu extends DrawCard {
                             amount: 2,
                             target: context.player
                         }),
-                        message: () => msg`${context.player} loses 2 honor due to the delayed effect of ${context.source}`}),
+                        message: () => msg`${context.player} loses 2 honor due to the delayed effect of ${context.source}`
+                    }),
                     duration: Duration.UntilEndOfPhase
                 }))
             ]))

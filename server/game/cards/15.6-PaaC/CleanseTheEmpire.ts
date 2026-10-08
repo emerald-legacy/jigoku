@@ -22,7 +22,8 @@ class CleanseTheEmpire extends DrawCard {
                     targets: true,
                     cardCondition: (card) => card.getFate() === 0,
                     gameAction: bow(),
-                    message: (_context, card, player) => msg`${player} chooses to bow ${card}`})
+                    message: (_context, card, player) => msg`${player} chooses to bow ${card}`
+                })
             ]));
     }
 }

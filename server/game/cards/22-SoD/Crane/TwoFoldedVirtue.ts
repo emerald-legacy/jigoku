@@ -26,7 +26,8 @@ export default class TwoFoldedVirtue extends DrawCard {
                                 context.player === event.conflict.loser
                         },
                         gameAction: gainHonor({ target: context.player }),
-                        message: () => msg`${context.player} gains 1 honor due to the delayed effect of ${context.source}`})
+                        message: () => msg`${context.player} gains 1 honor due to the delayed effect of ${context.source}`
+                    })
                 }))
             ]))
             .chatText('grant +2{1} to {0} and, if they lose the current conflict, gain 1 honor', () => ['military']);

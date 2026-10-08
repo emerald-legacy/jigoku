@@ -38,6 +38,7 @@ export default class TruthIsInTheKilling extends DrawCard {
                                     ]
                             )
                         ) : noAction(),
-                chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.losingPlayer}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`}));
+                chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.losingPlayer}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`
+            }));
     }
 }

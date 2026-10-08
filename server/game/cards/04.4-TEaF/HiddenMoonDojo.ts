@@ -26,7 +26,8 @@ export default class HiddenMoonDojo extends DrawCard {
                 cardCondition: (card, context) =>
                     context.player.areLocationsAdjacent(context.source.location, card.location),
                 gameAction: flipDynasty(),
-                message: (_context, card, player) => msg`${player} chooses to turn ${card} in ${card.location} faceup`})
+                message: (_context, card, player) => msg`${player} chooses to turn ${card} in ${card.location} faceup`
+            })
             .chatText('turn a card in an adjacent province faceup');
     }
 }

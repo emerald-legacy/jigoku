@@ -47,7 +47,8 @@ class VoidWielder extends DrawCard {
                     gameAction: discardFromPlay(),
                     chatText: 'discard an attachment from {0}',
                     chatTextArgs: () => [context.targets.character],
-                    message: (_context, card, player) => msg`${player} discards ${card}`}))
+                    message: (_context, card, player) => msg`${player} discards ${card}`
+                }))
             });
     }
 

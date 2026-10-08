@@ -43,7 +43,8 @@ export default class BeguilingMaiko extends DrawCard {
                             player: Players.Opponent,
                             controller: Players.Opponent,
                             gameAction: dishonor(),
-                            message: (_context, card, player) => msg`${player} dishonors ${card}`})
+                            message: (_context, card, player) => msg`${player} dishonors ${card}`
+                        })
                     );
                 }
                 return { gameActions };

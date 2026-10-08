@@ -33,7 +33,8 @@ class PrepareForWar extends DrawCard {
                                 activePromptTitle: 'Choose any amount of attachments',
                                 optional: true,
                                 gameAction: discardFromPlay(),
-                                message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target ?? ''}`})),
+                                message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target ?? ''}`
+                            })),
                             ...promptActions
                         ]
                     };

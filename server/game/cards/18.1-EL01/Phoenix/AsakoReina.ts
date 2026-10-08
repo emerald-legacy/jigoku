@@ -48,7 +48,8 @@ class AsakoReina extends DrawCard {
                         cardType: CardType.Character,
                         gameAction: ready(),
                         targets: false,
-                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`}),
+                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`
+                    }),
                     falseGameAction: draw(() => ({ amount: 0 }))
                 }),
                 conditional({
@@ -58,7 +59,8 @@ class AsakoReina extends DrawCard {
                         cardType: CardType.Character,
                         gameAction: honor(),
                         targets: false,
-                        message: (context, card, player) => msg`${player} chooses to honor ${card} with ${context.source}'s effect`}),
+                        message: (context, card, player) => msg`${player} chooses to honor ${card} with ${context.source}'s effect`
+                    }),
                     falseGameAction: draw(() => ({ amount: 0 }))
                 })
             ]))

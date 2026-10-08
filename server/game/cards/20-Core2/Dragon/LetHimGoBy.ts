@@ -33,7 +33,8 @@ export default class LetHimGoBy extends DrawCard {
                             (duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)
                         )
                     }),
-                chatText: (_context, duel) => msg`${duel.winner} gets +${(duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)}${'military'} skill`}))
+                chatText: (_context, duel) => msg`${duel.winner} gets +${(duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)}${'military'} skill`
+            }))
             .max(perConflict(1));
     }
 }

@@ -33,7 +33,8 @@ export default class DeedsNotWords extends DrawCard {
                                 context.player === event.conflict.winner
                         },
                         gameAction: claimImperialFavor(() => ({ target: context.player })),
-                        message: () => msg`${context.player} claims the Imperial Favor due to the delayed effect of ${context.source}`})
+                        message: () => msg`${context.player} claims the Imperial Favor due to the delayed effect of ${context.source}`
+                    })
                 }))
             ]))
             .chatText('give {0} +2{1}', () => ['military'])

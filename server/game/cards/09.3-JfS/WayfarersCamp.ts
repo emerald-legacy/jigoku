@@ -28,7 +28,8 @@ class WayfarersCamp extends DrawCard {
                     location: Location.Provinces,
                     controller: Players.Self,
                     gameAction: flipDynasty(),
-                    message: (_context, card, player) => msg`${player} turns ${card} faceup`})
+                    message: (_context, card, player) => msg`${player} turns ${card} faceup`
+                })
             ]))
             .chatText('play two cards from their provinces')
             .phase(Phase.Dynasty);

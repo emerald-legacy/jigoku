@@ -53,7 +53,8 @@ export default class DiligentChaperone extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => targetsFromEvent(context.event).has(card),
                 gameAction: honor(),
-                message: (_context, card, player) => msg`${player} honors ${card}`}))
+                message: (_context, card, player) => msg`${player} honors ${card}`
+            }))
             .chatText('protect the honor of the Crane');
     }
 }

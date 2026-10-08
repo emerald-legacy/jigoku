@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import {
     cardMenu,
@@ -35,11 +36,10 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
                         const revealedCards = randomHandCards(context.player.opponent, 2);
                         return {
                             gameActions: [
-                                lookAt((context) => ({
+                                lookAt({
                                     target: revealedCards,
-                                    message: '{0} reveals {1} from their hand',
-                                    messageArgs: (cards) => [context.player.opponent, cards]
-                                })),
+                                    message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand`
+                                }),
                                 cardMenu({
                                     activePromptTitle: 'Choose a card to discard',
                                     cards: revealedCards,

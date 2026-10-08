@@ -48,36 +48,19 @@ class Reconnaissance extends DrawCard {
     }
 
     getLookAtAction() {
-        return lookAt((context) => ({
+        return lookAt({
             message: (context) => {
-                let target: BaseCard | BaseCard[] | undefined = context.targets.target;
-                if(!Array.isArray(target)) {
-                    target = target ? [target] : [];
+                const target: BaseCard | BaseCard[] | undefined = context.targets.target;
+                const provinces = Array.isArray(target) ? target : target ? [target] : [];
+                const [first, second, third] = provinces;
+                if(provinces.length === 1) {
+                    return msg`${context.source} sees ${first} in ${first.location}`;
+                } else if(provinces.length === 2) {
+                    return msg`${context.source} sees ${first} in ${first.location} and ${second} in ${second.location}`;
                 }
-
-                if(target.length === 1) {
-                    return '{0} sees {1} in {2}';
-                } else if(target.length === 2) {
-                    return '{0} sees {1} in {2} and {3} in {4}';
-                }
-                return '{0} sees {1} in {2}, {3} in {4}, and {5} in {6}';
-
-            },
-            messageArgs: () => {
-                let target: BaseCard | BaseCard[] | undefined = context.targets.target;
-                if(!Array.isArray(target)) {
-                    target = target ? [target] : [];
-                }
-
-                if(target.length === 1) {
-                    return [context.source, target[0], target[0].location];
-                } else if(target.length === 2) {
-                    return [context.source, target[0], target[0].location, target[1], target[1].location];
-                }
-                return [context.source, target[0], target[0].location, target[1], target[1].location, target[2], target[2].location];
-
+                return msg`${context.source} sees ${first} in ${first.location}, ${second} in ${second.location}, and ${third} in ${third.location}`;
             }
-        }));
+        });
     }
 }
 

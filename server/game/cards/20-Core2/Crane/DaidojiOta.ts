@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { reduceCost } from '../../../effects.js';
 import { chosenDiscard, lookAt } from '../../../GameActions/GameActions.js';
@@ -36,8 +37,7 @@ export default class DaidojiOta extends DrawCard {
                 'Reveal your hand': lookAt((context) => ({
                     target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                     chatMessage: true,
-                    message: '{0} reveals their hand: {1}',
-                    messageArgs: (cards) => [context.player.opponent, cards]
+                    message: (context, cards) => msg`${context.player.opponent} reveals their hand: ${cards}`
                 }))
             })
             .chatText('make {1}{2}', (context) =>

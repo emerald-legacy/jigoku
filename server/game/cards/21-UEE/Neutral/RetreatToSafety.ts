@@ -23,6 +23,7 @@ export default class RetreatToSafety extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card) => context.targets.target.some((target) => target === card),
                     gameAction: ready(),
-                    message: (_context, card, player) => msg`${card} is readied due to ${player}'s superior leadership`}));
+                    message: (_context, card, player) => msg`${card} is readied due to ${player}'s superior leadership`
+                }));
     }
 }

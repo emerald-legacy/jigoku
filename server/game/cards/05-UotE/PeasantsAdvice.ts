@@ -14,10 +14,9 @@ class PeasantsAdvice extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, sequential([
-                lookAt((context) => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                })),
+                lookAt({
+                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                }),
                 selectCard((context) => ({
                     activePromptTitle: 'Choose a faceup card to return to its owner\'s deck',
                     cardCondition: (card) =>

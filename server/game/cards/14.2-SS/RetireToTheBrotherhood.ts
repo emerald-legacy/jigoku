@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import { Location, CardType, EventName } from '../../Constants.js';
@@ -35,13 +36,11 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                 multiple([
                     lookAt((context) => ({
                         target: this.getBrotherhoodCards(context, context.player).revealed,
-                        message: '{0} reveals {1}',
-                        messageArgs: (cards) => [context.player, cards]
+                        message: (context, cards) => msg`${context.player} reveals ${cards}`
                     })),
                     lookAt((context) => ({
                         target: this.getBrotherhoodCards(context, context.player.opponent).revealed,
-                        message: '{0} reveals {1}',
-                        messageArgs: (cards) => [context.player.opponent, cards]
+                        message: (context, cards) => msg`${context.player.opponent} reveals ${cards}`
                     }))
                 ]),
                 multiple([

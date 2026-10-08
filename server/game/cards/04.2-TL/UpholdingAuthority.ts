@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import { cardMenu, discardCard, lookAt, menuPrompt, sequential } from '../../GameActions/GameActions.js';
@@ -49,8 +50,7 @@ export default class UpholdingAuthority extends ProvinceCard {
             .gameAction(sequential([
                 lookAt((context) => ({
                     target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                    message: '{0} reveals their hand: {1}',
-                    messageArgs: (cards) => [context.game.currentConflict?.attackingPlayer, cards]
+                    message: (context, cards) => msg`${context.game.currentConflict?.attackingPlayer} reveals their hand: ${cards}`
                 })),
                 cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',

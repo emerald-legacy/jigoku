@@ -17,8 +17,7 @@ export default class CourtOfJustice extends DrawCard {
             })
             .gameAction(lookAt((context) => ({
                 target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
-                message: 'reveals {0} from {1}\'s hand',
-                messageArgs: (cards) => [cards, context.player.opponent]
+                message: (context, cards) => msg`reveals ${cards} from ${context.player.opponent}'s hand`
             })))
             .chatText((context) => msg`look at 3 random cards from ${context.player.opponent}'s hand`);
     }
