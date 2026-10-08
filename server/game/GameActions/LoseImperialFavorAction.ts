@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type DiscardFavorProperties = PlayerActionProperties;
 
-export class DiscardFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DiscardFavorProperties, EventName.OnDiscardFavor, C> {
+export class LoseImperialFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DiscardFavorProperties, EventName.OnDiscardFavor, C> {
     name = 'discardFavor';
     eventName = EventName.OnDiscardFavor;
     cost = 'discarding the Imperial Favor';

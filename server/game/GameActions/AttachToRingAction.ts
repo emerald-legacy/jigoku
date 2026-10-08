@@ -9,11 +9,11 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-export interface AttachToRingActionProperties extends CardActionProperties {
+export interface AttachToRingProperties extends CardActionProperties {
     attachment?: DrawCard;
 }
 
-export class AttachToRingAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AttachToRingActionProperties, EventName.OnCardAttached, C> {
+export class AttachToRingAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AttachToRingProperties, EventName.OnCardAttached, C> {
     name = 'attachToRing';
     eventName = EventName.OnCardAttached;
     targetType = ['ring'];

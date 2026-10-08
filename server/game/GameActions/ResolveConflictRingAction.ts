@@ -5,7 +5,7 @@ import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import { ResolveElementAction } from './ResolveElementAction.js';
+import { ResolveRingEffectAction } from './ResolveRingEffectAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -120,7 +120,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
 
     resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
         const rings = elements.flatMap((element) => player.game.ringFor(element) ?? []);
-        const action = new ResolveElementAction({
+        const action = new ResolveRingEffectAction({
             target: rings,
             optional: optional,
             physicalRing: player.game.currentConflict?.ring

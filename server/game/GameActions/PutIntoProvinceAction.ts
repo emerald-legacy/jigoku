@@ -16,7 +16,7 @@ export interface PutInProvinceProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class PutInProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
     PutInProvinceProperties,
     EventName.OnCardLeavesPlay,
     C,

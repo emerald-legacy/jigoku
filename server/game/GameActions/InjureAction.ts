@@ -9,18 +9,18 @@ import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
 import DrawCard from '../DrawCard.js';
 import type BaseCard from '../BaseCard.js';
 
-export interface InjureActionProperties extends GameActionProperties {
+export interface InjureProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-export class InjureAction<C extends AbilityContext = AbilityContext> extends GameAction<InjureActionProperties, EventName, C> {
+export class InjureAction<C extends AbilityContext = AbilityContext> extends GameAction<InjureProperties, EventName, C> {
     name = 'injure';
     targetType = [CardType.Character];
     effect = 'injure {0}';
     removeFateGameAction: GameAction;
     discardGameAction: GameAction;
 
-    constructor(propertyFactory: InjureActionProperties | ((context: C) => InjureActionProperties)) {
+    constructor(propertyFactory: InjureProperties | ((context: C) => InjureProperties)) {
         super(propertyFactory);
         this.removeFateGameAction = new RemoveFateAction({ amount: 1 });
         this.discardGameAction = new DiscardFromPlayAction({});

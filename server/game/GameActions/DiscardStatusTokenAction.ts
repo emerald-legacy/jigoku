@@ -8,7 +8,7 @@ import { targetList, type ActionEvent } from './GameAction.js';
 
 export type DiscardStatusProperties = TokenActionProperties;
 
-export class DiscardStatusAction<C extends AbilityContext = AbilityContext> extends TokenAction<DiscardStatusProperties, EventName.OnStatusTokenDiscarded, C> {
+export class DiscardStatusTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<DiscardStatusProperties, EventName.OnStatusTokenDiscarded, C> {
     name = 'discardStatus';
     eventName = EventName.OnStatusTokenDiscarded;
     cost = 'discarding a status token';

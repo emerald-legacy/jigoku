@@ -14,7 +14,7 @@ export interface LastingEffectCardProperties extends CardActionProperties, Lasti
     canChangeZoneNTimes?: number;
 }
 
-export class LastingEffectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
     LastingEffectCardProperties,
     EventName.OnEffectApplied,
     C,

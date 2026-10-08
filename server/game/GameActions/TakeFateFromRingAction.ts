@@ -12,7 +12,7 @@ export interface TakeFateRingProperties extends RingActionProperties {
     removeOnly?: boolean;
 }
 
-export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C, 'amount' | 'removeOnly'> {
+export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C, 'amount' | 'removeOnly'> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1, removeOnly: false };

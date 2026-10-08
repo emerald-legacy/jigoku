@@ -14,7 +14,7 @@ export interface ResolveElementProperties extends RingActionProperties {
     enforceOrderedResolution?: boolean;
 }
 
-export class ResolveElementAction<C extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, C> {
+export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, C> {
     name = 'resolveElement';
     eventName = EventName.OnResolveRingElement;
     effect = 'resolve {0} effect';

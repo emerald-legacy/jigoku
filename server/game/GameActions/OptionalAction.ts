@@ -7,7 +7,7 @@ import { Derivable, derive } from '../utils/helpers.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface OptionalActionProperties extends GameActionProperties {
+export interface OptionalProperties extends GameActionProperties {
     gameAction: GameAction;
     effect?: string;
     effectArgs?: Derivable<MsgArg[], AbilityContext>;
@@ -15,7 +15,7 @@ export interface OptionalActionProperties extends GameActionProperties {
     showMessageOnNo?: boolean;
 }
 
-export class OptionalAction<C extends AbilityContext = AbilityContext> extends GameAction<OptionalActionProperties, EventName, C> {
+export class OptionalAction<C extends AbilityContext = AbilityContext> extends GameAction<OptionalProperties, EventName, C> {
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction]);
     }
@@ -54,7 +54,7 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
     }
 
     resolveAction(
-        properties: OptionalActionProperties,
+        properties: OptionalProperties,
         events: Event[],
         context: C,
         additionalProperties: ActionOverrides = {}
@@ -67,7 +67,7 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
     }
 
     skipAction(
-        properties: OptionalActionProperties,
+        properties: OptionalProperties,
         context: C
     ) {
         if(properties.showMessageOnNo) {

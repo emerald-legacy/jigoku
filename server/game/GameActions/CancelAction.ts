@@ -7,14 +7,14 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { AnyEvent, TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 
-export interface CancelActionProperties extends GameActionProperties {
+export interface CancelProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
     effect?: string;
 }
 
 export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): void };
 
-export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName.Unnamed, C> {
+export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelProperties, EventName.Unnamed, C> {
     protected effectMessage(context: C): MessageArgs {
         const { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {

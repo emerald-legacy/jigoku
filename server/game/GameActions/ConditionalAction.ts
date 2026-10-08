@@ -7,14 +7,14 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 import { noAction } from './HandlerAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface ConditionalActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
-    condition: ((context: C, properties: ConditionalActionProperties<C>) => boolean) | boolean;
+export interface ConditionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+    condition: ((context: C, properties: ConditionalProperties<C>) => boolean) | boolean;
     trueGameAction: GameAction;
     /** Defaults to doing nothing. */
     falseGameAction?: GameAction;
 }
 
-export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties<C>, EventName, C, 'falseGameAction'> {
+export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalProperties<C>, EventName, C, 'falseGameAction'> {
     defaultProperties = { falseGameAction: noAction() };
 
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {

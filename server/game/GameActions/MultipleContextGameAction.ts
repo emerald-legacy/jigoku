@@ -6,11 +6,11 @@ import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface MultipleContextActionProperties extends GameActionProperties {
+export interface MultipleContextProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleContextActionProperties, EventName, C> {
+export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleContextProperties, EventName, C> {
     getEffectMessage(context: C): MessageArgs {
         const { gameActions } = this.getProperties(context);
         const legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));

@@ -9,7 +9,7 @@ export interface GloryCountProperties extends GameActionProperties {
     gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction | null) | GameAction;
 }
 
-export class GloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName.OnGloryCount, C> {
+export class PerformGloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName.OnGloryCount, C> {
     name = 'gloryCount';
     eventName = EventName.OnGloryCount;
 

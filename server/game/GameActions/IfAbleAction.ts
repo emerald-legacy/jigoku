@@ -6,12 +6,12 @@ import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface IfAbleActionProperties extends GameActionProperties {
+export interface IfAbleProperties extends GameActionProperties {
     ifAbleAction: GameAction;
     otherwiseAction: GameAction;
 }
 
-export class IfAbleAction<C extends AbilityContext = AbilityContext> extends GameAction<IfAbleActionProperties, EventName, C> {
+export class IfAbleAction<C extends AbilityContext = AbilityContext> extends GameAction<IfAbleProperties, EventName, C> {
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.ifAbleAction, properties.otherwiseAction]);
     }

@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type TurnCardFacedownProperties = CardActionProperties;
 
-export class TurnCardFacedownAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName.OnCardTurnedFacedown, C> {
+export class TurnFacedownAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName.OnCardTurnedFacedown, C> {
     name = 'turnFacedown';
     eventName = EventName.OnCardTurnedFacedown;
     cost = 'turning {0} facedown';

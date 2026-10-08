@@ -1,28 +1,28 @@
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
-import { AffinityAction, AffinityActionProperties } from './AffinityAction.js';
+import { AffinityAction, AffinityProperties } from './AffinityAction.js';
 import { AssignRolesAction, type AssignRolesProperties } from './AssignRolesAction.js';
-import { AttachAction, AttachActionProperties } from './AttachAction.js';
+import { AttachAction, AttachProperties } from './AttachAction.js';
 import { RearrangeDeckAction, type RearrangeDeckProperties } from './RearrangeDeckAction.js';
-import { AttachToRingAction, AttachToRingActionProperties } from './AttachToRingAction.js';
-import { BowAction, BowActionProperties } from './BowAction.js';
-import { BreakAction, BreakProperties } from './BreakAction.js';
-import { CancelAction, CancelActionProperties, type CancellingContext } from './CancelAction.js';
+import { AttachToRingAction, AttachToRingProperties } from './AttachToRingAction.js';
+import { BowAction, BowProperties } from './BowAction.js';
+import { BreakProvinceAction, BreakProperties } from './BreakProvinceAction.js';
+import { CancelAction, CancelProperties, type CancellingContext } from './CancelAction.js';
 import { CardMenuAction, CardMenuProperties } from './CardMenuAction.js';
 import { ChooseActionProperties, ChooseGameAction } from './ChooseGameAction.js';
 import { ChosenDiscardAction, ChosenDiscardProperties } from './ChosenDiscardAction.js';
 import { ChosenReturnToDeckAction, ChosenReturnToDeckProperties } from './ChosenReturnToDeckAction.js';
-import { ClaimFavorAction, ClaimFavorProperties } from './ClaimFavorAction.js';
+import { ClaimImperialFavorAction, ClaimFavorProperties } from './ClaimImperialFavorAction.js';
 import { ClaimRingAction, ClaimRingProperties } from './ClaimRingAction.js';
-import { ConditionalAction, ConditionalActionProperties } from './ConditionalAction.js';
+import { ConditionalAction, ConditionalProperties } from './ConditionalAction.js';
 import { CreateTokenAction, CreateTokenProperties } from './CreateTokenAction.js';
 import { DeckSearchAction, DeckSearchProperties } from './DeckSearchAction.js';
-import { DetachAction, DetachActionProperties } from './DetachAction.js';
+import { DetachAction, DetachProperties } from './DetachAction.js';
 import { DiscardCardAction, DiscardCardProperties } from './DiscardCardAction.js';
-import { DiscardFavorAction, DiscardFavorProperties } from './DiscardFavorAction.js';
+import { LoseImperialFavorAction, DiscardFavorProperties } from './LoseImperialFavorAction.js';
 import { DiscardFromPlayAction, DiscardFromPlayProperties } from './DiscardFromPlayAction.js';
-import { DiscardStatusAction, DiscardStatusProperties } from './DiscardStatusAction.js';
+import { DiscardStatusTokenAction, DiscardStatusProperties } from './DiscardStatusTokenAction.js';
 import { DishonorAction, DishonorProperties } from './DishonorAction.js';
 import { DishonorProvinceAction, DishonorProvinceProperties } from './DishonorProvinceAction.js';
 import { DrawAction, DrawProperties } from './DrawAction.js';
@@ -31,44 +31,44 @@ import { DuelAddParticipantAction, DuelAddParticipantProperties } from './DuelAd
 import { FateBidAction, FateBidProperties } from './FateBidAction.js';
 import { FillProvinceAction, FillProvinceProperties } from './FillProvinceAction.js';
 import { FlipDynastyAction, FlipDynastyProperties } from './FlipDynastyAction.js';
-import { FlipFavorAction, FlipFavorProperties } from './FlipFavorAction.js';
+import { FlipImperialFavorAction, FlipFavorProperties } from './FlipImperialFavorAction.js';
 import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
-import { GloryCountAction, GloryCountProperties } from './GloryCountAction.js';
+import { PerformGloryCountAction, GloryCountProperties } from './PerformGloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';
 import { HonorAction, HonorProperties } from './HonorAction.js';
 import { HonorBidAction, HonorBidProperties } from './HonorBidAction.js';
-import { IfAbleAction, IfAbleActionProperties } from './IfAbleAction.js';
+import { IfAbleAction, IfAbleProperties } from './IfAbleAction.js';
 import { InitiateConflictAction, InitiateConflictProperties } from './InitiateConflictAction.js';
-import { InjureAction, InjureActionProperties } from './InjureAction.js';
+import { InjureAction, InjureProperties } from './InjureAction.js';
 import { JointGameAction } from './JointGameAction.js';
 import { LastingEffectAction, LastingEffectProperties } from './LastingEffectAction.js';
-import { LastingEffectCardAction, LastingEffectCardProperties } from './LastingEffectCardAction.js';
-import { LastingEffectRingAction, LastingEffectRingProperties } from './LastingEffectRingAction.js';
+import { CardLastingEffectAction, LastingEffectCardProperties } from './CardLastingEffectAction.js';
+import { RingLastingEffectAction, LastingEffectRingProperties } from './RingLastingEffectAction.js';
 import { LookAtAction, LookAtProperties } from './LookAtAction.js';
 import { LoseFateAction, LoseFateProperties } from './LoseFateAction.js';
 import { LoseHonorAction, LoseHonorProperties } from './LoseHonorAction.js';
-import { OptionalAction, OptionalActionProperties } from './OptionalAction.js';
-import { MatchingDiscardAction, MatchingDiscardProperties } from './MatchingDiscardAction.js';
+import { OptionalAction, OptionalProperties } from './OptionalAction.js';
+import { DiscardMatchingAction, MatchingDiscardProperties } from './DiscardMatchingAction.js';
 import { MenuPromptAction, MenuPromptProperties } from './MenuPromptAction.js';
 import { ModifyBidAction, ModifyBidProperties } from './ModifyBidAction.js';
 import { MoveCardAction, MoveCardProperties } from './MoveCardAction.js';
 import { MoveConflictAction, MoveConflictProperties } from './MoveConflictAction.js';
 import { MoveToConflictAction, MoveToConflictProperties } from './MoveToConflictAction.js';
-import { MoveTokenAction, MoveTokenProperties } from './MoveTokenAction.js';
-import { MultipleContextActionProperties, MultipleContextGameAction } from './MultipleContextGameAction.js';
+import { MoveStatusTokenAction, MoveTokenProperties } from './MoveStatusTokenAction.js';
+import { MultipleContextProperties, MultipleContextGameAction } from './MultipleContextGameAction.js';
 import { MultipleGameAction } from './MultipleGameAction.js';
 import { OpponentPutIntoPlayAction, OpponentPutIntoPlayProperties } from './OpponentPutIntoPlayAction.js';
 import { PlaceCardUnderneathAction, PlaceCardUnderneathProperties } from './PlaceCardUnderneathAction.js';
 import { PlaceFateAction, PlaceFateProperties } from './PlaceFateAction.js';
-import { PlaceFateRingAction, PlaceFateRingProperties } from './PlaceFateRingAction.js';
+import { PlaceFateOnRingAction, PlaceFateRingProperties } from './PlaceFateOnRingAction.js';
 import { PlayCardAction, PlayCardProperties } from './PlayCardAction.js';
-import { PutInProvinceAction, PutInProvinceProperties } from './PutInProvinceAction.js';
+import { PutIntoProvinceAction, PutInProvinceProperties } from './PutIntoProvinceAction.js';
 import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction.js';
-import { RandomDiscardAction, RandomDiscardProperties } from './RandomDiscardAction.js';
+import { DiscardAtRandomAction, RandomDiscardProperties } from './DiscardAtRandomAction.js';
 import { ReadyAction, ReadyProperties } from './ReadyAction.js';
 import { RefillFaceupAction, RefillFaceupProperties } from './RefillFaceupAction.js';
 import { RemoveFateAction, RemoveFateProperties } from './RemoveFateAction.js';
@@ -76,7 +76,7 @@ import { RemoveFromGameAction, RemoveFromGameProperties } from './RemoveFromGame
 import { RemoveRingFromPlayAction, RemoveRingFromPlayProperties } from './RemoveRingFromPlayAction.js';
 import { ResolveAbilityAction, ResolveAbilityProperties } from './ResolveAbilityAction.js';
 import { ResolveConflictRingAction } from './ResolveConflictRingAction.js';
-import { ResolveElementAction, ResolveElementProperties } from './ResolveElementAction.js';
+import { ResolveRingEffectAction, ResolveElementProperties } from './ResolveRingEffectAction.js';
 import { RestoreProvinceAction, RestoreProvinceProperties } from './RestoreProvinceAction.js';
 import { ReturnRingAction, ReturnRingProperties } from './ReturnRingAction.js';
 import { ReturnRingToPlayAction, ReturnRingToPlayProperties } from './ReturnRingToPlayAction.js';
@@ -92,18 +92,18 @@ import { SelectTokenAction, SelectTokenProperties } from './SelectTokenAction.js
 import { SendHomeAction, SendHomeProperties } from './SendHomeAction.js';
 import { SequentialAction } from './SequentialAction.js';
 import { SequentialContextAction, SequentialContextProperties } from './SequentialContextAction.js';
-import { SetDialAction, SetDialProperties } from './SetDialAction.js';
+import { SetHonorDialAction, SetDialProperties } from './SetHonorDialAction.js';
 import { ShuffleDeckAction, ShuffleDeckProperties } from './ShuffleDeckAction.js';
 import { SwitchConflictElementAction, SwitchConflictElementProperties } from './SwitchConflictElementAction.js';
 import { SwitchConflictTypeAction, SwitchConflictTypeProperties } from './SwitchConflictTypeAction.js';
 import { TaintAction, TaintProperties } from './TaintAction.js';
 import { TakeControlAction, TakeControlProperties } from './TakeControlAction.js';
-import { TakeFateRingAction, TakeFateRingProperties } from './TakeFateRingAction.js';
+import { TakeFateFromRingAction, TakeFateRingProperties } from './TakeFateFromRingAction.js';
 import { TakeRingAction, TakeRingProperties } from './TakeRingAction.js';
-import { TransferFateAction, TransferFateProperties } from './TransferFateAction.js';
-import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAction.js';
+import { TakeFateAction, TransferFateProperties } from './TakeFateAction.js';
+import { TakeHonorAction, TransferHonorProperties } from './TakeHonorAction.js';
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction.js';
-import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
+import { TurnFacedownAction, TurnCardFacedownProperties } from './TurnFacedownAction.js';
 
 type PropsFactory<Props, C extends AbilityContext = AbilityContext> =
     Props | ((context: C) => Props);
@@ -114,28 +114,28 @@ type PropsFactory<Props, C extends AbilityContext = AbilityContext> =
 export function addToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AddTokenProperties, C> = {}): AddTokenAction<C> {
     return new AddTokenAction<C>(propertyFactory);
 }
-export function attach<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachActionProperties, C> = {}): AttachAction<C> {
+export function attach<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachProperties, C> = {}): AttachAction<C> {
     return new AttachAction<C>(propertyFactory);
 }
-export function attachToRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachToRingActionProperties, C> = {}): AttachToRingAction<C> {
+export function attachToRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AttachToRingProperties, C> = {}): AttachToRingAction<C> {
     return new AttachToRingAction<C>(propertyFactory);
 }
-export function bow<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BowActionProperties, C> = {}): BowAction<C> {
+export function bow<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BowProperties, C> = {}): BowAction<C> {
     return new BowAction<C>(propertyFactory);
 }
-export function breakProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BreakProperties, C> = {}): BreakAction<C> {
-    return new BreakAction<C>(propertyFactory);
+export function breakProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BreakProperties, C> = {}): BreakProvinceAction<C> {
+    return new BreakProvinceAction<C>(propertyFactory);
 }
-export function cardLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, C>): LastingEffectCardAction<C> {
-    return new LastingEffectCardAction<C>(propertyFactory);
+export function cardLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, C>): CardLastingEffectAction<C> {
+    return new CardLastingEffectAction<C>(propertyFactory);
 }
-export function claimImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimFavorProperties, C>): ClaimFavorAction<C> {
-    return new ClaimFavorAction<C>(propertyFactory);
+export function claimImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimFavorProperties, C>): ClaimImperialFavorAction<C> {
+    return new ClaimImperialFavorAction<C>(propertyFactory);
 }
 export function createToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CreateTokenProperties, C>): CreateTokenAction<C> {
     return new CreateTokenAction<C>(propertyFactory);
 }
-export function detach<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DetachActionProperties, C> = {}): DetachAction<C> {
+export function detach<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DetachProperties, C> = {}): DetachAction<C> {
     return new DetachAction<C>(propertyFactory);
 }
 export function discardCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardCardProperties, C> = {}): DiscardCardAction<C> {
@@ -159,13 +159,13 @@ export function duelAddParticipant<C extends AbilityContext = AbilityContext>(pr
 export function flipDynasty<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipDynastyProperties, C> = {}): FlipDynastyAction<C> {
     return new FlipDynastyAction<C>(propertyFactory);
 }
-export function flipImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipFavorProperties, C>): FlipFavorAction<C> {
-    return new FlipFavorAction<C>(propertyFactory);
+export function flipImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<FlipFavorProperties, C>): FlipImperialFavorAction<C> {
+    return new FlipImperialFavorAction<C>(propertyFactory);
 }
 export function honor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HonorProperties, C> = {}): HonorAction<C> {
     return new HonorAction<C>(propertyFactory);
 }
-export function injure<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<InjureActionProperties, C> = {}): InjureAction<C> {
+export function injure<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<InjureProperties, C> = {}): InjureAction<C> {
     return new InjureAction<C>(propertyFactory);
 }
 
@@ -195,8 +195,8 @@ export function placeFate<C extends AbilityContext = AbilityContext>(propertyFac
 export function playCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlayCardProperties, C> = {}): PlayCardAction<C> {
     return new PlayCardAction<C>(propertyFactory);
 }
-export function performGloryCount<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GloryCountProperties, C>): GloryCountAction<C> {
-    return new GloryCountAction<C>(propertyFactory);
+export function performGloryCount<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GloryCountProperties, C>): PerformGloryCountAction<C> {
+    return new PerformGloryCountAction<C>(propertyFactory);
 }
 /**
  * default fate = 0
@@ -212,8 +212,8 @@ export function putIntoConflict<C extends AbilityContext = AbilityContext>(prope
 export function putIntoPlay<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutIntoPlayProperties, C> = {}): PutIntoPlayAction<C> {
     return new PutIntoPlayAction<C>(propertyFactory, false);
 }
-export function putIntoProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutInProvinceProperties, C>): PutInProvinceAction<C> {
-    return new PutInProvinceAction<C>(propertyFactory);
+export function putIntoProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PutInProvinceProperties, C>): PutIntoProvinceAction<C> {
+    return new PutIntoProvinceAction<C>(propertyFactory);
 }
 /**
  * default fate = 0
@@ -270,8 +270,8 @@ export function takeControl<C extends AbilityContext = AbilityContext>(propertyF
 export function triggerAbility<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TriggerAbilityProperties, C>): TriggerAbilityAction<C> {
     return new TriggerAbilityAction<C>(propertyFactory);
 }
-export function turnFacedown<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TurnCardFacedownProperties, C> = {}): TurnCardFacedownAction<C> {
-    return new TurnCardFacedownAction<C>(propertyFactory);
+export function turnFacedown<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TurnCardFacedownProperties, C> = {}): TurnFacedownAction<C> {
+    return new TurnFacedownAction<C>(propertyFactory);
 }
 export function gainStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<GainStatusTokenProperties, C> = {}): GainStatusTokenAction<C> {
     return new GainStatusTokenAction<C>(propertyFactory);
@@ -312,14 +312,14 @@ export function deckSearch<C extends AbilityContext = AbilityContext>(propertyFa
 /**
  * default amount = 1
  */
-export function discardAtRandom<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RandomDiscardProperties, C> = {}): RandomDiscardAction<C> {
-    return new RandomDiscardAction<C>(propertyFactory);
+export function discardAtRandom<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RandomDiscardProperties, C> = {}): DiscardAtRandomAction<C> {
+    return new DiscardAtRandomAction<C>(propertyFactory);
 }
 /**
  * default amount = -1
  */
-export function discardMatching<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MatchingDiscardProperties, C> = {}): MatchingDiscardAction<C> {
-    return new MatchingDiscardAction<C>(propertyFactory);
+export function discardMatching<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MatchingDiscardProperties, C> = {}): DiscardMatchingAction<C> {
+    return new DiscardMatchingAction<C>(propertyFactory);
 }
 /**
  * default amount = 1
@@ -360,8 +360,8 @@ export function loseFate<C extends AbilityContext = AbilityContext>(propertyFact
 export function loseHonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LoseHonorProperties, C> = {}): LoseHonorAction<C> {
     return new LoseHonorAction<C>(propertyFactory);
 } // amount = 1
-export function loseImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFavorProperties, C> = {}): DiscardFavorAction<C> {
-    return new DiscardFavorAction<C>(propertyFactory);
+export function loseImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardFavorProperties, C> = {}): LoseImperialFavorAction<C> {
+    return new LoseImperialFavorAction<C>(propertyFactory);
 }
 export function modifyBid<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ModifyBidProperties, C> = {}): ModifyBidAction<C> {
     return new ModifyBidAction<C>(propertyFactory);
@@ -372,36 +372,36 @@ export function playerLastingEffect<C extends AbilityContext = AbilityContext>(p
 export function refillFaceup<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RefillFaceupProperties, C>): RefillFaceupAction<C> {
     return new RefillFaceupAction<C>(propertyFactory);
 } // location
-export function setHonorDial<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SetDialProperties, C>): SetDialAction<C> {
-    return new SetDialAction<C>(propertyFactory);
+export function setHonorDial<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SetDialProperties, C>): SetHonorDialAction<C> {
+    return new SetHonorDialAction<C>(propertyFactory);
 } // value
 export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ShuffleDeckProperties, C>): ShuffleDeckAction<C> {
     return new ShuffleDeckAction<C>(propertyFactory);
 }
-export function takeFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferFateProperties, C> = {}): TransferFateAction<C> {
-    return new TransferFateAction<C>(propertyFactory);
+export function takeFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferFateProperties, C> = {}): TakeFateAction<C> {
+    return new TakeFateAction<C>(propertyFactory);
 } // amount = 1
-export function takeHonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferHonorProperties, C> = {}): TransferHonorAction<C> {
-    return new TransferHonorAction<C>(propertyFactory);
+export function takeHonor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferHonorProperties, C> = {}): TakeHonorAction<C> {
+    return new TakeHonorAction<C>(propertyFactory);
 } // amount = 1
 
 //////////////
 // RING
 //////////////
-export function placeFateOnRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateRingProperties, C> = {}): PlaceFateRingAction<C> {
-    return new PlaceFateRingAction<C>(propertyFactory);
+export function placeFateOnRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateRingProperties, C> = {}): PlaceFateOnRingAction<C> {
+    return new PlaceFateOnRingAction<C>(propertyFactory);
 } // amount = 1, origin
 export function resolveConflictRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RingActionProperties, C> = {}): ResolveConflictRingAction<C> {
     return new ResolveConflictRingAction<C>(propertyFactory);
 }
-export function resolveRingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ResolveElementProperties, C> = {}): ResolveElementAction<C> {
-    return new ResolveElementAction<C>(propertyFactory);
+export function resolveRingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ResolveElementProperties, C> = {}): ResolveRingEffectAction<C> {
+    return new ResolveRingEffectAction<C>(propertyFactory);
 }
 export function returnRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ReturnRingProperties, C> = {}): ReturnRingAction<C> {
     return new ReturnRingAction<C>(propertyFactory);
 }
-export function ringLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectRingProperties, C>): LastingEffectRingAction<C> {
-    return new LastingEffectRingAction<C>(propertyFactory);
+export function ringLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectRingProperties, C>): RingLastingEffectAction<C> {
+    return new RingLastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, condition, until
 export function selectRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectRingProperties, C>): SelectRingAction<C> {
     return new SelectRingAction<C>(propertyFactory);
@@ -412,8 +412,8 @@ export function switchConflictElement<C extends AbilityContext = AbilityContext>
 export function switchConflictType<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SwitchConflictTypeProperties, C> = {}): SwitchConflictTypeAction<C> {
     return new SwitchConflictTypeAction<C>(propertyFactory);
 }
-export function takeFateFromRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeFateRingProperties, C> = {}): TakeFateRingAction<C> {
-    return new TakeFateRingAction<C>(propertyFactory);
+export function takeFateFromRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeFateRingProperties, C> = {}): TakeFateFromRingAction<C> {
+    return new TakeFateFromRingAction<C>(propertyFactory);
 } // amount = 1
 export function takeRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeRingProperties, C> = {}): TakeRingAction<C> {
     return new TakeRingAction<C>(propertyFactory);
@@ -431,17 +431,17 @@ export function returnRingToPlay<C extends AbilityContext = AbilityContext>(prop
 //////////////
 // STATUS TOKEN
 //////////////
-export function discardStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardStatusProperties, C> = {}): DiscardStatusAction<C> {
-    return new DiscardStatusAction<C>(propertyFactory);
+export function discardStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DiscardStatusProperties, C> = {}): DiscardStatusTokenAction<C> {
+    return new DiscardStatusTokenAction<C>(propertyFactory);
 }
-export function moveStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveTokenProperties, C>): MoveTokenAction<C> {
-    return new MoveTokenAction<C>(propertyFactory);
+export function moveStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MoveTokenProperties, C>): MoveStatusTokenAction<C> {
+    return new MoveStatusTokenAction<C>(propertyFactory);
 }
 
 //////////////
 // GENERIC
 //////////////
-export function cancel<C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelActionProperties, C> = {}): CancelAction<C> {
+export function cancel<C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelProperties, C> = {}): CancelAction<C> {
     return new CancelAction<C>(propertyFactory);
 }
 export function handler<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, C> = {}): HandlerAction<C> {
@@ -472,16 +472,16 @@ export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFact
 export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties, C>): ChooseGameAction<C> {
     return new ChooseGameAction<C>(propertyFactory);
 } // options, activePromptTitle = 'Select an action:'
-export function conditional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalActionProperties<C>, C>): ConditionalAction<C> {
+export function conditional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalProperties<C>, C>): ConditionalAction<C> {
     return new ConditionalAction<C>(propertyFactory);
 }
-export function onAffinity<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AffinityActionProperties, C>): AffinityAction<C> {
+export function onAffinity<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AffinityProperties, C>): AffinityAction<C> {
     return new AffinityAction<C>(propertyFactory);
 }
-export function optional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<OptionalActionProperties, C>): OptionalAction<C> {
+export function optional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<OptionalProperties, C>): OptionalAction<C> {
     return new OptionalAction<C>(propertyFactory);
 }
-export function ifAble<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<IfAbleActionProperties, C>): IfAbleAction<C> {
+export function ifAble<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<IfAbleProperties, C>): IfAbleAction<C> {
     return new IfAbleAction<C>(propertyFactory);
 }
 export function joint<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): JointGameAction<C> {
@@ -490,7 +490,7 @@ export function joint<C extends AbilityContext = AbilityContext>(gameActions: Ga
 export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): MultipleGameAction<C> {
     return new MultipleGameAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
-export function multipleContext<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MultipleContextActionProperties, C>): MultipleContextGameAction<C> {
+export function multipleContext<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MultipleContextProperties, C>): MultipleContextGameAction<C> {
     return new MultipleContextGameAction<C>(propertyFactory);
 }
 export function menuPrompt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, C>): MenuPromptAction<C> {

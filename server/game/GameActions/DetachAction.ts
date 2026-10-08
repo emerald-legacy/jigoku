@@ -6,9 +6,9 @@ import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
-export type DetachActionProperties = CardActionProperties;
+export type DetachProperties = CardActionProperties;
 
-export class DetachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DetachActionProperties, EventName.OnCardDetached, C> {
+export class DetachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DetachProperties, EventName.OnCardDetached, C> {
     name = 'detach';
     eventName = EventName.OnCardDetached;
     targetType = [CardType.Attachment];

@@ -10,7 +10,7 @@ export interface TransferFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class TransferFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferFateProperties, EventName.OnMoveFate, C, 'amount'> {
+export class TakeFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferFateProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1 };

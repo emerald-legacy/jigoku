@@ -7,7 +7,7 @@ import { Derivable, derive } from '../utils/helpers.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface AffinityActionProperties extends GameActionProperties {
+export interface AffinityProperties extends GameActionProperties {
     gameAction: GameAction;
     effect?: string;
     effectArgs?: Derivable<MsgArg[], AbilityContext>;
@@ -16,7 +16,7 @@ export interface AffinityActionProperties extends GameActionProperties {
     prompt?: string;
 }
 
-export class AffinityAction<C extends AbilityContext = AbilityContext> extends GameAction<AffinityActionProperties, EventName, C> {
+export class AffinityAction<C extends AbilityContext = AbilityContext> extends GameAction<AffinityProperties, EventName, C> {
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction, properties.noAffinityGameAction]);
     }
@@ -79,7 +79,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
     }
 
     #resolveAffinity(
-        properties: AffinityActionProperties,
+        properties: AffinityProperties,
         events: Event[],
         context: C,
         additionalProperties: ActionOverrides = {}

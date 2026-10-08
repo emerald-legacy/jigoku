@@ -14,7 +14,7 @@ export interface PlaceFateRingProperties extends RingActionProperties {
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
+export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1 };

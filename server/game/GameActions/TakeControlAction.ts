@@ -6,7 +6,7 @@ import Effects from '../effects.js';
 import type { EffectUntil } from '../Effects/Effect.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
-import { LastingEffectCardAction } from './LastingEffectCardAction.js';
+import { CardLastingEffectAction } from './CardLastingEffectAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 import type { TargetLocation } from '../Interfaces.js';
 
@@ -17,7 +17,7 @@ export interface TakeControlProperties extends CardActionProperties {
     targetLocation?: TargetLocation;
 }
 
-export class TakeControlAction<C extends AbilityContext = AbilityContext> extends LastingEffectCardAction<C> {
+export class TakeControlAction<C extends AbilityContext = AbilityContext> extends CardLastingEffectAction<C> {
     name = 'takeControl';
     effect = 'take control of {0}';
     defaultProperties = {

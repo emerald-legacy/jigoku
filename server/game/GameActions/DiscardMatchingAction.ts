@@ -20,7 +20,7 @@ type MatchingDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCa
     match: (context: AbilityContext, card: BaseCard) => boolean;
 };
 
-export class MatchingDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'reveal' | 'match'> {
+export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'reveal' | 'match'> {
     defaultProperties = {
         amount: -1,
         reveal: false,

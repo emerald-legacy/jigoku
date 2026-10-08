@@ -11,7 +11,7 @@ import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 type AttachEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardAttached, C> & { parent: BaseCard };
 
-export interface AttachActionProperties extends CardActionProperties {
+export interface AttachProperties extends CardActionProperties {
     attachment?: DrawCard;
     ignoreType?: boolean;
     takeControl?: boolean;
@@ -22,7 +22,7 @@ export interface AttachActionProperties extends CardActionProperties {
 }
 
 export class AttachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
-    AttachActionProperties,
+    AttachProperties,
     EventName.OnCardAttached,
     C,
     'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised' | 'wasACharacter'
@@ -76,7 +76,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         return card.allowAttachment(properties.attachment) && super.canAffect(card, context);
     }
 
-    getFinalController(properties: AttachActionProperties, context: C): Player | undefined {
+    getFinalController(properties: AttachProperties, context: C): Player | undefined {
         if(properties.takeControl) {
             return context.player;
         } else if(properties.giveControl) {

@@ -14,7 +14,7 @@ export interface RandomDiscardProperties extends PlayerActionProperties {
 /** A discard event this action created: `addPropertiesToEvent` always sets its amount. */
 type RandomDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, C> & { amount: number };
 
-export class RandomDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount'> {
+export class DiscardAtRandomAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount'> {
     defaultProperties = { amount: 1 };
 
     name = 'discard';

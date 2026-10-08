@@ -12,7 +12,7 @@ export interface TransferHonorProperties extends PlayerActionProperties {
     afterBid?: boolean;
 }
 
-export class TransferHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferHonorProperties, EventName.OnTransferHonor, C, 'amount' | 'afterBid'> {
+export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferHonorProperties, EventName.OnTransferHonor, C, 'amount' | 'afterBid'> {
     name = 'takeHonor';
     eventName = EventName.OnTransferHonor;
     defaultProperties = { amount: 1, afterBid: false };
