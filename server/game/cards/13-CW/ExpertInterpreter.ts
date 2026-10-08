@@ -13,7 +13,7 @@ class ExpertInterpreter extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
             })
-            .cost(costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalTakeHonorFromOpponent())
             .ringTarget({
                 name: 'myRing',
                 ringCondition: () => true
@@ -31,7 +31,7 @@ class ExpertInterpreter extends DrawCard {
                 player: Players.Opponent,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                ringCondition: (_ring, context) => !!context.costs.optionalHonorTransferFromOpponentCostPaid
+                ringCondition: (_ring, context) => !!context.costs.honorTakenFromOpponent
             }, ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,

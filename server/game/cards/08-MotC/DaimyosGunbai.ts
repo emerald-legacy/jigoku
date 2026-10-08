@@ -9,7 +9,7 @@ class DaimyosGunbai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Initiate a military duel and attach this to the winner')
-            .cost(costs.reveal(context => [context.source]))
+            .cost(costs.revealCardsOf(context => [context.source]))
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,

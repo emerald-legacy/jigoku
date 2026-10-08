@@ -22,7 +22,7 @@ export default class YoungBeastmaster extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false
             })
-            .cost(costs.discardCardSpecific((context) => context.player.dynastyDeck.slice(0, 2)))
+            .cost(costs.discardCardsOf((context) => context.player.dynastyDeck.slice(0, 2)))
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonusSize(context.costs.discardCard ?? []))
             }))

@@ -19,7 +19,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
                         !!context.target && attach({ attachment: card }).canAffect(context.target, context) &&
-                        card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
+                        card.costLessThan(context.costs.returnedRings ? context.costs.returnedRings.length + 1 : 1),
                 shuffle: true,
                 reveal: true,
                 selectedCardsHandler: (context, event, [card]) => {
@@ -30,6 +30,6 @@ export default class KaiuNoIshiTauro extends DrawCard {
                     attachSearchedCard(context, context.target, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.target]);
                 }
             })))
-            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnRing ?? []).length);
+            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnedRings ?? []).length);
     }
 }

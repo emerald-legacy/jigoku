@@ -15,7 +15,7 @@ export default class ContemplateTheEternal extends DrawCard {
                 cardCondition: (card) =>
                     !card.bowed && !card.attachments.some((attachment) => !attachment.hasTrait('tattoo'))
             }, placeFate((context) => ({
-                amount: context.costs.returnRing ? context.costs.returnRing.length : 1
+                amount: context.costs.returnedRings ? context.costs.returnedRings.length : 1
             })));
     }
 }

@@ -15,10 +15,10 @@ class Gossip extends DrawCard {
                 effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
                     restricts: 'copiesOfX',
-                    params: context.costs.nameCardCost
+                    params: context.costs.namedCard
                 })
             }))
-            .effect('prevent {1} from playing cards named {2} from their hand this phase', (context) => [context.player.opponent, context.costs.nameCardCost]);
+            .effect('prevent {1} from playing cards named {2} from their hand this phase', (context) => [context.player.opponent, context.costs.namedCard]);
     }
 }
 

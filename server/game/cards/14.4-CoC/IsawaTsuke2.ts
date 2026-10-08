@@ -13,15 +13,15 @@ class IsawaTsuke2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lose honor to discard fate')
-            .cost(costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
+            .cost(costs.payVariableHonor((context) => this.getNumberOfLegalTargets(context)))
             .condition((context) =>
                 context.game.isDuringConflict() &&
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())
             .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
-                    if(context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost;
+                    if(context.costs.honorPaid) {
+                        return context.costs.honorPaid;
                     }
 
                     return this.getNumberOfLegalTargets(context);
@@ -31,7 +31,7 @@ class IsawaTsuke2 extends DrawCard {
             }, removeFate((context) => {
                 return { target: Object.values(context.targets).flat() };
             }))
-            .effect((context) => msg`lose ${context.costs.variableHonorCost} honor to discard a fate from ${context.targets.target}`)
+            .effect((context) => msg`lose ${context.costs.honorPaid} honor to discard a fate from ${context.targets.target}`)
             .cannotTargetFirst();
     }
 

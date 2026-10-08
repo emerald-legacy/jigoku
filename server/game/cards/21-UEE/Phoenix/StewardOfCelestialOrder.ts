@@ -13,7 +13,7 @@ export default class StewardOfCelestialOrder extends DrawCard {
         this.action('Return rings to gain honor')
             .cost(costs.returnRings())
             .gainHonor((context) => ({
-                amount: context.costs.returnRing ? context.costs.returnRing.length : 1
+                amount: context.costs.returnedRings ? context.costs.returnedRings.length : 1
             }));
     }
 }

@@ -9,18 +9,21 @@ import Ring from '../Ring.js';
 import { randomItem } from '../utils/random.js';
 import { GameActionCost } from './GameActionCost.js';
 
-/** A cost paid by choosing a card or a ring, then resolving the select's game action on it. */
+/**
+ * A cost paid by choosing a card or a ring, then resolving the select's game action on it.
+ * What was chosen is stored in `context.costs` under the action's name, or under `resultKey`.
+ */
 export class MetaActionCost extends GameActionCost implements Cost {
     constructor(
         public action: SelectCardAction | SelectRingAction,
-        public activePromptTitle: string
+        public activePromptTitle: string,
+        private resultKey?: string
     ) {
         super(action);
     }
 
     getActionName(context: AbilityContext): string {
-        const { gameAction } = this.action.getProperties(context);
-        return gameAction.name;
+        return this.resultKey ?? this.action.getProperties(context).gameAction.name;
     }
 
     canPay(context: AbilityContext): boolean {
@@ -34,7 +37,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
     addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context);
-        const name = properties.gameAction.name;
+        const name = this.getActionName(context);
         const chosen = properties.targets && context.choosingPlayerOverride && 'selector' in properties && properties.selector
             ? randomItem(properties.selector.getAllLegalTargets(context, context.player))
             : undefined;

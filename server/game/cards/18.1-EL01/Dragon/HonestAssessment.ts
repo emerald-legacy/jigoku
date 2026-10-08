@@ -28,12 +28,12 @@ export default class HonestAssessment extends DrawCard {
                             cards,
                             amount: -1, //all
                             reveal: false,
-                            match: (context, card) => card.name === context.costs.nameCardCost
+                            match: (context, card) => card.name === context.costs.namedCard
                         })
                     ]
                 };
             }))
-            .effect('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.nameCardCost])
+            .effect('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.namedCard])
             .max(perRound(1));
     }
 }

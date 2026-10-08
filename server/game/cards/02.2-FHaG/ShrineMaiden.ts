@@ -10,7 +10,7 @@ class ShrineMaiden extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .cost(costs.reveal((context) => context.player.conflictDeck.slice(0, 3)))
+            .cost(costs.revealCardsOf((context) => context.player.conflictDeck.slice(0, 3)))
             .handler((context) => {
                 const cards = context.player.conflictDeck.slice(0, 3);
                 const toHand = cards.filter((card) => card.hasTrait('kiho') || card.hasTrait('spell'));

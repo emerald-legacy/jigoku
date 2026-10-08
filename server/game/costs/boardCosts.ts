@@ -94,7 +94,7 @@ export function shuffleIntoDeck<const K extends CardTypes = undefined, const M e
 /**
  * Cost that requires discarding a specific card.
  */
-export function discardCardSpecific(cardFunc: (context: AbilityContext) => DrawCard | DrawCard[] | undefined): Cost<{ discardCard: DrawCard[] }> {
+export function discardCardsOf(cardFunc: (context: AbilityContext) => DrawCard | DrawCard[] | undefined): Cost<{ discardCard: DrawCard[] }> {
     const action = GameActions.discardCard((context) => ({ target: cardFunc(context) }));
     return {
         getActionName: () => 'discardCard',
@@ -249,14 +249,14 @@ export function putSelfIntoPlay(): Cost {
 /**
  * Cost that will prompt for a card
  */
-export function selectedReveal<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'reveal', K, M>> {
+export function reveal<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'reveal', K, M>> {
     return getSelectCost('reveal', GameActions.reveal(), properties, `Select a ${properties.cardType || 'card'} to reveal`);
 }
 
 /**
  * Cost that will reveal specific cards
  */
-export function reveal<T extends BaseCard>(cardFunc: (context: AbilityContext) => T[]): Cost<{ reveal: T[] }> {
+export function revealCardsOf<T extends BaseCard>(cardFunc: (context: AbilityContext) => T[]): Cost<{ reveal: T[] }> {
     return new GameActionCost(GameActions.reveal((context) => ({ target: cardFunc(context) })));
 }
 

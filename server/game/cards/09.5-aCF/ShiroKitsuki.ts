@@ -21,7 +21,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                     when: {
                         onCardPlayed: (event, context) =>
                             event.player === context.player.opponent &&
-                            event.card.name === playerLastingEffectContext.costs.nameCardCost
+                            event.card.name === playerLastingEffectContext.costs.namedCard
                     },
                     multipleTrigger: true,
                     gameAction: selectRing((context) => ({
@@ -33,7 +33,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                     }))
                 })
             }))
-            .effect((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.nameCardCost}`)
+            .effect((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.namedCard}`)
             .limit(unlimitedPerConflict());
     }
 }

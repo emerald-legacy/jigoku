@@ -18,7 +18,7 @@ export default class AshalanLantern extends DrawCard {
                     targetController: context.player,
                     effect: reduceNextPlayedCardCost(
                         3,
-                        (card) => card.name === context.costs.nameCardCost
+                        (card) => card.name === context.costs.namedCard
                     )
                 })),
                 deckSearch((context) => ({

@@ -18,9 +18,9 @@ export default class YoungIseZumi extends DrawCard {
             .cost(costs.payFateToRing(1, () => true))
             .gameAction(ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: context.costs.placeFate || context.game.rings.air,
+                target: context.costs.ringPaidFateTo || context.game.rings.air,
                 effect: cannotDeclareRing(() => true)
             })))
-            .effect((context) => msg`prevent conflicts from being declared with the ${context.costs.placeFate}`);
+            .effect((context) => msg`prevent conflicts from being declared with the ${context.costs.ringPaidFateTo}`);
     }
 }

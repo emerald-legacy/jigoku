@@ -8,7 +8,7 @@ class ShoshiNiKie extends DrawCard {
 
     setupCardAbilities() {
         this.action('ready an ordinary character')
-            .cost(costs.selectedReveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }))
+            .cost(costs.reveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }))
             .target({
                 cardCondition: card => card.isOrdinary(),
                 cardType: CardType.Character,

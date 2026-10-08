@@ -12,7 +12,7 @@ class RoadsideInn extends DrawCard {
             .when({
                 onPhaseStarted: event => event.phase === Phases.Fate
             })
-            .cost(costs.optionalHonorTransferFromOpponentCost(context => {
+            .cost(costs.optionalTakeHonorFromOpponent(context => {
                 return (context.player.opponent?.fate ?? 0) > 0;
             }))
             .target({
@@ -25,7 +25,7 @@ class RoadsideInn extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
+                cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, placeFate(context => ({ origin: context.player.opponent })))
             .effect('place a fate from their pool on {1}{2}', (context) => [
                 context.targets.myCharacter,

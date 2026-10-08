@@ -12,7 +12,7 @@ class ChancellorsAide extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .cost(costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalTakeHonorFromOpponent())
             .selectFrom({
                 name: 'myPlayer',
                 targets: true
@@ -21,7 +21,7 @@ class ChancellorsAide extends DrawCard {
                 name: 'oppPlayer',
                 targets: true,
                 player: Players.Opponent,
-                condition: context => !!context.costs.optionalHonorTransferFromOpponentCostPaid
+                condition: context => !!context.costs.honorTakenFromOpponent
             }, (context) => context.player.opponent ? playerChoices(context.player.opponent, (player) => chosenDiscard({ target: player })) : {})
             .cannotTargetFirst();
     }

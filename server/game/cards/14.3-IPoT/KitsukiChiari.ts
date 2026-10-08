@@ -25,12 +25,12 @@ class KitsukiChiari extends DrawCard {
                             cards: cards,
                             amount: -1, //all
                             reveal: false,
-                            match: (context, card) => card.name === context.costs.nameCardCost
+                            match: (context, card) => card.name === context.costs.namedCard
                         }))
                     ]
                 });
             }))
-            .effect('look at 4 random cards in {1}\'s hand and discard all cards named {2}', context => [context.player.opponent, context.costs.nameCardCost]);
+            .effect('look at 4 random cards in {1}\'s hand and discard all cards named {2}', context => [context.player.opponent, context.costs.namedCard]);
     }
 
 

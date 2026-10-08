@@ -7,7 +7,7 @@ class TestOfSkill extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(costs.reveal((context) => context.player.conflictDeck.slice(0, revealCount(context, 'duelist'))))
+            .cost(costs.revealCardsOf((context) => context.player.conflictDeck.slice(0, revealCount(context, 'duelist'))))
             .cost(nameCardType())
             .condition((context) => context.player.conflictDeck.length >= revealCount(context, 'duelist'))
             .handler((context) => takeUpToTwoOfNamedType(context, context.costs.reveal ?? [], context.costs.namedCardType))

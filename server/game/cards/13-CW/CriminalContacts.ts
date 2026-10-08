@@ -9,7 +9,7 @@ class CriminalContacts extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a fate from a character')
-            .cost(costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalTakeHonorFromOpponent())
             .condition(context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({
                 name: 'myCharacter',
@@ -21,7 +21,7 @@ class CriminalContacts extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
+                cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, removeFate())
             .effect('discard a fate from {1}{2}', (context) => [
                 context.targets.myCharacter,

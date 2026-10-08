@@ -9,7 +9,7 @@ class CalledToWar extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place a fate on a bushi')
-            .cost(costs.optionalHonorTransferFromOpponentCost())
+            .cost(costs.optionalTakeHonorFromOpponent())
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,
@@ -21,7 +21,7 @@ class CalledToWar extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid)
+                cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.honorTakenFromOpponent)
             }, placeFate())
             .effect('place a fate on {1}{2}', (context) => [
                 context.targets.myCharacter,

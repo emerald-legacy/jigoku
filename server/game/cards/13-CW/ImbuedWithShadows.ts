@@ -11,10 +11,10 @@ class ImbuedWithShadows extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lose honor to discard status tokens')
-            .cost(costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
+            .cost(costs.payVariableHonor((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({
                 mode: TargetMode.ExactlyVariable,
-                numCardsFunc: (context) => context.costs.variableHonorCost || this.getNumberOfLegalTargets(context),
+                numCardsFunc: (context) => context.costs.honorPaid || this.getNumberOfLegalTargets(context),
                 cardType: CardType.Character
             }, multipleContext((context) => {
                 const targets = Object.values(context.targets).flat();
@@ -22,7 +22,7 @@ class ImbuedWithShadows extends DrawCard {
                     gameActions: this.getStatusTokenPrompts(targets)
                 };
             }))
-            .effect('lose {1} honor to discard status tokens from {2}', (context) => [context.costs.variableHonorCost, context.targets.target])
+            .effect('lose {1} honor to discard status tokens from {2}', (context) => [context.costs.honorPaid, context.targets.target])
             .cannotTargetFirst();
     }
 

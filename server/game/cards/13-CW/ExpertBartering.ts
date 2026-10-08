@@ -9,16 +9,16 @@ class ExpertBartering extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch this attachment with another')
-            .cost(costs.optionalFateCost(1, context => {
+            .cost(costs.payOptionalFate(1, context => {
                 const contextCopy = context.copy({});
-                contextCopy.costs.optionalFateCost = 0;
+                contextCopy.costs.optionalFatePaid = 0;
 
                 return !context.ability.hasLegalTargets(contextCopy);
             }))
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card !== context.source,
-                controller: context => (context.costs.optionalFateCost === undefined || context.costs.optionalFateCost > 0) ? Players.Any : Players.Self
+                controller: context => (context.costs.optionalFatePaid === undefined || context.costs.optionalFatePaid > 0) ? Players.Any : Players.Self
             })
             .gameAction(joint([
                 ifAble((context) => ({

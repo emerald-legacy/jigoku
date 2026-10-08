@@ -10,7 +10,7 @@ export default class ASwallowsReturn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
+            .cost(costs.revealCardsOf((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
             .condition((context) =>
                 context.game.currentConflict !== null &&
         context.player.opponent !== undefined &&

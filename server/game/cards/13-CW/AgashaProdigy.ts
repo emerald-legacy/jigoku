@@ -10,7 +10,7 @@ class AgashaProdigys extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a card to try and attach it to a character')
-            .cost(costs.optionalHonorTransferFromOpponentCost((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
+            .cost(costs.optionalTakeHonorFromOpponent((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character
@@ -32,7 +32,7 @@ class AgashaProdigys extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
+                cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, sequential([
                 discardCard(context => ({
                     target: this.oppCharacterChosen(context) ? context.player.opponent?.conflictDeck[0] : []
