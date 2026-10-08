@@ -30,11 +30,11 @@ export default class MirumotoHitomi extends DrawCard {
                                 options: {
                                     'Dishonor this character': {
                                         action: dishonor(),
-                                        message: '{0} chooses to dishonor {1}'
+                                        message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                                     },
                                     'Bow this character': {
                                         action: bow(),
-                                        message: '{0} chooses to bow {1}'
+                                        message: (_context, target, player) => msg`${player} chooses to bow ${target}`
                                     }
                                 }
                             })

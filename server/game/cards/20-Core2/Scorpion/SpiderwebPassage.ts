@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
@@ -46,14 +47,13 @@ export default class SpiderwebPassage extends DrawCard {
                         options: {
                             [`Discard ${discardCount} random cards from hand`]: {
                                 action: discardFromHandAction,
-                                message: '{0} distracts the Shinobi'
+                                message: (_context, _target, player) => msg`${player} distracts the Shinobi`
                             },
                             [`Discard ${context.target?.name}`]: {
                                 action: killAction,
-                                message: `{0} refuses to discard ${discardCount} cards. {2} is discarded`
+                                message: (context, _target, player) => msg`${player} refuses to discard ${discardCount} cards. ${context.target} is discarded`
                             }
-                        },
-                        messageArgs: [context.target]
+                        }
                     }))
                 };
             }))

@@ -94,24 +94,15 @@ describe('ChooseGameAction', function() {
         });
 
         it('should add the per-choice message when one is configured', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['{0} picks {1}', ['p', 'tgt']]);
             const action = new ChooseGameAction({
                 target: 'tgt',
-                options: { A: { action: this.actionA, message: 'msg' } }
+                options: { A: { action: this.actionA, message } }
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('A');
-            expect(this.game.addMessage).toHaveBeenCalledWith('msg', this.player, ['tgt']);
-        });
-
-        it('should append messageArgs to the per-choice message', function() {
-            const action = new ChooseGameAction({
-                target: 'tgt',
-                messageArgs: ['extra1', 'extra2'],
-                options: { A: { action: this.actionA, message: 'msg' } }
-            });
-            action.addEventsToArray([], this.context);
-            lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('A');
-            expect(this.game.addMessage).toHaveBeenCalledWith('msg', this.player, ['tgt'], 'extra1', 'extra2');
+            expect(message).toHaveBeenCalledWith(this.context, ['tgt'], this.player);
+            expect(this.game.addMessage).toHaveBeenCalledWith('{0} picks {1}', 'p', 'tgt');
         });
 
         it('should not add a message when the chosen option has none', function() {

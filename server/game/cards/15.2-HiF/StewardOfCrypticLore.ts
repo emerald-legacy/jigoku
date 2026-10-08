@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Element, Location } from '../../Constants.js';
 import { modifyPoliticalSkill, modifyProvinceStrength } from '../../effects.js';
 import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
@@ -32,14 +33,14 @@ export default class StewardOfCrypticLore extends DrawCard {
                                 targetLocation: Location.Provinces,
                                 effect: modifyProvinceStrength(3)
                             })),
-                            message: '{0} chooses to increase {1}\'s strength by 3'
+                            message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 3`
                         },
                         'Lower attacked province\'s strength by 3': {
                             action: cardLastingEffect(() => ({
                                 targetLocation: Location.Provinces,
                                 effect: modifyProvinceStrength(-3)
                             })),
-                            message: '{0} chooses to reduce {1}\'s strength by 3'
+                            message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 3`
                         }
                     }
                 }))

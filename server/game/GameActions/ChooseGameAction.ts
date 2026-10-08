@@ -1,25 +1,30 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
+import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { Players, type EventName } from '../Constants.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 
-export interface ChooseActionProperties extends GameActionProperties {
+export interface ChooseActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     activePromptTitle?: string;
     waitingPromptTitle?: string;
-    messageArgs?: MsgArg[];
     player?: Players.Self | Players.Opponent;
-    options: { [label: string]: { action: GameAction; message?: string } };
+    options: { [label: string]: ChooseActionOption<C> };
 }
 
-export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseActionProperties, EventName, C, 'activePromptTitle' | 'options' | 'messageArgs'> {
+export interface ChooseActionOption<C extends AbilityContext = AbilityContext> {
+    action: GameAction;
+    /** The chat line when this option is chosen; `target` is the action's target. */
+    message?: (context: C, target: GameActionTarget | GameActionTarget[] | undefined, chooser: Player) => MessageArgs;
+}
+
+export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseActionProperties<C>, EventName, C, 'activePromptTitle' | 'options'> {
     effect = 'choose between different actions';
     defaultProperties = {
         activePromptTitle: 'Select an action:',
-        options: {},
-        messageArgs: []
+        options: {}
     };
 
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
@@ -50,7 +55,8 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
                 return;
             }
             if(choice.message) {
-                context.game.addMessage(choice.message, player, properties.target, ...properties.messageArgs);
+                const [format, args] = choice.message(context, properties.target, player);
+                context.game.addMessage(format, ...args);
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
         };

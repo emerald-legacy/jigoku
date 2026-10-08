@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { cancel, chooseAction, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
@@ -38,14 +39,13 @@ export default class VillageDoshin extends DrawCard {
                                 amount: DOSHIN_TAX,
                                 target: context.player.opponent
                             }),
-                            message: '{0} distracts the Dōshin'
+                            message: (_context, _target, player) => msg`${player} distracts the Dōshin`
                         },
                         'Let the effect be canceled': {
                             action: cancel(),
-                            message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled`
+                            message: (context, _target, player) => msg`${player} refuses to discard ${DOSHIN_TAX} cards. The effects of ${context.event.card} are canceled`
                         }
-                    },
-                    messageArgs: [context.event.card]
+                    }
                 })))
             .otherwise()
                 .cancel();

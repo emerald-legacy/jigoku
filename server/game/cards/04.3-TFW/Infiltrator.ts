@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { PlayType } from '../../Constants.js';
 import { chooseAction, discardCard, playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -23,7 +24,7 @@ export default class Infiltrator extends DrawCard {
                         },
                         'Discard this card': {
                             action: discardCard({ target: topCard }),
-                            message: '{0} chooses to discard {1}'
+                            message: (_context, target, player) => msg`${player} chooses to discard ${target}`
                         }
                     }
                 };

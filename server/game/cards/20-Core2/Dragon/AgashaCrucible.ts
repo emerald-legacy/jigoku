@@ -1,13 +1,15 @@
+import { msg } from '../../../GameChat.js';
+import type { ChooseActionOption } from '../../../GameActions/ChooseGameAction.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import { addTrait, additionalAction } from '../../../effects.js';
 import { cardLastingEffect, chooseAction, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
-const options = Object.fromEntries(
+const options: Record<string, ChooseActionOption> = Object.fromEntries(
     ['Air', 'Earth', 'Fire', 'Void', 'Water'].map((option) => [
         option,
         {
-            message: `{1} gains the ${option} Trait`,
+            message: (_context, target) => msg`${target} gains the ${option} Trait`,
             action: sequential([
                 cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,

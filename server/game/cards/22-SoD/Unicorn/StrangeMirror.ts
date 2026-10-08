@@ -65,14 +65,13 @@ export default class StrangeMirror extends DrawCard {
                     options: {
                         'Sacrifice Strange Mirror': {
                             action: sacrifice({ target: context.source }),
-                            message: '{0} sacrifices {2}'
+                            message: (context, _target, player) => msg`${player} sacrifices ${context.source}`
                         },
                         'Injure attached character': {
                             action: injure({ target: context.source.parentCharacter ?? [] }),
-                            message: '{0} injures {3}'
+                            message: (context, _target, player) => msg`${player} injures ${context.source.parentCharacter}`
                         }
-                    },
-                    messageArgs: [context.source, context.source.parentCharacter]
+                    }
                 }))
             ]))
             .chatText((context) => msg`play an event from underneath ${context.source.parentCharacter}`);

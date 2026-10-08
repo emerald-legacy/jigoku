@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { cancel, chooseAction, takeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -27,14 +28,13 @@ export default class EnforcePropriety extends DrawCard {
                 options: {
                     [`Give 1 fate to ${context.player.name}`]: {
                         action: takeFate({ target: context.player.opponent }),
-                        message: '{0} gives 1 fate to {2} - the fortunes will be appeased, order is maintained'
+                        message: (context, _target, player) => msg`${player} gives 1 fate to ${context.player} - the fortunes will be appeased, order is maintained`
                     },
                     'Let the effects be canceled': {
                         action: cancel(),
-                        message: '{0} refuses to appease the fortunes - the effects of {3} are canceled'
+                        message: (context, _target, player) => msg`${player} refuses to appease the fortunes - the effects of ${context.event.card} are canceled`
                     }
-                },
-                messageArgs: [context.player, context.event.card]
+                }
             })))
             .chatText('enforce the proper protocol');
     }

@@ -30,11 +30,11 @@ export default class ChroniclerOfCalamities extends DrawCard {
                 options: {
                     'Dishonor it': {
                         action: dishonor({ target: context.target }),
-                        message: '{0} chooses to dishonor {1}'
+                        message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                     },
                     'Move it home': {
                         action: sendHome({ target: context.target }),
-                        message: '{0} chooses to send {1} home'
+                        message: (_context, target, player) => msg`${player} chooses to send ${target} home`
                     },
                     'Sacrifice a character to perform both': {
                         action: sequentialContext((context) => {
@@ -54,7 +54,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
 
                             return { gameActions };
                         }),
-                        message: '{0} chooses to sacrifice a character to both dishonor and send {1} home'
+                        message: (_context, target, player) => msg`${player} chooses to sacrifice a character to both dishonor and send ${target} home`
                     }
                 }
             })))

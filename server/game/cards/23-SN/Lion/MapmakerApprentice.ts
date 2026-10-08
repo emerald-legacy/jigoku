@@ -49,14 +49,14 @@ export default class MapmakerApprentice extends DrawCard {
                                         targetLocation: Location.Provinces,
                                         effect: modifyProvinceStrength(2)
                                     }),
-                                    message: '{0} chooses to increase {1}\'s strength by 2'
+                                    message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 2`
                                 },
                                 'Lower attacked province\'s strength by 2': {
                                     action: cardLastingEffect({
                                         targetLocation: Location.Provinces,
                                         effect: modifyProvinceStrength(-2)
                                     }),
-                                    message: '{0} chooses to reduce {1}\'s strength by 2'
+                                    message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 2`
                                 }
                             }
                         })

@@ -469,7 +469,7 @@ export function duelLastingEffect<C extends AbilityContext = AbilityContext>(pro
 export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CardMenuProperties, C>): CardMenuAction<C> {
     return new CardMenuAction<C>(propertyFactory);
 }
-export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties, C>): ChooseGameAction<C> {
+export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties<C>, C>): ChooseGameAction<C> {
     return new ChooseGameAction<C>(propertyFactory);
 } // options, activePromptTitle = 'Select an action:'
 export function conditional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalProperties<C>, C>): ConditionalAction<C> {

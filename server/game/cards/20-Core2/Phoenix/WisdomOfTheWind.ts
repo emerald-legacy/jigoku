@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import { modifyGlory } from '../../../effects.js';
 import {
@@ -25,11 +26,11 @@ export default class WisdomOfTheWind extends DrawCard {
                     options: {
                         'Honor this character': {
                             action: honor(),
-                            message: '{0} chooses to honor {1}'
+                            message: (_context, target, player) => msg`${player} chooses to honor ${target}`
                         },
                         'Dishonor this character': {
                             action: dishonor(),
-                            message: '{0} chooses to dishonor {1}'
+                            message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                         }
                     }
                 }),

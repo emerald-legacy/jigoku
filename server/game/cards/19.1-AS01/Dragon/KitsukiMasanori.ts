@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, DeckType, Duration } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
@@ -51,7 +52,7 @@ export default class KitsukiMasanori extends DrawCard {
                                 message: '{0} takes {1} and attaches it to {2}',
                                 messageArgs: (card) => [context.source.controller, card, context.source]
                             })),
-                            message: '{0} searches their discard pile'
+                            message: (_context, _target, player) => msg`${player} searches their discard pile`
                         },
 
                         'Search conflict deck': {
@@ -63,7 +64,7 @@ export default class KitsukiMasanori extends DrawCard {
                                 selectedCardsHandler: (context, event, [card]) =>
                                     attachSearchedCard(context, context.source, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.source])
                             }),
-                            message: '{0} searches their conflict deck'
+                            message: (_context, _target, player) => msg`${player} searches their conflict deck`
                         }
                     }
                 }),

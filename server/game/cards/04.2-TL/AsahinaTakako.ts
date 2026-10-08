@@ -37,7 +37,7 @@ export default class AsahinaTakako extends DrawCard {
                                 switchTarget: context.target
                             })
                         }),
-                        message: '{0} chooses to discard {1}'
+                        message: (_context, target, player) => msg`${player} chooses to discard ${target}`
                     }
                 }
             })))

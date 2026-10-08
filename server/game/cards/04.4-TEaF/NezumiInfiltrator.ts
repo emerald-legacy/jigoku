@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location } from '../../Constants.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { immunity, modifyProvinceStrength } from '../../effects.js';
@@ -40,7 +41,7 @@ export default class NezumiInfiltrator extends DrawCard {
                                 targetLocation: Location.Provinces,
                                 effect: modifyProvinceStrength(1)
                             }),
-                            message: '{0} chooses to increase {1}\'s strength by 1'
+                            message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 1`
                         },
                         'Lower attacked province\'s strength by 1': {
                             action: cardLastingEffect((context) => ({
@@ -50,7 +51,7 @@ export default class NezumiInfiltrator extends DrawCard {
                                         ? modifyProvinceStrength(-1)
                                         : []
                             })),
-                            message: '{0} chooses to reduce {1}\'s strength by 1'
+                            message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 1`
                         }
                     }
                 }))

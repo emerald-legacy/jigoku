@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Location, Players } from '../../../Constants.js';
 import {
     chooseAction,
@@ -43,14 +44,13 @@ export default class SandRoadMerchant extends DrawCard {
                             options: {
                                 'Leave on top of your deck': {
                                     action: noAction(),
-                                    message: '{0} chooses to put {2} on top of their deck'
+                                    message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on top of their deck`
                                 },
                                 'Put on the bottom of your deck': {
                                     action: moveCard({ target: topCard ?? [], destination: Location.ConflictDeck, bottom: true }),
-                                    message: '{0} chooses to put {2} on the bottom of their deck'
+                                    message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on the bottom of their deck`
                                 }
-                            },
-                            messageArgs: [topCard]
+                            }
                         };
                     })
                 ]

@@ -19,11 +19,11 @@ export default class IkomaUjio extends DrawCard {
                             action: takeHonor({
                                 target: duel.loserController
                             }),
-                            message: '{0} chooses to give 1 honor to their opponent'
+                            message: (_context, _target, player) => msg`${player} chooses to give 1 honor to their opponent`
                         },
                         'Bow duel loser': {
                             action: bow(),
-                            message: '{0} chooses to bow {1}'
+                            message: (_context, target, player) => msg`${player} chooses to bow ${target}`
                         }
                     }
                 })
