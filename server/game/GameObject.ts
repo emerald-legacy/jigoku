@@ -1,4 +1,4 @@
-import { v1 as uuidV1 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 import type { AbilityContext } from './AbilityContext.js';
 import { type CardType, EffectName, Stage } from './Constants.js';
@@ -20,7 +20,7 @@ interface ShortSummary {
 export class GameObject {
     declare public game: Game;
     private _name!: string;
-    public uuid = uuidV1();
+    public uuid: string = randomUUID();
     protected id: string;
     public printedType = '';
     public facedown = false;
