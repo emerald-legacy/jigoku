@@ -8,7 +8,7 @@ class ByAnyMeans extends DrawCard {
 
     setupCardAbilities() {
         this.action('Change base skill to match another character\'s')
-            .condition(context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
+            .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({
                 name: 'myCharacter',
                 activePromptTitle: 'Choose a bushi character',
@@ -23,11 +23,11 @@ class ByAnyMeans extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, cardLastingEffect(context => ({
+            }, cardLastingEffect((context) => ({
                 target: context.targets.myCharacter,
                 effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: [SkillType.Military] })
             })))
-            .chatText('set {1}\'s base military skill to equal {2}\'s current military skill', context => [context.targets.myCharacter, context.targets.oppCharacter]);
+            .chatText('set {1}\'s base military skill to equal {2}\'s current military skill', (context) => [context.targets.myCharacter, context.targets.oppCharacter]);
     }
 }
 

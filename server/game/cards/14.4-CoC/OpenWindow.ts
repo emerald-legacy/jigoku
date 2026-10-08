@@ -10,7 +10,7 @@ class OpenWindow extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('shinobi')
+                cardCondition: (card) => card.hasTrait('shinobi')
             }, moveToConflict());
     }
 }

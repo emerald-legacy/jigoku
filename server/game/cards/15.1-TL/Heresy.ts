@@ -11,8 +11,8 @@ class Heresy extends DrawCard {
                 type: DuelType.Political,
                 opponentChoosesChallenger: true,
                 message: 'remove a fate from {0}',
-                messageArgs: duel => [duel.loser],
-                gameAction: duel => removeFate({
+                messageArgs: (duel) => [duel.loser],
+                gameAction: (duel) => removeFate({
                     target: duel.loser
                 })
             }));

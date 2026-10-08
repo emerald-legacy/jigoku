@@ -26,7 +26,7 @@ const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => (
     },
     pay(context) {
         const discardedCards = context.costs.exposedCourtyardCost ?? [];
-        discardedCards.slice(0, 2).forEach(card => {
+        discardedCards.slice(0, 2).forEach((card) => {
             card.controller.moveCard(card, Location.ConflictDiscardPile);
         });
     }
@@ -38,7 +38,7 @@ class ExposedCourtyard extends DrawCard {
     setupCardAbilities() {
         this.action('Make an event in your conflict discard playable')
             .cost(exposedCourtyardCost())
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .gameAction(sequential([
                 // always legal, so this can trigger when only the cards the cost discards give it a choice
                 handler({
@@ -60,7 +60,7 @@ class ExposedCourtyard extends DrawCard {
                                 targetController: context.player,
                                 duration: Duration.Custom,
                                 until: {
-                                    onCardMoved: event => {
+                                    onCardMoved: (event) => {
                                         return event.card === context.target && event.originalLocation === Location.ConflictDiscardPile;
                                     },
                                     onConflictFinished: () => true
@@ -88,7 +88,7 @@ class ExposedCourtyard extends DrawCard {
                         }))
                     ]),
                     message: '{0} can play {1} this conflict. It will be put on the bottom of the deck if it\'s played this conflict',
-                    messageArgs: card => [context.player, card, context.source]
+                    messageArgs: (card) => [context.player, card, context.source]
                 }))
             ]))
             .chatText('pick an event to make playable this conflict')

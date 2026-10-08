@@ -12,7 +12,7 @@ export default class StarlessNights extends DrawCard {
                 onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .gameAction(placeFateOnRing((context) => ({
-                target: Object.values(context.game.rings).filter(ring => ring.isUnclaimed())
+                target: Object.values(context.game.rings).filter((ring) => ring.isUnclaimed())
             })))
             .max(perRound(1));
     }

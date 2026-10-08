@@ -96,11 +96,11 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         let buttons = [...this.game.rules.honorBidValues];
 
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
-        buttons = buttons.filter(num => !prohibitedBids.includes(num));
+        buttons = buttons.filter((num) => !prohibitedBids.includes(num));
         return {
             promptTitle: 'Honor Bid',
             menuTitle: this.menuTitle,
-            buttons: buttons.map(num => ({ text: num, arg: num }))
+            buttons: buttons.map((num) => ({ text: num, arg: num }))
         };
     }
 

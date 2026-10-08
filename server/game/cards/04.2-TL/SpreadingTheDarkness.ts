@@ -13,8 +13,8 @@ class SpreadingTheDarkness extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating()
-            }, cardLastingEffect(context => ({
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => ({
                 effect: [
                     modifyMilitarySkill(4),
                     cardCannot({

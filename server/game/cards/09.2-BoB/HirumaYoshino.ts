@@ -8,11 +8,11 @@ class HirumaYoshino extends DrawCard {
 
     setupCardAbilities() {
         this.action('Contribute printed military skill')
-            .condition(context => context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 location: Location.Provinces,
-                cardCondition: card => card.isInConflictProvince() &&
+                cardCondition: (card) => card.isInConflictProvince() &&
                     card.printedMilitarySkill > 0
             }, cardLastingEffect({
                 targetLocation: Location.Provinces,
@@ -21,7 +21,7 @@ class HirumaYoshino extends DrawCard {
                     changeContributionFunction((card) => card.printedMilitarySkill)
                 ]
             }))
-            .chatText('contribute {0}\'s printed {1} skill of {2} to their side of the conflict', context => ['military', context.target.printedMilitarySkill]);
+            .chatText('contribute {0}\'s printed {1} skill of {2} to their side of the conflict', (context) => ['military', context.target.printedMilitarySkill]);
     }
 }
 

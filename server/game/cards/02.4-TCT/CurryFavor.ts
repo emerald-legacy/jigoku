@@ -7,7 +7,7 @@ class CurryFavor extends DrawCard {
         this.reaction('Ready a character')
             .when({
                 onReturnHome: (event, context) => {
-                    if(this.game.getConflicts(context.player).filter(conflict => !conflict.passed).length !== 2) {
+                    if(this.game.getConflicts(context.player).filter((conflict) => !conflict.passed).length !== 2) {
                         return false;
                     }
                     return event.conflict.attackingPlayer === context.player && event.card.controller === context.player && !event.bowEvent.cancelled;

@@ -13,7 +13,7 @@ class ScholarOfOldRempet extends DrawCard {
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.isUnique()
+                cardCondition: (card) => !card.isUnique()
             }, cardLastingEffect({
                 effect: immunity({ restricts: 'events' })
             }))

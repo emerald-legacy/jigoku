@@ -7,7 +7,7 @@ class BayushiDairu extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a status token to this character')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .tokenTarget({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source

@@ -13,7 +13,7 @@ export default class CastOutTheShadow extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating() && (card.isTainted || card.hasSomeTrait('corrupt', 'shadowlands'))
+                cardCondition: (card) => card.isParticipating() && (card.isTainted || card.hasSomeTrait('corrupt', 'shadowlands'))
             })
             .select({
                 name: 'select',

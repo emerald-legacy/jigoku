@@ -14,8 +14,8 @@ class SpoilsOfWar extends DrawCard {
                                                    context.player.isAttackingPlayer()
             })
             .gameAction(sequential([
-                draw(context => ({ target: context.player, amount: 3 })),
-                chosenDiscard(context => ({ target: context.player }))
+                draw((context) => ({ target: context.player, amount: 3 })),
+                chosenDiscard((context) => ({ target: context.player }))
             ]))
             .chatText('draw 3 cards, then discard 1')
             .max(perConflict(1));

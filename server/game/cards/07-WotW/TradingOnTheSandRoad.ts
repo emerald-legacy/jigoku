@@ -9,21 +9,21 @@ class TradingOnTheSandRoad extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Take top 4 cards from both players\' decks')
             .when({
-                onPhaseCreated: event => event.phase === Phase.Draw
+                onPhaseCreated: (event) => event.phase === Phase.Draw
             })
             .gameAction(multiple([
                 cancel(),
-                lookAt(context=> ({
+                lookAt((context)=> ({
                     target: context.player.conflictDeck.slice(0, 4),
                     message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
-                    messageArgs: cards => [context.player, cards.length, cards]
+                    messageArgs: (cards) => [context.player, cards.length, cards]
                 })),
-                lookAt(context=> ({
+                lookAt((context)=> ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
-                    messageArgs: cards => [context.player.opponent, cards.length, cards]
+                    messageArgs: (cards) => [context.player.opponent, cards.length, cards]
                 })),
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
                     duration: Duration.UntilEndOfRound,
                     effect: [
@@ -34,7 +34,7 @@ class TradingOnTheSandRoad extends DrawCard {
                     ]
 
                 })),
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player.opponent,
                     duration: Duration.UntilEndOfRound,
                     effect: [
@@ -47,11 +47,11 @@ class TradingOnTheSandRoad extends DrawCard {
                         )
                     ]
                 })),
-                moveCard(context => ({
+                moveCard((context) => ({
                     target: context.player.conflictDeck.slice(0, 4),
                     destination: Location.RemovedFromGame
                 })),
-                moveCard(context => ({
+                moveCard((context) => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     destination: Location.RemovedFromGame
                 }))

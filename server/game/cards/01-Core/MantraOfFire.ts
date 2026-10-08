@@ -13,7 +13,7 @@ export default class MantraOfFire extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card =>
+                cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, placeFate())
             .draw()

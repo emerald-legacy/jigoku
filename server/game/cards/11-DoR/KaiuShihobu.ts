@@ -24,7 +24,7 @@ export default class KaiuShihobu extends DrawCard {
                             event.player.moveCard(card, Location.UnderneathStronghold);
                             card.lastingEffect({
                                 until: {
-                                    onCardMoved: event =>
+                                    onCardMoved: (event) =>
                                         event.card === card && event.originalLocation === Location.UnderneathStronghold
                                 },
                                 match: card,
@@ -65,7 +65,7 @@ export default class KaiuShihobu extends DrawCard {
                     context.player.stronghold.removeChildCard(holding, province.location);
                 }
                 holding.facedown = false;
-                cards.forEach(card => {
+                cards.forEach((card) => {
                     context.player.moveCard(card, Location.DynastyDiscardPile);
                 });
             })

@@ -9,7 +9,7 @@ class ContestedCountryside extends DrawCard {
         this.persistentEffect({
             match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,
-            condition: context => context.player.isAttackingPlayer(),
+            condition: (context) => context.player.isAttackingPlayer(),
             targetController: Players.Opponent,
             effect: canBeTriggeredByOpponent()
         });

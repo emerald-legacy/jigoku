@@ -9,7 +9,7 @@ class BayushiGensato extends DrawCard {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: duel => multiple([
+                gameAction: (duel) => multiple([
                     bow({ target: duel.loser }),
                     dishonor({ target: duel.winner })
                 ]),

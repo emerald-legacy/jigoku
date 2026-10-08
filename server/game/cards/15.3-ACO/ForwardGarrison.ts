@@ -7,7 +7,7 @@ class ForwardGarrison extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.isTraitInPlay('battlefield'),
+            condition: (context) => context.game.isTraitInPlay('battlefield'),
             match: (card, context) => card.type === CardType.Character && card.controller === context?.player,
             effect: cardCannot({
                 cannot: 'removeFate',

@@ -15,10 +15,10 @@ class AgashaProdigys extends DrawCard {
                 name: 'myCharacter',
                 cardType: CardType.Character
             }, sequential([
-                discardCard(context => ({
+                discardCard((context) => ({
                     target: context.player.conflictDeck[0]
                 })),
-                ifAble(context => ({
+                ifAble((context) => ({
                     ifAbleAction: attach({
                         target: context.targets.myCharacter,
                         attachment: this.getDiscardedCards(context)[0]
@@ -34,10 +34,10 @@ class AgashaProdigys extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, sequential([
-                discardCard(context => ({
+                discardCard((context) => ({
                     target: this.oppCharacterChosen(context) ? context.player.opponent?.conflictDeck[0] : []
                 })),
-                ifAble(context => ({
+                ifAble((context) => ({
                     ifAbleAction: attach({
                         target: context.targets.oppCharacter,
                         attachment: this.getDiscardedCards(context)[1]

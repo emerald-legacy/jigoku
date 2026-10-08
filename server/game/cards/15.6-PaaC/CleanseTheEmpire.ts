@@ -11,7 +11,7 @@ class CleanseTheEmpire extends DrawCard {
                 afterConflict: (event, context) => context.player.opponent && context.player.isAttackingPlayer() && event.conflict.winner === context.player
             })
             .gameAction(sequential([
-                removeFate(context => ({
+                removeFate((context) => ({
                     target: context.player.opponent?.filterCardsInPlay((card) => card.getType() === CardType.Character) ?? []
                 })),
                 selectCard({

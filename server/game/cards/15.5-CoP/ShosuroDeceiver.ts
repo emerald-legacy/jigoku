@@ -6,7 +6,7 @@ class ShosuroDeceiver extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             effect: gainAllAbilitiesDynamic((card, context) => {
                 return context.game.currentConflict?.getParticipants((a) => a.isDishonored && a !== card) ?? [];
             })

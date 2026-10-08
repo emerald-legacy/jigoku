@@ -9,7 +9,7 @@ class Dispatch extends DrawCard {
         this.action('Move a character into or out of the conflict')
             .selectCard({
                 cardType: CardType.Character,
-                cardCondition: card => card.isFaction('unicorn'),
+                cardCondition: (card) => card.isFaction('unicorn'),
                 controller: Players.Self,
                 gameAction: conditional({
                     condition: (_context, properties) => {

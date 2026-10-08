@@ -15,7 +15,7 @@ class HallowedGround extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
+            condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
             effect: playerCannot({
                 cannot: 'placeFateWhenPlayingCharacter'
             })
@@ -23,7 +23,7 @@ class HallowedGround extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
+            condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
             effect: playerDelayedEffect({
                 when: {
                     afterConflict: (event, context) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed

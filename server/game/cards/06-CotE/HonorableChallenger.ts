@@ -11,8 +11,8 @@ class HonorableChallenger extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} will not bow as a result of this conflict\'s resolution',
-                messageArgs: duel => duel.winner,
-                gameAction: duel => cardLastingEffect({
+                messageArgs: (duel) => duel.winner,
+                gameAction: (duel) => cardLastingEffect({
                     target: duel.winner,
                     effect: doesNotBow()
                 })

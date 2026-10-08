@@ -5,8 +5,8 @@ class HeroicResolve extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready attached character')
-            .condition(context => context.player.getClaimedRings().length >= 2)
-            .ready(context => ({ target: context.source.parentCharacter ?? [] }));
+            .condition((context) => context.player.getClaimedRings().length >= 2)
+            .ready((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

@@ -9,7 +9,7 @@ class KaiuSiegeForce extends DrawCard {
         this.action('Ready this character')
             .cost(costs.returnToDeck({
                 location: Location.Provinces,
-                cardCondition: card => card.type === CardType.Holding,
+                cardCondition: (card) => card.type === CardType.Holding,
                 bottom: true
             }))
             .ready();

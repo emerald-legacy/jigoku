@@ -10,10 +10,10 @@ class HiddenMountainPass extends DrawCard {
             .when({
                 onPhaseEnded: (event, context) => event.phase === Phase.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             })
-            .gameAction(turnFacedown(context => ({
+            .gameAction(turnFacedown((context) => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
-            .chatText('turn {1} facedown', context => context.player.getProvinceCardInProvince(context.source.location));
+            .chatText('turn {1} facedown', (context) => context.player.getProvinceCardInProvince(context.source.location));
     }
 }
 

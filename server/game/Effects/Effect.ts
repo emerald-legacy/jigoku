@@ -127,12 +127,12 @@ export class Effect<T extends GameObject = GameObject> {
     }
 
     removeTargets(targets: T[]) {
-        targets.forEach(target => this.effect.unapply(target));
-        this.targets = this.targets.filter(t => !targets.includes(t));
+        targets.forEach((target) => this.effect.unapply(target));
+        this.targets = this.targets.filter((t) => !targets.includes(t));
     }
 
     cancel() {
-        this.targets.forEach(target => this.effect.unapply(target));
+        this.targets.forEach((target) => this.effect.unapply(target));
         this.targets = [];
     }
 
@@ -152,16 +152,16 @@ export class Effect<T extends GameObject = GameObject> {
         } else if(typeof this.match === 'function') {
             const matchFn = this.match;
             // Get any targets which are no longer valid
-            const invalidTargets = this.targets.filter(target => !matchFn(target, this.context) || !this.isValidTarget(target));
+            const invalidTargets = this.targets.filter((target) => !matchFn(target, this.context) || !this.isValidTarget(target));
             // Remove invalid targets
             this.removeTargets(invalidTargets);
             stateChanged = stateChanged || invalidTargets.length > 0;
             // Recalculate the effect for valid targets
-            this.targets.forEach(target => stateChanged = this.effect.recalculate(target) || stateChanged);
+            this.targets.forEach((target) => stateChanged = this.effect.recalculate(target) || stateChanged);
             // Check for new targets
-            const newTargets = this.getTargets(matchFn).filter(target => !this.targets.includes(target) && this.isValidTarget(target));
+            const newTargets = this.getTargets(matchFn).filter((target) => !this.targets.includes(target) && this.isValidTarget(target));
             // Apply the effect to new targets
-            newTargets.forEach(target => this.addTarget(target));
+            newTargets.forEach((target) => this.addTarget(target));
             return stateChanged || newTargets.length > 0;
         } else if(this.targets.includes(this.match)) {
             if(!this.isValidTarget(this.match)) {
@@ -179,7 +179,7 @@ export class Effect<T extends GameObject = GameObject> {
     getDebugInfo() {
         return {
             source: this.source.name,
-            targets: this.targets.map(target => target.name).join(','),
+            targets: this.targets.map((target) => target.name).join(','),
             active: this.isEffectActive(),
             condition: this.condition(this.context),
             effect: this.effect.getDebugInfo()

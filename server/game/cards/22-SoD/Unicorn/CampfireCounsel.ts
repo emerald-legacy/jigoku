@@ -13,7 +13,7 @@ export default class CampfireCounsel extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => (card.printedCost ?? 0) <= 3
+                cardCondition: (card) => (card.printedCost ?? 0) <= 3
             }, ready())
             .thenIf((context) => !context.player.isCharacterTraitInPlay('storyteller'))
             .dishonor((context) => ({ target: context.target }))

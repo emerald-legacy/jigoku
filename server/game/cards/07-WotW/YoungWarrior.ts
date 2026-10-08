@@ -6,7 +6,7 @@ class YoungWarrior extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.conflictRecord.filter(record => record.completed).length === 0,
+            condition: (context) => context.game.conflictRecord.filter((record) => record.completed).length === 0,
             effect: [
                 mustBeDeclaredAsAttacker(),
                 mustBeDeclaredAsDefender()

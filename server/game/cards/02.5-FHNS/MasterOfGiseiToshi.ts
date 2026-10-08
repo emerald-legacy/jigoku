@@ -13,7 +13,7 @@ class MasterOfGiseiToshi extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict?.ring === context.ring,

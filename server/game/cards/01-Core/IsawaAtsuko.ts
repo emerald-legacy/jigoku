@@ -11,10 +11,10 @@ class IsawaAtsuko extends DrawCard {
     setupCardAbilities() {
         this.action('Wield the power of the void')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .gameAction(cardLastingEffect(context => ({
+            .gameAction(cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player) ?? [],
                 effect: modifyBothSkills(1)
-            })), cardLastingEffect(context => ({
+            })), cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)
             })))

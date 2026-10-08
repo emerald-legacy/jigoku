@@ -21,7 +21,7 @@ class ChancellorsAide extends DrawCard {
                 name: 'oppPlayer',
                 targets: true,
                 player: Players.Opponent,
-                condition: context => !!context.costs.honorTakenFromOpponent
+                condition: (context) => !!context.costs.honorTakenFromOpponent
             }, (context) => context.player.opponent ? playerChoices(context.player.opponent, (player) => chosenDiscard({ target: player })) : {})
             .cannotTargetFirst();
     }

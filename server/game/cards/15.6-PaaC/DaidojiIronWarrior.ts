@@ -10,11 +10,11 @@ class DaidojiIronWarrior extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
             .gameAction(multiple([
-                chosenDiscard(context => ({
+                chosenDiscard((context) => ({
                     target: context.player.opponent,
                     amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - 4)
                 })),
-                chosenDiscard(context => ({
+                chosenDiscard((context) => ({
                     target: context.player,
                     amount: Math.max(0, context.player.hand.length - 4)
                 }))

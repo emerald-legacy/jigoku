@@ -9,7 +9,7 @@ export function moveCardInProvinceAction(source: DrawCard) {
             name: 'cardInProvince',
             location: [Location.Provinces, Location.PlayArea],
             cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding],
-            cardCondition: card =>
+            cardCondition: (card) =>
                 Boolean((card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
                     (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province))
         })
@@ -29,7 +29,7 @@ export function moveCardInProvinceAction(source: DrawCard) {
                         (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
                         (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                     )
-        }, conditional(context => ({
+        }, conditional((context) => ({
             condition: context.targets.cardInProvince.type === CardType.Attachment,
             trueGameAction: attach({
                 target: context.targets.province,
@@ -40,7 +40,7 @@ export function moveCardInProvinceAction(source: DrawCard) {
                 destination: context.targets.province.location
             })
         })))
-        .chatText('move {1} to {2}', context => [
+        .chatText('move {1} to {2}', (context) => [
             context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
             context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
         ]);

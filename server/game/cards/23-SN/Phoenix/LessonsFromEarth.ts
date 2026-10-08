@@ -40,7 +40,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 }
                 return { gameActions };
             }))
-            .chatText('cause {1} to draw a card and {2} to discard a card', context => [context.event.conflict?.winner, context.event.conflict?.loser])
+            .chatText('cause {1} to draw a card and {2} to discard a card', (context) => [context.event.conflict?.winner, context.event.conflict?.loser])
             .limit(unlimitedPerConflict());
     }
 }

@@ -25,7 +25,7 @@ export default class IsawaHouseGuard extends DrawCard {
                     gameActions.push(dishonor({
                         target: duel.loser
                     }));
-                    duel.loser?.forEach(card => {
+                    duel.loser?.forEach((card) => {
                         if(card.isTainted) {
                             gameActions.push(injure({
                                 target: card
@@ -35,7 +35,7 @@ export default class IsawaHouseGuard extends DrawCard {
                     return { gameActions };
                 }),
                 message: '{0} is dishonored and injured if tainted',
-                messageArgs: duel => [duel.loser]
+                messageArgs: (duel) => [duel.loser]
             }));
     }
 }

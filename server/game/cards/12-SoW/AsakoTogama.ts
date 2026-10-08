@@ -6,20 +6,20 @@ class AsakoTogama extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch a claimed ring with an unclaimed one')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .gameAction(joint([
-                selectRing(context => ({
+                selectRing((context) => ({
                     activePromptTitle: 'Choose a ring to return',
-                    ringCondition: ring => ring.claimedBy === context.player.name,
+                    ringCondition: (ring) => ring.claimedBy === context.player.name,
                     message: '{0} returns the {1}',
-                    messageArgs: ring => [context.player, ring],
+                    messageArgs: (ring) => [context.player, ring],
                     gameAction: returnRing()
                 })),
-                selectRing(context => ({
+                selectRing((context) => ({
                     activePromptTitle: 'Choose a ring to take',
-                    ringCondition: ring => ring.isUnclaimed(),
+                    ringCondition: (ring) => ring.isUnclaimed(),
                     message: '{0} takes the {1}',
-                    messageArgs: ring => [context.player, ring],
+                    messageArgs: (ring) => [context.player, ring],
                     gameAction: takeRing({ takeFate: true })
                 }))
             ]))

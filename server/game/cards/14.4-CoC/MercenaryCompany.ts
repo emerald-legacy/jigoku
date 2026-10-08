@@ -16,7 +16,7 @@ class MercenaryCompany extends DrawCard {
                     && placeFate().canAffect(context.source, context)
             })
             .gameAction(handler({
-                handler: context => {
+                handler: (context) => {
                     const opponent = context.player.opponent;
                     const source = context.source;
                     if(!opponent || !source.isDrawCard()) {

@@ -14,7 +14,7 @@ class Fushicho extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('phoenix')
+                cardCondition: (card) => card.isFaction('phoenix')
             }, putIntoPlay({ fate: 1 }));
     }
 }

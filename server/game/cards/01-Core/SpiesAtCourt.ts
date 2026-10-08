@@ -12,7 +12,7 @@ class SpiesAtCourt extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Political
             })
-            .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: card => card.isParticipating() }))
+            .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .gameAction(discardAtRandom({ amount: 2 }))
             .max(perConflict(1));
     }

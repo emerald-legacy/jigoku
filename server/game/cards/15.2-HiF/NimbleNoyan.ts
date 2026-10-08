@@ -7,7 +7,7 @@ class NimbleNoyan extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,
             match: (card) => card.type === CardType.Character && card.isParticipating(),
             effect: canContributeWhileBowed()

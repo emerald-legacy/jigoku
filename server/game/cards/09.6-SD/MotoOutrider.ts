@@ -6,7 +6,7 @@ class MotoOutrider extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready this character')
-            .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
+            .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
             .ready();
     }
 }

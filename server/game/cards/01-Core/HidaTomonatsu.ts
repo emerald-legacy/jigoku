@@ -15,7 +15,7 @@ class HidaTomonatsu extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isAttacking() && !card.isUnique()
+                cardCondition: (card) => card.isAttacking() && !card.isUnique()
             }, returnToDeck());
     }
 }

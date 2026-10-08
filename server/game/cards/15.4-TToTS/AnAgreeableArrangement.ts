@@ -55,7 +55,7 @@ class AnAgreeableArrangement extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => !card.hasTrait('champion'),
+                cardCondition: (card) => !card.hasTrait('champion'),
                 activePromptTitle: 'Bow a non-champion'
             }, bow());
     }

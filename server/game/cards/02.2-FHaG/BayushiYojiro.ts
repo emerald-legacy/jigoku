@@ -11,7 +11,7 @@ class BayushiYojiro extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,
             match: (card) => card.isParticipating(),
             effect: [

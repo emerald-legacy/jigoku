@@ -8,11 +8,11 @@ class MatsuSakura extends DrawCard {
         this.wouldInterrupt('Cancel conflict province ability')
             .when({
                 onInitiateAbilityEffects: (event, context) => context.source.isAttacking() && event.card.isConflictProvince() && event.card.controller &&
-                    (event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFaceup()) || //any faceup cards
+                    (event.card.controller.getDynastyCardsInProvince(event.card.location).some((a) => a.isFaceup()) || //any faceup cards
                         event.card.location === Location.StrongholdProvince)
             })
             .cancel()
-            .chatText('cancel the effects of {1}\'s ability', context => context.event.card);
+            .chatText('cancel the effects of {1}\'s ability', (context) => context.event.card);
     }
 }
 

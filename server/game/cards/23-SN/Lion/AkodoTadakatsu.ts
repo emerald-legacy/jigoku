@@ -32,7 +32,7 @@ export default class AkodoTadakatsu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
-                cardCondition: card => card.isDefending()
+                cardCondition: (card) => card.isDefending()
             })
             .select({
                 name: 'select',

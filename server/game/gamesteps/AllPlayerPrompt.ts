@@ -11,6 +11,6 @@ export class AllPlayerPrompt extends UiPrompt {
     }
 
     isComplete() {
-        return this.game.getPlayers().every(player => this.completionCondition(player));
+        return this.game.getPlayers().every((player) => this.completionCondition(player));
     }
 }

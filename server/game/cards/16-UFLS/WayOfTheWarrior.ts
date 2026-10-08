@@ -11,9 +11,9 @@ class WayOfTheWarrior extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
             }, sequential([
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     effect: [
                         cardCannot({
                             cannot: 'sendHome',

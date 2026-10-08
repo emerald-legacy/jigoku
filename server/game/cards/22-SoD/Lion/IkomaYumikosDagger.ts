@@ -11,11 +11,11 @@ export default class IkomaYumikosDagger extends DrawCard {
                 onDiscardFavor: (event, context) => event.player === context.player &&
                     context.source.allowGameAction('discardFromPlay', context)
             })
-            .cancel(context => ({
+            .cancel((context) => ({
                 target: context.source,
                 replacementGameAction: discardFromPlay()
             }))
-            .chatText('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
+            .chatText('discard itself instead of the Imperial Favor', (context) => context.event.player ?? '');
 
         this.conflictAction('Injure a character')
             .target({

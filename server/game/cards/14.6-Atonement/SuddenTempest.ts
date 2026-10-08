@@ -9,10 +9,10 @@ class SuddenTempest extends DrawCard {
     setupCardAbilities() {
         this.action('Remove a ring from the unclaimed ring pool')
             .ringTarget({
-                ringCondition: ring => ring.isUnclaimed()
+                ringCondition: (ring) => ring.isUnclaimed()
             }, multiple([
                 removeRingFromPlay(),
-                ringLastingEffect(context => ({
+                ringLastingEffect((context) => ({
                     duration: Duration.Custom,
                     until: {
                         onBeginRound: () => true

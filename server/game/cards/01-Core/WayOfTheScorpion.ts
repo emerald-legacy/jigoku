@@ -9,7 +9,7 @@ class WayOfTheScorpion extends DrawCard {
         this.action('Dishonor a participating character')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && !card.isFaction('scorpion')
+                cardCondition: (card) => card.isParticipating() && !card.isFaction('scorpion')
             }, dishonor());
     }
 }

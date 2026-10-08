@@ -17,11 +17,11 @@ class DragonflyMediator extends DrawCard {
                 name: 'oppCard',
                 activePromptTitle: 'Choose three cards to reveal',
                 mode: TargetMode.ExactlyVariable,
-                numCardsFunc: context => Math.min(3, context.player.opponent?.hand.length ?? 0),
+                numCardsFunc: (context) => Math.min(3, context.player.opponent?.hand.length ?? 0),
                 player: Players.Opponent,
                 location: Location.Hand,
                 controller: Players.Opponent
-            }, reveal(context => ({ chatMessage: true, player: context.player.opponent })))
+            }, reveal((context) => ({ chatMessage: true, player: context.player.opponent })))
             .chatText('have each player reveal cards from their hand');
     }
 }

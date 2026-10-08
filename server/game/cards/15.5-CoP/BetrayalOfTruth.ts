@@ -5,8 +5,8 @@ class BetrayalOfTruth extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow honored and dishonored characters')
-            .condition(context => context.game.isDuringConflict() && context.game.findAnyCardsInPlay(card => card.isParticipating() && !card.isOrdinary()).length > 0)
-            .bow(context => ({
+            .condition((context) => context.game.isDuringConflict() && context.game.findAnyCardsInPlay((card) => card.isParticipating() && !card.isOrdinary()).length > 0)
+            .bow((context) => ({
                 target: context.game.findAnyCardsInPlay((card) => card.isParticipating() && !card.isOrdinary())
             }));
     }

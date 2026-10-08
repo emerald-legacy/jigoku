@@ -13,7 +13,7 @@ export default class OpportunisticRustler extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military
             })
-            .deckSearch(context => ({
+            .deckSearch((context) => ({
                 cardsToLookAt: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
                 player: context.player.opponent,
                 choosingPlayer: context.player,
@@ -34,7 +34,7 @@ export default class OpportunisticRustler extends DrawCard {
                     const numberOfTraits = selected.getTraits().size;
 
                     const gameActions: Array<GameAction> = [];
-                    gameActions.push(cardLastingEffect(context => ({
+                    gameActions.push(cardLastingEffect((context) => ({
                         target: context.source,
                         effect: modifyMilitarySkill(numberOfTraits)
                     })));

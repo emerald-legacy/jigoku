@@ -13,7 +13,7 @@ class Blackmail extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
-            }, cardLastingEffect(context => ({
+            }, cardLastingEffect((context) => ({
                 effect: takeControl(context.player)
             })))
             .chatText('take control of {0}');

@@ -21,7 +21,7 @@ class FuSuiDisciple extends DrawCard {
             .target({
                 name: 'character',
                 dependsOn: 'player',
-                player: context => context.selects.player.choice === context.player.name ? Players.Self : Players.Opponent,
+                player: (context) => context.selects.player.choice === context.player.name ? Players.Self : Players.Opponent,
                 activePromptTitle: 'Choose a character to be honored or dishonored',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
@@ -33,8 +33,8 @@ class FuSuiDisciple extends DrawCard {
                 name: 'effect',
                 dependsOn: 'character'
             }, {
-                'Honor this character': honor(context => ({ target: context.targets.character })),
-                'Dishonor this character': dishonor(context => ({ target: context.targets.character }))
+                'Honor this character': honor((context) => ({ target: context.targets.character })),
+                'Dishonor this character': dishonor((context) => ({ target: context.targets.character }))
             });
     }
 

@@ -37,10 +37,10 @@ class VoiceOfTheAncestors extends DrawCard {
             .selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
-                cardCondition: card => card.isFaction('lion'),
+                cardCondition: (card) => card.isFaction('lion'),
                 controller: Players.Self,
                 gameAction: sequential([
-                    playerLastingEffect(context => ({
+                    playerLastingEffect((context) => ({
                         targetController: context.player,
                         effect: reduceNextPlayedCardCost(1)
                     })),
@@ -61,9 +61,9 @@ class VoiceOfTheAncestors extends DrawCard {
                             })
                         ]
                     }),
-                    playCard(context => ({
+                    playCard((context) => ({
                         source: this,
-                        playCardTarget: attachContext => {
+                        playCardTarget: (attachContext) => {
                             attachContext.target = context.target;
                             attachContext.targets.target = context.targets.target;
                         }

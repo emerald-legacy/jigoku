@@ -13,9 +13,9 @@ class HiddenLineage extends DrawCard {
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player
             }, selectCard((context) => ({
                 cardType: CardType.Character,
-                cardCondition: card => card !== context.target.parentCharacter && card.controller === context.player,
+                cardCondition: (card) => card !== context.target.parentCharacter && card.controller === context.player,
                 message: '{0} moves {1} to {2}',
-                messageArgs: card => [context.player, context.target, card],
+                messageArgs: (card) => [context.player, context.target, card],
                 gameAction: ifAble({
                     ifAbleAction: attach({
                         attachment: context.target

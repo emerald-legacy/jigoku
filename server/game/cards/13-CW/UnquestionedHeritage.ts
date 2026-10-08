@@ -7,16 +7,16 @@ class UnquestionedHeritage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move an attachment')
-            .condition(context => context.game.rings.air.isConsideredClaimed(context.player))
+            .condition((context) => context.game.rings.air.isConsideredClaimed(context.player))
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Any,
                 cardCondition: (card, context) => Boolean(card.parentCharacter?.controller === context.player)
             }, selectCard((context) => ({
                 cardType: CardType.Character,
-                cardCondition: card => card !== context.target.parentCharacter,
+                cardCondition: (card) => card !== context.target.parentCharacter,
                 message: '{0} moves {1} to {2}',
-                messageArgs: card => [context.player, context.target, card],
+                messageArgs: (card) => [context.player, context.target, card],
                 gameAction: ifAble({
                     ifAbleAction: attach({
                         attachment: context.target

@@ -9,9 +9,9 @@ class DivineAncestry extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prevent losing honor this phase')
             .when({
-                onPhaseStarted: event => event.phase !== Phase.Setup
+                onPhaseStarted: (event) => event.phase !== Phase.Setup
             })
-            .playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: context.player,
                 effect: [

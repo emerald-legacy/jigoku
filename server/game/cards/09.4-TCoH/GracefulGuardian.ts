@@ -8,7 +8,7 @@ class GracefulGuardian extends DrawCard {
 
     setupCardAbilities() {
         this.action('Increase cost to play cards')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .playerLastingEffect({
                 targetController: Players.Any,
                 duration: Duration.UntilNextPassPriority,

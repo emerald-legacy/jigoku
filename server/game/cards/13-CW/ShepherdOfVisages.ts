@@ -10,7 +10,7 @@ class ShepherdOfVisages extends DrawCard {
         this.action('Give a participating character -2 glory')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect(() => ({
                 effect: modifyGlory(-2)
             })))

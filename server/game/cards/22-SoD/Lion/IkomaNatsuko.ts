@@ -12,7 +12,7 @@ export default class IkomaNatsuko extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, bow(), sendHome())
             .chatText('bow and send {0} home');
     }

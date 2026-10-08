@@ -21,7 +21,7 @@ class CraftyTsukumogami extends RingAttachment {
                 activePromptTitle: 'Choose a ring to attach to',
                 ringCondition: (ring, context) => this.checkRingCondition(ring, context)
             }, sequential([
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     canChangeZoneOnce: true,
                     duration: Duration.Custom,
                     target: context.source,
@@ -44,7 +44,7 @@ class CraftyTsukumogami extends RingAttachment {
                     attachment: context.source
                 })),
                 handler({
-                    handler: context => {
+                    handler: (context) => {
                         const card = context.source;
                         card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card), 1);
                         if(context.game.currentConflict) {

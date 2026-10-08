@@ -43,7 +43,7 @@ export default class KissOfTheSea extends DrawCard {
                     return false;
                 }
             })
-            .bow(context => ({
+            .bow((context) => ({
                 target: context.source.parentCharacter ?? []
             }));
     }

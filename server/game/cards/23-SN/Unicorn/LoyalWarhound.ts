@@ -20,22 +20,22 @@ export default class LoyalWarhound extends DrawCard {
         });
 
         this.action('Attach this to a character')
-            .condition(context => context.source.type === CardType.Character)
+            .condition((context) => context.source.type === CardType.Character)
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
             })
-            .gameAction(sequentialContext(context => {
+            .gameAction(sequentialContext((context) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(cardLastingEffect({
                     target: context.source,
                     duration: Duration.Custom,
                     until: {
-                        onCardDetached: event => event.card === context.source,
-                        onCardLeavesPlay: event => event.card === context.source
+                        onCardDetached: (event) => event.card === context.source,
+                        onCardLeavesPlay: (event) => event.card === context.source
                     },
                     effect: [
                         blank(true),

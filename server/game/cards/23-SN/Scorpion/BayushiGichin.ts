@@ -24,7 +24,7 @@ export default class BayushiGichin extends DrawCard {
                                     return false;
                                 }
                                 const poisons = this.getPoisons(context);
-                                return poisons.some(p => attach().canAffect(card, context, { attachment: p }));
+                                return poisons.some((p) => attach().canAffect(card, context, { attachment: p }));
                             },
                             message: '{0} poisons {1}',
                             messageArgs: (cards) => {
@@ -77,8 +77,8 @@ export default class BayushiGichin extends DrawCard {
 
     private getPoisons(context: AbilityContext) {
         const player = context.player;
-        const inDiscard = player.conflictDiscardPile.filter(card => card.hasTrait('poison'));
-        const inHand = player.hand.filter(card => card.hasTrait('poison'));
+        const inDiscard = player.conflictDiscardPile.filter((card) => card.hasTrait('poison'));
+        const inHand = player.hand.filter((card) => card.hasTrait('poison'));
 
         return [...inDiscard, ...inHand];
     }

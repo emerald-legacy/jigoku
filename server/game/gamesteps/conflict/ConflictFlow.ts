@@ -231,9 +231,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.attackingPlayer,
                     totalHonorCost
                 );
-                this.conflict.attackers.forEach(card => {
+                this.conflict.attackers.forEach((card) => {
                     const effects = card.getEffects(EffectName.HonorCostToDeclare);
-                    effects.forEach(effect => {
+                    effects.forEach((effect) => {
                         payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
                             costEvents,
                             this.game.getFrameworkContext(this.conflict.attackingPlayer)
@@ -666,9 +666,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.defendingPlayer,
                     totalHonorCost
                 );
-                this.conflict.defenders.forEach(card => {
+                this.conflict.defenders.forEach((card) => {
                     const effects = card.getEffects(EffectName.HonorCostToDeclare);
-                    effects.forEach(effect => {
+                    effects.forEach((effect) => {
                         payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
                             costEvents,
                             this.game.getFrameworkContext(this.conflict.defendingPlayer)

@@ -10,13 +10,13 @@ export default class FallowLands extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             })
             .gameAction(multiple([
-                draw(context => ({
+                draw((context) => ({
                     target: context.player
                 })),
-                gainFate(context => ({
+                gainFate((context) => ({
                     target: context.player
                 })),
-                gainHonor(context => ({
+                gainHonor((context) => ({
                     target: context.player
                 }))
             ]))

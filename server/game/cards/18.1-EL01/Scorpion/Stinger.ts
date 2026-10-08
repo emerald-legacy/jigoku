@@ -9,7 +9,7 @@ class Stinger extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => context.game.currentPhase !== Phase.Fate,
+            condition: (context) => context.game.currentPhase !== Phase.Fate,
             effect: cardCannot({
                 cannot: 'ready',
                 source: this
@@ -21,7 +21,7 @@ class Stinger extends DrawCard {
             .target({
                 player: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking()
+                cardCondition: (card) => card.isAttacking()
             }, attach((context) => ({
                 attachment: context.source
             })))

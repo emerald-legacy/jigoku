@@ -21,7 +21,7 @@ class MasterpiecePainter extends DrawCard {
                     this.revealAndMayPlayAbility(opponent)
                 ])
             ))
-            .chatText('make {1} reveal the top card of their deck. They may play their card until the end of the phase', context => context.select);
+            .chatText('make {1} reveal the top card of their deck. They may play their card until the end of the phase', (context) => context.select);
     }
 
     revealAndMayPlayAbility(player: Player) {
@@ -32,9 +32,9 @@ class MasterpiecePainter extends DrawCard {
                 targetController: player,
                 duration: Duration.Custom,
                 until: {
-                    onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
+                    onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                     onPhaseEnded: () => true,
-                    onDeckShuffled: event => event.player === player && event.deck === DeckType.Conflict
+                    onDeckShuffled: (event) => event.player === player && event.deck === DeckType.Conflict
                 },
                 effect: [
                     showTopConflictCard(),

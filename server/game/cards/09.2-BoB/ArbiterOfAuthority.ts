@@ -9,8 +9,8 @@ class ArbiterOfAuthority extends DrawCard {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
-                refuseGameAction: dishonor(context => ({ target: context.target })),
-                gameAction: duel => multiple([
+                refuseGameAction: dishonor((context) => ({ target: context.target })),
+                gameAction: (duel) => multiple([
                     bow({ target: duel.loser }),
                     sendHome({ target: duel.loser })
                 ])

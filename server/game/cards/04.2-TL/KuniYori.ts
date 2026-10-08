@@ -13,7 +13,7 @@ class KuniYori extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            match: card => card.getType() === CardType.Character,
+            match: (card) => card.getType() === CardType.Character,
             effect: modifyBothSkills(1)
         });
 

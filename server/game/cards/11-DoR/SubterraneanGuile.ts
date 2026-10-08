@@ -8,7 +8,7 @@ class SubterraneanGuile extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => this.game.isDuringConflict(ConflictType.Military) && this.isHoldingOnUnbrokenProvince(context),
+            condition: (context) => this.game.isDuringConflict(ConflictType.Military) && this.isHoldingOnUnbrokenProvince(context),
             effect: addKeyword('covert')
         });
     }
@@ -18,7 +18,7 @@ class SubterraneanGuile extends DrawCard {
             const province = context.player.getProvinceCardInProvince(location);
             if(province && !province.isBroken) {
                 const cards = context.player.getDynastyCardsInProvince(location);
-                if(cards.some(card => card.isFaceup() && card.type === CardType.Holding)) {
+                if(cards.some((card) => card.isFaceup() && card.type === CardType.Holding)) {
                     return true;
                 }
             }

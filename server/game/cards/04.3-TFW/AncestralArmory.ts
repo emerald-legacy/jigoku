@@ -11,7 +11,7 @@ class AncestralArmory extends DrawCard {
             .cost(costs.sacrificeSelf())
             .target({
                 activePromptTitle: 'Choose a weapon attachment from your conflict discard pile',
-                cardCondition: card => card.hasTrait('weapon'),
+                cardCondition: (card) => card.hasTrait('weapon'),
                 location: [Location.ConflictDiscardPile],
                 controller: Players.Self
             }, moveCard({ destination: Location.Hand }));

@@ -12,7 +12,7 @@ class SupernaturalStorm extends DrawCard {
             .condition(() => controlsShugenja(this.controller))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0))
             })))

@@ -9,10 +9,10 @@ class YasukiOguri2 extends DrawCard {
     setupCardAbilities() {
         this.action('Move a character in')
             .cost(costs.payFate(1))
-            .condition(context => context.source.isDefending())
+            .condition((context) => context.source.isDefending())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.getFate() > 0
+                cardCondition: (card) => card.getFate() > 0
             }, moveToConflict());
     }
 }

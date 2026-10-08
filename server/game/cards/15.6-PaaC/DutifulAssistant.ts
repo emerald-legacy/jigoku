@@ -6,7 +6,7 @@ class DutifulAssistant extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isHonored),
+            condition: (context) => !!(context.source.parentCharacter && context.source.parentCharacter.isHonored),
             effect: modifyGlory(2)
         });
     }

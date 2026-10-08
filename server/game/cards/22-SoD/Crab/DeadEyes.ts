@@ -14,7 +14,7 @@ export default class DeadEyes extends DrawCard {
         });
 
         this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
-            .cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: [
                     modifyMilitarySkill(2),
@@ -44,6 +44,6 @@ export default class DeadEyes extends DrawCard {
                     })
                 ]
             }))
-            .chatText('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
+            .chatText('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', (context) => [context.source.parentCharacter ?? '', 'military']);
     }
 }

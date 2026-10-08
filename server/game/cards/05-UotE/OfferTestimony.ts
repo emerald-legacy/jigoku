@@ -7,7 +7,7 @@ class OfferTestimony extends DrawCard {
 
     setupCardAbilities() {
         this.action('Both players reveal a card')
-            .condition(context => !!(context.player.opponent && context.game.isDuringConflict(ConflictType.Political)))
+            .condition((context) => !!(context.player.opponent && context.game.isDuringConflict(ConflictType.Political)))
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,
@@ -31,15 +31,15 @@ class OfferTestimony extends DrawCard {
                 player: Players.Opponent,
                 location: Location.Hand,
                 controller: Players.Opponent,
-                gameAction: reveal(context => ({ chatMessage: true, player: context.player.opponent }))
-            }), bow(context => {
+                gameAction: reveal((context) => ({ chatMessage: true, player: context.player.opponent }))
+            }), bow((context) => {
                 const revealedCards = context.events.flatMap((event) =>
                     event.is(EventName.OnCardRevealed) && event.card.isDrawCard() ? [event.card] : []);
                 const lowestCost = Math.min(...revealedCards.map((card) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));
                 const lowestCostPlayers = revealedCards.filter((card) => card.getCost() === lowestCost).map((card) => card.controller);
                 return { target: [context.targets.myCharacter, context.targets.oppCharacter].filter((card) => lowestCostPlayers.includes(card.controller)) };
             }))
-            .chatText('make each player choose a ready participating character they control: {1}', context => [Object.values(context.targets)]);
+            .chatText('make each player choose a ready participating character they control: {1}', (context) => [Object.values(context.targets)]);
     }
 }
 

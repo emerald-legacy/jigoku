@@ -24,7 +24,7 @@ class UnderSiege extends DrawCard {
                 onConflictDeclared: (_event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
             })
             .gameAction(sequential([
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     duration: Duration.UntilEndOfRound,
                     targetController: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
                     effect: playerDelayedEffect({
@@ -36,7 +36,7 @@ class UnderSiege extends DrawCard {
                                 amount: 1000 //discard the entire hand
                             })),
                             handler({
-                                handler: context => {
+                                handler: (context) => {
                                     if(this.targetPlayer && this.setAsideCards.length > 0) {
                                         const targetPlayer = this.targetPlayer;
                                         context.game.addMessage('{0} picks up their original hand', targetPlayer);
@@ -53,13 +53,13 @@ class UnderSiege extends DrawCard {
                     })
                 })),
                 conditional({
-                    condition: context => {
+                    condition: (context) => {
                         const conflict = context.game.currentConflict;
                         return conflict !== null && conflict.defendingPlayer !== null && conflict.defendingPlayer.hand.length > 0;
                     },
                     trueGameAction: sequential([
                         handler({
-                            handler: context => {
+                            handler: (context) => {
                                 const conflict = context.game.currentConflict;
                                 if(!conflict || !conflict.defendingPlayer) {
                                     return;
@@ -74,7 +74,7 @@ class UnderSiege extends DrawCard {
                                         player.moveCard(card, Location.RemovedFromGame);
                                         card.lastingEffect({
                                             until: {
-                                                onCardMoved: event => event.card === card && event.originalLocation === Location.RemovedFromGame
+                                                onCardMoved: (event) => event.card === card && event.originalLocation === Location.RemovedFromGame
                                             },
                                             match: card,
                                             effect: hideWhenFaceUp()
@@ -83,7 +83,7 @@ class UnderSiege extends DrawCard {
                                 }
                             }
                         }),
-                        draw(context => ({
+                        draw((context) => ({
                             target: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
                             amount: 5
                         }))
@@ -96,7 +96,7 @@ class UnderSiege extends DrawCard {
                     })
                 })
             ]))
-            .chatText('place {1} under siege', context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
+            .chatText('place {1} under siege', (context) => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
             .max(perConflict(1));
     }
 }

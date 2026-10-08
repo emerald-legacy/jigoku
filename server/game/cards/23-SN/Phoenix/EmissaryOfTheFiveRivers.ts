@@ -13,7 +13,7 @@ export default class EmissaryOfTheFiveRivers extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('spirit')
+                cardCondition: (card) => card.hasTrait('spirit')
             }, honor());
 
         this.action('Ready a spirit')
@@ -21,7 +21,7 @@ export default class EmissaryOfTheFiveRivers extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('spirit')
+                cardCondition: (card) => card.hasTrait('spirit')
             }, ready());
     }
 }

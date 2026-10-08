@@ -9,7 +9,7 @@ class StudentOfTheTao extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move in/out the conflict')
-            .condition(context => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
+            .condition((context) => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character

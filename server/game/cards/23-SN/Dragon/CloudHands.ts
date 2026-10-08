@@ -24,15 +24,15 @@ export default class CloudHands extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, multiple([
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.targets.myCharacter,
                     effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })
                 })),
-                honor(context => ({
+                honor((context) => ({
                     target: context.targets.myCharacter
                 }))
             ]))
-            .chatText('honor {1} and set their base skills to equal {2}\'s base skills', context => [context.targets.myCharacter, context.targets.oppCharacter])
+            .chatText('honor {1} and set their base skills to equal {2}\'s base skills', (context) => [context.targets.myCharacter, context.targets.oppCharacter])
             .max(perConflict(1));
     }
 }

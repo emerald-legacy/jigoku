@@ -9,7 +9,7 @@ export default class MalevolentAlchemist extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             match: (card) => card.type === CardType.Character,
-            effect: modifyBothSkills((character) => -1 * character.attachments.filter(a => a.hasTrait('poison')).length)
+            effect: modifyBothSkills((character) => -1 * character.attachments.filter((a) => a.hasTrait('poison')).length)
         });
     }
 }

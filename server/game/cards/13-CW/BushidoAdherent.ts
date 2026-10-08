@@ -7,13 +7,13 @@ class BushidoAdherent extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor a character')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, honor())
-            .draw(context => ({ target: context.player.opponent }))
-            .chatText('honor {0} and have {1} draw 1 card', context => [context.player.opponent ?? context.player]);
+            .draw((context) => ({ target: context.player.opponent }))
+            .chatText('honor {0} and have {1} draw 1 card', (context) => [context.player.opponent ?? context.player]);
     }
 }
 

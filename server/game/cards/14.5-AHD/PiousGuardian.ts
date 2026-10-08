@@ -7,7 +7,7 @@ class PiousGuardian extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Gain 1 honor')
             .when({
-                onPhaseEnded: (event, context) => event.phase === Phase.Conflict && context.player.getProvinces(a => a.isBroken).length < 2
+                onPhaseEnded: (event, context) => event.phase === Phase.Conflict && context.player.getProvinces((a) => a.isBroken).length < 2
             })
             .gainHonor();
     }

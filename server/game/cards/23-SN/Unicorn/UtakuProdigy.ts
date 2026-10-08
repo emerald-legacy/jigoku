@@ -17,7 +17,7 @@ export default class UtakuProdigy extends DrawCard {
             })
             .gameAction(sequential([
                 cancel(),
-                gainHonor(context => ({ target: context.player, amount: 2 }))
+                gainHonor((context) => ({ target: context.player, amount: 2 }))
             ]))
             .chatText('instead gain 2 honor from the status token');
     }

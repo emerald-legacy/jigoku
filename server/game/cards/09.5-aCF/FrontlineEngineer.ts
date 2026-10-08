@@ -12,13 +12,13 @@ class FrontlineEngineer extends DrawCard {
         });
 
         this.action('Place a holding from your deck faceup in the defending province')
-            .condition(context => context.player.dynastyDeck.length > 0 && context.source.isDefending())
+            .condition((context) => context.player.dynastyDeck.length > 0 && context.source.isDefending())
             .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
+                cardCondition: (card) => card.isConflictProvince(),
                 gameAction: handler({
                     handler: (context, [province]) => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
@@ -43,7 +43,7 @@ class FrontlineEngineer extends DrawCard {
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
                             context.player.moveCard(cardFromDeck, province.location);
                             cardFromDeck.facedown = false;
-                            cards.forEach(element => {
+                            cards.forEach((element) => {
                                 context.player.moveCard(element, Location.DynastyDiscardPile);
                             });
                             context.player.shuffleDynastyDeck();

@@ -13,12 +13,12 @@ class WickedTetsubo extends DrawCard {
         });
 
         this.action('Set Military or Political skill to 0')
-            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
             .target({
                 name: 'character',
                 activePromptTitle: 'Choose a defending character',
                 cardType: CardType.Character,
-                cardCondition: card => card.isDefending()
+                cardCondition: (card) => card.isDefending()
             })
             .select({
                 name: 'effect',

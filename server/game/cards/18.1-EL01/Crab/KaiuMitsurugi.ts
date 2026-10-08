@@ -10,7 +10,7 @@ class KaiuMitsurugi extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Self,
-            match: card => card.type === CardType.Holding,
+            match: (card) => card.type === CardType.Holding,
             targetLocation: Location.Any,
             effect: addKeyword('rally')
         });
@@ -20,10 +20,10 @@ class KaiuMitsurugi extends DrawCard {
                 cardType: CardType.Holding
             }))
             .gameAction(sequential([
-                gainFate(context => ({
+                gainFate((context) => ({
                     target: context.player
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.player
                 }))
             ]))

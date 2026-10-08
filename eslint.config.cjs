@@ -155,7 +155,8 @@ module.exports = [
                     catch: { after: false }
                 }
             }],
-            'no-trailing-spaces': 'error'
+            'no-trailing-spaces': 'error',
+            'arrow-parens': ['error', 'always']
         }
     },
     // Card files: game actions and effects come from named imports

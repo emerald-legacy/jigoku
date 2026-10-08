@@ -16,7 +16,7 @@ class LoyalChallenger extends DrawCard {
                     },
                     message: '{0} gains 1 honor due to {1} winning a conflict',
                     messageArgs: (context) => [context.player, context.source],
-                    gameAction: gainHonor(context => ({ target: context.player }))
+                    gameAction: gainHonor((context) => ({ target: context.player }))
                 }),
                 delayedEffect({
                     when: {
@@ -25,7 +25,7 @@ class LoyalChallenger extends DrawCard {
                     },
                     message: '{0} loses 1 honor due to {1} losing a conflict',
                     messageArgs: (context) => [context.player, context.source],
-                    gameAction: loseHonor(context => ({ target: context.player }))
+                    gameAction: loseHonor((context) => ({ target: context.player }))
                 })
             ]
         });
@@ -33,8 +33,8 @@ class LoyalChallenger extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 message: '{0} is blanked until the end of the conflict',
-                messageArgs: duel => duel.loser,
-                gameAction: duel => cardLastingEffect({
+                messageArgs: (duel) => duel.loser,
+                gameAction: (duel) => cardLastingEffect({
                     target: duel.loser,
                     effect: blank()
                 })

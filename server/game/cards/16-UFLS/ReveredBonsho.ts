@@ -16,17 +16,17 @@ class ReveredBonsho extends DrawCard {
             effect: customFatePhaseFateRemoval((player, fate) => {
                 const context = this.game.getGameContext();
                 const ringsBase = [this.game.rings.air, this.game.rings.earth, this.game.rings.fire, this.game.rings.void, this.game.rings.water];
-                let rings = ringsBase.filter(a => a.isUnclaimed());
+                let rings = ringsBase.filter((a) => a.isUnclaimed());
                 if(rings.length <= 0) {
                     return;
                 }
-                const ringFate: RingFate[] = rings.map(ring => ({
+                const ringFate: RingFate[] = rings.map((ring) => ({
                     ring: ring,
                     fate: 0
                 }));
 
                 while(fate >= rings.length) {
-                    ringFate.forEach(a => a.fate++);
+                    ringFate.forEach((a) => a.fate++);
                     fate = fate - rings.length;
                 }
 
@@ -41,13 +41,13 @@ class ReveredBonsho extends DrawCard {
                         context: context,
                         ringCondition: (ring) => rings.includes(ring),
                         onSelect: (_player, ring) => {
-                            const obj = ringFate.find(a => a.ring === ring);
+                            const obj = ringFate.find((a) => a.ring === ring);
                             if(!obj) {
                                 return true;
                             }
                             obj.fate++;
                             fate--;
-                            rings = rings.filter(a => a !== ring);
+                            rings = rings.filter((a) => a !== ring);
                             if(fate > 0) {
                                 promptForRing();
                             }

@@ -12,11 +12,11 @@ export default class TwilightAmbush extends DrawCard {
         this.action('Sacrifice dishonored character to injure dishonored one')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: card => card.isDishonored
+                cardCondition: (card) => card.isDishonored
             }))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isDishonored
+                cardCondition: (card) => card.isDishonored
             }, injure())
             .max(perRound(1))
             .cannotTargetFirst()

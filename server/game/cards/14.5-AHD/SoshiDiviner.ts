@@ -11,7 +11,7 @@ class SoshiDiviner extends DrawCard {
             .target({
                 name: 'cardInProvince',
                 location: [Location.Provinces, Location.PlayArea],
-                cardCondition: card => card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold
+                cardCondition: (card) => card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold
             })
             .target({
                 name: 'province',
@@ -22,11 +22,11 @@ class SoshiDiviner extends DrawCard {
                     card.location !== Location.StrongholdProvince &&
                     card.controller === context.targets.cardInProvince.controller &&
                     card.location !== context.targets.cardInProvince.location
-            }, moveCard(context => ({
+            }, moveCard((context) => ({
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             })))
-            .chatText('move {1} to {2}', context => [
+            .chatText('move {1} to {2}', (context) => [
                 context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
                 context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
             ]);

@@ -17,11 +17,11 @@ class AkodoKaede extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.type === CardType.Character && event.card !== context.source && event.card.location === Location.PlayArea
             })
-            .cancel(context => ({
+            .cancel((context) => ({
                 target: context.source,
                 replacementGameAction: removeFate()
             }))
-            .chatText('prevent {1} from leaving play', context => context.event.card);
+            .chatText('prevent {1} from leaving play', (context) => context.event.card);
     }
 }
 

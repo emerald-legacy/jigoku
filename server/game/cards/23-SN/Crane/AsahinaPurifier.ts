@@ -14,7 +14,7 @@ export default class AsahinaPurifier extends DrawCard {
             })
             .gameAction(sequential([
                 cancel(),
-                gainHonor(context => ({ target: context.player }))
+                gainHonor((context) => ({ target: context.player }))
             ]))
             .chatText((context) => msg`gain 1 honor rather than having ${context.event.player} lose 1 honor from a status token`)
             .limit(perPhase(1));

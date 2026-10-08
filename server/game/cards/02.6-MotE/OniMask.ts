@@ -16,7 +16,7 @@ class OniMask extends DrawCard {
             .cost(costs.removeFateFromParent())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({ effect: blank() }))
             .chatText('blank {0} until the end of the conflict');
     }

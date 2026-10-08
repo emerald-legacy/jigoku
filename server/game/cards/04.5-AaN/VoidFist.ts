@@ -7,7 +7,7 @@ class VoidFist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow and send a character home')
-            .condition(context =>
+            .condition((context) =>
                 !!this.game.currentConflict &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 2)
             .target({

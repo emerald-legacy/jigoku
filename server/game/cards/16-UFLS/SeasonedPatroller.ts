@@ -10,7 +10,7 @@ class SeasonedPatroller extends DrawCard {
             match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Any,
-            condition: context => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             effect: [
                 suppressEffects((effect) =>
                     effect.isProvinceStrengthModifier() && (effect.getValue() ?? 0) > 0

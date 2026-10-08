@@ -11,7 +11,7 @@ class APerfectCut extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
             }, cardLastingEffect((context) => ({
                 effect: [
                     modifyMilitarySkill(2),

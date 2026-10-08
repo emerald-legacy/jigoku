@@ -101,7 +101,7 @@ class AccursedSummoning extends DrawCard {
     setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
             .cost(accursedSummoningCost())
-            .gameAction(putIntoConflict(context => ({
+            .gameAction(putIntoConflict((context) => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
             .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));

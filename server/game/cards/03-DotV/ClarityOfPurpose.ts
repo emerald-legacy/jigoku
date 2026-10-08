@@ -14,7 +14,7 @@ class ClarityOfPurpose extends DrawCard {
             }, cardLastingEffect({
                 condition: () => this.game.isDuringConflict(ConflictType.Political),
                 effect: doesNotBow()
-            }), cardLastingEffect(context => ({
+            }), cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: 'bow',
                     restricts: 'opponentsCardEffects',

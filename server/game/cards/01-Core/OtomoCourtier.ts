@@ -8,7 +8,7 @@ class OtomoCourtier extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            condition: context => !!context.player.opponent && context.player.opponent.imperialFavor !== '',
+            condition: (context) => !!context.player.opponent && context.player.opponent.imperialFavor !== '',
             effect: cannotParticipateAsAttacker()
         });
     }

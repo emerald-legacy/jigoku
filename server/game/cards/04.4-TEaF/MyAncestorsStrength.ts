@@ -14,7 +14,7 @@ class MyAncestorsStrength extends DrawCard {
                 activePromptTitle: 'Choose a shugenja character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('shugenja') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait('shugenja') && card.isParticipating()
             })
             .target({
                 name: 'ancestor',
@@ -23,7 +23,7 @@ class MyAncestorsStrength extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
-            }, cardLastingEffect(context => ({
+            }, cardLastingEffect((context) => ({
                 target: context.targets.shugenja,
                 effect: copyBaseSkillEffects(context.targets.ancestor)
             })))

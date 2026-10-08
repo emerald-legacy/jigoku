@@ -6,7 +6,7 @@ class EnigmaticMagistrate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             effect: cannotContribute(() => {
                 return (card) => {
                     const cost = card.getCost();

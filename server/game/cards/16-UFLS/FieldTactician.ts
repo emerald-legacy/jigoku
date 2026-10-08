@@ -16,7 +16,7 @@ class FieldTactician extends DrawCard {
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Any
             }, handler({
-                handler: context => {
+                handler: (context) => {
                     const card = context.target;
                     const player = card.owner;
                     player.moveCard(card, Location.ConflictDeck);
@@ -27,7 +27,7 @@ class FieldTactician extends DrawCard {
                     player.conflictDeck.splice(0, 2, ...orderedCards);
                 }
             }))
-            .chatText('return {0} to {1}\'s conflict deck', context => [context.target.owner]);
+            .chatText('return {0} to {1}\'s conflict deck', (context) => [context.target.owner]);
     }
 }
 

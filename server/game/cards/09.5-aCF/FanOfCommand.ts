@@ -7,10 +7,10 @@ class FanOfCommand extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
             }, ready());
     }
 }

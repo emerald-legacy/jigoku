@@ -15,7 +15,7 @@ class Outflank extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => !card.isUnique()
+                cardCondition: (card) => !card.isUnique()
             }, cardLastingEffect({
                 effect: cannotBeDeclaredAsDefender()
             }))

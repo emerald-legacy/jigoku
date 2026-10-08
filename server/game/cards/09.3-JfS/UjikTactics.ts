@@ -7,7 +7,7 @@ class UjikTactics extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Give each non-unique character +1 military during this conflict')
-            .cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),
                 effect: modifyMilitarySkill(1)
             }))

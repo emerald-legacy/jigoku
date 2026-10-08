@@ -15,10 +15,10 @@ class MountaintopStatuary extends DrawCard {
             .chatText('move it to their stronghold province');
         this.action('Send a 2 or lower cost character home')
             .cost(costs.sacrificeSelf())
-            .condition(context => context.source.isInConflictProvince())
+            .condition((context) => context.source.isInConflictProvince())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking() && card.costLessThan(3)
+                cardCondition: (card) => card.isAttacking() && card.costLessThan(3)
             }, sendHome());
     }
 }

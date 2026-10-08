@@ -27,7 +27,7 @@ class ConsumedByFiveFires extends DrawCard {
         if(fateRemaining === 0 || !opponent.cardsInPlay.some((card) => card.allowGameAction('removeFate', context) && !Object.keys(targets).includes(card.uuid))) {
             this.game.addMessage('{0} chooses to: {1}', context.player, messages);
             const keys = Object.keys(targets);
-            const events = keys.map(key => {
+            const events = keys.map((key) => {
                 const card = opponent.cardsInPlay.find((c) => c.uuid === key);
                 if(card) {
                     return GameActions.removeFate({ amount: targets[key] }).getEvent(card, context);

@@ -9,22 +9,22 @@ class ASeasonOfWar extends DrawCard {
     setupCardAbilities() {
         this.action('Discard all cards from provinces, refill faceup, and start a new dynasty phase')
             .gameAction(sequential([
-                discardCard(context => ({
+                discardCard((context) => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces).concat(context.player.opponent ?
                         context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : [])
                 })),
-                refillFaceup(context => ({
+                refillFaceup((context) => ({
                     target: context.player,
                     location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
-                refillFaceup(context => ({
+                refillFaceup((context) => ({
                     target: context.player.opponent,
                     location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     duration: Duration.Custom,
                     until: {
-                        onPhaseStarted: event => event.phase === Phase.Dynasty
+                        onPhaseStarted: (event) => event.phase === Phase.Dynasty
                     },
                     effect: restartDynastyPhase(context.source)
                 }))

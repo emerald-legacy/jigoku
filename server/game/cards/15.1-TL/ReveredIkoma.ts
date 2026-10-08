@@ -11,7 +11,7 @@ class ReveredIkoma extends DrawCard {
         });
 
         this.action('Gain 1 fate')
-            .condition(context => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2)
+            .condition((context) => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2)
             .gainFate();
     }
 }

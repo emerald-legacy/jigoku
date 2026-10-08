@@ -15,7 +15,7 @@ export default class TimeForWar2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('bushi')
+                cardCondition: (card) => card.hasTrait('bushi')
             }, selectCard((context) => ({
                 activePromptTitle: 'Choose an attachment',
                 selector: CardSelector.for({
@@ -26,7 +26,7 @@ export default class TimeForWar2 extends DrawCard {
                 }),
                 message: '{0} chooses to attach {1} to {2}',
                 messageArgs: (card, player) => [player, card, context.target],
-                subActionProperties: card => ({ attachment: card }),
+                subActionProperties: (card) => ({ attachment: card }),
                 gameAction: attachAction
             })))
             .chatText('attach a weapon to {0}');

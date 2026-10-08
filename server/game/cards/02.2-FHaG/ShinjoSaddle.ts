@@ -15,7 +15,7 @@ class ShinjoSaddle extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait('cavalry')
             }, attach((context) => ({ attachment: context.source })));
     }
 }

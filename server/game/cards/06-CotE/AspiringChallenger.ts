@@ -13,7 +13,7 @@ class AspiringChallenger extends DrawCard {
         this.action('Initiate a Military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: duel => honor({
+                gameAction: (duel) => honor({
                     target: duel.winner
                 })
             }));

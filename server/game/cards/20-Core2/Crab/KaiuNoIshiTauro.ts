@@ -13,7 +13,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, deckSearch(context => ({
+            }, deckSearch((context) => ({
                 activePromptTitle: 'Select an attachment',
                 deck: DeckType.Conflict,
                 cardCondition: (card) => card.type === CardType.Attachment &&

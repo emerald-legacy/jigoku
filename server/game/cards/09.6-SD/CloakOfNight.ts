@@ -12,12 +12,12 @@ class CloakOfNight extends DrawCard {
         this.action('Give a participating character +3 glory')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, multiple([
                 cardLastingEffect(() => ({
                     effect: modifyGlory(3)
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     effect: cardCannot({
                         cannot: 'target',
                         restricts: 'opponentsCardAbilities',
@@ -25,7 +25,7 @@ class CloakOfNight extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', context => context.player.opponent ? [context.player.opponent] : []);
+            .chatText('give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', (context) => context.player.opponent ? [context.player.opponent] : []);
     }
 
     canPlay(context: AbilityContext, playType: string) {

@@ -10,7 +10,7 @@ class CompellingTestimony extends DrawCard {
         this.conflictAction('Give a character -4 political', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({
                 effect: modifyPoliticalSkill(-4)
             }))

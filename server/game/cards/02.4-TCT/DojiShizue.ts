@@ -7,7 +7,7 @@ class DojiShizue extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => this.game.currentPhase === Phase.Fate && context.player.imperialFavor !== '',
+            condition: (context) => this.game.currentPhase === Phase.Fate && context.player.imperialFavor !== '',
             effect: [
                 cardCannot('removeFate'),
                 cardCannot('discardFromPlay')

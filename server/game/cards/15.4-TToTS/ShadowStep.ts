@@ -9,20 +9,20 @@ class ShadowStep extends DrawCard {
         this.action('Remove a character from the game and put it into play')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasTrait('mythic'),
+                cardCondition: (card) => !card.hasTrait('mythic'),
                 controller: Players.Self
             }, sequential([
-                removeFromGame(context => ({
+                removeFromGame((context) => ({
                     target: context.target
                 })),
                 conditional({
-                    condition: context => {
+                    condition: (context) => {
                         return !!context.target?.hasTrait('shadow');
                     },
-                    trueGameAction: putIntoPlay(context => ({
+                    trueGameAction: putIntoPlay((context) => ({
                         target: context.target
                     })),
-                    falseGameAction: putIntoPlay(context => ({
+                    falseGameAction: putIntoPlay((context) => ({
                         target: context.target,
                         status: CharacterStatus.Dishonored
                     }))

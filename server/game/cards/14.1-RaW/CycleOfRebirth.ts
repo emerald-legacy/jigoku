@@ -12,29 +12,29 @@ class CycleOfRebirth extends DrawCard {
             .target({
                 location: Location.Provinces,
                 controller: Players.Any,
-                cardCondition: card => card.type !== CardType.Province && card.type !== CardType.Stronghold
+                cardCondition: (card) => card.type !== CardType.Province && card.type !== CardType.Stronghold
             })
             .gameAction(sequential([
                 multiple([
-                    moveCard(context => ({
+                    moveCard((context) => ({
                         destination: Location.DynastyDeck,
                         target: context.target,
                         shuffle: true,
                         bottom: true
                     })),
-                    moveCard(context => ({
+                    moveCard((context) => ({
                         destination: Location.DynastyDeck,
                         target: context.source,
                         shuffle: true,
                         bottom: true
                     }))
                 ]),
-                refillFaceup(context => ({
+                refillFaceup((context) => ({
                     target: context.target ? [context.target.controller, context.source.controller] : [context.source.controller],
                     location: context.game.getProvinceArray()
                 }))
             ]))
-            .chatText('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', context => {
+            .chatText('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', (context) => {
                 const target = context.target;
                 return [
                     target,

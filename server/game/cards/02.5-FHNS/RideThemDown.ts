@@ -11,14 +11,14 @@ class RideThemDown extends DrawCard {
         this.action('Reduce province strength')
             .cost(costs.discardImperialFavor())
             .condition(() => this.game.isDuringConflict())
-            .selectCard(context => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
+                cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} reduces the strength of {1} to 1',
-                messageArgs: cards => [context.player, cards],
+                messageArgs: (cards) => [context.player, cards],
                 gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: setBaseProvinceStrength(1)

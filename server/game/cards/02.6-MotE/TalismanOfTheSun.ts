@@ -9,13 +9,13 @@ class TalismanOfTheSun extends DrawCard {
     setupCardAbilities() {
         this.action('Move conflict to a different province')
             .cost(costs.bowSelf())
-            .condition(context => context.player.isDefendingPlayer())
-            .selectCard(context => ({
+            .condition((context) => context.player.isDefendingPlayer())
+            .selectCard((context) => ({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 gameAction: moveConflict(),
                 message: '{0} moves the conflict to {1}',
-                messageArgs: card => [context.player, card]
+                messageArgs: (card) => [context.player, card]
             }))
             .chatText('move the conflict to another eligible province');
     }

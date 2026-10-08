@@ -15,7 +15,7 @@ export default class ShatteredBladePass extends ProvinceCard {
             }, multiple([
                 ready(),
                 moveToConflict(),
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
                     duration: Duration.UntilPassPriority,
                     effect: additionalAction()

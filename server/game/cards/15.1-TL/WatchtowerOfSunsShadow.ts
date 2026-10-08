@@ -8,7 +8,7 @@ class WatchtowerOfSunsShadow extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => defendingAtKaiuWall(context.player, context.game.currentConflict),
+            condition: (context) => defendingAtKaiuWall(context.player, context.game.currentConflict),
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),
             effect: modifyBothSkills((card) => -card.getFate())
@@ -18,7 +18,7 @@ class WatchtowerOfSunsShadow extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
             })
-            .loseFate(context => ({
+            .loseFate((context) => ({
                 amount: 2,
                 target: context.player
             }));

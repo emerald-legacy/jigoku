@@ -13,7 +13,7 @@ class CalledToWar extends DrawCard {
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('bushi')
+                cardCondition: (card) => card.hasTrait('bushi')
             }, placeFate())
             .target({
                 name: 'oppCharacter',

@@ -7,7 +7,7 @@ class IkomaTsanuri2 extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             targetController: Players.Opponent,
             effect: playerCannot({
                 cannot: 'triggerAbilities',

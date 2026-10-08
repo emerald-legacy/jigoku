@@ -28,7 +28,7 @@ export default class ShaperOfStone extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => card.location !== Location.StrongholdProvince
+                cardCondition: (card) => card.location !== Location.StrongholdProvince
             }, playerLastingEffect((context) => ({
                 effect: delayedEffect({
                     when: {
@@ -45,6 +45,6 @@ export default class ShaperOfStone extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfRound
             })))
-            .chatText('mark {1} - they will gain 1 honor if the province remains unbroken at the end of the phase', context => context.target.facedown ? [context.target.location] : [context.target]);
+            .chatText('mark {1} - they will gain 1 honor if the province remains unbroken at the end of the phase', (context) => context.target.facedown ? [context.target.location] : [context.target]);
     }
 }

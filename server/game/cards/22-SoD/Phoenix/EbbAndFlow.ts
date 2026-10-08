@@ -13,13 +13,13 @@ export default class EbbAndFlow extends DrawCard {
                 name: 'mine',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating() && card.hasTrait('shugenja')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('shugenja')
             }, noAction())
             .target({
                 name: 'opponents',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating() && !card.hasDash()
+                cardCondition: (card) => card.isParticipating() && !card.hasDash()
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))

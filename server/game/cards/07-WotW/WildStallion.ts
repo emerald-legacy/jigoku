@@ -7,7 +7,7 @@ class WildStallion extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move this and another character to the conflict')
-            .condition(context => !!(context.game.currentConflict && !context.source.isParticipating()))
+            .condition((context) => !!(context.game.currentConflict && !context.source.isParticipating()))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
@@ -15,7 +15,7 @@ class WildStallion extends DrawCard {
                 optional: true
             }, moveToConflict())
             .moveToConflict()
-            .chatText('move {0}{1}{2} into the conflict', context => {
+            .chatText('move {0}{1}{2} into the conflict', (context) => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
                 return [hasAny ? ' and ' : '', context.source];

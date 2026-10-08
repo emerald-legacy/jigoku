@@ -14,7 +14,7 @@ class IsawaUona extends DrawCard {
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating() && !card.isUnique()
+                cardCondition: (card) => card.isParticipating() && !card.isUnique()
             }, bow());
     }
 }

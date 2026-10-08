@@ -14,9 +14,9 @@ class FearsomeMystic extends DrawCard {
         });
 
         this.action('Remove fate from characters')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .removeFate((context) => ({
-                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter(card => card.glory < context.source.glory) ?? []
+                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.glory < context.source.glory) ?? []
             }));
     }
 

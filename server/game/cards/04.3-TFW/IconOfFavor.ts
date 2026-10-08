@@ -18,7 +18,7 @@ class IconOfFavor extends DrawCard {
                     event.conflict.hasElement(this.getCurrentElementSymbol(elementKey)) &&
                     event.conflict.winner === context.player
             })
-            .honor(context => ({
+            .honor((context) => ({
                 target: context.source.parentCharacter ?? []
             }));
     }

@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 
 function penalty(context: AbilityContext): number {
     const ringsBase = [context.game.rings.air, context.game.rings.earth, context.game.rings.fire, context.game.rings.void, context.game.rings.water];
-    const rings = ringsBase.filter(a => a.isUnclaimed() && a.fate > 0);
+    const rings = ringsBase.filter((a) => a.isUnclaimed() && a.fate > 0);
 
 
     return -1 * (2 + 2 * rings.length);

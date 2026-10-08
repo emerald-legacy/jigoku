@@ -59,7 +59,7 @@ class Process {
                 card.controller = this.context.player;
                 this.context.source.lastingEffect({
                     until: {
-                        onCardMoved: event =>
+                        onCardMoved: (event) =>
                             event.card === card && event.originalLocation === Location.RemovedFromGame
                     },
                     match: card,

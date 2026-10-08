@@ -13,7 +13,7 @@ class BayushiTraitor extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            condition: context => context.player.opponent !== undefined && context.source.controller !== context.source.owner,
+            condition: (context) => context.player.opponent !== undefined && context.source.controller !== context.source.owner,
             effect: [
                 cannotParticipateAsAttacker(),
                 cannotParticipateAsDefender()

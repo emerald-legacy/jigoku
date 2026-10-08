@@ -7,7 +7,7 @@ class IuchiShahai2 extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => this.game.getFirstPlayer() === context.player,
+            condition: (context) => this.game.getFirstPlayer() === context.player,
             effect: addKeyword('covert')
         });
 

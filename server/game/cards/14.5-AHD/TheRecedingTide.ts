@@ -11,12 +11,12 @@ class TheRecedingTide extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.PlayArea,
                 cardCondition: (card, context) => !card.hasTrait('mythic') && card.owner === context.player
-            }, selectCard(context => ({
+            }, selectCard((context) => ({
                 targets: false,
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: card => card.location !== Location.StrongholdProvince,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 subActionProperties: (card) => ({ destination: card.location }),
                 gameAction: putIntoProvince({
                     target: context.target

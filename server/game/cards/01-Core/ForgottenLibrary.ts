@@ -7,7 +7,7 @@ class ForgottenLibrary extends DrawCard {
     setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Draw
+                onPhaseStarted: (event) => event.phase === Phase.Draw
             })
             .draw();
     }

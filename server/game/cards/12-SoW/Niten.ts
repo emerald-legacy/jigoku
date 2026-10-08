@@ -16,7 +16,7 @@ class Niten extends DrawCard {
         this.action('Put an attachment into play')
             .cost(captureParentCost())
             .cost(costs.returnSelfToHand())
-            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self,

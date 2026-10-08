@@ -13,12 +13,12 @@ class FuryOfTheDamned extends DrawCard {
                 mode: TargetMode.Unlimited,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('bushi') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait('bushi') && card.isParticipating()
             }, multiple([
                 cardLastingEffect({
                     effect: modifyBaseMilitarySkillMultiplier(2)
                 }),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     duration: Duration.UntilEndOfPhase,
                     effect: delayedEffect({
                         when: {

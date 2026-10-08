@@ -7,10 +7,10 @@ class CeaselessDuty extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
-                onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces(a => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
+                onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces((a) => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
             })
             .cancel()
-            .chatText('prevent {1} from leaving play', context => context.event.card)
+            .chatText('prevent {1} from leaving play', (context) => context.event.card)
             .cannotBeMirrored();
     }
 }

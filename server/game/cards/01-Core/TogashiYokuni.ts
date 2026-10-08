@@ -14,8 +14,8 @@ class TogashiYokuni extends DrawCard {
                 activePromptTitle: 'Select a character to copy from',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source,
-                abilityCondition: ability => ability.printedAbility
-            }, cardLastingEffect(context => ({
+                abilityCondition: (ability) => ability.printedAbility
+            }, cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 effect: context.targetAbility ? gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
             })))

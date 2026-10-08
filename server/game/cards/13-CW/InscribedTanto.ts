@@ -10,7 +10,7 @@ class InscribedTanto extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => hasClaimedRing(this, elementSymbol.key, context.player),
+            condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player),
             effect: immunity({
                 restricts: 'opponentsRingEffects'
             })

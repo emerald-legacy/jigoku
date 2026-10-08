@@ -29,7 +29,7 @@ class FavorableAlliance extends DrawCard {
                             context.player.removedFromGame.unshift(card);
                             context.source.lastingEffect({
                                 until: {
-                                    onCardMoved: event =>
+                                    onCardMoved: (event) =>
                                         event.card === card && event.originalLocation === Location.RemovedFromGame
                                 },
                                 match: card,

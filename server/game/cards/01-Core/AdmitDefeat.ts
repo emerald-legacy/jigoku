@@ -10,7 +10,7 @@ class AdmitDefeat extends DrawCard {
             .condition(() => this.game.currentConflict?.getNumberOfParticipantsFor('defender') === 1)
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isDefending()
+                cardCondition: (card) => card.isDefending()
             }, bow());
     }
 }

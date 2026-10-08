@@ -5,7 +5,7 @@ class ChroniclerOfConquests extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain 1 honor')
-            .condition(context => context.source.isParticipating() && context.game.isTraitInPlay('battlefield'))
+            .condition((context) => context.source.isParticipating() && context.game.isTraitInPlay('battlefield'))
             .gainHonor();
     }
 }

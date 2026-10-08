@@ -14,8 +14,8 @@ export default class AttentiveGuardsman extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: context => context.game.currentConflict?.attackingPlayer === context.player &&
-                !context.game.currentConflict.attackers.some(card => card.getType() === CardType.Character && card.isUnique()),
+            condition: (context) => context.game.currentConflict?.attackingPlayer === context.player &&
+                !context.game.currentConflict.attackers.some((card) => card.getType() === CardType.Character && card.isUnique()),
             effect: [
                 cardCannot('moveToConflict')
             ]

@@ -11,9 +11,9 @@ class IronMine extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea
             })
             .cancel({
-                replacementGameAction: sacrifice(context => ({ target: context.source }))
+                replacementGameAction: sacrifice((context) => ({ target: context.source }))
             })
-            .chatText('prevent {1} from leaving play', context => context.event.card);
+            .chatText('prevent {1} from leaving play', (context) => context.event.card);
     }
 }
 

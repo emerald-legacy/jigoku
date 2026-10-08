@@ -8,10 +8,10 @@ class FearlessSailor extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character -2 military')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasStatusTokens && card.isParticipating()
+                cardCondition: (card) => card.hasStatusTokens && card.isParticipating()
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(-2)
             }))

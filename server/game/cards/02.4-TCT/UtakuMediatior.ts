@@ -6,7 +6,7 @@ class UtakuMediator extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.player.imperialFavor === '',
+            condition: (context) => context.player.imperialFavor === '',
             effect: modifyBothSkills(1)
         });
     }

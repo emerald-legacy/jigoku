@@ -7,7 +7,7 @@ class KhanbulakBenefactor extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             effect: reduceCost({
                 amount: 1,
                 playingTypes: PlayType.PlayFromHand

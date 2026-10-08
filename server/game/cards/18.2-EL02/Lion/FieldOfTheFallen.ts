@@ -9,16 +9,16 @@ class FieldOfTheFallen extends DrawCard {
     setupCardAbilities() {
         this.action('Discard then draw a card')
             .cost(costs.discardCard({ location: Location.Hand }))
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .gameAction(sequentialContext(context => {
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .gameAction(sequentialContext((context) => {
                 const moreHonorable = context.player.isMoreHonorable();
                 const gameActions = [];
-                gameActions.push(draw(context => ({
+                gameActions.push(draw((context) => ({
                     target: context.player
                 }))
                 );
                 if(moreHonorable) {
-                    gameActions.push(selectCard(context => ({
+                    gameActions.push(selectCard((context) => ({
                         location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         activePromptTitle: 'Select a card to place on the bottom of a deck',
                         message: '{0} places {1} on the bottom of {2}\'s {3} deck',

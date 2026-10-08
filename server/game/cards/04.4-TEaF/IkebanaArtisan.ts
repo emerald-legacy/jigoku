@@ -12,7 +12,7 @@ class IkebanaArtisan extends DrawCard {
             })
             .gameAction(sequential([
                 cancel(),
-                loseFate(context => ({ target: context.player }))
+                loseFate((context) => ({ target: context.player }))
             ]))
             .chatText('lose 1 fate rather than 1 honor for not defending the conflict')
             .limit(unlimitedPerConflict());

@@ -50,13 +50,13 @@ export default class CastleOfAir extends DrawCard {
                 conditional((context) => ({
                     condition: context.player.hasAffinity('air', context),
                     trueGameAction: handler({
-                        handler: context => {
+                        handler: (context) => {
                             this.playersTriggered.add(context.player.uuid);
                         }
                     })
                 }))
             ]))
-            .chatText('increase the strength of an attacked province by 4{1}', context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);
+            .chatText('increase the strength of an attacked province by 4{1}', (context) => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);
     }
 
     onHonorLoss(event: Event & EventPayload<EventName.OnModifyHonor>) {

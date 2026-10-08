@@ -10,7 +10,7 @@ class ForthrightIde extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.costLessThan(4) && card.bowed
+                cardCondition: (card) => card.costLessThan(4) && card.bowed
             }, sequential([
                 ready(),
                 chosenDiscard((context) => ({

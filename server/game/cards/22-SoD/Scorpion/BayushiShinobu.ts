@@ -42,11 +42,11 @@ export default class BayushiShinobu extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.isDishonored && !card.isUnique()
             }, multiple([
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     effect: takeControl(context.player),
                     duration: Duration.UntilEndOfPhase
                 })),
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     target: context.player,
                     effect: delayedEffect({
                         when: {

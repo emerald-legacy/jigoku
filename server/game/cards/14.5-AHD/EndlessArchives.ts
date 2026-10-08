@@ -18,14 +18,14 @@ class EndlessArchives extends DrawCard {
             .anyPlayer()
             .then()
             .gameAction(sequential([
-                chosenReturnToDeck(context => ({
+                chosenReturnToDeck((context) => ({
                     target: context.player,
                     targets: false,
                     shuffle: false,
                     bottom: true,
                     amount: context.source.getTokenCount(TokenType.Honor)
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.player,
                     amount: context.events.find((event) => event.is(EventName.OnCardMoved))?.cards?.length ?? 0
                 }))

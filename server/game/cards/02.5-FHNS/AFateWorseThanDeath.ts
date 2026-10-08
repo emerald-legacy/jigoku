@@ -10,7 +10,7 @@ class AFateWorseThanDeath extends DrawCard {
         this.action('Bow, move home, dishonor, remove a fate and blank a character')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, bow(), dishonor(), removeFate(), sendHome(), cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()

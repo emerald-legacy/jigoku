@@ -8,12 +8,12 @@ class EtherealDreamer extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain +2/+2 while contesting the target ring')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .ringTarget({
                 ringCondition: () => true
             })
-            .cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 condition: () => context.ring.isContested(),
                 effect: modifyBothSkills(2)

@@ -11,8 +11,8 @@ class IsawaPilgrim extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give control of this character')
-            .condition(context => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
-            .cardLastingEffect(context => ({
+            .condition((context) => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
+            .cardLastingEffect((context) => ({
                 effect: takeControl(context.player.opponent),
                 duration: Duration.Custom
             }))

@@ -16,16 +16,16 @@ class DirectingTheBattle extends DrawCard {
             .select({
                 name: 'select',
                 dependsOn: 'character',
-                player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
+                player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Move this character home': sendHome(context => ({
+                'Move this character home': sendHome((context) => ({
                     target: context.targets.character
                 })),
-                'Give +3 Military': cardLastingEffect(context => ({
+                'Give +3 Military': cardLastingEffect((context) => ({
                     effect: modifyMilitarySkill(3),
                     target: context.targets.character
                 })),
-                'Prevent bowing during conflict': cardLastingEffect(context => ({
+                'Prevent bowing during conflict': cardLastingEffect((context) => ({
                     effect: cardCannot({
                         cannot: 'bow',
                         restricts: 'opponentsCardEffects',
@@ -34,7 +34,7 @@ class DirectingTheBattle extends DrawCard {
                     target: context.targets.character
                 }))
             })
-            .chatText('{1}{2}{3}{4}', context => {
+            .chatText('{1}{2}{3}{4}', (context) => {
                 if(context.selects.select.choice === 'Move this character home') {
                     return ['send ', context.targets.character, ' home', ''];
                 }

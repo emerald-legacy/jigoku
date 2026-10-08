@@ -5,7 +5,7 @@ class BrashSamurai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor this character')
-            .condition(context =>
+            .condition((context) =>
                 context.source.isParticipatingFor(context.player) &&
                 this.game.currentConflict?.getNumberOfParticipantsFor(context.player) === 1)
             .honor();

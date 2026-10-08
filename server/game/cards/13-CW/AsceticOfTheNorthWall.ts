@@ -10,7 +10,7 @@ class AsceticOfTheNorthWall extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phase.Fate,
+            condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phase.Fate,
             effect: [
                 cardCannot('removeFate'),
                 cardCannot('discardFromPlay')

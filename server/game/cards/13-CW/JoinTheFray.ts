@@ -13,7 +13,7 @@ class JoinTheFray extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait('cavalry')
             })
             .selectFrom({
                 name: 'select',

@@ -19,7 +19,7 @@ class YasukiFuzake extends DrawCard {
                 name: 'first',
                 optional: true,
                 cardType: CardType.Character
-            }, discardStatusToken(context => ({
+            }, discardStatusToken((context) => ({
                 target: statusTokensOf(context.targets.first)
             })))
             .target({
@@ -29,10 +29,10 @@ class YasukiFuzake extends DrawCard {
                 optional: true,
                 cardCondition: (card, context) =>
                     !context.targets.first || Array.isArray(context.targets.first) || card.controller !== context.targets.first.controller
-            }, discardStatusToken(context => ({
+            }, discardStatusToken((context) => ({
                 target: statusTokensOf(context.targets.second)
             })))
-            .chatText('discard all status tokens from {1}{2}{3}', context => [context.targets.first, !Array.isArray(context.targets.second) ? ' and ' : '', context.targets.second]);
+            .chatText('discard all status tokens from {1}{2}{3}', (context) => [context.targets.first, !Array.isArray(context.targets.second) ? ' and ' : '', context.targets.second]);
     }
 }
 

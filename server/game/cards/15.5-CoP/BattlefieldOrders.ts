@@ -18,9 +18,9 @@ class BattlefieldOrders extends DrawCard {
         this.conflictAction('Resolve an ability', { conflictType: ConflictType.Military })
             .abilityTarget({
                 activePromptTitle: 'Select an ability to resolve',
-                abilityCondition: ability => ability.abilityType === AbilityType.Action,
+                abilityCondition: (ability) => ability.abilityType === AbilityType.Action,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating(),
                 controller: Players.Any
             }, resolveAbility((context) => ({
                 target: context.targetAbility.card,

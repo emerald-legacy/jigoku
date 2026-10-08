@@ -23,9 +23,9 @@ export default class ACleansingDeath extends DrawCard {
                         stage: Stage.Target
                     });
 
-                    const faceupCharacters = cardsInProvinces.filter(a => a.isFaceup() && a.getType() === CardType.Character);
+                    const faceupCharacters = cardsInProvinces.filter((a) => a.isFaceup() && a.getType() === CardType.Character);
 
-                    const hasValidCharacters = faceupCharacters.some(a => {
+                    const hasValidCharacters = faceupCharacters.some((a) => {
                         return (a.printedCost || 0) <= (card.printedCost || 0) &&
                             putIntoPlay().canAffect(a, contextCopy);
                     });
@@ -40,7 +40,7 @@ export default class ACleansingDeath extends DrawCard {
                 controller: Players.Self
             }, joint([
                 putIntoPlay(),
-                gainHonor(context => ({
+                gainHonor((context) => ({
                     target: context.player
                 }))
             ]))

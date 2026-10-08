@@ -6,7 +6,7 @@ class MirumotoProdigy extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context =>
+            condition: (context) =>
                 context.source.isAttacking() &&
                 this.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
             effect: restrictNumberOfDefenders(1)

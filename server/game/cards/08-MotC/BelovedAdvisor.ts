@@ -5,7 +5,7 @@ class BelovedAdvisor extends DrawCard {
 
     setupCardAbilities() {
         this.action('Each player draws 1 card')
-            .draw(context => ({
+            .draw((context) => ({
                 target: context.game.getPlayers()
             }));
     }

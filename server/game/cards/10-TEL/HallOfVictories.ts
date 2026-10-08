@@ -10,7 +10,7 @@ class HallOfVictories extends DrawCard {
             .when({
                 afterConflict: (event) => !!event.conflict.winner
             })
-            .gainHonor(context => ({
+            .gainHonor((context) => ({
                 target: context.game.currentConflict?.winner ?? undefined
             }))
             .chatText((context) => msg`make ${context.game.currentConflict?.winner?.name ?? ''} gain 1 honor`)

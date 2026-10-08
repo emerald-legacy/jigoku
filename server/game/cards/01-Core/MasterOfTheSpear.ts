@@ -7,7 +7,7 @@ class MasterOfTheSpear extends DrawCard {
 
     setupCardAbilities() {
         this.action('Send home character')
-            .condition(context => context.source.isAttacking())
+            .condition((context) => context.source.isAttacking())
             .target({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to send home',

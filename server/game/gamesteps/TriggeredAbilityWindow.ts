@@ -22,11 +22,11 @@ export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
 
     showBluffPrompt(player: Player): boolean {
         // Show a bluff prompt if the player has an event which could trigger (but isn't in their hand) and that setting
-        if(player.timerSettings.eventsInDeck && this.choices.some(context => context.player === player)) {
+        if(player.timerSettings.eventsInDeck && this.choices.some((context) => context.player === player)) {
             return true;
         }
         // Show a bluff prompt if we're in Step 6, the player has the approriate setting, and there's an event for the other player
-        return this.abilityType === AbilityType.WouldInterrupt && !!player.timerSettings.events && this.events.some(event => (
+        return this.abilityType === AbilityType.WouldInterrupt && !!player.timerSettings.events && this.events.some((event) => (
             event.is(EventName.OnInitiateAbilityEffects) &&
             event.card.type === CardType.Event && event.context.player !== player
         ));
@@ -72,7 +72,7 @@ export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         }
         // remove any choices which involve the current player canceling their own abilities
         if(this.abilityType === AbilityType.WouldInterrupt && !this.requireCurrentPlayer().optionSettings.cancelOwnAbilities) {
-            this.choices = this.choices.filter(context => !(
+            this.choices = this.choices.filter((context) => !(
                 context.player === this.currentPlayer &&
                 context.event instanceof Event &&
                 context.event.name === EventName.OnInitiateAbilityEffects &&
@@ -81,7 +81,7 @@ export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         }
 
         // if the current player has no available choices in this window, check to see if they should get a bluff prompt
-        if(!this.choices.some(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context))) {
+        if(!this.choices.some((context) => context.player === this.currentPlayer && context.ability.isInValidLocation(context))) {
             const player = this.requireCurrentPlayer();
             if(this.showBluffPrompt(player)) {
                 this.promptWithBluffPrompt(player);
@@ -93,7 +93,7 @@ export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         }
 
         // Filter choices for current player, and prompt
-        this.choices = this.choices.filter(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context));
+        this.choices = this.choices.filter((context) => context.player === this.currentPlayer && context.ability.isInValidLocation(context));
         this.promptBetweenSources(this.choices);
         return false;
     }
@@ -124,7 +124,7 @@ export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     hasAbilityBeenTriggered(context: TriggerChoice): boolean {
         let alreadyResolved = false;
         if(Array.isArray(this.resolvedAbilitiesPerPlayer[context.player.uuid])) {
-            alreadyResolved = this.resolvedAbilitiesPerPlayer[context.player.uuid].some(resolved => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));
+            alreadyResolved = this.resolvedAbilitiesPerPlayer[context.player.uuid].some((resolved) => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));
         }
         return alreadyResolved;
     }

@@ -7,7 +7,7 @@ class CityOfLies extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce cost of next event by 1')
-            .playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: reduceNextPlayedCardCost(1, (card) => card.type === CardType.Event)

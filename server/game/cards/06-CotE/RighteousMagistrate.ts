@@ -7,7 +7,7 @@ class RighteousMagistrate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDefending(),
+            condition: (context) => context.source.isDefending(),
             targetController: Players.Any,
             effect: [
                 playerCannot({

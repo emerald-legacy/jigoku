@@ -20,8 +20,8 @@ class KamiOfAncientWisdom extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Place 1 Fate': placeFate(context => ({ target: context.targets.character })),
-                'Remove 1 Fate': removeFate(context => ({ target: context.targets.character }))
+                'Place 1 Fate': placeFate((context) => ({ target: context.targets.character })),
+                'Remove 1 Fate': removeFate((context) => ({ target: context.targets.character }))
             });
     }
 }

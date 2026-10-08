@@ -55,6 +55,6 @@ export default class EaglesRestPeak extends ProvinceCard {
                     ]
                 };
             }))
-            .chatText('use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand', context => [context.target.getCost() ?? 0, context.player.opponent]);
+            .chatText('use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand', (context) => [context.target.getCost() ?? 0, context.player.opponent]);
     }
 }

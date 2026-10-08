@@ -9,14 +9,14 @@ class MidnightBuilder extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: card => card.type === CardType.Holding,
+            match: (card) => card.type === CardType.Holding,
             effect: modifyProvinceStrengthBonus(2)
         });
 
         this.dire({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: card => card.type === CardType.Holding,
+            match: (card) => card.type === CardType.Holding,
             effect: increaseLimitOnAbilities()
         });
     }

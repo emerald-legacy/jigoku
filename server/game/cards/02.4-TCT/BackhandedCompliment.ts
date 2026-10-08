@@ -13,7 +13,7 @@ class BackhandedCompliment extends DrawCard {
                 loseHonor({ target: player }),
                 draw({ target: player })
             ])))
-            .chatText('make {1} lose an honor and draw a card', context => context.select === context.player.name ? context.player : (context.player.opponent ?? ''));
+            .chatText('make {1} lose an honor and draw a card', (context) => context.select === context.player.name ? context.player : (context.player.opponent ?? ''));
     }
 }
 

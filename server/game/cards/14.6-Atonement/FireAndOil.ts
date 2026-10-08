@@ -14,7 +14,7 @@ export default class FireAndOil extends DrawCard {
                 title: 'Dishonor a character',
                 condition: (context) =>
                     !!context.game.currentConflict &&
-                    context.game.currentConflict.getConflictProvinces().some(a => a.controller === context.player),
+                    context.game.currentConflict.getConflictProvinces().some((a) => a.controller === context.player),
                 cost: costs.payHonor(1),
                 target: {
                     cardType: CardType.Character,

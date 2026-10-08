@@ -9,7 +9,7 @@ class InspiredVisionary extends DrawCard {
     setupCardAbilities() {
         this.reaction('Bow to discard an attachment')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Fate
+                onPhaseStarted: (event) => event.phase === Phase.Fate
             })
             .cost(costs.bowSelf())
             .target({

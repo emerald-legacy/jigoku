@@ -16,7 +16,7 @@ class Ambush extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.Hand, Location.Provinces],
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('scorpion')
+                cardCondition: (card) => card.isFaction('scorpion')
             }, putIntoConflict());
     }
 }

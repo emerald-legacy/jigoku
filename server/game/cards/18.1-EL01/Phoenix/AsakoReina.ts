@@ -28,23 +28,23 @@ class AsakoReina extends DrawCard {
     setupCardAbilities() {
         this.action('Gain boons based on your currently claimed rings')
             .gameAction(multiple([
-                gainHonor(context => ({
+                gainHonor((context) => ({
                     target: context.player,
                     amount: hasClaimedRing(this, elementKeys.air, context.player) ? 1 : 0
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.player,
                     amount: hasClaimedRing(this, elementKeys.earth, context.player) ? 1 : 0
                 })),
-                gainFate(context => ({
+                gainFate((context) => ({
                     target: context.player,
                     amount: hasClaimedRing(this, elementKeys.void, context.player) ? 1 : 0
                 })),
                 conditional({
-                    condition: context => hasClaimedRing(this, elementKeys.water, context.player),
-                    trueGameAction: selectCard(context => ({
+                    condition: (context) => hasClaimedRing(this, elementKeys.water, context.player),
+                    trueGameAction: selectCard((context) => ({
                         activePromptTitle: 'Choose a 2 cost or lower character to ready',
-                        cardCondition: card => card.isCharacter() && card.costLessThan(3),
+                        cardCondition: (card) => card.isCharacter() && card.costLessThan(3),
                         cardType: CardType.Character,
                         gameAction: ready(),
                         targets: false,
@@ -54,8 +54,8 @@ class AsakoReina extends DrawCard {
                     falseGameAction: draw(() => ({ amount: 0 }))
                 }),
                 conditional({
-                    condition: context => hasClaimedRing(this, elementKeys.fire, context.player),
-                    trueGameAction: selectCard(context => ({
+                    condition: (context) => hasClaimedRing(this, elementKeys.fire, context.player),
+                    trueGameAction: selectCard((context) => ({
                         activePromptTitle: 'Choose a character to honor',
                         cardType: CardType.Character,
                         gameAction: honor(),

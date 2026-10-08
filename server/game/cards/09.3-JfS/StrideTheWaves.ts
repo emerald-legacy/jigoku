@@ -14,12 +14,12 @@ class StrideTheWaves extends DrawCard {
         });
 
         this.action('Move attached character in or out of the conflict')
-            .condition(context => context.game.isDuringConflict() && hasClaimedRing(this, elementSymbol.key, context.player))
-            .if(context => !!context.source.parentCharacter?.inConflict)
-                .sendHome(context => ({ target: context.source.parentCharacter ?? [] }))
+            .condition((context) => context.game.isDuringConflict() && hasClaimedRing(this, elementSymbol.key, context.player))
+            .if((context) => !!context.source.parentCharacter?.inConflict)
+                .sendHome((context) => ({ target: context.source.parentCharacter ?? [] }))
             .otherwise()
-                .moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }))
-            .chatText('{3} {1} {2}', context => {
+                .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .chatText('{3} {1} {2}', (context) => {
                 const parent = context.source.parentCharacter;
                 return [
                     parent ?? '',

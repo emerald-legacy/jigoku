@@ -10,7 +10,7 @@ class WayOfTheLion extends DrawCard {
         this.conflictAction('Double the base mil of a character')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isFaction('lion') && card.getBaseMilitarySkill() > 0
+                cardCondition: (card) => card.isFaction('lion') && card.getBaseMilitarySkill() > 0
             }, cardLastingEffect({
                 effect: modifyBaseMilitarySkillMultiplier(2)
             }))

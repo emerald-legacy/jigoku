@@ -7,8 +7,8 @@ class YasukiBroker extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
-            match: card => card.getType() === CardType.Character,
+            condition: (context) => context.source.isParticipating(),
+            match: (card) => card.getType() === CardType.Character,
             targetController: Players.Self,
             effect: [
                 addKeyword('courtesy'),

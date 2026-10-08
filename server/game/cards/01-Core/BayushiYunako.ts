@@ -8,10 +8,10 @@ class BayushiYunako extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch a character\'s M and P skill')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasDash()
+                cardCondition: (card) => !card.hasDash()
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))

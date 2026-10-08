@@ -13,7 +13,7 @@ export default class SupplyOfficer extends DrawCard {
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .target({
                 name: 'characterAtHome',
@@ -23,7 +23,7 @@ export default class SupplyOfficer extends DrawCard {
                 controller: Players.Self
             }, multiple([
                 joint([
-                    sendHome(context => ({ target: context.targets.characterInConflict })),
+                    sendHome((context) => ({ target: context.targets.characterInConflict })),
                     moveToConflict()
                 ])
             ]))

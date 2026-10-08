@@ -11,11 +11,11 @@ class MakeYourCase extends DrawCard {
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: '{0}{1}',
-                messageArgs: duel => [
+                messageArgs: (duel) => [
                     duel.winner,
                     duel.winner ? ' gains a fate' : ''
                 ],
-                gameAction: duel => placeFate({
+                gameAction: (duel) => placeFate({
                     target: duel.winner
                 })
             }));

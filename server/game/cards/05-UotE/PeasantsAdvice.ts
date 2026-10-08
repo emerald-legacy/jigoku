@@ -14,20 +14,20 @@ class PeasantsAdvice extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, sequential([
-                lookAt(context => ({
+                lookAt((context) => ({
                     message: '{0} sees {1} in {2}',
                     messageArgs: (cards) => [context.source, cards[0], cards[0].location]
                 })),
-                selectCard(context => ({
+                selectCard((context) => ({
                     activePromptTitle: 'Choose a faceup card to return to its owner\'s deck',
-                    cardCondition: card =>
+                    cardCondition: (card) =>
                         card.location === context.target?.location &&
                             card.controller === context.target?.controller &&
                             card.isDynasty && !card.facedown,
                     location: Location.Provinces,
                     optional: true,
                     message: '{0} chooses to shuffle {1} into its owner\'s deck',
-                    messageArgs: card => [context.player, card],
+                    messageArgs: (card) => [context.player, card],
                     gameAction: moveCard({
                         destination: Location.DynastyDeck,
                         shuffle: true

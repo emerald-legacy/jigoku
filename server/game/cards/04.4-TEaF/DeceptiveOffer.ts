@@ -12,20 +12,20 @@ class DeceptiveOffer extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .select({
                 name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Allow your opponent\'s character to gain military and political skill': cardLastingEffect(context => ({
+                'Allow your opponent\'s character to gain military and political skill': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     effect: modifyBothSkills(2)
                 })),
                 'Give your opponent 1 honor': takeHonor()
             })
-            .chatText('{1}{2}', context => {
+            .chatText('{1}{2}', (context) => {
                 if(context.selects.select.choice === 'Give your opponent 1 honor') {
                     return ['take 1 honor from ', context.player.opponent];
                 }

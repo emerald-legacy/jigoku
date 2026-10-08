@@ -8,15 +8,15 @@ class RecklessAvenger extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready and honor characters')
-            .condition(context => context.player.cardsInPlay.some((a) => a.bowed) && !!context.player.opponent || !!context.player.opponent?.cardsInPlay.some((a) => a.bowed))
+            .condition((context) => context.player.cardsInPlay.some((a) => a.bowed) && !!context.player.opponent || !!context.player.opponent?.cardsInPlay.some((a) => a.bowed))
             .target({
                 name: 'firstCharacter',
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
-                player: context => context.player.firstPlayer ? Players.Self : Players.Opponent
+                controller: (context) => context.player.firstPlayer ? Players.Self : Players.Opponent,
+                player: (context) => context.player.firstPlayer ? Players.Self : Players.Opponent
             }, ready())
             .target({
                 name: 'secondCharacter',
@@ -24,18 +24,18 @@ class RecklessAvenger extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 dependsOn: 'firstCharacter',
-                controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
-                player: context => context.player.firstPlayer ? Players.Opponent : Players.Self
+                controller: (context) => context.player.firstPlayer ? Players.Opponent : Players.Self,
+                player: (context) => context.player.firstPlayer ? Players.Opponent : Players.Self
             }, conditional({
-                condition: context => this.isTargetValid(context.targets.firstCharacter),
-                trueGameAction: honor(context => ({
+                condition: (context) => this.isTargetValid(context.targets.firstCharacter),
+                trueGameAction: honor((context) => ({
                     target: context.targets.secondCharacter
                 })),
-                falseGameAction: ready(context => ({
+                falseGameAction: ready((context) => ({
                     target: context.targets.secondCharacter
                 }))
             }))
-            .chatText('ready {1}{2}{3}', context => [
+            .chatText('ready {1}{2}{3}', (context) => [
                 this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter,
                 this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : '',
                 this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''

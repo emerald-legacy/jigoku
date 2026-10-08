@@ -21,10 +21,10 @@ class DaidojiHarrier extends DrawCard {
                 location: Location.Hand
             })
             .gameAction(multiple([
-                lookAt(context => ({
+                lookAt((context) => ({
                     target: context.targets.target
                 })),
-                cardMenu(context => ({
+                cardMenu((context) => ({
                     cards: context.targets.target.filter((card) => card.isDrawCard()),
                     gameAction: discardCard(),
                     message: '{0} chooses {1} to be discarded',

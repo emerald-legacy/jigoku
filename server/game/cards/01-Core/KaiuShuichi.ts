@@ -5,7 +5,7 @@ class KaiuShuichi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain 1 fate')
-            .condition(context => !!(context.source.isParticipating() && (context.player.getNumberOfHoldingsInPlay() > 0 ||
+            .condition((context) => !!(context.source.isParticipating() && (context.player.getNumberOfHoldingsInPlay() > 0 ||
                                   (context.player.opponent && context.player.opponent.getNumberOfHoldingsInPlay() > 0))))
             .gainFate();
     }

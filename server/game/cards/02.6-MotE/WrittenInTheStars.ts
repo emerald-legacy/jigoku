@@ -8,10 +8,10 @@ class WrittenInTheStars extends DrawCard {
         this.action('Place or take fate from rings')
             .select({}, {
                 'Place one fate on each unclaimed ring with no fate': placeFateOnRing(() => ({
-                    target: Object.values(this.game.rings).filter(ring => ring.isUnclaimed() && ring.fate === 0)
+                    target: Object.values(this.game.rings).filter((ring) => ring.isUnclaimed() && ring.fate === 0)
                 })),
                 'Remove one fate from each unclaimed ring': takeFateFromRing(() => ({
-                    target: Object.values(this.game.rings).filter(ring => ring.isUnclaimed() && ring.fate > 0),
+                    target: Object.values(this.game.rings).filter((ring) => ring.isUnclaimed() && ring.fate > 0),
                     removeOnly: true
                 }))
             });

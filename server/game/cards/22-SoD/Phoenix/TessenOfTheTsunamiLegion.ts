@@ -34,7 +34,7 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                                 effect: modifyMilitarySkill(2)
                             }),
                             conditional({
-                                condition: context => context.source.isDrawCard() && context.source.isParticipating(),
+                                condition: (context) => context.source.isDrawCard() && context.source.isParticipating(),
                                 trueGameAction: moveToConflict(),
                                 falseGameAction: sendHome()
                             })

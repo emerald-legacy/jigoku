@@ -6,7 +6,7 @@ class TheEmpressLegacy extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isFaction('crab')),
+            condition: (context) => !!(context.source.parentCharacter && context.source.parentCharacter.isFaction('crab')),
             effect: changePlayerGloryModifier(1)
         });
 

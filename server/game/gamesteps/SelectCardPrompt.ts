@@ -337,7 +337,7 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
         if(!this.selectedCards.includes(card)) {
             this.selectedCards.push(card);
         } else {
-            this.selectedCards = this.selectedCards.filter(c => c !== card);
+            this.selectedCards = this.selectedCards.filter((c) => c !== card);
         }
         this.choosingPlayer.setSelectedCards(this.selectedCards);
 

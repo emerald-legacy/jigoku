@@ -7,16 +7,16 @@ class ArtisanAcademy extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make top card of conflict deck playable')
-            .condition(context => context.player.conflictDeck.length > 0)
-            .playerLastingEffect(context => {
+            .condition((context) => context.player.conflictDeck.length > 0)
+            .playerLastingEffect((context) => {
                 const topCard = context.player.conflictDeck[0];
                 return {
                     targetController: context.player,
                     duration: Duration.Custom,
                     until: {
-                        onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
+                        onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                         onPhaseEnded: () => true,
-                        onDeckShuffled: event => event.player === context.player && event.deck === DeckType.Conflict
+                        onDeckShuffled: (event) => event.player === context.player && event.deck === DeckType.Conflict
                     },
                     effect: [
                         showTopConflictCard(),

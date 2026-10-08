@@ -13,18 +13,18 @@ export default class AncestralRivalry extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .select({
                 name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Give the character +3/+3': cardLastingEffect(context => ({
+                'Give the character +3/+3': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     effect: modifyBothSkills(3)
                 })),
-                'Let opponent claim favor': claimImperialFavor(context => ({
+                'Let opponent claim favor': claimImperialFavor((context) => ({
                     target: context.player
                 }))
             })

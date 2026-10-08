@@ -8,7 +8,7 @@ class MagistrateOfReason extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             targetController: Players.Opponent,
             effect: additionalTriggerCost((context) =>
                 context.source.type === CardType.Character ? [costs.payFateToRing(1)] : []

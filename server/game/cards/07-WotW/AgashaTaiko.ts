@@ -14,13 +14,13 @@ class AgashaTaiko extends DrawCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.location !== Location.StrongholdProvince
+                cardCondition: (card) => card.location !== Location.StrongholdProvince
             }, cardLastingEffect({
                 targetLocation: Location.Provinces,
                 duration: Duration.UntilEndOfRound,
                 effect: cannotBeAttacked()
             }))
-            .chatText('prevent {1}\'s {2} in {3} from being attacked this round', context => [
+            .chatText('prevent {1}\'s {2} in {3} from being attacked this round', (context) => [
                 context.target.controller,
                 context.target.isFacedown() ? 'hidden province' : context.target,
                 context.target.location

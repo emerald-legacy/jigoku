@@ -13,7 +13,7 @@ class CurrentOfTheBeryt extends DrawCard {
 
         this.action('Take two actions')
             .condition(() => this.game.isDuringConflict())
-            .playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(2)

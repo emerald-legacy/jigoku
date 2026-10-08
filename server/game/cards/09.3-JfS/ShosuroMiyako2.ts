@@ -23,7 +23,7 @@ class ShosuroMiyako2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => !card.isUnique()
+                cardCondition: (card) => !card.isUnique()
             }, dishonor());
     }
 

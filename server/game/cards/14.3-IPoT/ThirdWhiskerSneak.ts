@@ -23,13 +23,13 @@ class ThirdWhiskerSneak extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && event.conflict.conflictUnopposed && context.source.isParticipating()
             })
             .deckSearch({
-                cardsToLookAt: (context) => context.player.getProvinces(a => !a.isBroken).length,
+                cardsToLookAt: (context) => context.player.getProvinces((a) => !a.isBroken).length,
                 reveal: false,
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-            .chatText((context) => msg`look at the top ${context.player.getProvinces(a => !a.isBroken).length} cards of their conflict deck`);
+            .chatText((context) => msg`look at the top ${context.player.getProvinces((a) => !a.isBroken).length} cards of their conflict deck`);
     }
 }
 

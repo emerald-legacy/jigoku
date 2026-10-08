@@ -575,7 +575,7 @@ export class BaseCard extends EffectSource {
         const cardFaction = copiedCard ? copiedCard.printedFaction : this.printedFaction;
         const addedFactions = this.getEffects(EffectName.AddFaction);
         const lostFactions = this.getEffects(EffectName.LoseFaction);
-        const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction));
+        const factionArray = [...addedFactions, cardFaction].filter((faction) => !lostFactions.includes(faction));
 
         return new Set(factionArray);
     }

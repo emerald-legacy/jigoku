@@ -11,7 +11,7 @@ class CallingTheStorm extends DrawCard {
         this.action('Make top card of conflict deck playable')
             .cost(costs.discardHand())
             .gameAction(multiple([
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.player.getAllConflictCards(), //since this applies in one shot, apply it to all conflict cards
                     targetLocation: Location.Any,
                     duration: Duration.UntilEndOfPhase,

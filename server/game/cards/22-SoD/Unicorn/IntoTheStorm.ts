@@ -17,19 +17,19 @@ export default class IntoTheStorm extends DrawCard {
                     }),
                     duration: Duration.Custom,
                     until: {
-                        onCardPlayed: event => event.player === context.player && event.card.type === CardType.Event && event.card !== context.source,
+                        onCardPlayed: (event) => event.player === context.player && event.card.type === CardType.Event && event.card !== context.source,
                         onConflictFinished: () => true
                     },
                     endingMessage: 'The storm abates, events no longer cost 1 more'
                 })),
-                conditional(context => ({
-                    condition: context => context.player.isCharacterTraitInPlay('scout'),
+                conditional((context) => ({
+                    condition: (context) => context.player.isCharacterTraitInPlay('scout'),
                     trueGameAction: gainFate({
                         target: context.player
                     })
                 }))
             ]))
-            .chatText('increase the cost of events this conflict by 1{1}', context => [
+            .chatText('increase the cost of events this conflict by 1{1}', (context) => [
                 context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''
             ]);
     }

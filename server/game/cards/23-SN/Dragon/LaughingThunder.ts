@@ -35,8 +35,8 @@ export default class LaughingThunder extends DrawCard {
                     targetLocation: Location.Any,
                     canChangeZoneOnce: true,
                     until: {
-                        onCardDetached: event => event.card === context.target,
-                        onCardLeavesPlay: event => event.card === context.target
+                        onCardDetached: (event) => event.card === context.target,
+                        onCardLeavesPlay: (event) => event.card === context.target
                     },
                     effect: [
                         cannotTriggerAbilities(),

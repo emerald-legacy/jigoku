@@ -13,7 +13,7 @@ class AsakoAzunami extends DrawCard {
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
-            .cancel(context => ({
+            .cancel((context) => ({
                 replacementGameAction: multiple([
                     selectCard({
                         activePromptTitle: 'Choose a character to bow',

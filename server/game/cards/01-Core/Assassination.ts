@@ -13,7 +13,7 @@ class Assassination extends DrawCard {
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.costLessThan(3)
+                cardCondition: (card) => card.costLessThan(3)
             }, discardFromPlay())
             .max(perRound(1));
     }

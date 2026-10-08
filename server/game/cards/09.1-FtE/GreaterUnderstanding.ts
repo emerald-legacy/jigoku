@@ -11,7 +11,7 @@ class GreaterUnderstanding extends RingAttachment {
                 onMoveFate: (event) => event.recipient === this.parent,
                 onPlaceFateOnUnclaimedRings: () => this.parent instanceof Ring && this.parent.isUnclaimed()
             })
-            .gameAction(resolveRingEffect(context => ({ target: context.source.parent ?? [] })));
+            .gameAction(resolveRingEffect((context) => ({ target: context.source.parent ?? [] })));
     }
 }
 

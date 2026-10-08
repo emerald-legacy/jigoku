@@ -19,7 +19,7 @@ export default class WeKnow extends DrawCard {
                 name: 'token',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                tokenCondition: token => {
+                tokenCondition: (token) => {
                     return token.grantedStatus === CharacterStatus.Honored;
                 }
             })

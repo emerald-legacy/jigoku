@@ -14,10 +14,10 @@ class ForebearersEchoes extends DrawCard {
                 controller: Players.Self,
                 cardType: CardType.Character
             }, joint([
-                putIntoConflict(context => ({
+                putIntoConflict((context) => ({
                     target: context.target
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.target,
                     duration: Duration.UntilEndOfPhase,
                     location: [Location.DynastyDiscardPile, Location.PlayArea],

@@ -9,14 +9,14 @@ export default class RavingLunatic extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => !!(context.player.opponent && context.player.opponent.showBid % 2 === 1),
+            condition: (context) => !!(context.player.opponent && context.player.opponent.showBid % 2 === 1),
             effect: gainAbility(AbilityType.Action, {
                 title: 'Injure a character',
                 condition: (context) => context.source.isParticipating(),
                 target: {
                     cardType: CardType.Character,
                     controller: Players.Opponent,
-                    cardCondition: card => card.isParticipating(),
+                    cardCondition: (card) => card.isParticipating(),
                     gameAction: injure((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         target: [context.target, context.source]
                     }))
@@ -25,7 +25,7 @@ export default class RavingLunatic extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: context => !!(context.player.opponent && context.player.opponent.showBid % 2 === 0),
+            condition: (context) => !!(context.player.opponent && context.player.opponent.showBid % 2 === 0),
             effect: modifyMilitarySkill(2)
         });
     }

@@ -9,19 +9,19 @@ class HeavyBallista extends DrawCard {
     setupCardAbilities() {
         this.action('Bow or remove 1 fate')
             .cost(costs.discardCard({ location: Location.Hand }))
-            .condition(context => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
+            .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
             .target({
                 name: 'character',
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking() && !card.bowed
+                cardCondition: (card) => card.isAttacking() && !card.bowed
             })
             .select({
                 name: 'select',
                 dependsOn: 'character',
-                player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
+                player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Bow': bow(context => ({ target: context.targets.character })),
-                'Remove 1 Fate': removeFate(context => ({ target: context.targets.character }))
+                'Bow': bow((context) => ({ target: context.targets.character })),
+                'Remove 1 Fate': removeFate((context) => ({ target: context.targets.character }))
             });
     }
 }

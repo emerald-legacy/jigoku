@@ -10,7 +10,7 @@ class HurricanePunch extends DrawCard {
         this.action('Increase a monk\'s military skill and draw 1 card')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))

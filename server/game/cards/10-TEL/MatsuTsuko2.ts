@@ -12,7 +12,7 @@ export default class MatsuTsuko2 extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking() &&
                     context.player.isMoreHonorable() &&
-                    event.conflict.getConflictProvinces().some(p => p.location !== Location.StrongholdProvince)
+                    event.conflict.getConflictProvinces().some((p) => p.location !== Location.StrongholdProvince)
             })
             .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',

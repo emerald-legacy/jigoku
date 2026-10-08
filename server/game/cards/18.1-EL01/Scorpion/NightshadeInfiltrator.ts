@@ -13,7 +13,7 @@ class NightshadeInfiltrator extends DrawCard {
             .target({
                 player: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({
                 effect: modifyBothSkills(-3)
             }))

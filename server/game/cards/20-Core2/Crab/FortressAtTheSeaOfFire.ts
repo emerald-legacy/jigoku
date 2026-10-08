@@ -12,7 +12,7 @@ export default class FortressAtTheSeaOfFire extends StrongholdCard {
             .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.isParticipating()
+                cardCondition: (card) => !card.isParticipating()
             }, bow(), ready());
     }
 }

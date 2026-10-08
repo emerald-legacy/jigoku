@@ -9,7 +9,7 @@ class KaitoTempleProtector extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDefending(),
+            condition: (context) => context.source.isDefending(),
             effect: cardCannot({
                 cannot: 'sendHome',
                 restricts: 'opponentsCardEffects'
@@ -17,7 +17,7 @@ class KaitoTempleProtector extends DrawCard {
         });
 
         this.action('Change base skills to match another character\'s')
-            .condition(context => context.source.isDefending())
+            .condition((context) => context.source.isDefending())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source

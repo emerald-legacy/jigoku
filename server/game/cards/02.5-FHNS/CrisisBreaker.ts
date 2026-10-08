@@ -7,7 +7,7 @@ class CrisisBreaker extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready and bring into play')
-            .condition(context => {
+            .condition((context) => {
                 if(this.game.isDuringConflict(ConflictType.Military) && this.game.currentConflict) {
                     const diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
                     return context.player.isAttackingPlayer() ? diff < 0 : diff > 0;

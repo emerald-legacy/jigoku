@@ -45,7 +45,7 @@ export default class ShosuroIsa extends DrawCard {
             this.shadows.includes(event.card) &&
             event.card.location !== Location.RemovedFromGame
         ) {
-            this.shadows = this.shadows.filter(a => a !== event.card);
+            this.shadows = this.shadows.filter((a) => a !== event.card);
             this.game.addMessage(
                 '{0} fades into nothingness and is removed from the game due to leaving play',
                 event.card

@@ -15,7 +15,7 @@ class HeraldOfJade extends DrawCard {
                 location: Location.Any
             }, multiple([
                 discardStatusToken(),
-                gainHonor(context => ({
+                gainHonor((context) => ({
                     target: context.player
                 }))
             ]))

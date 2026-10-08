@@ -13,14 +13,14 @@ class TogashiDreamer extends DrawCard {
             .target({
                 name: 'character',
                 cardType: CardType.Character,
-                cardCondition: card => card.hasStatusTokens && card.isParticipating()
+                cardCondition: (card) => card.hasStatusTokens && card.isParticipating()
             })
             .ringTarget({
                 name: 'ring',
                 dependsOn: 'character',
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
-                ringCondition: ring => ring.isUnclaimed()
-            }, placeFateOnRing(context => ({ origin: context.targets.character })));
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, placeFateOnRing((context) => ({ origin: context.targets.character })));
     }
 }
 

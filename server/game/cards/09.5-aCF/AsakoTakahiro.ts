@@ -6,7 +6,7 @@ class AsakoTakahiro extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             effect: [
                 modifyMilitarySkill((_card, context) => (2 *
                     (context.game.currentConflict

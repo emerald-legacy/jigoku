@@ -11,20 +11,20 @@ class UnyieldingSensei extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
+                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some((c) => c.getType() === CardType.Holding && c.isFaceup())
             })
             .deckSearch({
                 activePromptTitle: 'Choose a character',
                 cardsToLookAt: 2,
                 deck: DeckType.Dynasty,
-                cardCondition: card => card.type === CardType.Character,
+                cardCondition: (card) => card.type === CardType.Character,
                 shuffle: false,
                 message: '{0} puts {1} into {2}',
                 messageArgs: (context, cards) => {
                     const province = context.target;
                     return [context.player, cards, province?.isFacedown() ? 'a facedown province' : province?.name];
                 },
-                gameAction: moveCard(context => ({
+                gameAction: moveCard((context) => ({
                     destination: context.target?.location,
                     faceup: true
                 }))

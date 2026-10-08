@@ -26,7 +26,7 @@ class IsawaTsuke extends DrawCard {
             return [];
         }
         return targetedCharacter.controller.cardsInPlay.filter(
-            card => card.printedCost === targetedCharacter.printedCost
+            (card) => card.printedCost === targetedCharacter.printedCost
         );
     }
 

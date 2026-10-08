@@ -6,7 +6,7 @@ class ShikshaScout extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             effect: additionalCharactersInConflict(1)
         });
     }

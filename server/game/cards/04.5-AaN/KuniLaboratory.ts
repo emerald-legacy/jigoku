@@ -7,15 +7,15 @@ class KuniLaboratory extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardType.Character,
+            match: (card) => card.getType() === CardType.Character,
             effect: modifyBothSkills(1)
         });
 
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .loseHonor(context => ({ target: context.player }))
+            .loseHonor((context) => ({ target: context.player }))
             .chatText('lose an honor');
     }
 }

@@ -69,7 +69,7 @@ export default class NegotiationTable extends DrawCard {
                 cardType: CardType.Character,
                 targets: true,
                 message: '{0} chooses to ready {1}',
-                messageArgs: card => [ctx.player.opponent, card],
+                messageArgs: (card) => [ctx.player.opponent, card],
                 gameAction: ready()
             }))
                 .resolve(opponent, context);
@@ -82,7 +82,7 @@ export default class NegotiationTable extends DrawCard {
                 cardType: CardType.Character,
                 targets: true,
                 message: '{0} chooses to ready {1}',
-                messageArgs: card => [ctx.player, card],
+                messageArgs: (card) => [ctx.player, card],
                 gameAction: ready()
             }))
                 .resolve(context.player, context);

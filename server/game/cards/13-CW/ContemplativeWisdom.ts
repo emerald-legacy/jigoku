@@ -15,7 +15,7 @@ export default class ContemplativeWisdom extends DrawCard {
                 cost: costs.returnRings(1),
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: card => card.isParticipating(),
+                    cardCondition: (card) => card.isParticipating(),
                     gameAction: cardLastingEffect((context) => ({
                         effect: gainAllAbilities(context.source)
                     }))

@@ -10,7 +10,7 @@ class SinisterSoshi extends DrawCard {
         this.action('Give a character -2/-2')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({ effect: modifyBothSkills(-2) }))
             .chatText('give {0} -2{1}/-2{2}', () => ['military', 'political']);
     }

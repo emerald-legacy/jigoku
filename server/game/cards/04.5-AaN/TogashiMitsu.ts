@@ -7,11 +7,11 @@ class TogashiMitsu extends DrawCard {
 
     setupCardAbilities() {
         this.action('Play a monk, kiho or tattoo card from discard')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('monk') || card.hasTrait('kiho') || card.hasTrait('tattoo')
+                cardCondition: (card) => card.hasTrait('monk') || card.hasTrait('kiho') || card.hasTrait('tattoo')
             }, playCard({
                 source: this,
                 playType: PlayType.PlayFromHand,

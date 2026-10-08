@@ -6,7 +6,7 @@ class CulturedFacade extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Prevent targeting')
-            .cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
                 effect: cardCannot({
                     cannot: 'target',

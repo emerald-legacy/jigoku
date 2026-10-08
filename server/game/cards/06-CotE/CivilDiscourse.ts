@@ -12,8 +12,8 @@ class CivilDiscourse extends DrawCard {
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: '{0} gains \'Increase the cost to play each card in your hand by 1.\'',
-                messageArgs: duel => duel.loser,
-                gameAction: duel => cardLastingEffect({
+                messageArgs: (duel) => duel.loser,
+                gameAction: (duel) => cardLastingEffect({
                     target: duel.loser,
                     effect: gainAbility(AbilityType.Persistent, {
                         targetController: Players.Self,

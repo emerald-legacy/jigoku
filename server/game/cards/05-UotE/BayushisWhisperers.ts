@@ -9,11 +9,11 @@ class BayushisWhisperers extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at opponent\'s hand and name a card')
-            .condition(context => !!(context.player.opponent && this.game.isDuringConflict()))
+            .condition((context) => !!(context.player.opponent && this.game.isDuringConflict()))
             .gameAction(sequential([
-                lookAt(context => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
+                lookAt((context) => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
                 handler({
-                    handler: context => this.game.promptWithMenu(context.player, this, {
+                    handler: (context) => this.game.promptWithMenu(context.player, this, {
                         context: context,
                         activePrompt: {
                             menuTitle: 'Name a card',
@@ -24,7 +24,7 @@ class BayushisWhisperers extends DrawCard {
                     })
                 })
             ]))
-            .chatText('look at {1}\'s hand, then name a card', context => context.player.opponent);
+            .chatText('look at {1}\'s hand, then name a card', (context) => context.player.opponent);
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {

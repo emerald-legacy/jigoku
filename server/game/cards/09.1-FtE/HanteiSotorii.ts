@@ -8,10 +8,10 @@ class HanteiSotorii extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a participating character +3 glory')
-            .condition(context => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
+            .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect(() => ({
                 effect: modifyGlory(3)
             })))

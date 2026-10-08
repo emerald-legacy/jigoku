@@ -6,7 +6,7 @@ class KakitaFavorite extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context =>
+            condition: (context) =>
                 this.game.currentDuel !== null &&
                 this.game.currentDuel.isInvolvedInAnyDuel(context.source),
             effect: modifyPoliticalSkill(2)

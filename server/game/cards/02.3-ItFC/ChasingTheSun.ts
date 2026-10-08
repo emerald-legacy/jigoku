@@ -7,7 +7,7 @@ class ChasingTheSun extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
-            .condition(context => context.player.isAttackingPlayer())
+            .condition((context) => context.player.isAttackingPlayer())
             .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,

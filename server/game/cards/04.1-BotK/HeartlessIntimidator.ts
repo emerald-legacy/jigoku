@@ -14,7 +14,7 @@ class HeartlessIntimidator extends DrawCard {
             .gameAction(discardCard((context) => ({
                 target: context.player.opponent ? context.player.opponent.conflictDeck[0] : []
             })))
-            .chatText('discard the top card of {1}\'s conflict deck', context => context.player.opponent ?? context.player)
+            .chatText('discard the top card of {1}\'s conflict deck', (context) => context.player.opponent ?? context.player)
             .limit(unlimited());
     }
 }

@@ -10,9 +10,9 @@ class CommuneWithTheSpirits extends DrawCard {
         this.action('Claim a ring')
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
-                ringCondition: ring => ring.isUnclaimed()
+                ringCondition: (ring) => ring.isUnclaimed()
             }, sequential([
-                takeFateFromRing(context => ({
+                takeFateFromRing((context) => ({
                     target: context.ring,
                     amount: context.ring?.fate,
                     removeOnly: true

@@ -14,12 +14,12 @@ class Spearhead extends DrawCard {
                 cardCondition: (card, context) => !!card.parentCharacter &&
                     card.parentCharacter.controller === context.player && card.parentCharacter.isParticipating()
             }))
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, bow())
             .cannotTargetFirst();
     }

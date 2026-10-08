@@ -13,11 +13,11 @@ class KitsukiJusai extends DrawCard {
                     context.player.honorBid === context.player.opponent.honorBid &&
                     context.player.opponent.fate > 0
             })
-            .gameAction(selectRing(context => ({
+            .gameAction(selectRing((context) => ({
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
-                ringCondition: ring => ring.isUnclaimed(),
+                ringCondition: (ring) => ring.isUnclaimed(),
                 message: '{0} moves a fate from {1}\'s fate pool to the {2}',
-                messageArgs: ring => [context.player, context.player.opponent, ring],
+                messageArgs: (ring) => [context.player, context.player.opponent, ring],
                 gameAction: placeFateOnRing({ origin: context.player.opponent })
             })))
             .chatText((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);

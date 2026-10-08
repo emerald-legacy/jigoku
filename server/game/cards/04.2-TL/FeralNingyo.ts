@@ -12,10 +12,10 @@ class FeralNingyo extends DrawCard {
         this.action('Put into play')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .gameAction(sequential([
-                putIntoConflict(context => ({
+                putIntoConflict((context) => ({
                     target: context.source
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.source,
                     location: [Location.Hand, Location.PlayArea],
                     duration: Duration.UntilEndOfPhase,
@@ -29,7 +29,7 @@ class FeralNingyo extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('{1}return {0} to the deck at the end of the conflict', context => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''])
+            .chatText('{1}return {0} to the deck at the end of the conflict', (context) => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''])
             .location([Location.Hand, Location.PlayArea]);
     }
 

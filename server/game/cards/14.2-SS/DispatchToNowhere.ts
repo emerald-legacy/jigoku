@@ -9,7 +9,7 @@ class DispatchToNowhere extends DrawCard {
         this.action('Discard a character with no fate')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.getFate() === 0
+                cardCondition: (card) => card.getFate() === 0
             }, discardFromPlay());
     }
 }

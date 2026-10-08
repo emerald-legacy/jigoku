@@ -7,7 +7,7 @@ class MotoYouth extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.isDuringConflict(ConflictType.Military) && this.game.conflictRecord.every(conflict => (
+            condition: () => this.game.isDuringConflict(ConflictType.Military) && this.game.conflictRecord.every((conflict) => (
                 conflict.declaredType !== ConflictType.Military && !conflict.typeSwitched || !conflict.completed || conflict.uuid === this.game.currentConflict?.uuid
             )),
             effect: modifyMilitarySkill(1)

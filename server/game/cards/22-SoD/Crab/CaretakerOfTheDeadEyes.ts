@@ -10,7 +10,7 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait('bushi')
             })
-            .gameAction(multipleContext(context => {
+            .gameAction(multipleContext((context) => {
                 const card = context.event.card;
                 const gameActions = [];
                 if(card.isDishonored) {

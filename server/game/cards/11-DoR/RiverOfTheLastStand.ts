@@ -7,13 +7,13 @@ class RiverOfTheLastStand extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make opponent discard two cards and draw a card')
-            .condition(context => defendingAtKaiuWall(context.player, context.game.currentConflict))
+            .condition((context) => defendingAtKaiuWall(context.player, context.game.currentConflict))
             .gameAction(sequential([
-                discardAtRandom(context => ({
+                discardAtRandom((context) => ({
                     target: context.player.opponent,
                     amount: 2
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.player.opponent
                 }))
             ]));

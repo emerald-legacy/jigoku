@@ -7,10 +7,10 @@ class StrengthInNumbers extends DrawCard {
 
     setupCardAbilities() {
         this.action('Send home defending character')
-            .condition(context => context.player.isAttackingPlayer())
+            .condition((context) => context.player.isAttackingPlayer())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card =>
+                cardCondition: (card) =>
                     card.isDefending() &&
                     card.glory <= (this.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0)
             }, sendHome())

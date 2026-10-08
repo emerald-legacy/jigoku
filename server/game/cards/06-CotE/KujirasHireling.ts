@@ -21,7 +21,7 @@ class KujirasHireling extends DrawCard {
                     duration: Duration.UntilEndOfPhase
                 })
             })
-            .chatText('give {0} {1}', context => context.select.toLowerCase())
+            .chatText('give {0} {1}', (context) => context.select.toLowerCase())
             .limit(unlimitedPerConflict())
             .anyPlayer();
     }

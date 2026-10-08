@@ -8,7 +8,7 @@ class AllOutAssault extends DrawCard {
     setupCardAbilities() {
         this.reaction('Both players must attack with as many characters as they can every conflict')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

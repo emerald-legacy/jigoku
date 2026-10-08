@@ -13,14 +13,14 @@ class KitsukiChiari extends DrawCard {
                     context.player.opponent && context.player.opponent.hand.length > 0
             })
             .cost(costs.nameCard())
-            .gameAction(multipleContext(context => {
+            .gameAction(multipleContext((context) => {
                 const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({
                     gameActions: [
                         lookAt(() => ({
                             target: cards
                         })),
-                        discardMatching(context => ({
+                        discardMatching((context) => ({
                             target: context.player.opponent,
                             cards: cards,
                             amount: -1, //all
@@ -30,7 +30,7 @@ class KitsukiChiari extends DrawCard {
                     ]
                 });
             }))
-            .chatText('look at 4 random cards in {1}\'s hand and discard all cards named {2}', context => [context.player.opponent, context.costs.namedCard]);
+            .chatText('look at 4 random cards in {1}\'s hand and discard all cards named {2}', (context) => [context.player.opponent, context.costs.namedCard]);
     }
 
 

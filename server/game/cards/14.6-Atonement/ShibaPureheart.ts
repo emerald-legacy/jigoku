@@ -12,7 +12,7 @@ class ShibaPureheart extends DrawCard {
                     const controller = context.player;
                     const attacker = event.conflict.attackingPlayer;
                     if(attacker === controller.opponent) {
-                        return this.game.getConflicts(attacker).filter(conflict => !conflict.passed).length === 2;
+                        return this.game.getConflicts(attacker).filter((conflict) => !conflict.passed).length === 2;
                     }
                     return false;
                 }

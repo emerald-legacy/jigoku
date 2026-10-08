@@ -11,8 +11,8 @@ class GiveNoGround extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isDefending()
-            }, cardLastingEffect(context => ({
+                cardCondition: (card) => card.isDefending()
+            }, cardLastingEffect((context) => ({
                 effect: [
                     modifyMilitarySkill(2),
                     suppressEffects((effect) => !!effect && effect.isSkillModifier() && ((effect.getValue() ?? 0) < 0 || effect.getValue(context.target) < 0)),

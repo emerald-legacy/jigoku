@@ -13,7 +13,7 @@ class SpiritcallerProdigy extends DrawCard {
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: [Location.DynastyDiscardPile],
                 cardType: CardType.Character,
-                cardCondition: card => card.isFaction('lion') && card.costLessThan(4),
+                cardCondition: (card) => card.isFaction('lion') && card.costLessThan(4),
                 controller: Players.Self
             }, putIntoPlay())
             .chatText('call {0} back from the dead');

@@ -11,8 +11,8 @@ class TogashiYoshi extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
-            .gameAction(selectRing(context => ({
-                ringCondition:  ring => ring.fate >= 1 && ring.isUnclaimed(),
+            .gameAction(selectRing((context) => ({
+                ringCondition:  (ring) => ring.fate >= 1 && ring.isUnclaimed(),
                 target: context.ring,
                 gameAction: takeFateFromRing()
             })))

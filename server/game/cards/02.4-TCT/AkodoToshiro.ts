@@ -8,18 +8,18 @@ class AkodoToshiro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain +5/+0 and provinces can\'t be broken')
-            .condition(context => context.source.isAttacking())
+            .condition((context) => context.source.isAttacking())
             .gameAction(multiple([
                 cardLastingEffect(() => ({
                     target: this.game.provinceCards,
                     targetLocation: Location.Provinces,
                     effect: cardCannot('break')
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.source,
                     effect: modifyMilitarySkill(5)
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.source,
                     duration: Duration.UntilEndOfRound,
                     effect: delayedEffect({

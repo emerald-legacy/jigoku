@@ -10,13 +10,13 @@ class IkomaEiji extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === ConflictType.Political
             })
-            .selectCard(context => ({
+            .selectCard((context) => ({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.DynastyDiscardPile],
                 controller: Players.Self,
-                cardCondition: card => card.isCharacter() && card.hasTrait('bushi') && card.costLessThan(4),
+                cardCondition: (card) => card.isCharacter() && card.hasTrait('bushi') && card.costLessThan(4),
                 message: '{0} puts {1} into play with {2}\'s ability',
-                messageArgs: card => [context.player, card, context.source],
+                messageArgs: (card) => [context.player, card, context.source],
                 gameAction: putIntoPlay()
             }))
             .chatText('put a character into play');

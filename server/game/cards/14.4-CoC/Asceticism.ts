@@ -7,7 +7,7 @@ class Asceticism extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => context.player.getNumberOfFacedownProvinces(province => province.location !== Location.StrongholdProvince) > 1,
+            condition: (context) => context.player.getNumberOfFacedownProvinces((province) => province.location !== Location.StrongholdProvince) > 1,
             effect: cardCannot({
                 cannot: 'target',
                 restricts: 'opponentsTriggeredAbilities',

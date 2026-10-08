@@ -22,7 +22,7 @@ class YogoTadashi extends DrawCard {
                     restricts: 'opponentsEvents'
                 })
             }))
-            .chatText('prevent {0} from being targeted by events played by {1}', context => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined));
+            .chatText('prevent {0} from being targeted by events played by {1}', (context) => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined));
     }
 }
 

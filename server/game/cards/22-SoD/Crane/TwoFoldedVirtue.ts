@@ -11,13 +11,13 @@ export default class TwoFoldedVirtue extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('scout'))
+                cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('scout'))
             }, multiple([
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     effect: modifyMilitarySkill(2),
                     target: context.target
                 })),
-                playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
                     effect: delayedEffect({
                         when: {

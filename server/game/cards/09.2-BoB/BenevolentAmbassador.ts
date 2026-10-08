@@ -8,7 +8,7 @@ class BenevolentAmbassador extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
             })
-            .gainHonor(context => ({
+            .gainHonor((context) => ({
                 target: context.game.getPlayers()
             }));
     }

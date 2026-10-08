@@ -14,7 +14,7 @@ class RamshackleFacade extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isAttacking() && card.costLessThan(4)
+                cardCondition: (card) => card.isAttacking() && card.costLessThan(4)
             }, bow());
     }
 }

@@ -10,11 +10,11 @@ class IuchiRimei extends DrawCard {
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
-                cardCondition: card => Boolean(card.costLessThan(2) && card.parentCharacter)
-            }, selectCard(context => ({
-                cardCondition: card => card !== context.target?.parentCharacter && card.controller === context.target?.parentCharacter?.controller && card.type === CardType.Character,
+                cardCondition: (card) => Boolean(card.costLessThan(2) && card.parentCharacter)
+            }, selectCard((context) => ({
+                cardCondition: (card) => card !== context.target?.parentCharacter && card.controller === context.target?.parentCharacter?.controller && card.type === CardType.Character,
                 message: '{0} moves {1} to {2}',
-                messageArgs: card => [context.player, context.target, card],
+                messageArgs: (card) => [context.player, context.target, card],
                 gameAction: ifAble({
                     ifAbleAction: attach({
                         attachment: context.target,

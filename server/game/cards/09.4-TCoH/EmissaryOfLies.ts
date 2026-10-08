@@ -9,7 +9,7 @@ class EmissaryOfLies extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character home')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

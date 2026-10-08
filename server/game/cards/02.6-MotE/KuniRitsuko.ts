@@ -12,7 +12,7 @@ class KuniRitsuko extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking()
+                cardCondition: (card) => card.isAttacking()
             }, removeFate());
     }
 }

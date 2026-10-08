@@ -8,7 +8,7 @@ class YasukiTaka extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain fate')
             .when({
-                onCardLeavesPlay: event => {
+                onCardLeavesPlay: (event) => {
                     const state = event.cardStateWhenLeftPlay;
                     return this.game.currentPhase === Phase.Conflict && !!state && state.isFaction('crab') &&
                         state.type === CardType.Character && state.location === Location.PlayArea;

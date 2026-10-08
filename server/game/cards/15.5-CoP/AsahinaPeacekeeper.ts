@@ -9,7 +9,7 @@ class AsahinaPeacekeeper extends DrawCard {
         this.persistentEffect({
             targetController: Players.Any,
             targetLocation: Location.PlayArea,
-            match: card => card.getType() === CardType.Character,
+            match: (card) => card.getType() === CardType.Character,
             effect: cardCostToAttackMilitary(1)
         });
     }

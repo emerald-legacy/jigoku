@@ -8,13 +8,13 @@ class SoshiMika extends DrawCard {
     setupCardAbilities() {
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .gameAction(multiple([
-                loseHonor(context => ({
+                loseHonor((context) => ({
                     target: context.game.getPlayers()
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 }))
@@ -22,7 +22,7 @@ class SoshiMika extends DrawCard {
             .chatText('have each player lose an honor and draw two cards');
 
         this.action('Flip the Imperial Favor')
-            .gameAction(flipImperialFavor(context => ({
+            .gameAction(flipImperialFavor((context) => ({
                 target: context.player.imperialFavor ? context.player : context.player.opponent
             })));
     }

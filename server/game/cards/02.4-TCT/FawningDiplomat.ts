@@ -9,7 +9,7 @@ class FawningDiplomat extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .gameAction(claimImperialFavor(context => ({
+            .gameAction(claimImperialFavor((context) => ({
                 target: context.player
             })))
             .chatText('claim the Emperor\'s favor as she leaves play');

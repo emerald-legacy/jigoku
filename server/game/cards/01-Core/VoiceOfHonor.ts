@@ -8,8 +8,8 @@ class VoiceOfHonor extends DrawCard {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.player.opponent &&
-                                                            context.player.getNumberOfCardsInPlay(card => card.isHonored) >
-                                                            context.player.opponent.getNumberOfCardsInPlay(card => card.isHonored)
+                                                            context.player.getNumberOfCardsInPlay((card) => card.isHonored) >
+                                                            context.player.opponent.getNumberOfCardsInPlay((card) => card.isHonored)
             })
             .cancel()
             .cannotBeMirrored();

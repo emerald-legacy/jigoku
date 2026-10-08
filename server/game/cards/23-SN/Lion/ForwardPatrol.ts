@@ -8,7 +8,7 @@ export default class ForwardPatrol extends DrawCard {
     setupCardAbilities() {
         this.conflictAction('Ready a character')
             .target({
-                cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi'),
                 cardType: CardType.Character
             }, ready());
     }

@@ -12,7 +12,7 @@ class UnveiledCorruption extends DrawCard {
             .cost(costs.taint({ cardCondition: (card) => {
                 return card.type === CardType.Province && !(card instanceof ProvinceCard && card.isBroken);
             }}))
-            .gameAction(chosenDiscard(context => ({
+            .gameAction(chosenDiscard((context) => ({
                 amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - context.player.hand.filter((card) => card !== context.source).length)
             })));
     }

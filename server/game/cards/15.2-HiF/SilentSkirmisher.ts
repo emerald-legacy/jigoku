@@ -13,7 +13,7 @@ class SilentSkirmisher extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source
             }))
-            .condition(context => context.game.isDuringConflict())
+            .condition((context) => context.game.isDuringConflict())
             .cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             })

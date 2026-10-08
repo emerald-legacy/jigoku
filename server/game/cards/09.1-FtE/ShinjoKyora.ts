@@ -7,10 +7,10 @@ class ShinjoKyora extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch the contested ring')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .gameAction(selectRing({
                 message: '{0} switches the contested ring with {1}',
-                ringCondition: ring => ring.isUnclaimed(),
+                ringCondition: (ring) => ring.isUnclaimed(),
                 messageArgs: (ring, player) => [player, ring],
                 gameAction: switchConflictElement()
             }))

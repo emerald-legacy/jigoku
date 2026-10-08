@@ -14,7 +14,7 @@ class IsawaMasahiro extends DrawCard {
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.costLessThan(3) && card.isParticipating()
+                cardCondition: (card) => card.costLessThan(3) && card.isParticipating()
             }, discardFromPlay());
     }
 

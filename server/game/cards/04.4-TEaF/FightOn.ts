@@ -7,11 +7,11 @@ class FightOn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready character and move to conflict')
-            .condition(context => context.player.isDefendingPlayer())
+            .condition((context) => context.player.isDefendingPlayer())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.bowed
+                cardCondition: (card) => card.bowed
             }, ready(), moveToConflict())
             .chatText('ready {0} and move it into the conflict');
     }

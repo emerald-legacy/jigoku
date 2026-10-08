@@ -10,21 +10,21 @@ class DoomThrower extends DrawCard {
     setupCardAbilities() {
         this.action('Reduce Province Strength')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
-            .condition(context => context.game.isDuringConflict())
-            .selectCard(context => ({
+            .condition((context) => context.game.isDuringConflict())
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
+                cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} reduces the strength of {1}',
-                messageArgs: cards => [context.player, cards],
+                messageArgs: (cards) => [context.player, cards],
                 gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)
                 })
             }))
-            .chatText('reduce an attacked province\'s strength by {1}', context => (context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2);
+            .chatText('reduce an attacked province\'s strength by {1}', (context) => (context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2);
     }
 }
 

@@ -15,7 +15,7 @@ class EruditePrestige extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player && context.source.parentCharacter.isParticipating()
             })
-            .cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: modifyPoliticalSkill(1)
             }))

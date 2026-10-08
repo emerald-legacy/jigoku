@@ -10,7 +10,7 @@ export default class IkomaUjio extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} chooses whether to bow {1} or give 1 honor to {2}',
-                messageArgs: duel => [duel.loserController, duel.loser, duel.winnerController],
+                messageArgs: (duel) => [duel.loserController, duel.loser, duel.winnerController],
                 gameAction: (duel, context) => chooseAction({
                     target: duel.loser,
                     player: duel.loserController !== context.source.controller ? Players.Opponent : Players.Self,

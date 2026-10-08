@@ -6,7 +6,7 @@ class ShosuroSadako extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDishonored,
+            condition: (context) => context.source.isDishonored,
             effect: honorStatusReverseModifySkill()
         });
     }

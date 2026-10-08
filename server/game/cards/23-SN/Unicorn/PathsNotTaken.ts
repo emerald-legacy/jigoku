@@ -28,14 +28,14 @@ export default class PathsNotTaken extends DrawCard {
         }
 
         const attackedProvinces = context.game.currentConflict.getConflictProvinces();
-        const hasScout = context.game.currentConflict.getDefenders(card => card.hasTrait('scout')).length > 0;
+        const hasScout = context.game.currentConflict.getDefenders((card) => card.hasTrait('scout')).length > 0;
 
         if(hasScout) {
-            const strengths = attackedProvinces.map(a => a.getStrength());
+            const strengths = attackedProvinces.map((a) => a.getStrength());
             return Math.max(...strengths);
         }
 
-        const strengths = attackedProvinces.map(a => a.getBaseStrength());
+        const strengths = attackedProvinces.map((a) => a.getBaseStrength());
         return Math.max(...strengths);
     }
 }

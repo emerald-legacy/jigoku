@@ -9,7 +9,7 @@ class SecludedShrine extends DrawCard {
     setupCardAbilities() {
         this.reaction('Count a ring as claimed')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .ringTarget({
                 ringCondition: () => true

@@ -10,7 +10,7 @@ class NeverYield extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
                     cardCannot({
@@ -25,7 +25,7 @@ class NeverYield extends DrawCard {
                     })
                 ]
             }))
-            .chatText('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', context => [context.player.opponent, context.player]);
+            .chatText('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', (context) => [context.player.opponent, context.player]);
     }
 }
 

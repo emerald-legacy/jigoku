@@ -12,7 +12,7 @@ export default class LoyalAttendant extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.attachments.filter(a => a.controller === context.player).length > 0
+                cardCondition: (card, context) => card.isParticipating() && card.attachments.filter((a) => a.controller === context.player).length > 0
             })
             .gameAction(multipleContext((context) => {
                 const cardNumber = context.target.attachments.length;

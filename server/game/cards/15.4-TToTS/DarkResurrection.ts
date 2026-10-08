@@ -15,7 +15,7 @@ class DarkResurrection extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.DynastyDiscardPile],
                 controller: Players.Self,
-                cardCondition: card => card.type === CardType.Character && (card.printedCost ?? 0) <= 3
+                cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 3
             }, putIntoConflict({ status: CharacterStatus.Dishonored }));
     }
 

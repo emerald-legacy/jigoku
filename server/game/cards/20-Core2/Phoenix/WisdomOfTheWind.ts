@@ -33,7 +33,7 @@ export default class WisdomOfTheWind extends DrawCard {
                         }
                     }
                 }),
-                onAffinity(context => ({
+                onAffinity((context) => ({
                     trait: 'air',
                     gameAction: cardLastingEffect({
                         target: context.target,

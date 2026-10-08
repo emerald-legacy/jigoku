@@ -18,10 +18,10 @@ class ChampionsOfYomi extends DrawCard {
                 cardType: CardType.Stronghold
             }))
             .gameAction(sequential([
-                putIntoPlay(context => ({
+                putIntoPlay((context) => ({
                     target: context.source
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.source,
                     duration: Duration.UntilEndOfRound,
                     effect: delayedEffect({

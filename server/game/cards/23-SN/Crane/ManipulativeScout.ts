@@ -10,7 +10,7 @@ export default class ManipulativeScout extends DrawCard {
             .target({
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: card => card.isDynasty
+                cardCondition: (card) => card.isDynasty
             }, flipDynasty(), turnFacedown());
     }
 }

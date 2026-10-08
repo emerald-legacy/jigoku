@@ -11,7 +11,7 @@ class LicensedQuarter extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player
             })
-            .gameAction(discardCard(context => ({
+            .gameAction(discardCard((context) => ({
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })))
             .chatText((context) => msg`discard the top card of ${context.player.opponent}'s conflict deck`)

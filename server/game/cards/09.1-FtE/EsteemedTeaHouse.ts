@@ -8,12 +8,12 @@ class EsteemedTeaHouse extends DrawCard {
 
     setupCardAbilities() {
         this.action('Return attachment to owners hand')
-            .condition(context => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
+            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
             .target({
                 cardType: CardType.Attachment,
-                cardCondition: card => Boolean(card.parentCharacter?.isParticipating())
+                cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
             }, returnToHand())
-            .playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: context.target?.owner,
                 effect: playerCannot({
@@ -22,7 +22,7 @@ class EsteemedTeaHouse extends DrawCard {
                     params: context.target?.name
                 })
             }))
-            .chatText('return {0} to {1}\'s hand and prevent them from playing copies this phase', context => [context.target.owner]);
+            .chatText('return {0} to {1}\'s hand and prevent them from playing copies this phase', (context) => [context.target.owner]);
     }
 }
 

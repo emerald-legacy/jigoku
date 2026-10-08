@@ -9,7 +9,7 @@ class KamiUnleashed extends DrawCard {
     setupCardAbilities() {
         this.action('Resolve ring effect')
             .cost(costs.sacrificeSelf())
-            .condition(context => context.source.isAttacking())
+            .condition((context) => context.source.isAttacking())
             .gameAction(resolveConflictRing())
             .max(perConflict(1));
     }

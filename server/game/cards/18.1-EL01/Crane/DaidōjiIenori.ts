@@ -17,8 +17,8 @@ class DaidojiIenori extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating()
-            }, cardLastingEffect(context => {
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => {
                 const effect = [
                     setMilitarySkill(3),
                     setPoliticalSkill(3)
@@ -32,7 +32,7 @@ class DaidojiIenori extends DrawCard {
                     effect: effect
                 };
             }))
-            .chatText('set the skills of {0} to 3{1}/3{2}{3}', context => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
+            .chatText('set the skills of {0} to 3{1}/3{2}{3}', (context) => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
     }
 }
 

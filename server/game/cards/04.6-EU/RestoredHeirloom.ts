@@ -18,7 +18,7 @@ class RestoredHeirloom extends DrawCard {
             }, cancel((context) => ({
                 replacementGameAction: attach({ attachment: context.source })
             })))
-            .chatText('attach {1} to {0} instead of resolving the {2}', context => [context.source, context.event.ring])
+            .chatText('attach {1} to {0} instead of resolving the {2}', (context) => [context.source, context.event.ring])
             .location([Location.Hand,Location.ConflictDiscardPile]);
     }
 

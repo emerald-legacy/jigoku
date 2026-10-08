@@ -14,7 +14,7 @@ export default class Pressure extends DrawCard {
                 onDefendersDeclared: (_event, _context) => true,
                 onMoveToConflict: (_event, _context) => true
             })
-            .selectCard(context => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,

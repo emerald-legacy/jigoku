@@ -11,15 +11,15 @@ class JewelOfTheKhamasin extends DrawCard {
     setupCardAbilities() {
         this.action('Reduce province strength')
             .cost(costs.payHonor(1))
-            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
-            .selectCard(context => ({
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 1',
-                messageArgs: cards => [context.player, cards],
+                messageArgs: (cards) => [context.player, cards],
                 gameAction: cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(-1)

@@ -9,20 +9,20 @@ class RegalBearing extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lower bid and draw bid difference as cards')
-            .condition(context => context.game.isDuringConflict(ConflictType.Political) &&
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political) &&
                 !!context.player.opponent &&
                 context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
             .gameAction(sequential([
-                setHonorDial(context => ({
+                setHonorDial((context) => ({
                     target: context.player,
                     value: 1
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.player,
                     amount: this.getHonorDialDifference(context)
                 }))
             ]))
-            .chatText('set their bid dial to 1 and draw {1} cards', context => this.getHonorDialDifference(context))
+            .chatText('set their bid dial to 1 and draw {1} cards', (context) => this.getHonorDialDifference(context))
             .max(perConflict(1));
     }
 

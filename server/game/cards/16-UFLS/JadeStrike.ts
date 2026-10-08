@@ -12,7 +12,7 @@ class JadeStrike extends DrawCard {
         this.action('Set a characters base skills to 0/0')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasStatusTokens && card.isParticipating()
+                cardCondition: (card) => card.hasStatusTokens && card.isParticipating()
             }, multiple([
                 cardLastingEffect({
                     effect: [
@@ -20,11 +20,11 @@ class JadeStrike extends DrawCard {
                         setBasePoliticalSkill(0)
                     ]
                 }),
-                removeFate(context => ({
+                removeFate((context) => ({
                     target: context.target?.isTainted ? context.target : []
                 }))
             ]))
-            .chatText('{3}set the base skills of {0} to 0{1}/0{2}', context => ['military', 'political', context.target.isTainted ? 'remove a fate from and ' : '']);
+            .chatText('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', context.target.isTainted ? 'remove a fate from and ' : '']);
     }
 
     canPlay(context: AbilityContext, playType: string) {

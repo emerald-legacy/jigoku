@@ -8,7 +8,7 @@ class Censure extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Event
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
             .cancel()
             .cannotBeMirrored();

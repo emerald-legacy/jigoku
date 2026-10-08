@@ -10,14 +10,14 @@ export default class UnbridledRage extends DrawCard {
         this.action('Military duel to stop contribution')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                challengerCondition: card => card.hasTrait('berserker'),
+                challengerCondition: (card) => card.hasTrait('berserker'),
                 message: 'prevent {0} from contributing to resolution of this conflict',
                 refuseGameAction: multiple([
-                    draw(context => ({
+                    draw((context) => ({
                         amount: 2,
                         target: context.player
                     })),
-                    playerLastingEffect(context => ({
+                    playerLastingEffect((context) => ({
                         targetController: context.player,
                         duration: Duration.UntilPassPriority,
                         effect: additionalAction()

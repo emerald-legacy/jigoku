@@ -19,7 +19,7 @@ class FalseLoyalties extends DrawCard {
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .target({
                 name: 'characterAtHome',
@@ -28,7 +28,7 @@ class FalseLoyalties extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent
             }, joint([
-                sendHome(context => ({ target: context.targets.characterInConflict })),
+                sendHome((context) => ({ target: context.targets.characterInConflict })),
                 moveToConflict()
             ]))
             .chatText((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);

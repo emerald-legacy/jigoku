@@ -6,7 +6,7 @@ class ShadowStalker extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.player.honor <= 6,
+            condition: (context) => context.player.honor <= 6,
             effect: modifyBothSkills(2)
         });
     }

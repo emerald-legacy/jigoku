@@ -21,7 +21,7 @@ class DanceOfChikushoDo extends DrawCard {
                     this.fillProvinces(opponent)
                 ])
             ))
-            .chatText('have {1} place 2 cards in each unbroken province they control', context => context.select)
+            .chatText('have {1} place 2 cards in each unbroken province they control', (context) => context.select)
             .max(perRound(1));
     }
 
@@ -29,7 +29,7 @@ class DanceOfChikushoDo extends DrawCard {
         return handler({
             handler: () => {
                 const unbrokenProvinces = this.getUnbrokenProvinces(player);
-                unbrokenProvinces.forEach(province => {
+                unbrokenProvinces.forEach((province) => {
                     this.game.queueSimpleStep(() => player.putTopDynastyCardInProvince(province, true));
                     this.game.queueSimpleStep(() => player.putTopDynastyCardInProvince(province, true));
                 });
@@ -40,7 +40,7 @@ class DanceOfChikushoDo extends DrawCard {
     getUnbrokenProvinces(player: Player): Location[] {
         const unbrokenLocations: Location[] = [];
         const baseLocations = this.game.rules.setupNonStrongholdProvinces;
-        baseLocations.forEach(p => {
+        baseLocations.forEach((p) => {
             const province = player.getProvinceCardInProvince(p);
             if(province && !province.isBroken) {
                 unbrokenLocations.push(p);

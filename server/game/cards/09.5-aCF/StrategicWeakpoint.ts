@@ -15,7 +15,7 @@ class StrategicWeakpoint extends DrawCard {
                 activePromptTitle: 'Choose a character to discard',
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking()
+                cardCondition: (card) => card.isAttacking()
             }, discardFromPlay());
     }
 }

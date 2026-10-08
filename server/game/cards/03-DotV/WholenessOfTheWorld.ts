@@ -10,7 +10,7 @@ class WholenessOfTheWorld extends DrawCard {
                 onReturnRing: (event, context) => event.ring.claimedBy === context.player.name
             })
             .cancel()
-            .chatText('prevent {1} from returning to the unclaimed pool', context => context.event.ring)
+            .chatText('prevent {1} from returning to the unclaimed pool', (context) => context.event.ring)
             .max(perRound(1))
             .cannotBeMirrored();
     }

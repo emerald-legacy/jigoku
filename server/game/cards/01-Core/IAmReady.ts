@@ -10,7 +10,7 @@ class IAmReady extends DrawCard {
         this.action('Ready a character')
             .cost(costs.removeFate({
                 cardType: CardType.Character,
-                cardCondition: card => card.isFaction('unicorn') && card.bowed
+                cardCondition: (card) => card.isFaction('unicorn') && card.bowed
             }))
             .handler((context) => ready().resolve(context.costs.removeFate, context))
             .chatText('ready {1}', (context) => context.costs.removeFate)

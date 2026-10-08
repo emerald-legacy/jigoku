@@ -7,19 +7,19 @@ class WildfireKick extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give opponent\'s characters -2/-2')
-            .condition(context =>
+            .condition((context) =>
                 !!this.game.currentConflict &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3)
             .target({
                 controller: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             })
             .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= (context.target?.militarySkill ?? 0) && card !== context.source) ?? [],
                 effect: modifyBothSkills(-2)
             }))
-            .chatText('give {1}\'s participating characters -2{2}/-2{3} if their military skill is equal to or lower than {4}. This affects: {5}', context => {
+            .chatText('give {1}\'s participating characters -2{2}/-2{3} if their military skill is equal to or lower than {4}. This affects: {5}', (context) => {
                 const targetMs = context.target.militarySkill;
                 return [context.player.opponent, 'military', 'political', targetMs, this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= targetMs && card !== context.source) ?? []];
             });

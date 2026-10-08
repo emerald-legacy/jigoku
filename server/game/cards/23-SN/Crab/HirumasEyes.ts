@@ -14,7 +14,7 @@ export default class HirumasEyes extends DrawCard {
                 name: 'provinceCard',
                 location: Location.Provinces,
                 cardType: CardType.Character,
-                cardCondition: card => card.isInConflictProvince() && card.isFaceup() && card.getTraits().size > 0
+                cardCondition: (card) => card.isInConflictProvince() && card.isFaceup() && card.getTraits().size > 0
             })
             .select({
                 name: 'select',
@@ -30,7 +30,7 @@ export default class HirumasEyes extends DrawCard {
                     effect: modifyMilitarySkill(-2)
                 }))
             })
-            .chatText('give {1} {2}2{3} until the end of the conflict', context => [
+            .chatText('give {1} {2}2{3} until the end of the conflict', (context) => [
                 this.getTargets(context.targets.provinceCard, context),
                 context.selects.select.choice === 'Give +2' ? '+' : '-',
                 'military'
@@ -42,7 +42,7 @@ export default class HirumasEyes extends DrawCard {
             const defenders = context.game.currentConflict.getDefenders();
             const traits = card.getTraits();
 
-            return defenders.filter(a => a.hasSomeTrait(traits));
+            return defenders.filter((a) => a.hasSomeTrait(traits));
         }
 
         return [];

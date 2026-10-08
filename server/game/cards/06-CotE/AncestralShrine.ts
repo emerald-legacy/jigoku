@@ -7,7 +7,7 @@ class AncestralShrine extends DrawCard {
     setupCardAbilities() {
         this.action('Return rings to gain honor')
             .cost(costs.returnRings())
-            .gainHonor(context => ({
+            .gainHonor((context) => ({
                 amount: context.costs.returnedRings ? context.costs.returnedRings.length : 1
             }));
     }

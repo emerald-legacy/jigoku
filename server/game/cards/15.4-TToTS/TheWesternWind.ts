@@ -7,7 +7,7 @@ class TheWesternWind extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at your dynasty deck')
-            .condition(context => !!context.player.opponent &&
+            .condition((context) => !!context.player.opponent &&
                 context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince) > 0 &&
                 context.player.dynastyDeck.length > 0)
             .target({

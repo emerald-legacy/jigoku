@@ -21,7 +21,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.player.getProvinceCardInProvince(context.source.location)
             })
-            .gainHonor(context => ({
+            .gainHonor((context) => ({
                 amount: declaredConflicts.countAgainst(context.player.getProvinceCardInProvince(context.source.location))
             }))
             .limit(unlimitedPerConflict());

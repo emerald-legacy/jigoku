@@ -11,7 +11,7 @@ class ThoseWhoServe extends DrawCard {
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: reduceCost({
-                    match: card => card.type === CardType.Character,
+                    match: (card) => card.type === CardType.Character,
                     amount: 1,
                     costFloor: 1
                 })

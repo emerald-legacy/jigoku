@@ -10,11 +10,11 @@ class NobleSacrifice extends DrawCard {
         this.action('Sacrifice honored character to discard dishonored one')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: card => card.isHonored
+                cardCondition: (card) => card.isHonored
             }))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isDishonored
+                cardCondition: (card) => card.isDishonored
             }, discardFromPlay());
     }
 }

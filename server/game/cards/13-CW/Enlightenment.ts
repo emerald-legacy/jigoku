@@ -6,14 +6,14 @@ class Enlightenment extends DrawCard {
 
     setupCardAbilities() {
         this.action('Resolve all claimed ring effects')
-            .condition(context => context.player.getClaimedRings().length > 0)
+            .condition((context) => context.player.getClaimedRings().length > 0)
             .gameAction(sequential([
-                resolveRingEffect(context => ({
+                resolveRingEffect((context) => ({
                     player: context.player,
                     target: context.player.getClaimedRings()
                 })),
                 handler({
-                    handler: context => {
+                    handler: (context) => {
                         if(context.player.getClaimedRings().length >= 5) {
                             this.game.recordWinner(context.player, 'enlightenment');
                         }

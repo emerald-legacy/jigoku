@@ -11,14 +11,14 @@ class GameOfSadane extends DrawCard {
                 name: 'challenger',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .target({
                 name: 'duelTarget',
                 dependsOn: 'challenger',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, duel((context) => ({
                 type: DuelType.Political,
                 challenger: context.targets.challenger,

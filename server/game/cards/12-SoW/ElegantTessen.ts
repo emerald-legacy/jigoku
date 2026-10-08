@@ -12,7 +12,7 @@ class ElegantTessen extends DrawCard {
                     event.originalLocation !== Location.PlayArea
                 )
             })
-            .ready(context => ({ target: context.source.parentCharacter ?? [] }));
+            .ready((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

@@ -10,7 +10,7 @@ export default class TwentyFourSteps extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('bushi') && card.attachments.length >= 2
+                cardCondition: (card) => card.hasTrait('bushi') && card.attachments.length >= 2
             }, multiple([
                 ready(),
                 moveToConflict()

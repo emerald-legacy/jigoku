@@ -7,11 +7,11 @@ class OracleOfStone extends DrawCard {
     setupCardAbilities() {
         this.action('Draw 2 cards, then discard 2 cards')
             .gameAction(sequential([
-                draw(context => ({
+                draw((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 })),
-                chosenDiscard(context => ({
+                chosenDiscard((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 }))

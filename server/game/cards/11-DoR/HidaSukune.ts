@@ -7,12 +7,12 @@ class HidaSukune extends DrawCard {
 
     setupCardAbilities() {
         this.action('Draw and discard a card')
-            .condition(context => context.source.isDefending())
+            .condition((context) => context.source.isDefending())
             .gameAction(sequential([
-                draw(context => ({
+                draw((context) => ({
                     target: context.player
                 })),
-                chosenDiscard(context => ({
+                chosenDiscard((context) => ({
                     target: context.player
                 }))
             ]))

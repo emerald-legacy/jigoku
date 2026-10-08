@@ -9,7 +9,7 @@ class Reconnaissance extends DrawCard {
     setupCardAbilities() {
         this.reaction('Look at provinces')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .targetCards({
                 mode: TargetMode.Exactly,
@@ -19,10 +19,10 @@ class Reconnaissance extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Any
             }, conditional({
-                condition: context => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
+                condition: (context) => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
                 trueGameAction: sequential([
                     this.getLookAtAction(),
-                    selectCards(context => {
+                    selectCards((context) => {
                         let target: BaseCard | BaseCard[] | undefined = context.targets.target;
                         if(!Array.isArray(target)) {
                             target = target ? [target] : [];
@@ -48,8 +48,8 @@ class Reconnaissance extends DrawCard {
     }
 
     getLookAtAction() {
-        return lookAt(context => ({
-            message: context => {
+        return lookAt((context) => ({
+            message: (context) => {
                 let target: BaseCard | BaseCard[] | undefined = context.targets.target;
                 if(!Array.isArray(target)) {
                     target = target ? [target] : [];

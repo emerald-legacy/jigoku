@@ -12,7 +12,7 @@ class CripplingTaxes extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(moveCard(context => ({
+            .gameAction(moveCard((context) => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location)
             })))

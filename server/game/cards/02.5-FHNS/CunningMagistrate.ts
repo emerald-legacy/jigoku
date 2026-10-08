@@ -6,7 +6,7 @@ class CunningMagistrate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             effect: cannotContribute((_conflict, context) => {
                 return (card) => card.isDishonored && card !== context.source;
             })

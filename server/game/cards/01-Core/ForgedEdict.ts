@@ -8,9 +8,9 @@ class ForgedEdict extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Event
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
-            .cost(costs.dishonor({ cardCondition: card => card.hasTrait('courtier') }))
+            .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }))
             .cancel()
             .cannotBeMirrored();
     }

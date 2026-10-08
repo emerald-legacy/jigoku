@@ -20,16 +20,16 @@ export default class APlagueOfYokai extends DrawCard {
             .cost(costs.dishonor({
                 controller: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && card.hasTrait('shinobi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('shinobi')
             }))
-            .condition(context => this.getCopiesInDeck(context).length > 0)
+            .condition((context) => this.getCopiesInDeck(context).length > 0)
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     attach().canAffect(card, context, { attachment: this.getCopiesInDeck(context)[0] })
-            }, multipleContext(context => ({
+            }, multipleContext((context) => ({
                 gameActions: [
                     attach({
                         target: context.target,
@@ -46,7 +46,7 @@ export default class APlagueOfYokai extends DrawCard {
 
     private getCopiesInDeck(context: AbilityContext) {
         const player = context.player;
-        return player.conflictDeck.filter(card => card.name === context.source.name);
+        return player.conflictDeck.filter((card) => card.name === context.source.name);
     }
 
     private getSkillModifier(context: AbilityContext) {
@@ -57,7 +57,7 @@ export default class APlagueOfYokai extends DrawCard {
         const participatingCharacters = context.game.currentConflict.getParticipants();
         const attachments = participatingCharacters.flatMap((current) => current.attachments);
 
-        const matchingAttachments = attachments.filter(a => a.name === context.source.name && a.controller === context.source.controller);
+        const matchingAttachments = attachments.filter((a) => a.name === context.source.name && a.controller === context.source.controller);
         return matchingAttachments.length;
     }
 }

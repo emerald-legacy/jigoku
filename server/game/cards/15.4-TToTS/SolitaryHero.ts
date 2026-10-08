@@ -13,7 +13,7 @@ class SolitaryHero extends DrawCard {
         });
 
         this.action('Remove a fate from weaker military characters')
-            .condition(context =>
+            .condition((context) =>
                 context.source.isParticipatingFor(context.player) &&
                 (context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
             .removeFate((context) => ({

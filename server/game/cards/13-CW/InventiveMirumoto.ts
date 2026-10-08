@@ -10,21 +10,21 @@ class InventiveMirumoto extends DrawCard {
 
     setupCardAbilities() {
         this.action('Play attachment onto this character')
-            .condition(context => hasClaimedRing(this, elementSymbol.key, context.player))
+            .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
-                cardCondition: card => card.type === CardType.Attachment,
+                cardCondition: (card) => card.type === CardType.Attachment,
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self
-            }, playCard(context => ({
+            }, playCard((context) => ({
                 payCosts: true,
                 source: this,
-                playCardTarget: attachContext => {
+                playCardTarget: (attachContext) => {
                     attachContext.target = context.source;
                     attachContext.targets.target = context.source;
                 }
 
             })))
-            .chatText('play {0} onto {1}', context => [context.target, context.source]);
+            .chatText('play {0} onto {1}', (context) => [context.target, context.source]);
     }
 
     getPrintedElementSymbols() {

@@ -58,7 +58,7 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
         if(!this.selectedCards[player.name].includes(card)) {
             this.selectedCards[player.name].push(card);
         } else {
-            this.selectedCards[player.name] = this.selectedCards[player.name].filter(c => c !== card);
+            this.selectedCards[player.name] = this.selectedCards[player.name].filter((c) => c !== card);
         }
         player.setSelectedCards(this.selectedCards[player.name]);
 

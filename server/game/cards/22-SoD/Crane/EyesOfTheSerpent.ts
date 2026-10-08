@@ -22,7 +22,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                 taint(),
                 onAffinity({
                     trait: 'air',
-                    gameAction: gainHonor(context => ({
+                    gameAction: gainHonor((context) => ({
                         target: context.player
                     })),
                     chatText: 'gain 1 honor'

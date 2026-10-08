@@ -7,13 +7,13 @@ class MomentOfPerfectBeauty extends DrawCard {
 
     setupCardAbilities() {
         this.action('One more action and then end the conflict')
-            .condition(context => {
+            .condition((context) => {
                 const conflict = this.game.currentConflict;
                 return !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
             })
-            .playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player.opponent,
                 effect: resolveConflictEarly()
             }))

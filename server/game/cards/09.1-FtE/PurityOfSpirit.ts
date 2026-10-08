@@ -10,7 +10,7 @@ class PurityOfSpirit extends DrawCard {
         this.action('Choose a bushi character to honor')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('bushi') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait('bushi') && card.isParticipating()
             }, multiple([
                 honor(),
                 cardLastingEffect((context) => ({

@@ -8,12 +8,12 @@ class DaidojiMarketplace extends DrawCard {
     setupCardAbilities() {
         this.reaction('Reveal this holding\'s province')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(reveal(context => ({
+            .gameAction(reveal((context) => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
-            .chatText('reveal {1}', context => context.player.getProvinceCardInProvince(context.source.location));
+            .chatText('reveal {1}', (context) => context.player.getProvinceCardInProvince(context.source.location));
     }
 }
 

@@ -6,7 +6,7 @@ class IronCraneLegion extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.isDuringConflict(),
+            condition: (context) => context.game.isDuringConflict(),
             effect: calculatePrintedMilitarySkill((card) => card.controller.opponent?.hand.length ?? 0)
         });
     }

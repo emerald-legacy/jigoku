@@ -15,7 +15,7 @@ class SmugglingDeal extends DrawCard {
                 activePromptTitle: 'Select an ability to increase limits on',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, cardLastingEffect(context => ({
+            }, cardLastingEffect((context) => ({
                 target: context.targetAbility?.card,
                 duration: Duration.UntilEndOfRound,
                 effect: increaseLimitOnAbilities({

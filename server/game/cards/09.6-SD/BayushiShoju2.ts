@@ -14,13 +14,13 @@ class BayushiShoju2 extends DrawCard {
 
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .gameAction(multiple([
-                loseHonor(context => ({
+                loseHonor((context) => ({
                     target: context.game.getPlayers()
                 })),
-                draw(context => ({
+                draw((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 }))

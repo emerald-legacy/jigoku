@@ -10,13 +10,13 @@ class GarantoGuardian extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .gameAction(selectRing(context => ({
+            .gameAction(selectRing((context) => ({
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 targets: true,
                 message: '{0} chooses to resolve {1}\'s effect',
-                ringCondition: ring => this.game.currentConflict?.getConflictProvinces().some(a => a.element.includes(ring.element)) ?? false,
-                messageArgs: ring => [context.player, ring],
+                ringCondition: (ring) => this.game.currentConflict?.getConflictProvinces().some((a) => a.element.includes(ring.element)) ?? false,
+                messageArgs: (ring) => [context.player, ring],
                 gameAction: resolveRingEffect({ player: context.player })
             })))
             .chatText('resolve a ring effect');

@@ -7,13 +7,13 @@ class AkodoZentaro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Take control of holding')
-            .condition(context => context.source.isAttacking())
+            .condition((context) => context.source.isAttacking())
             .target({
                 cardType: CardType.Holding,
                 controller: Players.Opponent,
                 location: Location.Provinces,
-                cardCondition: card => card.isInConflictProvince() && !card.isUnique() && card.isFaceup()
-            }, ifAble(context => ({
+                cardCondition: (card) => card.isInConflictProvince() && !card.isUnique() && card.isFaceup()
+            }, ifAble((context) => ({
                 ifAbleAction: selectCard({
                     cardType: CardType.Province,
                     location: Location.Provinces,

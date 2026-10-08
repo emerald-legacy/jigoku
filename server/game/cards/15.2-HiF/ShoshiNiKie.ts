@@ -8,9 +8,9 @@ class ShoshiNiKie extends DrawCard {
 
     setupCardAbilities() {
         this.action('ready an ordinary character')
-            .cost(costs.reveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }))
+            .cost(costs.reveal({ cardCondition: (card) => card.isFacedown(), cardType: CardType.Province }))
             .target({
-                cardCondition: card => card.isOrdinary(),
+                cardCondition: (card) => card.isOrdinary(),
                 cardType: CardType.Character,
                 player: Players.Self
             }, ready());

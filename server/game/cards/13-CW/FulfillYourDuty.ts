@@ -11,20 +11,20 @@ class FulfillYourDuty extends DrawCard {
         this.action('Add Province Strength')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
             .condition(() => this.game.isDuringConflict())
-            .selectCard(context => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
+                cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} increases the strength of {1}',
-                messageArgs: cards => [context.player, cards],
+                messageArgs: (cards) => [context.player, cards],
                 gameAction: cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0)
                 }))
             }))
-            .chatText('add {1} to an attacked province\'s strength', context => context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0);
+            .chatText('add {1} to an attacked province\'s strength', (context) => context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0);
     }
 }
 

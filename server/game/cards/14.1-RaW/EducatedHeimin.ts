@@ -11,7 +11,7 @@ class EducatedHeimin extends ProvinceAttachment {
         });
 
         this.persistentEffect({
-            condition: context => !!context?.source.parent,
+            condition: (context) => !!context?.source.parent,
             targetLocation: Location.Provinces,
             match: (card, context) => !!context && card === context.source.parent,
             effect: customRefillProvince((player, province) => {

@@ -8,7 +8,7 @@ class EtherealAlignment extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Restore a province')
             .when({
-                onPhaseEnded: event => event.phase === Phase.Conflict
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
             })
             .target({
                 location: Location.Provinces,
@@ -23,7 +23,7 @@ class EtherealAlignment extends DrawCard {
                 }
             }, multiple([
                 restoreProvince(),
-                moveCard(context => ({
+                moveCard((context) => ({
                     target: context.source,
                     destination: Location.RemovedFromGame
                 }))

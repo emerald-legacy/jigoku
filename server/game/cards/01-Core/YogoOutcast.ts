@@ -6,7 +6,7 @@ class YogoOutcast extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.player.isLessHonorable(),
+            condition: (context) => context.player.isLessHonorable(),
             effect: modifyBothSkills(1)
         });
     }

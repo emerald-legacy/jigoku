@@ -10,13 +10,13 @@ class KaitoNobukai extends DrawCard {
     setupCardAbilities() {
         this.action('Bow each participating characters')
             .cost(costs.sacrificeSelf())
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .gameAction(multiple([
                 bow(() => ({
-                    target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character && card.isParticipating())
+                    target: this.game.findAnyCardsInPlay((card) => card.getType() === CardType.Character && card.isParticipating())
                 })),
                 cardLastingEffect(() => ({
-                    target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character),
+                    target: this.game.findAnyCardsInPlay((card) => card.getType() === CardType.Character),
                     effect: cardCannot('moveToConflict')
                 }))
             ]))

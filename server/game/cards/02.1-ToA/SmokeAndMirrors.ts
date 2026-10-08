@@ -7,13 +7,13 @@ class SmokeAndMirrors extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move shinobi home')
-            .condition(context => context.player.isAttackingPlayer())
+            .condition((context) => context.player.isAttackingPlayer())
             .targetCards({
                 mode: TargetMode.Unlimited,
                 activePromptTitle: 'Choose characters',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('shinobi') && card.isAttacking()
+                cardCondition: (card) => card.hasTrait('shinobi') && card.isAttacking()
             }, sendHome());
     }
 }

@@ -8,13 +8,13 @@ class ShamelessGossip extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a status token')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 name: 'first',
                 activePromptTitle: 'Choose a Character to move a status token from',
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isHonored || card.isDishonored || card.isTainted
+                cardCondition: (card) => card.isHonored || card.isDishonored || card.isTainted
             })
             .target({
                 name: 'second',
@@ -24,7 +24,7 @@ class ShamelessGossip extends DrawCard {
                 cardCondition: (card, context) =>
                     card.controller === context.targets.first.controller &&
                         card !== context.targets.first
-            }, selectToken(context => ({
+            }, selectToken((context) => ({
                 card: context.targets.first,
                 activePromptTitle: 'Which token do you wish to move?',
                 message: '{0} chooses to move {1}',

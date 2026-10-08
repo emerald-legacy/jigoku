@@ -11,7 +11,7 @@ class IsawaTadaka extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => context.player.opponent === undefined || !hasClaimedRing(this, elementSymbol.key, context.player.opponent),
+            condition: (context) => context.player.opponent === undefined || !hasClaimedRing(this, elementSymbol.key, context.player.opponent),
             effect: playerCannot({
                 cannot: 'play',
                 restricts: 'copiesOfDiscardEvents'

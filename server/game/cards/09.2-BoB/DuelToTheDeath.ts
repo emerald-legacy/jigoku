@@ -9,8 +9,8 @@ class DuelToTheDeath extends DrawCard {
         this.action('Initiate a military duel, discarding the loser')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                refuseGameAction: dishonor(context => ({ target: context.targets.duelTarget })),
-                gameAction: duel => discardFromPlay({ target: duel.loser })
+                refuseGameAction: dishonor((context) => ({ target: context.targets.duelTarget })),
+                gameAction: (duel) => discardFromPlay({ target: duel.loser })
             }));
     }
 }

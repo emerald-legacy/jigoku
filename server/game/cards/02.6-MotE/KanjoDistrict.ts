@@ -11,7 +11,7 @@ class KanjoDistrict extends DrawCard {
             .cost(costs.discardImperialFavor())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, bow(), sendHome())
             .chatText('bow and send {0} home');
     }

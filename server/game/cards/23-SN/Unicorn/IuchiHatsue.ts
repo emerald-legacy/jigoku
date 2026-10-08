@@ -13,7 +13,7 @@ export default class IuchiHatsue extends DrawCard {
                 if(!context.game.currentConflict) {
                     return false;
                 }
-                return context.game.currentConflict.getNumberOfParticipantsFor(context.player, card => card.type === CardType.Character && card.hasTrait('creature')) > 0;
+                return context.game.currentConflict.getNumberOfParticipantsFor(context.player, (card) => card.type === CardType.Character && card.hasTrait('creature')) > 0;
             },
             effect: modifyBothSkills(2)
         });
@@ -24,17 +24,17 @@ export default class IuchiHatsue extends DrawCard {
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .target({
                 name: 'characterAtHome',
                 dependsOn: 'characterInConflict',
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,
-                controller: context => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent,
-                player: context => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent
+                controller: (context) => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent,
+                player: (context) => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent
             }, joint([
-                sendHome(context => ({ target: context.targets.characterInConflict })),
+                sendHome((context) => ({ target: context.targets.characterInConflict })),
                 moveToConflict()
             ]))
             .chatText((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);

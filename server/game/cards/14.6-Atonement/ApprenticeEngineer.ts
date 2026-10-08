@@ -14,7 +14,7 @@ class ApprenticeEngineer extends DrawCard {
                 cardType: CardType.Holding,
                 controller: Players.Self,
                 location: Location.DynastyDiscardPile
-            }, selectCard(context => ({
+            }, selectCard((context) => ({
                 activePromptTitle: 'Choose an unbroken province',
                 cardType: CardType.Province,
                 location: Location.Provinces,

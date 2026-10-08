@@ -12,7 +12,7 @@ class KaiuInventor extends DrawCard {
                 cardType: CardType.Holding,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => card.isFaceup()
+                cardCondition: (card) => card.isFaceup()
             }, cardLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 targetLocation: Location.Provinces,

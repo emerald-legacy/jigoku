@@ -10,7 +10,7 @@ class ShosuroHametsu extends DrawCard {
         this.action('Search conflict deck for a poison card')
             .cost(costs.payHonor(1))
             .deckSearch({
-                cardCondition: card => card.hasTrait('poison'),
+                cardCondition: (card) => card.hasTrait('poison'),
                 gameAction: moveCard({
                     destination: Location.Hand
                 })

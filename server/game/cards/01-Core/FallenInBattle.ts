@@ -14,7 +14,7 @@ class FallenInBattle extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, discardFromPlay())
             .max(perConflict(1));
     }

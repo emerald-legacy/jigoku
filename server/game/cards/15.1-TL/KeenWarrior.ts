@@ -14,8 +14,8 @@ class KeenWarrior extends DrawCard {
                     event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
             .gameAction(sequential([
-                draw(context => ({ target: context.player, amount: 2 })),
-                chosenReturnToDeck(context => ({
+                draw((context) => ({ target: context.player, amount: 2 })),
+                chosenReturnToDeck((context) => ({
                     target: context.player,
                     targets: false,
                     shuffle: false,

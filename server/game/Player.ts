@@ -1324,7 +1324,7 @@ export class Player extends GameObject {
 
     hasDeclaredConflictOfType(context: AbilityContext, conflictType: ConflictType): boolean {
         const conflicts = context.game.getConflicts(this);
-        const declaredConflicts = conflicts.filter(conflict => conflict.declaredType === conflictType);
+        const declaredConflicts = conflicts.filter((conflict) => conflict.declaredType === conflictType);
 
         return declaredConflicts.length > 0;
     }

@@ -14,11 +14,11 @@ class WarDogMaster extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source)
             })
-            .cost(costs.discardCardsOf(context => context.player.dynastyDeck[0]))
-            .cardLastingEffect(context => ({
+            .cost(costs.discardCardsOf((context) => context.player.dynastyDeck[0]))
+            .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(discardedCost(context.costs.discardCard))
             }))
-            .chatText('give {0} +{1}{2}', context => [discardedCost(context.costs.discardCard), 'military']);
+            .chatText('give {0} +{1}{2}', (context) => [discardedCost(context.costs.discardCard), 'military']);
     }
 }
 

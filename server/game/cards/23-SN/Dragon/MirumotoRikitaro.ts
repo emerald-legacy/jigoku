@@ -19,7 +19,7 @@ export default class MirumotoRikitaro extends DrawCard {
                     const isAttachment =
                         ec.source.type === CardType.Attachment ||
                         ec.ability instanceof PlayAttachmentAction;
-                    const sourceHasNoAttachment = context.source.attachments.filter(a => a.controller === context.player).length === 0;
+                    const sourceHasNoAttachment = context.source.attachments.filter((a) => a.controller === context.player).length === 0;
                     return (
                         isAttachment &&
                         sourceHasNoAttachment &&

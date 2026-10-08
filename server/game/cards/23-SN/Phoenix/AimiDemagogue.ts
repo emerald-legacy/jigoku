@@ -12,7 +12,7 @@ export default class AimiDemagogue extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, multipleContext((context) => {
                 const gameActions: GameAction[] = [];
 

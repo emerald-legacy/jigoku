@@ -11,17 +11,17 @@ class SeizeTheMind extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => !card.isUnique()
+                cardCondition: (card) => !card.isUnique()
             }, multiple([
                 loseHonor((context) => ({
                     target: context.player,
                     amount: context.target?.getFate() ?? 0
                 })),
-                cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     effect: takeControl(context.player)
                 }))
             ]))
-            .chatText('take control of {0}{1}{2}{3}', context => {
+            .chatText('take control of {0}{1}{2}{3}', (context) => {
                 const fate = context.target.getFate();
                 return fate > 0 ? [' and lose ', fate, ' honor'] : ['', '', ''];
             });

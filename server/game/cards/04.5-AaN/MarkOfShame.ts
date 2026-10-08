@@ -10,10 +10,10 @@ class MarkOfShame extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             })
             .gameAction(sequential([
-                dishonor(context => ({ target: context.source.parentCharacter ?? [] })),
-                dishonor(context => ({ target: context.source.parentCharacter ?? [] }))
+                dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
+                dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
             ]))
-            .chatText('dishonor {1}, then dishonor it again', context => context.source.parentCharacter);
+            .chatText('dishonor {1}, then dishonor it again', (context) => context.source.parentCharacter);
     }
 }
 

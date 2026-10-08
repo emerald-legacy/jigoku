@@ -16,7 +16,7 @@ class DiversionaryManeuver extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move the conflict to another province')
-            .condition(context => context.game.isDuringConflict(ConflictType.Military) && context.player.isAttackingPlayer())
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military) && context.player.isAttackingPlayer())
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
@@ -24,13 +24,13 @@ class DiversionaryManeuver extends DrawCard {
             })
             .gameAction(sequential([
                 multiple([
-                    bow(context => ({
+                    bow((context) => ({
                         target: context.game.currentConflict?.getParticipants()
                     })),
-                    sendHome(context => ({
+                    sendHome((context) => ({
                         target: context.game.currentConflict?.getParticipants()
                     })),
-                    moveConflict(context => ({
+                    moveConflict((context) => ({
                         target: context.target })),
                     selectCards({
                         cardType: CardType.Character,
@@ -39,7 +39,7 @@ class DiversionaryManeuver extends DrawCard {
                         player: Players.Self,
                         optional: true,
                         mode: TargetMode.Unlimited,
-                        cardCondition: card => !card.bowed,
+                        cardCondition: (card) => !card.bowed,
                         message: '{0} moves {1} to the conflict',
                         messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
                         gameAction: moveToConflict()
@@ -52,7 +52,7 @@ class DiversionaryManeuver extends DrawCard {
                     player: Players.Opponent,
                     optional: true,
                     mode: TargetMode.Unlimited,
-                    cardCondition: card => !card.bowed,
+                    cardCondition: (card) => !card.bowed,
                     message: '{0} moves {1} to the conflict',
                     messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
                     gameAction: moveToConflict()

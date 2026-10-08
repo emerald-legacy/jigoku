@@ -14,7 +14,7 @@ class BattleAspirant extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasKeyword('covert')
+                cardCondition: (card) => !card.hasKeyword('covert')
             }, cardLastingEffect({
                 effect: mustBeDeclaredAsDefender()
             }))

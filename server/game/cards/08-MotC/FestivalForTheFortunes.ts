@@ -7,7 +7,7 @@ class FestivalForTheFortunes extends DrawCard {
     setupCardAbilities() {
         this.action('Honor each character')
             .honor(() => ({
-                target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character)
+                target: this.game.findAnyCardsInPlay((card) => card.getType() === CardType.Character)
             }))
             .chatText('honor each character');
     }

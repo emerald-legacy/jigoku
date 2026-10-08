@@ -7,12 +7,12 @@ class MotoAriq extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a ready character to the conflict')
-            .condition(context => !!(context.source.isParticipating()
+            .condition((context) => !!(context.source.isParticipating()
                 && context.player.opponent
                 && context.player.opponent.isMoreHonorable()))
             .target({
                 player: Players.Opponent,
-                cardCondition: card => !card.bowed,
+                cardCondition: (card) => !card.bowed,
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to move to the conflict',
                 controller: Players.Opponent

@@ -11,7 +11,7 @@ class AGameOfLetters extends DrawCard {
                 name: 'token',
                 activePromptTitle: 'Choose a token',
                 cardType: CardType.Character,
-                tokenCondition: token => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
+                tokenCondition: (token) => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
             })
             .target({
                 name: 'character',

@@ -13,7 +13,7 @@ class DisplayOfPower extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
             })
-            .handler(context => {
+            .handler((context) => {
                 this.game.once(EventName.OnResolveConflictRing + ':' + AbilityType.WouldInterrupt, (event: unknown) => {
                     if(event instanceof Event && event.is(EventName.OnResolveConflictRing)) {
                         this.onResolveConflictRing(event, context);

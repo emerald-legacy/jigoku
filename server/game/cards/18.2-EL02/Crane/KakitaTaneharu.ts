@@ -13,7 +13,7 @@ class KakitaTaneharu extends DrawCard {
                 placeOnBottomInRandomOrder: true,
                 shuffle: false,
                 message: '{0} puts a card underneath {1}',
-                messageArgs: context => {
+                messageArgs: (context) => {
                     return [context.player, context.source];
                 },
                 gameAction: placeCardUnderneath({

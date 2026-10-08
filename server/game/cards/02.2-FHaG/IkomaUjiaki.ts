@@ -9,12 +9,12 @@ class IkomaUjiaki extends DrawCard {
     setupCardAbilities() {
         this.action('Put characters into play')
             .cost(costs.discardImperialFavor())
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .gameAction(sequential([
-                reveal(context => ({
+                reveal((context) => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
-                selectCards(context => ({
+                selectCards((context) => ({
                     activePromptTitle: 'Choose up to two characters',
                     numCards: 2,
                     targets: true,
@@ -23,9 +23,9 @@ class IkomaUjiaki extends DrawCard {
                     cardType: CardType.Character,
                     location: [Location.Provinces],
                     controller: Players.Self,
-                    cardCondition: card => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
+                    cardCondition: (card) => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
                     message: '{0} puts {1} into play into the conflict',
-                    messageArgs: cards => [context.player, cards],
+                    messageArgs: (cards) => [context.player, cards],
                     gameAction: putIntoConflict()
                 }))
             ]))

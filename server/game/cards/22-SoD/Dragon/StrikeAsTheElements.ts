@@ -13,14 +13,14 @@ export default class StrikeAsTheElements extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))
             .ringTarget({
                 name: 'ring',
                 activePromptTitle: 'Choose an unclaimed ring',
-                ringCondition: ring => ring.isUnclaimed()
+                ringCondition: (ring) => ring.isUnclaimed()
             }, claimRing({ takeFate: true, type: ConflictType.Military }))
             .chatText((context) => msg`grant +2${'military'} to ${context.targets.character} and claim the ${context.rings.ring}`);
     }

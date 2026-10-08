@@ -18,7 +18,7 @@ class AWarOnTwoFronts extends DrawCard {
                 cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
             }, sequential([
                 reveal(),
-                conflictLastingEffect(context => ({
+                conflictLastingEffect((context) => ({
                     effect: additionalAttackedProvince(context.target)
                 }))
             ]))

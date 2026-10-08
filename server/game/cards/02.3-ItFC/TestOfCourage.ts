@@ -7,11 +7,11 @@ class TestOfCourage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character into conflict')
-            .condition(context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid))
+            .condition((context) => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('lion')
+                cardCondition: (card) => card.isFaction('lion')
             }, sequential([
                 moveToConflict(),
                 honor()

@@ -11,7 +11,7 @@ class ExpertInterpreter extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prevent characters from entering play while contesting a ring')
             .when({
-                onPhaseStarted: event => event.phase === Phase.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .cost(costs.optionalTakeHonorFromOpponent())
             .ringTarget({

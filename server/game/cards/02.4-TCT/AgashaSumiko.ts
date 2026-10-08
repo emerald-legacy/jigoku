@@ -6,7 +6,7 @@ class AgashaSumiko extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
+            condition: (context) => (
                 context.player.imperialFavor !== '' &&
                 context.source.isAttacking()
             ),

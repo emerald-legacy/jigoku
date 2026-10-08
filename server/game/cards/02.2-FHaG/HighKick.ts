@@ -11,13 +11,13 @@ class HighKick extends DrawCard {
         this.action('Bow and Disable a character')
             .cost(costs.bow({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('monk') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait('monk') && card.isParticipating()
             }))
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }, bow(), cardLastingEffect({ effect: cannotTriggerAbilities() }))
             .chatText('bow {0} and prevent them from using abilities');
     }
