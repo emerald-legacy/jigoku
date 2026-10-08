@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -18,7 +19,7 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
         return ['extend the duel challenge to {0}', []];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
 
         if(card.type !== CardType.Character) {
@@ -35,7 +36,7 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;

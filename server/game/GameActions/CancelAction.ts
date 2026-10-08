@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import { CardType, EventName } from '../Constants.js';
@@ -33,7 +34,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         return replacementGameAction ? context.target : context.event?.card;
     }
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         if(properties.replacementGameAction) {
             properties.replacementGameAction.setDefaultTarget(() => properties.target);
@@ -41,7 +42,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         return properties;
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!context.event || context.event.cancelled) {
             return false;
         }
@@ -68,14 +69,14 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         );
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const event = this.createEvent(null, context, additionalProperties);
         super.addPropertiesToEvent(event, null, context, additionalProperties);
         event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         events.push(event);
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties = {}): void {
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const cancelled = context.event;
         if(!cancelled) {
@@ -102,7 +103,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         context.cancel();
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(!replacementGameAction) {
             return !!context.event && !context.event.cannotBeCancelled;
@@ -114,7 +115,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         return context.event?.card ? [context.event.card] : [];
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { replacementGameAction } = this.getProperties(context);
         return (
             replacementGameAction !== undefined &&

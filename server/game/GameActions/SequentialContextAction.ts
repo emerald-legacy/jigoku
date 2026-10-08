@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
@@ -15,21 +16,21 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
         return properties.gameActions[0].getEffectMessage(context);
     }
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => properties.gameActions);
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { gameActions } = this.getProperties(context, additionalProperties);
         return gameActions.some((gameAction) => gameAction.hasLegalTarget(context));
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context));
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
@@ -49,7 +50,7 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}) {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) =>
             gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)

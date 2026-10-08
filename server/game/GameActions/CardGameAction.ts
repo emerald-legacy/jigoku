@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
@@ -34,11 +35,11 @@ export class CardGameAction<
         return [context.source];
     }
 
-    checkEventCondition(event: ActionEvent<N, C>, additionalProperties = {}): boolean {
+    checkEventCondition(event: ActionEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return !!event.card && this.canAffect(event.card, event.context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         for(const card of targetList(target)) {
             let allCostsPaid = true;
@@ -108,7 +109,7 @@ export class CardGameAction<
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
@@ -117,7 +118,7 @@ export class CardGameAction<
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    checkForRefillProvince(card: BaseCard, event: { context: C }, additionalProperties: Record<string, unknown> = {}): void {
+    checkForRefillProvince(card: BaseCard, event: { context: C }, additionalProperties: ActionOverrides = {}): void {
         if(!card.isInProvince() || card.location === Location.StrongholdProvince) {
             return;
         }

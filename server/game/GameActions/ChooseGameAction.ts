@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -21,16 +22,16 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
         messageArgs: []
     };
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => Object.values(properties.options).map((option) => option.action));
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { options } = this.getProperties(context, additionalProperties);
         return Object.values(options).some(({ action }) => action.hasLegalTarget(context));
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const legalChoices = Object.entries(properties.options).filter(([_, option]) =>
             option.action.hasLegalTarget(context)
@@ -63,7 +64,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
         });
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { options } = this.getProperties(context, additionalProperties);
         return Object.values(options).some(({ action }) => action.canAffect(target, context));
     }

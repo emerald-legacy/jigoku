@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, FavorType } from '../Constants.js';
 import type Player from '../Player.js';
@@ -13,7 +14,7 @@ export class ClaimFavorAction<C extends AbilityContext = AbilityContext> extends
     eventName = EventName.OnClaimFavor;
     effect = 'claim the Emperor\'s favor';
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return targetList(this.getProperties(context, additionalProperties).target).length > 0;
     }
 
@@ -21,7 +22,7 @@ export class ClaimFavorAction<C extends AbilityContext = AbilityContext> extends
         return super.canAffect(player, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnClaimFavor, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnClaimFavor, C>, additionalProperties: ActionOverrides = {}): void {
         const { side } = this.getProperties(event.context, additionalProperties);
         event.player.claimImperialFavor(side);
     }

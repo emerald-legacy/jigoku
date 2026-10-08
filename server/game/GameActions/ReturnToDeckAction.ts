@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -39,7 +40,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         return ['return {0} to the ' + (properties.bottom ? 'bottom' : 'top') + ' of its owner\'s deck', []];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context);
         let location: Location[] = Array.isArray(properties.location) ? [...properties.location] : [properties.location];
         const index = location.indexOf(Location.Provinces);
@@ -54,7 +55,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         );
     }
 
-    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { shuffle, target, bottom } = this.getProperties(context, additionalProperties);
         super.updateEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
@@ -65,7 +66,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         }
     }
 
-    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
         super.eventHandler(event, additionalProperties);
         const card = event.card;
         if(event.shuffle) {

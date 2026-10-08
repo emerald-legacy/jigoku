@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players, TargetMode } from '../Constants.js';
@@ -29,7 +30,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         return ['make {0} return {1} cards to their deck', [this.getProperties(context).amount]];
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(player.hand.length === 0 || properties.amount === 0) {
             return false;
@@ -37,7 +38,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
             const amount = Math.min(player.hand.length, properties.amount);
@@ -74,7 +75,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         }
     }
 
-    addPropertiesToEvent(event: PlayerEvent<EventName.OnCardMoved, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: PlayerEvent<EventName.OnCardMoved, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };

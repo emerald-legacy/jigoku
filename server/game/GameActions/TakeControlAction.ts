@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Duration, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -26,7 +27,7 @@ export class TakeControlAction<C extends AbilityContext = AbilityContext> extend
         canChangeZoneNTimes: 0
     };
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         if(properties.effect.length === 0) {
             properties.effect = [Effects.takeControl(context.player)];
@@ -34,11 +35,11 @@ export class TakeControlAction<C extends AbilityContext = AbilityContext> extend
         return properties;
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return !card.anotherUniqueInPlay(context.player) && super.canAffect(card, context, additionalProperties);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.card }, properties));
     }

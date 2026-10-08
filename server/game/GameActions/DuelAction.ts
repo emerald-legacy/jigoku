@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
@@ -36,7 +37,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }
@@ -52,7 +53,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         return this.getProperties(context).challenger;
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!context.player.opponent) {
             return false;
         }
@@ -78,7 +79,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         );
     }
 
-    resolveDuel(duel: Duel, context: C, additionalProperties = {}): void {
+    resolveDuel(duel: Duel, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const gameAction =
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
@@ -94,14 +95,14 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
     }
 
-    honorCosts(prompt: unknown, context: C, additionalProperties = {}): void {
+    honorCosts(prompt: unknown, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.costHandler) {
             properties.costHandler(context, prompt);
         }
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target, refuseGameAction, refusalMessage, refusalMessageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -145,7 +146,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnDuelInitiated, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnDuelInitiated, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const resolvedCards = targetList(cards || properties.target).filter((card) => card.isDrawCard());
 
@@ -167,7 +168,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         event.duel = duel;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const cards = event.cards;
         const properties = this.getProperties(context, additionalProperties);
@@ -215,11 +216,11 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         );
     }
 
-    checkEventCondition(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+    checkEventCondition(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: ActionOverrides = {}): boolean {
         return event.cards.some((card) => this.canAffect(card, event.context, additionalProperties));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const mockDuel = new Duel(
             context.game,

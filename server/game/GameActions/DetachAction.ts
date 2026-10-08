@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -17,7 +18,7 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
         return ['detach {1} from {0}', [target.parent]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return !!(
             card.location === Location.PlayArea &&
             card.parent &&

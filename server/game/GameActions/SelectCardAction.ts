@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -124,7 +125,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
     };
 
     /** A custom `effect` brings its own arguments, from `{0}` on. */
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
@@ -136,7 +137,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         return ['choose a target for {0}', []];
     }
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const { cardCondition, subActionProperties } = properties;
@@ -153,7 +154,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         return Object.assign(properties, { selector });
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const player =
             (properties.targets && context.choosingPlayerOverride) ||
@@ -162,7 +163,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         return properties.selector.canTarget(card, context, player);
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const player =
             (properties.targets && context.choosingPlayerOverride) ||
@@ -171,7 +172,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         return properties.selector.hasEnoughTargets(context, player);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
@@ -226,7 +227,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         context.game.promptForSelect(player, finalProperties);
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.targets && properties.player !== Players.Opponent;
     }

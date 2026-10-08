@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -37,13 +38,13 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         cardCondition: () => true
     };
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.cards.some((c) =>
             properties.gameAction.canAffect(
@@ -54,7 +55,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.options) {
             return true;
@@ -70,7 +71,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cardCondition = (card: DrawCard, context: C) =>
             properties.gameAction.hasLegalTarget(
@@ -106,7 +107,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition: (card: DrawCard) => cardCondition(card, context) });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.targets ||

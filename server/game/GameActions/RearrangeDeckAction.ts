@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Decks, EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -41,12 +42,12 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         return deck === Decks.DynastyDeck ? player.dynastyDeck : player.conflictDeck;
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { deck } = this.getProperties(context, additionalProperties);
         return this.#deck(player, deck).length > 0 && super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
             if(!this.canAffect(player, context, additionalProperties)) {
@@ -78,7 +79,7 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         });
     }
 
-    #putBack(event: PlayerEvent<EventName.Unnamed, C>, ordered: DrawCard[], additionalProperties = {}): void {
+    #putBack(event: PlayerEvent<EventName.Unnamed, C>, ordered: DrawCard[], additionalProperties: ActionOverrides = {}): void {
         const { deck, message } = this.getProperties(event.context, additionalProperties);
         this.#deck(event.player, deck).splice(0, ordered.length, ...ordered);
         if(message) {

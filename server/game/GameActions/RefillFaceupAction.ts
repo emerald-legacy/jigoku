@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Location } from '../Constants.js';
 import type { EventName } from '../Constants.js';
@@ -16,7 +17,7 @@ export class RefillFaceupAction<C extends AbilityContext = AbilityContext> exten
         return [context.player];
     }
 
-    eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         let { location } = this.getProperties(context, additionalProperties);
         if(!Array.isArray(location)) {

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Decks, EventName, Location, TargetMode } from '../Constants.js';
@@ -60,7 +61,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         cardCondition: () => true
     };
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(derive(properties.amount, context) === 0) {
             return false;
@@ -82,7 +83,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return undefined;
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const amount = derive(properties.amount, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
@@ -92,13 +93,13 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return [context.player];
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = derive(amount, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const player = properties.player || context.player;
         const event = this.getEvent(player, context);
@@ -122,7 +123,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         }
     }
 
-    #selectCard(event: ActionEvent<EventName.OnDeckSearch, C>, additionalProperties: Record<string, unknown> = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
+    #selectCard(event: ActionEvent<EventName.OnDeckSearch, C>, additionalProperties: ActionOverrides = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         const canCancel = properties.targetMode !== TargetMode.Exactly;

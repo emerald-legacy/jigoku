@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -20,7 +21,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
         return ['{2} {1} fate from {0}', [properties.amount, properties.removeOnly ? 'remove' : 'take']];
     }
 
-    canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
+    canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             context.player.checkRestrictions('takeFateFromRings', context) &&
@@ -30,7 +31,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
         );
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         event.fate = properties.amount;
         event.origin = ring;
@@ -42,7 +43,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { amount } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&

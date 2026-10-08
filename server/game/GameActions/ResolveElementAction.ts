@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName } from '../Constants.js';
 import { Event } from '../Events/Event.js';
@@ -18,7 +19,7 @@ export class ResolveElementAction<C extends AbilityContext = AbilityContext> ext
     eventName = EventName.OnResolveRingElement;
     effect = 'resolve {0} effect';
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const rings = targetList(properties.target).flatMap((element) => {
             if(typeof element === 'string') {

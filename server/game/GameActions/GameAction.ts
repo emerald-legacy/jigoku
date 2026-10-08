@@ -43,6 +43,9 @@ function fillDefaults<T extends object>(properties: Partial<T>, defaults: Partia
     }
 }
 
+/** What a caller adds to an action's properties when it resolves or checks it, such as a composite's target. Never mutated. */
+export type ActionOverrides = Readonly<Record<string, unknown>>;
+
 const baseDefaults = { cannotBeCancelled: false, optional: false };
 
 const hasTarget = (properties: object | undefined) => !!properties && 'target' in properties;
@@ -83,7 +86,7 @@ export class GameAction<
         return this.#defaultTargetsOverride ? this.#defaultTargetsOverride(context) : this.defaultTargets(context);
     }
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
         return this.#resolveProperties(context, additionalProperties).properties;
     }
 
@@ -93,7 +96,7 @@ export class GameAction<
      */
     protected getCompositeProperties(
         context: C,
-        additionalProperties: object,
+        additionalProperties: ActionOverrides,
         actions: (properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>) => (GameAction | undefined)[]
     ): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
         const { properties, targetGiven } = this.#resolveProperties(context, additionalProperties);
@@ -103,7 +106,7 @@ export class GameAction<
         return properties;
     }
 
-    #resolveProperties(context: C, additionalProperties: object) {
+    #resolveProperties(context: C, additionalProperties: ActionOverrides) {
         const defaults = this.defaultProperties;
         const own = this.#own.resolve(context);
         const properties = Object.assign(
@@ -128,7 +131,7 @@ export class GameAction<
     }
 
     /** The effect message with `effectMessageTarget` as `{0}`, in front of `effectMessage`'s arguments. */
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const [format, args] = this.effectMessage(context, additionalProperties);
         return [format, [this.effectMessageTarget(context, additionalProperties), ...args]];
     }
@@ -139,7 +142,7 @@ export class GameAction<
     }
 
     /** `{0}` of the effect message: `undefined` for a message without one. */
-    protected effectMessageTarget(context: C, additionalProperties = {}): MsgArg {
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return this.getProperties(context, additionalProperties).target;
     }
 
@@ -148,7 +151,7 @@ export class GameAction<
         this.#defaultTargetsOverride = func;
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         return (
             this.targetType.includes(target.type) &&
@@ -157,11 +160,11 @@ export class GameAction<
         );
     }
 
-    #targets(context: C, additionalProperties = {}): GameActionTarget[] {
+    #targets(context: C, additionalProperties: ActionOverrides = {}): GameActionTarget[] {
         return targetList(this.getProperties(context, additionalProperties).target);
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         for(const candidateTarget of this.#targets(context, additionalProperties)) {
             if(this.canAffect(candidateTarget, context, additionalProperties)) {
                 return true;
@@ -170,7 +173,7 @@ export class GameAction<
         return false;
     }
 
-    allTargetsLegal(context: C, additionalProperties = {}): boolean {
+    allTargetsLegal(context: C, additionalProperties: ActionOverrides = {}): boolean {
         for(const candidateTarget of this.#targets(context, additionalProperties)) {
             if(!this.canAffect(candidateTarget, context, additionalProperties)) {
                 return false;
@@ -179,7 +182,7 @@ export class GameAction<
         return true;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         for(const target of this.#targets(context, additionalProperties)) {
             if(this.canAffect(target, context, additionalProperties)) {
                 events.push(this.getEvent(target, context, additionalProperties));
@@ -187,20 +190,20 @@ export class GameAction<
         }
     }
 
-    getEvent(target: TargetValue, context: C, additionalProperties = {}): ActionEvent<N, C> {
+    getEvent(target: TargetValue, context: C, additionalProperties: ActionOverrides = {}): ActionEvent<N, C> {
         const event = this.createEvent(target, context, additionalProperties);
         this.updateEvent(event, target, context, additionalProperties);
         return event;
     }
 
-    updateEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, additionalProperties = {}): void {
+    updateEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, additionalProperties: ActionOverrides = {}): void {
         event.name = this.eventName;
         this.addPropertiesToEvent(event, target, context, additionalProperties);
         event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         event.condition = () => this.checkEventCondition(event, additionalProperties);
     }
 
-    createEvent(target: TargetValue, context: C, additionalProperties: Record<string, unknown> = {}): ActionEvent<N, C> {
+    createEvent(target: TargetValue, context: C, additionalProperties: ActionOverrides = {}): ActionEvent<N, C> {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- filled in by addPropertiesToEvent; checkEventCondition cancels a wrong kind
         const event = new Event(EventName.Unnamed, { cannotBeCancelled, context }) as ActionEvent<N, C>;
@@ -221,7 +224,7 @@ export class GameAction<
         context.game.queueSimpleStep(() => context.game.openEventWindow(events));
     }
 
-    getEventArray(context: C, additionalProperties = {}): Event[] {
+    getEventArray(context: C, additionalProperties: ActionOverrides = {}): Event[] {
         const events: Event[] = [];
         this.addEventsToArray(events, context, additionalProperties);
         return events;
@@ -242,7 +245,7 @@ export class GameAction<
         return !event.cancelled && event.name === this.eventName;
     }
 
-    isOptional(context: C, additionalProperties = {}): boolean {
+    isOptional(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.getProperties(context, additionalProperties).optional;
     }
 

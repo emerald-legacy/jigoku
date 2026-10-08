@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -16,7 +17,7 @@ export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> ext
     targetType = [CardType.Character, CardType.Attachment, CardType.Holding, CardType.Event];
     effect = 'remove {0} from the game';
 
-    canAffect(card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location

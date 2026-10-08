@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -10,7 +11,7 @@ export interface MenuPromptProperties extends GameActionProperties {
     player?: Players.Self | Players.Opponent;
     gameAction: GameAction;
     choices: string[] | ((properties: MenuPromptProperties) => string[]);
-    choiceHandler: (choice: string, displayMessage: boolean, properties: MenuPromptProperties) => object;
+    choiceHandler: (choice: string, displayMessage: boolean, properties: MenuPromptProperties) => ActionOverrides;
 }
 
 export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends GameAction<MenuPromptProperties, EventName, C> {
@@ -18,13 +19,13 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
         return ['make a choice for {0}', []];
     }
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         const choices = properties.choices;
         return Object.assign(properties, { choices: typeof choices === 'function' ? choices(properties) : choices });
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.choices.some((choice) => {
             const childProperties = properties.choiceHandler(choice, false, properties);
@@ -32,7 +33,7 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
         });
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.choices.some((choice) => {
             const childProperties = properties.choiceHandler(choice, false, properties);
@@ -40,7 +41,7 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
         });
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const choices = properties.choices;
         if(choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {

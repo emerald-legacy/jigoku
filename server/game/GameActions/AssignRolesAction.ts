@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import BaseCard from '../BaseCard.js';
 import { EventName, Players } from '../Constants.js';
@@ -28,21 +29,21 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
     name = 'assignRoles';
     defaultProperties: { player: Players.Self | Players.Opponent } = { player: Players.Self };
 
-    #canTake(role: string, card: BaseCard, context: C, additionalProperties = {}): boolean {
+    #canTake(role: string, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const action = this.getProperties(context, additionalProperties).roles[role];
         return !!action && action.canAffect(card, context, { target: card });
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { roles } = this.getProperties(context, additionalProperties);
         return target instanceof BaseCard && Object.keys(roles).some((role) => this.#canTake(role, target, context, additionalProperties));
     }
 
-    #chooser(context: C, additionalProperties = {}): Player | undefined {
+    #chooser(context: C, additionalProperties: ActionOverrides = {}): Player | undefined {
         return this.getProperties(context, additionalProperties).player === Players.Opponent ? context.player.opponent : context.player;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cards = targetList(properties.target).filter((target) => target instanceof BaseCard);
         const [first, second] = Object.keys(properties.roles);
@@ -77,7 +78,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         this.#chooseRole(cards, [first, second], chooser, assign, context, additionalProperties);
     }
 
-    #chooseRole(cards: BaseCard[], roles: string[], chooser: Player, assign: (role: string, card: BaseCard) => void, context: C, additionalProperties: object): void {
+    #chooseRole(cards: BaseCard[], roles: string[], chooser: Player, assign: (role: string, card: BaseCard) => void, context: C, additionalProperties: ActionOverrides): void {
         const possible = roles.filter((role) => cards.some((card) => this.#canTake(role, card, context, additionalProperties)));
         if(possible.length === 1) {
             this.#chooseCard(possible[0], cards, roles, chooser, assign, false, context, additionalProperties);
@@ -101,7 +102,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         assign: (role: string, card: BaseCard) => void,
         canGoBack: boolean,
         context: C,
-        additionalProperties: object
+        additionalProperties: ActionOverrides
     ): void {
         context.game.promptForSelect(chooser, {
             activePromptTitle: `Choose a character to ${role.toLowerCase()}`,

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -27,7 +28,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         return super.canAffect(card, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         const cards = targetList(target).filter((card) => this.canAffect(card, context));
         if(cards.length === 0) {
@@ -47,7 +48,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         event.context = context;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         const cards = event.cards;

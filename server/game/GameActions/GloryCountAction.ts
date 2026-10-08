@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
@@ -16,11 +17,11 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
         return true;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: ActionEvent<EventName.OnGloryCount, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnGloryCount, C>, additionalProperties: ActionOverrides = {}): void {
         const game = event.context.game;
         const properties = this.getProperties(event.context, additionalProperties);
 

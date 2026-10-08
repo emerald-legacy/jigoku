@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
@@ -21,11 +22,11 @@ export class PlayerAction<
         return context.player && context.player.opponent ? [context.player.opponent] : [];
     }
 
-    checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+    checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.player, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.player = player;
     }

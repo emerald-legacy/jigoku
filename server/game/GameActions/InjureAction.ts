@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -29,14 +30,14 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         return [context.source];
     }
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         this.removeFateGameAction.setDefaultTarget(() => properties.target);
         this.discardGameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!(target instanceof DrawCard)) {
             return false;
         }
@@ -51,7 +52,7 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         return this.removeFateGameAction.canAffect(target, context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const target of targetList(properties.target)) {
             if(target.getFate() === 0) {

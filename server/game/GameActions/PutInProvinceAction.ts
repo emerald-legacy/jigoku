@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -43,7 +44,7 @@ export class PutInProvinceAction<C extends AbilityContext = AbilityContext> exte
         return ['move {0} to {1}\'s {2}', [destinationController, properties.destination]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { changePlayer, destination } = this.getProperties(
             context,
             additionalProperties
@@ -56,7 +57,7 @@ export class PutInProvinceAction<C extends AbilityContext = AbilityContext> exte
         return canMove;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();

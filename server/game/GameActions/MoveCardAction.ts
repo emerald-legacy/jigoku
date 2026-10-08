@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -52,7 +53,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         ];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { changePlayer, destination } = this.getProperties(context, additionalProperties);
         return (
             (!changePlayer ||
@@ -64,7 +65,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties = {}): void {
+    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(card.isDrawCard()) {

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -13,11 +14,11 @@ export class ReturnToHandAction<C extends AbilityContext = AbilityContext> exten
     cost = 'returning {0} to their hand';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event];
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return card.location === Location.PlayArea && super.canAffect(card, context, additionalProperties);
     }
 
-    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         super.updateEvent(event, card, context, additionalProperties);
         event.destination = Location.Hand;
     }

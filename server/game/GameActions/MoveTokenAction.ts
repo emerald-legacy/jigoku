@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventName, Location } from '../Constants.js';
@@ -14,16 +15,16 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
     name = 'moveStatusToken';
     eventName = EventName.OnStatusTokenMoved;
 
-    protected effectMessage(context: C, additionalProperties = {}): MessageArgs {
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { target, recipient } = this.getProperties(context, additionalProperties);
         return ['move {0}\'s {1} to {2}', [target, recipient]];
     }
 
-    protected effectMessageTarget(context: C, additionalProperties = {}): MsgArg {
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return targetList(this.getProperties(context, additionalProperties).target)[0].card;
     }
 
-    canAffect(token: StatusToken, context: C, additionalProperties = {}): boolean {
+    canAffect(token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { recipient } = this.getProperties(context);
         if(recipient.location !== Location.PlayArea) {
             return false;
@@ -46,7 +47,7 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(token, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenMoved, C>, token: StatusToken, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenMoved, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
         const { recipient } = this.getProperties(context);
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;

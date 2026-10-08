@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -48,7 +49,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         return ['attach {1} to {0}', [properties.attachment]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.viaDisguised) {
             return true;
@@ -103,7 +104,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         event.context = context;
     }
 
-    eventHandler(event: AttachEvent<C>, additionalProperties = {}): void {
+    eventHandler(event: AttachEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         const parent = event.parent;
         const context = event.context;

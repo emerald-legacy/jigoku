@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -15,26 +16,26 @@ export interface OptionalActionProperties extends GameActionProperties {
 }
 
 export class OptionalAction<C extends AbilityContext = AbilityContext> extends GameAction<OptionalActionProperties, EventName, C> {
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction]);
     }
 
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.getEffectMessage(context);
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}) {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.hasLegalTarget(context, additionalProperties);
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}) {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.canAffect(target, context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
 
         context.player.game.promptWithHandlerMenu(context.player, {
@@ -47,7 +48,7 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
         });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}) {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
     }
@@ -56,7 +57,7 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
         properties: OptionalActionProperties,
         events: Event[],
         context: C,
-        additionalProperties = {}
+        additionalProperties: ActionOverrides = {}
     ) {
         properties.gameAction.addEventsToArray(events, context, additionalProperties);
         const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { EntersPlayStatus } from '../Constants.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -93,7 +94,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return true;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -107,7 +108,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const player = this.getPutIntoPlayPlayer(context);
         const card = event.card;

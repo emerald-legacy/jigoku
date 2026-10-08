@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
@@ -23,7 +24,7 @@ export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends 
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnClaimRing, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnClaimRing, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { takeFate, type } = this.getProperties(context, additionalProperties);
         const ring = event.ring;

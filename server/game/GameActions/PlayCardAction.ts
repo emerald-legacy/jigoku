@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAction from '../BaseAction.js';
 import type BaseCard from '../BaseCard.js';
@@ -147,7 +148,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         ignoredRequirements: []
     };
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -195,7 +196,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const [card] = targetList(properties.target);
         if(!card || !card.isDrawCard()) {
@@ -230,7 +231,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         card: DrawCard,
         context: C,
         actionContext: AbilityContext,
-        additionalProperties: Record<string, unknown> = {}
+        additionalProperties: ActionOverrides = {}
     ): Event {
         const properties = this.getProperties(context, additionalProperties);
         const event = this.createEvent(card, context, additionalProperties);

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
@@ -110,7 +111,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         return ['resolve {0}\'s {1} ability', [this.getProperties(context).ability.title]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             super.canAffect(card, context) &&

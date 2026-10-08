@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -27,12 +28,12 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
         return ['place {0} underneath {1}', [this.getProperties(context).destination]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { destination } = this.getProperties(context, additionalProperties);
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(card.isDrawCard()) {

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -20,7 +21,7 @@ export class BreakAction<C extends AbilityContext = AbilityContext> extends Card
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnBreakProvince, C>, card: ProvinceCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnBreakProvince, C>, card: ProvinceCard, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.conflict = context.game.currentConflict;
     }

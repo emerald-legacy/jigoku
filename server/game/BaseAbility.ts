@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameActions/GameAction.js';
 import AbilityTargetAbility from './AbilityTargets/AbilityTargetAbility.js';
 import AbilityTargetCard from './AbilityTargets/AbilityTargetCard.js';
 import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
@@ -47,7 +48,7 @@ interface AbilityTarget extends DependentTarget {
  * property factories get that context. The ability checks that it is a `GameAction` when stored.
  */
 export interface DeclaredGameAction<C = never> {
-    hasLegalTarget(context: C, additionalProperties?: object): boolean;
+    hasLegalTarget(context: C, additionalProperties?: ActionOverrides): boolean;
 }
 
 export function toGameAction(action: object, message = 'An ability\'s gameAction must be a game action'): GameAction {

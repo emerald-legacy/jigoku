@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -42,7 +43,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
         const card = event.card;

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -16,11 +17,11 @@ export interface AffinityActionProperties extends GameActionProperties {
 }
 
 export class AffinityAction<C extends AbilityContext = AbilityContext> extends GameAction<AffinityActionProperties, EventName, C> {
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction, properties.noAffinityGameAction]);
     }
 
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.getEffectMessage(context);
@@ -29,7 +30,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         return properties.noAffinityGameAction?.getEffectMessage(context) ?? ['', []];
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}) {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.hasLegalTarget(context, additionalProperties);
@@ -38,7 +39,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         return properties.noAffinityGameAction?.hasLegalTarget(context, additionalProperties) ?? false;
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}) {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.canAffect(target, context, additionalProperties);
@@ -47,7 +48,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         return properties.noAffinityGameAction?.canAffect(target, context, additionalProperties) ?? false;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(!context.player.hasAffinity(properties.trait, context)) {
             return properties.noAffinityGameAction?.addEventsToArray(events, context, additionalProperties);
@@ -67,7 +68,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}) {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
@@ -81,7 +82,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         properties: AffinityActionProperties,
         events: Event[],
         context: C,
-        additionalProperties = {}
+        additionalProperties: ActionOverrides = {}
     ) {
         properties.gameAction.addEventsToArray(events, context, additionalProperties);
         if(properties.effect === undefined) {

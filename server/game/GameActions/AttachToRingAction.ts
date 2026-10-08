@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -21,7 +22,7 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
         return ['attach {1} to {0}', [this.getProperties(context).attachment]];
     }
 
-    canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
+    canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(!context.player) {
             return false;
@@ -35,17 +36,17 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
         return super.canAffect(ring, context);
     }
 
-    checkEventCondition(event: ActionEvent<EventName.OnCardAttached, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+    checkEventCondition(event: ActionEvent<EventName.OnCardAttached, C>, additionalProperties: ActionOverrides = {}): boolean {
         const parent = event.parent;
         return parent instanceof Ring && this.canAffect(parent, event.context, additionalProperties);
     }
 
-    isEventFullyResolved(event: AnyEvent, card: BaseCard | Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, card: BaseCard | Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, C>, ring: BaseCard | Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, C>, ring: BaseCard | Ring, context: C, additionalProperties: ActionOverrides = {}): void {
         const { attachment } = this.getProperties(context, additionalProperties);
         event.parent = ring;
         if(attachment) {
