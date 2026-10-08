@@ -24,7 +24,7 @@ export default class Infiltrator extends DrawCard {
                         },
                         'Discard this card': {
                             action: discardCard({ target: topCard }),
-                            message: (_context, target, player) => msg`${player} chooses to discard ${target}`
+                            message: (_context, _target, player) => msg`${player} chooses to discard ${topCard}`
                         }
                     }
                 };
