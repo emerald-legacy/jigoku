@@ -16,7 +16,7 @@ export default class ShamefulDisplay extends ProvinceCard {
                 cardCondition: (card) => card.isParticipating()
             }, assignRoles({
                 roles: { Honor: honor(), Dishonor: dishonor() },
-                message: (assigned, context) => msg`${context.player} chooses to honor ${assigned.Honor} and dishonor ${assigned.Dishonor}`
+                message: (context, assigned) => msg`${context.player} chooses to honor ${assigned.Honor} and dishonor ${assigned.Dishonor}`
             }))
             .chatText('change the personal honor of {0}');
     }

@@ -18,7 +18,7 @@ export interface AssignRolesProperties<R extends string = string> extends CardAc
     pick?: NoInfer<R>;
     activePromptTitle?: string;
     /** Printed once each card has its role. Method syntax, so a card's narrower role names fit. */
-    message?(assigned: Record<NoInfer<R>, BaseCard>, context: AbilityContext): MessageArgs;
+    message?(context: AbilityContext, assigned: Record<NoInfer<R>, BaseCard>, chooser: Player): MessageArgs;
 }
 
 /**
@@ -59,7 +59,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
             const otherRole = role === first ? second : first;
             const assigned: Record<string, BaseCard> = { [role]: card, [otherRole]: other };
             if(properties.message) {
-                const [format, args] = properties.message(assigned, context);
+                const [format, args] = properties.message(context, assigned, chooser);
                 context.game.addMessage(format, ...args);
             }
             properties.roles[role].addEventsToArray(events, context, { target: card });

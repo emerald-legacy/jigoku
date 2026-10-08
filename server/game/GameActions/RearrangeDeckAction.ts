@@ -18,7 +18,7 @@ export interface RearrangeDeckProperties extends PlayerActionProperties {
     /** The title of the first prompt; the later ones ask for the second, third… card. */
     activePromptTitle?: string;
     /** Printed once the cards are back, with the cards top card first. Method syntax, so a narrower context fits. */
-    message?(cards: DrawCard[], context: AbilityContext): MessageArgs;
+    message?(context: AbilityContext, cards: DrawCard[]): MessageArgs;
 }
 
 /** The player of the ability puts the top cards of the target player's deck back in the order they choose. */
@@ -83,7 +83,7 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         const { deck, message } = this.getProperties(event.context, additionalProperties);
         this.#deck(event.player, deck).splice(0, ordered.length, ...ordered);
         if(message) {
-            const [format, args] = message(ordered, event.context);
+            const [format, args] = message(event.context, ordered);
             event.context.game.addMessage(format, ...args);
         }
     }

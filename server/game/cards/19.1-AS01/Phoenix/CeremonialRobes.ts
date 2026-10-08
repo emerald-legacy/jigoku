@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg, type MessageArgs } from '../../../GameChat.js';
 import { modifyGlory } from '../../../effects.js';
 import { loseHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -7,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 
 type HandlerStep = {
     activePromptTitle: string;
-    message: string;
+    message: (chosenCard: BaseCard) => MessageArgs;
     callback: (chosenCard: BaseCard) => void;
 };
 
@@ -35,7 +36,7 @@ export default class CeremonialRobes extends DrawCard {
                 const steps: HandlerStep[] = [
                     {
                         activePromptTitle: 'Select a card to put into the province faceup',
-                        message: '{0} places {1} into their province',
+                        message: (chosenCard) => msg`${context.player} places ${chosenCard} into their province`,
                         callback: (chosenCard) => {
                             context.player.moveCard(chosenCard, context.target.location);
                             chosenCard.facedown = false;
@@ -43,12 +44,12 @@ export default class CeremonialRobes extends DrawCard {
                     },
                     {
                         activePromptTitle: 'Select a card to put on the bottom of the deck',
-                        message: '{0} places a card on the bottom of the deck',
+                        message: () => msg`${context.player} places a card on the bottom of the deck`,
                         callback: (chosenCard) => context.player.moveCard(chosenCard, Location.DynastyDeck, { bottom: true })
                     },
                     {
                         activePromptTitle: 'Select a card to discard',
-                        message: '{0} discards {1}',
+                        message: (chosenCard) => msg`${context.player} discards ${chosenCard}`,
                         callback: (chosenCard) => {
                             context.player.moveCard(chosenCard, Location.DynastyDiscardPile);
                             if(chosenCard.hasTrait('spirit')) {
@@ -77,7 +78,8 @@ export default class CeremonialRobes extends DrawCard {
             return;
         }
         const resolve = (card: BaseCard) => {
-            this.game.addMessage(step.message, context.player, card, context.target);
+            const [format, args] = step.message(card);
+            this.game.addMessage(format, ...args);
             step.callback(card);
         };
         if(cards.length === 1) {

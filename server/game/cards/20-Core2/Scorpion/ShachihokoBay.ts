@@ -78,7 +78,7 @@ class Process {
         }
         rearrangeDeck({
             amount: remaining.length,
-            message: (ordered, context) => msg`${context.player} returns ${ordered.length} cards to the top of ${opponent}'s deck`
+            message: (context, ordered) => msg`${context.player} returns ${ordered.length} cards to the top of ${opponent}'s deck`
         }).resolve(opponent, this.context);
     }
 }

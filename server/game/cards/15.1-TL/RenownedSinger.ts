@@ -26,8 +26,8 @@ export default class RenownedSinger extends DrawCard {
                     hand: moveCard({ destination: Location.Hand }),
                     bottom: returnToDeck({ location: Location.ConflictDiscardPile, bottom: true, shuffle: false })
                 },
-                message: (assigned, context) =>
-                    msg`${context.player.opponent} chooses ${assigned.hand} to be put into ${context.player}'s hand. ${assigned.bottom} is put on the bottom of ${context.player}'s conflict deck`
+                message: (context, assigned, chooser) =>
+                    msg`${chooser} chooses ${assigned.hand} to be put into ${context.player}'s hand. ${assigned.bottom} is put on the bottom of ${context.player}'s conflict deck`
             }))
             .chatText((context) => msg`have ${context.player.opponent} return one of ${context.targets.target} to ${context.player}'s hand`);
     }
