@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import { attach, conditional, draw, moveCard, multiple } from '../../GameActions/GameActions.js';
+import { attach, draw, moveCard } from '../../GameActions/GameActions.js';
 
 class Logistics extends DrawCard {
     static id = 'logistics';
@@ -34,20 +34,17 @@ class Logistics extends DrawCard {
                             (moving.type !== CardType.Attachment && card.location !== moving.location)
                         );
                 }
-            }, multiple([
-                conditional((context) => ({
-                    condition: context.targets.cardInProvince.type === CardType.Attachment,
-                    trueGameAction: attach({
-                        target: context.targets.province,
-                        attachment: context.targets.cardInProvince
-                    }),
-                    falseGameAction: moveCard({
-                        target: context.targets.cardInProvince,
-                        destination: context.targets.province.location
-                    })
-                })),
-                draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] }))
-            ]))
+            }, draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] })))
+            .if((context) => context.targets.cardInProvince.type === CardType.Attachment)
+            .gameAction(attach((context) => ({
+                target: context.targets.province,
+                attachment: context.targets.cardInProvince
+            })))
+            .otherwise()
+            .gameAction(moveCard((context) => ({
+                target: context.targets.cardInProvince,
+                destination: context.targets.province.location
+            })))
             .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}${context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''}`);
     }
 }

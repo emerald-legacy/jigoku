@@ -684,8 +684,8 @@ export class AbilityBuilder<
 
     /**
      * "If …": the game actions after it resolve only when `condition` holds, the ones after otherwise() (if any) when it doesn't.
-     * Right after a card target without game actions, they are that target's: they resolve on the chosen card
-     * (after several such targets, they stay on the ability).
+     * Right after a card target, they are that target's: they resolve on the chosen card, after its own game actions if it has any
+     * (after several card targets without game actions, they stay on the ability).
      */
     if(condition: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => boolean): this {
         if(this.draft.branch) {
@@ -707,16 +707,23 @@ export class AbilityBuilder<
     }
 
     /**
-     * The card target the branches belong to: the last target, when it is the only card target without game actions.
-     * With several, none is meant more than another, so the branches stay on the ability.
+     * The card target the branches belong to: the last target, when it is the only card target without game actions,
+     * or when it has game actions of its own and the ability none yet. With several bare card targets, none is meant
+     * more than another, so the branches stay on the ability.
      */
     #branchTarget(): string | undefined {
-        const bare = (this.draft.cardTargets ?? []).filter((name) => {
+        const cardTargets = this.draft.cardTargets ?? [];
+        const hasActions = (name: string) => {
             const entry = this.draft.targets[name];
-            return !('gameAction' in entry) || entry.gameAction === undefined;
-        });
+            return 'gameAction' in entry && entry.gameAction !== undefined;
+        };
         const names = Object.keys(this.draft.targets);
-        return bare.length === 1 && bare[0] === names[names.length - 1] ? bare[0] : undefined;
+        const last = names[names.length - 1];
+        if(last !== undefined && cardTargets.includes(last) && hasActions(last) && this.draft.gameActions.length === 0) {
+            return last;
+        }
+        const bare = cardTargets.filter((name) => !hasActions(name));
+        return bare.length === 1 && bare[0] === last ? bare[0] : undefined;
     }
 
     /** "Otherwise, …": the game actions after it resolve when the if() condition doesn't hold. */
@@ -1253,7 +1260,10 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
     if(branch.target === undefined) {
         return { ...draft, branch: undefined, gameActions: [...before, branches] };
     }
-    return { ...draft, branch: undefined, gameActions: before, targets: { ...draft.targets, [branch.target]: { ...draft.targets[branch.target], gameAction: branches } } };
+    const entry = draft.targets[branch.target];
+    const own = 'gameAction' in entry ? entry.gameAction : undefined;
+    const gameAction = own === undefined ? branches : [...(Array.isArray(own) ? own : [own]), branches];
+    return { ...draft, branch: undefined, gameActions: before, targets: { ...draft.targets, [branch.target]: { ...entry, gameAction } } };
 }
 
 interface AffinityOptions<Context = AbilityContext> {

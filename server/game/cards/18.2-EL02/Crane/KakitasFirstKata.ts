@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { CardType, EventName, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { cardCannot } from '../../../effects.js';
-import { cardLastingEffect, conditional, multiple, ready } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, ready } from '../../../GameActions/GameActions.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -22,33 +22,27 @@ export default class KakitasFirstKata extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('duelist') || card.isFaction('crane')
-            }, multiple([
-                cardLastingEffect((context) => ({
-                    effect: cardCannot({
-                        cannot: 'sendHome',
-                        restricts: 'opponentsCardEffects',
-                        applyingPlayer: context.player
-                    })
-                })),
-                cardLastingEffect((context) => ({
-                    effect: cardCannot({
-                        cannot: 'moveToConflict',
-                        restricts: 'opponentsCardEffects',
-                        applyingPlayer: context.player
-                    })
-                })),
-                cardLastingEffect((context) => ({
-                    effect: cardCannot({
-                        cannot: 'bow',
-                        restricts: 'opponentsCardEffects',
-                        applyingPlayer: context.player
-                    })
-                })),
-                conditional({
-                    condition: (context) => context.target !== undefined && this.bowedCharactersThisConflict.has(context.target),
-                    trueGameAction: ready((context) => ({ target: context.target }))
+            }, cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: 'sendHome',
+                    restricts: 'opponentsCardEffects',
+                    applyingPlayer: context.player
                 })
-            ]))
+            })), cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: 'moveToConflict',
+                    restricts: 'opponentsCardEffects',
+                    applyingPlayer: context.player
+                })
+            })), cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: 'bow',
+                    restricts: 'opponentsCardEffects',
+                    applyingPlayer: context.player
+                })
+            })))
+            .if((context) => context.target !== undefined && this.bowedCharactersThisConflict.has(context.target))
+            .gameAction(ready((context) => ({ target: context.target })))
             .chatText((context) => msg`${(context.target && this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : '')}prevent opponents' actions from bowing or moving ${context.chatTarget()}`);
     }
 

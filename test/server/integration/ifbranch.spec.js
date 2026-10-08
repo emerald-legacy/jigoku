@@ -69,14 +69,27 @@ describe('if() and otherwise() in the ability builder', function() {
             expect(properties.target.gameAction).toEqual(jasmine.any(ConditionalAction));
         });
 
-        it('keeps the branches on the ability after a target with game actions', function() {
+        it('adds the branches to a card target with game actions, after its own', function() {
             this.builder.target({ cardType: 'character' }, bow())
                 .if(() => true)
                 .gainHonor(1);
 
             const properties = toActionProps(this.draft);
-            expect(properties.gameAction[0]).toEqual(jasmine.any(ConditionalAction));
-            expect(properties.target.gameAction).not.toEqual(jasmine.any(ConditionalAction));
+            expect(properties.gameAction).toBeUndefined();
+            const [own, branches] = properties.target.gameAction;
+            expect(own.name).toBe('bow');
+            expect(branches).toEqual(jasmine.any(ConditionalAction));
+        });
+
+        it('keeps the branches on the ability when it has game actions of its own', function() {
+            this.builder.target({ cardType: 'character' }, bow())
+                .draw(1)
+                .if(() => true)
+                .gainHonor(1);
+
+            const properties = toActionProps(this.draft);
+            expect(properties.gameAction[1]).toEqual(jasmine.any(ConditionalAction));
+            expect(properties.target.gameAction).not.toEqual(jasmine.any(Array));
         });
 
         it('keeps the branches on the ability after several targets without game actions', function() {

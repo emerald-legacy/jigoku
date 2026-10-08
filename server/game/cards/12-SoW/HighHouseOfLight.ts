@@ -5,8 +5,6 @@ import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
 import {
     cardLastingEffect,
-    conditional,
-    multiple,
     placeFate,
     selectRing
 } from '../../GameActions/GameActions.js';
@@ -22,25 +20,21 @@ export default class HighHouseOfLight extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, multiple([
-                cardLastingEffect((context) => ({
-                    effect: cardCannot({
-                        cannot: 'target',
-                        restricts: 'opponentsEvents',
-                        applyingPlayer: context.player
-                    })
-                })),
-                conditional({
-                    condition: (context) => (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 5,
-                    trueGameAction: selectRing((context) => ({
-                        activePromptTitle: 'Choose a ring to take a fate from',
-                        message: (context, ring) => msg`${context.player} moves a fate from the ${ring} to ${context.target}`,
-                        ringCondition: (ring) => ring.fate >= 1,
-                        subActionProperties: (ring) => ({ origin: ring }),
-                        gameAction: placeFate({ target: context.target })
-                    }))
+            }, cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: 'target',
+                    restricts: 'opponentsEvents',
+                    applyingPlayer: context.player
                 })
-            ]))
+            })))
+            .if((context) => (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 5)
+            .gameAction(selectRing((context) => ({
+                activePromptTitle: 'Choose a ring to take a fate from',
+                message: (context, ring) => msg`${context.player} moves a fate from the ${ring} to ${context.target}`,
+                ringCondition: (ring) => ring.fate >= 1,
+                subActionProperties: (ring) => ({ origin: ring }),
+                gameAction: placeFate({ target: context.target })
+            })))
             .chatText('make {0} unable to be targeted by opponent\'s events');
     }
 }
