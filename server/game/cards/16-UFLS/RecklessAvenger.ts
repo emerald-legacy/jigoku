@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { conditional, honor, ready } from '../../GameActions/GameActions.js';
+import { honor, ready } from '../../GameActions/GameActions.js';
 
 class RecklessAvenger extends DrawCard {
     static id = 'reckless-avenger';
@@ -27,15 +27,11 @@ class RecklessAvenger extends DrawCard {
                 dependsOn: 'firstCharacter',
                 controller: (context) => context.player.firstPlayer ? Players.Opponent : Players.Self,
                 player: (context) => context.player.firstPlayer ? Players.Opponent : Players.Self
-            }, conditional({
-                condition: (context) => this.isTargetValid(context.targets.firstCharacter),
-                trueGameAction: honor((context) => ({
-                    target: context.targets.secondCharacter
-                })),
-                falseGameAction: ready((context) => ({
-                    target: context.targets.secondCharacter
-                }))
-            }))
+            })
+            .if((context) => this.isTargetValid(context.targets.firstCharacter))
+            .gameAction(honor())
+            .otherwise()
+            .gameAction(ready())
             .chatText((context) => msg`ready ${this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter}${this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : ''}${this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''}`);
     }
 
