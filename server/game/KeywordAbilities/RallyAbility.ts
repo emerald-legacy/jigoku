@@ -1,7 +1,7 @@
 import { AbilityType, EventName, Location } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import TriggeredAbility from '../TriggeredAbility.js';
+import { TriggeredAbility } from '../TriggeredAbility.js';
 
 import type { EventPayload } from '../Events/EventPayloads.js';
 export class RallyAbility extends TriggeredAbility<DrawCard> {

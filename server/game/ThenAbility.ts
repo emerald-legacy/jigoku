@@ -1,12 +1,12 @@
 import type { MessageArgs, MsgArg } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
-import BaseCardAbility from './BaseCardAbility.js';
+import { BaseCardAbility } from './BaseCardAbility.js';
 import type { BaseAbilityProperties, DeclaredGameAction } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
-import type EventWindow from './Events/EventWindow.js';
-import type ThenEventWindow from './Events/ThenEventWindow.js';
+import type { EventWindow } from './Events/EventWindow.js';
+import type { ThenEventWindow } from './Events/ThenEventWindow.js';
 import type { EffectArg, OwnContextCallback } from './Interfaces.js';
 
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
@@ -24,7 +24,7 @@ export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext
     inheritTargets?: boolean;
 }
 
-class ThenAbility extends BaseCardAbility {
+export class ThenAbility extends BaseCardAbility {
     properties: ThenAbilityProperties;
     handler: (context: AbilityContext) => void;
     cannotTargetFirst = true;
@@ -137,4 +137,3 @@ class ThenAbility extends BaseCardAbility {
     }
 }
 
-export default ThenAbility;

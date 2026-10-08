@@ -3,20 +3,20 @@ import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { Location, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import { Event } from '../Events/Event.js';
-import type EventWindow from '../Events/EventWindow.js';
+import type { EventWindow } from '../Events/EventWindow.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
 import type { TriggerChoice } from '../TriggeredAbility.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
+import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type Ring from '../Ring.js';
 import type { HandlerMenuOption } from './HandlerMenuPrompt.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 
 function promptCardFor(context: TriggerChoice): BaseCard | undefined {
     return Event.promptCardOf(context.event);
 }
 
-class ForcedTriggeredAbilityWindow extends BaseStep {
+export class ForcedTriggeredAbilityWindow extends BaseStep {
     choices: TriggerChoice[];
     events: Event[];
     eventWindow: EventWindow;
@@ -251,4 +251,3 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 }
 
-export default ForcedTriggeredAbilityWindow;

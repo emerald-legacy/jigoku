@@ -5,7 +5,7 @@ import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
-class SetupProvincesPrompt extends AllPlayerPrompt {
+export class SetupProvincesPrompt extends AllPlayerPrompt {
     strongholdProvince: Record<string, ProvinceCard | null>;
     clickedDone: Record<string, boolean>;
     selectedCards: Record<string, ProvinceCard[]>;
@@ -127,4 +127,3 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
     }
 }
 
-export default SetupProvincesPrompt;

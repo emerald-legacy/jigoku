@@ -5,7 +5,7 @@ import type DrawCard from '../../DrawCard.js';
 import type Game from '../../Game.js';
 import type Player from '../../Player.js';
 
-class MulliganDynastyPrompt extends AllPlayerPrompt {
+export class MulliganDynastyPrompt extends AllPlayerPrompt {
     selectedCards: Record<string, DrawCard[]>;
     selectableCards: Record<string, DrawCard[]>;
 
@@ -102,4 +102,3 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
     }
 }
 
-export default MulliganDynastyPrompt;

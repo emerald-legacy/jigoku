@@ -1,12 +1,12 @@
-import Effect, { type EffectMatchFn, type EffectProperties } from './Effect.js';
+import { Effect, type EffectMatchFn, type EffectProperties } from './Effect.js';
 import { Players } from '../Constants.js';
 import type { EffectName } from '../Constants.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type { EffectBase } from './EffectBase.js';
 
-export default class PlayerEffect extends Effect<Player> {
+export class PlayerEffect extends Effect<Player> {
     targetController: string | Player;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<Player>, effect: EffectBase<EffectName, Player>) {

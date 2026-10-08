@@ -1,11 +1,11 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
-import CardSelector from '../CardSelector.js';
+import { CardSelector } from '../CardSelector.js';
 import { Stage, Players } from '../Constants.js';
 import type { CardType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
@@ -20,7 +20,7 @@ interface AbilityTargetAbilityProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbilityProperties> {
+export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbilityProperties> {
     abilityCondition: (ability: CardAbility) => boolean;
     selector: CardSelectorInstance;
 
@@ -127,4 +127,3 @@ class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbilityPropert
     }
 }
 
-export default AbilityTargetAbility;

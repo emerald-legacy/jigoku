@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../BaseAbility.js';
+import type { BaseAbility } from '../BaseAbility.js';
 import { Duration, EventName, Players } from '../Constants.js';
 import type { EffectUntil } from '../Effects/Effect.js';
 import type Player from '../Player.js';

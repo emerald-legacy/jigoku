@@ -4,7 +4,7 @@ import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName } from '../Constants.js';
-import Effects from '../effects.js';
+import { Effects } from '../effects.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 
 export interface PlaceCardUnderneathProperties extends CardActionProperties {

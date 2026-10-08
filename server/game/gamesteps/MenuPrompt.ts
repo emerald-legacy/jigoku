@@ -24,7 +24,7 @@ interface MenuPromptProperties {
  * source             - what is at the origin of the user prompt, usually a card;
  *                      used to provide a default waitingPromptTitle, if missing
  */
-class MenuPrompt extends UiPrompt {
+export class MenuPrompt extends UiPrompt {
     player: Player;
     context: MenuContext;
     properties: MenuPromptProperties;
@@ -84,4 +84,3 @@ class MenuPrompt extends UiPrompt {
     }
 }
 
-export default MenuPrompt;

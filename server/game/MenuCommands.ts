@@ -2,7 +2,7 @@ import { Location } from './Constants.js';
 import { Conflict } from './Conflict.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
-import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
+import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
 import type Player from './Player.js';
 import type Ring from './Ring.js';
 

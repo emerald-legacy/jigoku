@@ -1,6 +1,6 @@
 import * as AbilityLimit from './AbilityLimit.js';
-import GainAllAbilitiesDynamic from './Effects/GainAllAbilitiesDynamic.js';
-import Restriction from './Effects/Restriction.js';
+import { GainAllAbilitiesDynamic } from './Effects/GainAllAbilitiesDynamic.js';
+import { Restriction } from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
 import { EffectBuilder } from './Effects/EffectBuilder.js';
 import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier.js';
@@ -20,7 +20,7 @@ import type DrawCard from './DrawCard.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type Ring from './Ring.js';
-import type BaseAction from './BaseAction.js';
+import type { BaseAction } from './BaseAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectFactory, FlexibleValue } from './Effects/EffectBuilder.js';
 import type { DetachedValue } from './Effects/DetachedEffect.js';
@@ -55,7 +55,7 @@ function modifyDuelistSkill(value: FlexibleValue<number>, duel?: Duel): EffectFa
         : EffectBuilder.card.flexible(EffectName.ModifyDuelistSkill, value);
 }
 
-const Effects = {
+export const Effects = {
     // Card effects
     addElementAsAttacker: (element: FlexibleValue<Element | Element[]>) => EffectBuilder.card.flexible(EffectName.AddElementAsAttacker, element),
     addFlag: (flag: string) => EffectBuilder.card.static(EffectName.AddFlag, flag),
@@ -357,8 +357,6 @@ const Effects = {
     applyStatusTokensToDuel: () => EffectBuilder.duel.static(EffectName.ApplyStatusTokensToDuel, true),
     duelIgnorePrintedSkill: () => EffectBuilder.duel.static(EffectName.DuelIgnorePrintedSkill, true)
 };
-
-export default Effects;
 
 /** Each effect as a named export, for cards that import what they use. */
 export const {

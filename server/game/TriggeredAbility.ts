@@ -1,4 +1,4 @@
-import CardAbility from './CardAbility.js';
+import { CardAbility } from './CardAbility.js';
 import type { CardAbilityProperties } from './CardAbility.js';
 import { TriggeredAbilityContext, type TriggeringEvent } from './TriggeredAbilityContext.js';
 import { Stage, CardType, EffectName, EventName, AbilityType } from './Constants.js';
@@ -47,7 +47,7 @@ interface RegisteredEvent {
 }
 
 
-class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
+export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     when?: WhenType;
     aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext], boolean>;
     anyPlayer: boolean;
@@ -186,4 +186,3 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     }
 }
 
-export default TriggeredAbility;

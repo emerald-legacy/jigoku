@@ -1,6 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { CardType, Element } from '../Constants.js';
-import BaseAbility from '../BaseAbility.js';
+import { BaseAbility } from '../BaseAbility.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import DrawCard from '../DrawCard.js';
 

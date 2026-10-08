@@ -4,7 +4,7 @@ import type Game from '../Game.js';
 import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
-import ActionWindow from './ActionWindow.js';
+import { ActionWindow } from './ActionWindow.js';
 
 function characterShouldBeDiscarded(character: DrawCard) {
     return character.fate === 0 && character.allowGameAction('discardFromPlay');

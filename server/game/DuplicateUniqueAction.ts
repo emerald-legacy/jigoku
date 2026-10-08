@@ -3,7 +3,7 @@ import { Phases, PlayType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type DrawCard from './DrawCard.js';
 
-class DuplicateUniqueAction extends PlayCardSourceAction {
+export class DuplicateUniqueAction extends PlayCardSourceAction {
     title = 'Add fate to a duplicate';
 
     meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
@@ -39,4 +39,3 @@ class DuplicateUniqueAction extends PlayCardSourceAction {
     }
 }
 
-export default DuplicateUniqueAction;

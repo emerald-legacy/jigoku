@@ -31,7 +31,7 @@ class AttackerInfo {
     }
 }
 
-class AttackersMatrix {
+export class AttackersMatrix {
     player: Player;
     characters: DrawCard[];
     attackers: Record<string, Record<string, Record<string, AttackerInfo>>>;
@@ -184,4 +184,3 @@ class AttackersMatrix {
     }
 }
 
-export default AttackersMatrix;

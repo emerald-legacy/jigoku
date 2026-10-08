@@ -11,7 +11,7 @@ interface Calculation<T, V> {
 }
 export type DynamicValue<V, T> = Calculation<T, V>['calculate'];
 
-export default class DynamicEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectBase<N, T> {
+export class DynamicEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectBase<N, T> {
     value = new EffectValue(true);
     values: Record<string, EffectValueMap[N]>;
     calculate: DynamicValue<EffectValueMap[N], T>;

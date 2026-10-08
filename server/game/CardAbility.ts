@@ -1,7 +1,7 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import type { AbilityLimit as IAbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
-import ThenAbility from './ThenAbility.js';
+import { ThenAbility } from './ThenAbility.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName, Phases } from './Constants.js';
@@ -62,7 +62,7 @@ function nextPrintedAbilityNumber(card: BaseCard): number {
     return number;
 }
 
-class CardAbility extends ThenAbility {
+export class CardAbility extends ThenAbility {
     declare properties: CardAbilityProperties;
     title?: string;
     limit: IAbilityLimit;
@@ -329,4 +329,3 @@ class CardAbility extends ThenAbility {
     }
 }
 
-export default CardAbility;

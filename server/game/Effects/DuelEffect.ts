@@ -1,11 +1,11 @@
-import Effect, { type EffectProperties } from './Effect.js';
+import { Effect, type EffectProperties } from './Effect.js';
 import type { EffectName } from '../Constants.js';
 import { Duel } from '../Duel.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import type Game from '../Game.js';
 import type { EffectBase } from './EffectBase.js';
 
-export default class DuelEffect extends Effect<Duel> {
+export class DuelEffect extends Effect<Duel> {
     duel: Duel | undefined;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<Duel>, effect: EffectBase<EffectName, Duel>) {

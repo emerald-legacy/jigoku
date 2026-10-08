@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { EventName } from '../Constants.js';
-import type EventWindow from './EventWindow.js';
+import type { EventWindow } from './EventWindow.js';
 import type { GameEvent } from './EventPayloads.js';
 
 export class Event {

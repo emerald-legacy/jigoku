@@ -3,8 +3,8 @@ import { AbilityType, CardType, Location, Phases, Stage } from '../Constants.js'
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import BaseCardAbility from '../BaseCardAbility.js';
-import ThenAbility from '../ThenAbility.js';
+import { BaseCardAbility } from '../BaseCardAbility.js';
+import { ThenAbility } from '../ThenAbility.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
@@ -170,7 +170,7 @@ export interface RestrictionProperties {
     cannot?: RestrictionType;
 }
 
-class Restriction extends EffectValueBase<Restriction> {
+export class Restriction extends EffectValueBase<Restriction> {
     type?: string;
     restriction?: RestrictionType;
     applyingPlayer?: Player;
@@ -224,4 +224,3 @@ class Restriction extends EffectValueBase<Restriction> {
     }
 }
 
-export default Restriction;

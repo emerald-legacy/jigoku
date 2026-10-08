@@ -1,4 +1,4 @@
-import CardAbility from '../../../CardAbility.js';
+import { CardAbility } from '../../../CardAbility.js';
 import { CardType, Location } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';

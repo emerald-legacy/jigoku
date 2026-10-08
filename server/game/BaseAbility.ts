@@ -1,10 +1,10 @@
 import type { ActionOverrides } from './GameActions/GameAction.js';
-import AbilityTargetAbility from './AbilityTargets/AbilityTargetAbility.js';
-import AbilityTargetCard from './AbilityTargets/AbilityTargetCard.js';
-import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
-import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
-import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
-import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
+import { AbilityTargetAbility } from './AbilityTargets/AbilityTargetAbility.js';
+import { AbilityTargetCard } from './AbilityTargets/AbilityTargetCard.js';
+import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
+import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
+import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
+import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
 import { Stage, TargetMode, AbilityType, Players, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
@@ -13,7 +13,7 @@ import type { Cost } from './costs/Cost.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
-import type CardAbility from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 
 interface AbilityTargetProperties {
     dependsOn?: string;
@@ -85,7 +85,7 @@ export interface TargetResults {
  * `player` that is executing the action, and the `source` card object that the
  * ability is generated from.
  */
-class BaseAbility {
+export class BaseAbility {
     abilityType: AbilityType = AbilityType.Action;
     gameAction: GameAction[];
     targets: AbilityTarget[];
@@ -334,4 +334,3 @@ class BaseAbility {
     }
 }
 
-export default BaseAbility;

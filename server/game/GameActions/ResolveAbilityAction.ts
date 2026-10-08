@@ -1,13 +1,13 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import { EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
+import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/AbilityResolver.js';
+import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';

@@ -1,6 +1,6 @@
 import { EffectName, EventName } from '../../Constants.js';
 import type Game from '../../Game.js';
-import ActionWindow from '../ActionWindow.js';
+import { ActionWindow } from '../ActionWindow.js';
 
 export class DynastyActionWindow extends ActionWindow {
     constructor(game: Game) {

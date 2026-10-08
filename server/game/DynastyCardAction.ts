@@ -1,4 +1,4 @@
-import BaseAction from './BaseAction.js';
+import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import * as GameActions from './GameActions/GameActions.js';
@@ -8,7 +8,7 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf } from './Effects/types.js';
 
-class DynastyCardAction extends BaseAction {
+export class DynastyCardAction extends BaseAction {
     title = 'Play this character';
     declare card: DrawCard;
 
@@ -87,4 +87,3 @@ class DynastyCardAction extends BaseAction {
     }
 }
 
-export default DynastyCardAction;

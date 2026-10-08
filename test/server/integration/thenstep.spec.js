@@ -1,4 +1,4 @@
-import ThenAbility from '../../../build/server/game/ThenAbility.js';
+import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
 import { AbilityBuilder, toActionProps, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 

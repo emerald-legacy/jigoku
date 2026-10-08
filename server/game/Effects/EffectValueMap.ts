@@ -11,7 +11,7 @@ import type { ProvinceCard } from '../ProvinceCard.js';
 import type { Cost } from '../costs/Cost.js';
 import type { Conflict } from '../Conflict.js';
 import type { Faction } from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { Duel } from '../Duel.js';
 import type { ElementSymbolInfo } from '../ElementSymbol.js';
 import type { GameEvent } from '../Events/EventPayloads.js';

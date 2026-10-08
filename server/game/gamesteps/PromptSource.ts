@@ -1,4 +1,4 @@
-import EffectSource from '../EffectSource.js';
+import { EffectSource } from '../EffectSource.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
 

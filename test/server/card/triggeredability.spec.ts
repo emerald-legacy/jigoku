@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- stub-based unit test: partial fakes of game, card and context */
-import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
+import { TriggeredAbility } from '../../../server/game/TriggeredAbility.js';
 import { AbilityType, EventName } from '../../../server/game/Constants.js';
 import { Event } from '../../../server/game/Events/Event.js';
 

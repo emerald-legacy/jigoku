@@ -14,7 +14,7 @@ interface SimultaneousEffectChoice {
     handler: () => void;
 }
 
-class SimultaneousEffectWindow extends BaseStep {
+export class SimultaneousEffectWindow extends BaseStep {
     choices: SimultaneousEffectChoice[] = [];
     // unset while the first player is not chosen yet (during setup)
     currentPlayer: Player | undefined;
@@ -76,4 +76,3 @@ class SimultaneousEffectWindow extends BaseStep {
     }
 }
 
-export default SimultaneousEffectWindow;

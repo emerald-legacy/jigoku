@@ -1,4 +1,4 @@
-import Socket from '../../server/Socket.js';
+import { Socket } from '../../server/Socket.js';
 import type { SocketLike } from '../../server/Socket.js';
 import jwt from 'jsonwebtoken';
 

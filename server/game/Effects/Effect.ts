@@ -1,8 +1,8 @@
 import { Location, Duration } from '../Constants.js';
 import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../BaseAbility.js';
-import type EffectSource from '../EffectSource.js';
+import type { BaseAbility } from '../BaseAbility.js';
+import type { EffectSource } from '../EffectSource.js';
 import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
@@ -68,7 +68,7 @@ export interface EffectProperties<T extends GameObject = GameObject> {
  *                    to match.  Card effects only.
  * effect           - object representing the effect to be applied.
  */
-class Effect<T extends GameObject = GameObject> {
+export class Effect<T extends GameObject = GameObject> {
     game: Game;
     source: EffectSource;
     match: EffectMatch<T>;
@@ -187,4 +187,3 @@ class Effect<T extends GameObject = GameObject> {
     }
 }
 
-export default Effect;

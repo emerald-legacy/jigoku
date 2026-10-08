@@ -1,4 +1,4 @@
-import ThenAbility from '../../../build/server/game/ThenAbility.js';
+import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
 import {
     bow, chooseAction, conditional, draw, ifAble, joint, multiple, noAction, onAffinity, optional, sequential
 } from '../../../build/server/game/GameActions/GameActions.js';

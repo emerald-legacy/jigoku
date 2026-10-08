@@ -1,4 +1,4 @@
-import GainAbility from '../../../build/server/game/Effects/GainAbility.js';
+import { GainAbility } from '../../../build/server/game/Effects/GainAbility.js';
 import { AbilityType } from '../../../build/server/game/Constants.js';
 
 describe('a gained ability applied again', function() {

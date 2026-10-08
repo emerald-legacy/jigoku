@@ -1,4 +1,4 @@
-import SincerityAbility from '../../../build/server/game/KeywordAbilities/SincerityAbility.js';
+import { SincerityAbility } from '../../../build/server/game/KeywordAbilities/SincerityAbility.js';
 
 describe('SincerityAbility', function() {
     let card, ability;

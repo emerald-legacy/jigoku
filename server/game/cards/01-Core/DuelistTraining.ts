@@ -3,7 +3,7 @@ import { gainAbility } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityType, CardType, DuelType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
+import { HonorBidPrompt } from '../../gamesteps/HonorBidPrompt.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 
 class DuelistTraining extends DrawCard {

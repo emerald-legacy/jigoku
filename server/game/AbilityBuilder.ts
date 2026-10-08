@@ -2,7 +2,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
-import CardAbility from './CardAbility.js';
+import { CardAbility } from './CardAbility.js';
 import { type EventName, type Location, type Phases, Players, TargetMode } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';

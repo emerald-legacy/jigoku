@@ -1,6 +1,6 @@
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import { PlayableLocation } from './PlayableLocation.js';
-import EffectSource from './EffectSource.js';
+import { EffectSource } from './EffectSource.js';
 import {
     AbilityType,
     CardType,

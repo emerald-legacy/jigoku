@@ -1,9 +1,9 @@
-import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
+import { MulliganDynastyPrompt } from './MulliganDynastyPrompt.js';
 import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 
-class MulliganConflictPrompt extends MulliganDynastyPrompt {
+export class MulliganConflictPrompt extends MulliganDynastyPrompt {
     readyToStart?: boolean;
 
     completionCondition(player: Player): boolean {
@@ -62,4 +62,3 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     }
 }
 
-export default MulliganConflictPrompt;

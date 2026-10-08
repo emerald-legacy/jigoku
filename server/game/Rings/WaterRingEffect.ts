@@ -1,7 +1,7 @@
 import type { GameMode } from '../GameMode.js';
 import { CardType } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
-import BaseAbility from '../BaseAbility.js';
+import { BaseAbility } from '../BaseAbility.js';
 
 export class WaterRingEffect extends BaseAbility {
     public title = 'Water Ring Effect';

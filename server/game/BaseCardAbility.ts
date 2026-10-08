@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './BaseAbility.js';
+import { BaseAbility } from './BaseAbility.js';
 import { Stage } from './Constants.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
@@ -11,7 +11,7 @@ import type Game from './Game.js';
  * Owns the card-bound contract — the source `card` and `createContext` — so the
  * card action/play/reaction menus share one type instead of falling back to `any`.
  */
-abstract class BaseCardAbility extends BaseAbility {
+export abstract class BaseCardAbility extends BaseAbility {
     card: BaseCard;
     title?: string;
 
@@ -50,4 +50,3 @@ abstract class BaseCardAbility extends BaseAbility {
     }
 }
 
-export default BaseCardAbility;

@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
-class ExactlyXCardSelector extends BaseCardSelector {
+export class ExactlyXCardSelector extends BaseCardSelector {
     numCards: number;
 
     constructor(numCards: number, properties: BaseCardSelectorProperties) {
@@ -44,4 +44,3 @@ class ExactlyXCardSelector extends BaseCardSelector {
     }
 }
 
-export default ExactlyXCardSelector;

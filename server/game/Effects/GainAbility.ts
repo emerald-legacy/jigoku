@@ -3,11 +3,11 @@ import { AbilityType, Location } from '../Constants.js';
 import type { Duration } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
+import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from '../TriggeredAbility.js';
-import type Effect from './Effect.js';
+import type { Effect } from './Effect.js';
 import type {
     ActionProps,
     PersistentEffectProps,
@@ -95,7 +95,7 @@ function grantFor(args: GainAbilityArgs): Grant {
     return { kind: 'triggered', properties: Object.assign({ printedAbility: false }, args[1]) };
 }
 
-export default class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
+export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
     abilityType: AbilityType;
     createCopies: boolean;
     forCopying: GainAbilityArgs | undefined;

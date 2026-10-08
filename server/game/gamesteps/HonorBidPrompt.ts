@@ -8,7 +8,7 @@ import type { Duel } from '../Duel.js';
 
 type HonorBidCostHandler = (prompt: HonorBidPrompt) => void;
 
-class HonorBidPrompt extends AllPlayerPrompt {
+export class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;
     costHandler?: HonorBidCostHandler;
     prohibitedBids: Record<string, string[]>;
@@ -117,4 +117,3 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 }
 
-export default HonorBidPrompt;

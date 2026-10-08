@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { attach, selectCard } from '../../../GameActions/GameActions.js';
-import CardSelector from '../../../CardSelector.js';
+import { CardSelector } from '../../../CardSelector.js';
 import { Location, Players, CardType } from '../../../Constants.js';
 
 export default class TimeForWar2 extends DrawCard {

@@ -3,9 +3,9 @@ import { randomItem } from '../utils/random.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
-import MulliganConflictPrompt from './setup/MulliganConflictPrompt.js';
-import MulliganDynastyPrompt from './setup/MulliganDynastyPrompt.js';
-import SetupProvincesPrompt from './setup/SetupProvincesPrompt.js';
+import { MulliganConflictPrompt } from './setup/MulliganConflictPrompt.js';
+import { MulliganDynastyPrompt } from './setup/MulliganDynastyPrompt.js';
+import { SetupProvincesPrompt } from './setup/SetupProvincesPrompt.js';
 
 export class SetupPhase extends Phase {
     constructor(game: Game) {

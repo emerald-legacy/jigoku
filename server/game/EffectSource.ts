@@ -2,7 +2,7 @@ import { GameObject } from './GameObject.js';
 import { Location, Duration } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import type Effect from './Effects/Effect.js';
+import type { Effect } from './Effects/Effect.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import type { EffectProperties } from './Effects/Effect.js';
 
@@ -10,7 +10,7 @@ type EffectSourceProperties = EffectProperties<EffectTarget> & { effect?: Effect
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
 
-class EffectSource extends GameObject {
+export class EffectSource extends GameObject {
     constructor(game: Game, name = 'Framework effect') {
         super(game, name);
     }
@@ -144,4 +144,3 @@ class EffectSource extends GameObject {
     }
 }
 
-export default EffectSource;

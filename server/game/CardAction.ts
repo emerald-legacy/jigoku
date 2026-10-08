@@ -1,5 +1,5 @@
 import type { AbilityContext } from './AbilityContext.js';
-import CardAbility from './CardAbility.js';
+import { CardAbility } from './CardAbility.js';
 import { AbilityType, CardType, EffectName, Phases } from './Constants.js';
 import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';

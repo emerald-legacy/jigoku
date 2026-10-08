@@ -4,14 +4,14 @@ import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
-import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
+import { CovertAbility } from '../../KeywordAbilities/CovertAbility.js';
 import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
 import { SimpleStep } from '../SimpleStep.js';
-import ConflictActionWindow from './ConflictActionWindow.js';
-import InitiateConflictPrompt from './InitiateConflictPrompt.js';
-import SelectDefendersPrompt from './SelectDefendersPrompt.js';
-import InitiateCardAbilityEvent from '../../Events/InitiateCardAbilityEvent.js';
-import AttackersMatrix from './AttackersMatrix.js';
+import { ConflictActionWindow } from './ConflictActionWindow.js';
+import { InitiateConflictPrompt } from './InitiateConflictPrompt.js';
+import { SelectDefendersPrompt } from './SelectDefendersPrompt.js';
+import { InitiateCardAbilityEvent } from '../../Events/InitiateCardAbilityEvent.js';
+import { AttackersMatrix } from './AttackersMatrix.js';
 
 import { Players, CardType, EventName, EffectName, Location, ConflictType } from '../../Constants.js';
 import type Player from '../../Player.js';
@@ -38,7 +38,7 @@ Conflict Resolution
 3.2.8 Return home. Go to (3.3).
  */
 
-class ConflictFlow extends BaseStepWithPipeline {
+export class ConflictFlow extends BaseStepWithPipeline {
     conflict: Conflict;
     canPass: boolean;
     covert: AbilityContext<DrawCard, DrawCard>[];
@@ -955,4 +955,3 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 }
 
-export default ConflictFlow;

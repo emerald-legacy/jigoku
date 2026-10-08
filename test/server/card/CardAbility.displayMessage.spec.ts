@@ -1,4 +1,4 @@
-import CardAbility from '../../../server/game/CardAbility.js';
+import { CardAbility } from '../../../server/game/CardAbility.js';
 import { discardFromPlay, takeHonor } from '../../../server/game/GameActions/GameActions.js';
 import * as costs from '../../../server/game/costs/index.js';
 import { AbilityContext } from '../../../server/game/AbilityContext.js';
@@ -6,7 +6,7 @@ import { TriggeredAbilityContext } from '../../../server/game/TriggeredAbilityCo
 import DrawCard from '../../../server/game/DrawCard.js';
 import { StrongholdCard } from '../../../server/game/StrongholdCard.js';
 import { Event } from '../../../server/game/Events/Event.js';
-import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
+import { TriggeredAbility } from '../../../server/game/TriggeredAbility.js';
 import { AbilityType, CardType, EventName } from '../../../server/game/Constants.js';
 import type Game from '../../../server/game/Game.js';
 import type Player from '../../../server/game/Player.js';

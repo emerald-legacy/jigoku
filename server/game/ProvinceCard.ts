@@ -4,7 +4,7 @@ import { cardCannot } from './effects.js';
 import BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
-import StatModifier, { type StatModifierSummary } from './StatModifier.js';
+import { StatModifier, type StatModifierSummary } from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 import { isEffectOf } from './Effects/types.js';
 import type { EffectBase } from './Effects/EffectBase.js';

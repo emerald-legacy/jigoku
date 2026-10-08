@@ -10,7 +10,7 @@ import {
     sequential
 } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
-import CardAbility from '../../CardAbility.js';
+import { CardAbility } from '../../CardAbility.js';
 
 class CaptivatingStory extends DrawCard {
     static id = 'captivating-story';

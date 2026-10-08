@@ -1,6 +1,6 @@
 import type { DeckDTO, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import type { CardLibrary } from './types/CardClass.js';
-import ChatCommands from './ChatCommands.js';
+import { ChatCommands } from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import type { MsgArg } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
@@ -15,28 +15,28 @@ import { ConflictPhase } from './gamesteps/ConflictPhase.js';
 import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
-import GameWonPrompt from './gamesteps/GameWonPrompt.js';
+import { GameWonPrompt } from './gamesteps/GameWonPrompt.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { Event } from './Events/Event.js';
 import type { EventParams, GameEvent } from './Events/EventPayloads.js';
-import EventWindow from './Events/EventWindow.js';
-import ThenEventWindow from './Events/ThenEventWindow.js';
-import AbilityResolver from './gamesteps/AbilityResolver.js';
-import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
+import { EventWindow } from './Events/EventWindow.js';
+import { ThenEventWindow } from './Events/ThenEventWindow.js';
+import { AbilityResolver } from './gamesteps/AbilityResolver.js';
+import { SimultaneousEffectWindow } from './gamesteps/SimultaneousEffectWindow.js';
 import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
-import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
-import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import type MenuPrompt from './gamesteps/MenuPrompt.js';
+import type { ForcedTriggeredAbilityWindow } from './gamesteps/ForcedTriggeredAbilityWindow.js';
+import type { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
+import type { MenuPrompt } from './gamesteps/MenuPrompt.js';
 import type { HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
 import type { CardsChoice, OptionalCardChoice, SelectCardPromptProperties, SelectorChoice, SingleCardChoice } from './gamesteps/SelectCardPrompt.js';
 import type { CardTypes } from './types/CardOfType.js';
-import type SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
-import type ActionWindow from './gamesteps/ActionWindow.js';
+import type { SelectRingPrompt } from './gamesteps/SelectRingPrompt.js';
+import type { ActionWindow } from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
 import { Duel } from './Duel.js';
-import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
+import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
 import type { FormattedDeck } from './GameStateSerializer.js';
@@ -55,7 +55,7 @@ import { isEnumValue, isOwnKey } from './utils/helpers.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
@@ -127,7 +127,7 @@ type GameActionRequest = Partial<
     { [K in keyof typeof APPLY_PLAYER_ACTIONS]: ApplyGameActionPlayerTarget }
 >;
 
-class Game {
+export class Game {
     private readonly events = new GameEventManager(this);
 
     effectEngine: EffectEngine;

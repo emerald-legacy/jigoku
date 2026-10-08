@@ -1,7 +1,7 @@
 import { dishonor, ready } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import ThenAbility from '../../ThenAbility.js';
+import { ThenAbility } from '../../ThenAbility.js';
 
 export default class KitsukiShomon extends DrawCard {
     static id = 'kitsuki-shomon';

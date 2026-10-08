@@ -1,13 +1,13 @@
 import { AbilityContext } from './AbilityContext.js';
 import { AbilityType } from './Constants.js';
-import BaseCardAbility from './BaseCardAbility.js';
+import { BaseCardAbility } from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { Cost } from './costs/Cost.js';
 import type { BaseAbilityProperties } from './BaseAbility.js';
 
 type TargetProperties = NonNullable<BaseAbilityProperties['target']>;
 
-class BaseAction extends BaseCardAbility {
+export class BaseAction extends BaseCardAbility {
     abilityType = AbilityType.Action;
     cannotBeCancelled = true;
     declare cost: Cost[];
@@ -37,4 +37,3 @@ class BaseAction extends BaseCardAbility {
     }
 }
 
-export default BaseAction;

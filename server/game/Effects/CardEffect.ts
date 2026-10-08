@@ -1,9 +1,9 @@
-import Effect, { type EffectMatchFn, type EffectProperties } from './Effect.js';
+import { Effect, type EffectMatchFn, type EffectProperties } from './Effect.js';
 import { Location, Players, CardType } from '../Constants.js';
 import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type { EffectBase } from './EffectBase.js';
@@ -12,7 +12,7 @@ import type { TargetLocation } from '../Interfaces.js';
 
 const provinceCardTypes: readonly string[] = [CardType.Province, CardType.Stronghold, CardType.Holding];
 
-export default class CardEffect extends Effect<BaseCard> {
+export class CardEffect extends Effect<BaseCard> {
     targetController: string | Player;
     targetLocation: TargetLocation;
 

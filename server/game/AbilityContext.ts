@@ -1,10 +1,10 @@
 import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
-import BaseAbility from './BaseAbility.js';
+import { BaseAbility } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
-import type CardAbility from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 import type DrawCard from './DrawCard.js';
 import { Location, PlayType, Stage } from './Constants.js';
-import EffectSource from './EffectSource.js';
+import { EffectSource } from './EffectSource.js';
 import type { ElementSymbol } from './ElementSymbol.js';
 import type { Event } from './Events/Event.js';
 import type Game from './Game.js';

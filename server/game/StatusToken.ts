@@ -1,10 +1,10 @@
 import { CardType, CharacterStatus, EffectName } from './Constants.js';
-import EffectSource from './EffectSource.js';
+import { EffectSource } from './EffectSource.js';
 import { loseHonor } from './GameActions/GameActions.js';
 import { costToDeclareAnyParticipants, honorCostToDeclare, modifyBothSkills, modifyProvinceStrength } from './effects.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-import type Effect from './Effects/Effect.js';
+import type { Effect } from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type Game from './Game.js';
 import type Player from './Player.js';

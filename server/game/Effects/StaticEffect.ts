@@ -7,7 +7,7 @@ import type { EffectValueMap } from './EffectValueMap.js';
 
 export type StaticValue<N extends EffectName, T extends GameObject> = EffectValueMap[N] | EffectValueBase<EffectValueMap[N], T>;
 
-class StaticEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectBase<N, T> {
+export class StaticEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectBase<N, T> {
     value: EffectValueBase<EffectValueMap[N], T>;
     copies = new Map<string, EffectValueBase<EffectValueMap[N], T>>();
 
@@ -59,4 +59,3 @@ class StaticEffect<N extends EffectName = EffectName, T extends GameObject = Gam
     }
 }
 
-export default StaticEffect;

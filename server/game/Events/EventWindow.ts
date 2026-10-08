@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
-import ForcedTriggeredAbilityWindow from '../gamesteps/ForcedTriggeredAbilityWindow.js';
+import { ForcedTriggeredAbilityWindow } from '../gamesteps/ForcedTriggeredAbilityWindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
+import { TriggeredAbilityWindow } from '../gamesteps/TriggeredAbilityWindow.js';
 import { AbilityType } from '../Constants.js';
-import KeywordAbilityWindow from '../gamesteps/KeywordAbilityWindow.js';
+import { KeywordAbilityWindow } from '../gamesteps/KeywordAbilityWindow.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 
@@ -12,7 +12,7 @@ interface ThenAbilityLike {
     createThenContext(parent: AbilityContext): AbilityContext;
 }
 
-export default class EventWindow extends BaseStepWithPipeline {
+export class EventWindow extends BaseStepWithPipeline {
     events: Event[] = [];
     thenAbilities: Array<{ ability: ThenAbilityLike; context: AbilityContext; condition: (event: Event) => boolean }> = [];
     previousEventWindow: EventWindow | null = null;

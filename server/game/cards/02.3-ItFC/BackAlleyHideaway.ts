@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Phases, PlayType, EventName, CardType } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
-import ThenAbility from '../../ThenAbility.js';
+import { ThenAbility } from '../../ThenAbility.js';
 import { customDetachedCard } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import DynastyCardAction from '../../DynastyCardAction.js';
+import { DynastyCardAction } from '../../DynastyCardAction.js';
 import type BaseCard from '../../BaseCard.js';
 import type { Event } from '../../Events/Event.js';
 import { perRound, type AbilityLimit } from '../../AbilityLimit.js';

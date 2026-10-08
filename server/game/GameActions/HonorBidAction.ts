@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Players } from '../Constants.js';
-import HonorBidPrompt from '../gamesteps/HonorBidPrompt.js';
+import { HonorBidPrompt } from '../gamesteps/HonorBidPrompt.js';
 import type Player from '../Player.js';
 import type { GameAction, ActionEvent } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';

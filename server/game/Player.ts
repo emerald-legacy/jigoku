@@ -5,7 +5,7 @@ import { PlayerZones, type AdditionalPile, type DrawCardPile } from './PlayerZon
 
 import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
-import AttachmentPrompt from './gamesteps/AttachmentPrompt.js';
+import { AttachmentPrompt } from './gamesteps/AttachmentPrompt.js';
 import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
@@ -32,7 +32,7 @@ import {
     PlayType
 } from './Constants.js';
 import type Game from './Game.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type BaseCard from './BaseCard.js';
 import type { CardSummary } from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -133,7 +133,7 @@ export interface GamePlayerUser {
     settings?: GamePlayerUserSettings;
 }
 
-class Player extends GameObject {
+export class Player extends GameObject {
     user: GamePlayerUser;
     emailHash: string;
     declare id: string;

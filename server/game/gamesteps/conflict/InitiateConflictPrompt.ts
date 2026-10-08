@@ -1,8 +1,8 @@
 import { UiPrompt } from '../UiPrompt.js';
 import { Location, ConflictType } from '../../Constants.js';
-import AttackersMatrix from './AttackersMatrix.js';
+import { AttackersMatrix } from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
-import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
+import { CovertAbility } from '../../KeywordAbilities/CovertAbility.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
@@ -20,7 +20,7 @@ const capitalize: Record<string, string> = {
     void: 'Void'
 };
 
-class InitiateConflictPrompt extends UiPrompt {
+export class InitiateConflictPrompt extends UiPrompt {
     conflict: Conflict;
     choosingPlayer: Player;
     attackerChoosesRing: boolean;
@@ -361,4 +361,3 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 }
 
-export default InitiateConflictPrompt;

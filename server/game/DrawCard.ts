@@ -3,18 +3,18 @@ import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from './effects.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
-import type StatModifier from './StatModifier.js';
+import type { StatModifier } from './StatModifier.js';
 import type { StatModifierSummary } from './StatModifier.js';
-import DuplicateUniqueAction from './DuplicateUniqueAction.js';
-import DynastyCardAction from './DynastyCardAction.js';
+import { DuplicateUniqueAction } from './DuplicateUniqueAction.js';
+import { DynastyCardAction } from './DynastyCardAction.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
 import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
 import { PlayCharacterAction } from './PlayCharacterAction.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
-import type BaseCardAbility from './BaseCardAbility.js';
-import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
-import PrideAbility from './KeywordAbilities/PrideAbility.js';
-import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
+import type { BaseCardAbility } from './BaseCardAbility.js';
+import { CourtesyAbility } from './KeywordAbilities/CourtesyAbility.js';
+import { PrideAbility } from './KeywordAbilities/PrideAbility.js';
+import { SincerityAbility } from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
 import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
@@ -90,7 +90,7 @@ function formatSkill(skill: number): string {
     return isNaN(skill) ? '-' : Math.max(skill, 0).toString();
 }
 
-class DrawCard extends BaseCard {
+export class DrawCard extends BaseCard {
     fromOutOfPlaySource?: BaseCard[];
     eventRegistrarForEphemeral?: EventRegistrar;
 

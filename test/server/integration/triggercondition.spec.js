@@ -1,4 +1,4 @@
-import TriggeredAbility from '../../../build/server/game/TriggeredAbility.js';
+import { TriggeredAbility } from '../../../build/server/game/TriggeredAbility.js';
 import { AbilityType } from '../../../build/server/game/Constants.js';
 import { createDraft, toTriggerProps } from '../../../build/server/game/AbilityBuilder.js';
 

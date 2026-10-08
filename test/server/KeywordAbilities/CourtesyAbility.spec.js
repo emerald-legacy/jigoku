@@ -1,4 +1,4 @@
-import CourtesyAbility from '../../../build/server/game/KeywordAbilities/CourtesyAbility.js';
+import { CourtesyAbility } from '../../../build/server/game/KeywordAbilities/CourtesyAbility.js';
 
 describe('CourtesyAbility', function() {
     let game, card, ability;

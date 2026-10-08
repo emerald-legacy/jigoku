@@ -1,7 +1,7 @@
 import Player from './Player.js';
 import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type { GamePlayerUser } from './Player.js';
 import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 

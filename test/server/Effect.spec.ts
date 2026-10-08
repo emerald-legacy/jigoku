@@ -1,6 +1,6 @@
-import Effect from '../../server/game/Effects/Effect.js';
-import EffectSource from '../../server/game/EffectSource.js';
-import StaticEffect from '../../server/game/Effects/StaticEffect.js';
+import { Effect } from '../../server/game/Effects/Effect.js';
+import { EffectSource } from '../../server/game/EffectSource.js';
+import { StaticEffect } from '../../server/game/Effects/StaticEffect.js';
 import { Duration, EffectName } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 import { createTestGame } from '../helpers/fixtures.js';

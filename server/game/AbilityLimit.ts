@@ -1,6 +1,6 @@
 import { EventName } from './Constants.js';
 import type Player from './Player.js';
-import type CardAbility from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 import type { EventHandler } from './GameEventBus.js';
 
 interface EventBusLike {

@@ -11,7 +11,7 @@ import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/Player.js';
 import { logger } from '../logger.js';
-import Socket, { SocketUserSchema } from '../Socket.js';
+import { Socket, SocketUserSchema } from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { isOwnKey } from '../game/utils/helpers.js';
 import { stringifyWithoutCycles, WsSocket } from './WsSocket.js';

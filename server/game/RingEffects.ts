@@ -4,7 +4,7 @@ import { FireRingEffect } from './Rings/FireRingEffect.js';
 import { VoidRingEffect } from './Rings/VoidRingEffect.js';
 import { WaterRingEffect } from './Rings/WaterRingEffect.js';
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './BaseAbility.js';
+import { BaseAbility } from './BaseAbility.js';
 import Player from './Player.js';
 import type { GameMode } from './GameMode.js';
 import { Element } from './Constants.js';

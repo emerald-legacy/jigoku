@@ -1,13 +1,13 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAction from '../BaseAction.js';
+import type { BaseAction } from '../BaseAction.js';
 import type BaseCard from '../BaseCard.js';
-import type BaseCardAbility from '../BaseCardAbility.js';
+import type { BaseCardAbility } from '../BaseCardAbility.js';
 import { Location, PlayType, Stage, type EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/AbilityResolver.js';
+import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { type ActionEvent, targetList, type WithDefaults } from './GameAction.js';

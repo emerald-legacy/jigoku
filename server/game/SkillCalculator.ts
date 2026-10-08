@@ -1,4 +1,4 @@
-import StatModifier from './StatModifier.js';
+import { StatModifier } from './StatModifier.js';
 import { EffectName } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';

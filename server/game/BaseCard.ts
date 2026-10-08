@@ -1,13 +1,13 @@
 import { AttachmentManager } from './AttachmentManager.js';
 import type DrawCard from './DrawCard.js';
 import { addKeyword, cardCannot, legendaryFate, playerCannot } from './effects.js';
-import Effects from './effects.js';
-import EffectSource from './EffectSource.js';
+import { Effects } from './effects.js';
+import { EffectSource } from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
-import CardAbility from './CardAbility.js';
-import TriggeredAbility from './TriggeredAbility.js';
+import { CardAbility } from './CardAbility.js';
+import { TriggeredAbility } from './TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
-import type BaseCardAbility from './BaseCardAbility.js';
+import type { BaseCardAbility } from './BaseCardAbility.js';
 import Game from './Game.js';
 
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
@@ -35,17 +35,17 @@ import {
 import type { GameObject } from './GameObject.js';
 import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
-import type BaseAction from './BaseAction.js';
+import type { BaseAction } from './BaseAction.js';
 import Ring from './Ring.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type { StrongholdCard } from './StrongholdCard.js';
 import type { RoleCard } from './RoleCard.js';
-import type Effect from './Effects/Effect.js';
+import type { Effect } from './Effects/Effect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { AbilityLimitIncrease } from './Effects/EffectValueMap.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
-import GainAllAbilitiesDynamic from './Effects/GainAllAbilitiesDynamic.js';
+import { GainAllAbilitiesDynamic } from './Effects/GainAllAbilitiesDynamic.js';
 import { CopyCard } from './Effects/Library/copyCard.js';
 import { isPersistentGain } from './Effects/GainAbility.js';
 import type { CardData } from './types/CardData.js';
@@ -112,7 +112,7 @@ export interface CardSummary {
     [key: string]: unknown;
 }
 
-class BaseCard extends EffectSource {
+export class BaseCard extends EffectSource {
     controller: Player;
     declare game: Game;
 

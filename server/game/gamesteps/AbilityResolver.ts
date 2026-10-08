@@ -1,12 +1,12 @@
 import { createCardPlayedEvent } from '../Events/cardPlayedEvent.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
-import InitiateAbilityEventWindow from '../Events/InitiateAbilityEventWindow.js';
+import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js';
+import { InitiateAbilityEventWindow } from '../Events/InitiateAbilityEventWindow.js';
 import { Location, Stage, CardType, EventName } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
-import type BaseAbility from '../BaseAbility.js';
+import type { BaseAbility } from '../BaseAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
@@ -32,7 +32,7 @@ interface AbilityResolverCostResults {
 
 const snapshotTypes: readonly string[] = [CardType.Character, CardType.Holding, CardType.Attachment];
 
-class AbilityResolver extends BaseStepWithPipeline {
+export class AbilityResolver extends BaseStepWithPipeline {
     context: AbilityContext;
     canCancel: boolean;
     initiateAbility: boolean;
@@ -254,4 +254,3 @@ class AbilityResolver extends BaseStepWithPipeline {
     }
 }
 
-export default AbilityResolver;

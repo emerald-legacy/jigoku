@@ -1,4 +1,4 @@
-import EffectSource from '../../server/game/EffectSource.js';
+import { EffectSource } from '../../server/game/EffectSource.js';
 import type { EffectEngine } from '../../server/game/EffectEngine.js';
 import { createTestGame } from '../helpers/fixtures.js';
 

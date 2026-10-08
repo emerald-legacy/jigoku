@@ -4,7 +4,7 @@ import { Stage, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import type { TargetResults } from '../BaseAbility.js';
 import { waitingPromptTitle } from './TargetPrompt.js';
@@ -21,7 +21,7 @@ interface AbilityTargetSelectProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectProperties> {
+export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectProperties> {
     hasLegalTarget(context: AbilityContext): boolean {
         const keys = Object.keys(this.getChoices(context));
         return keys.some((key) => this.isChoiceLegal(key, context));
@@ -135,4 +135,3 @@ class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectPropertie
     }
 }
 
-export default AbilityTargetSelect;

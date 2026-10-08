@@ -1,5 +1,5 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
-import CardSelector from '../CardSelector.js';
+import { CardSelector } from '../CardSelector.js';
 import { CardType, Stage, Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -20,7 +20,7 @@ interface AbilityTargetTokenProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProperties> {
+export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProperties> {
     selector: CardSelectorInstance;
 
     constructor(name: string, properties: AbilityTargetTokenProperties, ability: OwningAbility) {
@@ -151,4 +151,3 @@ class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProperties>
     }
 }
 
-export default AbilityTargetToken;

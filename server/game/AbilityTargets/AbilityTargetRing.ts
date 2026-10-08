@@ -16,7 +16,7 @@ interface AbilityTargetRingProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProperties> {
+export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProperties> {
     ringCondition: (ring: Ring, context: AbilityContext) => boolean;
 
     constructor(name: string, properties: AbilityTargetRingProperties, ability: OwningAbility) {
@@ -111,4 +111,3 @@ class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProperties> {
     }
 }
 
-export default AbilityTargetRing;

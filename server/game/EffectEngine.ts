@@ -1,11 +1,11 @@
 import { Duration, EffectName, EventName } from './Constants.js';
-import type Effect from './Effects/Effect.js';
+import type { Effect } from './Effects/Effect.js';
 import type { EffectUntil } from './Effects/Effect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { DelayedEffectValue, DelayedEffectWhen } from './Effects/EffectValueMap.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { isEnumValue } from './utils/helpers.js';
-import type EffectSource from './EffectSource.js';
+import type { EffectSource } from './EffectSource.js';
 import { Event } from './Events/Event.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';

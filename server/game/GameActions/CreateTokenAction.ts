@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { CardType, Duration, EventName, Location, ConflictType } from '../Constants.js';
-import Effects from '../effects.js';
+import { Effects } from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
 import type { ActionEvent } from './GameAction.js';

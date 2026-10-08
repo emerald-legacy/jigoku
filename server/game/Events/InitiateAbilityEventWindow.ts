@@ -1,5 +1,5 @@
-import EventWindow from './EventWindow.js';
-import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
+import { EventWindow } from './EventWindow.js';
+import { TriggeredAbilityWindow } from '../gamesteps/TriggeredAbilityWindow.js';
 import { EventName, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
@@ -55,7 +55,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     }
 }
 
-export default class InitiateAbilityEventWindow extends EventWindow {
+export class InitiateAbilityEventWindow extends EventWindow {
     eventsToExecute: Event[] = [];
 
     openWindow(abilityType: AbilityType) {

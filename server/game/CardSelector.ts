@@ -1,10 +1,10 @@
-import ExactlyXCardSelector from './CardSelectors/ExactlyXCardSelector.js';
-import ExactlyVariableXCardSelector from './CardSelectors/ExactlyVariableXCardSelector.js';
-import MaxStatCardSelector from './CardSelectors/MaxStatCardSelector.js';
-import SingleCardSelector from './CardSelectors/SingleCardSelector.js';
-import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector.js';
-import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
-import UpToVariableXCardSelector from './CardSelectors/UpToVariableXCardSelector.js';
+import { ExactlyXCardSelector } from './CardSelectors/ExactlyXCardSelector.js';
+import { ExactlyVariableXCardSelector } from './CardSelectors/ExactlyVariableXCardSelector.js';
+import { MaxStatCardSelector } from './CardSelectors/MaxStatCardSelector.js';
+import { SingleCardSelector } from './CardSelectors/SingleCardSelector.js';
+import { UnlimitedCardSelector } from './CardSelectors/UnlimitedCardSelector.js';
+import { UpToXCardSelector } from './CardSelectors/UpToXCardSelector.js';
+import { UpToVariableXCardSelector } from './CardSelectors/UpToVariableXCardSelector.js';
 import { TargetMode, CardType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { BaseCardSelectorProperties } from './CardSelectors/BaseCardSelector.js';
@@ -74,7 +74,7 @@ const ModeToSelector: Record<string, (p: CardSelectorProperties) => BaseSelector
     upToVariable: (p) => new UpToVariableXCardSelector(p.numCardsFunc ?? (() => 1), p)
 };
 
-class CardSelector {
+export class CardSelector {
     static for(properties: CardSelectorProperties): BaseSelector {
         properties = CardSelector.getDefaultedProperties(properties);
 
@@ -99,4 +99,3 @@ class CardSelector {
     }
 }
 
-export default CardSelector;

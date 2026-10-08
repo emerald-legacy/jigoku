@@ -1,7 +1,7 @@
 import { Event } from './Events/Event.js';
 import type { EventParams, EventPayload, GameEvent } from './Events/EventPayloads.js';
-import EventWindow from './Events/EventWindow.js';
-import ThenEventWindow from './Events/ThenEventWindow.js';
+import { EventWindow } from './Events/EventWindow.js';
+import { ThenEventWindow } from './Events/ThenEventWindow.js';
 import { EventName } from './Constants.js';
 import { GameEventBus, type EventHandler } from './GameEventBus.js';
 import type Game from './Game.js';

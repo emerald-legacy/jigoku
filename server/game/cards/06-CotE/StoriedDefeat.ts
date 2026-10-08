@@ -1,4 +1,4 @@
-import CardAbility from '../../CardAbility.js';
+import { CardAbility } from '../../CardAbility.js';
 import { CardType, EventName } from '../../Constants.js';
 import {
     bow,

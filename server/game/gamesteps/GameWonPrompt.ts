@@ -2,7 +2,7 @@ import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 
-class GameWonPrompt extends AllPlayerPrompt {
+export class GameWonPrompt extends AllPlayerPrompt {
     winner: Player;
     clickedButton: Record<string, boolean>;
 
@@ -37,4 +37,3 @@ class GameWonPrompt extends AllPlayerPrompt {
     }
 }
 
-export default GameWonPrompt;

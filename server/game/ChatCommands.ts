@@ -1,6 +1,6 @@
 import { rollDie } from './utils/random.js';
 import * as GameActions from './GameActions/GameActions.js';
-import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
+import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
 import { Location, CardType, Players, TargetMode } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
@@ -9,7 +9,7 @@ import type Ring from './Ring.js';
 
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
 
-class ChatCommands {
+export class ChatCommands {
     game: Game;
     commands: Record<string, CommandHandler>;
     tokens: string[];
@@ -486,4 +486,3 @@ class ChatCommands {
     }
 }
 
-export default ChatCommands;

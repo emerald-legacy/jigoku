@@ -2,10 +2,10 @@ import * as AbilityLimit from '../AbilityLimit.js';
 import { AbilityType, EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import TriggeredAbility from '../TriggeredAbility.js';
+import { TriggeredAbility } from '../TriggeredAbility.js';
 
 import type { EventPayload } from '../Events/EventPayloads.js';
-export default class PrideAbility extends TriggeredAbility<DrawCard> {
+export class PrideAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
             when: {

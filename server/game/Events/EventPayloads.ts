@@ -1,10 +1,10 @@
 import type { EntersPlayStatus } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type ActionWindow from '../gamesteps/ActionWindow.js';
-import type AttackersMatrix from '../gamesteps/conflict/AttackersMatrix.js';
-import type BaseAbility from '../BaseAbility.js';
-import type CardAbility from '../CardAbility.js';
-import type AbilityResolver from '../gamesteps/AbilityResolver.js';
+import type { ActionWindow } from '../gamesteps/ActionWindow.js';
+import type { AttackersMatrix } from '../gamesteps/conflict/AttackersMatrix.js';
+import type { BaseAbility } from '../BaseAbility.js';
+import type { CardAbility } from '../CardAbility.js';
+import type { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
 import type { CharacterStatus, ConflictType, Decks, DuelType, EventName, Location, Phases, Players, PlayType, TokenType } from '../Constants.js';

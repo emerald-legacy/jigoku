@@ -1,7 +1,7 @@
-import ActionWindow from '../ActionWindow.js';
+import { ActionWindow } from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import type AbilityResolver from '../AbilityResolver.js';
+import type { AbilityResolver } from '../AbilityResolver.js';
 import type { Conflict } from '../../Conflict.js';
 
 const capitalize: Record<string, string> = {
@@ -14,7 +14,7 @@ const capitalize: Record<string, string> = {
     void: 'Void'
 };
 
-class ConflictActionWindow extends ActionWindow {
+export class ConflictActionWindow extends ActionWindow {
     conflict: Conflict;
     displayTotals: boolean;
 
@@ -74,4 +74,3 @@ class ConflictActionWindow extends ActionWindow {
     }
 }
 
-export default ConflictActionWindow;

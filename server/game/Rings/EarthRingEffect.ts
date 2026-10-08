@@ -1,6 +1,6 @@
 import { TargetMode } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
-import BaseAbility from '../BaseAbility.js';
+import { BaseAbility } from '../BaseAbility.js';
 import { EARTH_CHOICE, type GameMode } from '../GameMode.js';
 
 export class EarthRingEffect extends BaseAbility {

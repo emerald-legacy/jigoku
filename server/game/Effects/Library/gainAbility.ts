@@ -7,10 +7,10 @@ import type {
     TriggeredAbilityWhenProps
 } from '../../Interfaces.js';
 import type BaseCard from '../../BaseCard.js';
-import type CardAbility from '../../CardAbility.js';
+import type { CardAbility } from '../../CardAbility.js';
 import type DrawCard from '../../DrawCard.js';
 import { EffectBuilder, type EffectTarget } from '../EffectBuilder.js';
-import GainAbility, { type GainAbilityArgs } from '../GainAbility.js';
+import { GainAbility, type GainAbilityArgs } from '../GainAbility.js';
 
 type Res = ReturnType<typeof EffectBuilder.card.static>;
 

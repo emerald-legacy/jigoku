@@ -1,10 +1,10 @@
 import type Player from './Player.js';
 import type Game from './Game.js';
-import MenuPrompt from './gamesteps/MenuPrompt.js';
-import HandlerMenuPrompt, { type HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
-import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import SelectCardPrompt, { type SelectCardPromptProperties } from './gamesteps/SelectCardPrompt.js';
-import SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
+import { MenuPrompt } from './gamesteps/MenuPrompt.js';
+import { HandlerMenuPrompt, type HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
+import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
+import { SelectCardPrompt, type SelectCardPromptProperties } from './gamesteps/SelectCardPrompt.js';
+import { SelectRingPrompt } from './gamesteps/SelectRingPrompt.js';
 import type { CardTypes } from './types/CardOfType.js';
 import type BaseCard from './BaseCard.js';
 
