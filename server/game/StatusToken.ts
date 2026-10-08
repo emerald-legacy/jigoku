@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { CardType, CharacterStatus, EffectName } from './Constants.js';
 import { EffectSource } from './EffectSource.js';
 import { loseHonor } from './GameActions/GameActions.js';
@@ -171,7 +172,7 @@ export class StatusToken extends EffectSource {
                 condition: () => card.isConflictProvince(),
                 effect: costToDeclareAnyParticipants({
                     type: 'defenders',
-                    message: 'loses 1 honor',
+                    chatText: () => msg`loses 1 honor`,
                     cost: (player: Player) =>
                         loseHonor({
                             target: player,

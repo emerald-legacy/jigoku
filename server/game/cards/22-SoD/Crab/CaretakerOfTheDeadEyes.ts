@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { addKeyword } from '../../../effects.js';
 import { cardLastingEffect, honor, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -20,7 +21,7 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
                     gameActions.push(cardLastingEffect({
                         target: card,
                         effect: addKeyword('courtesy'),
-                        message: 'give Courtesy to {0}'
+                        chatText: () => msg`give Courtesy to ${card}`
                     }));
                 }
 

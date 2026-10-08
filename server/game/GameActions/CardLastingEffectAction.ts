@@ -12,6 +12,8 @@ export interface LastingEffectCardProperties extends CardActionProperties, Lasti
     targetLocation?: TargetLocation;
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
+    /** The ability's chat text for this effect, after "to"; without it, "apply a lasting effect to <target>". */
+    chatText?: (context: AbilityContext) => MessageArgs;
 }
 
 export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
@@ -29,8 +31,9 @@ export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> 
         canChangeZoneNTimes: 0
     };
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return [this.getProperties(context, additionalProperties).message || this.effect, []];
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { chatText } = this.getProperties(context, additionalProperties);
+        return chatText ? chatText(context) : super.getEffectMessage(context, additionalProperties);
     }
 
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {

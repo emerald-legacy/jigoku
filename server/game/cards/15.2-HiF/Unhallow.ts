@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { costToDeclareAnyParticipants, modifyProvinceStrength } from '../../effects.js';
 import { loseHonor } from '../../GameActions/GameActions.js';
 import { Location, Players } from '../../Constants.js';
@@ -24,7 +25,7 @@ class Unhallow extends ProvinceAttachment {
             targetController: Players.Self,
             effect: costToDeclareAnyParticipants({
                 type: 'defenders',
-                message: 'loses 1 honor',
+                chatText: () => msg`loses 1 honor`,
                 cost: (player: Player) => loseHonor({
                     target: player
                 })

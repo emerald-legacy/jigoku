@@ -14,7 +14,6 @@ export interface LastingEffectFields {
     condition?: (context: AbilityContext) => boolean;
     until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
-    message?: string;
     ability?: BaseAbility;
 }
 

@@ -637,7 +637,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             this.game.queueSimpleStep(() => {
                 const player = declaringPlayer();
                 const cost = typeof properties.cost === 'function' ? properties.cost(player) : properties.cost;
-                if(!payAdditionalCost(this.game.getFrameworkContext(player), player, cost, player, purpose, properties.message)) {
+                if(!payAdditionalCost(this.game.getFrameworkContext(player), player, cost, player, purpose, properties.chatText)) {
                     failed();
                 }
             });

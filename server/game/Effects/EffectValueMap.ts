@@ -37,7 +37,8 @@ interface TargetingCallbacks {
 export interface ParticipantCostEffect {
     type: string;
     cost: GameAction | ((player: Player) => GameAction);
-    message?: string;
+    /** What the player did, in "<player> <chatText> in order to declare …"; without it, the cost's own text. */
+    chatText?: (context: AbilityContext) => MessageArgs;
 }
 
 
