@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
@@ -9,19 +10,18 @@ export default class CollapsibleTunnels extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Add Province Strength')
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} increases the strength of {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
                 gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(2)
                 })
-            }))
+            })
             .chatText('increase the strength of an attacked province by 2');
 
         this.action('Bow a character')

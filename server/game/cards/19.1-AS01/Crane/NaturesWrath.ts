@@ -1,4 +1,4 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { dishonor, selectCard, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
@@ -7,14 +7,13 @@ import DrawCard from '../../../DrawCard.js';
 const TARGET_CHARACTER = 'character';
 
 function selfDishonorSelect() {
-    return selectCard((context: AbilityContext) => ({
+    return selectCard({
         cardType: CardType.Character,
         controller: Players.Self,
         cardCondition: (card) => card.isParticipating(),
         gameAction: dishonor(),
-        message: '{0} dishonors {1}',
-        messageArgs: (card) => [context.player, card]
-    }));
+        message: (context, card) => msg`${context.player} dishonors ${card}`
+    });
 }
 
 export default class NaturesWrath extends DrawCard {

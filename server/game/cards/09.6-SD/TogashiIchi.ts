@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location } from '../../Constants.js';
 import { breakProvince } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -15,16 +16,15 @@ export default class TogashiIchi extends DrawCard {
                         conflict.getNumberOfCardsPlayed(opponent) >= 10 &&
                     conflict.getConflictProvinces().some((p) => p.location !== Location.StrongholdProvince);
             })
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
-                message: '{0} breaks {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} breaks ${cards}`,
                 gameAction: breakProvince()
-            }))
+            })
             .chatText('break an attacked province');
     }
 }

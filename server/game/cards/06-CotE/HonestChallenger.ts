@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Players } from '../../Constants.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { moveToConflict, noAction, selectCard } from '../../GameActions/GameActions.js';
@@ -23,8 +24,7 @@ export default class HonestChallenger extends DrawCard {
                             cardType: CardType.Character,
                             player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
                             controller: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                            message: '{0} moves {1} to the conflict',
-                            messageArgs: (card, player) => [player, card],
+                            message: (_context, card, player) => msg`${player} moves ${card} to the conflict`,
                             gameAction: moveToConflict()
                         })
                         : noAction()

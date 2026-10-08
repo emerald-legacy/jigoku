@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import {
@@ -25,14 +26,13 @@ export default class IllusionaryDecoy extends DrawCard {
                 chooseAction({
                     options: {
                         'Move another of your characters home': {
-                            action: selectCard((context) => ({
+                            action: selectCard({
                                 controller: Players.Self,
                                 cardType: CardType.Character,
                                 cardCondition: (card) => card.isCharacter() && card.isParticipating(),
-                                message: '{0} moves home {1} - they were an {2}',
-                                messageArgs: (card, player) => [player, card, context.source],
+                                message: (context, card, player) => msg`${player} moves home ${card} - they were an ${context.source}`,
                                 gameAction: sendHome()
-                            }))
+                            })
                         },
                         Done: { action: noAction() }
                     }

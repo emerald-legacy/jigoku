@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, moveToConflict, multiple, sendHome } from '../../../GameActions/GameActions.js';
@@ -22,8 +23,7 @@ export default class CorneringManeuver extends DrawCard {
                 optional: true,
                 controller: Players.Self,
                 cardType: CardType.Character,
-                message: '{0} moves {1} {2}',
-                messageArgs: (card, player) => [player, card, card.isParticipating() ? 'home' : 'to the conflict'],
+                message: (_context, card, player) => msg`${player} moves ${card} ${card.isParticipating() ? 'home' : 'to the conflict'}`,
                 gameAction: multiple([
                     sendHome(),
                     moveToConflict()

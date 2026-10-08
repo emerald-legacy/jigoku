@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, TargetMode, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -24,8 +25,7 @@ class IkomaUjiaki extends DrawCard {
                     location: [Location.Provinces],
                     controller: Players.Self,
                     cardCondition: (card) => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
-                    message: '{0} puts {1} into play into the conflict',
-                    messageArgs: (cards) => [context.player, cards],
+                    message: (context, cards) => msg`${context.player} puts ${cards} into play into the conflict`,
                     gameAction: putIntoConflict()
                 }))
             ]))

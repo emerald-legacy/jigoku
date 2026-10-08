@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location, ConflictType } from '../../Constants.js';
@@ -17,8 +18,7 @@ class RootOutHeresy extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} reduces the strength of {1} by {2}',
-                messageArgs: (cards) => [context.player, cards, this.getStrengthModifier(context)],
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by ${this.getStrengthModifier(context)}`,
                 gameAction: cardLastingEffect(() => ({
                     effect: modifyProvinceStrength(this.getStrengthModifier(context))
                 }))

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, DuelType, Players, Location } from '../../../Constants.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
@@ -26,10 +27,7 @@ export default class BayushiGichin extends DrawCard {
                                 const poisons = this.getPoisons(context);
                                 return poisons.some((p) => attach().canAffect(card, context, { attachment: p }));
                             },
-                            message: '{0} poisons {1}',
-                            messageArgs: (cards) => {
-                                return [context.player, cards];
-                            },
+                            message: (context, cards) => msg`${context.player} poisons ${cards}`,
                             subActionProperties: (card) => {
                                 character = Array.isArray(card) ? undefined : card;
                                 return { target: card };
@@ -42,10 +40,7 @@ export default class BayushiGichin extends DrawCard {
                             controller: Players.Self,
                             location: [Location.Hand, Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                             cardCondition: (card) => card.hasTrait('poison') && !!character && attach().canAffect(character, context, { attachment: card }),
-                            message: '{0} attaches {1}',
-                            messageArgs: (cards) => {
-                                return [context.player, cards];
-                            },
+                            message: (context, cards) => msg`${context.player} attaches ${cards}`,
                             subActionProperties: (card) => {
                                 poison = !Array.isArray(card) && card.isDrawCard() ? card : undefined;
                                 return { attachment: card };

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { draw, gainFate, ready, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
@@ -68,8 +69,7 @@ export default class NegotiationTable extends DrawCard {
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 targets: true,
-                message: '{0} chooses to ready {1}',
-                messageArgs: (card) => [ctx.player.opponent, card],
+                message: (_context, card) => msg`${ctx.player.opponent} chooses to ready ${card}`,
                 gameAction: ready()
             }))
                 .resolve(opponent, context);
@@ -81,8 +81,7 @@ export default class NegotiationTable extends DrawCard {
                 player: Players.Self,
                 cardType: CardType.Character,
                 targets: true,
-                message: '{0} chooses to ready {1}',
-                messageArgs: (card) => [ctx.player, card],
+                message: (_context, card) => msg`${ctx.player} chooses to ready ${card}`,
                 gameAction: ready()
             }))
                 .resolve(context.player, context);

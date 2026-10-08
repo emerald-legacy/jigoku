@@ -26,8 +26,7 @@ class PeasantsAdvice extends DrawCard {
                             card.isDynasty && !card.facedown,
                     location: Location.Provinces,
                     optional: true,
-                    message: '{0} chooses to shuffle {1} into its owner\'s deck',
-                    messageArgs: (card) => [context.player, card],
+                    message: (context, card) => msg`${context.player} chooses to shuffle ${card} into its owner's deck`,
                     gameAction: moveCard({
                         destination: Location.DynastyDeck,
                         shuffle: true

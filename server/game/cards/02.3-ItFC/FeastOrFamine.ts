@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { placeFate, selectCard } from '../../GameActions/GameActions.js';
@@ -16,8 +17,7 @@ export default class FeastOrFamine extends ProvinceCard {
             }, selectCard((context) => ({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                message: '{0} moves 1 fate from {1} to {2}',
-                messageArgs: (card) => [context.player, context.target, card],
+                message: (context, card) => msg`${context.player} moves 1 fate from ${context.target} to ${card}`,
                 gameAction: placeFate({
                     origin: context.target
                 })

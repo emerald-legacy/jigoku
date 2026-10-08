@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { dishonor, honor, selectCard } from '../../GameActions/GameActions.js';
@@ -9,25 +10,23 @@ class CourtGames extends DrawCard {
     setupCardAbilities() {
         this.conflictAction('Honor or dishonor a character', { conflictType: ConflictType.Political })
             .select({}, {
-                'Honor a friendly character': selectCard((context) => ({
+                'Honor a friendly character': selectCard({
                     cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
                     cardCondition: (card) => card.isCharacter() && card.isParticipating(),
-                    message: '{0} chooses to honor {1}',
-                    messageArgs: (card) => [context.player, card],
+                    message: (context, card) => msg`${context.player} chooses to honor ${card}`,
                     gameAction: honor()
-                })),
-                'Dishonor an opposing character': selectCard((context) => ({
+                }),
+                'Dishonor an opposing character': selectCard({
                     player: Players.Opponent,
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     targets: true,
                     cardCondition: (card) => card.isCharacter() && card.isParticipating(),
-                    message: '{0} chooses to dishonor {1}',
-                    messageArgs: (card) => [context.player.opponent, card],
+                    message: (context, card) => msg`${context.player.opponent} chooses to dishonor ${card}`,
                     gameAction: dishonor()
-                }))
+                })
             })
             .chatText('{1}', (context) => context.select.toLowerCase())
             .max(perConflict(1));

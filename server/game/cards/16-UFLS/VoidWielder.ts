@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import {
     discardFromPlay,
@@ -46,9 +47,7 @@ class VoidWielder extends DrawCard {
                     gameAction: discardFromPlay(),
                     chatText: 'discard an attachment from {0}',
                     chatTextArgs: () => [context.targets.character],
-                    message: '{0} discards {1}',
-                    messageArgs: (card, player) => [player, card]
-                }))
+                    message: (_context, card, player) => msg`${player} discards ${card}`}))
             });
     }
 

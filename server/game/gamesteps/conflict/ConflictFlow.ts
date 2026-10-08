@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
@@ -251,8 +252,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 const props = {
                     numCards: totalCardCost,
                     manuallyRaiseEvent: true,
-                    message: '{0} discards {1}',
-                    messageArgs: (cards: BaseCard | BaseCard[], player: Player) => [player, cards]
+                    message: (_context: AbilityContext, cards: BaseCard[], chooser: Player) => msg`${chooser} discards ${cards}`
                 };
                 discardCard(props).addEventsToArray?.(
                     costEvents,

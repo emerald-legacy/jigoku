@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Location, ConflictType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
@@ -18,16 +19,15 @@ class FieldOfTheFallen extends DrawCard {
                 }))
                 );
                 if(moreHonorable) {
-                    gameActions.push(selectCard((context) => ({
+                    gameActions.push(selectCard({
                         location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         activePromptTitle: 'Select a card to place on the bottom of a deck',
-                        message: '{0} places {1} on the bottom of {2}\'s {3} deck',
-                        messageArgs: (card) => [context.player, card, card.owner, card.isDynasty ? 'dynasty' : 'conflict'],
+                        message: (context, card) => msg`${context.player} places ${card} on the bottom of ${card.owner}'s ${card.isDynasty ? 'dynasty' : 'conflict'} deck`,
                         gameAction: returnToDeck({
                             location: Location.Any,
                             bottom: true
                         })
-                    })));
+                    }));
                 }
 
                 return ({

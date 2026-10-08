@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
 import { moveConflict, onAffinity, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,13 +17,11 @@ export default class AllDistancesAreOne extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 )))
-            .selectCard((context) => ({
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 gameAction: moveConflict(),
-                message: '{0} moves the conflict to {1}',
-                messageArgs: (card) => [context.player, card]
-            }))
+                message: (context, card) => msg`${context.player} moves the conflict to ${card}`})
             .chatText('move the conflict to another eligible province')
             .thenIf((context) => !context.costs.originalProvince?.isBroken)
             .gameAction(onAffinity((context) => ({

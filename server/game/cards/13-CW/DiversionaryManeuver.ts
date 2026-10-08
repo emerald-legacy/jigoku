@@ -40,8 +40,7 @@ class DiversionaryManeuver extends DrawCard {
                         optional: true,
                         mode: TargetMode.Unlimited,
                         cardCondition: (card) => !card.bowed,
-                        message: '{0} moves {1} to the conflict',
-                        messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
+                        message: (_context, card, player) => msg`${player} moves ${card.length > 0 ? card : 'no one'} to the conflict`,
                         gameAction: moveToConflict()
                     })
                 ]),
@@ -53,8 +52,7 @@ class DiversionaryManeuver extends DrawCard {
                     optional: true,
                     mode: TargetMode.Unlimited,
                     cardCondition: (card) => !card.bowed,
-                    message: '{0} moves {1} to the conflict',
-                    messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
+                    message: (_context, card, player) => msg`${player} moves ${card.length > 0 ? card : 'no one'} to the conflict`,
                     gameAction: moveToConflict()
                 })
             ]))

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -17,8 +18,7 @@ class DoomThrower extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} reduces the strength of {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards}`,
                 gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)

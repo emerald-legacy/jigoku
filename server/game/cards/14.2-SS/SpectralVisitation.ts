@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DeckType, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import * as costs from '../../costs/index.js';
@@ -26,7 +27,7 @@ export default class SpectralVisitation extends ProvinceCard {
                 handler({
                     handler: () => true
                 }),
-                selectCard((context) => ({
+                selectCard({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
                     controller: Players.Self,
@@ -45,10 +46,7 @@ export default class SpectralVisitation extends ProvinceCard {
                             })
                         }))
                     ]),
-                    message:
-                        '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the phase',
-                    messageArgs: (card) => [context.player, card, context.source]
-                }))
+                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the phase`})
             ]))
             .chatText('put a dynasty character into play')
             .cannotTargetFirst();

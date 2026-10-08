@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { ConflictType, CardType, Location } from '../../../Constants.js';
 import { breakProvince } from '../../../GameActions/GameActions.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -20,16 +21,15 @@ export default class WarCry extends DrawCard {
                     !event.conflict.isAtStrongholdProvince() &&
                     areAllAttackersBerserker(event.conflict)
             })
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
-                message: '{0} breaks {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} breaks ${cards}`,
                 gameAction: breakProvince()
-            }))
+            })
             .chatText('break an attacked province');
     }
 }

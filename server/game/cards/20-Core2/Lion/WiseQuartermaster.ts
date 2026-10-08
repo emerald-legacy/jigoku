@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { attach, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,8 +26,7 @@ export default class WiseQuartermaster extends DrawCard {
                     cardType: isOnProvince ? CardType.Province : CardType.Character,
                     location: isOnProvince ? Location.Provinces : Location.PlayArea,
                     cardCondition: (card) => card !== parent && card.controller === parent?.controller,
-                    message: '{0} moves {1} to {2}',
-                    messageArgs: (card) => [context.player, context.target ?? '', card],
+                    message: (_context, card) => msg`${context.player} moves ${context.target ?? ''} to ${card}`,
                     gameAction: attach({ attachment: context.target })
                 };
             }))

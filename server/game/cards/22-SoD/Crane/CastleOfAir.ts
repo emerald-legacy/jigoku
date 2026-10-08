@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { AbilityType, EventName, CardType, Location } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { modifyProvinceStrength } from '../../../effects.js';
@@ -34,19 +35,18 @@ export default class CastleOfAir extends DrawCard {
             }))
             .condition((context) => context.game.isDuringConflict())
             .gameAction(multiple([
-                selectCard((context) => ({
+                selectCard({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
                     cardType: CardType.Province,
                     location: Location.Provinces,
                     cardCondition: (card) => card.isConflictProvince(),
-                    message: '{0} increases the strength of {1}',
-                    messageArgs: (cards) => [context.player, cards],
+                    message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
                     gameAction: cardLastingEffect({
                         targetLocation: Location.Provinces,
                         effect: modifyProvinceStrength(4)
                     })
-                })),
+                }),
                 conditional((context) => ({
                     condition: context.player.hasAffinity('air', context),
                     trueGameAction: handler({

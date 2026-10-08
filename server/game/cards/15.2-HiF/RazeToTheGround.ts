@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location, ConflictType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { breakProvince } from '../../GameActions/GameActions.js';
@@ -14,16 +15,15 @@ export default class RazeToTheGround extends DrawCard {
             })
             .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .cost(costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
-                message: '{0} breaks {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} breaks ${cards}`,
                 gameAction: breakProvince()
-            }))
+            })
             .chatText('break an attacked province');
     }
 }

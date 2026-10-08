@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,8 +26,7 @@ export default class Coward extends DrawCard {
 
                     return isInvolved && isChallenger && higherSkill;
                 },
-                message: '{0} dishonors {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} dishonors ${cards}`,
                 gameAction: dishonor()
             }))
             .chatText('dishonor a duel challenger');

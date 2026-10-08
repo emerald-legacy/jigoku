@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -22,9 +23,7 @@ class KaradaDistrict extends DrawCard {
                         attachment: context.target,
                         takeControl: true
                     }),
-                    message: '{0} chooses to attach {1} to {2}',
-                    messageArgs: (cards, player) => [player, context.target, cards]
-                }),
+                    message: (context, cards, player) => msg`${player} chooses to attach ${context.target} to ${cards}`}),
                 otherwiseAction: discardFromPlay({ target: context.target })
             })));
     }

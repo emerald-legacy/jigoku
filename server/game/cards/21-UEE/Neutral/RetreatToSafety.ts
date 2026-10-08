@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { ready, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -22,8 +23,6 @@ export default class RetreatToSafety extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card) => context.targets.target.some((target) => target === card),
                     gameAction: ready(),
-                    message: '{0} is readied due to {1}\'s superior leadership',
-                    messageArgs: (card, player) => [card, player]
-                }));
+                    message: (_context, card, player) => msg`${card} is readied due to ${player}'s superior leadership`}));
     }
 }

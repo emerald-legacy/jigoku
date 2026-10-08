@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { placeFate, selectCard } from '../../GameActions/GameActions.js';
@@ -18,8 +19,7 @@ export default class SharingShinseisWisdom extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: context.target.controller === context.player ? Players.Self : Players.Opponent,
                 cardCondition: (card, context) => card !== context.target,
-                message: '{0} moves 1 fate from {1} to {2}',
-                messageArgs: (card) => [context.player, context.target, card],
+                message: (context, card) => msg`${context.player} moves 1 fate from ${context.target} to ${card}`,
                 gameAction: placeFate({
                     origin: context.target
                 })

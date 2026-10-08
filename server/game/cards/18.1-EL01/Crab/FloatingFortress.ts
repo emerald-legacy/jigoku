@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { copyCard } from '../../../effects.js';
 import {
@@ -36,8 +37,7 @@ export default class FloatingFortress extends DrawCard {
                                 hidePromptIfSingleCard: true,
                                 cardType: CardType.Province,
                                 location: Location.Provinces,
-                                message: '{0} moves {1} to {2}',
-                                messageArgs: (province, player) => [player, context.source, province],
+                                message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,
                                 cardCondition: (card) => card.isConflictProvince(),
                                 subActionProperties: (card) => ({
                                     target: context.source,

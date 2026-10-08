@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Players, Phase, Location, TargetMode } from '../../Constants.js';
@@ -36,8 +37,7 @@ class Reconnaissance extends DrawCard {
                             location: [Location.Provinces],
                             controller: Players.Any,
                             cardCondition: (card) => locations.includes(card.location),
-                            message: '{0} chooses to discard {1}',
-                            messageArgs: (cards) => [context.player, cards],
+                            message: (_context, cards) => msg`${context.player} chooses to discard ${cards}`,
                             gameAction: moveCard({ destination: Location.DynastyDiscardPile })
                         });
                     })

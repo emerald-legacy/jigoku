@@ -19,8 +19,7 @@ class Aranat extends DrawCard {
                 optional: true,
                 mode: TargetMode.Unlimited,
                 cardCondition: (card) => card.isFacedown(),
-                message: '{0} chooses to reveal {1}',
-                messageArgs: (card, player) => [player, card],
+                message: (_context, card, player) => msg`${player} chooses to reveal ${card}`,
                 gameAction: reveal()
             }))
             .chatText('give {1} the opportunity to reveal provinces', (context) => context.player.opponent ?? '')

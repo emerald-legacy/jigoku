@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { moveToConflict, selectCards, sendHome, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
@@ -20,9 +21,7 @@ class WarriorsOfTheWind extends DrawCard {
                     targets: true,
                     cardCondition: (card) => card.hasTrait('cavalry'),
                     gameAction: moveToConflict(),
-                    message: '{0} chooses to move {1} to the conflict',
-                    messageArgs: (cards, player) => [player, cards]
-                })
+                    message: (_context, cards, player) => msg`${player} chooses to move ${cards} to the conflict`})
             ]));
     }
 }

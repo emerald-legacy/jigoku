@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Location, CardType, CharacterStatus, EventName } from '../../../Constants.js';
 import { cannotParticipateAsAttacker } from '../../../effects.js';
 import { honor } from '../../../GameActions/GameActions.js';
@@ -52,9 +53,7 @@ export default class DiligentChaperone extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) => targetsFromEvent(context.event).has(card),
                 gameAction: honor(),
-                message: '{0} honors {1}',
-                messageArgs: (card, player) => [player, card]
-            }))
+                message: (_context, card, player) => msg`${player} honors ${card}`}))
             .chatText('protect the honor of the Crane');
     }
 }

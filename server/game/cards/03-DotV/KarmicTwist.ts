@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { placeFate, selectCard } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
@@ -15,8 +16,7 @@ class KarmicTwist extends DrawCard {
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a recipient character',
                 cardCondition: (card) => !card.isUnique() && card.getFate() === 0 && card.controller === context.target?.controller,
-                message: '{0} moves {1} fate from {2} to {3}',
-                messageArgs: (card) => [context.player, context.target?.getFate() ?? 0, context.target ?? '', card],
+                message: (context, card) => msg`${context.player} moves ${context.target?.getFate() ?? 0} fate from ${context.target ?? ''} to ${card}`,
                 gameAction: placeFate({
                     origin: context.target,
                     amount: context.target?.getFate() ?? 0

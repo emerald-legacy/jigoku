@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { discardCard, moveCard, multiple, selectCard } from '../../GameActions/GameActions.js';
@@ -20,8 +21,7 @@ class ApprenticeEngineer extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
-                message: '{0} places {1} in {2}, discarding {3}',
-                messageArgs: (card) => [context.player, context.target, card.facedown ? card.location : card, context.player.getDynastyCardsInProvince(card.location)],
+                message: (context, card) => msg`${context.player} places ${context.target} in ${card.facedown ? card.location : card}, discarding ${context.player.getDynastyCardsInProvince(card.location)}`,
                 subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
                 gameAction: multiple([
                     moveCard({

@@ -13,7 +13,7 @@ class AsakoAzunami extends DrawCard {
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
-            .cancel((context) => ({
+            .cancel({
                 replacementGameAction: multiple([
                     selectCard({
                         activePromptTitle: 'Choose a character to bow',
@@ -21,20 +21,16 @@ class AsakoAzunami extends DrawCard {
                         optional: true,
                         gameAction: bow(),
                         targets: true,
-                        message: '{0} chooses to bow {1} with {2}\'s effect',
-                        messageArgs: (card, player) => [player, card, context.source]
-                    }),
+                        message: (context, card, player) => msg`${player} chooses to bow ${card} with ${context.source}'s effect`}),
                     selectCard({
                         activePromptTitle: 'Choose a character to ready',
                         cardType: CardType.Character,
                         optional: true,
                         gameAction: ready(),
                         targets: true,
-                        message: '{0} chooses to ready {1} with {2}\'s effect',
-                        messageArgs: (card, player) => [player, card, context.source]
-                    })
+                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`})
                 ])
-            }))
+            })
             .chatText(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, PlayType, Players, TargetMode } from '../../../Constants.js';
 import { delayedEffect, playerCannot } from '../../../effects.js';
 import { multiple, placeFate, playerLastingEffect, selectCards } from '../../../GameActions/GameActions.js';
@@ -32,11 +33,7 @@ export default class UtakuSumire extends DrawCard {
                             mode: TargetMode.UpTo,
                             numCards: 2,
                             gameAction: placeFate(),
-                            message: '{0} encourages her troops and places {1} on {2}',
-                            messageArgs: (cards) => {
-                                const named = cards.map((c) => (c === this ? 'herself' : c));
-                                return [this, 'fate', named];
-                            }
+                            message: (_context, cards) => msg`${this} encourages her troops and places ${'fate'} on ${cards.map((c) => (c === this ? 'herself' : c))}`
                         })
                     })
                 })

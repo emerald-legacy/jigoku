@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location, Players, TargetMode } from '../../../Constants.js';
 import { delayedEffect } from '../../../effects.js';
 import {
@@ -31,8 +32,7 @@ export default class BayushiKotaro extends DrawCard {
                         !card.facedown &&
                         card.isFaction('scorpion') &&
                         card.allowGameAction('putIntoConflict', context),
-                    message: '{0} puts {1} into play into the conflict, aiding {2} with their mission',
-                    messageArgs: (card) => [context.player, card, context.source],
+                    message: (context, card) => msg`${context.player} puts ${card} into play into the conflict, aiding ${context.source} with their mission`,
                     gameAction: sequential([
                         putIntoConflict(),
                         cardLastingEffect(() => ({

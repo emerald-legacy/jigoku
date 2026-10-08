@@ -1,3 +1,5 @@
+import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { attach, cardMenu, selectCard, sequential, shuffleDeck } from '../../GameActions/GameActions.js';
@@ -29,13 +31,12 @@ export default class IllustriousForge extends ProvinceCard {
                     // the chosen attachment reaches the message through the select's properties
                     subActionProperties: (attachment) => ({
                         attachment,
-                        messageArgs: (card: BaseCard | BaseCard[]) => [context.player, attachment, card]
+                        message: (context: AbilityContext, card: BaseCard | BaseCard[]) => msg`${context.player} chooses to attach ${attachment} to ${card}`
                     }),
                     gameAction: selectCard({
                         controller: Players.Self,
                         location: Location.PlayArea,
                         cardType: CardType.Character,
-                        message: '{0} chooses to attach {1} to {2}',
                         gameAction: attach()
                     })
                 })),

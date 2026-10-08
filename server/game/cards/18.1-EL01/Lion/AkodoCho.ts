@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { bow, discardFromPlay, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -35,8 +36,7 @@ export default class AkodoCho extends DrawCard {
                                     : Players.Opponent,
                     activePromptTitle: 'Choose an attachment to discard',
                     cardCondition: (card) => card.parentCharacter === context.targets[CHARACTER],
-                    message: '{0} discards {1}',
-                    messageArgs: (card) => [context.targets[CHARACTER].controller, card],
+                    message: (context, card) => msg`${context.targets[CHARACTER].controller} discards ${card}`,
                     gameAction: discardFromPlay()
                 })),
                 'Bow this character': bow((context) => ({

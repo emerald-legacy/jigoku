@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { reduceCost } from '../../effects.js';
 import { putIntoConflict, reveal, selectCards, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode } from '../../Constants.js';
@@ -37,8 +38,7 @@ export default class StokeInsurrection extends DrawCard {
                     location: [Location.Provinces],
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
-                    message: '{0} puts {1} into play into the conflict',
-                    messageArgs: (cards) => [context.player, cards],
+                    message: (context, cards) => msg`${context.player} puts ${cards} into play into the conflict`,
                     gameAction: putIntoConflict()
                 }))
             ]))

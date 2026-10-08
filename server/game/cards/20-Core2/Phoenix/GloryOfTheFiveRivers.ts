@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { dishonor, handler, honor, loseFate, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -13,8 +14,7 @@ function resolveActionOnSelection(context: AbilityContext, player: Player, actio
         controller: Players.Any,
         cardType: CardType.Character,
         gameAction: action === 'honor' ? honor() : dishonor(),
-        message: `{0} ${action}s {1}`,
-        messageArgs: (card, player) => [player, card]
+        message: (_context, card, chooser) => msg`${chooser} ${action}s ${card}`
     })
         .resolve(player, context);
 }

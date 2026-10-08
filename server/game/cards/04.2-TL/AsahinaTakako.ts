@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Location, CardType, Players } from '../../Constants.js';
 import { canBeSeenWhenFacedown } from '../../effects.js';
 import { chooseAction, discardCard, moveCard, selectCard } from '../../GameActions/GameActions.js';
@@ -29,14 +30,7 @@ export default class AsahinaTakako extends DrawCard {
                             cardType: [CardType.Character, CardType.Holding, CardType.Event],
                             location: Location.Provinces,
                             controller: Players.Self,
-                            message: '{0} switches {1} in {2} and {3} in {4}',
-                            messageArgs: (card) => [
-                                context.player,
-                                context.target?.isFacedown() ? 'a facedown card' : context.target ?? '',
-                                context.target?.location ?? '',
-                                card.isFacedown() ? 'a facedown card' : card,
-                                card.location
-                            ],
+                            message: (context, card) => msg`${context.player} switches ${context.target?.isFacedown() ? 'a facedown card' : context.target ?? ''} in ${context.target?.location ?? ''} and ${card.isFacedown() ? 'a facedown card' : card} in ${card.location}`,
                             gameAction: moveCard({
                                 destination: context.target?.location,
                                 switch: true,

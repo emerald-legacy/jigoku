@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { unlimited } from '../../AbilityLimit.js';
 import { sacrifice } from '../../GameActions/GameActions.js';
@@ -16,8 +17,7 @@ class HidaAmoro extends DrawCard {
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.controller === context.event.conflict.attackingPlayer,
-                message: '{0} sacrifices {1} to {2}',
-                messageArgs: (card) => [context.event.conflict.attackingPlayer, card, context.source],
+                message: (context, card) => msg`${context.event.conflict.attackingPlayer} sacrifices ${card} to ${context.source}`,
                 gameAction: sacrifice()
             }))
             .chatText('force {1} to sacrifice a character', (context) => context.event.conflict.attackingPlayer)

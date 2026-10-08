@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Phase, Players, PlayType } from '../../Constants.js';
 import { flipDynasty, playCard, selectCard, sequential } from '../../GameActions/GameActions.js';
@@ -27,9 +28,7 @@ class WayfarersCamp extends DrawCard {
                     location: Location.Provinces,
                     controller: Players.Self,
                     gameAction: flipDynasty(),
-                    message: '{0} turns {1} faceup',
-                    messageArgs: (card, player) => [player, card]
-                })
+                    message: (_context, card, player) => msg`${player} turns ${card} faceup`})
             ]))
             .chatText('play two cards from their provinces')
             .phase(Phase.Dynasty);

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import { modifyProvinceStrength } from '../../effects.js';
@@ -23,8 +24,7 @@ class HeroOfThreeTrees extends DrawCard {
                         context.target = card;
                         return ({ target: card });
                     },
-                    message: '{0} reduces the strength of {1} by 1',
-                    messageArgs: (cards) => [context.player, cards],
+                    message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 1`,
                     gameAction: cardLastingEffect(() => ({
                         effect: (
                             (context.target?.isProvinceCard() ? context.target.getStrength() : 0) > 0 ?

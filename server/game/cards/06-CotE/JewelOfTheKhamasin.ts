@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -12,19 +13,18 @@ class JewelOfTheKhamasin extends DrawCard {
         this.action('Reduce province strength')
             .cost(costs.payHonor(1))
             .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
-                message: '{0} reduces the strength of {1} by 1',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 1`,
                 gameAction: cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(-1)
                 }))
-            }))
+            })
             .chatText('reduce an attacked province strength by 1')
             .limit(unlimitedPerConflict());
     }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import {
@@ -43,8 +44,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                                     activePromptTitle: 'Select a character to sacrifice',
                                     cardType: CardType.Character,
                                     controller: Players.Self,
-                                    message: '{0} chooses to sacrifice {1}',
-                                    messageArgs: (card) => [context.player, card],
+                                    message: (context, card) => msg`${context.player} chooses to sacrifice ${card}`,
                                     subActionProperties: (card) => ({ target: card, cannotBeCancelled: true }),
                                     gameAction: sacrifice()
                                 })

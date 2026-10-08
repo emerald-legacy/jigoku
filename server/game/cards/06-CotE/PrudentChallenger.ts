@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType } from '../../Constants.js';
 import { discardFromPlay, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -17,8 +18,7 @@ export default class PrudentChallenger extends DrawCard {
                         cardType: CardType.Attachment,
                         cardCondition: (card) => !!card.parentCharacter && (duel.loser?.includes(card.parentCharacter) ?? false),
                         targets: true,
-                        message: '{0} chooses to discard {1}',
-                        messageArgs: (card, player) => [player, card],
+                        message: (_context, card, player) => msg`${player} chooses to discard ${card}`,
                         gameAction: discardFromPlay()
                     })
             }));

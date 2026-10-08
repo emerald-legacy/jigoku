@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { attach, selectCard } from '../../GameActions/GameActions.js';
 import { CardSelector } from '../../CardSelector.js';
@@ -24,8 +25,7 @@ class TimeForWar extends DrawCard {
                     controller: Players.Self,
                     cardCondition: (card) => card.isDrawCard() && card.costLessThan(4) && card.hasTrait('weapon') && attachAction.canAffect(context.target, context, { attachment: card })
                 }),
-                message: '{0} chooses to attach {1} to {2}',
-                messageArgs: (card, player) => [player, card, context.target],
+                message: (context, card, player) => msg`${player} chooses to attach ${card} to ${context.target}`,
                 subActionProperties: (card) => ({ attachment: card }),
                 gameAction: attachAction
             })))

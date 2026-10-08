@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { setMilitarySkill, setPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Location, Players } from '../../../Constants.js';
@@ -17,13 +18,7 @@ export default class ShinjoAtagi extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                message: '{3} sets the {1} skill of {0} to {2}{1}',
-                messageArgs: (card) => [
-                    context.target,
-                    context.game.currentConflict?.conflictType,
-                    card.isProvinceCard() ? card.getStrength() : 0,
-                    context.source
-                ],
+                message: (context, card) => msg`${context.source} sets the ${context.game.currentConflict?.conflictType} skill of ${context.target} to ${card.isProvinceCard() ? card.getStrength() : 0}${context.game.currentConflict?.conflictType}`,
                 cardCondition: (card) => card.isConflictProvince(),
                 subActionProperties: (card) => {
                     const provinceStrength = card.isProvinceCard() ? card.getStrength() : 0;

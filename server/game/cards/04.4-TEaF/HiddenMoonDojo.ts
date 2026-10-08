@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Location, Players } from '../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import { gainPlayAction } from '../../effects.js';
@@ -25,9 +26,7 @@ export default class HiddenMoonDojo extends DrawCard {
                 cardCondition: (card, context) =>
                     context.player.areLocationsAdjacent(context.source.location, card.location),
                 gameAction: flipDynasty(),
-                message: '{0} chooses to turn {1} in {2} faceup',
-                messageArgs: (card, player) => [player, card, card.location]
-            })
+                message: (_context, card, player) => msg`${player} chooses to turn ${card} in ${card.location} faceup`})
             .chatText('turn a card in an adjacent province faceup');
     }
 }

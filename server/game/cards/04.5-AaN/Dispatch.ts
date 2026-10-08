@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { conditional, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
@@ -23,14 +24,7 @@ class Dispatch extends DrawCard {
                     trueGameAction: sendHome(),
                     falseGameAction: moveToConflict()
                 }),
-                message: '{0} chooses to {3} {1} {2}',
-                messageArgs: (card, player) => [
-                    player,
-                    card,
-                    card.inConflict ? 'home' : 'into the conflict',
-                    card.inConflict ? 'send' : 'move'
-                ]
-            })
+                message: (_context, card, player) => msg`${player} chooses to ${card.inConflict ? 'send' : 'move'} ${card} ${card.inConflict ? 'home' : 'into the conflict'}`})
             .chatText('choose a unicorn character they control to move into a conflict or home');
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { bow, removeFate, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
@@ -21,9 +22,7 @@ class CleanseTheEmpire extends DrawCard {
                     targets: true,
                     cardCondition: (card) => card.getFate() === 0,
                     gameAction: bow(),
-                    message: '{0} chooses to bow {1}',
-                    messageArgs: (card, player) => [player, card]
-                })
+                    message: (_context, card, player) => msg`${player} chooses to bow ${card}`})
             ]));
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { deckSearch, moveCard, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
@@ -44,9 +45,7 @@ export default class CinderSalamander extends DrawCard {
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
                     gameAction: putIntoPlay(),
-                    message: '{0} finds {1} in their provinces',
-                    messageArgs: (cards, player) => [player, this.salamanderCountToText(cards.length)]
-                })
+                    message: (_context, cards, player) => msg`${player} finds ${this.salamanderCountToText(cards.length)} in their provinces`})
             ]))
             .chatText('search their deck and provinces for other copies of {0} and put them into play')
             .max(perRound(1));

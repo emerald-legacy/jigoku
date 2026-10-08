@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -10,13 +11,11 @@ class TalismanOfTheSun extends DrawCard {
         this.action('Move conflict to a different province')
             .cost(costs.bowSelf())
             .condition((context) => context.player.isDefendingPlayer())
-            .selectCard((context) => ({
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 gameAction: moveConflict(),
-                message: '{0} moves the conflict to {1}',
-                messageArgs: (card) => [context.player, card]
-            }))
+                message: (context, card) => msg`${context.player} moves the conflict to ${card}`})
             .chatText('move the conflict to another eligible province');
     }
 }

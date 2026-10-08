@@ -19,15 +19,14 @@ export default class ShosuroMiyako extends DrawCard {
                 player: Players.Opponent
             }, {
                 'Discard at random': discardAtRandom(),
-                'Dishonor a character': selectCard((context) => ({
+                'Dishonor a character': selectCard({
                     activePromptTitle: 'Choose a character to dishonor',
                     player: Players.Opponent,
                     controller: Players.Opponent,
                     targets: true,
-                    message: '{0} chooses to dishonor {1}',
-                    messageArgs: (card) => [context.player.opponent, card],
+                    message: (context, card) => msg`${context.player.opponent} chooses to dishonor ${card}`,
                     gameAction: dishonor()
-                }))
+                })
             })
             .chatText((context) => msg`force ${context.player.opponent ?? ''} to ${context.select.toLowerCase()}`);
     }

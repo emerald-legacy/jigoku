@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import {
@@ -32,13 +33,7 @@ class PrepareForWar extends DrawCard {
                                 activePromptTitle: 'Choose any amount of attachments',
                                 optional: true,
                                 gameAction: discardFromPlay(),
-                                message: '{0} chooses to discard {1} from {2}',
-                                messageArgs: (cards) => [
-                                    context.player,
-                                    cards.length === 0 ? 'no attachments' : cards,
-                                    context.target ?? ''
-                                ]
-                            })),
+                                message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target ?? ''}`})),
                             ...promptActions
                         ]
                     };

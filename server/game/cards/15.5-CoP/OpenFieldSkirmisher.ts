@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -11,19 +12,18 @@ class OpenFieldSkirmisher extends DrawCard {
         this.action('Reduce Province Strength')
             .cost(costs.removeFateFromSelf())
             .condition((context) => context.source.isAttacking())
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} reduces the strength of {1} by 3',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 3`,
                 gameAction: cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrength(-3)
                 }))
-            }))
+            })
             .chatText('reduce the strength of an attacked province by 3');
     }
 }

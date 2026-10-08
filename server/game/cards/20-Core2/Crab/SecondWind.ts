@@ -26,7 +26,7 @@ export default class SecondWind extends DrawCard {
                 discardCard((context) => ({
                     target: cardsToDiscard(context)
                 })),
-                selectCard((context) => ({
+                selectCard({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
                     cardCondition: (card) => !card.isUnique(),
@@ -45,10 +45,7 @@ export default class SecondWind extends DrawCard {
                             })
                         }))
                     ]),
-                    message:
-                        '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the conflict',
-                    messageArgs: (card) => [context.player, card, context.source]
-                }))
+                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`})
             ]))
             .chatText((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
             .cannotTargetFirst();

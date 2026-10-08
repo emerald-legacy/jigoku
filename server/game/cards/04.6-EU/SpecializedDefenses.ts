@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import { modifyProvinceStrengthMultiplier } from '../../effects.js';
@@ -21,8 +22,7 @@ class SpecializedDefenses extends DrawCard {
                     return this.game.ringFor(element)?.isConsideredClaimed(context.player) ||
                            (isEnumValue(Element, element) && (this.game.currentConflict?.ring?.getElements().includes(element) ?? false));
                 }),
-                message: '{0} doubles the province strength of {1}',
-                messageArgs: (cards) => [context.player, cards],
+                message: (context, cards) => msg`${context.player} doubles the province strength of ${cards}`,
                 gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: modifyProvinceStrengthMultiplier(2)

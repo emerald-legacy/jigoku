@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
@@ -14,7 +15,7 @@ export default class Pressure extends DrawCard {
                 onDefendersDeclared: (_event, _context) => true,
                 onMoveToConflict: (_event, _context) => true
             })
-            .selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -34,9 +35,7 @@ export default class Pressure extends DrawCard {
                         ]
                     })
                 ]),
-                message: '{0} chooses {1}',
-                messageArgs: (cards) => [context.player, cards]
-            }))
+                message: (context, cards) => msg`${context.player} chooses ${cards}`})
             .chatText('move a character home and prevent it from participating in the conflict')
             .max(perConflict(1));
     }

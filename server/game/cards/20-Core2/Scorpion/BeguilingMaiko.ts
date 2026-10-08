@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import {
     claimImperialFavor,
     dishonor,
@@ -42,9 +43,7 @@ export default class BeguilingMaiko extends DrawCard {
                             player: Players.Opponent,
                             controller: Players.Opponent,
                             gameAction: dishonor(),
-                            message: '{0} dishonors {1}',
-                            messageArgs: (card, player) => [player, card]
-                        })
+                            message: (_context, card, player) => msg`${player} dishonors ${card}`})
                     );
                 }
                 return { gameActions };

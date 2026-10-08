@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { discardFromPlay, placeFate, selectCards, sequential } from '../../../GameActions/GameActions.js';
@@ -22,13 +23,7 @@ export default class KotobukisBlessing extends DrawCard {
                     activePromptTitle: 'Choose up to 1 attachment',
                     optional: true,
                     gameAction: discardFromPlay(),
-                    message: '{0} chooses to discard {1} from {2}',
-                    messageArgs: (cards) => [
-                        context.player,
-                        cards.length === 0 ? 'no attachments' : cards,
-                        context.target
-                    ]
-                }))
+                    message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target}`}))
             ]))
             .max(perRound(1));
     }
