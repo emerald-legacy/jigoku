@@ -1,4 +1,4 @@
-import type { MessageArgs, MsgArg } from './GameChat.js';
+import type { MessageArgs } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
 import { BaseCardAbility } from './BaseCardAbility.js';
 import type { BaseAbilityProperties, DeclaredGameAction } from './BaseAbility.js';
@@ -7,7 +7,7 @@ import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { EventWindow } from './Events/EventWindow.js';
 import type { ThenEventWindow } from './Events/ThenEventWindow.js';
-import type { EffectArg, OwnContextCallback } from './Interfaces.js';
+import type { OwnContextCallback } from './Interfaces.js';
 
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
     gameAction?: DeclaredGameAction<C> | DeclaredGameAction<C>[];
@@ -17,9 +17,8 @@ export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext
     then?: ThenAbilityProperties | OwnContextCallback<[context: C], ThenAbilityProperties | undefined>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: C | Event): boolean;
-    /** A format with `{0}` the player, `{1}` the source and `{2}` the target, or a `msg` template. */
-    message?: string | OwnContextCallback<[context: C], string | MessageArgs | undefined>;
-    messageArgs?: (EffectArg | undefined)[] | OwnContextCallback<[context: C], (EffectArg | undefined)[]>;
+    /** The step's whole chat line; nothing when it returns undefined. */
+    message?: OwnContextCallback<[context: C], MessageArgs | undefined>;
     /** Its context starts with the chosen targets, selects and costs of the ability it continues, and that ability's events as `previousEvents`. */
     inheritTargets?: boolean;
 }
@@ -73,20 +72,9 @@ export class ThenAbility extends BaseCardAbility {
     }
 
     displayMessage(context: AbilityContext): void {
-        const property = this.properties.message;
-        const message = typeof property === 'function' ? property(context) : property;
-        if(Array.isArray(message)) {
+        const message = this.properties.message?.(context);
+        if(message) {
             this.game.addMessage(message[0], ...message[1]);
-        } else if(message) {
-            let messageArgs: MsgArg[] = [context.player, context.source, context.messageTarget()];
-            if(this.properties.messageArgs) {
-                let args = this.properties.messageArgs;
-                if(typeof args === 'function') {
-                    args = args(context);
-                }
-                messageArgs = messageArgs.concat(args);
-            }
-            this.game.addMessage(message, ...messageArgs);
         }
     }
 

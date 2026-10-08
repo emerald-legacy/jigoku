@@ -231,20 +231,9 @@ export class CardAbility extends ThenAbility {
         }
 
         if(this.properties.message) {
-            let messageArgs = this.properties.messageArgs;
-            if(typeof messageArgs === 'function') {
-                messageArgs = messageArgs(context);
-            }
-            if(!Array.isArray(messageArgs)) {
-                messageArgs = [messageArgs];
-            }
-            const message = typeof this.properties.message === 'function'
-                ? this.properties.message(context)
-                : this.properties.message;
-            if(Array.isArray(message)) {
+            const message = this.properties.message(context);
+            if(message) {
                 this.game.addMessage(message[0], ...message[1]);
-            } else if(message !== undefined) {
-                this.game.addMessage(message, ...messageArgs);
             }
             return;
         }

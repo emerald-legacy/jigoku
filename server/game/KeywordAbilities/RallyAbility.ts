@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AbilityType, EventName, Location } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -24,15 +25,10 @@ export class RallyAbility extends TriggeredAbility<DrawCard> {
             ],
             title: `${card.name}'s Rally`,
             printedAbility: false,
-            message: '{0} places {1} faceup in {2} due to {3}\'s Rally',
-            messageArgs: (context: TriggeredAbilityContext) => [
-                context.player,
-                context.player.dynastyDeck[0] ? context.player.dynastyDeck[0] : 'a card',
-                context.player.getProvinceCardInProvince(context.source.location)?.isFacedown()
-                    ? context.source.location
-                    : context.player.getProvinceCardInProvince(context.source.location),
-                context.source
-            ],
+            message: (context: TriggeredAbilityContext) => {
+                const province = context.player.getProvinceCardInProvince(context.source.location);
+                return msg`${context.player} places ${context.player.dynastyDeck[0] ?? 'a card'} faceup in ${province?.isFacedown() ? context.source.location : province} due to ${context.source}'s Rally`;
+            },
             handler: (context: TriggeredAbilityContext) => {
                 context.player.putTopDynastyCardInProvince(context.source.location);
             }

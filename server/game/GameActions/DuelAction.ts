@@ -1,5 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type Player from '../Player.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
@@ -10,10 +11,6 @@ import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction, type ActionEvent } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
-
-function toArray(args: MsgArg | MsgArg[]): MsgArg[] {
-    return Array.isArray(args) ? args : [args];
-}
 
 export interface DuelProperties extends CardActionProperties {
     type: DuelType;
@@ -28,8 +25,8 @@ export interface DuelProperties extends CardActionProperties {
     challengerEffect?: EffectFactory | EffectFactory[];
     targetEffect?: EffectFactory | EffectFactory[];
     refuseGameAction?: GameAction;
-    refusalMessage?: string;
-    refusalMessageArgs?: (context: AbilityContext) => MsgArg | MsgArg[];
+    /** The chat line when the opponent refuses; by default "<refuser> chooses to refuse the duel and <refuseGameAction's text>". */
+    refusalMessage?: (context: AbilityContext, refuser: Player) => MessageArgs;
 }
 
 export class DuelAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelProperties, EventName.OnDuelInitiated, C> {
@@ -103,7 +100,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
-        const { target, refuseGameAction, refusalMessage, refusalMessageArgs } = this.getProperties(
+        const { target, refuseGameAction, refusalMessage } = this.getProperties(
             context,
             additionalProperties
         );
@@ -126,12 +123,12 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
                         text: 'Yes',
                         handler: () => {
                             if(refusalMessage) {
-                                const refusalArgs = refusalMessageArgs ? toArray(refusalMessageArgs(context)) : [];
-                                context.game.addMessage(refusalMessage, ...refusalArgs);
+                                const [format, args] = refusalMessage(context, opponent);
+                                context.game.addMessage(format, ...args);
                             } else {
                                 context.game.addMessage(
                                     '{0} chooses to refuse the duel and {1}',
-                                    context.player.opponent,
+                                    opponent,
                                     context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))
                                 );
                             }

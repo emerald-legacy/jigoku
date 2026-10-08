@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AbilityType, EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -13,8 +14,7 @@ export class CourtesyAbility extends TriggeredAbility<DrawCard> {
             },
             title: card.name + '\'s Courtesy',
             printedAbility: false,
-            message: '{0} gains a fate due to {1}\'s Courtesy',
-            messageArgs: (context: TriggeredAbilityContext) => [context.player, context.source],
+            message: (context: TriggeredAbilityContext) => msg`${context.player} gains a fate due to ${context.source}'s Courtesy`,
             handler: (context: TriggeredAbilityContext) => this.game.applyGameAction(context, { gainFate: context.player })
         });
     }

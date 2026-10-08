@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AbilityType, EventName, Location, Phase } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -22,14 +23,10 @@ export class ThrivingAbility extends TriggeredAbility<DrawCard> {
             ],
             title: `${card.name}'s Thriving`,
             printedAbility: false,
-            message: '{0} places a card facedown in {1} due to {2}\'s Thriving',
-            messageArgs: (context: TriggeredAbilityContext<DrawCard>) => [
-                context.player,
-                context.player.getProvinceCardInProvince(context.source.location)?.isFacedown()
-                    ? context.source.location
-                    : context.player.getProvinceCardInProvince(context.source.location),
-                context.source
-            ],
+            message: (context: TriggeredAbilityContext<DrawCard>) => {
+                const province = context.player.getProvinceCardInProvince(context.source.location);
+                return msg`${context.player} places a card facedown in ${province?.isFacedown() ? context.source.location : province} due to ${context.source}'s Thriving`;
+            },
             handler: (context: TriggeredAbilityContext<DrawCard>) => {
                 context.player.putTopDynastyCardInProvince(context.source.location, true);
             }

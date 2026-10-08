@@ -24,11 +24,8 @@ export default class UnbridledRage extends DrawCard {
                         effect: additionalAction()
                     }))
                 ]),
-                refusalMessage: '{0} chooses to refuse the duel, allowing {1} to draw 2 cards and take an additional action',
-                refusalMessageArgs: (context) => [
-                    context.player.opponent,
-                    context.player
-                ],
+                refusalMessage: (context, refuser) =>
+                    msg`${refuser} chooses to refuse the duel, allowing ${context.player} to draw 2 cards and take an additional action`,
                 gameAction: (duel) =>
                     cardLastingEffect({
                         target: duel.loser,

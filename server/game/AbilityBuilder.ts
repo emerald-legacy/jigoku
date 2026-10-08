@@ -34,7 +34,7 @@ import type {
     WhenType
 } from './Interfaces.js';
 import { Event } from './Events/Event.js';
-import type { MessageArgs } from './GameChat.js';
+import { msg, type MessageArgs } from './GameChat.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import Ring from './Ring.js';
 import { ElementSymbol } from './ElementSymbol.js';
@@ -947,15 +947,15 @@ export class AbilityBuilder<
                 return {
                     inheritTargets: true,
                     target: { mode: TargetMode.Select, choices: { [`${label} for no effect`]: cost, Done: () => true } },
-                    message: '{0} chooses {3}to {4} for no effect',
-                    messageArgs: (choiceContext: AbilityContext) => [choiceContext.select === 'Done' ? 'not ' : '', verb]
+                    message: (choiceContext: AbilityContext) =>
+                        msg`${choiceContext.player} chooses ${choiceContext.select === 'Done' ? 'not ' : ''}to ${verb} for no effect`
                 };
             }
             return {
                 inheritTargets: true,
                 target: { mode: TargetMode.Select, choices: { [`${label} to resolve this ability again`]: cost, Done: () => true } },
-                message: '{0} chooses {3}to {4} to resolve {1} again',
-                messageArgs: (choiceContext: AbilityContext) => [choiceContext.select === 'Done' ? 'not ' : '', verb],
+                message: (choiceContext: AbilityContext) =>
+                    msg`${choiceContext.player} chooses ${choiceContext.select === 'Done' ? 'not ' : ''}to ${verb} to resolve ${choiceContext.source} again`,
                 // paid even when changed on the way (Embrace the Void takes the fate), but not when cancelled or declined
                 then: {
                     thenCondition: (contextOrEvent: AbilityContext | Event) => contextOrEvent instanceof Event && !contextOrEvent.cancelled,
@@ -1221,10 +1221,12 @@ function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, 
                 No: (choiceContext: AbilityContext) => again.hasLegalTarget(choiceContext)
             }
         },
-        message: opponent ? '{3} chooses {4}to resolve {1}\'s ability again' : '{0} chooses {3}to resolve {1} again',
-        messageArgs: (choiceContext: AbilityContext) => opponent
-            ? [player, choiceContext.select === 'No' ? 'not ' : '']
-            : [choiceContext.select === 'No' ? 'not ' : '']
+        message: (choiceContext: AbilityContext) => {
+            const not = choiceContext.select === 'No' ? 'not ' : '';
+            return opponent
+                ? msg`${player} chooses ${not}to resolve ${choiceContext.source}'s ability again`
+                : msg`${choiceContext.player} chooses ${not}to resolve ${choiceContext.source} again`;
+        }
     };
 }
 
