@@ -403,7 +403,7 @@ export function returnRing<C extends AbilityContext = AbilityContext>(propertyFa
 export function ringLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectRingProperties, C>): RingLastingEffectAction<C> {
     return new RingLastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, condition, until
-export function selectRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectRingProperties, C>): SelectRingAction<C> {
+export function selectRing<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectRingProperties<C>, C>): SelectRingAction<C> {
     return new SelectRingAction<C>(propertyFactory);
 }
 export function switchConflictElement<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SwitchConflictElementProperties, C> = {}): SwitchConflictElementAction<C> {

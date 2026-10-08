@@ -136,14 +136,14 @@ describe('SelectRingAction', function() {
             expect(this.gameAction.hasLegalTarget).toHaveBeenCalledWith(this.context, jasmine.objectContaining({ element: 'fire' }));
         });
 
-        it('should invoke messageArgs with (ring, selectingPlayer) and forward to addMessage', function() {
-            const messageArgs = jasmine.createSpy('messageArgs').and.returnValue(['arg1', 'arg2']);
+        it('should invoke message with (context, ring, selectingPlayer) and forward to addMessage', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['picked', ['arg1', 'arg2']]);
             const action = new SelectRingAction({
-                gameAction: this.gameAction, message: 'picked', messageArgs
+                gameAction: this.gameAction, message
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptForRingSelect).onSelect(this.player, this.ringA);
-            expect(messageArgs).toHaveBeenCalledWith(this.ringA, this.player);
+            expect(message).toHaveBeenCalledWith(this.context, this.ringA, this.player);
             expect(this.game.addMessage).toHaveBeenCalledWith('picked', 'arg1', 'arg2');
         });
 

@@ -24,13 +24,12 @@ export default class ShiroKitsuki extends StrongholdCard {
                             event.card.name === playerLastingEffectContext.costs.namedCard
                     },
                     multipleTrigger: true,
-                    gameAction: selectRing((context) => ({
+                    gameAction: selectRing({
                         activePromptTitle: 'Choose a ring to claim',
                         ringCondition: (ring) => ring.isUnclaimed(),
-                        message: '{0} claims the {1}',
-                        messageArgs: (ring) => [context.player, ring],
+                        message: (context, ring) => msg`${context.player} claims the ${ring}`,
                         gameAction: claimRing({ takeFate: true, type: ConflictType.Political })
-                    }))
+                    })
                 })
             }))
             .chatText((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.namedCard}`)

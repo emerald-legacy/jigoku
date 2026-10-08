@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
@@ -14,8 +15,7 @@ class JadeMasterpiece extends DrawCard {
             }, selectRing((context) => ({
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
                 ringCondition: (ring) => ring.isUnclaimed() && ring !== context.ring,
-                message: '{0} moves a fate from {1} to {2}',
-                messageArgs: (ring) => [context.player, context.ring, ring],
+                message: (context, ring) => msg`${context.player} moves a fate from ${context.ring} to ${ring}`,
                 gameAction: placeFateOnRing({ origin: context.ring })
             })))
             .chatText('move 1 fate from {0} to an unclaimed ring');

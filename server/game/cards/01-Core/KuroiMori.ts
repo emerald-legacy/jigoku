@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { selectRing, switchConflictElement, switchConflictType } from '../../GameActions/GameActions.js';
 
@@ -9,9 +10,8 @@ export default class KuroiMori extends ProvinceCard {
             .select({}, {
                 'Switch the contested ring': selectRing({
                     activePromptTitle: 'Choose a ring to switch with the contested ring',
-                    message: '{0} switches the contested ring with {1}',
+                    message: (_context, ring, player) => msg`${player} switches the contested ring with ${ring}`,
                     ringCondition: (ring) => ring.isUnclaimed(),
-                    messageArgs: (ring, player) => [player, ring],
                     gameAction: switchConflictElement()
                 }),
                 'Switch the conflict type': switchConflictType()

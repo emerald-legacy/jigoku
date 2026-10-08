@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { returnRing, selectRing } from '../../GameActions/GameActions.js';
 import { Players } from '../../Constants.js';
@@ -14,8 +15,7 @@ class KuniSilencer extends DrawCard {
                 activePromptTitle: 'Choose a ring to return',
                 player: Players.Opponent,
                 ringCondition: (ring) => ring.claimedBy !== undefined && ring.claimedBy === context.player.opponent?.name,
-                message: '{0} returns {1}',
-                messageArgs: (ring) => [context.player.opponent, ring],
+                message: (context, ring) => msg`${context.player.opponent} returns ${ring}`,
                 gameAction: returnRing()
             })));
     }

@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Event } from '../Events/Event.js';
 import { Players, type EventName } from '../Constants.js';
@@ -8,19 +8,19 @@ import type Ring from '../Ring.js';
 import type { GameAction } from './GameAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
-export interface SelectRingProperties extends RingActionProperties {
+export interface SelectRingProperties<C extends AbilityContext = AbilityContext> extends RingActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
     targets?: boolean;
     ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
     cancelHandler?: () => void;
     subActionProperties?: (ring: Ring) => Record<string, unknown>;
-    message?: string;
-    messageArgs?: (ring: Ring, player: Player) => MsgArg[];
+    /** The chat line once a ring is chosen. */
+    message?: (context: C, ring: Ring, chooser: Player) => MessageArgs;
     gameAction: GameAction;
 }
 
-export class SelectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<SelectRingProperties, EventName, C, 'ringCondition' | 'subActionProperties'> {
+export class SelectRingAction<C extends AbilityContext = AbilityContext> extends RingAction<SelectRingProperties<C>, EventName, C, 'ringCondition' | 'subActionProperties'> {
     defaultProperties = {
         ringCondition: () => true,
         subActionProperties: (ring: Ring) => ({ target: ring })
@@ -67,14 +67,14 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
-        const messageArgs = properties.messageArgs;
         const defaultProperties = {
             context: context,
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
             onCancel: properties.cancelHandler,
             onSelect: (selectingPlayer: Player, ring: Ring) => {
-                if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...messageArgs(ring, selectingPlayer));
+                if(properties.message) {
+                    const [format, args] = properties.message(context, ring, selectingPlayer);
+                    context.game.addMessage(format, ...args);
                 }
                 properties.gameAction.addEventsToArray(
                     events,

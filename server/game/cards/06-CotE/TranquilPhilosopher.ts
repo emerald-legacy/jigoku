@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainHonor, placeFateOnRing, selectRing, sequential } from '../../GameActions/GameActions.js';
 
@@ -13,8 +14,7 @@ class TranquilPhilosopher extends DrawCard {
                 selectRing((context) => ({
                     activePromptTitle: 'Choose an unclaimed ring to move fate to',
                     ringCondition: (ring) => context.ring.fate > 0 && ring.isUnclaimed() && ring !== context.ring,
-                    message: '{0} moves a fate from the {1} to the {2}',
-                    messageArgs: (ring) => [context.player, context.ring, ring],
+                    message: (context, ring) => msg`${context.player} moves a fate from the ${context.ring} to the ${ring}`,
                     gameAction: placeFateOnRing({ origin: context.ring })
                 })),
                 gainHonor((context) => ({ target: context.player }))

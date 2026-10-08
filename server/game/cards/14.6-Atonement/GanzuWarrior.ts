@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { perConflict } from '../../AbilityLimit.js';
@@ -16,10 +17,9 @@ class GanzuWarrior extends DrawCard {
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 targets: false,
-                message: '{0} resolves the {1}\'s effect',
+                message: (context, ring) => msg`${context.player} resolves the ${ring}'s effect`,
                 ringCondition: (ring) =>
                     !!context.event.card && context.event.card.isProvinceCard() && context.event.card.element.includes(ring.element),
-                messageArgs: (ring) => [context.player, ring],
                 gameAction: resolveRingEffect({ player: context.player })
             })))
             .chatText('resolve a ring effect')

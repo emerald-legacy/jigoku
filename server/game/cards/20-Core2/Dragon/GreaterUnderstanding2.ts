@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { immunity } from '../../../effects.js';
 import { attachToRing, resolveRingEffect, selectRing } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
@@ -28,8 +29,7 @@ export default class GreaterUnderstanding2 extends RingAttachment {
                 ringCondition: (ring) => ring !== context.source.parent && ring.getFate() === 0,
                 subActionProperties: (ring) => ({ attachment: context.source, target: ring }),
                 gameAction: attachToRing(),
-                message: '{0} moves {1} to {2} - enlightenment is elusive',
-                messageArgs: (ring, player) => [player, context.source, ring]
+                message: (context, ring, player) => msg`${player} moves ${context.source} to ${ring} - enlightenment is elusive`
             })));
     }
 }

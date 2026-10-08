@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -33,9 +34,8 @@ export default class HighHouseOfLight extends StrongholdCard {
                     condition: (context) => (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 5,
                     trueGameAction: selectRing((context) => ({
                         activePromptTitle: 'Choose a ring to take a fate from',
-                        message: '{0} moves a fate from the {1} to {2}',
+                        message: (context, ring) => msg`${context.player} moves a fate from the ${ring} to ${context.target}`,
                         ringCondition: (ring) => ring.fate >= 1,
-                        messageArgs: (ring) => [context.player, ring, context.target],
                         subActionProperties: (ring) => ({ origin: ring }),
                         gameAction: placeFate({ target: context.target })
                     }))

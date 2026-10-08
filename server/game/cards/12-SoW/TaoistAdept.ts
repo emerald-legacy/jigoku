@@ -16,8 +16,7 @@ export default class TaoistAdept extends DrawCard {
                     selectRing((context) => ({
                         activePromptTitle: 'Choose a ring to receive a fate',
                         player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                        message: '{0} places a fate on the {1}',
-                        messageArgs: (ring, player) => [player, ring],
+                        message: (_context, ring, player) => msg`${player} places a fate on the ${ring}`,
                         ringCondition: (ring) => duel.winner !== undefined && ring.isUnclaimed(),
                         gameAction: placeFateOnRing(),
                         optional: true,

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 import { resolveRingEffect, selectRing } from '../../GameActions/GameActions.js';
@@ -14,9 +15,8 @@ class GarantoGuardian extends DrawCard {
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 targets: true,
-                message: '{0} chooses to resolve {1}\'s effect',
+                message: (context, ring) => msg`${context.player} chooses to resolve ${ring}'s effect`,
                 ringCondition: (ring) => this.game.currentConflict?.getConflictProvinces().some((a) => a.element.includes(ring.element)) ?? false,
-                messageArgs: (ring) => [context.player, ring],
                 gameAction: resolveRingEffect({ player: context.player })
             })))
             .chatText('resolve a ring effect');
