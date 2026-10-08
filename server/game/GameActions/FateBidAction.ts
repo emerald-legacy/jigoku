@@ -11,11 +11,11 @@ import { JointGameAction } from './JointGameAction.js';
 
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;
-    message?: string;
-    messageArgs?: (context: AbilityContext) => MsgArg[];
+    /** The chat line after the bids; without it, the post-bid action's own text. */
+    message?: (context: AbilityContext) => MessageArgs;
 }
 
-type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message' | 'messageArgs'>;
+type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message'>;
 
 export function queuePostBidSteps(event: PostBid, context: AbilityContext): void {
     context.game.queueStep(
@@ -23,10 +23,10 @@ export function queuePostBidSteps(event: PostBid, context: AbilityContext): void
     );
     context.game.queueStep(
         new SimpleStep(context.game, () => {
-            const [message, messageArgs]: MessageArgs = event.message
-                ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
+            const [format, args]: MessageArgs = event.message
+                ? event.message(context)
                 : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
-            context.game.addMessage(message, ...messageArgs);
+            context.game.addMessage(format, ...args);
         })
     );
 }
@@ -48,14 +48,13 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
     }
 
     addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
-        const { postBidAction, message, messageArgs } = this.getProperties(
+        const { postBidAction, message } = this.getProperties(
             context,
             additionalProperties
         );
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.postBidAction = postBidAction;
         event.message = message;
-        event.messageArgs = messageArgs;
     }
 
     eventHandler(event: ActionEvent<EventName.Unnamed, C>): void {

@@ -13,8 +13,8 @@ export interface HonorBidProperties extends PlayerActionProperties {
     prohibitedBids?: Array<number>;
     players?: Players;
     postBidAction?: GameAction;
-    message?: string;
-    messageArgs?: (context: AbilityContext) => MsgArg[];
+    /** The chat line after the bids; without it, the post-bid action's own text. */
+    message?: (context: AbilityContext) => MessageArgs;
 }
 
 /** An honor bid event this action created: `addPropertiesToEvent` always sets its prohibited bids. */
@@ -63,7 +63,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
-        const { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
+        const { giveHonor, prohibitedBids, players, postBidAction, message } = this.getProperties(
             context,
             additionalProperties
         );
@@ -73,7 +73,6 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         event.players = players;
         event.postBidAction = postBidAction;
         event.message = message;
-        event.messageArgs = messageArgs;
     }
 
     eventHandler(event: HonorBidEvent<C>): void {

@@ -13,7 +13,7 @@ import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import type { EffectMatch } from '../Effects/Effect.js';
 import type { Event } from './Event.js';
-import type { MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -37,8 +37,7 @@ interface EventPayloadMap {
         ring?: Ring;
         cardStateWhenMoved?: DrawCard;
         postBidAction?: GameAction;
-        message?: string;
-        messageArgs?: (context: AbilityContext) => MsgArg[];
+        message?: (context: AbilityContext) => MessageArgs;
         duel?: Duel | null;
         isHonorBid?: boolean;
     };
@@ -253,8 +252,7 @@ interface EventPayloadMap {
         prohibitedBids?: number[];
         players?: Players;
         postBidAction?: GameAction;
-        message?: string;
-        messageArgs?: (context: AbilityContext) => MsgArg[];
+        message?: (context: AbilityContext) => MessageArgs;
     };
     [EventName.OnModifyBid]: BaseEventPayload & {
         player: Player;
