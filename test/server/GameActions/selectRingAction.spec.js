@@ -144,7 +144,7 @@ describe('SelectRingAction', function() {
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptForRingSelect).onSelect(this.player, this.ringA);
             expect(message).toHaveBeenCalledWith(this.context, this.ringA, this.player);
-            expect(this.game.addMessage).toHaveBeenCalledWith('picked', 'arg1', 'arg2');
+            expect(this.game.addMessage).toHaveBeenCalledWith(['picked', ['arg1', 'arg2']]);
         });
 
         it('should include a Cancel button when cancelHandler is provided', function() {

@@ -74,7 +74,7 @@ export class ThenAbility extends BaseCardAbility {
     displayMessage(context: AbilityContext): void {
         const message = this.properties.message?.(context);
         if(message) {
-            this.game.addMessage(message[0], ...message[1]);
+            this.game.addMessage(message);
         }
     }
 

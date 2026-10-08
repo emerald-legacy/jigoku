@@ -23,10 +23,9 @@ export function queuePostBidSteps(event: PostBid, context: AbilityContext): void
     );
     context.game.queueStep(
         new SimpleStep(context.game, () => {
-            const [format, args]: MessageArgs = event.message
+            context.game.addMessage(event.message
                 ? event.message(context)
-                : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
-            context.game.addMessage(format, ...args);
+                : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]));
         })
     );
 }

@@ -135,8 +135,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
 
     #addMessage(message: SelectTokenProperties<C>['message'], context: C, tokens: StatusToken | StatusToken[], chooser: Player): void {
         if(message) {
-            const [format, args] = message(context, tokens, chooser);
-            context.game.addMessage(format, ...args);
+            context.game.addMessage(message(context, tokens, chooser));
         }
     }
 

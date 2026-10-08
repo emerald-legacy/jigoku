@@ -233,7 +233,7 @@ export class CardAbility extends ThenAbility {
         if(this.properties.message) {
             const message = this.properties.message(context);
             if(message) {
-                this.game.addMessage(message[0], ...message[1]);
+                this.game.addMessage(message);
             }
             return;
         }

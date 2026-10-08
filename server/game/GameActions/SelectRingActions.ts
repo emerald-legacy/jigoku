@@ -73,8 +73,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
             onCancel: properties.cancelHandler,
             onSelect: (selectingPlayer: Player, ring: Ring) => {
                 if(properties.message) {
-                    const [format, args] = properties.message(context, ring, selectingPlayer);
-                    context.game.addMessage(format, ...args);
+                    context.game.addMessage(properties.message(context, ring, selectingPlayer));
                 }
                 properties.gameAction.addEventsToArray(
                     events,

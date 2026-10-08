@@ -78,8 +78,7 @@ export default class CeremonialRobes extends DrawCard {
             return;
         }
         const resolve = (card: BaseCard) => {
-            const [format, args] = step.message(card);
-            this.game.addMessage(format, ...args);
+            this.game.addMessage(step.message(card));
             step.callback(card);
         };
         if(cards.length === 1) {

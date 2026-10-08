@@ -55,8 +55,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
                 return;
             }
             if(choice.message) {
-                const [format, args] = choice.message(context, properties.target, player);
-                context.game.addMessage(format, ...args);
+                context.game.addMessage(choice.message(context, properties.target, player));
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
         };

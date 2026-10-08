@@ -102,7 +102,7 @@ describe('ChooseGameAction', function() {
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('A');
             expect(message).toHaveBeenCalledWith(this.context, ['tgt'], this.player);
-            expect(this.game.addMessage).toHaveBeenCalledWith('{0} picks {1}', 'p', 'tgt');
+            expect(this.game.addMessage).toHaveBeenCalledWith(['{0} picks {1}', ['p', 'tgt']]);
         });
 
         it('should not add a message when the chosen option has none', function() {

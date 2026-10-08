@@ -83,8 +83,7 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         const { deck, message } = this.getProperties(event.context, additionalProperties);
         this.#deck(event.player, deck).splice(0, ordered.length, ...ordered);
         if(message) {
-            const [format, args] = message(event.context, ordered);
-            event.context.game.addMessage(format, ...args);
+            event.context.game.addMessage(message(event.context, ordered));
         }
     }
 }

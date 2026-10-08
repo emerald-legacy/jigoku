@@ -59,8 +59,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
             const otherRole = role === first ? second : first;
             const assigned: Record<string, BaseCard> = { [role]: card, [otherRole]: other };
             if(properties.message) {
-                const [format, args] = properties.message(context, assigned, chooser);
-                context.game.addMessage(format, ...args);
+                context.game.addMessage(properties.message(context, assigned, chooser));
             }
             properties.roles[role].addEventsToArray(events, context, { target: card });
             properties.roles[otherRole].addEventsToArray(events, context, { target: other });

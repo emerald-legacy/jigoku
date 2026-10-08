@@ -90,8 +90,7 @@ export class EffectEngine {
                 handler: () => {
                     properties.gameAction.setDefaultTarget(() => targets);
                     if(properties.message && properties.gameAction.hasLegalTarget(context)) {
-                        const [format, args] = properties.message(context, targets);
-                        this.game.addMessage(format, ...args);
+                        this.game.addMessage(properties.message(context, targets));
                     }
                     const actionEvents: Event[] = [];
                     properties.gameAction.addEventsToArray(actionEvents, context);

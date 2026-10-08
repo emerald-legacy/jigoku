@@ -111,7 +111,6 @@ describe('Honest Challenger', function() {
                     type: 'political'
                 });
                 this.player2.pass();
-                this.chat = spyOn(this.game, 'addMessage');
                 this.player1.clickCard(this.honestChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('5');
@@ -125,7 +124,7 @@ describe('Honest Challenger', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.togashiInitiate);
                 this.player1.clickCard(this.motoYouth);
                 expect(this.motoYouth.inConflict).toBe(true);
-                expect(this.chat).toHaveBeenCalledWith('{0} moves {1} to the conflict', this.player1.player, this.motoYouth);
+                expect(this.getChatLogs(5)).toContain('player1 moves Moto Youth to the conflict');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
@@ -137,13 +136,12 @@ describe('Honest Challenger', function() {
                     type: 'political'
                 });
                 this.player2.pass();
-                this.chat = spyOn(this.game, 'addMessage');
                 this.player1.clickCard(this.honestChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Choose a character to move to the conflict');
-                expect(this.chat).toHaveBeenCalledWith('The duel has no effect');
+                expect(this.getChatLogs(10)).toContain('The duel has no effect');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
@@ -155,7 +153,6 @@ describe('Honest Challenger', function() {
                     type: 'political'
                 });
                 this.player2.pass();
-                this.chat = spyOn(this.game, 'addMessage');
                 this.player1.clickCard(this.honestChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('1');
@@ -169,8 +166,8 @@ describe('Honest Challenger', function() {
                 expect(this.player2).toBeAbleToSelect(this.togashiInitiate);
                 this.player2.clickCard(this.doomedShugenja);
                 expect(this.doomedShugenja.inConflict).toBe(true);
-                expect(this.chat).toHaveBeenCalledWith('Honest Challenger: 5 vs 8: Mirumoto Raitsugu');
-                expect(this.chat).toHaveBeenCalledWith('{0} moves {1} to the conflict', this.player2.player, this.doomedShugenja);
+                expect(this.getChatLogs(10)).toContain('Honest Challenger: 5 vs 8: Mirumoto Raitsugu');
+                expect(this.getChatLogs(5)).toContain('player2 moves Doomed Shugenja to the conflict');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
         });

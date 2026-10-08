@@ -203,7 +203,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
                 const text = properties.message?.(context, cards, player);
                 if(text) {
-                    context.game.addMessage(text[0], ...text[1]);
+                    context.game.addMessage(text);
                 }
                 properties.gameAction.addEventsToArray(
                     events,

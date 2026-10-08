@@ -50,8 +50,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
     eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
-        const [format, args] = properties.message(context, event.cards);
-        context.game.addMessage(format, ...args);
+        context.game.addMessage(properties.message(context, event.cards));
     }
 
     isEventFullyResolved(event: AnyEvent): boolean {

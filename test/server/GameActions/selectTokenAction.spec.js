@@ -159,7 +159,7 @@ describe('SelectTokenAction', function() {
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).options[0].handler();
             expect(message).toHaveBeenCalledWith(this.context, this.tokenA, this.player);
-            expect(this.game.addMessage).toHaveBeenCalledWith('picked', 'arg');
+            expect(this.game.addMessage).toHaveBeenCalledWith(['picked', ['arg']]);
         });
     });
 

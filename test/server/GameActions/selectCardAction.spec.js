@@ -166,7 +166,7 @@ describe('SelectCardAction', function() {
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
             expect(message).toHaveBeenCalledWith(this.context, this.cardA, this.player);
-            expect(this.game.addMessage).toHaveBeenCalledWith('{0} picks {1}', 'arg1', 'arg2');
+            expect(this.game.addMessage).toHaveBeenCalledWith(['{0} picks {1}', ['arg1', 'arg2']]);
         });
 
         it('should include a Cancel button when cancelHandler is provided', function() {

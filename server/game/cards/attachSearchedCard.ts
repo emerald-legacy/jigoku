@@ -10,8 +10,7 @@ export function attachSearchedCard(context: AbilityContext, parent: BaseCard | u
         return;
     }
 
-    const [format, args] = message(card);
-    context.game.addMessage(format, ...args);
+    context.game.addMessage(message(card));
     context.game.queueSimpleStep(() =>
         attach({ target: parent, attachment: card }).resolve(undefined, context)
     );

@@ -123,8 +123,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
                         text: 'Yes',
                         handler: () => {
                             if(refusalMessage) {
-                                const [format, args] = refusalMessage(context, opponent);
-                                context.game.addMessage(format, ...args);
+                                context.game.addMessage(refusalMessage(context, opponent));
                             } else {
                                 context.game.addMessage(
                                     '{0} chooses to refuse the duel and {1}',

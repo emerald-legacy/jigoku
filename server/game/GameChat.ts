@@ -47,14 +47,19 @@ export class GameChat {
         this.addMessage('{0} {1}', playerArg, message);
     }
 
-    addMessage(message: string, ...args: Array<MsgArg>): void {
-        const formattedMessage = this.formatMessage(message, args);
-        this.messages.push({ date: new Date(), message: formattedMessage });
+    /** A `msg` template, or a format with its arguments. */
+    addMessage(message: MessageArgs): void;
+    addMessage(format: string, ...args: Array<MsgArg>): void;
+    addMessage(message: string | MessageArgs, ...args: Array<MsgArg>): void {
+        const [format, formatArgs] = typeof message === 'string' ? [message, args] : message;
+        this.messages.push({ date: new Date(), message: this.formatMessage(format, formatArgs) });
     }
 
-    addAlert(type: string, message: string, ...args: Array<MsgArg>): void {
-        const formattedMessage = this.formatMessage(message, args);
-        this.messages.push({ date: new Date(), message: { alert: { type: type, message: formattedMessage } } });
+    addAlert(type: string, message: MessageArgs): void;
+    addAlert(type: string, format: string, ...args: Array<MsgArg>): void;
+    addAlert(type: string, message: string | MessageArgs, ...args: Array<MsgArg>): void {
+        const [format, formatArgs] = typeof message === 'string' ? [message, args] : message;
+        this.messages.push({ date: new Date(), message: { alert: { type: type, message: this.formatMessage(format, formatArgs) } } });
     }
 
     formatMessage(format: string, args: Array<MsgArg>): MessageText {

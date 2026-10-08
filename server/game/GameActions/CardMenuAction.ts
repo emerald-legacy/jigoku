@@ -99,8 +99,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
                     Object.assign({}, additionalProperties, properties.subActionProperties(card))
                 );
                 if(properties.message) {
-                    const [format, args] = properties.message(context, card, player);
-                    context.game.addMessage(format, ...args);
+                    context.game.addMessage(properties.message(context, card, player));
                 }
             }
         };

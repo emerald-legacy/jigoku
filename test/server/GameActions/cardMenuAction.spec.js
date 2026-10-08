@@ -138,7 +138,7 @@ describe('CardMenuAction', function() {
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).cardHandler(this.cardA);
             expect(message).toHaveBeenCalledWith(this.context, this.cardA, this.player);
-            expect(this.game.addMessage).toHaveBeenCalledWith('picked {0}', 'arg1', 'arg2');
+            expect(this.game.addMessage).toHaveBeenCalledWith(['picked {0}', ['arg1', 'arg2']]);
         });
 
         it('should not add a message when message is not configured', function() {
