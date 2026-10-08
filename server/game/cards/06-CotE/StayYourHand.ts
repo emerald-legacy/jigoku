@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 
 class StayYourHand extends DrawCard {
@@ -13,7 +14,7 @@ class StayYourHand extends DrawCard {
                     (event.context.targets.target && Object.values(event.context.targets.target).some((card) => card.controller === context.player)))
             })
             .cancel()
-            .chatText('cancel the duel originating from {1}', (context) => context.event.context.source)
+            .chatText((context) => msg`cancel the duel originating from ${context.event.context.source}`)
             .cannotBeMirrored();
     }
 }

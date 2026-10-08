@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, SkillType } from '../../Constants.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -27,7 +28,7 @@ class ByAnyMeans extends DrawCard {
                 target: context.targets.myCharacter,
                 effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: [SkillType.Military] })
             })))
-            .chatText('set {1}\'s base military skill to equal {2}\'s current military skill', (context) => [context.targets.myCharacter, context.targets.oppCharacter]);
+            .chatText((context) => msg`set ${context.targets.myCharacter}'s base military skill to equal ${context.targets.oppCharacter}'s current military skill`);
     }
 }
 

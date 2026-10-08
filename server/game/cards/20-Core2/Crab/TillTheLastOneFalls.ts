@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
@@ -19,7 +20,7 @@ export default class TillTheLastOneFalls extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(this.bonus(context))
             })))
-            .chatText('give {0} +{1}{2}/+{1}{3}', (context) => [this.bonus(context), 'military', 'political'])
+            .chatText((context) => msg`give ${context.chatTarget()} +${this.bonus(context)}${'military'}/+${this.bonus(context)}${'political'}`)
             .max(perConflict(1));
     }
 

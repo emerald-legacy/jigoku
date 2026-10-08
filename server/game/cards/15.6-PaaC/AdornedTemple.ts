@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -19,7 +20,9 @@ class AdornedTemple extends DrawCard {
             .draw((context) => ({
                 amount: context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? 2 : 1
             }))
-            .chatText('draw {1} card{2}', (context) => (context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']));
+            .chatText((context) => context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary()
+                ? msg`draw 2 card${'s'}`
+                : msg`draw a card`);
     }
 }
 

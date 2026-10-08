@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 
@@ -11,7 +12,7 @@ class PathfindersBlade extends DrawCard {
             })
             .cost(costs.sacrificeSelf())
             .cancel()
-            .chatText('cancel the effects of {1}\'s ability', (context) => context.event.card);
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`);
     }
 }
 

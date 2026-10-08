@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { immunity } from '../../effects.js';
 import { removeFate } from '../../GameActions/GameActions.js';
@@ -21,7 +22,7 @@ class AkodoKaede extends DrawCard {
                 target: context.source,
                 replacementGameAction: removeFate()
             }))
-            .chatText('prevent {1} from leaving play', (context) => context.event.card);
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`);
     }
 }
 

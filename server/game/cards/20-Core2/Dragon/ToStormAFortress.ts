@@ -35,6 +35,6 @@ export default class ToStormAFortress extends DrawCard {
                     gameAction: discardCard()
                 }))
             ]))
-            .chatText('grant +2{1} to {0}', () => ['military']);
+            .chatText((context) => msg`grant +2${'military'} to ${context.chatTarget()}`);
     }
 }

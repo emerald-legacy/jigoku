@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { fixed } from '../../AbilityLimit.js';
 import { reduceCost } from '../../effects.js';
@@ -24,7 +25,7 @@ class DaimyosFavor extends DrawCard {
                     limit: fixed(1)
                 })
             }))
-            .chatText('reduce the cost of the next attachment they play on {1} by 1', (context) => context.source.parentCharacter);
+            .chatText((context) => msg`reduce the cost of the next attachment they play on ${context.source.parentCharacter} by 1`);
     }
 }
 

@@ -35,7 +35,7 @@ export default class ShaperOfStone extends DrawCard {
                     when: {
                         onPhaseEnded: (event) => event.phase === Phase.Conflict
                     },
-                    message: () => context.target.isBroken ? msg`${''}${''}${''}` : msg`${context.player}${' gains 1 honor due to the delayed effect of '}${context.source}`,
+                    message: () => context.target.isBroken ? msg`` : msg`${context.player}${' gains 1 honor due to the delayed effect of '}${context.source}`,
                     gameAction: conditional({
                         condition: () => !context.target.isBroken,
                         trueGameAction: gainHonor({
@@ -45,6 +45,8 @@ export default class ShaperOfStone extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfRound
             })))
-            .chatText('mark {1} - they will gain 1 honor if the province remains unbroken at the end of the phase', (context) => context.target.facedown ? [context.target.location] : [context.target]);
+            .chatText((context) => context.target.facedown
+                ? msg`mark ${context.target.location} - they will gain 1 honor if the province remains unbroken at the end of the phase`
+                : msg`mark ${context.target} - they will gain 1 honor if the province remains unbroken at the end of the phase`);
     }
 }

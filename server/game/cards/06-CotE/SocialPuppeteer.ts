@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { mustBeChosen } from '../../effects.js';
 import { setHonorDial } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -18,7 +19,7 @@ class SocialPuppeteer extends DrawCard {
                 target: context.player,
                 value: context.player.opponent ? context.player.opponent.showBid : 0
             })))
-            .chatText('switch honor dials with {1}', (context) => context.player.opponent);
+            .chatText((context) => msg`switch honor dials with ${context.player.opponent}`);
     }
 }
 

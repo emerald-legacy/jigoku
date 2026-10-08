@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +14,7 @@ export default class DarkSecret extends DrawCard {
             .loseHonor((context) => ({
                 target: this.targetPlayer(context.source.parentCharacter)
             }))
-            .chatText('make {1} lose 1 honor - {2}', (context) => [this.targetPlayer(context.source.parentCharacter), this.quote(context.source.parentCharacter)])
+            .chatText((context) => msg`make ${this.targetPlayer(context.source.parentCharacter)} lose 1 honor - ${this.quote(context.source.parentCharacter)}`)
             .limit(unlimitedPerConflict());
     }
 

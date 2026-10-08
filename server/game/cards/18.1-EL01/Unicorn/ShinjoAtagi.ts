@@ -33,6 +33,6 @@ export default class ShinjoAtagi extends DrawCard {
                 },
                 gameAction: cardLastingEffect({})
             })))
-            .chatText('set the {1} skill of {0} to the strength of an attacked province', (context) => [context.game.currentConflict?.conflictType ?? '']);
+            .chatText((context) => msg`set the ${context.game.currentConflict?.conflictType ?? ''} skill of ${context.chatTarget()} to the strength of an attacked province`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { joint, moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
@@ -33,6 +34,6 @@ export default class CloudStepValley extends ProvinceCard {
                 sendHome(({ targets }) => ({ target: targets[STARTED_IN_CONFLICT] })),
                 moveToConflict(({ targets }) => ({ target: targets[STARTED_AT_HOME] }))
             ]))
-            .chatText('move {1} home, and move {2} to the conflict', (context) => [context.targets[STARTED_IN_CONFLICT], context.targets[STARTED_AT_HOME]]);
+            .chatText((context) => msg`move ${context.targets[STARTED_IN_CONFLICT]} home, and move ${context.targets[STARTED_AT_HOME]} to the conflict`);
     }
 }

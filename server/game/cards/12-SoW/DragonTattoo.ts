@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { addTrait } from '../../effects.js';
 import { ifAble, moveCard, playCard } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
@@ -53,11 +54,7 @@ export default class DragonTattoo extends DrawCard {
                     })
                 };
             }))
-            .chatText('{1}{2}{3}', (context) => [
-                this.cardPlayed ? 'play ' : 'remove ',
-                context.event.card.name,
-                this.cardPlayed ? '' : ' from the game'
-            ]);
+            .chatText((context) => msg`${this.cardPlayed ? 'play ' : 'remove '}${context.event.card.name}${this.cardPlayed ? '' : ' from the game'}`);
     }
 
     private isValidTargetForTattoo(card: BaseCard, context: TriggeredAbilityContext) {

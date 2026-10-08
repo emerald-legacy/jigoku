@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -24,7 +25,7 @@ class SpreadingTheDarkness extends DrawCard {
                     })
                 ]
             })))
-            .chatText('give {0} +4{1} and prevent them from being targeted by opponent\'s abilities', () => 'military');
+            .chatText((context) => msg`give ${context.chatTarget()} +4${'military'} and prevent them from being targeted by opponent's abilities`);
     }
 }
 

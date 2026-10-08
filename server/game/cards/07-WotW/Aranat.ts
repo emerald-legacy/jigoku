@@ -22,7 +22,7 @@ class Aranat extends DrawCard {
                 message: (_context, card, player) => msg`${player} chooses to reveal ${card}`,
                 gameAction: reveal()
             }))
-            .chatText('give {1} the opportunity to reveal provinces', (context) => context.player.opponent ?? '')
+            .chatText((context) => msg`give ${context.player.opponent ?? ''} the opportunity to reveal provinces`)
             .afterwards()
             .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))
             .message((context) => {

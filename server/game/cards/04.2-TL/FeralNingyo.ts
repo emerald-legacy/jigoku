@@ -29,7 +29,7 @@ class FeralNingyo extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('{1}return {0} to the deck at the end of the conflict', (context) => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''])
+            .chatText((context) => msg`${context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''}return ${context.chatTarget()} to the deck at the end of the conflict`)
             .location([Location.Hand, Location.PlayArea]);
     }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
@@ -16,9 +17,9 @@ export default class PurveyorOfRarities extends DrawCard {
                 .gainFate(1)
             .otherwise()
                 .cardLastingEffect((context) => ({ target: context.source, effect: modifyBothSkills(3) }))
-            .chatText('give +{1}{2}/+{1}{3} to {4}{5}', (context) => this.cardCondition(context.costs.discardCard) ?
-                [1, 'military', 'political', context.source, ' and gain 1 fate'] :
-                [3, 'military', 'political', context.source, ''])
+            .chatText((context) => this.cardCondition(context.costs.discardCard)
+                ? msg`give +${1}${'military'}/+${1}${'political'} to ${context.source}${' and gain 1 fate'}`
+                : msg`give +${3}${'military'}/+${3}${'political'} to ${context.source}`)
             .max(perConflict(1));
     }
 

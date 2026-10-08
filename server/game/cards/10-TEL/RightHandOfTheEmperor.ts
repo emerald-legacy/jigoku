@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOwn } from '../../effects.js';
 import { moveCard, ready } from '../../GameActions/GameActions.js';
@@ -29,7 +30,7 @@ class RightHandOfTheEmperor extends DrawCard {
                 destination: Location.ConflictDeck,
                 bottom: true
             })))
-            .chatText('ready {0}{1}. {2} is placed on the bottom of {3}\'s conflict deck', (context) => [context.targets.target.length > 0 ? '' : 'no one', context.source, context.source.owner]);
+            .chatText((context) => msg`ready ${context.chatTarget()}${context.targets.target.length > 0 ? '' : 'no one'}. ${context.source} is placed on the bottom of ${context.source.owner}'s conflict deck`);
     }
 }
 

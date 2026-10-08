@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
@@ -15,7 +16,7 @@ class RestorativeHotSpring extends DrawCard {
             .cancel({
                 replacementGameAction: removeFromGame((context) => ({ target: context.source }))
             })
-            .chatText('prevent {1} from leaving play, removing itself from the game instead', (context) => context.event.card);
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play, removing itself from the game instead`);
     }
 }
 

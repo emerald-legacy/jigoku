@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
 import { returnToHand } from '../../GameActions/GameActions.js';
@@ -22,7 +23,7 @@ class EsteemedTeaHouse extends DrawCard {
                     params: context.target?.name
                 })
             }))
-            .chatText('return {0} to {1}\'s hand and prevent them from playing copies this phase', (context) => [context.target.owner]);
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s hand and prevent them from playing copies this phase`);
     }
 }
 

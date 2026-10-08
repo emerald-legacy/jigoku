@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import { removeFate } from '../../GameActions/GameActions.js';
@@ -19,7 +20,7 @@ export default class TogashiKazue extends DrawCard {
             }, removeFate((context) => ({
                 recipient: context.source.parentCharacter ?? undefined
             })))
-            .chatText('steal a fate from {0} and place it on {1}', (context) => context.source.parentCharacter ?? '')
+            .chatText((context) => msg`steal a fate from ${context.chatTarget()} and place it on ${context.source.parentCharacter ?? ''}`)
             .notPrinted();
     }
 }

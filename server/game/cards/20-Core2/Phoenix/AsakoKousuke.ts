@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { discardStatusToken, dishonor, honor, joint, taint } from '../../../GameActions/GameActions.js';
@@ -60,14 +61,7 @@ export default class AsakoKousuke extends DrawCard {
 
                 return Object.fromEntries(choices);
             })
-            .chatText('clarify what it means to be {2}. The exposition reveals that {1} is {2}', (context) => [
-                context.tokens[ORIGINL_TOKEN][0].card,
-                context.selects.selection.choice === 'Turn it into Honored'
-                    ? 'honored'
-                    : context.selects.selection.choice === 'Turn it into Dishonored'
-                        ? 'dishonored'
-                        : 'tainted'
-            ])
+            .chatText((context) => msg`clarify what it means to be ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}. The exposition reveals that ${context.tokens[ORIGINL_TOKEN][0].card} is ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}`)
             .cannotTargetFirst();
     }
 }

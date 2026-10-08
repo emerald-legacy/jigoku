@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { multipleContext, sendHome, takeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -20,9 +21,7 @@ export default class MangroveSafehouse extends DrawCard {
                 }
                 return { gameActions };
             }))
-            .chatText('move {0} home{1}', (context) => [
-                this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''
-            ]);
+            .chatText((context) => msg`move ${context.chatTarget()} home${this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''}`);
     }
 
     private targetIsMantis(context: AbilityContext): boolean {

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { lookAt } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -13,6 +14,6 @@ export default class MeekInformant extends DrawCard {
                 target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true
             })))
-            .chatText('look at {1}\'s hand', (context) => context.player.opponent);
+            .chatText((context) => msg`look at ${context.player.opponent}'s hand`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, Phase } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -41,10 +42,7 @@ class ExpertInterpreter extends DrawCard {
                     restricts: 'characters'
                 })
             })))
-            .chatText('prevent characters from entering play while the {1} is contested{2}', (context) => [
-                context.rings.myRing,
-                honorTransferMessage(context, context.rings.oppRing, (name) => 'also apply this effect to the ' + name)
-            ]);
+            .chatText((context) => msg`prevent characters from entering play while the ${context.rings.myRing} is contested${honorTransferMessage(context, context.rings.oppRing, (name) => 'also apply this effect to the ' + name)}`);
     }
 }
 

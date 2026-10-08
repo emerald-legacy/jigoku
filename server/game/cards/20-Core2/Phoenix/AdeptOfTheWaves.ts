@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Element } from '../../../Constants.js';
 import { addKeyword } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -20,7 +21,7 @@ export default class AdeptOfTheWaves extends DrawCard {
                     effect: addKeyword('covert')
                 };
             }))
-            .chatText('grant Covert during {1} conflicts to {0}', () => [this.getCurrentElementSymbol(COVERT_ELEMENT)]);
+            .chatText((context) => msg`grant Covert during ${this.getCurrentElementSymbol(COVERT_ELEMENT)} conflicts to ${context.chatTarget()}`);
     }
 
     getPrintedElementSymbols() {

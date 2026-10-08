@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { dishonor, returnToHand } from '../../GameActions/GameActions.js';
 
@@ -10,7 +11,7 @@ class CourtMask extends DrawCard {
         });
 
         this.action('Return court mask to hand')
-            .chatText('return {0} to hand, dishonoring {1}', (context) => context.source.parentCharacter ?? '')
+            .chatText((context) => msg`return ${context.chatTarget()} to hand, dishonoring ${context.source.parentCharacter ?? ''}`)
             .gameAction(
                 returnToHand(),
                 dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))

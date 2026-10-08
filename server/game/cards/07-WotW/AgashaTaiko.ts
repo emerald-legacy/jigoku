@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Duration, Location } from '../../Constants.js';
 import { cannotBeAttacked } from '../../effects.js';
@@ -20,11 +21,7 @@ class AgashaTaiko extends DrawCard {
                 duration: Duration.UntilEndOfRound,
                 effect: cannotBeAttacked()
             }))
-            .chatText('prevent {1}\'s {2} in {3} from being attacked this round', (context) => [
-                context.target.controller,
-                context.target.isFacedown() ? 'hidden province' : context.target,
-                context.target.location
-            ]);
+            .chatText((context) => msg`prevent ${context.target.controller}'s ${context.target.isFacedown() ? 'hidden province' : context.target} in ${context.target.location} from being attacked this round`);
     }
 }
 

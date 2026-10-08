@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { modifyProvinceStrength } from '../../effects.js';
@@ -16,7 +17,7 @@ class WrathOfTheKami extends DrawCard {
                 targetLocation: Location.Provinces,
                 effect: modifyProvinceStrength(1)
             }))
-            .chatText('add 1 to the province strength of {1}', (context) => [context.source.controller.getProvinceCardInProvince(context.source.location)])
+            .chatText((context) => msg`add 1 to the province strength of ${context.source.controller.getProvinceCardInProvince(context.source.location)}`)
             .limit(unlimitedPerConflict());
     }
 }

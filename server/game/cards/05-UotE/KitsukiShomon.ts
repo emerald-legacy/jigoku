@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { dishonor, ready } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -30,6 +31,6 @@ export default class KitsukiShomon extends DrawCard {
                 window.addThenAbility(thenAbility, context);
                 context.cancel();
             })
-            .chatText('dishonor {0} instead of {1}', (context) => context.event.card);
+            .chatText((context) => msg`dishonor ${context.chatTarget()} instead of ${context.event.card}`);
     }
 }

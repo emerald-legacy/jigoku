@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import { setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect, conditional, multiple, removeFate } from '../../../GameActions/GameActions.js';
@@ -33,6 +34,6 @@ export default class KaitoYoshiaki extends DrawCard {
                     trueGameAction: removeFate()
                 })
             ]))
-            .chatText('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', isEvil(context.target) ? 'remove a fate from and ' : '']);
+            .chatText((context) => msg`${isEvil(context.target) ? 'remove a fate from and ' : ''}set the base skills of ${context.chatTarget()} to 0${'military'}/0${'political'}`);
     }
 }

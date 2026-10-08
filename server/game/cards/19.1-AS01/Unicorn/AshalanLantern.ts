@@ -52,6 +52,6 @@ export default class AshalanLantern extends DrawCard {
                     message: (context, selectedCards) => msg`${context.player}${selectedCards.length > 0 ? ' compels ' : ' takes nothing'}${selectedCards}${selectedCards.length > 0 ? ' into service' : ''}`
                 }))
             ]))
-            .chatText('look for a character on the top of {1}\'s dynasty deck. They reveal {2}', (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]);
+            .chatText((context) => msg`look for a character on the top of ${context.player.opponent ?? ''}'s dynasty deck. They reveal ${context.player.opponent?.dynastyDeck.slice(0, 3) ?? []}`);
     }
 }

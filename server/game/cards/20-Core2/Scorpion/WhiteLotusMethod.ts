@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, CharacterStatus, Players } from '../../../Constants.js';
 import { conditional, draw, moveStatusToken, sequentialContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -42,9 +43,6 @@ export default class WhiteLotusMethod extends DrawCard {
                     })
                 ]
             })))
-            .chatText('move a status token to {1}{2}', (context) => [
-                context.targets[RECIPIENT],
-                doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''
-            ]);
+            .chatText((context) => msg`move a status token to ${context.targets[RECIPIENT]}${doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''}`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType, Players } from '../../Constants.js';
 import { cannotApplyLastingEffects, modifyMilitarySkill, suppressEffects } from '../../effects.js';
@@ -19,7 +20,7 @@ class GiveNoGround extends DrawCard {
                     cannotApplyLastingEffects((effect) => effect && effect.isSkillModifier() && ((effect.getValue() ?? 0) < 0 || effect.getValue(context.target) < 0))
                 ]
             })))
-            .chatText('give +2{1} to {0} and prevent its skills from being reduced', () => (['military']));
+            .chatText((context) => msg`give +2${'military'} to ${context.chatTarget()} and prevent its skills from being reduced`);
     }
 }
 

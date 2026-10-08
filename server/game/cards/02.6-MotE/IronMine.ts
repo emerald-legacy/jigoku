@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import { sacrifice } from '../../GameActions/GameActions.js';
@@ -13,7 +14,7 @@ class IronMine extends DrawCard {
             .cancel({
                 replacementGameAction: sacrifice((context) => ({ target: context.source }))
             })
-            .chatText('prevent {1} from leaving play', (context) => context.event.card);
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`);
     }
 }
 

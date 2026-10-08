@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
@@ -22,7 +23,7 @@ class MagistratesIntervention extends DrawCard {
                 })
 
             ]))
-            .chatText('dishonor {0}{1}', (context) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1 ? ', then dishonor it again' : '']);
+            .chatText((context) => msg`dishonor ${context.chatTarget()}${context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1 ? ', then dishonor it again' : ''}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

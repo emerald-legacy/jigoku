@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -28,7 +29,7 @@ class MakeAnOpening extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(-this.getHonorDialDifference(context))
             })))
-            .chatText('give {0} -{1}{2}/-{1}{3}', (context) => [this.getHonorDialDifference(context), 'military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -${this.getHonorDialDifference(context)}${'military'}/-${this.getHonorDialDifference(context)}${'political'}`);
     }
 
     private getHonorDialDifference(context: AbilityContext) {

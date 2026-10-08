@@ -33,8 +33,7 @@ class HeroOfThreeTrees extends DrawCard {
                     }))
                 }))
             })
-            .chatText('{1}{2}', (context) => [context.select === 'Gain 1 honor' ? 'gain 1 honor' : 'reduce the strength of ',
-                context.select === 'Gain 1 honor' ? '' : 'an attacked province by 1']);
+            .chatText((context) => msg`${context.select === 'Gain 1 honor' ? 'gain 1 honor' : 'reduce the strength of '}${context.select === 'Gain 1 honor' ? '' : 'an attacked province by 1'}`);
     }
 }
 

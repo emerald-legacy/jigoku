@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { canPlayFromOwn } from '../../effects.js';
@@ -29,7 +30,7 @@ class InServiceToMyLord extends DrawCard {
                     bottom: true
                 }))
             ]))
-            .chatText('ready {0}. {1} is placed on the bottom of {2}\'s conflict deck', (context) => [context.source, context.source.owner]);
+            .chatText((context) => msg`ready ${context.chatTarget()}. ${context.source} is placed on the bottom of ${context.source.owner}'s conflict deck`);
     }
 }
 

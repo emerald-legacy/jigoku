@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender } from '../../../effects.js';
@@ -31,10 +32,7 @@ export default class InLadyDojisService extends DrawCard {
                     effect: [cannotBeDeclaredAsDefender()]
                 }))
             })
-            .chatText('prevent {1} from being declared as {2} this phase', (context) => [
-                context.targets.character,
-                context.selects.select.choice === 'Prevent Attacking' ? 'an attacker' : 'a defender'
-            ])
+            .chatText((context) => msg`prevent ${context.targets.character} from being declared as ${context.selects.select.choice === 'Prevent Attacking' ? 'an attacker' : 'a defender'} this phase`)
             .max(perRound(1));
     }
 }

@@ -21,7 +21,7 @@ export default class MotoOktai extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyMilitarySkill(skillBonus(context.event.card))
             }))
-            .chatText('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
+            .chatText((context) => msg`get +${skillBonus(context.event.card)} ${'military'} for this phase - he is emboldened by justice, but unburdened by mercy`);
 
         this.conflictAction('Discard a character from play')
             .target({

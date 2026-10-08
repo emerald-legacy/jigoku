@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { EventName, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import * as costs from '../../../costs/index.js';
@@ -43,10 +44,7 @@ export default class PlantedFields extends DrawCard {
                     handler: (context) => this.triggeredByPlayer.add(context.player.name)
                 })
             ]))
-            .chatText('{1}', (context) =>
-                this.hasAnyCopyTriggered(context.player.name)
-                    ? 'gain 2 honor'
-                    : 'gain 2 fate and draw 2 cards');
+            .chatText((context) => msg`${this.hasAnyCopyTriggered(context.player.name) ? 'gain 2 honor' : 'gain 2 fate and draw 2 cards'}`);
     }
 
     private hasAnyCopyTriggered(playerName: string): boolean {

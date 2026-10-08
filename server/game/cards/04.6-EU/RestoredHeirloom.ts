@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { attach, cancel } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, Element } from '../../Constants.js';
@@ -18,7 +19,7 @@ class RestoredHeirloom extends DrawCard {
             }, cancel((context) => ({
                 replacementGameAction: attach({ attachment: context.source })
             })))
-            .chatText('attach {1} to {0} instead of resolving the {2}', (context) => [context.source, context.event.ring])
+            .chatText((context) => msg`attach ${context.source} to ${context.chatTarget()} instead of resolving the ${context.event.ring}`)
             .location([Location.Hand,Location.ConflictDiscardPile]);
     }
 

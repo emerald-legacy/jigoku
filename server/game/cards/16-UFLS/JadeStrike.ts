@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
@@ -24,7 +25,7 @@ class JadeStrike extends DrawCard {
                     target: context.target?.isTainted ? context.target : []
                 }))
             ]))
-            .chatText('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', context.target.isTainted ? 'remove a fate from and ' : '']);
+            .chatText((context) => msg`${context.target.isTainted ? 'remove a fate from and ' : ''}set the base skills of ${context.chatTarget()} to 0${'military'}/0${'political'}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

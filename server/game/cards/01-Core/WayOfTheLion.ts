@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { modifyBaseMilitarySkillMultiplier } from '../../effects.js';
@@ -14,7 +15,7 @@ class WayOfTheLion extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBaseMilitarySkillMultiplier(2)
             }))
-            .chatText('double the base {1} skill of {0}', () => 'military');
+            .chatText((context) => msg`double the base ${'military'} skill of ${context.chatTarget()}`);
     }
 }
 

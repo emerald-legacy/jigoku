@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -48,7 +49,7 @@ class SlovenlyScavenger extends DrawCard {
                     opponent.shuffleConflictDeck();
                 }
             })
-            .chatText('shuffle {1} into their deck', (context) => this.getEffectArg(context.select));
+            .chatText((context) => msg`shuffle ${this.getEffectArg(context.select)} into their deck`);
     }
 
     getEffectArg(selection: string) {

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
@@ -17,6 +18,6 @@ export default class ThunderboltTower extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyBothSkills(-2)
             }))
-            .chatText('give {0} -2{1}/-2{2} for the phase', () => ['military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}/-2${'political'} for the phase`);
     }
 }

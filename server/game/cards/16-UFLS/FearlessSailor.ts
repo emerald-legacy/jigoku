@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { modifyMilitarySkill } from '../../effects.js';
@@ -15,7 +16,7 @@ class FearlessSailor extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(-2)
             }))
-            .chatText('give {0} -2{1}', () => ['military']);
+            .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}`);
     }
 }
 

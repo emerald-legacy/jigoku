@@ -28,7 +28,7 @@ class CourtGames extends DrawCard {
                     gameAction: dishonor()
                 })
             })
-            .chatText('{1}', (context) => context.select.toLowerCase())
+            .chatText((context) => msg`${context.select.toLowerCase()}`)
             .max(perConflict(1));
     }
 }

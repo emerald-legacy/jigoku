@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
@@ -45,10 +46,7 @@ class AgashaProdigys extends DrawCard {
                     otherwiseAction: discardFromPlay({ target: [] })
                 }))
             ]))
-            .chatText('discard the top card of their deck and attempt to attach it to {1}{2}', (context) => [
-                context.targets.myCharacter,
-                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)
-            ]);
+            .chatText((context) => msg`discard the top card of their deck and attempt to attach it to ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)}`);
     }
 
     private oppCharacterChosen(context: AbilityContext): boolean {

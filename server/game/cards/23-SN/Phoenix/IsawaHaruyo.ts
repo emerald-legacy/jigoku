@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
 import { lookAt, multipleContext } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -33,8 +34,6 @@ export default class IsawaHaruyo extends DrawCard {
                     };
                 })
             }))
-            .chatText('look at an amount of random cards in {1}\'s hand equal to the strength of an attacked province and discard one of them', (context) => [
-                context.player.opponent
-            ]);
+            .chatText((context) => msg`look at an amount of random cards in ${context.player.opponent}'s hand equal to the strength of an attacked province and discard one of them`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { moveCard } from '../../GameActions/GameActions.js';
@@ -17,7 +18,7 @@ class BorderlandsFortifications extends DrawCard {
                 switch: true,
                 switchTarget: context.target.isDrawCard() ? context.target : undefined
             })))
-            .chatText('swap it with {1}', (context) => context.target.isFacedown() ? 'a facedown card' : context.target);
+            .chatText((context) => msg`swap it with ${context.target.isFacedown() ? 'a facedown card' : context.target}`);
     }
 }
 

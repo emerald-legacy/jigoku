@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { discardCard, dishonor, multipleContext } from '../../../GameActions/GameActions.js';
@@ -21,6 +22,6 @@ export default class AncestorAttendant extends DrawCard {
                     dishonor()
                 ]
             })))
-            .chatText('dishonor {0} and discard the top {1} cards of their dynasty deck', (context) => [context.target.printedCost]);
+            .chatText((context) => msg`dishonor ${context.chatTarget()} and discard the top ${context.target.printedCost} cards of their dynasty deck`);
     }
 }

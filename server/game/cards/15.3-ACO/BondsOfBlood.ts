@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -13,7 +14,7 @@ class BondsOfBlood extends DrawCard {
                 cardType: CardType.Character
             }, sendHome())
             .sendHome((context) => ({ target: context.costs.dishonor }))
-            .chatText('send {1} home', (context) => [context.costs.dishonor === context.target ? [context.target] : [context.target, context.costs.dishonor]])
+            .chatText((context) => msg`send ${context.costs.dishonor === context.target ? [context.target] : [context.target, context.costs.dishonor]} home`)
             .cannotTargetFirst();
     }
 

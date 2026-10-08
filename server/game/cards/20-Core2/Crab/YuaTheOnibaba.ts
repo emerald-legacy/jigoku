@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -49,6 +50,6 @@ export default class YuaTheOnibaba extends DrawCard {
                     ]
                 };
             }))
-            .chatText('give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}', () => ['military', 'political']);
+            .chatText(() => msg`give all friendly participating bushi characters +1${'military'} / +1${'political'} and give all participating non-bushi characters -1${'military'} / -1${'political'}`);
     }
 }

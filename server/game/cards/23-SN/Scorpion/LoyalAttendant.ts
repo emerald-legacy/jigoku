@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { lookAt, multipleContext } from '../../../GameActions/GameActions.js';
@@ -26,10 +27,7 @@ export default class LoyalAttendant extends DrawCard {
                     ]
                 };
             }))
-            .chatText('look at {2} random cards in {1}\'s hand and discard one of them', (context) => [
-                context.player.opponent,
-                context.target.attachments.length
-            ])
+            .chatText((context) => msg`look at ${context.target.attachments.length} random cards in ${context.player.opponent}'s hand and discard one of them`)
             .max(perConflict(1));
     }
 }

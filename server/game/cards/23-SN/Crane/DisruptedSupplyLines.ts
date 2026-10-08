@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { cancel, dishonor, loseFate, removeFromGame, takeFate } from '../../../GameActions/GameActions.js';
@@ -97,8 +98,8 @@ export default class DisruptedSupplyLines extends DrawCard {
                     replacementGameAction: removeFromGame({ target: context.event.card, location: Location.Any })
                 }))
             })
-            .chatText('{1}{2}{3}', (context) => context.select === 'Give your opponent 1 fate' ?
-                ['take 1 fate from ', context.player.opponent, ''] :
-                ['remove ', context.event.card, ' from the game']);
+            .chatText((context) => context.select === 'Give your opponent 1 fate'
+                ? msg`${'take 1 fate from '}${context.player.opponent}`
+                : msg`remove ${context.event.card} from the game`);
     }
 }

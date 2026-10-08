@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
@@ -18,7 +19,7 @@ class Gossip extends DrawCard {
                     params: context.costs.namedCard
                 })
             }))
-            .chatText('prevent {1} from playing cards named {2} from their hand this phase', (context) => [context.player.opponent, context.costs.namedCard]);
+            .chatText((context) => msg`prevent ${context.player.opponent} from playing cards named ${context.costs.namedCard} from their hand this phase`);
     }
 }
 

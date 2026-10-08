@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CharacterStatus } from '../../../Constants.js';
 import { discardStatusToken } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +16,7 @@ export default class StandYourGround extends DrawCard {
                     target: context.event.card.getStatusToken(CharacterStatus.Honored)
                 })
             }))
-            .chatText('prevent {1} from leaving play', (context) => context.event.card)
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`)
             .cannotBeMirrored();
     }
 }

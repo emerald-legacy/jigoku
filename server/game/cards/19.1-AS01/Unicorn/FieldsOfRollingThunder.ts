@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { delayedEffect } from '../../../effects.js';
 import { cardLastingEffect, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../../Constants.js';
@@ -35,6 +36,6 @@ export default class FieldsOfRollingThunder extends DrawCard {
                     };
                 })
             ]))
-            .chatText('honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict', (context) => [context.source.controller]);
+            .chatText((context) => msg`honor ${context.chatTarget()}. They will be dishonored at the end of the conflict if ${context.source.controller} loses the conflict`);
     }
 }

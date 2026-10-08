@@ -20,7 +20,7 @@ class HidaAmoro extends DrawCard {
                 message: (context, card) => msg`${context.event.conflict.attackingPlayer} sacrifices ${card} to ${context.source}`,
                 gameAction: sacrifice()
             }))
-            .chatText('force {1} to sacrifice a character', (context) => context.event.conflict.attackingPlayer)
+            .chatText((context) => msg`force ${context.event.conflict.attackingPlayer} to sacrifice a character`)
             .limit(unlimited());
     }
 }

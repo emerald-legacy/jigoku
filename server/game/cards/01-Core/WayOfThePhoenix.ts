@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Duration } from '../../Constants.js';
 import { perPhase } from '../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../effects.js';
@@ -18,7 +19,7 @@ export default class WayOfThePhoenix extends DrawCard {
                 target: context.ring.getElements().map((element) => this.game.rings[element]),
                 effect: cannotDeclareRing((player) => player === context.player.opponent)
             })))
-            .chatText('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent ?? '')
+            .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring a conflict with ${context.chatTarget()}`)
             .max(perPhase(1));
     }
 }

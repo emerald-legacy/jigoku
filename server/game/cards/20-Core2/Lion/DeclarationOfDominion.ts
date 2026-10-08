@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import { addKeyword } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -35,11 +36,7 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
             }, cardLastingEffect({
                 effect: addKeyword('pride')
             }))
-            .chatText('give pride to {1}', (context) => [
-                (context.targets.myCard ?? []).concat(
-                    context.targets.opponentsCard ?? []
-                )
-            ]);
+            .chatText((context) => msg`give pride to ${(context.targets.myCard ?? []).concat(context.targets.opponentsCard ?? [])}`);
     }
 
     protected unbrokenOnly() {

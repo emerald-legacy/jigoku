@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { moveToConflict } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
@@ -11,7 +12,7 @@ class EndlessPlainsSkirmisher extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Which side should this character be on?'
             }, (context) => playerChoices(context.player, (player) => moveToConflict({ side: player })))
-            .chatText('join the conflict for {1}', (context) => context.select === context.player.name ? context.player : context.player.opponent);
+            .chatText((context) => msg`join the conflict for ${context.select === context.player.name ? context.player : context.player.opponent}`);
     }
 }
 

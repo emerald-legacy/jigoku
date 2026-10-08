@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -21,6 +22,6 @@ export default class KitsukiYuikimi extends DrawCard {
                     applyingPlayer: context.player
                 })
             }))
-            .chatText('prevent {0} from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', (context) => [context.player.opponent]);
+            .chatText((context) => msg`prevent ${context.chatTarget()} from being chosen as the target of ${context.player.opponent}'s triggered abilities until the end of the conflict`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import {
     cannotReceiveDishonorToken,
@@ -32,7 +33,7 @@ class DaidojiIenori extends DrawCard {
                     effect: effect
                 };
             }))
-            .chatText('set the skills of {0} to 3{1}/3{2}{3}', (context) => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
+            .chatText((context) => msg`set the skills of ${context.chatTarget()} to 3${'military'}/3${'political'}${context.source.isHonored ? ' and prevent them from receiving status tokens' : ''}`);
     }
 }
 

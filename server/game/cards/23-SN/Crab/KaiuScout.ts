@@ -20,7 +20,7 @@ export default class KaiuScout extends DrawCard {
                     this.chooseCardsToTurnFaceup(context, cards.filter((a) => a.isFacedown()));
                 }
             }))
-            .chatText('look at facedown dynasty cards in {1}', (context) => [context.target.isFacedown() ? context.target.location : context.target])
+            .chatText((context) => msg`look at facedown dynasty cards in ${context.target.isFacedown() ? context.target.location : context.target}`)
             .evenDuringDynasty();
     };
 

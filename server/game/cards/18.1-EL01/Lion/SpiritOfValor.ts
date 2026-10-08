@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { gainAllAbilities, reduceCost } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -31,6 +32,6 @@ export default class SpiritOfValor extends DrawCard {
                 target: capturedParent(context) ?? [],
                 effect: context.target ? gainAllAbilities(context.target) : []
             })))
-            .chatText('copy {0}\'s abilities onto {1}', (context) => [capturedParent(context)]);
+            .chatText((context) => msg`copy ${context.chatTarget()}'s abilities onto ${capturedParent(context)}`);
     }
 }

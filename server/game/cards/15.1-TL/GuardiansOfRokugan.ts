@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { CardType, DeckType } from '../../Constants.js';
@@ -18,7 +19,7 @@ class GuardiansOfRokugan extends DrawCard {
                 gameAction: putIntoPlay(),
                 shuffle: (ctx) => (ctx.game.currentConflict?.skillDifference ?? 0) >= ctx.player.dynastyDeck.length
             })
-            .chatText('look at the top {1} cards of their deck for a character costing {1} or less to put into play', (context) => [context.game.currentConflict?.skillDifference ?? 0]);
+            .chatText((context) => msg`look at the top ${context.game.currentConflict?.skillDifference ?? 0} cards of their deck for a character costing ${context.game.currentConflict?.skillDifference ?? 0} or less to put into play`);
     }
 }
 

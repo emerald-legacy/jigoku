@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { attach, removeFate, sequential } from '../../GameActions/GameActions.js';
@@ -16,7 +17,7 @@ class InvocationOfAsh extends DrawCard {
                 attach((context) => ({ attachment: context.source })),
                 removeFate()
             ]))
-            .chatText('move {1} to {0}, then remove a fate from {0}', (context) => context.source);
+            .chatText((context) => msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`);
     }
 }
 

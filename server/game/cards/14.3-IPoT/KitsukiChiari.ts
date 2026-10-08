@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { discardMatching, lookAt, multipleContext } from '../../GameActions/GameActions.js';
@@ -30,7 +31,7 @@ class KitsukiChiari extends DrawCard {
                     ]
                 });
             }))
-            .chatText('look at 4 random cards in {1}\'s hand and discard all cards named {2}', (context) => [context.player.opponent, context.costs.namedCard]);
+            .chatText((context) => msg`look at 4 random cards in ${context.player.opponent}'s hand and discard all cards named ${context.costs.namedCard}`);
     }
 
 

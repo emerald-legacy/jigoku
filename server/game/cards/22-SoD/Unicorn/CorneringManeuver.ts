@@ -15,7 +15,7 @@ export default class CorneringManeuver extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))
-            .chatText('give {0} +2{1}', () => ['military'])
+            .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}`)
             .then()
             .selectCard({
                 activePromptTitle: 'Choose a character to move',

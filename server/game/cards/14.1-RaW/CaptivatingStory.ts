@@ -51,7 +51,7 @@ class CaptivatingStory extends DrawCard {
                     ])
                 }))
             ]))
-            .chatText('give {0} +1{1} for each faceup province they control (+{2}{1})', (context) => ['political', context.player.getNumberOfFaceupProvinces()]);
+            .chatText((context) => msg`give ${context.chatTarget()} +1${'political'} for each faceup province they control (+${context.player.getNumberOfFaceupProvinces()}${'political'})`);
     }
 }
 

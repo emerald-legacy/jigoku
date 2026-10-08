@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
@@ -32,7 +33,7 @@ export default class CloudHands extends DrawCard {
                     target: context.targets.myCharacter
                 }))
             ]))
-            .chatText('honor {1} and set their base skills to equal {2}\'s base skills', (context) => [context.targets.myCharacter, context.targets.oppCharacter])
+            .chatText((context) => msg`honor ${context.targets.myCharacter} and set their base skills to equal ${context.targets.oppCharacter}'s base skills`)
             .max(perConflict(1));
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
@@ -17,7 +18,7 @@ class NightshadeInfiltrator extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(-3)
             }))
-            .chatText('give {0} -3{1}/-3{2}', () => ['military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -3${'military'}/-3${'political'}`);
     }
 }
 

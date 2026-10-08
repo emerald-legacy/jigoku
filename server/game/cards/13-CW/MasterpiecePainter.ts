@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
@@ -21,7 +22,7 @@ class MasterpiecePainter extends DrawCard {
                     this.revealAndMayPlayAbility(opponent)
                 ])
             ))
-            .chatText('make {1} reveal the top card of their deck. They may play their card until the end of the phase', (context) => context.select);
+            .chatText((context) => msg`make ${context.select} reveal the top card of their deck. They may play their card until the end of the phase`);
     }
 
     revealAndMayPlayAbility(player: Player) {

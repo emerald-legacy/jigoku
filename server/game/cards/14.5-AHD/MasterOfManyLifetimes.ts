@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { multiple, putIntoProvince, returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location } from '../../Constants.js';
@@ -33,7 +34,7 @@ class MasterOfManyLifetimes extends DrawCard {
                     })
                 ])
             }))
-            .chatText('prevent {1} from leaving play, putting it into {2} instead', (context) => [context.event.card ?? '', context.target?.location ?? '']);
+            .chatText((context) => msg`prevent ${context.event.card ?? ''} from leaving play, putting it into ${context.target?.location ?? ''} instead`);
     }
 }
 

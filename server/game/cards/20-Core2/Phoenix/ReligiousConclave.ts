@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Duration } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { cannotDeclareRing } from '../../../effects.js';
@@ -19,6 +20,6 @@ export default class ReligiousConclave extends DrawCard {
                 target: context.ring.getElements().map((element) => context.game.rings[element]),
                 effect: cannotDeclareRing((player) => player === context.player.opponent)
             })))
-            .chatText('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent);
+            .chatText((context) => msg`prevent ${context.player.opponent} from declaring a conflict with ${context.chatTarget()}`);
     }
 }

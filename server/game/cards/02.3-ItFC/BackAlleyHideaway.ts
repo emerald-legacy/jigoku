@@ -136,6 +136,6 @@ export default class BackAlleyHideaway extends DrawCard {
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });
             })
-            .chatText('move {1} into hiding', (context) => context.event.card);
+            .chatText((context) => msg`move ${context.event.card} into hiding`);
     }
 }

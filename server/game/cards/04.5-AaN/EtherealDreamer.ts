@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, Phase } from '../../Constants.js';
@@ -18,7 +19,7 @@ class EtherealDreamer extends DrawCard {
                 condition: () => context.ring.isContested(),
                 effect: modifyBothSkills(2)
             }))
-            .chatText('give herself +2{1}/+2{2} while the {0} is contested', () => (['military', 'political']));
+            .chatText((context) => msg`give herself +2${'military'}/+2${'political'} while the ${context.chatTarget()} is contested`);
     }
 }
 

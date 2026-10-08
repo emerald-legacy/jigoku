@@ -50,6 +50,6 @@ export default class FloatingFortress extends DrawCard {
                     }
                 })
             ]))
-            .chatText('turn {1} into a copy of {0}', (context) => [context.source]);
+            .chatText((context) => msg`turn ${context.source} into a copy of ${context.chatTarget()}`);
     }
 }

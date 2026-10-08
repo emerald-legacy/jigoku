@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { setMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -19,7 +20,7 @@ class InDefenseOfRokugan extends DrawCard {
             }, cardLastingEffect({
                 effect: setMilitarySkill(0)
             }))
-            .chatText('set {0}\'s {1} skill to 0', () => 'military');
+            .chatText((context) => msg`set ${context.chatTarget()}'s ${'military'} skill to 0`);
     }
 }
 

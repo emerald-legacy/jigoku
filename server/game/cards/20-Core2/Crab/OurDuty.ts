@@ -23,7 +23,7 @@ export default class OurDuty extends DrawCard {
                 message: (context, card) => msg`${context.player.opponent} sacrifices ${card} to ${context.source}`,
                 gameAction: sacrifice()
             })
-            .chatText('force {1} to sacrifice a character', (context) => context.player.opponent)
+            .chatText((context) => msg`force ${context.player.opponent} to sacrifice a character`)
             .max(perGame(1));
 
         this.action('Move an attacker home')

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import BaseCard from '../../../BaseCard.js';
 import { Location } from '../../../Constants.js';
@@ -26,10 +27,7 @@ export default class DaidojiAhma extends DrawCard {
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context)
             })
             .cancel()
-            .chatText('cancel the effects of {1}{2}', (context) => [
-                context.event.context.source instanceof Ring ? 'the ' : '',
-                context.event.context.source
-            ]);
+            .chatText((context) => msg`cancel the effects of ${context.event.context.source instanceof Ring ? 'the ' : ''}${context.event.context.source}`);
     }
 
     private isRingEffect(event: { context?: AbilityContext }): boolean {

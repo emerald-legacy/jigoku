@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -11,7 +12,7 @@ class Cursecatcher extends DrawCard {
                     event.card.controller.getDynastyCardsInProvince(event.card.location).some((a) => a.isFacedown())
             })
             .cancel()
-            .chatText('cancel the effects of {1}\'s ability', (context) => context.event.card);
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`);
     }
 }
 

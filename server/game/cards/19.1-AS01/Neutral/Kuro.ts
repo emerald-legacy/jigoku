@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import {
     conditional,
@@ -48,11 +49,6 @@ export default class Kuro extends DrawCard {
                     falseGameAction: moveToConflict({ target: conditionalContext.source })
                 }))
             ]))
-            .chatText('seek the lost treasure \'{1}\'. {2}', (context) => [
-                context.target,
-                context.source.isParticipating()
-                    ? 'Kuro returns home with their treasure'
-                    : 'Kuro swoops into the conflict'
-            ]);
+            .chatText((context) => msg`seek the lost treasure '${context.target}'. ${context.source.isParticipating() ? 'Kuro returns home with their treasure' : 'Kuro swoops into the conflict'}`);
     }
 }

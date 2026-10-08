@@ -64,6 +64,8 @@ export default class MapmakerApprentice extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfRound
             })))
-            .chatText('map {1}{2}{3} - the first event they play during each conflict at that province will also modify its strength', (context) => context.target.facedown ? [context.target.controller, '\'s ', context.target.location] : ['', '', context.target]);
+            .chatText((context) => context.target.facedown
+                ? msg`map ${context.target.controller}${'\'s '}${context.target.location} - the first event they play during each conflict at that province will also modify its strength`
+                : msg`map ${context.target} - the first event they play during each conflict at that province will also modify its strength`);
     }
 }

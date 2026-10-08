@@ -115,8 +115,9 @@ export default class Maelstrom extends ProvinceCard {
                     ]
                 };
             }))
-            .chatText('move {0} into the conflict{1}', (context) =>
-                context.target.controller === context.player ? ['. It will be honored if it wins the conflict'] : [''])
+            .chatText((context) => context.target.controller === context.player
+                ? msg`move ${context.chatTarget()} into the conflict. It will be honored if it wins the conflict`
+                : msg`move ${context.chatTarget()} into the conflict`)
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .cannotTargetFirst();
     }

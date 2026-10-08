@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
@@ -16,7 +17,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyMilitarySkill(this.penaltyValue(context))
             }))
-            .chatText('give {1}\'s participating characters {2}{3}', (context) => [context.player.opponent, this.penaltyValue(context), 'military'])
+            .chatText((context) => msg`give ${context.player.opponent}'s participating characters ${this.penaltyValue(context)}${'military'}`)
             .max(perConflict(1));
     }
 

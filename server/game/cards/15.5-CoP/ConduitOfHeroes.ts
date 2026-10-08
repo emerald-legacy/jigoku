@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
@@ -58,7 +59,7 @@ class ConduitOfHeroes extends DrawCard {
                     modifyGlory(1)
                 ]
             })))
-            .chatText('grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict', () => (['military', 'political', 'glory']));
+            .chatText((context) => msg`grant ${context.chatTarget()} +3${'military'}/+1${'political'}/+1glory until the end of the conflict`);
     }
 }
 

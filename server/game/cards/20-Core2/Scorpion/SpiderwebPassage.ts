@@ -57,6 +57,6 @@ export default class SpiderwebPassage extends DrawCard {
                     }))
                 };
             }))
-            .chatText('ambush {1}', (context) => context.target);
+            .chatText((context) => msg`ambush ${context.target}`);
     }
 }

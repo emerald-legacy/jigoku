@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { ConflictType } from '../../Constants.js';
@@ -19,10 +20,7 @@ class DaidojiKageyu extends DrawCard {
                 context.source.isParticipating() &&
                 cardsPlayed(context.player.opponent) > 0)
             .draw((context) => ({ amount: cardsPlayed(context.player.opponent) }))
-            .chatText('draw {1} card{2}', (context) => [
-                cardsPlayed(context.player.opponent),
-                cardsPlayed(context.player.opponent) > 1 ? 's' : ''
-            ]);
+            .chatText((context) => msg`draw ${cardsPlayed(context.player.opponent)} card${cardsPlayed(context.player.opponent) > 1 ? 's' : ''}`);
     }
 }
 

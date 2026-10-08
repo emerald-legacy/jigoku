@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyBothSkills } from '../../effects.js';
@@ -17,7 +18,7 @@ export default class DrivenByCourage extends ProvinceCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(2)
             }))
-            .chatText('give {0} +2{1} and +2{2}', () => ['political', 'military'])
+            .chatText((context) => msg`give ${context.chatTarget()} +2${'political'} and +2${'military'}`)
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 

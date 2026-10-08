@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
@@ -12,7 +13,7 @@ class KabukiHero extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(context.source.politicalSkill)
             }))
-            .chatText('give itself +{1}{2}/+0{3} until the end of the conflict', (context) => [context.source.politicalSkill, 'military', 'political']);
+            .chatText((context) => msg`give itself +${context.source.politicalSkill}${'military'}/+0${'political'} until the end of the conflict`);
     }
 }
 

@@ -1,9 +1,19 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
 import { handler, putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Event } from '../../../Events/Event.js';
+
+/** The token as the chat shows it: a card fragment, so its name can be hovered. */
+const recruitInChat = {
+    id: 'ashigaru-recruit',
+    label: 'Ashigaru Recruit',
+    name: 'Ashigaru Recruit',
+    facedown: false,
+    type: CardType.Character
+};
 
 function putAshigaruTokenIntoPlay(context: AbilityContext) {
     const card = context.player.dynastyDeck[0];
@@ -22,12 +32,6 @@ export default class AshigaruEncampment extends DrawCard {
     setupCardAbilities() {
         this.action('Recruit a fresh Ashigaru')
             .gameAction(handler({ handler: putAshigaruTokenIntoPlay }))
-            .chatText('recruit {1}', () => ({
-                id: 'ashigaru-recruit',
-                label: 'Ashigaru Recruit',
-                name: 'Ashigaru Recruit',
-                facedown: false,
-                type: CardType.Character
-            }));
+            .chatText(() => msg`recruit ${recruitInChat}`);
     }
 }

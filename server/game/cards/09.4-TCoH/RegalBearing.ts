@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { perConflict } from '../../AbilityLimit.js';
@@ -22,7 +23,7 @@ class RegalBearing extends DrawCard {
                     amount: this.getHonorDialDifference(context)
                 }))
             ]))
-            .chatText('set their bid dial to 1 and draw {1} cards', (context) => this.getHonorDialDifference(context))
+            .chatText((context) => msg`set their bid dial to 1 and draw ${this.getHonorDialDifference(context)} cards`)
             .max(perConflict(1));
     }
 

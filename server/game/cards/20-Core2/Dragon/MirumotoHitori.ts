@@ -40,6 +40,6 @@ export default class MirumotoHitori extends DrawCard {
                     })
                 ])
             }))
-            .chatText('remove {1} from play, to be put back into play next round', (context) => context.source);
+            .chatText((context) => msg`remove ${context.source} from play, to be put back into play next round`);
     }
 }

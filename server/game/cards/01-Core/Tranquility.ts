@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { cannotTriggerAbilities } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -11,6 +12,6 @@ export default class Tranquility extends DrawCard {
                 target: (context.player.opponent?.cardsInPlay ?? []).filter((card) => !card.isParticipating()),
                 effect: cannotTriggerAbilities()
             }))
-            .chatText('stop characters at {1}\'s home from triggering abilities until the end of the conflict', (context) => context.player.opponent ?? '');
+            .chatText((context) => msg`stop characters at ${context.player.opponent ?? ''}'s home from triggering abilities until the end of the conflict`);
     }
 }

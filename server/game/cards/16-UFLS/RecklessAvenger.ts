@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Players, CardType } from '../../Constants.js';
@@ -35,11 +36,7 @@ class RecklessAvenger extends DrawCard {
                     target: context.targets.secondCharacter
                 }))
             }))
-            .chatText('ready {1}{2}{3}', (context) => [
-                this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter,
-                this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : '',
-                this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''
-            ]);
+            .chatText((context) => msg`ready ${this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter}${this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : ''}${this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''}`);
     }
 
     isTargetValid(target: BaseCard | BaseCard[] | undefined) {

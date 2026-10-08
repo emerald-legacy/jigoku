@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Duration, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -19,10 +20,6 @@ export default class KyudenBayushi extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyBothSkills(1)
             })))
-            .chatText('{1}{2}{3} {0}', (context) => [
-                context.target.bowed ? 'ready' : '',
-                context.target.bowed && context.player.honor <= 6 ? ' and ' : '',
-                context.player.honor <= 6 ? 'give +1/+1 until the end of phase to' : ''
-            ]);
+            .chatText((context) => msg`${context.target.bowed ? 'ready' : ''}${context.target.bowed && context.player.honor <= 6 ? ' and ' : ''}${context.player.honor <= 6 ? 'give +1/+1 until the end of phase to' : ''} ${context.chatTarget()}`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { modifyBothSkills } from '../../effects.js';
@@ -15,7 +16,7 @@ class HidaGuardian extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())
             })))
-            .chatText('give {0} +{1}{2}/+{1}{3}', (context) => [2 * context.player.getNumberOfHoldingsInPlay(), 'military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} +${2 * context.player.getNumberOfHoldingsInPlay()}${'military'}/+${2 * context.player.getNumberOfHoldingsInPlay()}${'political'}`);
     }
 }
 

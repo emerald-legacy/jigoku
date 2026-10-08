@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { doesNotBow } from '../../effects.js';
 import { cardLastingEffect, honor, multiple } from '../../GameActions/GameActions.js';
@@ -20,7 +21,7 @@ class SwellOfSeafoam extends DrawCard {
                     target: context.player.isKihoPlayedThisConflict(context, this) ? context.target : []
                 }))
             ]))
-            .chatText('{1}prevent {0} from bowing at the end of the conflict', (context) => [context.player.isKihoPlayedThisConflict(context, this) ? 'honor and ' : '']);
+            .chatText((context) => msg`${context.player.isKihoPlayedThisConflict(context, this) ? 'honor and ' : ''}prevent ${context.chatTarget()} from bowing at the end of the conflict`);
     }
 }
 

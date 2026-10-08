@@ -24,7 +24,7 @@ export default class MazeOfIllusion extends DrawCard {
                     options: [1, 2, 3, 4, 5].map((value) => ({ text: value.toString(), handler: () => this.opponentGuess(value, context) }))
                 });
             })
-            .chatText('bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd', (context) => context.player.opponent);
+            .chatText((context) => msg`bow and dishonor ${context.chatTarget()} if ${context.player.opponent} can't guess whether their dial is even or odd`);
     }
 
     private opponentGuess(value: number, context: AbilityContext) {

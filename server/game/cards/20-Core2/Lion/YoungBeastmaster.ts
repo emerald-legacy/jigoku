@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -26,6 +27,6 @@ export default class YoungBeastmaster extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonusSize(context.costs.discardCard ?? []))
             }))
-            .chatText('give {0} +{1}{2}', (context) => [bonusSize(context.costs.discardCard ?? []), 'military']);
+            .chatText((context) => msg`give ${context.chatTarget()} +${bonusSize(context.costs.discardCard ?? [])}${'military'}`);
     }
 }

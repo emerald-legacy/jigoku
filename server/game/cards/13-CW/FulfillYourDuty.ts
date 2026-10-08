@@ -24,7 +24,7 @@ class FulfillYourDuty extends DrawCard {
                     effect: modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0)
                 }))
             }))
-            .chatText('add {1} to an attacked province\'s strength', (context) => context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0);
+            .chatText((context) => msg`add ${context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0} to an attacked province's strength`);
     }
 }
 

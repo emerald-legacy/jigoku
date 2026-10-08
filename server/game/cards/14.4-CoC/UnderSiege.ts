@@ -97,7 +97,7 @@ class UnderSiege extends DrawCard {
                     })
                 })
             ]))
-            .chatText('place {1} under siege', (context) => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
+            .chatText((context) => msg`place ${context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''} under siege`)
             .max(perConflict(1));
     }
 }

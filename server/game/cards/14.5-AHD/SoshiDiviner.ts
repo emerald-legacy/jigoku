@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
@@ -26,10 +27,7 @@ class SoshiDiviner extends DrawCard {
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             })))
-            .chatText('move {1} to {2}', (context) => [
-                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
-            ]);
+            .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}`);
     }
 }
 

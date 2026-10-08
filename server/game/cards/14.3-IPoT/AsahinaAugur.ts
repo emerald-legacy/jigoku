@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { canBeSeenWhenFacedown } from '../../effects.js';
@@ -20,7 +21,7 @@ class AsahinaAugur extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self
             }, discardCard())
-            .chatText('discard {1} in {2}', (context) => [context.target.isFacedown() ? 'a facedown card' : context.target, context.target.location])
+            .chatText((context) => msg`discard ${context.target.isFacedown() ? 'a facedown card' : context.target} in ${context.target.location}`)
             .limit(perRound(3));
     }
 }

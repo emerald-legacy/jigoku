@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Duration } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { blank } from '../../effects.js';
@@ -15,6 +16,6 @@ export default class Desolation extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()
             }))
-            .chatText('blank {1}\'s provinces until the end of the phase', (context) => context.player.opponent?.name ?? '');
+            .chatText((context) => msg`blank ${context.player.opponent?.name ?? ''}'s provinces until the end of the phase`);
     }
 }

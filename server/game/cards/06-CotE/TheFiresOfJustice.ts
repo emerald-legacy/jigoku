@@ -35,7 +35,7 @@ class TheFiresOfJustice extends DrawCard {
                     gameAction: placeFate({ origin: context.player.opponent })
                 }))
             })
-            .chatText('{1} {2}', (context) => [context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on', context.targets.character]);
+            .chatText((context) => msg`${context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on'} ${context.targets.character}`);
     }
 }
 

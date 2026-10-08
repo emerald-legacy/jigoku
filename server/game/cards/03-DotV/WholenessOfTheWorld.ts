@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 
@@ -10,7 +11,7 @@ class WholenessOfTheWorld extends DrawCard {
                 onReturnRing: (event, context) => event.ring.claimedBy === context.player.name
             })
             .cancel()
-            .chatText('prevent {1} from returning to the unclaimed pool', (context) => context.event.ring)
+            .chatText((context) => msg`prevent ${context.event.ring} from returning to the unclaimed pool`)
             .max(perRound(1))
             .cannotBeMirrored();
     }

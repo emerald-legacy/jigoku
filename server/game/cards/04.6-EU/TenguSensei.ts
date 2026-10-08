@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
@@ -12,7 +13,7 @@ class TenguSensei extends DrawCard {
                     return (event.card === context.source || (Array.isArray(event.card) && event.card.includes(context.source)));
                 }
             })
-            .chatText('prevent {1} from attacking this phase', (context) => context.event.context.target)
+            .chatText((context) => msg`prevent ${context.event.context.target} from attacking this phase`)
             .cardLastingEffect((context) => ({
                 target: context.event.context.target ?? [],
                 duration: Duration.UntilEndOfPhase,

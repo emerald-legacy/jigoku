@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { handler, multiple } from '../../GameActions/GameActions.js';
@@ -21,7 +22,7 @@ class DanceOfChikushoDo extends DrawCard {
                     this.fillProvinces(opponent)
                 ])
             ))
-            .chatText('have {1} place 2 cards in each unbroken province they control', (context) => context.select)
+            .chatText((context) => msg`have ${context.select} place 2 cards in each unbroken province they control`)
             .max(perRound(1));
     }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
@@ -15,7 +16,7 @@ class Reprieve extends DrawCard {
                 target: context.source,
                 replacementGameAction: discardFromPlay()
             }))
-            .chatText('prevent {1} from leaving play', (context) => context.event.card);
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`);
     }
 }
 

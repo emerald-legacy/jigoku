@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -16,10 +17,7 @@ class IuchiDaiyu extends DrawCard {
                     context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
                 )
             })))
-            .chatText('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => [
-                'military',
-                context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
-            ]);
+            .chatText((context) => msg`give ${context.chatTarget()} +1${'military'} for each faceup non-stronghold province their opponent controls (+${context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)}${'military'})`);
     }
 }
 

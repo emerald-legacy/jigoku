@@ -26,10 +26,10 @@ export default class WiseQuartermaster extends DrawCard {
                     cardType: isOnProvince ? CardType.Province : CardType.Character,
                     location: isOnProvince ? Location.Provinces : Location.PlayArea,
                     cardCondition: (card) => card !== parent && card.controller === parent?.controller,
-                    message: (_context, card) => msg`${context.player} moves ${context.target ?? ''} to ${card}`,
+                    message: (context, card) => msg`${context.player} moves ${context.target ?? ''} to ${card}`,
                     gameAction: attach({ attachment: context.target })
                 };
             }))
-            .chatText('move {0} to another {1}', (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']);
+            .chatText((context) => msg`move ${context.chatTarget()} to another ${parentCard(context)?.isProvinceCard() ? 'province' : 'character'}`);
     }
 }

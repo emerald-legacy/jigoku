@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { playerFateCostToTargetCard } from '../../../effects.js';
 import { playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
@@ -26,6 +27,6 @@ export default class ToShowThePath extends DrawCard {
                             context.target.attachments.some((attachment) => attachment === card)
                 })
             })))
-            .chatText('make {1} pay 1 additional fate as a cost whenever they target {0} or its attachments with a card ability until the end of the phase', (context) => [context.source.controller.opponent]);
+            .chatText((context) => msg`make ${context.source.controller.opponent} pay 1 additional fate as a cost whenever they target ${context.chatTarget()} or its attachments with a card ability until the end of the phase`);
     }
 }

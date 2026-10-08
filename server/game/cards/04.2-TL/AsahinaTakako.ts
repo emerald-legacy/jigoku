@@ -41,9 +41,6 @@ export default class AsahinaTakako extends DrawCard {
                     }
                 }
             })))
-            .chatText('switch or discard {1} in {2}', (context) => [
-                context.target.isFacedown() ? 'a facedown card' : context.target,
-                context.target.location
-            ]);
+            .chatText((context) => msg`switch or discard ${context.target.isFacedown() ? 'a facedown card' : context.target} in ${context.target.location}`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
@@ -21,7 +22,7 @@ class Stowaway extends DrawCard {
                 activePromptTitle: 'Choose up to 2 cards in a discard pile',
                 sameDiscardPile: true
             }, placeCardUnderneath({ destination: this }))
-            .chatText('place {0} beneath {1}', (context) => [context.source]);
+            .chatText((context) => msg`place ${context.chatTarget()} beneath ${context.source}`);
 
         this.persistentEffect({
             effect: modifyMilitarySkill(() => Math.floor(countCardsUnderneath(this) / 2))

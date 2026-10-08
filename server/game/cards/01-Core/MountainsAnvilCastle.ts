@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -17,6 +18,6 @@ export default class MountainsAnvilCastle extends StrongholdCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(Math.min(context.target?.attachments.length ?? 0, 2))
             })))
-            .chatText('give {0} +{1}{2}/{1}{3}', (context) => [Math.min(context.target.attachments.length, 2), 'military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} +${Math.min(context.target.attachments.length, 2)}${'military'}/${Math.min(context.target.attachments.length, 2)}${'political'}`);
     }
 }

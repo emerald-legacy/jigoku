@@ -18,7 +18,7 @@ class GovernorsSpy extends DrawCard {
             }, (context) => playerChoices(context.player, (player) => handler({
                 handler: (handlerContext) => this.rearrange(handlerContext, player)
             })))
-            .chatText('turn facedown and rearrange all of {1}\'s dynasty cards', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
+            .chatText((context) => msg`turn facedown and rearrange all of ${(context.select === context.player.name ? context.player : context.player.opponent)}'s dynasty cards`);
     }
 
     private rearrange(context: AbilityContext, targetPlayer: Player) {

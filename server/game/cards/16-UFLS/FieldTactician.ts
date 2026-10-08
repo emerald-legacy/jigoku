@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import { handler } from '../../GameActions/GameActions.js';
@@ -27,7 +28,7 @@ class FieldTactician extends DrawCard {
                     player.conflictDeck.splice(0, 2, ...orderedCards);
                 }
             }))
-            .chatText('return {0} to {1}\'s conflict deck', (context) => [context.target.owner]);
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s conflict deck`);
     }
 }
 

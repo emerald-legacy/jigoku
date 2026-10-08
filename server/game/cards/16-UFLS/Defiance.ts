@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { modifyBothSkills } from '../../effects.js';
@@ -15,7 +16,7 @@ class Defiance extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(context.player.opponent?.showBid ?? 0)
             })))
-            .chatText('give {0} +{1}{2}/+{1}{3}', (context) => [context.player.opponent?.showBid ?? 0, 'military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} +${context.player.opponent?.showBid ?? 0}${'military'}/+${context.player.opponent?.showBid ?? 0}${'political'}`);
     }
 }
 

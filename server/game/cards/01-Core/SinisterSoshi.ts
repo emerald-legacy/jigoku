@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { modifyBothSkills } from '../../effects.js';
@@ -12,7 +13,7 @@ class SinisterSoshi extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({ effect: modifyBothSkills(-2) }))
-            .chatText('give {0} -2{1}/-2{2}', () => ['military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}/-2${'political'}`);
     }
 }
 

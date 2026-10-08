@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { changePlayerSkillModifier } from '../../../effects.js';
@@ -19,7 +20,7 @@ export default class MarvelousBeings extends DrawCard {
                 target: context.player,
                 effect: changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
             }))
-            .chatText('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context.costs.moveToConflict), 'political'])
+            .chatText((context) => msg`entrance the court, giving their side an extra ${this.marvelousSkillBonus(context.costs.moveToConflict)}${'political'} this conflict`)
             .max(perConflict(1));
     }
 

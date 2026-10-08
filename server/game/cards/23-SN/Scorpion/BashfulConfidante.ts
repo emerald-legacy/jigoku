@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { additionalTriggerCostForCard } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -19,6 +20,6 @@ export default class BashfulConfidante extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: additionalTriggerCostForCard(() => [giveHonorToTriggerCost(context.player)])
             })))
-            .chatText('force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities', (context) => [context.player.opponent, context.player]);
+            .chatText((context) => msg`force ${context.player.opponent} to pay 1 honor to ${context.player} in order to trigger ${context.chatTarget()}'s abilities`);
     }
 }

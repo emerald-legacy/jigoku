@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, conditional, injure, sequential } from '../../../GameActions/GameActions.js';
@@ -26,12 +27,7 @@ export default class DaidojiAmbusher extends DrawCard {
                     trueGameAction: injure()
                 })
             ]))
-            .chatText('give {0} -2{1}{2}', (context) => [
-                'military',
-                this.triggerKickerEffect(context, Timing.BEFORE_PENALTY)
-                    ? ` and ${this.shouldDiscardTarget(context) ? 'discard them' : 'remove a fate from them'}`
-                    : ''
-            ]);
+            .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}${this.triggerKickerEffect(context, Timing.BEFORE_PENALTY) ? ` and ${this.shouldDiscardTarget(context) ? 'discard them' : 'remove a fate from them'}` : ''}`);
     }
 
     private triggerKickerEffect(context: AbilityContext, timing: Timing): boolean {

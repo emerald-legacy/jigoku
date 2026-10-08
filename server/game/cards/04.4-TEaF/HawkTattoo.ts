@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { addTrait, additionalAction } from '../../effects.js';
 import { moveToConflict, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -24,7 +25,7 @@ class HawkTattoo extends DrawCard {
                 duration: Duration.UntilPassPriority,
                 effect: context.source.parentCharacter?.hasTrait('monk') ? additionalAction() : []
             })))
-            .chatText('move {1} into the conflict{2}', (context) => [context.source.parentCharacter, context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : '']);
+            .chatText((context) => msg`move ${context.source.parentCharacter} into the conflict${context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : ''}`);
     }
 }
 

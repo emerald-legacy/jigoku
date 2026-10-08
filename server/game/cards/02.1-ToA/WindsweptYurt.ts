@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { gainFate, gainHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -19,7 +20,7 @@ class WindsweptYurt extends DrawCard {
                 }))
             })
             .refillFaceup((context) => ({ location: context.cardStateWhenInitiated?.location ?? [] }))
-            .chatText('give each player 2 {1}', (context) => context.select === 'Each player gains 2 fate' ? 'fate' : 'honor');
+            .chatText((context) => msg`give each player 2 ${context.select === 'Each player gains 2 fate' ? 'fate' : 'honor'}`);
     }
 }
 

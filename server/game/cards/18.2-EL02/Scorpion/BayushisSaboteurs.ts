@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Location, Players } from '../../../Constants.js';
 import { discardCard, refillFaceup, sequential, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -48,6 +49,6 @@ export default class BayushisSaboteurs extends DrawCard {
                     target: defender(context).getDynastyCardsInProvince(Location.Provinces)
                 }))
             })
-            .chatText('{1} all of {2}\'s dynasty cards', (context) => [context.select === DISCARD ? 'discard' : 'flip facedown', defender(context)]);
+            .chatText((context) => msg`${context.select === DISCARD ? 'discard' : 'flip facedown'} all of ${defender(context)}'s dynasty cards`);
     }
 }

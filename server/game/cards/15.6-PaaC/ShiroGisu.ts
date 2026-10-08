@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Location } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
@@ -21,7 +22,7 @@ export default class ShiroGisu extends StrongholdCard {
                 reveal: false,
                 placeOnBottomInRandomOrder: true
             })
-            .chatText('look at the top {1} cards of their conflict deck', (context) => this.getCharactersWithoutFate(context));
+            .chatText((context) => msg`look at the top ${this.getCharactersWithoutFate(context)} cards of their conflict deck`);
     }
 
     private getCharactersWithoutFate(context: AbilityContext) {

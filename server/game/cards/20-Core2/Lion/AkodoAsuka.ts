@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
@@ -27,6 +28,6 @@ export default class AkodoAsuka extends DrawCard {
                 shuffle: true,
                 reveal: false
             })
-            .chatText('look at the top {1} cards of their conflict deck', (context) => charactersOnYourSide(context));
+            .chatText((context) => msg`look at the top ${charactersOnYourSide(context)} cards of their conflict deck`);
     }
 }

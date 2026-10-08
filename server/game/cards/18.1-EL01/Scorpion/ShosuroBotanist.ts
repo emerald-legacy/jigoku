@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { returnToHand } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -12,7 +13,7 @@ class ShosuroBotanist extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => !card.hasTrait('weapon')
             }, returnToHand())
-            .chatText('return {0} to {1}\'s hand', (context) => [context.target.owner]);
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s hand`);
     }
 }
 

@@ -16,7 +16,7 @@ class ConsumedByFiveFires extends DrawCard {
                 !!context.player.opponent &&
                 context.player.opponent.cardsInPlay.some((card) => card.allowGameAction('removeFate', context)))
             .handler((context) => this.chooseCard(context, {}, []))
-            .chatText('remove fate from {1}\'s characters', (context) => context.player.opponent);
+            .chatText((context) => msg`remove fate from ${context.player.opponent}'s characters`);
     }
 
     private chooseCard(context: AbilityContext, targets: Record<string, number>, messages: string[]) {

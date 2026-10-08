@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { chosenDiscard, draw } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -25,6 +26,6 @@ export default class GladeOfContemplation extends ProvinceCard {
                     amount: cardDifference(context)
                 }))
             })
-            .chatText('{1}', (context) => context.select.toLowerCase());
+            .chatText((context) => msg`${context.select.toLowerCase()}`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { modifyPoliticalSkill } from '../../effects.js';
@@ -14,7 +15,7 @@ class SpeakToTheHeart extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))
             })))
-            .chatText('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)])
+            .chatText((context) => msg`give ${context.chatTarget()} +1${'political'} for each faceup non-stronghold province their opponent controls (+${context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)}${'political'})`)
             .max(perConflict(1));
     }
 }

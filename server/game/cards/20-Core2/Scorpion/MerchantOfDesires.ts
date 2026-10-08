@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,11 +14,6 @@ export default class MerchantOfDesires extends DrawCard {
                     ? [context.player, context.player.opponent]
                     : context.player
             }))
-            .chatText('draw a card. {1} {2}', (context) => [
-                context.player.opponent,
-                context.costs.optionalOpponentLoseHonorPaid
-                    ? 'does not resist and loses 1 honor to also draw a card'
-                    : 'resists the temptation'
-            ]);
+            .chatText((context) => msg`draw a card. ${context.player.opponent} ${context.costs.optionalOpponentLoseHonorPaid ? 'does not resist and loses 1 honor to also draw a card' : 'resists the temptation'}`);
     }
 }

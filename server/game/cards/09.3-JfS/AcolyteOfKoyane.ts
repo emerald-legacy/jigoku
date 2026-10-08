@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { addKeyword, loseKeyword } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -28,7 +29,7 @@ class AcolyteOfKoyane extends DrawCard {
                     target: context.targets.character
                 }))
             })
-            .chatText('{1} until the end of the conflict', (context) => [[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]]);
+            .chatText((context) => msg`${[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]} until the end of the conflict`);
     }
 }
 

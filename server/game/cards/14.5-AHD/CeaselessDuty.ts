@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 
@@ -10,7 +11,7 @@ class CeaselessDuty extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces((a) => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
             })
             .cancel()
-            .chatText('prevent {1} from leaving play', (context) => context.event.card)
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`)
             .cannotBeMirrored();
     }
 }

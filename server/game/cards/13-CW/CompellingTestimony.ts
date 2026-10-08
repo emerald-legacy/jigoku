@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
 import { modifyPoliticalSkill } from '../../effects.js';
@@ -14,7 +15,7 @@ class CompellingTestimony extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyPoliticalSkill(-4)
             }))
-            .chatText('give {0} -4{1}', () => ['political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -4${'political'}`);
     }
 }
 

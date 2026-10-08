@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -17,7 +18,7 @@ class AsahinaArtisan extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyPoliticalSkill(3)
             }))
-            .chatText('give {0} +3{1} skill', () => 'political');
+            .chatText((context) => msg`give ${context.chatTarget()} +3${'political'} skill`);
     }
 }
 

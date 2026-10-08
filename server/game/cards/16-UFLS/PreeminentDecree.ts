@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { modifyPoliticalSkill } from '../../effects.js';
@@ -18,7 +19,7 @@ class PreeminentDecree extends DrawCard {
                 target: context.game.currentConflict?.getParticipants().filter((a) => a !== context.target) ?? [],
                 effect: modifyPoliticalSkill(-1 * ((context.target && context.target.glory) || 0))
             })))
-            .chatText('give all participating characters except {0} -{1}{2}', (context) => [context.target.glory, 'political']);
+            .chatText((context) => msg`give all participating characters except ${context.chatTarget()} -${context.target.glory}${'political'}`);
     }
 }
 

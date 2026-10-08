@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { draw, loseHonor, multiple } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
@@ -13,7 +14,7 @@ class BackhandedCompliment extends DrawCard {
                 loseHonor({ target: player }),
                 draw({ target: player })
             ])))
-            .chatText('make {1} lose an honor and draw a card', (context) => context.select === context.player.name ? context.player : (context.player.opponent ?? ''));
+            .chatText((context) => msg`make ${context.select === context.player.name ? context.player : (context.player.opponent ?? '')} lose an honor and draw a card`);
     }
 }
 

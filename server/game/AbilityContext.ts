@@ -95,6 +95,11 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         const chosen = this.targets.target;
         return Array.isArray(chosen) ? chosen : this.target;
     }
+
+    /** What a chat text string's `{0}` names: the target, else the ring, else the source. */
+    chatTarget(): T | BaseCard[] | Ring | S {
+        return this.messageTarget() || this.ring || this.source;
+    }
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
         // a framework context's source is a plain EffectSource and its player may be missing

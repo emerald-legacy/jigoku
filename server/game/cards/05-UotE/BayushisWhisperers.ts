@@ -25,7 +25,7 @@ class BayushisWhisperers extends DrawCard {
                     })
                 })
             ]))
-            .chatText('look at {1}\'s hand, then name a card', (context) => context.player.opponent);
+            .chatText((context) => msg`look at ${context.player.opponent}'s hand, then name a card`);
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {

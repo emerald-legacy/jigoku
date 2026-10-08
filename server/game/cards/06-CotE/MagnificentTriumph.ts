@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
 import { cardCannot, modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -24,6 +25,6 @@ export default class MagnificentTriumph extends DrawCard {
                     })
                 ]
             })))
-            .chatText('give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent\'s events', () => ['military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}, +2${'political'}, and prevent them from being targeted by opponent's events`);
     }
 }

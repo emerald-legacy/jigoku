@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyGlory, modifyMilitarySkill, setBaseMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, moveToConflict, multiple, sequential } from '../../../GameActions/GameActions.js';
@@ -33,10 +34,9 @@ export default class IchigoKun extends DrawCard {
                 [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),
                 [LESS_MIL_MORE_GLORY]: this.actionSequence(context, { military: -2, glory: +2 })
             }))
-            .chatText('give {0} {1} {2} and {3} {4} glory - {0} {5}', (context) =>
-                context.selects.select.choice === MORE_MIL_LESS_GLORY
-                    ? ['+2', 'military', context.targets.otherCharacter, '-2', 'is wild today']
-                    : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive']);
+            .chatText((context) => context.selects.select.choice === MORE_MIL_LESS_GLORY
+                ? msg`give ${context.chatTarget()} +2 ${'military'} and ${context.targets.otherCharacter} -2 glory - ${context.chatTarget()} is wild today`
+                : msg`give ${context.chatTarget()} -2 ${'military'} and ${context.targets.otherCharacter} +2 glory - ${context.chatTarget()} is well-behaved. Impressive`);
     }
 
     public getPrintedElementSymbols() {

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Location, Players, TargetMode } from '../../Constants.js';
@@ -28,7 +29,7 @@ class IkomaMessageRunner extends DrawCard {
                 optional: true,
                 cardCondition: (card) => card.isDynasty && card.isFacedown()
             }, flipDynasty())
-            .chatText('reveal up to 1 facedown card in each player\'s provinces{1}', (context) => [this.buildString(context.targets.myCard, context.targets.opponentsCard)]);
+            .chatText((context) => msg`reveal up to 1 facedown card in each player's provinces${this.buildString(context.targets.myCard, context.targets.opponentsCard)}`);
     }
 
     buildString(myCards: BaseCard[] | undefined, opponentsCards: BaseCard[] | undefined) {

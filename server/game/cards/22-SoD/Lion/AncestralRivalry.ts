@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
@@ -28,21 +29,9 @@ export default class AncestralRivalry extends DrawCard {
                     target: context.player
                 }))
             })
-            .chatText('{1}{2}{3}{4}{5}{6}', (context) => context.selects.select.choice === 'Let opponent claim favor' ? [
-                'claim the Imperial Favor',
-                '',
-                '',
-                '',
-                '',
-                ''
-            ] : [
-                'give ',
-                context.targets.character,
-                ' +3',
-                'military',
-                '/+3',
-                'political'
-            ])
+            .chatText((context) => context.selects.select.choice === 'Let opponent claim favor'
+                ? msg`claim the Imperial Favor`
+                : msg`give ${context.targets.character}${' +3'}${'military'}${'/+3'}${'political'}`)
             .max(perConflict(1));
     }
 }

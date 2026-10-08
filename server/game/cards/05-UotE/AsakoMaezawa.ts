@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { modifyBasePoliticalSkillMultiplier } from '../../effects.js';
@@ -16,7 +17,7 @@ class AsakoMaezawa extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBasePoliticalSkillMultiplier(2)
             }))
-            .chatText('double {0}\'s base {1} skill', () => ['political']);
+            .chatText((context) => msg`double ${context.chatTarget()}'s base ${'political'} skill`);
     }
 }
 

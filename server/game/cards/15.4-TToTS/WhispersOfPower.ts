@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType } from '../../Constants.js';
@@ -20,7 +21,7 @@ class WhispersOfPower extends DrawCard {
                     this.getPoliticalPowerChange(context)
                 )
             })))
-            .chatText('grant {0} +{1} {2} until the end of the conflict', (context) => [this.getPoliticalPowerChange(context), 'political']);
+            .chatText((context) => msg`grant ${context.chatTarget()} +${this.getPoliticalPowerChange(context)} ${'political'} until the end of the conflict`);
     }
 
     private getPoliticalPowerChange(context: AbilityContext) {

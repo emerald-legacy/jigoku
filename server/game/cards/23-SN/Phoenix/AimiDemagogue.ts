@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { addKeyword } from '../../../effects.js';
 import { cardLastingEffect, multipleContext } from '../../../GameActions/GameActions.js';
@@ -29,6 +30,6 @@ export default class AimiDemagogue extends DrawCard {
                 }
                 return { gameActions };
             }))
-            .chatText('give {1}{0} pride until the end of the conflict', (context) => [context.target.controller !== context.player ? 'itself and ' : '']);
+            .chatText((context) => msg`give ${context.target.controller !== context.player ? 'itself and ' : ''}${context.chatTarget()} pride until the end of the conflict`);
     }
 }

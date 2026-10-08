@@ -16,7 +16,7 @@ export default class MantisRaider extends DrawCard {
             .placeFate((context) => ({
                 origin: context.player.opponent
             }))
-            .chatText('take a fate from {1} and place it on {0}', (context) => context.player.opponent);
+            .chatText((context) => msg`take a fate from ${context.player.opponent} and place it on ${context.chatTarget()}`);
 
         this.conflictAction('Give this character +1 military')
             .cost(costs.removeFateFromSelf())

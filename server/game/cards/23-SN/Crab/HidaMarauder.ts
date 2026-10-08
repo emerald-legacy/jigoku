@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { multipleContext, reveal } from '../../../GameActions/GameActions.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
@@ -26,10 +27,6 @@ export default class HidaMarauder extends DrawCard {
                     ]
                 };
             }))
-            .chatText('make {2} reveal {1} random card{3} from their hand', (context) => [
-                context.game.currentConflict?.getCharacters(context.player).length ?? 0,
-                context.player.opponent,
-                (context.game.currentConflict?.getCharacters(context.player).length ?? 0) === 1 ? '' : 's'
-            ]);
+            .chatText((context) => msg`make ${context.player.opponent} reveal ${context.game.currentConflict?.getCharacters(context.player).length ?? 0} random card${(context.game.currentConflict?.getCharacters(context.player).length ?? 0) === 1 ? '' : 's'} from their hand`);
     }
 }

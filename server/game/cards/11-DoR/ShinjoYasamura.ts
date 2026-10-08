@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 import { cannotBeDeclaredAsDefender } from '../../effects.js';
@@ -18,7 +19,7 @@ class ShinjoYasamura extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: cannotBeDeclaredAsDefender()
             }))
-            .chatText('prevent {1} from defending this phase', (context) => context.event.context.target);
+            .chatText((context) => msg`prevent ${context.event.context.target} from defending this phase`);
     }
 }
 

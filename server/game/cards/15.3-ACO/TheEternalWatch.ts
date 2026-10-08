@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { bow, takeHonor } from '../../GameActions/GameActions.js';
@@ -22,9 +23,8 @@ export default class TheEternalWatch extends ProvinceCard {
                 })),
                 'Give your opponent 1 honor': takeHonor()
             })
-            .chatText('{1}{2}', (context) =>
-                context.selects.select.choice === 'Give your opponent 1 honor'
-                    ? ['take 1 honor from ', context.player.opponent]
-                    : ['bow ', context.targets.character]);
+            .chatText((context) => context.selects.select.choice === 'Give your opponent 1 honor'
+                ? msg`${'take 1 honor from '}${context.player.opponent}`
+                : msg`bow ${context.targets.character}`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
 import { CardType } from '../../Constants.js';
@@ -25,7 +26,7 @@ class NeverYield extends DrawCard {
                     })
                 ]
             }))
-            .chatText('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', (context) => [context.player.opponent, context.player]);
+            .chatText((context) => msg`make it so ${context.player.opponent}'s card effects can't bow or send home ${context.player}'s characters currently in play until the end of the conflict`);
     }
 }
 

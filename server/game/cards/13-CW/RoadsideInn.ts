@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { placeFate } from '../../GameActions/GameActions.js';
@@ -27,10 +28,7 @@ class RoadsideInn extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, placeFate((context) => ({ origin: context.player.opponent })))
-            .chatText('place a fate from their pool on {1}{2}', (context) => [
-                context.targets.myCharacter,
-                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name)
-            ]);
+            .chatText((context) => msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name)}`);
     }
 }
 

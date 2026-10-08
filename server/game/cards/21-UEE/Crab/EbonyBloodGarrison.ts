@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Phase, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
@@ -37,10 +38,6 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 context.game.queueSimpleStep(() => reveal({ target: provinces }).resolve(provinces, context));
                 context.game.queueSimpleStep(() => breakProvince({ target: provinces }).resolve(provinces, context));
             })
-            .chatText('drag {1} into chaos, as a crisis strikes {2} and {3}', (context) => [
-                context.player.opponent,
-                context.targets[MY_PROVINCE],
-                context.targets[OPP_PROVINCE]
-            ]);
+            .chatText((context) => msg`drag ${context.player.opponent} into chaos, as a crisis strikes ${context.targets[MY_PROVINCE]} and ${context.targets[OPP_PROVINCE]}`);
     }
 }

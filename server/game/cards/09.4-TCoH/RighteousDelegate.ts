@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
@@ -44,7 +45,7 @@ class RighteousDelegate extends DrawCard {
                     };
                 })
             ]))
-            .chatText('give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}', () => ['military', 'political']);
+            .chatText(() => msg`give all participating bushi characters -1${'military'} / -1${'political'} and give all participating non-bushi characters +1${'military'} / +1${'political'}`);
     }
 }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { cannotBeDeclaredAsDefender } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +16,7 @@ export default class RecklessAssault extends DrawCard {
                 target: this.getCharacters(context),
                 effect: cannotBeDeclaredAsDefender()
             }))
-            .chatText('prevent characters with less than 3{1} from defending (this affects {2})', (context) => ['military', this.getCharacters(context)]);
+            .chatText((context) => msg`prevent characters with less than 3${'military'} from defending (this affects ${this.getCharacters(context)})`);
     }
 
     private getCharacters(context: AbilityContext) {

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -11,7 +12,7 @@ export default class FukurokushisBlessing extends DrawCard {
                 onInitiateAbilityEffects: ({ card }) => card instanceof ProvinceCard
             })
             .cancel()
-            .chatText('cancel the effects of {1}\'s ability', (context) => context.event.card)
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`)
             .max(perRound(1));
     }
 }

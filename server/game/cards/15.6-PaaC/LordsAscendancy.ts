@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { placeFate } from '../../GameActions/GameActions.js';
@@ -13,6 +14,6 @@ export default class LordsAscendancy extends ProvinceCard {
             }, placeFate((context) => ({
                 origin: context.target.controller
             })))
-            .chatText('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller]);
+            .chatText((context) => msg`place a fate from ${context.target.controller}'s fate pool on ${context.chatTarget()}`);
     }
 }

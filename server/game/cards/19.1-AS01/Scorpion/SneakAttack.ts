@@ -57,9 +57,6 @@ export default class SneakAttack extends DrawCard {
                     effect: gainActionPhasePriority()
                 }))
             ]))
-            .chatText('give {1} the first action in this conflict{2}', (context) => [
-                context.player,
-                (context.player.opponent?.hand.length ?? 0) > 0 ? ' and set aside opponent\'s cards' : ''
-            ]);
+            .chatText((context) => msg`give ${context.player} the first action in this conflict${(context.player.opponent?.hand.length ?? 0) > 0 ? ' and set aside opponent\'s cards' : ''}`);
     }
 }

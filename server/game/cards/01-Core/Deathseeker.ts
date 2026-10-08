@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -16,7 +17,7 @@ class Deathseeker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent
             }, injure())
-            .chatText('{1} {0}', (context) => context.target.getFate() > 0 ? 'remove 1 fate from' : 'discard');
+            .chatText((context) => msg`${context.target.getFate() > 0 ? 'remove 1 fate from' : 'discard'} ${context.chatTarget()}`);
     }
 }
 

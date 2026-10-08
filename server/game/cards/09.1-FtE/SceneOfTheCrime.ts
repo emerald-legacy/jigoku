@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { lookAt } from '../../GameActions/GameActions.js';
 
@@ -14,6 +15,6 @@ export default class SceneOfTheCrime extends ProvinceCard {
                 target: (context.player.opponent?.hand ?? []).slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true
             })))
-            .chatText('look at {1}\'s hand', (context) => context.player.opponent ?? '');
+            .chatText((context) => msg`look at ${context.player.opponent ?? ''}'s hand`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { blank } from '../../effects.js';
@@ -20,7 +21,7 @@ class AgashaHiyori extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()
             }))
-            .chatText('treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase', (context) => context.target);
+            .chatText((context) => msg`treat ${context.target} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase`);
     }
 }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { bow, reveal, selectCard } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, EventName, ConflictType } from '../../Constants.js';
@@ -39,7 +40,7 @@ class OfferTestimony extends DrawCard {
                 const lowestCostPlayers = revealedCards.filter((card) => card.getCost() === lowestCost).map((card) => card.controller);
                 return { target: [context.targets.myCharacter, context.targets.oppCharacter].filter((card) => lowestCostPlayers.includes(card.controller)) };
             }))
-            .chatText('make each player choose a ready participating character they control: {1}', (context) => [Object.values(context.targets)]);
+            .chatText((context) => msg`make each player choose a ready participating character they control: ${Object.values(context.targets)}`);
     }
 }
 

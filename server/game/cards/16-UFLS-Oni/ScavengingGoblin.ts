@@ -52,6 +52,6 @@ export default class ScavengingGoblin extends BaseOni {
                     ]
                 };
             }))
-            .chatText('remove the top 3 cards of {1}\'s conflict deck from the game as well as any matching attachments', (context) => [context.player.opponent ?? '']);
+            .chatText((context) => msg`remove the top 3 cards of ${context.player.opponent ?? ''}'s conflict deck from the game as well as any matching attachments`);
     }
 }

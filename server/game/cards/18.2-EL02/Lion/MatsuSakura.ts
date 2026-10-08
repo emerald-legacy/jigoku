@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Location } from '../../../Constants.js';
 
@@ -12,7 +13,7 @@ class MatsuSakura extends DrawCard {
                         event.card.location === Location.StrongholdProvince)
             })
             .cancel()
-            .chatText('cancel the effects of {1}\'s ability', (context) => context.event.card);
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`);
     }
 }
 

@@ -24,7 +24,7 @@ class DoomThrower extends DrawCard {
                     effect: modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)
                 })
             }))
-            .chatText('reduce an attacked province\'s strength by {1}', (context) => (context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2);
+            .chatText((context) => msg`reduce an attacked province's strength by ${(context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2}`);
     }
 }
 

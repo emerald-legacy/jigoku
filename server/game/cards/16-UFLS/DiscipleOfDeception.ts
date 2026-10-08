@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { StatusToken } from '../../StatusToken.js';
@@ -41,11 +42,7 @@ export default class DiscipleOfDeception extends DrawCard {
                     targetCard.updateStatusTokenEffects();
                 }
             }))
-            .chatText('replace {1}\'s {2} with {3} until the end of the conflict', (context) => [
-                context.tokens.second[0].card,
-                context.tokens.second,
-                context.tokens.first
-            ]);
+            .chatText((context) => msg`replace ${context.tokens.second[0].card}'s ${context.tokens.second} with ${context.tokens.first} until the end of the conflict`);
     }
 
     public onConflictFinished() {

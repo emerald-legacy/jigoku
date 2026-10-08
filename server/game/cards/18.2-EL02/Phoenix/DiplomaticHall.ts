@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { draw } from '../../../GameActions/GameActions.js';
 import { ConflictType } from '../../../Constants.js';
@@ -11,7 +12,7 @@ class DiplomaticHall extends DrawCard {
             .selectFrom({
                 targets: true
             }, (context) => playerChoices(context.player, (player) => draw({ target: player })))
-            .chatText('have {1} draw a card', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
+            .chatText((context) => msg`have ${(context.select === context.player.name ? context.player : context.player.opponent)} draw a card`);
     }
 }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Phase } from '../../Constants.js';
 import { turnFacedown } from '../../GameActions/GameActions.js';
@@ -13,7 +14,7 @@ class HiddenMountainPass extends DrawCard {
             .gameAction(turnFacedown((context) => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
-            .chatText('turn {1} facedown', (context) => context.player.getProvinceCardInProvince(context.source.location));
+            .chatText((context) => msg`turn ${context.player.getProvinceCardInProvince(context.source.location)} facedown`);
     }
 }
 

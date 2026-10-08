@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { moveCard } from '../../GameActions/GameActions.js';
@@ -20,7 +21,7 @@ class IsawaEju extends DrawCard {
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
             })))
-            .chatText('discard {1} and refill the province faceup', (context) => [context.target.controller.getDynastyCardsInProvince(context.target.location)])
+            .chatText((context) => msg`discard ${context.target.controller.getDynastyCardsInProvince(context.target.location)} and refill the province faceup`)
             .limit(perRound(3))
             .then()
             .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));

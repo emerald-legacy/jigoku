@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -17,7 +18,7 @@ class CommandRespect extends DrawCard {
                     sourceContext.source.type === CardType.Event ? [costs.giveHonorToOpponent(1)] : []
                 )
             }))
-            .chatText('force {1} to give them an honor as an additional cost to play an event until the end of the conflict', (context) => [context.player.opponent])
+            .chatText((context) => msg`force ${context.player.opponent} to give them an honor as an additional cost to play an event until the end of the conflict`)
             .max(perConflict(1));
     }
 }

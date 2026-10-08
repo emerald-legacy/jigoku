@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CharacterStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { discardStatusToken } from '../../GameActions/GameActions.js';
@@ -15,6 +16,6 @@ export default class PledgeOfLoyalty extends ProvinceCard {
                     target: context.event?.card.getStatusToken(CharacterStatus.Honored)
                 })
             }))
-            .chatText('prevent {1} from leaving play', (context) => context.event?.card ?? '');
+            .chatText((context) => msg`prevent ${context.event?.card ?? ''} from leaving play`);
     }
 }

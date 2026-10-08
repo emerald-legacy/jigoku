@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../effects.js';
@@ -19,7 +20,7 @@ export default class RisingStarsKata extends DrawCard {
                     ? modifyMilitarySkill(5)
                     : modifyMilitarySkill(3)
             })))
-            .chatText('give {0} +{1} {2} skill until the end of the conflict', (context) => [duelWinners.has(context.target) ? 5 : 3, 'military'])
+            .chatText((context) => msg`give ${context.chatTarget()} +${duelWinners.has(context.target) ? 5 : 3} ${'military'} skill until the end of the conflict`)
             .max(perConflict(1));
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { discardStatusToken } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
@@ -32,7 +33,7 @@ class YasukiFuzake extends DrawCard {
             }, discardStatusToken((context) => ({
                 target: statusTokensOf(context.targets.second)
             })))
-            .chatText('discard all status tokens from {1}{2}{3}', (context) => [context.targets.first, !Array.isArray(context.targets.second) ? ' and ' : '', context.targets.second]);
+            .chatText((context) => msg`discard all status tokens from ${context.targets.first}${!Array.isArray(context.targets.second) ? ' and ' : ''}${context.targets.second}`);
     }
 }
 

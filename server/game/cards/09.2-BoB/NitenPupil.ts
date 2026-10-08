@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyBaseMilitarySkillMultiplier, modifyBasePoliticalSkillMultiplier } from '../../effects.js';
 import { Duration } from '../../Constants.js';
@@ -17,7 +18,7 @@ class NitenPupil extends DrawCard {
                 ],
                 duration: Duration.UntilEndOfPhase
             })
-            .chatText('double {0}\'s base {1} and {2} skills', () => (['military', 'political']));
+            .chatText((context) => msg`double ${context.chatTarget()}'s base ${'military'} and ${'political'} skills`);
     }
 }
 

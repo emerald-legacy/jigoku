@@ -21,7 +21,7 @@ class KitsukiInvestigator extends DrawCard {
                 message: (context, card) => msg`${context.player} chooses ${card} to be discarded`,
                 gameAction: discardCard()
             })))
-            .chatText('reveal {1}\'s hand and discard a card from it', (context) => context.player.opponent ?? context.player)
+            .chatText((context) => msg`reveal ${context.player.opponent ?? context.player}'s hand and discard a card from it`)
             .max(perConflict(1));
     }
 }

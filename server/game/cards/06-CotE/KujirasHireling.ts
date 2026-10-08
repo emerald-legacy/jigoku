@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
@@ -21,7 +22,7 @@ class KujirasHireling extends DrawCard {
                     duration: Duration.UntilEndOfPhase
                 })
             })
-            .chatText('give {0} {1}', (context) => context.select.toLowerCase())
+            .chatText((context) => msg`give ${context.chatTarget()} ${context.select.toLowerCase()}`)
             .limit(unlimitedPerConflict())
             .anyPlayer();
     }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
 import { joint, noAction, placeFate, placeFateOnRing } from '../../../GameActions/GameActions.js';
 import { Element, EventName } from '../../../Constants.js';
@@ -39,7 +40,7 @@ export default class KitsukiSeiji extends DrawCard {
                         return { replacementGameAction: noAction() };
                 }
             })
-            .chatText('put the fate that would go on the {1} ring on {0} instead', () => [this.getCurrentElementSymbol(ELEMENT_KEY)]);
+            .chatText((context) => msg`put the fate that would go on the ${this.getCurrentElementSymbol(ELEMENT_KEY)} ring on ${context.chatTarget()} instead`);
     }
 
     public getPrintedElementSymbols() {

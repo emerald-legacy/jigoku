@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
@@ -18,7 +19,7 @@ class WarDogMaster extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(discardedCost(context.costs.discardCard))
             }))
-            .chatText('give {0} +{1}{2}', (context) => [discardedCost(context.costs.discardCard), 'military']);
+            .chatText((context) => msg`give ${context.chatTarget()} +${discardedCost(context.costs.discardCard)}${'military'}`);
     }
 }
 

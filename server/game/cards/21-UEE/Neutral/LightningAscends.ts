@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { loseTrait, modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -26,6 +27,6 @@ export default class LightningAscends extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: context.targets.enemy.traits.map((t) => loseTrait(t))
             })))
-            .chatText('grant +2 {1} to {2} and remove all traits from {3}', (context) => ['military', context.targets.monk, context.targets.enemy]);
+            .chatText((context) => msg`grant +2 ${'military'} to ${context.targets.monk} and remove all traits from ${context.targets.enemy}`);
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, Players, CardType } from '../../Constants.js';
 import { additionalAction, increaseLimitOnPrintedAbilities } from '../../effects.js';
@@ -23,7 +24,7 @@ class CenteredBreath extends DrawCard {
                     effect: context.player.isKihoPlayedThisConflict(context, this) ? additionalAction() : []
                 }))
             ]))
-            .chatText('add an additional use to each of {0}\'s printed abilities{1}', (context) => [context.player.isKihoPlayedThisConflict(context, this) ? ' and take an additional action' : '']);
+            .chatText((context) => msg`add an additional use to each of ${context.chatTarget()}'s printed abilities${context.player.isKihoPlayedThisConflict(context, this) ? ' and take an additional action' : ''}`);
     }
 }
 

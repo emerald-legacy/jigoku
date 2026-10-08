@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { multiple, putIntoProvince, returnToHand } from '../../../GameActions/GameActions.js';
@@ -33,9 +34,6 @@ export default class RoadToShakyakuMura extends DrawCard {
                     })
                 ])
             }))
-            .chatText('prevent {1} from leaving play, putting it into {2} instead', (context) => [
-                context.event.card ?? '',
-                context.costs.captureLocationCost ?? ''
-            ]);
+            .chatText((context) => msg`prevent ${context.event.card ?? ''} from leaving play, putting it into ${context.costs.captureLocationCost ?? ''} instead`);
     }
 }

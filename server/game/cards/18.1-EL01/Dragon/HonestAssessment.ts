@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { discardMatching, multipleContext, reveal } from '../../../GameActions/GameActions.js';
@@ -33,7 +34,7 @@ export default class HonestAssessment extends DrawCard {
                     ]
                 };
             }))
-            .chatText('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.namedCard])
+            .chatText((context) => msg`reveal 4 random cards from ${context.player.opponent}'s hand and discard all copies of ${context.costs.namedCard}`)
             .max(perRound(1));
     }
 }

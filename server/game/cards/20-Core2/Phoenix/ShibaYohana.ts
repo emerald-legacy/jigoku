@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import { addTrait } from '../../../effects.js';
 import { moveToConflict, taint } from '../../../GameActions/GameActions.js';
@@ -16,7 +17,7 @@ export default class ShibaYohana extends DrawCard {
                 target: context.source,
                 replacementGameAction: taint()
             }))
-            .chatText('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play - vengeance and destruction sustains her in a damned existence`)
             .then()
             .cardLastingEffect((context) => ({
                 target: context.source,

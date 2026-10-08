@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -27,7 +28,7 @@ class StolenSecrets extends DrawCard {
                     cardHandler: (card) => this.stealCard(card, opponent.conflictDeck.slice(0, 4).filter((c) => c !== card), context)
                 });
             })
-            .chatText('look at the top 4 cards of {1}\'s conflict deck and remove one from the game', (context) => context.player.opponent);
+            .chatText((context) => msg`look at the top 4 cards of ${context.player.opponent}'s conflict deck and remove one from the game`);
     }
 
     private stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext) {

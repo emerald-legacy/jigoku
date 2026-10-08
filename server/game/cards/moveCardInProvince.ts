@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { attach, conditional, moveCard } from '../GameActions/GameActions.js';
 import { CardType, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -40,8 +41,5 @@ export function moveCardInProvinceAction(source: DrawCard) {
                 destination: context.targets.province.location
             })
         })))
-        .chatText('move {1} to {2}', (context) => [
-            context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-            context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
-        ]);
+        .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}`);
 }

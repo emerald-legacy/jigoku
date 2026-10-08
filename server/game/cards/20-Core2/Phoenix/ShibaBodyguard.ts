@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,6 +17,6 @@ export default class ShibaBodyguard extends DrawCard {
             }, placeFate((context) => ({
                 origin: context.player
             })))
-            .chatText('place a fate from {1}\'s fate pool on {0}', (context) => [context.player]);
+            .chatText((context) => msg`place a fate from ${context.player}'s fate pool on ${context.chatTarget()}`);
     }
 }

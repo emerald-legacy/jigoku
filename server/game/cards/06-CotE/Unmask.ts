@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect, discardStatusToken, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -23,7 +24,7 @@ class Unmask extends DrawCard {
                 }))
             ]))
             .gainHonor((context) => ({ amount: 2, target: context.target?.controller }))
-            .chatText('discard all status tokens on {0} and set its skill to its printed value until the end of the conflict. {1} gains 2 honor', (context) => context.target.controller);
+            .chatText((context) => msg`discard all status tokens on ${context.chatTarget()} and set its skill to its printed value until the end of the conflict. ${context.target.controller} gains 2 honor`);
     }
 }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
 import { cancel, moveCard, multiple } from '../../../GameActions/GameActions.js';
@@ -21,7 +22,7 @@ export default class ShibasOath extends DrawCard {
             .honor((context) => ({
                 target: context.source.parentCharacter ?? []
             }))
-            .chatText('honor {1}', (context) => context.source.parentCharacter);
+            .chatText((context) => msg`honor ${context.source.parentCharacter}`);
 
         this.whileAttached({
             effect: gainAbility(AbilityType.WouldInterrupt, {

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Duration } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { additionalConflict } from '../../../effects.js';
@@ -19,7 +20,7 @@ export default class TheSunWillRiseAgain extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(context.event.conflict.conflictType)
             }))
-            .chatText('gain an additional {1} conflict this round. They will not forget this defeat', (context) => [context.event.conflict.conflictType])
+            .chatText((context) => msg`gain an additional ${context.event.conflict.conflictType} conflict this round. They will not forget this defeat`)
             .max(perConflict(1));
     }
 }

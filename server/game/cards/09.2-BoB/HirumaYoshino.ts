@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import { changeContributionFunction, contributeToConflict } from '../../effects.js';
@@ -21,7 +22,7 @@ class HirumaYoshino extends DrawCard {
                     changeContributionFunction((card) => card.printedMilitarySkill)
                 ]
             }))
-            .chatText('contribute {0}\'s printed {1} skill of {2} to their side of the conflict', (context) => ['military', context.target.printedMilitarySkill]);
+            .chatText((context) => msg`contribute ${context.chatTarget()}'s printed ${'military'} skill of ${context.target.printedMilitarySkill} to their side of the conflict`);
     }
 }
 

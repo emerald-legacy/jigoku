@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { increaseCost } from '../../../effects.js';
 import { conditional, gainFate, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
@@ -29,8 +30,6 @@ export default class IntoTheStorm extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('increase the cost of events this conflict by 1{1}', (context) => [
-                context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''
-            ]);
+            .chatText((context) => msg`increase the cost of events this conflict by 1${context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''}`);
     }
 }

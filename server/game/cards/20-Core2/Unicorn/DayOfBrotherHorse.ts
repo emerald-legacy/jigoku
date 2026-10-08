@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../../effects.js';
 import { chosenDiscard, draw, ringLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
@@ -49,7 +50,7 @@ export default class DayOfBrotherHorse extends DrawCard {
                     chosenDiscard({ target: context.player })
                 ]
             })))
-            .chatText('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
+            .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring ${context.chatTarget()} conflicts, draw 3 cards, and discard 1 card - ${fluff(context.ring.element)}`)
             .max(perRound(1));
     }
 }

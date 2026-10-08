@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import { attach, conditional, draw, moveCard, multiple } from '../../GameActions/GameActions.js';
@@ -47,11 +48,7 @@ class Logistics extends DrawCard {
                 })),
                 draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] }))
             ]))
-            .chatText('move {1} to {2}{3}', (context) => [
-                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province,
-                context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''
-            ]);
+            .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}${context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''}`);
     }
 }
 

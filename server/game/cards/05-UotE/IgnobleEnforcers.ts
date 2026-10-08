@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -11,7 +12,7 @@ class IgnobleEnforcers extends DrawCard {
             })
             .cost(costs.payVariableHonor(() => 3))
             .placeFate((context) => ({ amount: context.costs.honorPaid }))
-            .chatText('place {1} fate on {0}', (context) => context.costs.honorPaid);
+            .chatText((context) => msg`place ${context.costs.honorPaid} fate on ${context.chatTarget()}`);
     }
 }
 

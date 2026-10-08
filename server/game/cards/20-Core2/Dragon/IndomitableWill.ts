@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +16,7 @@ export default class IndomitableWill extends DrawCard {
                 target: context.event.conflict.getCharacters(context.player),
                 effect: doesNotBow()
             }))
-            .chatText('prevent {1} from bowing as a result of the conflict\'s resolution', (context) => context.player.cardsInPlay.find((card) => card.isParticipating()))
+            .chatText((context) => msg`prevent ${context.player.cardsInPlay.find((card) => card.isParticipating())} from bowing as a result of the conflict's resolution`)
             .cannotBeMirrored();
     }
 }
