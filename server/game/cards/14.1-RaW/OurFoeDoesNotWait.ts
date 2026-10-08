@@ -19,7 +19,7 @@ class OurFoeDoesNotWait extends DrawCard {
                 cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
             .deckSearch((context) => ({
-                amount: 8,
+                cardsToLookAt: 8,
                 deck: Decks.DynastyDeck,
                 gameAction: moveCard({
                     faceup: true,

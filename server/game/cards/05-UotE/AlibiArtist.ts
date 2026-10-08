@@ -9,7 +9,7 @@ class AlibiArtist extends DrawCard {
         this.action('Look at top 2 cards of conflict deck')
             .condition(context => context.player.honor <= 6)
             .deckSearch({
-                amount: 2,
+                cardsToLookAt: 2,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

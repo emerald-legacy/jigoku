@@ -18,7 +18,7 @@ export default class AsahinaEnvoy extends DrawCard {
             }, deckSearch({
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
-                amount: 6,
+                cardsToLookAt: 6,
                 deck: Decks.DynastyDeck,
                 shuffle: true,
                 selectedCardsHandler: (context, event, cards) => {

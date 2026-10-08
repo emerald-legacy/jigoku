@@ -16,7 +16,7 @@ export default class AncientMaster extends DrawCard {
                     context.source.type === CardType.Attachment && event.defenders.some((card) => card === context.source.parentCharacter)
             })
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
                 gameAction: moveCard({
                     destination: Location.Hand

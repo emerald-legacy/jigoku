@@ -18,7 +18,7 @@ export default class EarthsExamination extends DrawCard {
                 taint(),
                 onAffinity((context) => ({
                     trait: 'earth',
-                    promptTitleForConfirmingAffinity: context.target.isTainted ? undefined : 'Bow that character?',
+                    prompt: context.target.isTainted ? undefined : 'Bow that character?',
                     gameAction: bow(),
                     effect: 'bow {0}',
                     effectArgs: (context) => [context.target]

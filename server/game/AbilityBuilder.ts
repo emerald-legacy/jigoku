@@ -3,7 +3,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import CardAbility from './CardAbility.js';
-import { type Element, type EventName, type Location, type Phases, Players, TargetMode } from './Constants.js';
+import { type EventName, type Location, type Phases, Players, TargetMode } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -155,7 +155,7 @@ interface AbilityDraft {
     message?: (context: AbilityContext) => MessageArgs | undefined;
     isStep?: boolean;
     /** From `onAffinity()`: the game actions resolve only with this affinity. */
-    affinity?: Element;
+    affinity?: string;
     /** From `onAffinity()`: a Yes/No question before using the affinity, and what the chat says it does. */
     affinityOptions?: AffinityOptions;
     /** From `if()` / `otherwise()`: the game actions from `from` on are the branches, on `target` when they follow a card target without game actions. */
@@ -670,11 +670,11 @@ export class AbilityBuilder<
     }
 
     /**
-     * "With [element] affinity": this step's game actions resolve only if the player has that affinity.
+     * "With [trait] affinity" (usually an element, but any trait, e.g. Shadow): this step's game actions resolve only if the player has that affinity.
      * `prompt` asks the player first ("Pay 1 fate to swap abilities?"); `effect` is what the chat says the affinity does.
      */
-    onAffinity(element: Element, options: AffinityOptions<BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
-        this.#once('affinity', element, 'onAffinity()');
+    onAffinity(trait: string, options: AffinityOptions<BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        this.#once('affinity', trait, 'onAffinity()');
         this.draft.affinityOptions = {
             ...(options.prompt !== undefined ? { prompt: options.prompt } : {}),
             ...(options.effect ? { effect: this.#checked(options.effect, this.draft.specs) } : {})
@@ -1273,7 +1273,7 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
         return {
             trait,
             gameAction,
-            ...(prompt !== undefined ? { promptTitleForConfirmingAffinity: prompt } : {}),
+            ...(prompt !== undefined ? { prompt } : {}),
             ...(format !== undefined ? { effect: format, effectArgs: args } : {})
         };
     })] };

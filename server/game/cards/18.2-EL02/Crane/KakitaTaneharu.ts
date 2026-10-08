@@ -8,7 +8,7 @@ class KakitaTaneharu extends DrawCard {
     setupCardAbilities() {
         this.conflictAction('Search your conflict deck', { evenFromHome: true })
             .deckSearch({
-                amount: 4,
+                cardsToLookAt: 4,
                 reveal: false,
                 placeOnBottomInRandomOrder: true,
                 shuffle: false,

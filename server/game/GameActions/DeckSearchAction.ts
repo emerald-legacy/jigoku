@@ -12,9 +12,9 @@ import type { GameEvent } from '../Events/EventPayloads.js';
 import { derive, type Derivable } from '../utils/helpers.js';
 
 export interface DeckSearchProperties extends PlayerActionProperties {
-    targetMode?: TargetMode;
+    mode?: TargetMode;
     activePromptTitle?: string;
-    amount?: Derivable<number, AbilityContext>;
+    cardsToLookAt?: Derivable<number, AbilityContext>;
     numCards?: Derivable<number, AbilityContext>;
     reveal?: boolean;
     deck?: Decks;
@@ -33,9 +33,9 @@ export interface DeckSearchProperties extends PlayerActionProperties {
 }
 
 type DeckSearchDefaults =
-    | 'amount'
+    | 'cardsToLookAt'
     | 'numCards'
-    | 'targetMode'
+    | 'mode'
     | 'deck'
     | 'shuffle'
     | 'reveal'
@@ -50,9 +50,9 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     eventName = EventName.OnDeckSearch;
 
     defaultProperties = {
-        amount: -1,
+        cardsToLookAt: -1,
         numCards: 1,
-        targetMode: TargetMode.Single,
+        mode: TargetMode.Single,
         deck: Decks.ConflictDeck,
         shuffle: true,
         reveal: true,
@@ -63,7 +63,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(derive(properties.amount, context) === 0) {
+        if(derive(properties.cardsToLookAt, context) === 0) {
             return false;
         }
         const player = properties.player || context.player;
@@ -71,7 +71,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     protected effectMessage(context: C): MessageArgs {
-        const amount = derive(this.getProperties(context).amount, context);
+        const amount = derive(this.getProperties(context).cardsToLookAt, context);
         const message =
             amount > 0
                 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of their deck`
@@ -85,7 +85,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        const amount = derive(properties.amount, context);
+        const amount = derive(properties.cardsToLookAt, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
@@ -94,9 +94,9 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
-        const { amount } = this.getProperties(context, additionalProperties);
+        const { cardsToLookAt } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = derive(amount, context);
+        event.amount = derive(cardsToLookAt, context);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
@@ -126,20 +126,20 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     #selectCard(event: ActionEvent<EventName.OnDeckSearch, C>, additionalProperties: ActionOverrides = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
-        const canCancel = properties.targetMode !== TargetMode.Exactly;
+        const canCancel = properties.mode !== TargetMode.Exactly;
         let selectAmount = 1;
         const choosingPlayer = properties.choosingPlayer || event.player;
 
-        if(properties.targetMode === TargetMode.UpTo || properties.targetMode === TargetMode.UpToVariable) {
+        if(properties.mode === TargetMode.UpTo || properties.mode === TargetMode.UpToVariable) {
             selectAmount = derive(properties.numCards, context);
         }
-        if(properties.targetMode === TargetMode.Single) {
+        if(properties.mode === TargetMode.Single) {
             selectAmount = 1;
         }
-        if(properties.targetMode === TargetMode.Exactly || properties.targetMode === TargetMode.ExactlyVariable) {
+        if(properties.mode === TargetMode.Exactly || properties.mode === TargetMode.ExactlyVariable) {
             selectAmount = derive(properties.numCards, context);
         }
-        if(properties.targetMode === TargetMode.Unlimited) {
+        if(properties.mode === TargetMode.Unlimited) {
             selectAmount = -1;
         }
 

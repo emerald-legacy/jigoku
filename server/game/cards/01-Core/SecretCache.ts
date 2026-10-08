@@ -11,7 +11,7 @@ export default class SecretCache extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 reveal: false,
                 gameAction: moveCard({
                     destination: Location.Hand

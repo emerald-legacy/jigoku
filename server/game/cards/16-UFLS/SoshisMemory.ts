@@ -23,7 +23,7 @@ class SoshisMemory extends DrawCard {
             player: player,
             activePromptTitle: 'Choose a card to put into your hand',
             reveal: false,
-            amount: (context) => context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
+            cardsToLookAt: (context) => context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
             deck: Decks.ConflictDeck,
             gameAction: moveCard({
                 destination: Location.Hand

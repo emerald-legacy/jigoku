@@ -16,7 +16,7 @@ export default class KakitaRusumi extends DrawCard {
             .condition((context) => context.player.isDefendingPlayer())
             .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
-                amount: 4,
+                cardsToLookAt: 4,
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),

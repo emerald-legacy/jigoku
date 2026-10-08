@@ -16,7 +16,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                     gameActions: [
                         deckSearch({
                             activePromptTitle: 'Choose a character to put into play',
-                            amount: 5,
+                            cardsToLookAt: 5,
                             deck: Decks.DynastyDeck,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
                             message: '{0} puts {1} into play{2}{3}',

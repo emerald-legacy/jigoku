@@ -12,7 +12,7 @@ export default class HirumaHajime extends DrawCard {
                 context.targets.cardInProvince.type !== CardType.Attachment &&
                 context.targets.cardInProvince.isFaceup())
             .gameAction(optional((context) => ({
-                promptTitleForConfirming: 'Do you want to turn ' + context.targets.cardInProvince.name + ' facedown?',
+                prompt: 'Do you want to turn ' + context.targets.cardInProvince.name + ' facedown?',
                 gameAction: turnFacedown({ target: context.targets.cardInProvince }),
                 showMessageOnNo: true,
                 effect: 'turn {1} facedown',

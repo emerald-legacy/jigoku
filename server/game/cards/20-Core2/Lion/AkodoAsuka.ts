@@ -19,7 +19,7 @@ export default class AkodoAsuka extends DrawCard {
                     context.player.conflictDeck.length > 0
             })
             .deckSearch({
-                amount: (context) => charactersOnYourSide(context),
+                cardsToLookAt: (context) => charactersOnYourSide(context),
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: moveCard({
                     destination: Location.Hand

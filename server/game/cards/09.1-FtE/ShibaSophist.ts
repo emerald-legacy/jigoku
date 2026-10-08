@@ -9,7 +9,7 @@ class ShibaSophist extends DrawCard {
         this.action('Search top 5 cards for a card with the contested ring trait')
             .condition(context => context.source.isParticipating())
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 cardCondition: card => this.game.currentConflict?.elements.some(element => card.hasTrait(element)) ?? false,
                 gameAction: moveCard({
                     destination: Location.Hand

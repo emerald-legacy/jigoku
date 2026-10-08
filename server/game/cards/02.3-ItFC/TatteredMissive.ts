@@ -16,7 +16,7 @@ class TatteredMissive extends DrawCard {
             .cost(costs.bowParent())
             .condition(context => context.player.conflictDeck.length > 0)
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 gameAction: moveCard({
                     destination: Location.Hand
                 })

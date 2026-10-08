@@ -11,7 +11,7 @@ class EmptyCityArchivist extends DrawCard {
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .deckSearch({
-                amount: 4,
+                cardsToLookAt: 4,
                 cardCondition: (card, context) => {
                     const parent = context.source.parentCharacter;
                     return card.hasTrait('spell') || card.hasTrait('kiho') || (!!parent && parent.hasTrait('scholar'));

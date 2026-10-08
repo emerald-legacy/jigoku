@@ -11,7 +11,7 @@ export default class EarnestSculptor extends DrawCard {
     public setupCardAbilities() {
         this.action('Search top 8 card for a spell')
             .deckSearch({
-                amount: 8,
+                cardsToLookAt: 8,
                 cardCondition: (card) => card.hasTrait('spell'),
                 gameAction: moveCard({
                     destination: Location.Hand

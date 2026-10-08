@@ -12,8 +12,8 @@ class KiAlignment extends DrawCard {
                 onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && event.defenders.some((card) => card.hasTrait('monk'))
             })
             .deckSearch({
-                targetMode: TargetMode.UpTo,
-                amount: 8,
+                mode: TargetMode.UpTo,
+                cardsToLookAt: 8,
                 numCards: 2,
                 uniqueNames: true,
                 cardCondition: (card) => card.hasTrait('kiho'),

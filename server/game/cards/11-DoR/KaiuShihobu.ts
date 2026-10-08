@@ -14,7 +14,7 @@ export default class KaiuShihobu extends DrawCard {
             })
             .deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
-                targetMode: TargetMode.Unlimited,
+                mode: TargetMode.Unlimited,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (_context, event, cards) => {
                     if(cards.length > 0) {

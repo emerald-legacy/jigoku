@@ -17,9 +17,9 @@ class TheWesternWind extends DrawCard {
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
             }, deckSearch({
                 cardCondition: (card) => card.type === CardType.Character,
-                targetMode: TargetMode.UpToVariable,
+                mode: TargetMode.UpToVariable,
                 numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
-                amount: 8,
+                cardsToLookAt: 8,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (context, event, cards) => {
                     const target = context.target;

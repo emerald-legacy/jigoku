@@ -17,7 +17,7 @@ export default class TheEastWind extends StrongholdCard {
             .deckSearch((context) => {
                 const playedCardTraits = context.event.card.getTraits();
                 return {
-                    amount: 5,
+                    cardsToLookAt: 5,
                     cardCondition: (card) => {
                         for(const searchedCardTrait of card.getTraits()) {
                             if(playedCardTraits.has(searchedCardTrait)) {

@@ -9,7 +9,7 @@ class YasukiHatsu extends DrawCard {
         this.action('Search top 5 cards for attachment')
             .condition(context => !!(context.source.isParticipating() && context.player.opponent && context.player.isLessHonorable()))
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 cardCondition: card => card.type === CardType.Attachment,
                 gameAction: moveCard({
                     destination: Location.Hand

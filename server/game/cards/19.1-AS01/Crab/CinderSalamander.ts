@@ -27,7 +27,7 @@ export default class CinderSalamander extends DrawCard {
                 deckSearch({
                     activePromptTitle: 'Select characters to put into play from your deck',
                     deck: Decks.DynastyDeck,
-                    targetMode: TargetMode.UpTo,
+                    mode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
                     shuffle: true,

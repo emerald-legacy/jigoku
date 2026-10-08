@@ -12,7 +12,7 @@ class EloquentAdvocate extends DrawCard {
                                                    event.conflict.conflictType === ConflictType.Political
             })
             .deckSearch({
-                amount: 2,
+                cardsToLookAt: 2,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

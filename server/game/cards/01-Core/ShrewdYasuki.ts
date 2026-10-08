@@ -10,7 +10,7 @@ class ShrewdYasuki extends DrawCard {
             .condition(context => context.player.conflictDeck.length > 0 && context.source.isParticipating() &&
                                   this.game.allCards.some(card => card.type === CardType.Holding && card.isInProvince() && card.isFaceup()))
             .deckSearch({
-                amount: 2,
+                cardsToLookAt: 2,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

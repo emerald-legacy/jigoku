@@ -10,7 +10,7 @@ class DaidojiUji2 extends DrawCard {
         this.reaction('Search your conflict deck')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
             .deckSearch({
-                targetMode: TargetMode.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 4,
                 deck: Decks.ConflictDeck,
                 reveal: false,

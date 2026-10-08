@@ -9,7 +9,7 @@ export default class AgashaSwordsmith extends DrawCard {
     setupCardAbilities() {
         this.action('Search top 5 cards for attachment')
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 cardCondition: (card) => card.type === CardType.Attachment,
                 gameAction: moveCard({
                     destination: Location.Hand

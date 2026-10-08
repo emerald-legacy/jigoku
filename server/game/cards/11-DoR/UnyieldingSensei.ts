@@ -15,7 +15,7 @@ class UnyieldingSensei extends DrawCard {
             })
             .deckSearch({
                 activePromptTitle: 'Choose a character',
-                amount: 2,
+                cardsToLookAt: 2,
                 deck: Decks.DynastyDeck,
                 cardCondition: card => card.type === CardType.Character,
                 shuffle: false,

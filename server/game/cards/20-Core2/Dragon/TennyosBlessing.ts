@@ -13,9 +13,9 @@ export default class TennyosBlessing extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
             }, deckSearch({
-                targetMode: TargetMode.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 2,
-                amount: 4,
+                cardsToLookAt: 4,
                 shuffle: true,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (context, event, cards) => {

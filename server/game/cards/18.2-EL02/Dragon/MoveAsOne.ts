@@ -13,7 +13,7 @@ class MoveAsOne extends DrawCard {
                 onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && event.defenders.some(card => card.hasTrait('monk'))
             })
             .deckSearch({
-                amount: 8,
+                cardsToLookAt: 8,
                 shuffle: false,
                 placeOnBottomInRandomOrder: true,
                 cardCondition: card => card.hasTrait('kiho'),

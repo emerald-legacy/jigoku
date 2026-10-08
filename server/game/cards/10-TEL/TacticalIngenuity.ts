@@ -16,7 +16,7 @@ class TacticalIngenuity extends DrawCard {
                 condition: (context) => context.source.isParticipating(),
                 effect: 'look at the top four cards of their deck',
                 gameAction: deckSearch({
-                    amount: 4,
+                    cardsToLookAt: 4,
                     cardCondition: (card) => card.type === CardType.Event,
                     gameAction: moveCard({
                         destination: Location.Hand

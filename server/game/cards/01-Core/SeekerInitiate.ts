@@ -12,7 +12,7 @@ class SeekerInitiate extends DrawCard {
                 onClaimRing: (event, context) => claimsRoleElement(context.player, event) && event.player === context.player && context.player.conflictDeck.length > 0
             })
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 reveal: false,
                 gameAction: moveCard({
                     destination: Location.Hand

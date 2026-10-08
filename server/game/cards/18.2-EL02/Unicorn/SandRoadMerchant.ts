@@ -26,7 +26,7 @@ export default class SandRoadMerchant extends DrawCard {
             .gameAction(sequentialContext((context) => ({
                 gameActions: [
                     deckSearch({
-                        amount: 2,
+                        cardsToLookAt: 2,
                         player: context.player.opponent,
                         choosingPlayer: context.player,
                         gameAction: placeCardUnderneath({

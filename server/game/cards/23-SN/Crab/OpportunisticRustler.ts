@@ -14,7 +14,7 @@ export default class OpportunisticRustler extends DrawCard {
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military
             })
             .deckSearch(context => ({
-                amount: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
+                cardsToLookAt: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
                 player: context.player.opponent,
                 choosingPlayer: context.player,
                 deck: Decks.DynastyDeck,

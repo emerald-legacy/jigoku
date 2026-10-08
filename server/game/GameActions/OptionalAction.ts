@@ -11,7 +11,7 @@ export interface OptionalActionProperties extends GameActionProperties {
     gameAction: GameAction;
     effect?: string;
     effectArgs?: Derivable<MsgArg[], AbilityContext>;
-    promptTitleForConfirming: string;
+    prompt: string;
     showMessageOnNo?: boolean;
 }
 
@@ -39,7 +39,7 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
         const properties = this.getProperties(context, additionalProperties);
 
         context.player.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: properties.promptTitleForConfirming,
+            activePromptTitle: properties.prompt,
             source: context.source,
             options: [
                 { text: 'Yes', handler: () => this.resolveAction(properties, events, context, additionalProperties) },

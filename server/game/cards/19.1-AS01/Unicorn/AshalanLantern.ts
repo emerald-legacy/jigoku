@@ -22,7 +22,7 @@ export default class AshalanLantern extends DrawCard {
                     )
                 })),
                 deckSearch((context) => ({
-                    amount: 3,
+                    cardsToLookAt: 3,
                     deck: Decks.DynastyDeck,
                     player: context.player.opponent,
                     choosingPlayer: context.player,

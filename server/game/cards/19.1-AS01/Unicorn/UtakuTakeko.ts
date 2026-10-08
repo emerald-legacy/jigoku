@@ -12,7 +12,7 @@ export default class UtakuTakeko extends DrawCard {
         this.action('Play a character from your dynasty deck')
             .deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
-                amount: 8,
+                cardsToLookAt: 8,
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) =>
                     card.type === CardType.Character &&

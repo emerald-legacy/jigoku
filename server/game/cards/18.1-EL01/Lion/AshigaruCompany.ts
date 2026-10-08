@@ -11,7 +11,7 @@ class AshigaruCompany extends DrawCard {
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .deckSearch({
-                amount: 5,
+                cardsToLookAt: 5,
                 cardCondition: (card) => card.hasTrait('follower') && card.type === CardType.Attachment,
                 gameAction: moveCard({
                     destination: Location.Hand

@@ -13,7 +13,7 @@ export interface AffinityActionProperties extends GameActionProperties {
     effectArgs?: Derivable<MsgArg[], AbilityContext>;
     trait: string;
     noAffinityGameAction?: GameAction;
-    promptTitleForConfirmingAffinity?: string;
+    prompt?: string;
 }
 
 export class AffinityAction<C extends AbilityContext = AbilityContext> extends GameAction<AffinityActionProperties, EventName, C> {
@@ -54,12 +54,12 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
             return properties.noAffinityGameAction?.addEventsToArray(events, context, additionalProperties);
         }
 
-        if(!properties.promptTitleForConfirmingAffinity) {
+        if(!properties.prompt) {
             return this.#resolveAffinity(properties, events, context, additionalProperties);
         }
 
         context.player.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: properties.promptTitleForConfirmingAffinity,
+            activePromptTitle: properties.prompt,
             source: context.source,
             options: [
                 { text: 'Yes', handler: () => this.#resolveAffinity(properties, events, context, additionalProperties) },
