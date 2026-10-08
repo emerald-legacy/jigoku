@@ -365,6 +365,24 @@ describe('GameServer.handleError', () => {
             debugData: jasmine.objectContaining({ omitted: jasmine.stringContaining('could not be serialized') })
         }));
     });
+
+    it('still reports the error when collecting the debug data throws', () => {
+        const ctx = makeCtx();
+        const game = makeErroringGame({ step: 'ConflictFlow' });
+        game.effectEngine = { getDebugInfo: () => {
+            throw new Error('broken again');
+        } };
+
+        expect(() => call('handleError', ctx, game, new Error('boom'))).not.toThrow();
+
+        const { command, arg } = sentPayload(ctx);
+        expect(command).toBe('GAMEERROR');
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: { omitted: 'could not be collected: Error: broken again' }
+        }));
+        expect(game.addMessage).toHaveBeenCalled();
+    });
 });
 
 describe('GameServer.runAndCatchErrors', () => {
