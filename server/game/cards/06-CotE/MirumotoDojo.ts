@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { DuelType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { joint, removeFate } from '../../GameActions/GameActions.js';
@@ -11,12 +12,11 @@ export default class MirumotoDojo extends DrawCard {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: '{0}{1}{2}{3}{4}',
-                messageArgs: (duel) =>
+                chatText: (_context, duel) =>
                     duel.loser ? (this.wonByDuelist(duel)
-                        ? ['discard 1 fate from', duel.loser, '', this.loserOwner(duel), '']
-                        : ['move 1 fate from', duel.loser, ' to ', this.loserOwner(duel), '\'s pool'])
-                        : ['no effect', '', '', '', ''],
+                        ? msg`discard 1 fate from ${duel.loser}`
+                        : msg`move 1 fate from ${duel.loser} to ${this.loserOwner(duel)}'s pool`)
+                        : msg`no effect`,
                 gameAction: (duel) =>
                     joint(
                         duel.loser ? duel.loser.map((loserChar) =>

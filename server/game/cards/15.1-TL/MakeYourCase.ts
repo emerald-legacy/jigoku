@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { placeFate } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
@@ -10,11 +11,7 @@ class MakeYourCase extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: '{0}{1}',
-                messageArgs: (duel) => [
-                    duel.winner,
-                    duel.winner ? ' gains a fate' : ''
-                ],
+                chatText: (_context, duel) => msg`${duel.winner}${duel.winner ? ' gains a fate' : ''}`,
                 gameAction: (duel) => placeFate({
                     target: duel.winner
                 })

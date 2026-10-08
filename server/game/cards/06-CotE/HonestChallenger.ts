@@ -15,8 +15,7 @@ export default class HonestChallenger extends DrawCard {
         this.action('Initiate a military duel')
             .initiateDuel((context) => ({
                 type: DuelType.Military,
-                message: '{0} chooses a character to move to the conflict',
-                messageArgs: (duel) => duel.winnerController,
+                chatText: (_context, duel) => msg`${duel.winnerController} chooses a character to move to the conflict`,
                 gameAction: (duel) =>
                     duel.winner
                         ? selectCard({

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
@@ -32,13 +33,7 @@ export default class LetHimGoBy extends DrawCard {
                             (duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)
                         )
                     }),
-                message: '{0} gets +{1}{2} skill',
-                messageArgs: (duel) => [
-                    duel.winner,
-                    (duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0),
-                    'military'
-                ]
-            }))
+                chatText: (_context, duel) => msg`${duel.winner} gets +${(duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)}${'military'} skill`}))
             .max(perConflict(1));
     }
 }

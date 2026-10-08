@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
 import type { Duel } from '../../../Duel.js';
 import { perRound } from '../../../AbilityLimit.js';
@@ -27,9 +28,7 @@ export default class UnyieldingTerms extends DrawCard {
                         bow({ target: duel.loser }),
                         removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ]),
-                message: 'bow{1} {0}',
-                messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : '']
-            }))
+                chatText: (_context, duel) => msg`bow${this.wonByDuelist(duel) ? ' and remove 1 fate from' : ''} ${duel.loser}`}))
             .max(perRound(1));
     }
 

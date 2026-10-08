@@ -21,8 +21,8 @@ export interface DuelProperties extends CardActionProperties {
     challengerCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     requiresConflict?: boolean;
     gameAction: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
-    message?: string;
-    messageArgs?: (duel: Duel, context: AbilityContext) => MsgArg | MsgArg[];
+    /** What the chat says the duel does, after "Duel Effect: "; by default its game action's own text. */
+    chatText?: (context: AbilityContext, duel: Duel) => MessageArgs;
     costHandler?: (context: AbilityContext, prompt: unknown) => void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
     challengerEffect?: EffectFactory | EffectFactory[];
@@ -85,8 +85,8 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
         const isNoAction = !!gameAction.isNoAction;
         if(!isNoAction && gameAction.hasLegalTarget(context)) {
-            const [message, messageArgs]: MessageArgs = properties.message
-                ? [properties.message, properties.messageArgs ? toArray(properties.messageArgs(duel, context)) : []]
+            const [message, messageArgs]: MessageArgs = properties.chatText
+                ? properties.chatText(context, duel)
                 : gameAction.getEffectMessage(context);
             context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
             gameAction.resolve(undefined, context);

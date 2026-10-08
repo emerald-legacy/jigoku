@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Players } from '../../Constants.js';
 import { duel, resolveRingEffect, selectRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -24,8 +25,7 @@ export default class TaryuJiai extends DrawCard {
             }, duel((context) => ({
                 type: DuelType.Glory,
                 challenger: context.targets.myShugenja,
-                message: '{0} chooses a ring effect to resolve',
-                messageArgs: (duel) => duel.winnerController,
+                chatText: (_context, duel) => msg`${duel.winnerController} chooses a ring effect to resolve`,
                 gameAction: (duel) =>
                     selectRing({
                         activePromptTitle: 'Choose a ring effect to resolve',

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, ConflictType } from '../../../Constants.js';
 import { discardFromPlay, noAction, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -37,8 +38,6 @@ export default class TruthIsInTheKilling extends DrawCard {
                                     ]
                             )
                         ) : noAction(),
-                message: 'return all fate on {0} to {1}\'s fate pool{2}',
-                messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
-            }));
+                chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.losingPlayer}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`}));
     }
 }

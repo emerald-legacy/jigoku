@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { cardMenu, discardCard, duel, lookAt, sequential } from '../../GameActions/GameActions.js';
@@ -23,8 +24,7 @@ export default class PolicyDebate extends DrawCard {
             }, duel((context) => ({
                 type: DuelType.Political,
                 challenger: context.targets.challenger,
-                message: '{0} sees {1}\'s hand and chooses a card to discard',
-                messageArgs: (duel) => [duel.loserController?.opponent ?? '', duel.loserController ?? ''],
+                chatText: (_context, duel) => msg`${duel.loserController?.opponent ?? ''} sees ${duel.loserController ?? ''}'s hand and chooses a card to discard`,
                 gameAction: (duel) =>
                     sequential([
                         lookAt({

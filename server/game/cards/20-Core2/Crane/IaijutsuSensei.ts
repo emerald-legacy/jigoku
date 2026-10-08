@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
 import { cannotContribute, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -18,8 +19,7 @@ export default class IaijutsuSensei extends DrawCard {
                 opponentChoosesDuelTarget: true,
                 challengerCondition: (card) => card.isParticipating(),
                 targetCondition: (card) => card.isParticipating() && !card.bowed,
-                message: 'prevent {0} from contributing to resolution of this conflict',
-                messageArgs: (duel) => duel.loser,
+                chatText: (_context, duel) => msg`prevent ${duel.loser?.[0]} from contributing to resolution of this conflict`,
                 gameAction: (duel) =>
                     cardLastingEffect({
                         target: duel.loser,

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
 import { bow, chooseAction, dishonor, duel, multiple, noAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -16,12 +17,7 @@ export default class MirumotoHitomi extends DrawCard {
                 numCards: 2
             }, duel((context) => ({
                 type: DuelType.Military,
-
-                message: '{0} chooses whether to dishonor or bow {1}',
-                messageArgs: (duel) => [
-                    duel.winner?.includes(context.source) ? context.player.opponent : context.player,
-                    duel.loser
-                ],
+                chatText: (_context, duel) => msg`${duel.winner?.includes(context.source) ? context.player.opponent : context.player} chooses whether to dishonor or bow ${duel.loser}`,
                 gameAction: (duel) => {
                     if(!duel.loser) {
                         return noAction();

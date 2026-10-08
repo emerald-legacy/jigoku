@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
 import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
@@ -10,14 +11,7 @@ class ReturnTheOffense extends DrawCard {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
-                message: '{0}{1}{2}{3}{4}',
-                messageArgs: (duel) => [
-                    duel.winner,
-                    duel.winner?.length ? ' does not bow as a result of conflict resolution' : '',
-                    duel.loser?.length ? ' and ' : '',
-                    duel.loser,
-                    duel.loser?.length ? ' cannot be readied' : ''
-                ],
+                chatText: (_context, duel) => msg`${duel.winner}${duel.winner?.length ? ' does not bow as a result of conflict resolution' : ''}${duel.loser?.length ? ' and ' : ''}${duel.loser}${duel.loser?.length ? ' cannot be readied' : ''}`,
                 gameAction: (duel) => multiple([
                     cardLastingEffect({
                         target: duel.winner,

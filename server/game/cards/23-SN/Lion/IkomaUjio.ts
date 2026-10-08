@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, Players, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { bow, chooseAction, takeHonor } from '../../../GameActions/GameActions.js';
@@ -9,8 +10,7 @@ export default class IkomaUjio extends DrawCard {
         this.conflictAction('Military duel to bow', { conflictType: ConflictType.Political })
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: '{0} chooses whether to bow {1} or give 1 honor to {2}',
-                messageArgs: (duel) => [duel.loserController, duel.loser, duel.winnerController],
+                chatText: (_context, duel) => msg`${duel.loserController} chooses whether to bow ${duel.loser} or give 1 honor to ${duel.winnerController}`,
                 gameAction: (duel, context) => chooseAction({
                     target: duel.loser,
                     player: duel.loserController !== context.source.controller ? Players.Opponent : Players.Self,

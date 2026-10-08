@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { ConflictType, DuelType, Duration } from '../../Constants.js';
 import { perRound } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
@@ -12,8 +13,7 @@ export default class CourteousScheming extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: 'allow {0} to declare an additional political conflict this phase',
-                messageArgs: (duel) => [duel.winnerController ?? ''],
+                chatText: (_context, duel) => msg`allow ${duel.winnerController ?? ''} to declare an additional political conflict this phase`,
                 gameAction: (duel) =>
                     duel.winner
                         ? playerLastingEffect({

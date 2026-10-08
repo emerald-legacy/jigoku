@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { DuelType, Players } from '../../Constants.js';
 import { setConflictTotalSkill } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
@@ -15,7 +16,7 @@ export default class KakitaToshimoko extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                message: 'both players count 0 total skill for the conflict',
+                chatText: () => msg`both players count 0 total skill for the conflict`,
                 gameAction: playerLastingEffect((context) => ({
                     targetController: Players.Any,
                     effect:

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, Duration } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
 import { dishonor, duelLastingEffect, injure, multipleContext } from '../../../GameActions/GameActions.js';
@@ -34,8 +35,6 @@ export default class IsawaHouseGuard extends DrawCard {
                     });
                     return { gameActions };
                 }),
-                message: '{0} is dishonored and injured if tainted',
-                messageArgs: (duel) => [duel.loser]
-            }));
+                chatText: (_context, duel) => msg`${duel.loser} is dishonored and injured if tainted`}));
     }
 }

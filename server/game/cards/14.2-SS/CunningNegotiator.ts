@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Location, Players } from '../../Constants.js';
 import { menuPrompt, selectCard, triggerAbility } from '../../GameActions/GameActions.js';
 import type { ResolvedAbilityContext } from '../../AbilityContext.js';
@@ -14,7 +15,7 @@ export default class CunningNegotiator extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: 'resolve the action ability of an attacked province',
+                chatText: () => msg`resolve the action ability of an attacked province`,
                 gameAction: (duel) =>
                     menuPrompt((context) => ({
                         activePromptTitle: 'Do you want to trigger a province ability?',

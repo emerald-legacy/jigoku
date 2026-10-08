@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, Duration, ConflictType } from '../../../Constants.js';
 import { changePlayerSkillModifier, modifyDuelSkill } from '../../../effects.js';
 import { conditional, duelLastingEffect, playerLastingEffect } from '../../../GameActions/GameActions.js';
@@ -20,11 +21,8 @@ export default class DaidojiAkikore extends DrawCard {
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                message: '{0}{1}{2}',
-                messageArgs: (duel) =>
-                    duel.winningPlayer === context.player
-                        ? ['add 3 to ', context.player, '\'s side for this conflict']
-                        : ['no effect', '', ''],
+                chatText: (_context, duel) =>
+                    duel.winningPlayer === context.player ? msg`add 3 to ${context.player}'s side for this conflict` : msg`no effect`,
                 gameAction: (duel) =>
                     conditional({
                         condition: duel.winningPlayer === context.player,

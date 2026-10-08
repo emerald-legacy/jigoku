@@ -10,8 +10,7 @@ export default class PrudentChallenger extends DrawCard {
         this.action('Initiate a duel to discard attachment')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: '{0} chooses one of {1}\'s attachments to discard',
-                messageArgs: (duel) => [duel.winnerController, duel.loser],
+                chatText: (_context, duel) => msg`${duel.winnerController} chooses one of ${duel.loser}'s attachments to discard`,
                 gameAction: (duel) =>
                     selectCard({
                         activePromptTitle: 'Choose an attachment to discard',

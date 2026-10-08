@@ -31,8 +31,7 @@ class LoyalChallenger extends DrawCard {
         this.action('Initiate a Political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
-                message: '{0} is blanked until the end of the conflict',
-                messageArgs: (duel) => duel.loser,
+                chatText: (_context, duel) => msg`${duel.loser?.[0]} is blanked until the end of the conflict`,
                 gameAction: (duel) => cardLastingEffect({
                     target: duel.loser,
                     effect: blank()

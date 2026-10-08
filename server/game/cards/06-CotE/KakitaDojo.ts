@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { DuelType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { cannotTriggerAbilities } from '../../effects.js';
@@ -11,8 +12,7 @@ export default class KakitaDojo extends DrawCard {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: '{0} {1}cannot trigger its abilities until the end of the conflict',
-                messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? 'is bowed and ' : ''],
+                chatText: (_context, duel) => msg`${duel.loser} ${this.wonByDuelist(duel) ? 'is bowed and ' : ''}cannot trigger its abilities until the end of the conflict`,
                 gameAction: (duel) =>
                     multiple([
                         cardLastingEffect({
