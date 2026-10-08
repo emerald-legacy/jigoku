@@ -1,4 +1,5 @@
-import { AbilityType, CardType, Location, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import { gainAbility, reduceCost } from '../../../effects.js';
 import { cancel } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -20,16 +21,12 @@ export default class GraspOfEarth2 extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.WouldInterrupt, {
-                title: 'Block a character\'s movement to the conflict',
-                when: {
-                    onMoveToConflict: (event, context) =>
-                        event.card.type === CardType.Character && context.source.isParticipating()
-                },
-                chatText: 'deny {1}\'s movement',
-                chatTextArgs: (context) => [context.event.card],
-                gameAction: cancel()
-            })
+            effect: gainAbility.wouldInterrupt('Block a character\'s movement to the conflict', {
+                onMoveToConflict: (event, context) =>
+                    event.card.type === CardType.Character && context.source.isParticipating()
+            }, (ability) => ability
+                .gameAction(cancel())
+                .chatText((context) => msg`deny ${context.event.card}'s movement`))
         });
     }
 }

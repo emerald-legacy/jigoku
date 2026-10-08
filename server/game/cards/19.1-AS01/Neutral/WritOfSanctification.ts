@@ -1,6 +1,6 @@
 import { addKeyword, gainAbility } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
-import { AbilityType, CardType, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WritOfSanctification extends DrawCard {
@@ -21,16 +21,13 @@ export default class WritOfSanctification extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Bow corrupt character',
-                condition: (context) => context.source.isParticipating(),
-                target: {
+            effect: gainAbility.action('Bow corrupt character', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .target({
                     cardType: CardType.Character,
                     controller: Players.Any,
-                    cardCondition: (card) => card.isParticipating() && (card.hasTrait('shadowlands') || card.isTainted),
-                    gameAction: bow()
-                }
-            })
+                    cardCondition: (card) => card.isParticipating() && (card.hasTrait('shadowlands') || card.isTainted)
+                }, bow()))
         });
     }
 }

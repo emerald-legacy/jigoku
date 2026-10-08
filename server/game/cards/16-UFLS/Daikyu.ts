@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { gainAbility, modifyMilitarySkill } from '../../effects.js';
 import { bow } from '../../GameActions/GameActions.js';
-import { AbilityType, CardType, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 
 class Daikyu extends DrawCard {
     static id = 'daikyu';
@@ -13,23 +13,19 @@ class Daikyu extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.Reaction, {
-                title: 'Bow a character',
-                when: {
-                    onConflictDeclared: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
-                    onDefendersDeclared: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
-                    onMoveToConflict: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
-                },
-                target: {
+            effect: gainAbility.reaction('Bow a character', {
+                onConflictDeclared: (_event, context) =>
+                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
+                onDefendersDeclared: (_event, context) =>
+                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
+                onMoveToConflict: (_event, context) =>
+                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
+            }, (ability) => ability
+                .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.militarySkill < context.source.militarySkill && card.isParticipating(),
-                    gameAction: bow()
-                }
-            })
+                        card.militarySkill < context.source.militarySkill && card.isParticipating()
+                }, bow()))
         });
     }
 }

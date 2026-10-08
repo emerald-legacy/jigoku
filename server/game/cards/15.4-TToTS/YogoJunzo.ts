@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType, Players} from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
 import { menuPrompt, removeFate } from '../../GameActions/GameActions.js';
 
@@ -9,16 +9,13 @@ class YogoJunzo extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Remove all fate from a character',
-                target: {
-                    cardType: CardType.Character,
-                    gameAction: removeFate((context) => ({
-                        amount: context.target?.getFate() ?? 0
-                    }))
-                },
-                chatText: 'remove all fate from {0}'
-            })
+            effect: gainAbility.action('Remove all fate from a character', (ability) => ability
+                .target({
+                    cardType: CardType.Character
+                }, removeFate((context) => ({
+                    amount: context.target?.getFate() ?? 0
+                })))
+                .chatText('remove all fate from {0}'))
         });
 
         this.action('Return any amount of fate from a character you control')

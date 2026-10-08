@@ -1,7 +1,7 @@
 import * as costs from '../../costs/index.js';
 import { gainAbility } from '../../effects.js';
 import { dishonor } from '../../GameActions/GameActions.js';
-import { AbilityType, CardType } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class FireAndOil extends DrawCard {
@@ -10,18 +10,15 @@ export default class FireAndOil extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !context.player.getProvinceCardInProvince(context.source.location)?.isBroken,
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Dishonor a character',
-                condition: (context) =>
+            effect: gainAbility.action('Dishonor a character', (ability) => ability
+                .condition((context) =>
                     !!context.game.currentConflict &&
-                    context.game.currentConflict.getConflictProvinces().some((a) => a.controller === context.player),
-                cost: costs.payHonor(1),
-                target: {
+                    context.game.currentConflict.getConflictProvinces().some((a) => a.controller === context.player))
+                .cost(costs.payHonor(1))
+                .target({
                     cardType: CardType.Character,
-                    cardCondition: (card) => card.isAttacking(),
-                    gameAction: dishonor()
-                }
-            })
+                    cardCondition: (card) => card.isAttacking()
+                }, dishonor()))
         });
     }
 }

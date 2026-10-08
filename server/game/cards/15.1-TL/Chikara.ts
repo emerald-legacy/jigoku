@@ -1,7 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { removeFate, sacrifice, sequential } from '../../GameActions/GameActions.js';
-import { AbilityType, CardType } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class Chikara extends DrawCard {
     static id = 'chikara';
@@ -15,30 +16,24 @@ class Chikara extends DrawCard {
 
         this.whileAttached({
             match: (card) => card.hasTrait('champion'),
-            effect: gainAbility(AbilityType.Reaction, {
-                title: 'Return all fate from, then sacrifice a character',
-                when: {
-                    afterConflict: (event, context) => {
-                        return event.conflict.winner === context.source.controller && context.source.isParticipating();
-                    }
-                },
-                printedAbility: false,
-                chatText: 'force {1} to sacrifice {0}, returning all its fate to {1}\'s fate pool',
-                chatTextArgs: (context) => [context.target?.controller],
-                target: {
-                    cardType: CardType.Character,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: sequential([
-                        removeFate((context) => ({
-                            amount: context.target?.getFate(),
-                            recipient: context.target?.owner
-                        })),
-                        sacrifice((context) => ({
-                            target: context.target
-                        }))
-                    ])
+            effect: gainAbility.reaction('Return all fate from, then sacrifice a character', {
+                afterConflict: (event, context) => {
+                    return event.conflict.winner === context.source.controller && context.source.isParticipating();
                 }
-            })
+            }, (ability) => ability
+                .target({
+                    cardType: CardType.Character,
+                    cardCondition: (card) => card.isParticipating()
+                }, sequential([
+                    removeFate((context) => ({
+                        amount: context.target?.getFate(),
+                        recipient: context.target?.owner
+                    })),
+                    sacrifice((context) => ({
+                        target: context.target
+                    }))
+                ]))
+                .chatText((context) => msg`force ${context.target?.controller} to sacrifice ${context.chatTarget()}, returning all its fate to ${context.target?.controller}'s fate pool`))
         });
     }
 }

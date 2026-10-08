@@ -1,4 +1,4 @@
-import { AbilityType, DuelType } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
 import type { GameAction } from '../../GameActions/GameAction.js';
 import { gainAbility } from '../../effects.js';
@@ -12,17 +12,14 @@ export default class JusticarsApproach extends DrawCard {
         this.attachmentConditions({ trait: 'courtier' });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Initiate a duel to dishonor/bow/discard',
-                printedAbility: false,
-                initiateDuel: {
+            effect: gainAbility.action('Initiate a duel to dishonor/bow/discard', (ability) => ability
+                .initiateDuel(() => ({
                     type: DuelType.Military,
                     gameAction: (duel) =>
                         multiple(
                             duel.loser?.map((loserChar) => this.effectsOnLoser(loserChar)) ?? []
                         )
-                }
-            })
+                })))
         });
     }
 

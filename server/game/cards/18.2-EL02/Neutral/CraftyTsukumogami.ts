@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { RingAttachment } from '../../RingAttachment.js';
 import type Ring from '../../../Ring.js';
-import { CardType, AbilityType, Duration } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { changeType, gainAbility } from '../../../effects.js';
 import {
@@ -27,17 +27,13 @@ class CraftyTsukumogami extends RingAttachment {
                     target: context.source,
                     effect: [
                         changeType(CardType.Attachment),
-                        gainAbility(AbilityType.ForcedReaction, {
-                            title: 'Discard a card',
-                            limit: unlimitedPerConflict(),
-                            when: {
-                                onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
-                            },
-                            printedAbility: false,
-                            gameAction: chosenDiscard((context) => ({
+                        gainAbility.forcedReaction('Discard a card', {
+                            onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
+                        }, (ability) => ability
+                            .gameAction(chosenDiscard((context) => ({
                                 target: context.game.currentConflict?.attackingPlayer
-                            }))
-                        })
+                            })))
+                            .limit(unlimitedPerConflict()))
                     ]
                 })),
                 attachToRing((context) => ({

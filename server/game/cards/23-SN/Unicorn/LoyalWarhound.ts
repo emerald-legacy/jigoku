@@ -40,16 +40,13 @@ export default class LoyalWarhound extends DrawCard {
                     effect: [
                         blank(true),
                         changeType(CardType.Attachment),
-                        gainAbility(AbilityType.Action, {
-                            title: 'Detach',
-                            condition: (context) => {
+                        gainAbility.action('Detach', (ability) => ability
+                            .condition((context) => {
                                 const flags = context.source.getEffects(EffectName.AddFlag);
                                 return !flags.includes('wasAttachedThisRound');
-                            },
-                            printedAbility: false,
-                            chatText: 'detach itself',
-                            gameAction: detach()
-                        }),
+                            })
+                            .gameAction(detach())
+                            .chatText('detach itself')),
                         // Matched dynamically so the protection follows this card if it is reattached
                         gainAbility(AbilityType.Persistent, {
                             targetController: Players.Any,

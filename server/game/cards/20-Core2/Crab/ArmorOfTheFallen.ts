@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { AbilityType, CardType, Location, TargetMode } from '../../../Constants.js';
+import { CardType, Location, TargetMode } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
@@ -12,22 +12,19 @@ export default class ArmorOfTheFallen extends DrawCard {
         this.attachmentConditions({ trait: 'bushi' });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Remove characters from your discard pile to bow a character',
-                condition: (context) => context.source.isParticipating(),
-                cost: costs.removeFromGame({
+            effect: gainAbility.action('Remove characters from your discard pile to bow a character', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .cost(costs.removeFromGame({
                     cardType: CardType.Character,
                     location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                     mode: TargetMode.Unlimited
-                }),
-                target: {
+                }))
+                .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.isParticipating() && (card.printedCost ?? 0) <= this.maxCostReachable(context),
-                    gameAction: bow()
-                },
-                cannotTargetFirst: true
-            })
+                        card.isParticipating() && (card.printedCost ?? 0) <= this.maxCostReachable(context)
+                }, bow())
+                .cannotTargetFirst())
         });
     }
 

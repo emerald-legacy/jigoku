@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { handler } from '../../GameActions/GameActions.js';
-import { AbilityType, Location } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class ShojusDiviner extends DrawCard {
@@ -10,15 +10,12 @@ class ShojusDiviner extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Divine your conflict deck',
-                printedAbility: false,
-                condition: (context) => context.player.conflictDeck.length > 0,
-                chatText: 'look at the top 8 cards of their conflict deck',
-                gameAction: handler({
+            effect: gainAbility.action('Divine your conflict deck', (ability) => ability
+                .condition((context) => context.player.conflictDeck.length > 0)
+                .gameAction(handler({
                     handler: (context) => this.chooseCardsToKeep(context, context.player.conflictDeck.slice(0, 8))
-                })
-            })
+                }))
+                .chatText('look at the top 8 cards of their conflict deck'))
         });
     }
 

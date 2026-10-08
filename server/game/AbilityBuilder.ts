@@ -1087,7 +1087,7 @@ export class AbilityBuilder<
     }
 }
 
-type TriggerBase<S extends BaseCard, W, EventOptional extends boolean> =
+export type TriggerBase<S extends BaseCard, W, EventOptional extends boolean> =
     EventOptional extends true ? ProvinceTriggerContext<S, W> : TriggerContext<S, W>;
 
 type AggregateBase<S extends BaseCard, EventOptional extends boolean> = EventOptional extends true

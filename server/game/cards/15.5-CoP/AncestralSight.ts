@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Players, AbilityType, Location } from '../../Constants.js';
+import { CardType, Players, Location } from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
 import { placeFate, returnToDeck } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -59,20 +59,16 @@ class AncestralSight extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Put a fate on a character',
-                cost: ancestralSightCost(),
-                printedAbility: false,
-                cannotTargetFirst: true,
-                target: {
+            effect: gainAbility.action('Put a fate on a character', (ability) => ability
+                .cost(ancestralSightCost())
+                .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) => {
                         const returned = context.costs.ancestralSightCost;
                         return !returned || (returned instanceof DrawCard && card.name === returned.name);
-                    },
-                    gameAction: placeFate((context) => ({ origin: context.player }))
-                }
-            })
+                    }
+                }, placeFate((context) => ({ origin: context.player })))
+                .cannotTargetFirst())
         });
     }
 }

@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { switchConflictType } from '../../GameActions/GameActions.js';
-import { AbilityType } from '../../Constants.js';
 
 class Shukujo extends DrawCard {
     static id = 'shukujo';
@@ -15,13 +14,10 @@ class Shukujo extends DrawCard {
 
         this.whileAttached({
             match: (card) => card.hasTrait('champion'),
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Switch the conflict type',
-                condition: (context) => context.source.isParticipating(),
-                printedAbility: false,
-                chatText: 'switch the conflict type',
-                gameAction: switchConflictType()
-            })
+            effect: gainAbility.action('Switch the conflict type', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .gameAction(switchConflictType())
+                .chatText('switch the conflict type'))
         });
     }
 }

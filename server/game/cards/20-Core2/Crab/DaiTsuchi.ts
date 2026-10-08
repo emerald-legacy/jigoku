@@ -1,4 +1,5 @@
-import { AbilityType, CardType, ConflictType } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import { gainAbility, playerCannot } from '../../../effects.js';
 import { playerLastingEffect, returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,27 +13,23 @@ export default class DaiTsuchi extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility(AbilityType.Action, {
-                title: 'Return attachment to owners hand',
-                condition: (context) => context.source.isParticipating(ConflictType.Military),
-                target: {
+            effect: gainAbility.action('Return attachment to owners hand', (ability) => ability
+                .condition((context) => context.source.isParticipating(ConflictType.Military))
+                .target({
                     cardType: CardType.Attachment,
                     cardCondition: (card, context) =>
                         !!context.player.opponent &&
-                        !!card.parentCharacter?.isParticipatingFor(context.player.opponent),
-                    gameAction: returnToHand()
-                },
-                gameAction: playerLastingEffect((context) => ({
+                        !!card.parentCharacter?.isParticipatingFor(context.player.opponent)
+                }, returnToHand())
+                .gameAction(playerLastingEffect((context) => ({
                     targetController: context.target?.owner,
                     effect: playerCannot({
                         cannot: 'play',
                         restricts: 'copiesOfX',
                         params: context.target?.name
                     })
-                })),
-                chatText: 'return {0} to {1}\'s hand and prevent them from playing copies this conflict',
-                chatTextArgs: (context) => [context.target?.owner ?? '']
-            })
+                })))
+                .chatText((context) => msg`return ${context.chatTarget()} to ${context.target?.owner ?? ''}'s hand and prevent them from playing copies this conflict`))
         });
     }
 }
