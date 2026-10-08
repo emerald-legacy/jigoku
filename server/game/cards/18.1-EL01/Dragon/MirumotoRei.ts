@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -47,23 +48,11 @@ export default class MirumotoRei extends DrawCard {
                     )
                 ]
             })))
-            .chatText('give {1} a skill bonus equal to the total attachment skill bonus on {0} ({2}{3}/{4}{5})', (context) => {
+            .chatText((context) => {
                 const target = context.target;
-                return [
-                    context.source,
-                    sumModifiers(
-                        target.getEffects(EffectName.AttachmentMilitarySkillModifier),
-                        target,
-                        context
-                    ),
-                    'military',
-                    sumModifiers(
-                        target.getEffects(EffectName.AttachmentPoliticalSkillModifier),
-                        target,
-                        context
-                    ),
-                    'political'
-                ];
+                const military = sumModifiers(target.getEffects(EffectName.AttachmentMilitarySkillModifier), target, context);
+                const political = sumModifiers(target.getEffects(EffectName.AttachmentPoliticalSkillModifier), target, context);
+                return msg`give ${context.source} a skill bonus equal to the total attachment skill bonus on ${context.chatTarget()} (${military}${'military'}/${political}${'political'})`;
             });
     }
 }

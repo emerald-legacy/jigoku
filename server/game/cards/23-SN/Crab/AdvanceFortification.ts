@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
@@ -15,8 +16,9 @@ export default class AdvanceFortification extends DrawCard {
                 }))
             .otherwise()
                 .loseHonor((context) => ({ target: context.player.opponent }))
-            .chatText('{1}{2}{3}', (context) => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?
-                ['give defending characters +1/+1', ''] : ['make ', context.player.opponent, ' lose 1 honor'])
+            .chatText((context) => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince()
+                ? msg`give defending characters +1/+1`
+                : msg`make ${context.player.opponent}${' lose 1 honor'}`)
             .max(perConflict(1));
     }
 }

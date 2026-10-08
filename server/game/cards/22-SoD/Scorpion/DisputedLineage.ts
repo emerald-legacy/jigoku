@@ -26,7 +26,7 @@ export default class DisputedLineage extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict', (context) => context.player.opponent ? [context.player.opponent] : [])
+            .chatText((context) => msg`remove ${context.chatTarget()}'s printed faction and prevent ${context.player.opponent} from honoring characters while ${context.chatTarget()} is participating in a conflict`)
             .afterwardsIf((context) => context.player.imperialFavor !== '')
             .draw(1)
             .message((context) => msg`${context.player} draws a card`);

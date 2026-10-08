@@ -43,21 +43,9 @@ export default class WeKnow extends DrawCard {
                 }
                 return choices;
             })
-            .chatText('{1}{2}{3}', (context) => {
-                if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
-                    return [
-                        'draw two cards and cause ',
-                        context.player.opponent,
-                        ' to lose 1 honor'
-                    ];
-                }
-                return [
-                    'replace ',
-                    context.tokens.token[0].card,
-                    ' honored status token with a dishonored status token'
-                ];
-
-            })
+            .chatText((context) => context.selects.select.choice === 'Lose honor and let opponent draw cards'
+                ? msg`${'draw two cards and cause '}${context.player.opponent}${' to lose 1 honor'}`
+                : msg`replace ${context.tokens.token[0].card} honored status token with a dishonored status token`)
             .cannotTargetFirst()
             .thenIf((context) => !!context.player.opponent && context.player.honor > context.player.opponent.honor)
             .loseHonor(2)

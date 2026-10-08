@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
@@ -25,7 +26,7 @@ class CloakOfNight extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', (context) => context.player.opponent ? [context.player.opponent] : []);
+            .chatText((context) => msg`give ${context.chatTarget()} +3 glory and prevent them from being chosen as the target of ${context.player.opponent}'s triggered abilities until the end of the conflict`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

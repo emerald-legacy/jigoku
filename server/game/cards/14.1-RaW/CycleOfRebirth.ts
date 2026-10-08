@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { moveCard, multiple, refillFaceup, sequential } from '../../GameActions/GameActions.js';
@@ -34,20 +35,11 @@ class CycleOfRebirth extends DrawCard {
                     location: context.game.getProvinceArray()
                 }))
             ]))
-            .chatText('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', (context) => {
+            .chatText((context) => {
                 const target = context.target;
-                return [
-                    target,
-                    target.controller,
-                    target.controller === context.source.controller ? ' and ' : '',
-                    target.controller === context.source.controller ? context.source : '',
-                    target.controller !== context.source.controller ? '. ' : '',
-                    target.controller !== context.source.controller ? context.source : '',
-                    target.controller !== context.source.controller ? ' is shuffled into ' : '',
-                    target.controller !== context.source.controller ? context.source.controller : '',
-                    target.controller !== context.source.controller ? '\'s dynasty deck' : '',
-                    context.source.controller
-                ];
+                return target.controller === context.source.controller
+                    ? msg`shuffle ${target} and ${context.source} into ${target.controller}'s dynasty deck`
+                    : msg`shuffle ${target} into ${target.controller}'s dynasty deck. ${context.source} is shuffled into ${context.source.controller}'s dynasty deck`;
             })
             .max(perRound(1));
     }

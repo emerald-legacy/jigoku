@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
@@ -24,9 +25,9 @@ export default class EarthsStagnation extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyBothSkills(penaltyAmount(context))
             }))
-            .chatText('give {1}{2} and {3}{4} to {5}', (context) => {
+            .chatText((context) => {
                 const penalty = penaltyAmount(context);
-                return [penalty, 'military', penalty, 'political', context.source.parentCharacter];
+                return msg`give ${penalty}${'military'} and ${penalty}${'political'} to ${context.source.parentCharacter}`;
             })
             .limit(unlimitedPerConflict());
     }

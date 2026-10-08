@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainHonor, moveCard } from '../../GameActions/GameActions.js';
 import { Players, Location, CardType } from '../../Constants.js';
@@ -27,12 +28,9 @@ class ProceduralInterference extends DrawCard {
                     amount: 2
                 })
             })
-            .chatText('{1}{2}', (context) => {
-                if(context.selects.select.choice === 'Let opponent gain 2 honor') {
-                    return ['gain 2 honor', ''];
-                }
-                return ['discard ', context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)];
-            });
+            .chatText((context) => context.selects.select.choice === 'Let opponent gain 2 honor'
+                ? msg`${'gain 2 honor'}`
+                : msg`discard ${context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)}`);
     }
 }
 

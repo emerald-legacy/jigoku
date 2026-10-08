@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cancel, moveCard, multiple } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
@@ -17,14 +18,11 @@ class AppealToSympathy extends DrawCard {
                     destination: context.event.card.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
                 }))
             ]))
-            .chatText('cancel the effects of {1} and {2}', (context) => {
+            .chatText((context) => {
                 const card = context.event.card;
-                return [
-                    card,
-                    card.isConflict
-                        ? 'return it to the top of its owner\'s conflict deck'
-                        : 'move it to its owner\'s dynasty discard pile'
-                ];
+                return card.isConflict
+                    ? msg`cancel the effects of ${card} and return it to the top of its owner's conflict deck`
+                    : msg`cancel the effects of ${card} and move it to its owner's dynasty discard pile`;
             })
             .cannotBeMirrored();
     }

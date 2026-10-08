@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import { takeControl } from '../../effects.js';
@@ -21,9 +22,11 @@ class SeizeTheMind extends DrawCard {
                     effect: takeControl(context.player)
                 }))
             ]))
-            .chatText('take control of {0}{1}{2}{3}', (context) => {
+            .chatText((context) => {
                 const fate = context.target.getFate();
-                return fate > 0 ? [' and lose ', fate, ' honor'] : ['', '', ''];
+                return fate > 0
+                    ? msg`take control of ${context.chatTarget()} and lose ${fate}${' honor'}`
+                    : msg`take control of ${context.chatTarget()}`;
             });
     }
 

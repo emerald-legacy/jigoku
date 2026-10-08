@@ -25,7 +25,7 @@ export default class Overhear extends DrawCard {
                     ]
                 };
             }))
-            .chatText('reveal a random card from {1}\'s hand and place it on top of {1}\'s deck', (context) => (context.player.opponent ? [context.player.opponent] : []))
+            .chatText((context) => msg`reveal a random card from ${context.player.opponent}'s hand and place it on top of ${context.player.opponent}'s deck`)
             .mayResolveAgain({
                 cost: takeHonor((context) => ({ target: context.player })),
                 label: 'Give 1 honor',

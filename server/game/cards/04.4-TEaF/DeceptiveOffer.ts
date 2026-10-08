@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect, takeHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -25,12 +26,9 @@ class DeceptiveOffer extends DrawCard {
                 })),
                 'Give your opponent 1 honor': takeHonor()
             })
-            .chatText('{1}{2}', (context) => {
-                if(context.selects.select.choice === 'Give your opponent 1 honor') {
-                    return ['take 1 honor from ', context.player.opponent];
-                }
-                return ['give +2/+2 to ', context.targets.character];
-            });
+            .chatText((context) => context.selects.select.choice === 'Give your opponent 1 honor'
+                ? msg`${'take 1 honor from '}${context.player.opponent}`
+                : msg`give +2/+2 to ${context.targets.character}`);
     }
 }
 

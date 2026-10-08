@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { discardFromPlay, removeFate, sequential } from '../../../GameActions/GameActions.js';
@@ -30,11 +31,11 @@ export default class BrokenBlades extends DrawCard {
                 })),
                 discardFromPlay()
             ]))
-            .chatText('ensure {0} is gone!{1}{2}{3}', (context) => {
+            .chatText((context) => {
                 const target = context.target;
                 return target.fate < 1
-                    ? []
-                    : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
+                    ? msg`ensure ${context.chatTarget()} is gone!`
+                    : msg`ensure ${context.chatTarget()} is gone! (${target.owner} recovers ${target.fate} fate)`;
             })
             .max(perConflict(1));
     }

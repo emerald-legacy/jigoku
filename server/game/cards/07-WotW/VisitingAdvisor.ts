@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import { sendHome } from '../../GameActions/GameActions.js';
@@ -15,10 +16,12 @@ class VisitingAdvisor extends DrawCard {
                 cardCondition: (card, context) => card !== context.source
             }, sendHome())
             .sendHome()
-            .chatText('send {0}{1}{2} home', (context) => {
+            .chatText((context) => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
-                return hasAny ? [' and ', context.source] : [context.source];
+                return hasAny
+                    ? msg`send ${context.chatTarget()} and ${context.source} home`
+                    : msg`send ${context.chatTarget()}${context.source} home`;
             });
     }
 }

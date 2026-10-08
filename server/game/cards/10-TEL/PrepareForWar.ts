@@ -43,7 +43,7 @@ class PrepareForWar extends DrawCard {
                     target: context.target?.hasTrait('commander') ? context.target : []
                 }))
             ]))
-            .chatText('{1}{2} {0}', (context) => {
+            .chatText((context) => {
                 const target = context.target;
                 const isCommander = target.hasTrait('commander');
                 const hasAttachments = target.attachments.length > 0;
@@ -66,7 +66,7 @@ class PrepareForWar extends DrawCard {
                         honorMessage += ' and ';
                     }
                 }
-                return [honorMessage, discardMessage];
+                return msg`${honorMessage}${discardMessage} ${context.chatTarget()}`;
             });
     }
 

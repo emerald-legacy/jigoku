@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { cardCannot, mustBeDeclaredAsAttacker } from '../../../effects.js';
 import { cardLastingEffect, initiateConflict, ready, sequentialContext } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
@@ -39,12 +40,9 @@ export default class ScoutsSteed extends DrawCard {
                     ]
                 })
             ))
-            .chatText('ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now', (context) => {
+            .chatText((context) => {
                 const target = context.target;
-                return [
-                    context.source.parentCharacter,
-                    target.isFacedown() ? target.location : target
-                ];
+                return msg`ready ${context.source.parentCharacter} and send them on a journey! ${target.isFacedown() ? target.location : target} cannot be broken during this conflict - it's just exploration for now`;
             });
     }
 }

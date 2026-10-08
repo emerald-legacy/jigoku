@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -19,9 +20,9 @@ export default class SagenOfHoneyedWords extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyBothSkills(skillBonus(context.target))
             }))
-            .chatText('get +{1}{2} and +{3}{4}', (context) => {
+            .chatText((context) => {
                 const bonus = skillBonus(context.target);
-                return [bonus, 'military', bonus, 'political'];
+                return msg`get +${bonus}${'military'} and +${bonus}${'political'}`;
             });
     }
 }

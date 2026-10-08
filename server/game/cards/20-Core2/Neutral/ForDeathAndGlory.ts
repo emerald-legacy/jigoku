@@ -46,16 +46,9 @@ export default class ForDeathAndGlory extends DrawCard {
                     }))
                 ])
             })
-            .chatText('{1}{2}{3}', (context) => {
-                if(context.selects.select.choice === 'Gain +2 skill') {
-                    return ['grant 2 military skill to ', context.targets[CHARACTER], ''];
-                }
-                return [
-                    'grant 4 military skill to ',
-                    context.targets[CHARACTER],
-                    ', sacrificing them at the end of the conflict'
-                ];
-            })
+            .chatText((context) => context.selects.select.choice === 'Gain +2 skill'
+                ? msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
+                : msg`${'grant 4 military skill to '}${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`)
             .max(perConflict(1));
     }
 }

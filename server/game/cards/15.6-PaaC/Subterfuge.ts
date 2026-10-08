@@ -45,13 +45,9 @@ class Subterfuge extends DrawCard {
                     };
                 })
             }))
-            .chatText('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
+            .chatText((context) => {
                 const amount = context.event.amount ?? 0;
-                return [
-                    Math.min(amount, 3),
-                    amount > 1 ? 's' : '',
-                    amount > 1 ? 'them' : 'it'
-                ];
+                return msg`prevent ${Math.min(amount, 3)} card${amount > 1 ? 's' : ''} from being drawn, discarding ${amount > 1 ? 'them' : 'it'} instead`;
             });
     }
 }

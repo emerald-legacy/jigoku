@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { cannotParticipateAsAttacker, cardCannot } from '../../../effects.js';
 import { dishonor, draw, sequentialContext } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -46,10 +47,7 @@ export default class AncientStoneGuardian extends DrawCard {
             }, sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.secondCharacter)
             ))
-            .chatText('present an opportunity to sneak around {0} and find some secrets{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}', (context) =>
-                this.effectsForCard(context.targets.firstCharacter).concat(
-                    this.effectsForCard(context.targets.secondCharacter)
-                ));
+            .chatText((context) => msg`present an opportunity to sneak around ${context.chatTarget()} and find some secrets${this.effectsForCard(context, context.targets.firstCharacter)}${this.effectsForCard(context, context.targets.secondCharacter)}`);
     }
 
     private cardCanBeChosenForDishonor(card: BaseCard, context: TriggeredAbilityContext): boolean {
@@ -67,10 +65,10 @@ export default class AncientStoneGuardian extends DrawCard {
         };
     }
 
-    private effectsForCard(target?: BaseCard | []) {
+    private effectsForCard(context: TriggeredAbilityContext, target?: BaseCard | []) {
         if(target instanceof DrawCard) {
-            return ['. ', target.controller, ' dishonors ', target, ' to draw a card'];
+            return context.game.gameChat.nested(msg`. ${target.controller} dishonors ${target}${' to draw a card'}`);
         }
-        return ['', '', '', '', ''];
+        return '';
     }
 }

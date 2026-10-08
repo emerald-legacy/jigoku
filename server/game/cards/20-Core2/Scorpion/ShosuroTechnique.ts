@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import { duelIgnorePrintedSkill, setMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, duelLastingEffect, multiple } from '../../../GameActions/GameActions.js';
@@ -36,10 +37,10 @@ export default class ShosuroTechnique extends DrawCard {
                     effect: setMilitarySkill(context.targets.enemy.militarySkill)
                 }))
             ]))
-            .chatText('set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise', (context) => {
+            .chatText((context) => {
                 const shinobi = context.targets.shinobi;
                 const enemy = context.targets.enemy;
-                return [shinobi.name, enemy.name, 'military', enemy.militarySkill];
+                return msg`set the ${'military'} of ${shinobi.name} to ${enemy.militarySkill}${'military'} (equal to ${enemy.name}). There's no blade as keen as surprise`;
             });
     }
 }

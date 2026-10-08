@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { addTrait, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -32,12 +33,9 @@ class SoshiAoi extends DrawCard {
                         addTrait('courtier')]
                 }))
             })
-            .chatText('{1}{2}', (context) => {
-                if(context.selects.select.choice === 'Give +1/+0 and the Bushi trait') {
-                    return ['give +1/+0 and the bushi trait to ', context.targets.character];
-                }
-                return ['give +0/+1 and the courtier trait to ', context.targets.character];
-            });
+            .chatText((context) => context.selects.select.choice === 'Give +1/+0 and the Bushi trait'
+                ? msg`give +1/+0 and the bushi trait to ${context.targets.character}`
+                : msg`give +0/+1 and the courtier trait to ${context.targets.character}`);
     }
 }
 

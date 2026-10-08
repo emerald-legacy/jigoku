@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { restrictNumberOfDefenders } from '../../effects.js';
 
@@ -23,7 +24,7 @@ class IssueAChallenge extends DrawCard {
                 targetController: context.player,
                 effect: restrictNumberOfDefenders(1)
             }))
-            .chatText('prevent {1} from declaring more than 1 defender', (context) => context.player.opponent ? [context.player.opponent] : []);
+            .chatText((context) => msg`prevent ${context.player.opponent} from declaring more than 1 defender`);
     }
 }
 

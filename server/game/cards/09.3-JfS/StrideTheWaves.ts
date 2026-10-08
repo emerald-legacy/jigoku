@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { Element } from '../../Constants.js';
@@ -19,13 +20,11 @@ class StrideTheWaves extends DrawCard {
                 .sendHome((context) => ({ target: context.source.parentCharacter ?? [] }))
             .otherwise()
                 .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }))
-            .chatText('{3} {1} {2}', (context) => {
+            .chatText((context) => {
                 const parent = context.source.parentCharacter;
-                return [
-                    parent ?? '',
-                    parent && parent.inConflict ? 'home' : 'into the conflict',
-                    parent && parent.inConflict ? 'send' : 'move'
-                ];
+                return parent && parent.inConflict
+                    ? msg`send ${parent} home`
+                    : msg`move ${parent} into the conflict`;
             })
             .limit(perRound(2));
     }

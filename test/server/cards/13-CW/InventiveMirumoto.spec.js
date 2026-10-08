@@ -60,6 +60,7 @@ describe('Inventive Mirumoto', function() {
                 this.player1.clickCard(this.jade);
                 expect(this.player1.fate).toBe(playerFateBefore - 1);
                 expect(this.jade.parent).toBe(this.inventiveMirumoto);
+                expect(this.getChatLogs(5)).toContain('player1 uses Inventive Mirumoto to play Finger of Jade onto Inventive Mirumoto');
             });
 
             it('should make you pay costs for the attachments - 2nd test', function() {

@@ -46,19 +46,11 @@ export default class KakitaTechnique extends DrawCard {
                     effect: additionalAction(this.getExtraActionCount(context))
                 }))
             ]))
-            .chatText('give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}', (context) => {
+            .chatText((context) => {
                 const actions = this.getExtraActionCount(context);
-                if(actions > 0) {
-                    return [
-                        'military',
-                        'political',
-                        ' and take ',
-                        actions,
-                        ' additional action',
-                        actions > 1 ? 's' : ''
-                    ];
-                }
-                return ['military', 'political', '', '', '', ''];
+                return actions > 0
+                    ? msg`give ${context.chatTarget()} +1${'military'} and +1${'political'} after each event they play and take ${actions} additional action${actions > 1 ? 's' : ''}`
+                    : msg`give ${context.chatTarget()} +1${'military'} and +1${'political'} after each event they play`;
             })
             .max(perConflict(1));
     }

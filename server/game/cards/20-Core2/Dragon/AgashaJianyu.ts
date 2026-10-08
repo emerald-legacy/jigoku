@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -38,9 +39,9 @@ export default class AgashaJianyu extends DrawCard {
                     ]
                 };
             }))
-            .chatText('give {0} +{1}{2}/+{3}{4}', (context) => {
+            .chatText((context) => {
                 const bonus = bonusBase(context);
-                return [2 * bonus, 'military', 1 * bonus, 'political'];
+                return msg`give ${context.chatTarget()} +${2 * bonus}${'military'}/+${bonus}${'political'}`;
             });
     }
 }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -16,6 +17,6 @@ export default class ShinjoArcher extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(-2)
             }))
-            .chatText('give {0} -2{2}/-2{3}', (context) => [context.source, 'military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}/-2${'political'}`);
     }
 }

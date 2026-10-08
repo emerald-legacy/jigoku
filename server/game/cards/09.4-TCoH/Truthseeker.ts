@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -22,7 +23,10 @@ class Truthseeker extends DrawCard {
                 [deckChoiceName(this.owner, 'MyDynasty')]: this.rearrange(() => this.owner, DeckType.Dynasty),
                 [deckChoiceName(this.owner, 'MyConflict')]: this.rearrange(() => this.owner, DeckType.Conflict)
             })
-            .chatText('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
+            .chatText((context) => {
+                const [player, deck] = this.mapChoiceToEffectArgs(context);
+                return msg`look at the top 3 cards of ${player}'s ${deck}`;
+            });
     }
 
     private mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {

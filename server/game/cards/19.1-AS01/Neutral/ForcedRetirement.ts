@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import {
     discardFromPlay,
     discardStatusToken,
@@ -45,11 +46,8 @@ export default class ForcedRetirement extends DrawCard {
                     ])
                 ]
             })))
-            .chatText('expiate {0}\'s misdeeds by retiring them to the nearest monastery{1}. Let them contemplate their sins', (context) => {
-                const target = context.target;
-                return [
-                    target.fate > 0 ? ', recovering their ' + target.fate + ' fate' : ''
-                ];
-            });
+            .chatText((context) => context.target.fate > 0
+                ? msg`expiate ${context.chatTarget()}'s misdeeds by retiring them to the nearest monastery, recovering their ${context.target.fate} fate. Let them contemplate their sins`
+                : msg`expiate ${context.chatTarget()}'s misdeeds by retiring them to the nearest monastery. Let them contemplate their sins`);
     }
 }

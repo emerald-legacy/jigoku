@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { chosenDiscard, draw, multiple } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
@@ -13,14 +14,12 @@ class MasterWhisperer extends DrawCard {
                 chosenDiscard({ targets: false, target: player, amount: 3 }),
                 draw({ target: player, amount: 3 })
             ])))
-            .chatText('make {1}{2} draw 3 cards', (context) => {
+            .chatText((context) => {
                 const player = context.select === context.player.name ? context.player : context.player.opponent;
-                if(!player) {
-                    return [context.player, ''];
-                }
-                const handSize = player.hand.length;
-                const amountDiscarded = Math.min(3, handSize);
-                return [player, amountDiscarded > 0 ? ' discard ' + amountDiscarded + ' cards and' : ''];
+                const amountDiscarded = player ? Math.min(3, player.hand.length) : 0;
+                return amountDiscarded > 0
+                    ? msg`make ${player}${' discard ' + amountDiscarded + ' cards and'} draw 3 cards`
+                    : msg`make ${player ?? context.player} draw 3 cards`;
             });
     }
 }

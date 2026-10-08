@@ -13,13 +13,11 @@ export default class InsultToInjury extends DrawCard {
                         (card) => card.controller === context.player && card.hasTrait('duelist')
                     ) ?? false
             })
-            .chatText('{1}', (context) => {
+            .chatText((context) => {
                 const loser = context.event.loser;
-                return [
-                    (loser?.length ?? 0) > 1
-                        ? 'choose to dishonor a loser of the duel'
-                        : ['dishonor {0}', loser ?? []]
-                ];
+                return (loser?.length ?? 0) > 1
+                    ? msg`choose to dishonor a loser of the duel`
+                    : msg`dishonor ${loser ?? []}`;
             })
             .if((context) => (context.event.loser ?? []).length > 1)
                 .gameAction(cardMenu((context) => ({

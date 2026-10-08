@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players, Element } from '../../Constants.js';
 import { playCard } from '../../GameActions/GameActions.js';
@@ -24,7 +25,7 @@ class InventiveMirumoto extends DrawCard {
                 }
 
             })))
-            .chatText('play {0} onto {1}', (context) => [context.target, context.source]);
+            .chatText((context) => msg`play ${context.chatTarget()} onto ${context.source}`);
     }
 
     getPrintedElementSymbols() {

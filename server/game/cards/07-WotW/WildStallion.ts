@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { moveToConflict } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
@@ -15,10 +16,12 @@ class WildStallion extends DrawCard {
                 optional: true
             }, moveToConflict())
             .moveToConflict()
-            .chatText('move {0}{1}{2} into the conflict', (context) => {
+            .chatText((context) => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
-                return [hasAny ? ' and ' : '', context.source];
+                return hasAny
+                    ? msg`move ${context.chatTarget()} and ${context.source} into the conflict`
+                    : msg`move ${context.chatTarget()}${context.source} into the conflict`;
             });
     }
 }

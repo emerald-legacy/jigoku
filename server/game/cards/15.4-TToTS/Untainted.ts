@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { discardStatusToken, gainHonor, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
@@ -28,10 +29,7 @@ class Untainted extends ProvinceAttachment {
                     target: context.player
                 }))
             ]))
-            .chatText('gain 1 honor and discard {1} from {2}', (context) => {
-                const card = context.token[0].card;
-                return card ? [context.token, card] : [];
-            });
+            .chatText((context) => msg`gain 1 honor and discard ${context.token} from ${context.token[0].card}`);
     }
 }
 

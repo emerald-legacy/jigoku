@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect, sendHome } from '../../GameActions/GameActions.js';
@@ -34,14 +35,14 @@ class DirectingTheBattle extends DrawCard {
                     target: context.targets.character
                 }))
             })
-            .chatText('{1}{2}{3}{4}', (context) => {
+            .chatText((context) => {
                 if(context.selects.select.choice === 'Move this character home') {
-                    return ['send ', context.targets.character, ' home', ''];
+                    return msg`send ${context.targets.character} home`;
                 }
                 if(context.selects.select.choice === 'Give +3 Military') {
-                    return ['give ', context.targets.character, ' +3', 'military'];
+                    return msg`give ${context.targets.character} +3${'military'}`;
                 }
-                return ['prevent ', context.targets.character, ' from being bowed by opponent\'s card effects', ''];
+                return msg`prevent ${context.targets.character}${' from being bowed by opponent\'s card effects'}`;
             });
     }
 }

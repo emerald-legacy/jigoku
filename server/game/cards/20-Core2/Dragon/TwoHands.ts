@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
 import { setMilitarySkill, setPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect, duelAddParticipant } from '../../../GameActions/GameActions.js';
@@ -42,9 +43,9 @@ export default class TwoHands extends DrawCard {
                                 : setPoliticalSkill(twoHands.value)
                 };
             }))
-            .chatText('set {1} {2} skills equal to {3}', (context) => {
+            .chatText((context) => {
                 const twoHands = calcTwoHandsEffect(context, context.targets.target);
-                return [twoHands.targets, twoHands.type, twoHands.value];
+                return msg`set ${twoHands.targets} ${twoHands.type} skills equal to ${twoHands.value}`;
             });
     }
 }

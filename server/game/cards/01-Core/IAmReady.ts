@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import * as costs from '../../costs/index.js';
 import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -13,7 +14,7 @@ class IAmReady extends DrawCard {
                 cardCondition: (card) => card.isFaction('unicorn') && card.bowed
             }))
             .handler((context) => ready().resolve(context.costs.removeFate, context))
-            .chatText('ready {1}', (context) => context.costs.removeFate)
+            .chatText((context) => msg`ready ${context.costs.removeFate}`)
             .cannotBeMirrored();
     }
 }

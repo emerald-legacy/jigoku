@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -22,7 +23,7 @@ class YogoTadashi extends DrawCard {
                     restricts: 'opponentsEvents'
                 })
             }))
-            .chatText('prevent {0} from being targeted by events played by {1}', (context) => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined));
+            .chatText((context) => msg`prevent ${context.chatTarget()} from being targeted by events played by ${context.player.opponent}`);
     }
 }
 
