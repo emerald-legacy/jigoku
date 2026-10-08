@@ -14,7 +14,7 @@ export default class DaidojiAkikore extends DrawCard {
                 effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add 1 to their duel total');
+            .chatText('add 1 to their duel total');
 
         this.conflictAction('Military duel to add skill')
             .initiateDuel((context) => ({

@@ -14,7 +14,7 @@ class ExiledGuardian extends DrawCard {
                 cardType: [CardType.Character, CardType.Province],
                 location: Location.Any
             }, discardStatusToken())
-            .effect((context) => msg`discard ${context.token[0].card}'s ${context.token}`);
+            .chatText((context) => msg`discard ${context.token[0].card}'s ${context.token}`);
     }
 }
 

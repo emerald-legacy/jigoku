@@ -11,7 +11,7 @@ class HirumaKogoe extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === Phase.Draw && context.player.opponent && context.player.honor < context.player.opponent.honor
             })
             .gameAction(rearrangeDeck({ amount: 3, deck: DeckType.Conflict }))
-            .effect('rearrange the top 3 cards of their conflict deck');
+            .chatText('rearrange the top 3 cards of their conflict deck');
     }
 }
 

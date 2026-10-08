@@ -15,7 +15,7 @@ export default class IkomaYumikosDagger extends DrawCard {
                 target: context.source,
                 replacementGameAction: discardFromPlay()
             }))
-            .effect('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
+            .chatText('discard itself instead of the Imperial Favor', context => context.event.player ?? '');
 
         this.conflictAction('Injure a character')
             .target({
@@ -26,6 +26,6 @@ export default class IkomaYumikosDagger extends DrawCard {
                 injure(),
                 injure((context) => ({ target: context.source }))
             ]))
-            .effect('injure itself and {0}');
+            .chatText('injure itself and {0}');
     }
 }

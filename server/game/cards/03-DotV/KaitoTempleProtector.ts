@@ -25,7 +25,7 @@ class KaitoTempleProtector extends DrawCard {
                 target: context.source,
                 effect: copyBaseSkillEffects(context.target)
             })))
-            .effect('change his base skills to equal {0}\'s current skills');
+            .chatText('change his base skills to equal {0}\'s current skills');
     }
 }
 

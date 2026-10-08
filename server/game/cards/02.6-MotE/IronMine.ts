@@ -13,7 +13,7 @@ class IronMine extends DrawCard {
             .cancel({
                 replacementGameAction: sacrifice(context => ({ target: context.source }))
             })
-            .effect('prevent {1} from leaving play', context => context.event.card);
+            .chatText('prevent {1} from leaving play', context => context.event.card);
     }
 }
 

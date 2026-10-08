@@ -64,7 +64,7 @@ export default class Retribution extends DrawCard {
                     })
                 ]
             })))
-            .effect((context) => msg`declare a military conflict, attacking with ${context.target}`)
+            .chatText((context) => msg`declare a military conflict, attacking with ${context.target}`)
             .max(perRound(1));
     }
 }

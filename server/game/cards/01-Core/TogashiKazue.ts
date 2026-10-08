@@ -19,7 +19,7 @@ export default class TogashiKazue extends DrawCard {
             }, removeFate((context) => ({
                 recipient: context.source.parentCharacter ?? undefined
             })))
-            .effect('steal a fate from {0} and place it on {1}', (context) => context.source.parentCharacter ?? '')
+            .chatText('steal a fate from {0} and place it on {1}', (context) => context.source.parentCharacter ?? '')
             .notPrinted();
     }
 }

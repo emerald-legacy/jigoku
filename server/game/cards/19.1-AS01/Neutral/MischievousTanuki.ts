@@ -56,7 +56,7 @@ export default class MischievousTanuki extends DrawCard {
                     ])
                 })
             }))
-            .effect('play a game')
+            .chatText('play a game')
             .phase(Phase.Conflict);
     }
 }

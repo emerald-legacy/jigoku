@@ -23,6 +23,6 @@ export default class RediscoveredShrine extends DrawCard {
                     (card) => card === context.event.card
                 )
             }))
-            .effect('reduce the cost of their next event by 1');
+            .chatText('reduce the cost of their next event by 1');
     }
 }

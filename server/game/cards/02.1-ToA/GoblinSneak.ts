@@ -12,6 +12,6 @@ export default class GoblinSneak extends DrawCard {
             .placeFate((context) => ({
                 origin: context.player.opponent
             }))
-            .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent ?? '');
+            .chatText('take a fate from {1} and place it on {0}', (context) => context.player.opponent ?? '');
     }
 }

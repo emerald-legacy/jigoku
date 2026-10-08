@@ -30,7 +30,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 takeFate: false,
                 type: ConflictType.Political
             }))
-            .effect('claim {0} as a political ring')
+            .chatText('claim {0} as a political ring')
             .limit(sharedLimit)
             .canTriggerOutsideConflict();
 
@@ -48,7 +48,7 @@ export default class TheEmptyCity extends ProvinceCard {
                     duration: Duration.UntilEndOfRound
                 }))
             ]))
-            .effect('put {0} into play')
+            .chatText('put {0} into play')
             .onResolve((context) => {
                 this.invokedSpirit = context.target;
             })

@@ -17,7 +17,7 @@ export default class DishonorableAssault extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, dishonor())
-            .effect((context) => msg`discard ${context.costs.discardCardsUpToVariableX} and dishonor ${context.targets.target}`)
+            .chatText((context) => msg`discard ${context.costs.discardCardsUpToVariableX} and dishonor ${context.targets.target}`)
             .cannotTargetFirst();
     }
 

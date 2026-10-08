@@ -12,7 +12,7 @@ class SeppunTruthseeker extends DrawCard {
                 target: context.game.getPlayers(),
                 amount: 2
             }))
-            .effect('make both players draw 2 cards');
+            .chatText('make both players draw 2 cards');
     }
 }
 

@@ -22,7 +22,7 @@ class TogashiMitsu2 extends DrawCard {
                 player: Players.Self,
                 ringCondition: (ring, context) => RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context)
             }, resolveRingEffect(context => ({ player: context.player })))
-            .effect('resolve the {0}\'s effect');
+            .chatText('resolve the {0}\'s effect');
     }
 }
 

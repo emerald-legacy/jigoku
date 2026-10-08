@@ -29,8 +29,8 @@ interface SelectCardBase<C extends AbilityContext, K extends CardTypes> extends 
     selector?: BaseCardSelector;
     hidePromptIfSingleCard?: boolean;
     cancelHandler?: () => void;
-    effect?: string;
-    effectArgs?: (context: C) => EffectArg[];
+    chatText?: string;
+    chatTextArgs?: (context: C) => EffectArg[];
 }
 
 /** One card. An optional select that is skipped resolves with no target and no message. */
@@ -53,10 +53,10 @@ export interface SelectCardsProperties<C extends AbilityContext = AbilityContext
  * What the action works with: the card type is checked once, in `cardCondition`.
  * Callbacks taking the context use method syntax, so an action for a narrower context stays assignable.
  */
-export interface SelectCardActionProperties<C extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<C, CardTypes>, 'cardType' | 'cardCondition' | 'effectArgs'> {
+export interface SelectCardActionProperties<C extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<C, CardTypes>, 'cardType' | 'cardCondition' | 'chatTextArgs'> {
     cardType?: CardType | CardType[];
     cardCondition?(card: BaseCard, context: C): boolean;
-    effectArgs?(context: C): EffectArg[];
+    chatTextArgs?(context: C): EffectArg[];
     mode?: TargetMode;
     numCards?: number;
     /** Gets the resolved properties; nothing means no message. */
@@ -124,11 +124,11 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         manuallyRaiseEvent: false
     };
 
-    /** A custom `effect` brings its own arguments, from `{0}` on. */
+    /** A custom `chatText` brings its own arguments, from `{0}` on. */
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { effect, effectArgs } = this.getProperties(context);
-        if(effect) {
-            return [effect, (effectArgs && effectArgs(context)) || []];
+        const { chatText, chatTextArgs } = this.getProperties(context);
+        if(chatText) {
+            return [chatText, (chatTextArgs && chatTextArgs(context)) || []];
         }
         return super.getEffectMessage(context, additionalProperties);
     }

@@ -22,7 +22,7 @@ class Truthseeker extends DrawCard {
                 [deckChoiceName(this.owner, 'MyDynasty')]: this.rearrange(() => this.owner, DeckType.Dynasty),
                 [deckChoiceName(this.owner, 'MyConflict')]: this.rearrange(() => this.owner, DeckType.Conflict)
             })
-            .effect('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
+            .chatText('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
     }
 
     private mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {

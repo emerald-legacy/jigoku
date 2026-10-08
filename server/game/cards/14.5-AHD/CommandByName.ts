@@ -25,7 +25,7 @@ class CommandByName extends DrawCard {
                     effect: setBaseProvinceStrength(0)
                 }))
             }))
-            .effect('reduce the strength of an attacked province to 0');
+            .chatText('reduce the strength of an attacked province to 0');
     }
 }
 

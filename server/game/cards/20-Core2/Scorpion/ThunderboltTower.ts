@@ -17,6 +17,6 @@ export default class ThunderboltTower extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyBothSkills(-2)
             }))
-            .effect('give {0} -2{1}/-2{2} for the phase', () => ['military', 'political']);
+            .chatText('give {0} -2{1}/-2{2} for the phase', () => ['military', 'political']);
     }
 }

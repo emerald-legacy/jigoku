@@ -19,7 +19,7 @@ export default class KagiNawa extends DrawCard {
                     cardCondition: (card) => (card.printedCost ?? 0) <= 2,
                     gameAction: moveToConflict()
                 },
-                effect: 'hook {0} and drag them into the conflict'
+                chatText: 'hook {0} and drag them into the conflict'
             })
         });
     }

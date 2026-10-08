@@ -12,7 +12,7 @@ class HidaTsuru extends DrawCard {
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
-            .effect(() => msg`give him +1${'military'}/+1${'political'}`)
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
             .limit(unlimitedPerConflict());
 
         this.reaction('Give this character +1/+1')
@@ -20,7 +20,7 @@ class HidaTsuru extends DrawCard {
                 onCardPlayed: (event, context) => event.card.isParticipating() && context.source.isParticipating()
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
-            .effect(() => msg`give him +1${'military'}/+1${'political'}`)
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
             .limit(unlimitedPerConflict());
     }
 }

@@ -22,7 +22,7 @@ export default class RelentlessGloryseeker extends DrawCard {
                     this.ressurrectionsThisRound < MAXIMUM_RESSURRECTIONS
             })
             .gameAction(putIntoPlay())
-            .effect('return to play - {0} is ready for more')
+            .chatText('return to play - {0} is ready for more')
             .location(Location.DynastyDiscardPile)
             .onResolve(() => {
                 this.ressurrectionsThisRound++;

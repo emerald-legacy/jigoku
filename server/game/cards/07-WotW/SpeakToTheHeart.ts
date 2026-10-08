@@ -14,7 +14,7 @@ class SpeakToTheHeart extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))
             })))
-            .effect('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)])
+            .chatText('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)])
             .max(perConflict(1));
     }
 }

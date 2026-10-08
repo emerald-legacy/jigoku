@@ -44,7 +44,7 @@ class Reconnaissance extends DrawCard {
                 ]),
                 falseGameAction: this.getLookAtAction()
             }))
-            .effect('look at 3 provinces');
+            .chatText('look at 3 provinces');
     }
 
     getLookAtAction() {

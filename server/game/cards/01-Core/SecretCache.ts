@@ -17,6 +17,6 @@ export default class SecretCache extends ProvinceCard {
                     destination: Location.Hand
                 })
             })
-            .effect('look at the top 5 cards of their conflict deck');
+            .chatText('look at the top 5 cards of their conflict deck');
     }
 }

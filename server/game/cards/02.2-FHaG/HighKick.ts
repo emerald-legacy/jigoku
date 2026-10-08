@@ -19,7 +19,7 @@ class HighKick extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating()
             }, bow(), cardLastingEffect({ effect: cannotTriggerAbilities() }))
-            .effect('bow {0} and prevent them from using abilities');
+            .chatText('bow {0} and prevent them from using abilities');
     }
 }
 

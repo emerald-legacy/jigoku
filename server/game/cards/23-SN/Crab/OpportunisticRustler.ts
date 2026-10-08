@@ -48,6 +48,6 @@ export default class OpportunisticRustler extends DrawCard {
                     return { gameActions };
                 })
             }))
-            .effect((context) => msg`look at ${context.player.opponent}'s dynasty deck`);
+            .chatText((context) => msg`look at ${context.player.opponent}'s dynasty deck`);
     }
 }

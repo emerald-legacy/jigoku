@@ -11,7 +11,7 @@ export default class BayushiRumormonger extends DrawCard {
             .gameAction(discardCard(context => ({
                 target: context.player.opponent?.conflictDeck.slice(0, this.getHighestNumberOfParticipants(context)) ?? []
             })))
-            .effect('discard {1} card{2} from {3}\'s conflict deck', context => {
+            .chatText('discard {1} card{2} from {3}\'s conflict deck', context => {
                 const x = this.getHighestNumberOfParticipants(context);
                 const opponent = context.player.opponent;
                 return [x, x === 1 ? '' : 's', opponent ?? ''];

@@ -34,7 +34,7 @@ class CycleOfRebirth extends DrawCard {
                     location: context.game.getProvinceArray()
                 }))
             ]))
-            .effect('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', context => {
+            .chatText('shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}', context => {
                 const target = context.target;
                 return [
                     target,

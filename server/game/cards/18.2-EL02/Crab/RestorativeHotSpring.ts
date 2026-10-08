@@ -15,7 +15,7 @@ class RestorativeHotSpring extends DrawCard {
             .cancel({
                 replacementGameAction: removeFromGame(context => ({ target: context.source }))
             })
-            .effect('prevent {1} from leaving play, removing itself from the game instead', context => context.event.card);
+            .chatText('prevent {1} from leaving play, removing itself from the game instead', context => context.event.card);
     }
 }
 

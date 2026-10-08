@@ -20,7 +20,7 @@ export default class WaseitsBlessing extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, sendHome())
-            .effect((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
+            .chatText((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
             .max(perRound(1));
     }
 }

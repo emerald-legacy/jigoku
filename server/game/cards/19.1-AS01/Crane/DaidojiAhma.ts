@@ -26,7 +26,7 @@ export default class DaidojiAhma extends DrawCard {
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context)
             })
             .cancel()
-            .effect('cancel the effects of {1}{2}', (context) => [
+            .chatText('cancel the effects of {1}{2}', (context) => [
                 context.event.context.source instanceof Ring ? 'the ' : '',
                 context.event.context.source
             ]);

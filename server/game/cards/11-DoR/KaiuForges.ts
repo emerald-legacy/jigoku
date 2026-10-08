@@ -56,7 +56,7 @@ class KaiuForges extends DrawCard {
                     }
                 });
             })
-            .effect('look at the top ten cards of their dynasty deck');
+            .chatText('look at the top ten cards of their dynasty deck');
     }
 }
 

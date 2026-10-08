@@ -18,7 +18,7 @@ class Ofushikai extends DrawCard {
             effect: gainAbility(AbilityType.Action, {
                 title: 'Send a character home',
                 condition: (context) => context.source.isParticipating(),
-                effect: 'send {0} home and prevent it from attacking this phase',
+                chatText: 'send {0} home and prevent it from attacking this phase',
                 printedAbility: false,
                 target: {
                     cardType: CardType.Character,

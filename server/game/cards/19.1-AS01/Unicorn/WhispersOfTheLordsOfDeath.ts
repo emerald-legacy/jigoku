@@ -27,7 +27,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                     side: FavorType.Military
                 }))
             ]))
-            .effect('put {0} into play and claim the Imperial Favor')
+            .chatText('put {0} into play and claim the Imperial Favor')
             .location([Location.Hand]);
     }
 

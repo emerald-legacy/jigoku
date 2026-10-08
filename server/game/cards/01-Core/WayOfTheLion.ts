@@ -14,7 +14,7 @@ class WayOfTheLion extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBaseMilitarySkillMultiplier(2)
             }))
-            .effect('double the base {1} skill of {0}', () => 'military');
+            .chatText('double the base {1} skill of {0}', () => 'military');
     }
 }
 

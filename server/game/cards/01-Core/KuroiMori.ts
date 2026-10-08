@@ -16,7 +16,7 @@ export default class KuroiMori extends ProvinceCard {
                 }),
                 'Switch the conflict type': switchConflictType()
             })
-            .effect('{1}', (context) => context.select.toLowerCase());
+            .chatText('{1}', (context) => context.select.toLowerCase());
     }
 
     cannotBeStrongholdProvince() {

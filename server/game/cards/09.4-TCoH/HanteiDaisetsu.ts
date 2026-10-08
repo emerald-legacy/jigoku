@@ -16,7 +16,7 @@ class HanteiDaisetsu extends DrawCard {
             }, cardLastingEffect({
                 effect: blank()
             }))
-            .effect((context) => msg`treat ${context.target} as if its text box were blank until the end of the conflict`);
+            .chatText((context) => msg`treat ${context.target} as if its text box were blank until the end of the conflict`);
     }
 }
 

@@ -26,6 +26,6 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                     gameAction: removeFate((context) => ({ target: context.target }))
                 })
             ]))
-            .effect('prevent {0} from contributing to resolution of this conflict');
+            .chatText('prevent {0} from contributing to resolution of this conflict');
     }
 }

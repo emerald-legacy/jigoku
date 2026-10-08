@@ -31,7 +31,7 @@ export default class InfernoGuardInvoker extends DrawCard {
                     gameAction: sacrifice({ target: context.target })
                 })
             })))
-            .effect('honor {0}. It will be discarded if a province is broken this conflict');
+            .chatText('honor {0}. It will be discarded if a province is broken this conflict');
     }
 
     public onBreakProvince() {

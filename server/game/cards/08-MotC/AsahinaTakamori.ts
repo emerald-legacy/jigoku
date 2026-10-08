@@ -22,7 +22,7 @@ class AsahinaTakamori extends DrawCard {
                     cannotBeDeclaredAsDefender()
                 ]
             }))
-            .effect('prevent {0} from being declared as an attacker or defender this round');
+            .chatText('prevent {0} from being declared as an attacker or defender this round');
     }
 }
 

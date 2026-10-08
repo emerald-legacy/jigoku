@@ -25,7 +25,7 @@ class BayushiShoju2 extends DrawCard {
                     amount: 2
                 }))
             ]))
-            .effect('have each player lose an honor and draw two cards');
+            .chatText('have each player lose an honor and draw two cards');
     }
 }
 

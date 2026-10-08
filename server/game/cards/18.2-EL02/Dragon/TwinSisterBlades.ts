@@ -12,8 +12,8 @@ class TwinSisterBlades extends DrawCard {
             effect: gainAbility(AbilityType.Action, {
                 title: 'Draw cards',
                 condition: (context) => context.source.isParticipating() && context.source.hasTrait('bushi'),
-                effect: 'draw {1} card{2}',
-                effectArgs: (context) => this.getNumberOfCards(context) === 2 ? ['2', 's'] : ['a', ''],
+                chatText: 'draw {1} card{2}',
+                chatTextArgs: (context) => this.getNumberOfCards(context) === 2 ? ['2', 's'] : ['a', ''],
                 gameAction: draw((context) => ({
                     amount: this.getNumberOfCards(context)
                 }))

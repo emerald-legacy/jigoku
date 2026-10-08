@@ -17,7 +17,7 @@ class TalismanOfTheSun extends DrawCard {
                 message: '{0} moves the conflict to {1}',
                 messageArgs: card => [context.player, card]
             }))
-            .effect('move the conflict to another eligible province');
+            .chatText('move the conflict to another eligible province');
     }
 }
 

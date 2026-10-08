@@ -27,7 +27,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                         ),
                         effect: cardCannot('moveToConflict')
                     })),
-                    effect: 'forbid all players from moving characters into the conflict'
+                    chatText: 'forbid all players from moving characters into the conflict'
                 })
             ]));
     }

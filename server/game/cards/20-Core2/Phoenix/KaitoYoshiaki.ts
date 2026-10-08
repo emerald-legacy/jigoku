@@ -33,6 +33,6 @@ export default class KaitoYoshiaki extends DrawCard {
                     trueGameAction: removeFate()
                 })
             ]))
-            .effect('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', isEvil(context.target) ? 'remove a fate from and ' : '']);
+            .chatText('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', isEvil(context.target) ? 'remove a fate from and ' : '']);
     }
 }

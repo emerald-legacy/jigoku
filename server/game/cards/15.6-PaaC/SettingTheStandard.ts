@@ -18,7 +18,7 @@ class SettingTheStandard extends DrawCard {
                     draw((context) => ({ target: context.player, amount: 2 })),
                     chosenDiscard((context) => ({ target: context.player }))
                 ]),
-                effect: 'draw 2 cards, then discard 1'
+                chatText: 'draw 2 cards, then discard 1'
             })
         });
     }

@@ -17,6 +17,6 @@ export default class DemonstratingExcellence extends ProvinceCard {
                 onBreakProvince: (event, context) => event.card === context.source
             })
             .gainFate().draw()
-            .effect('gain 1 fate and draw a card');
+            .chatText('gain 1 fate and draw a card');
     }
 }

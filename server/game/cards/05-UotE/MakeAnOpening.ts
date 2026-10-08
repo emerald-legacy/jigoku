@@ -28,7 +28,7 @@ class MakeAnOpening extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(-this.getHonorDialDifference(context))
             })))
-            .effect('give {0} -{1}{2}/-{1}{3}', context => [this.getHonorDialDifference(context), 'military', 'political']);
+            .chatText('give {0} -{1}{2}/-{1}{3}', context => [this.getHonorDialDifference(context), 'military', 'political']);
     }
 
     private getHonorDialDifference(context: AbilityContext) {

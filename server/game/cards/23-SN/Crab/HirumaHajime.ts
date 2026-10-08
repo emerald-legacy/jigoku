@@ -15,8 +15,8 @@ export default class HirumaHajime extends DrawCard {
                 prompt: 'Do you want to turn ' + context.targets.cardInProvince.name + ' facedown?',
                 gameAction: turnFacedown({ target: context.targets.cardInProvince }),
                 showMessageOnNo: true,
-                effect: 'turn {1} facedown',
-                effectArgs: () => [context.player, context.targets.cardInProvince]
+                chatText: 'turn {1} facedown',
+                chatTextArgs: () => [context.player, context.targets.cardInProvince]
             })));
     }
 }

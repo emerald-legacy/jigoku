@@ -23,7 +23,7 @@ class DisdainfulRemark extends DrawCard {
                     effect: modifyProvinceStrength(context.player.opponent?.hand.length ?? 0)
                 }))
             }))
-            .effect('increase the strength of an attacked province');
+            .chatText('increase the strength of an attacked province');
     }
 }
 

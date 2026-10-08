@@ -43,7 +43,7 @@ export default class PlantedFields extends DrawCard {
                     handler: (context) => this.triggeredByPlayer.add(context.player.name)
                 })
             ]))
-            .effect('{1}', (context) =>
+            .chatText('{1}', (context) =>
                 this.hasAnyCopyTriggered(context.player.name)
                     ? 'gain 2 honor'
                     : 'gain 2 fate and draw 2 cards');

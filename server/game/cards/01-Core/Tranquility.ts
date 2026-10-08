@@ -11,6 +11,6 @@ export default class Tranquility extends DrawCard {
                 target: (context.player.opponent?.cardsInPlay ?? []).filter((card) => !card.isParticipating()),
                 effect: cannotTriggerAbilities()
             }))
-            .effect('stop characters at {1}\'s home from triggering abilities until the end of the conflict', (context) => context.player.opponent ?? '');
+            .chatText('stop characters at {1}\'s home from triggering abilities until the end of the conflict', (context) => context.player.opponent ?? '');
     }
 }

@@ -23,7 +23,7 @@ class TheWealthOfTheCrane extends DrawCard {
         this.action('Look at your dynasty deck')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .handler((context) => placeInProvinces(context, context.player.dynastyDeck.slice(0, 10)))
-            .effect('look at the top ten cards of their dynasty deck')
+            .chatText('look at the top ten cards of their dynasty deck')
             .max(perPhase(1));
     }
 }

@@ -22,7 +22,7 @@ export default class TheEternalWatch extends ProvinceCard {
                 })),
                 'Give your opponent 1 honor': takeHonor()
             })
-            .effect('{1}{2}', (context) =>
+            .chatText('{1}{2}', (context) =>
                 context.selects.select.choice === 'Give your opponent 1 honor'
                     ? ['take 1 honor from ', context.player.opponent]
                     : ['bow ', context.targets.character]);

@@ -13,7 +13,7 @@ export default class ShosuroTechnique extends DrawCard {
                 effect: duelIgnorePrintedSkill(),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('ignore printed skill when resolving this duel');
+            .chatText('ignore printed skill when resolving this duel');
 
         this.conflictAction('Set shinobi\'s skills to that of an enemy', { conflictType: ConflictType.Military })
             .target({
@@ -36,7 +36,7 @@ export default class ShosuroTechnique extends DrawCard {
                     effect: setMilitarySkill(context.targets.enemy.militarySkill)
                 }))
             ]))
-            .effect('set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise', (context) => {
+            .chatText('set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise', (context) => {
                 const shinobi = context.targets.shinobi;
                 const enemy = context.targets.enemy;
                 return [shinobi.name, enemy.name, 'military', enemy.militarySkill];

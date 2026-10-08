@@ -19,7 +19,7 @@ class AshigaruCompany extends DrawCard {
                 shuffle: false,
                 placeOnBottomInRandomOrder: true
             })
-            .effect('look at the top five cards of their deck');
+            .chatText('look at the top five cards of their deck');
     }
 }
 

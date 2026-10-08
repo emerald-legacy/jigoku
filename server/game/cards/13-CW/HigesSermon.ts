@@ -23,7 +23,7 @@ class HigesSermon extends DrawCard {
                 controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                 player: context => context.player.firstPlayer ? Players.Opponent : Players.Self
             }, bow())
-            .effect((context) => msg`bow ${context.targets.firstCharacter} and ${context.targets.secondCharacter}`)
+            .chatText((context) => msg`bow ${context.targets.firstCharacter} and ${context.targets.secondCharacter}`)
             .phase(Phase.Draw);
     }
 }

@@ -30,7 +30,7 @@ class FuryOfTheDamned extends DrawCard {
                     })
                 }))
             ]))
-            .effect('double the base {1} skill of {0} and sacrifice them at the end of the conflict', () => (['military']));
+            .chatText('double the base {1} skill of {0} and sacrifice them at the end of the conflict', () => (['military']));
     }
 }
 

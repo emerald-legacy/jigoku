@@ -56,7 +56,7 @@ class OniTyrant extends DrawCard {
             .gameAction(putIntoConflict(context => ({
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
+            .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
     }
 }
 

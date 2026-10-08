@@ -17,7 +17,7 @@ class NitenPupil extends DrawCard {
                 ],
                 duration: Duration.UntilEndOfPhase
             })
-            .effect('double {0}\'s base {1} and {2} skills', () => (['military', 'political']));
+            .chatText('double {0}\'s base {1} and {2} skills', () => (['military', 'political']));
     }
 }
 

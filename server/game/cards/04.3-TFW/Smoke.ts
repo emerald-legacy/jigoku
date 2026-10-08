@@ -15,7 +15,7 @@ class Smoke extends DrawCard {
                 target: context.game.currentConflict?.getParticipants().filter((card) => !card.isUnique()) ?? [],
                 effect: modifyMilitarySkill(-2)
             }))
-            .effect(() => msg`give all non-unique participating characters -2${'military'}`);
+            .chatText(() => msg`give all non-unique participating characters -2${'military'}`);
     }
 }
 

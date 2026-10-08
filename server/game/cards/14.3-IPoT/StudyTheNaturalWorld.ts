@@ -42,7 +42,7 @@ class StudyTheNaturalWorld extends DrawCard {
                     })
                 }))
             ]))
-            .effect('add {1} to the conflict ring. They may resolve all elements if they win the conflict', (context) => [this.getElements(context)]);
+            .chatText('add {1} to the conflict ring. They may resolve all elements if they win the conflict', (context) => [this.getElements(context)]);
     }
 
     private getElementsOfAttackedProvinces(context: AbilityContext): Element[] {

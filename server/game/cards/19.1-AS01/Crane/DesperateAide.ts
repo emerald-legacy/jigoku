@@ -20,8 +20,8 @@ export default class DesperateAide extends DrawCard {
                         target: context.player
                     }))
                 ]),
-                effect: 'draw 1 card{1}',
-                effectArgs: (context) => [this.controllerHasHigherPol(context) ? ' and gain 1 honor' : '']
+                chatText: 'draw 1 card{1}',
+                chatTextArgs: (context) => [this.controllerHasHigherPol(context) ? ' and gain 1 honor' : '']
             })
         });
     }

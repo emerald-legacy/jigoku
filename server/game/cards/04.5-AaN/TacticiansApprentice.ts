@@ -13,7 +13,7 @@ export default class TacticiansApprentice extends DrawCard {
                     context.player.showBid < context.player.opponent.showBid
             })
             .draw()
-            .effect('draw a card')
+            .chatText('draw a card')
             .limit(perPhase(1));
     }
 }

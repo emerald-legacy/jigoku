@@ -44,7 +44,7 @@ export default class ACleansingDeath extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .effect('put {0} into play and gain 1 honor')
+            .chatText('put {0} into play and gain 1 honor')
             .cannotTargetFirst();
     }
 }

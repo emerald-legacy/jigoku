@@ -9,16 +9,16 @@ import { GameAction, type GameActionProperties, type ActionEvent } from './GameA
 
 export interface CancelProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
-    effect?: string;
+    chatText?: string;
 }
 
 export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): void };
 
 export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelProperties, EventName.Unnamed, C> {
     protected effectMessage(context: C): MessageArgs {
-        const { replacementGameAction, effect } = this.getProperties(context);
-        if(effect) {
-            return [effect, []];
+        const { replacementGameAction, chatText } = this.getProperties(context);
+        if(chatText) {
+            return [chatText, []];
         }
         if(replacementGameAction) {
             return ['{1} {0} instead of {2}', [replacementGameAction.name, context.event?.card]];
@@ -27,8 +27,8 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
     }
 
     protected effectMessageTarget(context: C): MsgArg {
-        const { replacementGameAction, effect } = this.getProperties(context);
-        if(effect) {
+        const { replacementGameAction, chatText } = this.getProperties(context);
+        if(chatText) {
             return undefined;
         }
         return replacementGameAction ? context.target : context.event?.card;

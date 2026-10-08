@@ -24,7 +24,7 @@ class SpreadingTheDarkness extends DrawCard {
                     })
                 ]
             })))
-            .effect('give {0} +4{1} and prevent them from being targeted by opponent\'s abilities', () => 'military');
+            .chatText('give {0} +4{1} and prevent them from being targeted by opponent\'s abilities', () => 'military');
     }
 }
 

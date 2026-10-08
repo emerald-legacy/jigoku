@@ -19,7 +19,7 @@ export default class RisingStarsKata extends DrawCard {
                     ? modifyMilitarySkill(5)
                     : modifyMilitarySkill(3)
             })))
-            .effect('give {0} +{1} {2} skill until the end of the conflict', (context) => [duelWinners.has(context.target) ? 5 : 3, 'military'])
+            .chatText('give {0} +{1} {2} skill until the end of the conflict', (context) => [duelWinners.has(context.target) ? 5 : 3, 'military'])
             .max(perConflict(1));
     }
 }

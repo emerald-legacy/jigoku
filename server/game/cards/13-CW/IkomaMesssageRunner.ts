@@ -28,7 +28,7 @@ class IkomaMessageRunner extends DrawCard {
                 optional: true,
                 cardCondition: card => card.isDynasty && card.isFacedown()
             }, flipDynasty())
-            .effect('reveal up to 1 facedown card in each player\'s provinces{1}', context => [this.buildString(context.targets.myCard, context.targets.opponentsCard)]);
+            .chatText('reveal up to 1 facedown card in each player\'s provinces{1}', context => [this.buildString(context.targets.myCard, context.targets.opponentsCard)]);
     }
 
     buildString(myCards: BaseCard[] | undefined, opponentsCards: BaseCard[] | undefined) {

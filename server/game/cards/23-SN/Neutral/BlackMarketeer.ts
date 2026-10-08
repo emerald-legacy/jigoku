@@ -18,6 +18,6 @@ export default class BlackMarketeer extends DrawCard {
                 playType: PlayType.PlayFromHand,
                 payFateToOpponent: true
             }))
-            .effect((context) => msg`buy an attachment from ${context.player.opponent}'s discard pile`);
+            .chatText((context) => msg`buy an attachment from ${context.player.opponent}'s discard pile`);
     }
 }

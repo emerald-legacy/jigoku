@@ -20,7 +20,7 @@ class IsawaEju extends DrawCard {
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
             })))
-            .effect('discard {1} and refill the province faceup', context => [context.target.controller.getDynastyCardsInProvince(context.target.location)])
+            .chatText('discard {1} and refill the province faceup', context => [context.target.controller.getDynastyCardsInProvince(context.target.location)])
             .limit(perRound(3))
             .then()
             .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));

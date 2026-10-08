@@ -30,6 +30,6 @@ export default class DaidojiNakatama extends DrawCard {
                 ready(),
                 dishonor()
             ]))
-            .effect('ready and dishonor {0}');
+            .chatText('ready and dishonor {0}');
     }
 }

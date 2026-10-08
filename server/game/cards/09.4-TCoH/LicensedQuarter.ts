@@ -14,7 +14,7 @@ class LicensedQuarter extends DrawCard {
             .gameAction(discardCard(context => ({
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })))
-            .effect((context) => msg`discard the top card of ${context.player.opponent}'s conflict deck`)
+            .chatText((context) => msg`discard the top card of ${context.player.opponent}'s conflict deck`)
             .limit(unlimitedPerConflict());
     }
 }

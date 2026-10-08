@@ -28,7 +28,7 @@ export default class DevelopingMasterpiece extends DrawCard {
             .gainHonor((context) => ({
                 amount: capturedParent(context)?.glory ?? 0
             }))
-            .effect((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`)
+            .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`)
             .onResolve((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
                 context.game.addMessage('>>>> Matsuo Bashō <<<<');

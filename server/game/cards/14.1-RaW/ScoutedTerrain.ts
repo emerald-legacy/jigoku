@@ -14,7 +14,7 @@ class ScoutedTerrain extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: strongholdCanBeAttacked()
             }))
-            .effect((context) => msg`allow ${context.player.opponent}'s stronghold to be attacked this phase`);
+            .chatText((context) => msg`allow ${context.player.opponent}'s stronghold to be attacked this phase`);
     }
 }
 

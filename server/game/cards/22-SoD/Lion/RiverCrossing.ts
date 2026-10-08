@@ -14,6 +14,6 @@ export default class RiverCrossing extends ProvinceCard {
                 targetController: Players.Any,
                 effect: changeConflictSkillFunction((_card) => 1)
             })
-            .effect('make it so each character contributes 1 skill to the conflict');
+            .chatText('make it so each character contributes 1 skill to the conflict');
     }
 }

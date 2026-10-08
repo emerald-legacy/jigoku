@@ -22,6 +22,6 @@ export default class Pride extends StrongholdCard {
             }, handler({
                 handler: (context) => attachTopConflictCardAsSoldier(context, context.target)
             }))
-            .effect('attach the top card of their conflict deck to {0} as a +1/+1 attachment');
+            .chatText('attach the top card of their conflict deck to {0} as a +1/+1 attachment');
     }
 }

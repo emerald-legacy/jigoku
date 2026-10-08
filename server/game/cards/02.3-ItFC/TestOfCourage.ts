@@ -16,7 +16,7 @@ class TestOfCourage extends DrawCard {
                 moveToConflict(),
                 honor()
             ]))
-            .effect('move {0} to the conflict and honor it');
+            .chatText('move {0} to the conflict and honor it');
     }
 }
 

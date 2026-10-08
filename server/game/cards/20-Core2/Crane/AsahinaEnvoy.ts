@@ -42,6 +42,6 @@ export default class AsahinaEnvoy extends DrawCard {
                     }
                 }
             }))
-            .effect('put a character from their deck into a province');
+            .chatText('put a character from their deck into a province');
     }
 }

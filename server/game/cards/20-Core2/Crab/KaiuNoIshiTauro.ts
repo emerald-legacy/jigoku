@@ -30,6 +30,6 @@ export default class KaiuNoIshiTauro extends DrawCard {
                     attachSearchedCard(context, context.target, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.target]);
                 }
             })))
-            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnedRings ?? []).length);
+            .chatText('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnedRings ?? []).length);
     }
 }

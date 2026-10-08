@@ -12,7 +12,7 @@ class ExemplaryEtiquette extends DrawCard {
                     cannot: 'triggerAbilities'
                 })
             }))
-            .effect('make it so that characters cannot trigger abilities this conflict');
+            .chatText('make it so that characters cannot trigger abilities this conflict');
     }
 }
 

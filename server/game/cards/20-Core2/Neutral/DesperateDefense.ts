@@ -23,7 +23,7 @@ export default class DesperateDefense extends DrawCard {
                     effect: modifyProvinceStrength(3)
                 })
             }))
-            .effect('increase the strength of an attacked province by 3')
+            .chatText('increase the strength of an attacked province by 3')
             .max(perConflict(1));
     }
 }

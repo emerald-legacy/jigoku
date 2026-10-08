@@ -11,7 +11,7 @@ class IgnobleEnforcers extends DrawCard {
             })
             .cost(costs.payVariableHonor(() => 3))
             .placeFate((context) => ({ amount: context.costs.honorPaid }))
-            .effect('place {1} fate on {0}', (context) => context.costs.honorPaid);
+            .chatText('place {1} fate on {0}', (context) => context.costs.honorPaid);
     }
 }
 

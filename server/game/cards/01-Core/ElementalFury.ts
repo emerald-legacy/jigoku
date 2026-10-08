@@ -15,6 +15,6 @@ export default class ElementalFury extends ProvinceCard {
                 messageArgs: (ring, player) => [player, ring],
                 gameAction: switchConflictElement()
             }))
-            .effect('switch the contested ring with an unclaimed one');
+            .chatText('switch the contested ring with an unclaimed one');
     }
 }

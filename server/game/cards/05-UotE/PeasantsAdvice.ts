@@ -34,7 +34,7 @@ class PeasantsAdvice extends DrawCard {
                     })
                 }))
             ]))
-            .effect((context) => msg`look at ${context.target.controller}'s ${context.target.location}`)
+            .chatText((context) => msg`look at ${context.target.controller}'s ${context.target.location}`)
             .phase(Phase.Conflict);
     }
 }

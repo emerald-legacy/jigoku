@@ -46,7 +46,7 @@ export default class KakitaTechnique extends DrawCard {
                     effect: additionalAction(this.getExtraActionCount(context))
                 }))
             ]))
-            .effect('give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}', (context) => {
+            .chatText('give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}', (context) => {
                 const actions = this.getExtraActionCount(context);
                 if(actions > 0) {
                     return [

@@ -26,6 +26,6 @@ export default class YoungBeastmaster extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonusSize(context.costs.discardCard ?? []))
             }))
-            .effect('give {0} +{1}{2}', (context) => [bonusSize(context.costs.discardCard ?? []), 'military']);
+            .chatText('give {0} +{1}{2}', (context) => [bonusSize(context.costs.discardCard ?? []), 'military']);
     }
 }

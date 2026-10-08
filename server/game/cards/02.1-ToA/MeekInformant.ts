@@ -13,6 +13,6 @@ export default class MeekInformant extends DrawCard {
                 target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true
             })))
-            .effect('look at {1}\'s hand', (context) => context.player.opponent);
+            .chatText('look at {1}\'s hand', (context) => context.player.opponent);
     }
 }

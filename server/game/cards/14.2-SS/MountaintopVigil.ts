@@ -11,7 +11,7 @@ class MountaintopVigil extends DrawCard {
                 targetController: Players.Any,
                 effect: cannotResolveRings()
             })
-            .effect('cancel all ring effects until the end of the conflict');
+            .chatText('cancel all ring effects until the end of the conflict');
     }
 }
 

@@ -32,7 +32,7 @@ class YogoHiroue extends DrawCard {
                     })
                 }))
             ]))
-            .effect('move {0} into the conflict - they may choose to dishonor it if they win the conflict');
+            .chatText('move {0} into the conflict - they may choose to dishonor it if they win the conflict');
     }
 }
 

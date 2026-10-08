@@ -16,7 +16,7 @@ class IsawaPilgrim extends DrawCard {
                 effect: takeControl(context.player.opponent),
                 duration: Duration.Custom
             }))
-            .effect((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
+            .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 
     getPrintedElementSymbols() {

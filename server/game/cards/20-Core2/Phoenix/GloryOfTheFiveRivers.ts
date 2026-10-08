@@ -51,6 +51,6 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                     );
                 }
             }))
-            .effect('collect offerings');
+            .chatText('collect offerings');
     }
 }

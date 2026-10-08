@@ -97,7 +97,7 @@ export default class DisruptedSupplyLines extends DrawCard {
                     replacementGameAction: removeFromGame({ target: context.event.card, location: Location.Any })
                 }))
             })
-            .effect('{1}{2}{3}', context => context.select === 'Give your opponent 1 fate' ?
+            .chatText('{1}{2}{3}', context => context.select === 'Give your opponent 1 fate' ?
                 ['take 1 fate from ', context.player.opponent, ''] :
                 ['remove ', context.event.card, ' from the game']);
     }

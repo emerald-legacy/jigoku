@@ -37,6 +37,6 @@ export default class IuchiHatsue extends DrawCard {
                 sendHome(context => ({ target: context.targets.characterInConflict })),
                 moveToConflict()
             ]))
-            .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);
+            .chatText((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);
     }
 }

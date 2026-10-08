@@ -27,7 +27,7 @@ class FieldTactician extends DrawCard {
                     player.conflictDeck.splice(0, 2, ...orderedCards);
                 }
             }))
-            .effect('return {0} to {1}\'s conflict deck', context => [context.target.owner]);
+            .chatText('return {0} to {1}\'s conflict deck', context => [context.target.owner]);
     }
 }
 

@@ -20,7 +20,7 @@ export default class CounselFromYumeDo extends DrawCard {
             .then()
             .gameAction(onAffinity({
                 trait: 'water',
-                effect: 'draw a card',
+                chatText: 'draw a card',
                 gameAction: draw((context) => ({ target: context.player }))
             }));
     }

@@ -31,6 +31,6 @@ export default class SpiritOfValor extends DrawCard {
                 target: capturedParent(context) ?? [],
                 effect: context.target ? gainAllAbilities(context.target) : []
             })))
-            .effect('copy {0}\'s abilities onto {1}', (context) => [capturedParent(context)]);
+            .chatText('copy {0}\'s abilities onto {1}', (context) => [capturedParent(context)]);
     }
 }

@@ -28,7 +28,7 @@ export default class LongJourneyHome extends DrawCard {
                     effect: cardCannot({ cannot: 'ready' })
                 })
             ]))
-            .effect('make {1} take the long way home. {1} is bowed and cannot ready until the end of the phase', (context) => [context.event.card]);
+            .chatText('make {1} take the long way home. {1} is bowed and cannot ready until the end of the phase', (context) => [context.event.card]);
     }
 
     private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<this>) {

@@ -23,7 +23,7 @@ class HiddenLineage extends DrawCard {
                     otherwiseAction: discardFromPlay({ target: context.target })
                 })
             })))
-            .effect('move {0} to another character they control');
+            .chatText('move {0} to another character they control');
     }
 }
 

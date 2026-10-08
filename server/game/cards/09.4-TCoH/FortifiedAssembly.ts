@@ -12,7 +12,7 @@ export default class FortifiedAssembly extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .gameAction(addToken())
-            .effect('put an honor token on {0}', (context) => context.source);
+            .chatText('put an honor token on {0}', (context) => context.source);
         this.persistentEffect({
             effect: modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor) * 2)
         });

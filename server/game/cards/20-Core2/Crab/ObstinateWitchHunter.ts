@@ -22,6 +22,6 @@ export default class ObstinateWitchHunter extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: [cardCannot('removeFate'), cardCannot('discardFromPlay')]
             })
-            .effect('stop him being discarded or losing fate in this phase');
+            .chatText('stop him being discarded or losing fate in this phase');
     }
 }

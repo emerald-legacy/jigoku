@@ -31,7 +31,7 @@ class Compass extends DrawCard {
                         }))
                 });
             })
-            .effect('look at the top 3 cards of one of their decks');
+            .chatText('look at the top 3 cards of one of their decks');
     }
 
     private moveToBottomHandler(context: TriggeredAbilityContext, cards: DrawCard[], deck: Location) {

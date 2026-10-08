@@ -25,7 +25,7 @@ class NeverYield extends DrawCard {
                     })
                 ]
             }))
-            .effect('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', context => [context.player.opponent, context.player]);
+            .chatText('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', context => [context.player.opponent, context.player]);
     }
 }
 

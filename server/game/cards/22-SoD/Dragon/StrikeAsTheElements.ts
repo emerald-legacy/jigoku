@@ -22,6 +22,6 @@ export default class StrikeAsTheElements extends DrawCard {
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
             }, claimRing({ takeFate: true, type: ConflictType.Military }))
-            .effect((context) => msg`grant +2${'military'} to ${context.targets.character} and claim the ${context.rings.ring}`);
+            .chatText((context) => msg`grant +2${'military'} to ${context.targets.character} and claim the ${context.rings.ring}`);
     }
 }

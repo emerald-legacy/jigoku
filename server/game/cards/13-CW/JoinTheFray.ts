@@ -21,7 +21,7 @@ class JoinTheFray extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Which side should this character be on?'
             }, (context) => playerChoices(context.player, (player) => putIntoConflict({ side: player, target: context.targets.character })))
-            .effect('have {1} join the conflict for {2}', (context) => [
+            .chatText('have {1} join the conflict for {2}', (context) => [
                 context.targets.character,
                 context.selects.select.choice === context.player.name ? context.player : context.player.opponent
             ]);

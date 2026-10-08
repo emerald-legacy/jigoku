@@ -28,7 +28,7 @@ export default class AncestralRivalry extends DrawCard {
                     target: context.player
                 }))
             })
-            .effect('{1}{2}{3}{4}{5}{6}', (context) => context.selects.select.choice === 'Let opponent claim favor' ? [
+            .chatText('{1}{2}{3}{4}{5}{6}', (context) => context.selects.select.choice === 'Let opponent claim favor' ? [
                 'claim the Imperial Favor',
                 '',
                 '',

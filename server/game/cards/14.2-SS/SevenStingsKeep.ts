@@ -34,7 +34,7 @@ export default class SevenStingsKeep extends StrongholdCard {
                     };
                 }
             })))
-            .effect((context) => msg`force ${context.player.opponent} to declare defenders before attackers are chosen this conflict`);
+            .chatText((context) => msg`force ${context.player.opponent} to declare defenders before attackers are chosen this conflict`);
     }
 
     private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {

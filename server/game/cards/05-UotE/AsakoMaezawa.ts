@@ -16,7 +16,7 @@ class AsakoMaezawa extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBasePoliticalSkillMultiplier(2)
             }))
-            .effect('double {0}\'s base {1} skill', () => ['political']);
+            .chatText('double {0}\'s base {1} skill', () => ['political']);
     }
 }
 

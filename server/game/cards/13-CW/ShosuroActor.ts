@@ -19,6 +19,6 @@ export default class ShosuroActor extends DrawCard {
                 target: context.source,
                 effect: context.target ? copyCard(context.target) : []
             })))
-            .effect((context) => msg`become a copy of ${context.target}`);
+            .chatText((context) => msg`become a copy of ${context.target}`);
     }
 }

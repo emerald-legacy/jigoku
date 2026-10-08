@@ -11,7 +11,7 @@ class EndlessPlainsSkirmisher extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Which side should this character be on?'
             }, (context) => playerChoices(context.player, (player) => moveToConflict({ side: player })))
-            .effect('join the conflict for {1}', (context) => context.select === context.player.name ? context.player : context.player.opponent);
+            .chatText('join the conflict for {1}', (context) => context.select === context.player.name ? context.player : context.player.opponent);
     }
 }
 

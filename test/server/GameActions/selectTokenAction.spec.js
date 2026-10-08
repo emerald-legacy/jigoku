@@ -180,7 +180,7 @@ describe('SelectTokenAction', function() {
             const effectArgs = jasmine.createSpy('effectArgs').and.returnValue(['x', 'y']);
             const action = new SelectTokenAction({
                 target: 'tgt', card: this.card, gameAction: this.gameAction,
-                effect: 'custom effect', effectArgs
+                chatText: 'custom effect', chatTextArgs: effectArgs
             });
             expect(action.getEffectMessage(this.context)).toEqual(['custom effect', ['x', 'y']]);
         });

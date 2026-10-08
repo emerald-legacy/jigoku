@@ -14,7 +14,7 @@ class ChildOfThePlains extends DrawCard {
                 targetController: context.player,
                 effect: gainActionPhasePriority()
             }))
-            .effect('get the first action in this conflict');
+            .chatText('get the first action in this conflict');
     }
 }
 

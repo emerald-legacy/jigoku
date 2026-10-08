@@ -58,7 +58,7 @@ class DiversionaryManeuver extends DrawCard {
                     gameAction: moveToConflict()
                 })
             ]))
-            .effect((context) => msg`move the conflict to ${context.target} and send all participating characters home bowed`);
+            .chatText((context) => msg`move the conflict to ${context.target} and send all participating characters home bowed`);
     }
 }
 

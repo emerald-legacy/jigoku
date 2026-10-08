@@ -16,7 +16,7 @@ class SupernaturalStorm extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0))
             })))
-            .effect('imbue {0} with the supernatural power of the storm');
+            .chatText('imbue {0} with the supernatural power of the storm');
     }
 }
 

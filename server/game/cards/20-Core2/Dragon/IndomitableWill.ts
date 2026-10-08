@@ -15,7 +15,7 @@ export default class IndomitableWill extends DrawCard {
                 target: context.event.conflict.getCharacters(context.player),
                 effect: doesNotBow()
             }))
-            .effect('prevent {1} from bowing as a result of the conflict\'s resolution', (context) => context.player.cardsInPlay.find((card) => card.isParticipating()))
+            .chatText('prevent {1} from bowing as a result of the conflict\'s resolution', (context) => context.player.cardsInPlay.find((card) => card.isParticipating()))
             .cannotBeMirrored();
     }
 }

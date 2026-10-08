@@ -29,7 +29,7 @@ export default class StrangeMirror extends DrawCard {
                 target: context.event.card,
                 destination: context.source.parentCharacter ?? undefined
             })))
-            .effect((context) => msg`put ${context.event.card} facedown underneath ${context.source.parentCharacter}`);
+            .chatText((context) => msg`put ${context.event.card} facedown underneath ${context.source.parentCharacter}`);
 
         const chooseEvent = selectCard((context: AbilityContext<this>) => ({
             activePromptTitle: 'Choose an event to play',
@@ -76,7 +76,7 @@ export default class StrangeMirror extends DrawCard {
                     messageArgs: [context.source, context.source.parentCharacter]
                 }))
             ]))
-            .effect((context) => msg`play an event from underneath ${context.source.parentCharacter}`);
+            .chatText((context) => msg`play an event from underneath ${context.source.parentCharacter}`);
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {

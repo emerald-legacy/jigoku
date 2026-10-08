@@ -29,7 +29,7 @@ class BattlefieldOrders extends DrawCard {
                 ignoredRequirements: ['player'],
                 choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
             })))
-            .effect((context) => msg`trigger ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
+            .chatText((context) => msg`trigger ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

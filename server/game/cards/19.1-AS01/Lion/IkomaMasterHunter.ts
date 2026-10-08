@@ -36,6 +36,6 @@ export default class IkomaMasterHunter extends DrawCard {
                     ])
                 })
             })))
-            .effect('track {0}');
+            .chatText('track {0}');
     }
 }

@@ -24,7 +24,7 @@ class ShinjoAmbusher extends DrawCard {
                     effect: cannotTriggerAbilities()
                 }))
             }))
-            .effect('prevent an attacked province from triggering its abilities this conflict');
+            .chatText('prevent an attacked province from triggering its abilities this conflict');
     }
 }
 

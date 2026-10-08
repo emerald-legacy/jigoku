@@ -66,7 +66,7 @@ class AsakoReina extends DrawCard {
                     falseGameAction: draw(() => ({ amount: 0 }))
                 })
             ]))
-            .effect((context) => msg`${this.createEffectMessage(context)}`);
+            .chatText((context) => msg`${this.createEffectMessage(context)}`);
     }
 
     private createEffectMessage(context: AbilityContext) {

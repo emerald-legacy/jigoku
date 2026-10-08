@@ -15,6 +15,6 @@ export default class AFateWorseThanDeath2 extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()
             }))
-            .effect('bow, dishonor, blank, move home, and remove a fate from {0}');
+            .chatText('bow, dishonor, blank, move home, and remove a fate from {0}');
     }
 }

@@ -30,6 +30,6 @@ export default class TwoFoldedVirtue extends DrawCard {
                     })
                 }))
             ]))
-            .effect('grant +2{1} to {0} and, if they lose the current conflict, gain 1 honor', () => ['military']);
+            .chatText('grant +2{1} to {0} and, if they lose the current conflict, gain 1 honor', () => ['military']);
     }
 }

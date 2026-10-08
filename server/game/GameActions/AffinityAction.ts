@@ -9,8 +9,8 @@ import type { EventName } from '../Constants.js';
 
 export interface AffinityProperties extends GameActionProperties {
     gameAction: GameAction;
-    effect?: string;
-    effectArgs?: Derivable<MsgArg[], AbilityContext>;
+    chatText?: string;
+    chatTextArgs?: Derivable<MsgArg[], AbilityContext>;
     trait: string;
     noAffinityGameAction?: GameAction;
     prompt?: string;
@@ -85,15 +85,15 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         additionalProperties: ActionOverrides = {}
     ) {
         properties.gameAction.addEventsToArray(events, context, additionalProperties);
-        if(properties.effect === undefined) {
-            // without an effect text, the action's own effect message says what the affinity does
-            const effect = context.game.gameChat.nested(properties.gameAction.getEffectMessage(context));
-            context.game.addMessage(`{0} channels their ${properties.trait} affinity to {1}`, context.player, effect);
+        if(properties.chatText === undefined) {
+            // without an chatText text, the action's own chatText message says what the affinity does
+            const chatText = context.game.gameChat.nested(properties.gameAction.getEffectMessage(context));
+            context.game.addMessage(`{0} channels their ${properties.trait} affinity to {1}`, context.player, chatText);
             return;
         }
-        const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
+        const args = properties.chatTextArgs ? derive(properties.chatTextArgs, context) : [];
         const nextArg = args.length;
-        const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.effect}`;
+        const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.chatText}`;
         context.game.addMessage(affinityMsg, ...args, context.player);
     }
 }

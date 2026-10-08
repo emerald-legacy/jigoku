@@ -27,6 +27,6 @@ export default class TogashiTsurumi extends DrawCard {
                 })),
                 placeCardUnderneath((context) => ({ destination: context.source }))
             ]))
-            .effect((context) => msg`place a card from their hand beneath ${context.source} and draw a card`);
+            .chatText((context) => msg`place a card from their hand beneath ${context.source} and draw a card`);
     }
 }

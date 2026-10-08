@@ -18,6 +18,6 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
             })
             .gameAction(switchConflictType({ targetConflictType: ConflictType.Military }))
-            .effect('switch the conflict type to {1}', () => 'military');
+            .chatText('switch the conflict type to {1}', () => 'military');
     }
 }

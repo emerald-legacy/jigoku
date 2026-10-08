@@ -21,7 +21,7 @@ class JadeTetsubo extends DrawCard {
                 amount: context.target.getFate(),
                 recipient: context.target.owner
             })))
-            .effect('return all fate from {0} to its owner');
+            .chatText('return all fate from {0} to its owner');
     }
 }
 

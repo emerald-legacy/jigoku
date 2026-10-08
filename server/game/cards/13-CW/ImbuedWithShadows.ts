@@ -22,7 +22,7 @@ class ImbuedWithShadows extends DrawCard {
                     gameActions: this.getStatusTokenPrompts(targets)
                 };
             }))
-            .effect('lose {1} honor to discard status tokens from {2}', (context) => [context.costs.honorPaid, context.targets.target])
+            .chatText('lose {1} honor to discard status tokens from {2}', (context) => [context.costs.honorPaid, context.targets.target])
             .cannotTargetFirst();
     }
 

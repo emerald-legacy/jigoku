@@ -44,6 +44,6 @@ export default class DeadEyes extends DrawCard {
                     })
                 ]
             }))
-            .effect('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
+            .chatText('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
     }
 }

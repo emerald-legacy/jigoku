@@ -21,13 +21,13 @@ export default class MotoOktai extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyMilitarySkill(skillBonus(context.event.card))
             }))
-            .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
+            .chatText('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
 
         this.conflictAction('Discard a character from play')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, discardFromPlay())
-            .effect((context) => msg`discard ${context.target} - purge the weak`);
+            .chatText((context) => msg`discard ${context.target} - purge the weak`);
     }
 }

@@ -21,7 +21,7 @@ export default class CourteousGreeting extends ProvinceCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, bow())
-            .effect((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
+            .chatText((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 

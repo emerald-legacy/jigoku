@@ -10,7 +10,7 @@ class CourtMask extends DrawCard {
         });
 
         this.action('Return court mask to hand')
-            .effect('return {0} to hand, dishonoring {1}', (context) => context.source.parentCharacter ?? '')
+            .chatText('return {0} to hand, dishonoring {1}', (context) => context.source.parentCharacter ?? '')
             .gameAction(
                 returnToHand(),
                 dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))

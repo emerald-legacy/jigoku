@@ -16,6 +16,6 @@ export default class NorthernWallSensei extends DrawCard {
             }, cardLastingEffect({
                 effect: immunity({ restricts: 'events' })
             }))
-            .effect('grant immunity to events to {0}');
+            .chatText('grant immunity to events to {0}');
     }
 }

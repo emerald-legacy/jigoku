@@ -14,7 +14,7 @@ class CompellingTestimony extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyPoliticalSkill(-4)
             }))
-            .effect('give {0} -4{1}', () => ['political']);
+            .chatText('give {0} -4{1}', () => ['political']);
     }
 }
 

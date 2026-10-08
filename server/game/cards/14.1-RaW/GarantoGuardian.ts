@@ -19,7 +19,7 @@ class GarantoGuardian extends DrawCard {
                 messageArgs: ring => [context.player, ring],
                 gameAction: resolveRingEffect({ player: context.player })
             })))
-            .effect('resolve a ring effect');
+            .chatText('resolve a ring effect');
     }
 }
 

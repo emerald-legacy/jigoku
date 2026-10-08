@@ -9,8 +9,8 @@ import type { EventName } from '../Constants.js';
 
 export interface OptionalProperties extends GameActionProperties {
     gameAction: GameAction;
-    effect?: string;
-    effectArgs?: Derivable<MsgArg[], AbilityContext>;
+    chatText?: string;
+    chatTextArgs?: Derivable<MsgArg[], AbilityContext>;
     prompt: string;
     showMessageOnNo?: boolean;
 }
@@ -60,9 +60,9 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
         additionalProperties: ActionOverrides = {}
     ) {
         properties.gameAction.addEventsToArray(events, context, additionalProperties);
-        const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
+        const args = properties.chatTextArgs ? derive(properties.chatTextArgs, context) : [];
         const nextArg = args.length;
-        const msg = `{${nextArg}} chooses to ${properties.effect ?? ''}`;
+        const msg = `{${nextArg}} chooses to ${properties.chatText ?? ''}`;
         context.game.addMessage(msg, ...args, context.player);
     }
 
@@ -71,9 +71,9 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends G
         context: C
     ) {
         if(properties.showMessageOnNo) {
-            const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
+            const args = properties.chatTextArgs ? derive(properties.chatTextArgs, context) : [];
             const nextArg = args.length;
-            const msg = `{${nextArg}} chooses not to ${properties.effect ?? ''}`;
+            const msg = `{${nextArg}} chooses not to ${properties.chatText ?? ''}`;
             context.game.addMessage(msg, ...args, context.player);
         }
     }

@@ -35,7 +35,7 @@ class AsakoAzunami extends DrawCard {
                     })
                 ])
             }))
-            .effect(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
+            .chatText(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 
     getPrintedElementSymbols() {

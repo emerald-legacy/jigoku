@@ -29,7 +29,7 @@ export default class ToSowTheEarth extends DrawCard {
                     target: context.target
                 }))
             ]))
-            .effect('play {0} from their discard pile');
+            .chatText('play {0} from their discard pile');
 
         this.action('Place a province facedown')
             .cost(costs.bow({

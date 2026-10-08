@@ -20,6 +20,6 @@ export default class CourtOfJustice extends DrawCard {
                 message: 'reveals {0} from {1}\'s hand',
                 messageArgs: (cards) => [cards, context.player.opponent]
             })))
-            .effect((context) => msg`look at 3 random cards from ${context.player.opponent}'s hand`);
+            .chatText((context) => msg`look at 3 random cards from ${context.player.opponent}'s hand`);
     }
 }

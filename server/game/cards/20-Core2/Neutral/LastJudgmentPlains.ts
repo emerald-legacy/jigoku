@@ -33,7 +33,7 @@ export default class LastJudgmentPlains extends ProvinceCard {
                 }),
                 gameAction: placeFate()
             })))
-            .effect(({ targets }) => msg`move fate from ${targets[DONOR]} to ${targets[RECIPIENT]}`);
+            .chatText(({ targets }) => msg`move fate from ${targets[DONOR]} to ${targets[RECIPIENT]}`);
     }
 
     private createChoiceArray(fate: number): string[] {

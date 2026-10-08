@@ -17,6 +17,6 @@ export default class MantraOfAir extends DrawCard {
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, honor())
             .draw()
-            .effect('honor {0} and draw a card');
+            .chatText('honor {0} and draw a card');
     }
 }

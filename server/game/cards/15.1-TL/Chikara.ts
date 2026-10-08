@@ -23,8 +23,8 @@ class Chikara extends DrawCard {
                     }
                 },
                 printedAbility: false,
-                effect: 'force {1} to sacrifice {0}, returning all its fate to {1}\'s fate pool',
-                effectArgs: (context) => [context.target?.controller],
+                chatText: 'force {1} to sacrifice {0}, returning all its fate to {1}\'s fate pool',
+                chatTextArgs: (context) => [context.target?.controller],
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card) => card.isParticipating(),

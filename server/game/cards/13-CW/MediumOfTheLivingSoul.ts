@@ -23,7 +23,7 @@ class MediumOfTheLivingSoul extends DrawCard {
                     gameAction: resolveRingEffect((context) => ({ target: context.event.ring }))
                 })
             })))
-            .effect('give {0} the ability to resolve a ring effect');
+            .chatText('give {0} the ability to resolve a ring effect');
     }
 }
 

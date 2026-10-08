@@ -24,6 +24,6 @@ export default class MantraOfEarth extends DrawCard {
                 })
             })))
             .draw()
-            .effect('make {0} untargetable by opponents\' card effects and draw a card');
+            .chatText('make {0} untargetable by opponents\' card effects and draw a card');
     }
 }

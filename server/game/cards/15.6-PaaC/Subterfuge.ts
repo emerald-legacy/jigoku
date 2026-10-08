@@ -53,7 +53,7 @@ class Subterfuge extends DrawCard {
                     };
                 })
             }))
-            .effect('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
+            .chatText('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
                 const amount = context.event.amount ?? 0;
                 return [
                     Math.min(amount, 3),

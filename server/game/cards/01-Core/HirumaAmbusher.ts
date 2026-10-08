@@ -16,7 +16,7 @@ class HirumaAmbusher extends DrawCard {
             }, cardLastingEffect({
                 effect: cannotTriggerAbilities()
             }))
-            .effect('prevent {0} from using any abilities');
+            .chatText('prevent {0} from using any abilities');
     }
 }
 

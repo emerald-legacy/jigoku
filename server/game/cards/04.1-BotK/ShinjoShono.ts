@@ -12,7 +12,7 @@ class ShinjoShono extends DrawCard {
                 target: this.game.currentConflict?.getCharacters(context.player).filter(card => card.hasTrait('cavalry')) ?? [],
                 effect: modifyBothSkills(1)
             }))
-            .effect('give friendly, participating cavalry +1/+1');
+            .chatText('give friendly, participating cavalry +1/+1');
     }
 }
 

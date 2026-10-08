@@ -22,7 +22,7 @@ export default class AncientMaster extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .effect('look at the top five cards of their deck')
+            .chatText('look at the top five cards of their deck')
             .notPrinted();
     }
 }

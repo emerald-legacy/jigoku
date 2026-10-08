@@ -19,6 +19,6 @@ export default class PrivilegedPosition extends DrawCard {
                 targetController: context.player.opponent,
                 effect: setMaxConflicts(1)
             }))
-            .effect((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this turn`);
+            .chatText((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this turn`);
     }
 }

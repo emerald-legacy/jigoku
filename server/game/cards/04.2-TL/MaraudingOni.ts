@@ -19,7 +19,7 @@ class MaraudingOni extends DrawCard {
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source)
             })
             .loseHonor((context) => ({ target: context.player }))
-            .effect('lose an honor')
+            .chatText('lose an honor')
             .limit(unlimitedPerConflict());
     }
 }

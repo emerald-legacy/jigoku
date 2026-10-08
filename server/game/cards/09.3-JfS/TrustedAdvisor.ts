@@ -11,7 +11,7 @@ class TrustedAdvisor extends DrawCard {
                     event.recipient === context.player
             })
             .draw()
-            .effect('draw a card');
+            .chatText('draw a card');
     }
 }
 

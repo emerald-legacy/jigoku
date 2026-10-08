@@ -13,7 +13,7 @@ export default class UseTheTerrain extends DrawCard {
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: modifyMilitarySkill(this.hasKicker(context) ? 2 : 1)
             }))
-            .effect((context) => msg`give all characters they control +${this.hasKicker(context) ? 2 : 1}${'military'}`);
+            .chatText((context) => msg`give all characters they control +${this.hasKicker(context) ? 2 : 1}${'military'}`);
     }
 
     private hasKicker(context: AbilityContext<this>) {

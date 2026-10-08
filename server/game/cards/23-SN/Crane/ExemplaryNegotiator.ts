@@ -12,7 +12,7 @@ export default class ExemplaryNegotiator extends DrawCard {
             .gameAction(discardAtRandom(context => ({
                 amount: context.costs.discardCardsUpToVariableX?.length || 1
             })))
-            .effect('discard {1} to make {2} discard {3} card{4} at random', (context) => [
+            .chatText('discard {1} to make {2} discard {3} card{4} at random', (context) => [
                 context.costs.discardCardsUpToVariableX,
                 context.player.opponent,
                 (context.costs.discardCardsUpToVariableX ?? []).length,

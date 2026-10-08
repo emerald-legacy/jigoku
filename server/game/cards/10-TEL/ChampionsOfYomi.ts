@@ -34,7 +34,7 @@ class ChampionsOfYomi extends DrawCard {
                     })
                 }))
             ]))
-            .effect('put {0} into play and remove {0} from the game at the end of the phase')
+            .chatText('put {0} into play and remove {0} from the game at the end of the phase')
             .location(Location.DynastyDiscardPile);
     }
 }

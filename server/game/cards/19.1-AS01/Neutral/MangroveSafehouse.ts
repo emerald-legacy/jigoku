@@ -20,7 +20,7 @@ export default class MangroveSafehouse extends DrawCard {
                 }
                 return { gameActions };
             }))
-            .effect('move {0} home{1}', (context) => [
+            .chatText('move {0} home{1}', (context) => [
                 this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''
             ]);
     }

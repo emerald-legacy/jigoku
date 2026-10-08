@@ -17,7 +17,7 @@ class HirumaSignaller extends DrawCard {
                 ready(),
                 moveToConflict()
             ]))
-            .effect('ready and move {0} to the conflict');
+            .chatText('ready and move {0} to the conflict');
     }
 }
 

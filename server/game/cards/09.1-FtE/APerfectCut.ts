@@ -27,7 +27,7 @@ class APerfectCut extends DrawCard {
                     })
                 ]
             })))
-            .effect('grant +2{1} to {0} and honor them, if they win the current conflict', () => (['military']));
+            .chatText('grant +2{1} to {0} and honor them, if they win the current conflict', () => (['military']));
     }
 }
 

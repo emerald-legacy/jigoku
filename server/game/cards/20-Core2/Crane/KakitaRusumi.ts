@@ -25,7 +25,7 @@ export default class KakitaRusumi extends DrawCard {
                 shuffle: true,
                 gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
             })
-            .effect('search their dynasty deck for a character to put into play')
+            .chatText('search their dynasty deck for a character to put into play')
             .then()
             .cardLastingEffect((context) => {
                 const target = context.deckSearchSelected[0] ?? [];

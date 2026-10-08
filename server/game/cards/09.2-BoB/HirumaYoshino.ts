@@ -21,7 +21,7 @@ class HirumaYoshino extends DrawCard {
                     changeContributionFunction((card) => card.printedMilitarySkill)
                 ]
             }))
-            .effect('contribute {0}\'s printed {1} skill of {2} to their side of the conflict', context => ['military', context.target.printedMilitarySkill]);
+            .chatText('contribute {0}\'s printed {1} skill of {2} to their side of the conflict', context => ['military', context.target.printedMilitarySkill]);
     }
 }
 

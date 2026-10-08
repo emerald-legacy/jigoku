@@ -33,7 +33,7 @@ export default class IsawaHaruyo extends DrawCard {
                     };
                 })
             }))
-            .effect('look at an amount of random cards in {1}\'s hand equal to the strength of an attacked province and discard one of them', (context) => [
+            .chatText('look at an amount of random cards in {1}\'s hand equal to the strength of an attacked province and discard one of them', (context) => [
                 context.player.opponent
             ]);
     }

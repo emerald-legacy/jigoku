@@ -19,7 +19,7 @@ class CommuneWithTheSpirits extends DrawCard {
                 })),
                 claimRing({ takeFate: false, type: ConflictType.Political})
             ]))
-            .effect('discard all fate from the {0} and claim it as a political ring')
+            .chatText('discard all fate from the {0} and claim it as a political ring')
             .max(perRound(1));
     }
 }

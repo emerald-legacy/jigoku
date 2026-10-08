@@ -51,7 +51,7 @@ class FrontlineEngineer extends DrawCard {
                     })
                 })
             })
-            .effect('look at the top five cards of their dynasty deck');
+            .chatText('look at the top five cards of their dynasty deck');
     }
 
     getHoldingsInPlay() {

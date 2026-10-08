@@ -10,7 +10,7 @@ class MonoNoAware extends DrawCard {
             .removeFate(() => ({
                 target: this.game.findAnyCardsInPlay(card => card.getFate() > 0)
             }))
-            .effect('remove a fate from each character and draw a card')
+            .chatText('remove a fate from each character and draw a card')
             .max(perRound(1));
     }
 }

@@ -22,7 +22,7 @@ export default class CollapsibleTunnels extends DrawCard {
                     effect: modifyProvinceStrength(2)
                 })
             }))
-            .effect('increase the strength of an attacked province by 2');
+            .chatText('increase the strength of an attacked province by 2');
 
         this.action('Bow a character')
             .cost(costs.sacrificeSelf())

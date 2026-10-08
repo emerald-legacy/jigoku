@@ -13,7 +13,7 @@ export default class TheVoidOfWar extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, bow())
-            .effect('bow {0}')
+            .chatText('bow {0}')
             .opponentMayResolveAgain('Resolve The Void of War\'s ability again?');
     }
 }

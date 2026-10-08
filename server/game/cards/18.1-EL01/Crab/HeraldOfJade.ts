@@ -19,7 +19,7 @@ class HeraldOfJade extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .effect((context) => msg`discard ${context.token?.[0]?.card}'s ${context.token} and gain 1 honor`);
+            .chatText((context) => msg`discard ${context.token?.[0]?.card}'s ${context.token} and gain 1 honor`);
     }
 }
 

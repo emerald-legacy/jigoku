@@ -22,7 +22,7 @@ export default class Levy2 extends DrawCard {
                 'Give your opponent 1 fate': takeFate(),
                 'Give your opponent 1 honor': takeHonor()
             })
-            .effect((context) => {
+            .chatText((context) => {
                 const resource = context.select === 'Give your opponent 1 fate' ? 'fate' : 'honor';
                 const andDraw = hasFewerCards(context) ? ' and draw a card' : '';
                 return msg`take 1 ${resource} from ${context.player.opponent}${andDraw}`;

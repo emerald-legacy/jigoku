@@ -20,7 +20,7 @@ class SwellOfSeafoam extends DrawCard {
                     target: context.player.isKihoPlayedThisConflict(context, this) ? context.target : []
                 }))
             ]))
-            .effect('{1}prevent {0} from bowing at the end of the conflict', (context) => [context.player.isKihoPlayedThisConflict(context, this) ? 'honor and ' : '']);
+            .chatText('{1}prevent {0} from bowing at the end of the conflict', (context) => [context.player.isKihoPlayedThisConflict(context, this) ? 'honor and ' : '']);
     }
 }
 

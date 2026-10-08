@@ -58,7 +58,7 @@ class ConduitOfHeroes extends DrawCard {
                     modifyGlory(1)
                 ]
             })))
-            .effect('grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict', () => (['military', 'political', 'glory']));
+            .chatText('grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict', () => (['military', 'political', 'glory']));
     }
 }
 

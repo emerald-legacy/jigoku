@@ -12,6 +12,6 @@ export default class StarryRespite extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, honor())
-            .effect('honor {0}');
+            .chatText('honor {0}');
     }
 }

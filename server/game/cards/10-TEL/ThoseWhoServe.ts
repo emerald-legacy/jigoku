@@ -16,7 +16,7 @@ class ThoseWhoServe extends DrawCard {
                     costFloor: 1
                 })
             }))
-            .effect('reduce the cost of their characters by 1 this phase')
+            .chatText('reduce the cost of their characters by 1 this phase')
             .phase(Phase.Dynasty);
     }
 }

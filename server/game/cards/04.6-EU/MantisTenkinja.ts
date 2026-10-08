@@ -19,7 +19,7 @@ class MantisTenkinja extends DrawCard {
                 targetController: context.player,
                 effect: reduceNextPlayedCardCost(1, (card) => card === context.event.card)
             }))
-            .effect('reduce the cost of their next event by 1');
+            .chatText('reduce the cost of their next event by 1');
     }
 }
 

@@ -47,7 +47,7 @@ export default class MirumotoRei extends DrawCard {
                     )
                 ]
             })))
-            .effect('give {1} a skill bonus equal to the total attachment skill bonus on {0} ({2}{3}/{4}{5})', (context) => {
+            .chatText('give {1} a skill bonus equal to the total attachment skill bonus on {0} ({2}{3}/{4}{5})', (context) => {
                 const target = context.target;
                 return [
                     context.source,

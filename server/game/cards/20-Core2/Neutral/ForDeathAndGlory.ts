@@ -46,7 +46,7 @@ export default class ForDeathAndGlory extends DrawCard {
                     }))
                 ])
             })
-            .effect('{1}{2}{3}', (context) => {
+            .chatText('{1}{2}{3}', (context) => {
                 if(context.selects.select.choice === 'Gain +2 skill') {
                     return ['grant 2 military skill to ', context.targets[CHARACTER], ''];
                 }

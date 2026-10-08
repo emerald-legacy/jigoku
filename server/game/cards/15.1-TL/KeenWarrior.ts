@@ -22,7 +22,7 @@ class KeenWarrior extends DrawCard {
                     bottom: true
                 }))
             ]))
-            .effect('draw 2 cards, then place a card on the bottom of their deck')
+            .chatText('draw 2 cards, then place a card on the bottom of their deck')
             .collectiveTrigger();
     }
 }

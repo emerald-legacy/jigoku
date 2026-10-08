@@ -17,6 +17,6 @@ export default class DaidojiSaboteur extends DrawCard {
                 effect: cannotTriggerAbilities(),
                 duration: Duration.UntilEndOfPhase
             }))
-            .effect('prevent {0} from using any abilities for the rest of the phase');
+            .chatText('prevent {0} from using any abilities for the rest of the phase');
     }
 }

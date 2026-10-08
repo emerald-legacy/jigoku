@@ -52,6 +52,6 @@ export default class DesertedShrine extends ProvinceCard {
 
                 return Object.fromEntries(choices);
             })
-            .effect((context) => msg`discard the top 10 cards of ${context.select} deck`);
+            .chatText((context) => msg`discard the top 10 cards of ${context.select} deck`);
     }
 }

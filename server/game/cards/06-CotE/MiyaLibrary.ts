@@ -29,7 +29,7 @@ class MiyaLibrary extends DrawCard {
                     }
                 });
             })
-            .effect('search the top four cards of their dynasty deck for an Imperial character');
+            .chatText('search the top four cards of their dynasty deck for an Imperial character');
     }
 }
 

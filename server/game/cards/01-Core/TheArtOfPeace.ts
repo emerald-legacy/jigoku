@@ -13,6 +13,6 @@ export default class TheArtOfPeace extends ProvinceCard {
                 dishonor((context) => ({ target: context.game.currentConflict?.getAttackers() ?? [] })),
                 honor((context) => ({ target: context.game.currentConflict?.getDefenders() ?? [] }))
             )
-            .effect('dishonor all attackers and honor all defenders in this conflict');
+            .chatText('dishonor all attackers and honor all defenders in this conflict');
     }
 }

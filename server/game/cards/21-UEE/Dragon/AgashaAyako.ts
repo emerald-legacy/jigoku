@@ -38,6 +38,6 @@ export default class AgashaAyako extends DrawCard {
                     })
                 ])
             })
-            .effect('search their dynasty deck for a character');
+            .chatText('search their dynasty deck for a character');
     }
 }

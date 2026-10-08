@@ -21,7 +21,7 @@ class Rebuild extends DrawCard {
                 destination: context.costs.moveStateWhenChosen instanceof DrawCard ? context.costs.moveStateWhenChosen.location : Location.ProvinceOne,
                 facedown: false
             })))
-            .effect('replace it with {0}')
+            .chatText('replace it with {0}')
             .cannotTargetFirst()
             .cannotBeMirrored();
     }

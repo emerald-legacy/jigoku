@@ -28,6 +28,6 @@ export default class HiddenMoonDojo extends DrawCard {
                 message: '{0} chooses to turn {1} in {2} faceup',
                 messageArgs: (card, player) => [player, card, card.location]
             })
-            .effect('turn a card in an adjacent province faceup');
+            .chatText('turn a card in an adjacent province faceup');
     }
 }

@@ -16,7 +16,7 @@ class FavorableDealbroker extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Character && card.printedCost === 1,
                 gameAction: putIntoPlay()
             })
-            .effect('search their dynasty deck for a character that costs 1 and put it into play');
+            .chatText('search their dynasty deck for a character that costs 1 and put it into play');
     }
 }
 

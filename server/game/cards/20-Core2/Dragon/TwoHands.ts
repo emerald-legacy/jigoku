@@ -42,7 +42,7 @@ export default class TwoHands extends DrawCard {
                                 : setPoliticalSkill(twoHands.value)
                 };
             }))
-            .effect('set {1} {2} skills equal to {3}', (context) => {
+            .chatText('set {1} {2} skills equal to {3}', (context) => {
                 const twoHands = calcTwoHandsEffect(context, context.targets.target);
                 return [twoHands.targets, twoHands.type, twoHands.value];
             });

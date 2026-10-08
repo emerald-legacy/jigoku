@@ -25,7 +25,7 @@ class CloakOfNight extends DrawCard {
                     })
                 }))
             ]))
-            .effect('give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', context => context.player.opponent ? [context.player.opponent] : []);
+            .chatText('give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', context => context.player.opponent ? [context.player.opponent] : []);
     }
 
     canPlay(context: AbilityContext, playType: string) {

@@ -22,7 +22,7 @@ class SmugglingDeal extends DrawCard {
                     targetAbility: context.targetAbility
                 })
             })))
-            .effect((context) => msg`increase the limit on ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
+            .chatText((context) => msg`increase the limit on ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

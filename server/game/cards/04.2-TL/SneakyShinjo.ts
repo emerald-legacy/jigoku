@@ -11,7 +11,7 @@ class SneakyShinjo extends DrawCard {
                 onPassDuringDynasty: (event, context) => event.player === context.player
             })
             .gameAction(playCard({ location: Location.ProvinceOne, source: this }))
-            .effect('play {0}')
+            .chatText('play {0}')
             .location(Location.Provinces);
     }
 }

@@ -47,7 +47,7 @@ class PrepareForWar extends DrawCard {
                     target: context.target?.hasTrait('commander') ? context.target : []
                 }))
             ]))
-            .effect('{1}{2} {0}', (context) => {
+            .chatText('{1}{2} {0}', (context) => {
                 const target = context.target;
                 const isCommander = target.hasTrait('commander');
                 const hasAttachments = target.attachments.length > 0;

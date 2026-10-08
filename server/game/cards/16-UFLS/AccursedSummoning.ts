@@ -104,7 +104,7 @@ class AccursedSummoning extends DrawCard {
             .gameAction(putIntoConflict(context => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
+            .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
     }
 
     isTemptationsMaho() {

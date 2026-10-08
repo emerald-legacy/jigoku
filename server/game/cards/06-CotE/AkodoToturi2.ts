@@ -14,7 +14,7 @@ class AkodoToturi2 extends DrawCard {
                     cannot: PlayType.PlayFromHand
                 })
             })
-            .effect('prevent each player playing cards from hand');
+            .chatText('prevent each player playing cards from hand');
     }
 }
 

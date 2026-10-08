@@ -28,7 +28,7 @@ class SpecializedDefenses extends DrawCard {
                     effect: modifyProvinceStrengthMultiplier(2)
                 })
             }))
-            .effect('double the province strength of an attacked province');
+            .chatText('double the province strength of an attacked province');
     }
 }
 

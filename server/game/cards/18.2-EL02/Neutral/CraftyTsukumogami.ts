@@ -53,7 +53,7 @@ class CraftyTsukumogami extends RingAttachment {
                     }
                 })
             ]))
-            .effect('attach itself to the {0}');
+            .chatText('attach itself to the {0}');
     }
 
     private checkRingCondition(ring: Ring, context: AbilityContext) {

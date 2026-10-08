@@ -25,6 +25,6 @@ export default class IkomaYumiko extends DrawCard {
             .gameAction(claimImperialFavor((context) => ({
                 target: context.player
             })))
-            .effect('claim the Emperor\'s favor');
+            .chatText('claim the Emperor\'s favor');
     }
 }

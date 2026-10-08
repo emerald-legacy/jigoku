@@ -23,7 +23,7 @@ class AsakoTogama extends DrawCard {
                     gameAction: takeRing({ takeFate: true })
                 }))
             ]))
-            .effect('switch a claimed ring with an unclaimed one');
+            .chatText('switch a claimed ring with an unclaimed one');
     }
 }
 

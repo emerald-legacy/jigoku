@@ -29,7 +29,7 @@ class ASeasonOfWar extends DrawCard {
                     effect: restartDynastyPhase(context.source)
                 }))
             ]))
-            .effect('discard all cards in all provinces, and refill each province faceup');
+            .chatText('discard all cards in all provinces, and refill each province faceup');
     }
 }
 

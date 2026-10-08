@@ -39,10 +39,10 @@ export default class WisdomOfTheWind extends DrawCard {
                         target: context.target,
                         effect: modifyGlory(2)
                     }),
-                    effect: 'give {0} +2 glory',
-                    effectArgs: () => [context.target]
+                    chatText: 'give {0} +2 glory',
+                    chatTextArgs: () => [context.target]
                 }))
             ]))
-            .effect('honor or dishonor {0}');
+            .chatText('honor or dishonor {0}');
     }
 }

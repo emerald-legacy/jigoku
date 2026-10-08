@@ -19,7 +19,7 @@ class MotoStables extends DrawCard {
                 target: context.event.card,
                 effect: modifyMilitarySkill(2)
             }))
-            .effect((context) => msg`give ${context.event.card} +2${'military'}`)
+            .chatText((context) => msg`give ${context.event.card} +2${'military'}`)
             .limit(perRound(2));
     }
 }

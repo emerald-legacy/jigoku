@@ -13,7 +13,7 @@ class IAmReady extends DrawCard {
                 cardCondition: card => card.isFaction('unicorn') && card.bowed
             }))
             .handler((context) => ready().resolve(context.costs.removeFate, context))
-            .effect('ready {1}', (context) => context.costs.removeFate)
+            .chatText('ready {1}', (context) => context.costs.removeFate)
             .cannotBeMirrored();
     }
 }

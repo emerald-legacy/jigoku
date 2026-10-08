@@ -25,7 +25,7 @@ class MagnificentLighthouse extends DrawCard {
                     this.chooseDiscard(context, opponent, topThree);
                 }
             })
-            .effect((context) => msg`look at the top 3 cards of ${context.player.opponent}'s ${context.select.toLowerCase()}`);
+            .chatText((context) => msg`look at the top 3 cards of ${context.player.opponent}'s ${context.select.toLowerCase()}`);
     }
 
     // With fewer than 3 cards, each step may be skipped, except the bottom card after skipping the discard of 2

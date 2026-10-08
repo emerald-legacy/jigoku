@@ -22,6 +22,6 @@ export default class SoshiYuka extends DrawCard {
                 message: '{0} is bowed, as they are dragged into a web of intrigue',
                 messageArgs: (card, _player) => [card]
             }))
-            .effect('sow discord between {0}');
+            .chatText('sow discord between {0}');
     }
 }

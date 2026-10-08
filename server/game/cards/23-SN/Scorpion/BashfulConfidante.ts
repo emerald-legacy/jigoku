@@ -19,6 +19,6 @@ export default class BashfulConfidante extends DrawCard {
             }, cardLastingEffect(context => ({
                 effect: additionalTriggerCostForCard(() => [giveHonorToTriggerCost(context.player)])
             })))
-            .effect('force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities', context => [context.player.opponent, context.player]);
+            .chatText('force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities', context => [context.player.opponent, context.player]);
     }
 }

@@ -18,7 +18,7 @@ class ObsidianTalisman extends DrawCard {
                 messageArgs: (token, player) => [player, token],
                 gameAction: discardStatusToken()
             })))
-            .effect((context) => msg`discard a status token from ${context.source.parentCharacter}`)
+            .chatText((context) => msg`discard a status token from ${context.source.parentCharacter}`)
             .limit(unlimited());
     }
 }

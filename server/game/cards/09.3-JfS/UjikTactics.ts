@@ -11,7 +11,7 @@ class UjikTactics extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),
                 effect: modifyMilitarySkill(1)
             }))
-            .effect(() => msg`give all non-unique character they control +1${'military'}`);
+            .chatText(() => msg`give all non-unique character they control +1${'military'}`);
     }
 }
 

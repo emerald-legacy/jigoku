@@ -18,7 +18,7 @@ class SocialPuppeteer extends DrawCard {
                 target: context.player,
                 value: context.player.opponent ? context.player.opponent.showBid : 0
             })))
-            .effect('switch honor dials with {1}', (context) => context.player.opponent);
+            .chatText('switch honor dials with {1}', (context) => context.player.opponent);
     }
 }
 

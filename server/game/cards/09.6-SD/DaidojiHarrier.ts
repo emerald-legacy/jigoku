@@ -31,7 +31,7 @@ class DaidojiHarrier extends DrawCard {
                     messageArgs: (card, player) => [player, card]
                 }))
             ]))
-            .effect((context) => msg`make ${context.player.opponent} reveal 2 cards and discard one of them`);
+            .chatText((context) => msg`make ${context.player.opponent} reveal 2 cards and discard one of them`);
     }
 }
 

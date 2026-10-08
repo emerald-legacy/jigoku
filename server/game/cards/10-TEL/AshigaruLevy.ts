@@ -15,7 +15,7 @@ class AshigaruLevy extends DrawCard {
                 location: [Location.Provinces, Location.DynastyDiscardPile],
                 cardCondition: (card, context) => card.owner === context.player && card.id === 'ashigaru-levy'
             }, putIntoPlay())
-            .effect('put {0} into play');
+            .chatText('put {0} into play');
     }
 }
 

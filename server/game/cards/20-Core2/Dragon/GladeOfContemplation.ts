@@ -25,6 +25,6 @@ export default class GladeOfContemplation extends ProvinceCard {
                     amount: cardDifference(context)
                 }))
             })
-            .effect('{1}', (context) => context.select.toLowerCase());
+            .chatText('{1}', (context) => context.select.toLowerCase());
     }
 }

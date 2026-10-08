@@ -21,6 +21,6 @@ export default class Penanggalan extends BaseOni {
                 target: context.source,
                 origin: context.target
             })))
-            .effect((context) => msg`take a fate from ${context.target} and place it on ${context.source}`);
+            .chatText((context) => msg`take a fate from ${context.target} and place it on ${context.source}`);
     }
 }

@@ -76,7 +76,7 @@ class SurgingWave extends DrawCard {
                     gameActions: gameActions
                 };
             }))
-            .effect('discard all status tokens from {0} at the end of the conflict');
+            .chatText('discard all status tokens from {0} at the end of the conflict');
     }
 }
 

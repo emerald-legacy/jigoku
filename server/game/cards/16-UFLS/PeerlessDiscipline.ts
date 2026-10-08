@@ -16,7 +16,7 @@ class PeerlessDiscipline extends DrawCard {
                 ],
                 duration: Duration.UntilEndOfPhase
             }))
-            .effect(() => msg`give all characters they control +1${'military'} and the Bushi trait`);
+            .chatText(() => msg`give all characters they control +1${'military'} and the Bushi trait`);
     }
 }
 

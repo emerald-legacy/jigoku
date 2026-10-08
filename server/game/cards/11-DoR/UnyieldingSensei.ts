@@ -29,7 +29,7 @@ class UnyieldingSensei extends DrawCard {
                     faceup: true
                 }))
             })
-            .effect('look at the top two cards of their dynasty deck');
+            .chatText('look at the top two cards of their dynasty deck');
     }
 }
 

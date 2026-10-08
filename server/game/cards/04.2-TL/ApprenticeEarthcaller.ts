@@ -17,6 +17,6 @@ export default class ApprenticeEarthcaller extends DrawCard {
                     setPoliticalSkill(context.target.printedPoliticalSkill)
                 ]
             })))
-            .effect('set {0}\'s skill values to their printed values until the end of the conflict');
+            .chatText('set {0}\'s skill values to their printed values until the end of the conflict');
     }
 }

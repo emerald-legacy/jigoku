@@ -21,7 +21,7 @@ export default class VillageDoshin extends DrawCard {
                     })
             })
             .cost(costs.discardSelf())
-            .effect('protect {1}', (context) => context.event.cardTargets)
+            .chatText('protect {1}', (context) => context.event.cardTargets)
             .location(Location.Hand)
             .if((context) => {
                 const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;

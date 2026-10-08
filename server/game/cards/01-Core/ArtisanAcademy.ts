@@ -24,7 +24,7 @@ class ArtisanAcademy extends DrawCard {
                     ]
                 };
             })
-            .effect('reveal the top card of their conflict deck')
+            .chatText('reveal the top card of their conflict deck')
             .phase(Phase.Conflict);
     }
 }

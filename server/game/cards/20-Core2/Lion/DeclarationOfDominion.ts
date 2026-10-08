@@ -35,7 +35,7 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
             }, cardLastingEffect({
                 effect: addKeyword('pride')
             }))
-            .effect('give pride to {1}', (context) => [
+            .chatText('give pride to {1}', (context) => [
                 (context.targets.myCard ?? []).concat(
                     context.targets.opponentsCard ?? []
                 )

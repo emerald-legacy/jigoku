@@ -24,6 +24,6 @@ export default class CaptureTheFalseEye extends DrawCard {
                     match: (card) => card.type === CardType.Event
                 })
             })))
-            .effect('bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?', (context) => [context.player]);
+            .chatText('bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?', (context) => [context.player]);
     }
 }

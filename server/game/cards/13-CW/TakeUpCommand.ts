@@ -19,7 +19,7 @@ class TakeUpCommand extends DrawCard {
                         cardCondition: card => card.hasTrait('bushi') && card.costLessThan(3),
                         gameAction: [ready(), moveToConflict()]
                     },
-                    effect: 'ready {0} and move it into the conflict'
+                    chatText: 'ready {0} and move it into the conflict'
                 })
             ]
         });

@@ -15,7 +15,7 @@ class WayOfTheOpenHand extends DrawCard {
                 sendHome(),
                 placeFate()
             ]))
-            .effect('send home and place a fate on {0}');
+            .chatText('send home and place a fate on {0}');
     }
 }
 

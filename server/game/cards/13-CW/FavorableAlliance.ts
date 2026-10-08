@@ -39,7 +39,7 @@ class FavorableAlliance extends DrawCard {
                     }
                 })
             ]))
-            .effect('set aside {1} card{2}', (context) => [context.costs.fatePaid, (context.costs.fatePaid ?? 0) > 1 ? 's' : '']);
+            .chatText('set aside {1} card{2}', (context) => [context.costs.fatePaid, (context.costs.fatePaid ?? 0) > 1 ? 's' : '']);
     }
 }
 

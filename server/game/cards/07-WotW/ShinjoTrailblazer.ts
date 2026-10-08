@@ -10,7 +10,7 @@ class ShinjoTrailblazer extends DrawCard {
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()
             })
             .cardLastingEffect({ effect: modifyBothSkills(2) })
-            .effect('give {0} +2{1}, +2{2}', () => ['military', 'political']);
+            .chatText('give {0} +2{1}, +2{2}', () => ['military', 'political']);
     }
 }
 

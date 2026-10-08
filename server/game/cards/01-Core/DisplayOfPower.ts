@@ -20,7 +20,7 @@ class DisplayOfPower extends DrawCard {
                     }
                 });
             })
-            .effect('resolve and claim the ring when the ring effect resolves')
+            .chatText('resolve and claim the ring when the ring effect resolves')
             .cannotBeMirrored();
     }
 

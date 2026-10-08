@@ -49,7 +49,7 @@ export default class DayOfBrotherHorse extends DrawCard {
                     chosenDiscard({ target: context.player })
                 ]
             })))
-            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
+            .chatText('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
             .max(perRound(1));
     }
 }

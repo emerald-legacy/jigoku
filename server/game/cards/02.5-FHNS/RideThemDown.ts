@@ -24,7 +24,7 @@ class RideThemDown extends DrawCard {
                     effect: setBaseProvinceStrength(1)
                 })
             }))
-            .effect('reduce the strength of an attacked province to 1');
+            .chatText('reduce the strength of an attacked province to 1');
     }
 }
 

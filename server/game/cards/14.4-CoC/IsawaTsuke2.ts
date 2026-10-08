@@ -31,7 +31,7 @@ class IsawaTsuke2 extends DrawCard {
             }, removeFate((context) => {
                 return { target: Object.values(context.targets).flat() };
             }))
-            .effect((context) => msg`lose ${context.costs.honorPaid} honor to discard a fate from ${context.targets.target}`)
+            .chatText((context) => msg`lose ${context.costs.honorPaid} honor to discard a fate from ${context.targets.target}`)
             .cannotTargetFirst();
     }
 

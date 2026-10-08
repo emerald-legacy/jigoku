@@ -16,7 +16,7 @@ class TheMountainDoesNotFall extends DrawCard {
                 condition: () => context.target.isDefending(),
                 effect: doesNotBow()
             })))
-            .effect('make {0} not bow as a defender')
+            .chatText('make {0} not bow as a defender')
             .max(perRound(1));
     }
 }

@@ -22,7 +22,7 @@ class SiegeWarfare extends DrawCard {
                     effect: modifyProvinceStrength(-2)
                 }))
             }))
-            .effect('reduce the province strength of an attacked province by 2');
+            .chatText('reduce the province strength of an attacked province by 2');
     }
 }
 

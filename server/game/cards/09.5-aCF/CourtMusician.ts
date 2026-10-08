@@ -16,7 +16,7 @@ class CourtMusician extends DrawCard {
                     amount: 1
                 })
             })
-            .effect('decrease the cost of cards played by 1 for each player\'s next action opportunity');
+            .chatText('decrease the cost of cards played by 1 for each player\'s next action opportunity');
     }
 }
 

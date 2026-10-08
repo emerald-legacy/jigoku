@@ -26,8 +26,8 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     origin?: BaseCard;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
-    effect?: string | OwnContextCallback<[context: C], MessageArgs>;
-    effectArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
+    chatText?: string | OwnContextCallback<[context: C], MessageArgs>;
+    chatTextArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
 }
 
 /** Cost results are open-ended; only those the chat can format are passed to it. */
@@ -279,7 +279,7 @@ export class CardAbility extends ThenAbility {
         } else {
             messageArgs.push('', '');
         }
-        const effect = this.properties.effect;
+        const effect = this.properties.chatText;
         let effectMessage = typeof effect === 'function' ? undefined : effect;
         let effectArgs: MsgArg[] = [];
         let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
@@ -293,7 +293,7 @@ export class CardAbility extends ThenAbility {
             }
         } else {
             effectArgs.push(context.messageTarget() || context.ring || context.source);
-            extraArgs = this.properties.effectArgs;
+            extraArgs = this.properties.chatTextArgs;
         }
 
         if(extraArgs) {

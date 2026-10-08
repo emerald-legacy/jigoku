@@ -27,7 +27,7 @@ export default class FieldOfRuin extends BattlefieldAttachment {
                 target:
                     context.source.parentProvince?.controller.getDynastyCardsInProvince(context.source.parentProvince.location) ?? []
             })))
-            .effect('discard each card in the attached province');
+            .chatText('discard each card in the attached province');
     }
 
     protected unbrokenOnly() {

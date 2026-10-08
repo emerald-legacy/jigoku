@@ -15,7 +15,7 @@ class ImpossibleKoan extends DrawCard {
                     setBasePoliticalSkill(1)
                 ]
             }))
-            .effect(() => msg`make all characters have base skills of 1${'military'}/1${'political'}`);
+            .chatText(() => msg`make all characters have base skills of 1${'military'}/1${'political'}`);
     }
 }
 

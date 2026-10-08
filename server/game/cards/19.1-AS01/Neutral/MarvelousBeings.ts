@@ -19,7 +19,7 @@ export default class MarvelousBeings extends DrawCard {
                 target: context.player,
                 effect: changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
             }))
-            .effect('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context.costs.moveToConflict), 'political'])
+            .chatText('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context.costs.moveToConflict), 'political'])
             .max(perConflict(1));
     }
 

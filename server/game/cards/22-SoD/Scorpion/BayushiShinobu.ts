@@ -63,7 +63,7 @@ export default class BayushiShinobu extends DrawCard {
                     duration: Duration.UntilEndOfPhase
                 }))
             ]))
-            .effect('take control of {0}');
+            .chatText('take control of {0}');
     }
 }
 

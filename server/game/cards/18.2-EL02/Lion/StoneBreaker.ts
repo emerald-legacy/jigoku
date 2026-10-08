@@ -27,7 +27,7 @@ class StoneBreaker extends DrawCard {
                     effect: modifyProvinceStrength(-2)
                 })
             }))
-            .effect('reduce an attacked province strength by 2');
+            .chatText('reduce an attacked province strength by 2');
     }
 }
 

@@ -9,7 +9,7 @@ class WayOfTheUnicorn extends DrawCard {
                 onPassFirstPlayer: (event, context) => event.player === context.player.opponent
             })
             .cancel()
-            .effect('keep the first player token')
+            .chatText('keep the first player token')
             .cannotBeMirrored();
     }
 }

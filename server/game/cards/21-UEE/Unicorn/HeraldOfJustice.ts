@@ -16,6 +16,6 @@ export default class HeraldOfJustice extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Military)
             }))
-            .effect((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
+            .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

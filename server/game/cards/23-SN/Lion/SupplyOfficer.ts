@@ -27,7 +27,7 @@ export default class SupplyOfficer extends DrawCard {
                     moveToConflict()
                 ])
             ]))
-            .effect((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`)
+            .chatText((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`)
             .afterwardsIf((context) => !context.targets.characterInConflict.isParticipating())
             .ready((context) => ({ target: context.targets.characterInConflict }))
             .message((context) => msg`${context.targets.characterInConflict} is readied`);

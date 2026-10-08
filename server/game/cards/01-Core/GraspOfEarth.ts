@@ -33,6 +33,6 @@ export default class GraspOfEarth extends DrawCard {
                     restricts: 'characters'
                 })
             })))
-            .effect('prevent the opponent from bringing characters to the conflict');
+            .chatText('prevent the opponent from bringing characters to the conflict');
     }
 }

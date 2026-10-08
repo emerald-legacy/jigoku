@@ -49,7 +49,7 @@ class MercenaryCompany extends DrawCard {
                     });
                 }
             }))
-            .effect((context) => msg`let ${context.player.opponent} hire their services`)
+            .chatText((context) => msg`let ${context.player.opponent} hire their services`)
             .limit(unlimitedPerConflict());
     }
 

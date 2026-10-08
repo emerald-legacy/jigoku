@@ -15,7 +15,7 @@ class HurricanePunch extends DrawCard {
                 effect: modifyMilitarySkill(2)
             }))
             .draw()
-            .effect('grant 2 military skill to {0} and draw a card');
+            .chatText('grant 2 military skill to {0} and draw a card');
     }
 }
 

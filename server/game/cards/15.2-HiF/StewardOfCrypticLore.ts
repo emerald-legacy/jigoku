@@ -44,7 +44,7 @@ export default class StewardOfCrypticLore extends DrawCard {
                     }
                 }))
             }))
-            .effect('change the province strength of an attacked province');
+            .chatText('change the province strength of an attacked province');
     }
 
     getPrintedElementSymbols() {

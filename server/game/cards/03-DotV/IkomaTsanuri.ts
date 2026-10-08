@@ -13,7 +13,7 @@ class IkomaTsanuri extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => card.isParticipating()),
                 effect: modifyBothSkills(1)
             }))
-            .effect(() => msg`grant their participating characters +1${'military'}/+1${'political'}`);
+            .chatText(() => msg`grant their participating characters +1${'military'}/+1${'political'}`);
     }
 }
 

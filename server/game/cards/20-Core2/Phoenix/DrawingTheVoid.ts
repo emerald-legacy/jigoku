@@ -46,7 +46,7 @@ export default class DrawingTheVoid extends DrawCard {
                     ]
                 };
             }))
-            .effect((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
+            .chatText((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
             .max(perRound(1));
     }
 }

@@ -15,7 +15,7 @@ class VisitingAdvisor extends DrawCard {
                 cardCondition: (card, context) => card !== context.source
             }, sendHome())
             .sendHome()
-            .effect('send {0}{1}{2} home', (context) => {
+            .chatText('send {0}{1}{2} home', (context) => {
                 const t = context.targets.target;
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
                 return hasAny ? [' and ', context.source] : [context.source];

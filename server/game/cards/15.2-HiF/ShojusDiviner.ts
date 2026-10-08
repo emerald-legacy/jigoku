@@ -13,7 +13,7 @@ class ShojusDiviner extends DrawCard {
                 title: 'Divine your conflict deck',
                 printedAbility: false,
                 condition: (context) => context.player.conflictDeck.length > 0,
-                effect: 'look at the top 8 cards of their conflict deck',
+                chatText: 'look at the top 8 cards of their conflict deck',
                 gameAction: handler({
                     handler: (context) => this.chooseCardsToKeep(context, context.player.conflictDeck.slice(0, 8))
                 })

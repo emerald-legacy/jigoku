@@ -10,7 +10,7 @@ export default class ForegateVillage extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .gameAction(switchConflictType())
-            .effect('switch the conflict type');
+            .chatText('switch the conflict type');
     }
 
     cannotBeStrongholdProvince() {

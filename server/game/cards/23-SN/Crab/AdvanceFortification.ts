@@ -15,7 +15,7 @@ export default class AdvanceFortification extends DrawCard {
                 }))
             .otherwise()
                 .loseHonor(context => ({ target: context.player.opponent }))
-            .effect('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?
+            .chatText('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?
                 ['give defending characters +1/+1', ''] : ['make ', context.player.opponent, ' lose 1 honor'])
             .max(perConflict(1));
     }

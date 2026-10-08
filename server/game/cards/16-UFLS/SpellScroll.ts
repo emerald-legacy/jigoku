@@ -32,6 +32,6 @@ export default class SpellScroll extends DrawCard {
                 })),
                 sacrifice((context) => ({ target: context.source }))
             ]))
-            .effect((context) => msg`move ${context.target} to their hand and sacrifice ${context.source}`);
+            .chatText((context) => msg`move ${context.target} to their hand and sacrifice ${context.source}`);
     }
 }

@@ -29,7 +29,7 @@ class TimeForWar extends DrawCard {
                 subActionProperties: card => ({ attachment: card }),
                 gameAction: attachAction
             })))
-            .effect('attach a weapon to {0}');
+            .chatText('attach a weapon to {0}');
     }
 }
 

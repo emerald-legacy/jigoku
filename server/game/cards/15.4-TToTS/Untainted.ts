@@ -28,7 +28,7 @@ class Untainted extends ProvinceAttachment {
                     target: context.player
                 }))
             ]))
-            .effect('gain 1 honor and discard {1} from {2}', (context) => {
+            .chatText('gain 1 honor and discard {1} from {2}', (context) => {
                 const card = context.token[0].card;
                 return card ? [context.token, card] : [];
             });

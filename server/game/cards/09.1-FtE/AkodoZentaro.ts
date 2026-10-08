@@ -30,7 +30,7 @@ class AkodoZentaro extends DrawCard {
                 }),
                 otherwiseAction: discardCard({ target: context.target })
             })))
-            .effect('take control of {0} and move it one of their provinces');
+            .chatText('take control of {0} and move it one of their provinces');
     }
 }
 

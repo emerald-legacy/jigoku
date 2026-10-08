@@ -91,7 +91,7 @@ class MerchantOfCuriosities extends DrawCard {
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
             }))
             // the card is chosen only once the opponent agreed to pay
-            .effect('draw a card{2}', context => [
+            .chatText('draw a card{2}', context => [
                 context.costs.discardCard,
                 honorTransferMessage(context, context.costs.merchantOfCuriositiesCostDiscardedCard, (name) => 'discard ' + name + ' and draw a card')
             ]);

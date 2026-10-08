@@ -34,7 +34,7 @@ class WayOfTheWarrior extends DrawCard {
                 })),
                 ready()
             ]))
-            .effect('ready and prevent opponent\'s card effects from bowing, sending home, or dishonoring {0}');
+            .chatText('ready and prevent opponent\'s card effects from bowing, sending home, or dishonoring {0}');
     }
 }
 

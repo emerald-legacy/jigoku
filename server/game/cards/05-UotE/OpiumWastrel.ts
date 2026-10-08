@@ -18,7 +18,7 @@ class OpiumWastrel extends DrawCard {
             }, cardLastingEffect({
                 effect: setGlory(0)
             }))
-            .effect('set {0}\'s glory to 0 until the end of the conflict');
+            .chatText('set {0}\'s glory to 0 until the end of the conflict');
     }
 
     canPlay(context: AbilityContext, playType: string): boolean {

@@ -23,7 +23,7 @@ class DivineAncestry extends DrawCard {
                     })
                 ]
             }))
-            .effect((context) => msg`prevent ${context.player} from losing honor this phase`);
+            .chatText((context) => msg`prevent ${context.player} from losing honor this phase`);
     }
 }
 

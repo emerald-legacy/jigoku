@@ -48,7 +48,7 @@ export default class KakitasFirstKata extends DrawCard {
                     trueGameAction: ready((context) => ({ target: context.target }))
                 })
             ]))
-            .effect('{1}prevent opponents\' actions from bowing or moving {0}', (context) => (context.target && this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : ''));
+            .chatText('{1}prevent opponents\' actions from bowing or moving {0}', (context) => (context.target && this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : ''));
     }
 
     public onConflictFinished() {

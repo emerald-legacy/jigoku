@@ -23,7 +23,7 @@ class CenteredBreath extends DrawCard {
                     effect: context.player.isKihoPlayedThisConflict(context, this) ? additionalAction() : []
                 }))
             ]))
-            .effect('add an additional use to each of {0}\'s printed abilities{1}', context => [context.player.isKihoPlayedThisConflict(context, this) ? ' and take an additional action' : '']);
+            .chatText('add an additional use to each of {0}\'s printed abilities{1}', context => [context.player.isKihoPlayedThisConflict(context, this) ? ' and take an additional action' : '']);
     }
 }
 

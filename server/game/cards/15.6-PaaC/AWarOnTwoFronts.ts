@@ -22,7 +22,7 @@ class AWarOnTwoFronts extends DrawCard {
                     effect: additionalAttackedProvince(context.target)
                 }))
             ]))
-            .effect((context) => msg`${context.target.isFacedown() ? 'reveal and ' : ''}also attack ${context.target} this conflict`);
+            .chatText((context) => msg`${context.target.isFacedown() ? 'reveal and ' : ''}also attack ${context.target} this conflict`);
     }
 }
 

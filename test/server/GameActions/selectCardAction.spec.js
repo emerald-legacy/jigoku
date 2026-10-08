@@ -249,7 +249,7 @@ describe('SelectCardAction', function() {
             const effectArgs = jasmine.createSpy('effectArgs').and.returnValue(['x']);
             const action = new SelectCardAction({
                 target: 'tgt', selector: this.selector, gameAction: this.gameAction,
-                effect: 'custom', effectArgs
+                chatText: 'custom', chatTextArgs: effectArgs
             });
             expect(action.getEffectMessage(this.context)).toEqual(['custom', ['x']]);
         });

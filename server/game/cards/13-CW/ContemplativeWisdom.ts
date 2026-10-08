@@ -20,8 +20,8 @@ export default class ContemplativeWisdom extends DrawCard {
                         effect: gainAllAbilities(context.source)
                     }))
                 },
-                effect: 'give {0} all the printed abilities of {1}',
-                effectArgs: (context) => [context.source],
+                chatText: 'give {0} all the printed abilities of {1}',
+                chatTextArgs: (context) => [context.source],
                 printedAbility: false
             })
         });

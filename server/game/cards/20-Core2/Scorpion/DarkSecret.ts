@@ -13,7 +13,7 @@ export default class DarkSecret extends DrawCard {
             .loseHonor((context) => ({
                 target: this.targetPlayer(context.source.parentCharacter)
             }))
-            .effect('make {1} lose 1 honor - {2}', (context) => [this.targetPlayer(context.source.parentCharacter), this.quote(context.source.parentCharacter)])
+            .chatText('make {1} lose 1 honor - {2}', (context) => [this.targetPlayer(context.source.parentCharacter), this.quote(context.source.parentCharacter)])
             .limit(unlimitedPerConflict());
     }
 

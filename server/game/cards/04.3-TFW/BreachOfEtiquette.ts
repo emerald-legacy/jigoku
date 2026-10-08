@@ -37,7 +37,7 @@ class BreachOfEtiquette extends DrawCard {
                     })
                 }))
             ]))
-            .effect('force honor loss on players when their non-courtier characters use abilities during this conflict')
+            .chatText('force honor loss on players when their non-courtier characters use abilities during this conflict')
             .max(perConflict(1));
     }
 }

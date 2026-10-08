@@ -15,7 +15,7 @@ export default class TwentyFourSteps extends DrawCard {
                 ready(),
                 moveToConflict()
             ]))
-            .effect('ready {0} and move it into the conflict');
+            .chatText('ready {0} and move it into the conflict');
 
         this.conflictAction('Move two monks to the conflict', { conflictType: ConflictType.Military })
             .targetCards({

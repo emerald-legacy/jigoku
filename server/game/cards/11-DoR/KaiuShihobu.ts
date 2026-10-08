@@ -69,7 +69,7 @@ export default class KaiuShihobu extends DrawCard {
                     context.player.moveCard(card, Location.DynastyDiscardPile);
                 });
             })
-            .effect('discard {1}, replacing {2} with {3}', (context) => [
+            .chatText('discard {1}, replacing {2} with {3}', (context) => [
                 context.player.getDynastyCardsInProvince(context.targets.second.location),
                 context.player.getDynastyCardsInProvince(context.targets.second.location).length > 1 ? 'them' : 'it',
                 context.targets.first

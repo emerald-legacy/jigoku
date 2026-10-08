@@ -30,7 +30,7 @@ class Kunshu extends DrawCard {
                         source: this
                     }))
                 },
-                effect: 'play {0}'
+                chatText: 'play {0}'
             })
         });
     }

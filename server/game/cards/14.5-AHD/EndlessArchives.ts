@@ -13,7 +13,7 @@ class EndlessArchives extends DrawCard {
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             })
             .gameAction(addToken())
-            .effect((context) => msg`place an honor token on ${context.source} and exchange cards from their hand`)
+            .chatText((context) => msg`place an honor token on ${context.source} and exchange cards from their hand`)
             .limit(unlimitedPerConflict())
             .anyPlayer()
             .then()

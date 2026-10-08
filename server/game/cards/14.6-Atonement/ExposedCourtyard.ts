@@ -91,7 +91,7 @@ class ExposedCourtyard extends DrawCard {
                     messageArgs: card => [context.player, card, context.source]
                 }))
             ]))
-            .effect('pick an event to make playable this conflict')
+            .chatText('pick an event to make playable this conflict')
             .cannotTargetFirst();
     }
 }

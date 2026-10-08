@@ -33,7 +33,7 @@ export default class IchigoKun extends DrawCard {
                 [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),
                 [LESS_MIL_MORE_GLORY]: this.actionSequence(context, { military: -2, glory: +2 })
             }))
-            .effect('give {0} {1} {2} and {3} {4} glory - {0} {5}', (context) =>
+            .chatText('give {0} {1} {2} and {3} {4} glory - {0} {5}', (context) =>
                 context.selects.select.choice === MORE_MIL_LESS_GLORY
                     ? ['+2', 'military', context.targets.otherCharacter, '-2', 'is wild today']
                     : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive']);

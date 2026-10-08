@@ -16,7 +16,7 @@ class ParalyzingDelicacy extends DrawCard {
             }, cardLastingEffect(context => ({
                 effect: modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
             })))
-            .effect((context) => msg`give ${context.target} -${this.getFaceDownProvinceCards(context)}${'military'}`);
+            .chatText((context) => msg`give ${context.target} -${this.getFaceDownProvinceCards(context)}${'military'}`);
     }
 
     private getFaceDownProvinceCards(context: AbilityContext) {

@@ -22,7 +22,7 @@ class DragonflyMediator extends DrawCard {
                 location: Location.Hand,
                 controller: Players.Opponent
             }, reveal(context => ({ chatMessage: true, player: context.player.opponent })))
-            .effect('have each player reveal cards from their hand');
+            .chatText('have each player reveal cards from their hand');
     }
 }
 

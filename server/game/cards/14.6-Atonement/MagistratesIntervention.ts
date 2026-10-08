@@ -22,7 +22,7 @@ class MagistratesIntervention extends DrawCard {
                 })
 
             ]))
-            .effect('dishonor {0}{1}', (context) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1 ? ', then dishonor it again' : '']);
+            .chatText('dishonor {0}{1}', (context) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1 ? ', then dishonor it again' : '']);
     }
 
     canPlay(context: AbilityContext, playType: string) {

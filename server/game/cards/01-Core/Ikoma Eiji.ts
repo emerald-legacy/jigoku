@@ -19,7 +19,7 @@ class IkomaEiji extends DrawCard {
                 messageArgs: card => [context.player, card, context.source],
                 gameAction: putIntoPlay()
             }))
-            .effect('put a character into play');
+            .chatText('put a character into play');
     }
 }
 

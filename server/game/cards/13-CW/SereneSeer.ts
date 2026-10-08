@@ -21,7 +21,7 @@ class SereneSeer extends DrawCard {
                     messageArgs: (cards) => [context.source, cards[0], cards[0].location]
                 }))
             })
-            .effect('look at a province');
+            .chatText('look at a province');
     }
 
     getPrintedElementSymbols() {

@@ -14,6 +14,6 @@ export default class PromisingKohai extends DrawCard {
                 effect: modifyDuelSkill({ amount: 2, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add 2 to their duel total');
+            .chatText('add 2 to their duel total');
     }
 }

@@ -18,7 +18,7 @@ class CurrentOfTheBeryt extends DrawCard {
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(2)
             }))
-            .effect('take two actions');
+            .chatText('take two actions');
     }
 }
 

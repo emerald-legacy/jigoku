@@ -19,6 +19,6 @@ export default class UtakuProdigy extends DrawCard {
                 cancel(),
                 gainHonor(context => ({ target: context.player, amount: 2 }))
             ]))
-            .effect('instead gain 2 honor from the status token');
+            .chatText('instead gain 2 honor from the status token');
     }
 }

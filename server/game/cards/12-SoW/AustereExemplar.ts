@@ -16,7 +16,7 @@ class AustereExemplar extends DrawCard {
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(3)
             }))
-            .effect('take three actions')
+            .chatText('take three actions')
             .limit(perConflict(1));
     }
 }

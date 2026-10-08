@@ -19,7 +19,7 @@ export default class AnkokusBlessing extends DrawCard {
                     gainFate({ target: context.player, amount: 2 })
                 ]
             })))
-            .effect('draw 2 cards and gain 2 fate')
+            .chatText('draw 2 cards and gain 2 fate')
             .max(perRound(1))
             .phase(Phase.Fate);
     }

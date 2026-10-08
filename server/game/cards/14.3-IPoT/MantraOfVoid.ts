@@ -25,6 +25,6 @@ export default class MantraOfVoid extends DrawCard {
                 })
             })))
             .draw()
-            .effect('reduce the cost of attachments they play on {0} this conflict by 1 and draw a card');
+            .chatText('reduce the cost of attachments they play on {0} this conflict by 1 and draw a card');
     }
 }

@@ -21,7 +21,7 @@ class JadeTalisman extends DrawCard {
             })
             .cost(costs.sacrificeSelf())
             .cancel()
-            .effect((context) => msg`cancel the effects of the ${context.event.context.source}`);
+            .chatText((context) => msg`cancel the effects of the ${context.event.context.source}`);
     }
 }
 

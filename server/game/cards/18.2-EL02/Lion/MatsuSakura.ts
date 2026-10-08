@@ -12,7 +12,7 @@ class MatsuSakura extends DrawCard {
                         event.card.location === Location.StrongholdProvince)
             })
             .cancel()
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
+            .chatText('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }
 

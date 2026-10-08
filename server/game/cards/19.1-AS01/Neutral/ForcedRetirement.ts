@@ -45,7 +45,7 @@ export default class ForcedRetirement extends DrawCard {
                     ])
                 ]
             })))
-            .effect('expiate {0}\'s misdeeds by retiring them to the nearest monastery{1}. Let them contemplate their sins', (context) => {
+            .chatText('expiate {0}\'s misdeeds by retiring them to the nearest monastery{1}. Let them contemplate their sins', (context) => {
                 const target = context.target;
                 return [
                     target.fate > 0 ? ', recovering their ' + target.fate + ' fate' : ''

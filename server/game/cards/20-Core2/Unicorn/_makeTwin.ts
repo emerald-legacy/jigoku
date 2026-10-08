@@ -15,7 +15,7 @@ import { DeckType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
-export function makeTwin(id: string, opt: { siblingName: string; title: string; effect: string }) {
+export function makeTwin(id: string, opt: { siblingName: string; title: string; chatText: string }) {
     return class Twin extends DrawCard {
         static id = id;
 
@@ -80,7 +80,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                         );
                     }
                 })
-                .effect(opt.effect);
+                .chatText(opt.chatText);
         }
     };
 }

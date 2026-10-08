@@ -12,7 +12,7 @@ class SuperiorAuthority extends DrawCard {
                     return (card) => card.getFate() === 0 && card.checkRestrictions('', context);
                 })
             })))
-            .effect('make it so that participating characters with 0 fate cannot contribute skill to conflict resolution');
+            .chatText('make it so that participating characters with 0 fate cannot contribute skill to conflict resolution');
     }
 }
 

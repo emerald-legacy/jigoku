@@ -15,6 +15,6 @@ export default class MotoRaiju extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonus(context))
             }))
-            .effect((context) => msg`give itself +${bonus(context)}${'military'} until the end of the conflict`);
+            .chatText((context) => msg`give itself +${bonus(context)}${'military'} until the end of the conflict`);
     }
 }

@@ -19,7 +19,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyBothSkills(skillBonus(context.target))
             }))
-            .effect('get +{1}{2} and +{3}{4}', (context) => {
+            .chatText('get +{1}{2} and +{3}{4}', (context) => {
                 const bonus = skillBonus(context.target);
                 return [bonus, 'military', bonus, 'political'];
             });

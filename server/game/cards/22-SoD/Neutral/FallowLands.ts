@@ -20,6 +20,6 @@ export default class FallowLands extends ProvinceCard {
                     target: context.player
                 }))
             ]))
-            .effect('draw 1 card, gain 1 fate, and gain 1 honor');
+            .chatText('draw 1 card, gain 1 fate, and gain 1 honor');
     }
 }

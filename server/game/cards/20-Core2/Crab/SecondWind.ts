@@ -50,7 +50,7 @@ export default class SecondWind extends DrawCard {
                     messageArgs: (card) => [context.player, card, context.source]
                 }))
             ]))
-            .effect((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
+            .chatText((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
             .cannotTargetFirst();
     }
 }

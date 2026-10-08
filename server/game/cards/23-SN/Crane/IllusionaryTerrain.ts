@@ -40,6 +40,6 @@ export default class IllusionaryTerrain extends DrawCard {
                 targetLocation: Location.Any,
                 effect: context.target ? copyProvince(context.target) : []
             })))
-            .effect('transform the attacked province into a copy of {0}');
+            .chatText('transform the attacked province into a copy of {0}');
     }
 }

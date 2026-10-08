@@ -17,7 +17,7 @@ class SecludedShrine extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: considerRingAsClaimed((player) => player === context.player)
             })))
-            .effect('make it so that they are considered to have claimed {0} until the end of the phase');
+            .chatText('make it so that they are considered to have claimed {0} until the end of the phase');
     }
 }
 

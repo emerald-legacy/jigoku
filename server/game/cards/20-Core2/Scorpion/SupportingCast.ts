@@ -40,7 +40,7 @@ export default class SupportingCast extends DrawCard {
             })), cardLastingEffect({
                 effect: modifyMilitarySkill(3)
             }))
-            .effect((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
+            .chatText((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
             .max(perConflict(1));
     }
 }

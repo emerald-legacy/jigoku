@@ -41,7 +41,7 @@ export default class APlagueOfYokai extends DrawCard {
                     })
                 ]
             })))
-            .effect('infect {0}');
+            .chatText('infect {0}');
     }
 
     private getCopiesInDeck(context: AbilityContext) {

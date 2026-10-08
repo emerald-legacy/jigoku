@@ -16,7 +16,7 @@ class Blackmail extends DrawCard {
             }, cardLastingEffect(context => ({
                 effect: takeControl(context.player)
             })))
-            .effect('take control of {0}');
+            .chatText('take control of {0}');
     }
 
     canPlay(context: AbilityContext, playType = 'play'): boolean {

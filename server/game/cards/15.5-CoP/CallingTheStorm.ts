@@ -28,7 +28,7 @@ class CallingTheStorm extends DrawCard {
                     effect: showTopConflictCard(Players.Self)
                 }))
             ]))
-            .effect('play cards from their conflict deck this phase');
+            .chatText('play cards from their conflict deck this phase');
     }
 }
 

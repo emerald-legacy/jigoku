@@ -30,7 +30,7 @@ export default class HirumasEyes extends DrawCard {
                     effect: modifyMilitarySkill(-2)
                 }))
             })
-            .effect('give {1} {2}2{3} until the end of the conflict', context => [
+            .chatText('give {1} {2}2{3} until the end of the conflict', context => [
                 this.getTargets(context.targets.provinceCard, context),
                 context.selects.select.choice === 'Give +2' ? '+' : '-',
                 'military'

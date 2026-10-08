@@ -48,7 +48,7 @@ export default class Kuro extends DrawCard {
                     falseGameAction: moveToConflict({ target: conditionalContext.source })
                 }))
             ]))
-            .effect('seek the lost treasure \'{1}\'. {2}', (context) => [
+            .chatText('seek the lost treasure \'{1}\'. {2}', (context) => [
                 context.target,
                 context.source.isParticipating()
                     ? 'Kuro returns home with their treasure'

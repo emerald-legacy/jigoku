@@ -16,7 +16,7 @@ class IuchiDaiyu extends DrawCard {
                     context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
                 )
             })))
-            .effect('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => [
+            .chatText('give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})', (context) => [
                 'military',
                 context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
             ]);

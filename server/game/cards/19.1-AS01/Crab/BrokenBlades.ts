@@ -30,7 +30,7 @@ export default class BrokenBlades extends DrawCard {
                 })),
                 discardFromPlay()
             ]))
-            .effect('ensure {0} is gone!{1}{2}{3}', (context) => {
+            .chatText('ensure {0} is gone!{1}{2}{3}', (context) => {
                 const target = context.target;
                 return target.fate < 1
                     ? []

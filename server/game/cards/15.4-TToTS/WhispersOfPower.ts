@@ -20,7 +20,7 @@ class WhispersOfPower extends DrawCard {
                     this.getPoliticalPowerChange(context)
                 )
             })))
-            .effect('grant {0} +{1} {2} until the end of the conflict', (context) => [this.getPoliticalPowerChange(context), 'political']);
+            .chatText('grant {0} +{1} {2} until the end of the conflict', (context) => [this.getPoliticalPowerChange(context), 'political']);
     }
 
     private getPoliticalPowerChange(context: AbilityContext) {

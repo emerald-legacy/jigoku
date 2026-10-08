@@ -16,6 +16,6 @@ export default class CycleOfVengeance extends ProvinceCard {
                 placeFate(),
                 honor()
             ]))
-            .effect('honor and place a fate on {0}');
+            .chatText('honor and place a fate on {0}');
     }
 }

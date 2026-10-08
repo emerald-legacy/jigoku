@@ -26,7 +26,7 @@ export default class LoyalAttendant extends DrawCard {
                     ]
                 };
             }))
-            .effect('look at {2} random cards in {1}\'s hand and discard one of them', (context) => [
+            .chatText('look at {2} random cards in {1}\'s hand and discard one of them', (context) => [
                 context.player.opponent,
                 context.target.attachments.length
             ])

@@ -19,7 +19,7 @@ class GiveNoGround extends DrawCard {
                     cannotApplyLastingEffects((effect) => effect && effect.isSkillModifier() && ((effect.getValue() ?? 0) < 0 || effect.getValue(context.target) < 0))
                 ]
             })))
-            .effect('give +2{1} to {0} and prevent its skills from being reduced', () => (['military']));
+            .chatText('give +2{1} to {0} and prevent its skills from being reduced', () => (['military']));
     }
 }
 

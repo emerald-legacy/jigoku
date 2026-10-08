@@ -11,7 +11,7 @@ export default class WorkInProgress extends DrawCard {
             .cost(nameCardType())
             .condition((context) => context.player.conflictDeck.length >= revealCount(context, 'artisan'))
             .handler((context) => takeUpToTwoOfNamedType(context, context.costs.reveal ?? [], context.costs.namedCardType))
-            .effect('take cards into their hand')
+            .chatText('take cards into their hand')
             .cannotBeMirrored();
     }
 }

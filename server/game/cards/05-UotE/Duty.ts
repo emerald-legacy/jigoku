@@ -17,7 +17,7 @@ class Duty extends DrawCard {
                 cancel(),
                 gainHonor((context) => ({ target: context.player }))
             ]))
-            .effect('cancel their honor loss, then gain 1 honor')
+            .chatText('cancel their honor loss, then gain 1 honor')
             .cannotBeMirrored();
     }
 }

@@ -43,7 +43,7 @@ export default class PalmStrike extends DrawCard {
                     })
                 })
             ]))
-            .effect((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
+            .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
             .onResolve((context) => {
                 if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
                     context.game.addMessage(

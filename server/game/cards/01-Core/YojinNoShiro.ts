@@ -14,6 +14,6 @@ export default class YojinNoShiro extends StrongholdCard {
                 target: context.player.cardsInPlay.filter((card) => card.isAttacking()),
                 effect: modifyMilitarySkill(1)
             }))
-            .effect(() => msg`give attacking characters +1${'military'}/+0${'political'}`);
+            .chatText(() => msg`give attacking characters +1${'military'}/+0${'political'}`);
     }
 }

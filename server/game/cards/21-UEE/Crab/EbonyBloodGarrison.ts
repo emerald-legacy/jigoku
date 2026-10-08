@@ -37,7 +37,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 context.game.queueSimpleStep(() => reveal({ target: provinces }).resolve(provinces, context));
                 context.game.queueSimpleStep(() => breakProvince({ target: provinces }).resolve(provinces, context));
             })
-            .effect('drag {1} into chaos, as a crisis strikes {2} and {3}', (context) => [
+            .chatText('drag {1} into chaos, as a crisis strikes {2} and {3}', (context) => [
                 context.player.opponent,
                 context.targets[MY_PROVINCE],
                 context.targets[OPP_PROVINCE]

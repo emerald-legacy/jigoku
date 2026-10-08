@@ -23,7 +23,7 @@ class IssueAChallenge extends DrawCard {
                 targetController: context.player,
                 effect: restrictNumberOfDefenders(1)
             }))
-            .effect('prevent {1} from declaring more than 1 defender', (context) => context.player.opponent ? [context.player.opponent] : []);
+            .chatText('prevent {1} from declaring more than 1 defender', (context) => context.player.opponent ? [context.player.opponent] : []);
     }
 }
 

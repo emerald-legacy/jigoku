@@ -18,7 +18,7 @@ class KaiuInventor extends DrawCard {
                 targetLocation: Location.Provinces,
                 effect: increaseLimitOnAbilities()
             }))
-            .effect('add an additional use to each of {0}\'s abilities');
+            .chatText('add an additional use to each of {0}\'s abilities');
     }
 }
 

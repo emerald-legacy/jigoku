@@ -13,6 +13,6 @@ export default class BackhandedCompliment2 extends DrawCard {
                 loseHonor({ target }),
                 draw({ target })
             ])))
-            .effect('make {1} lose an honor and draw a card', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
+            .chatText('make {1} lose an honor and draw a card', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
     }
 }

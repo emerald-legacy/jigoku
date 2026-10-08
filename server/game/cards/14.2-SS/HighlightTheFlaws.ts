@@ -10,7 +10,7 @@ class HighlightTheFlaws extends DrawCard {
                 onInitiateAbilityEffects: event => event.card.type === CardType.Province
             })
             .cancel()
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
+            .chatText('cancel the effects of {1}\'s ability', context => context.event.card);
     }
 }
 

@@ -18,7 +18,7 @@ export default class ALegionOfOne extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(3)
             }))
-            .effect('give {0} +3/+0')
+            .chatText('give {0} +3/+0')
             .mayResolveAgain({ cost: removeFate((context) => ({ target: context.target })), label: 'Remove 1 fate' });
     }
 }

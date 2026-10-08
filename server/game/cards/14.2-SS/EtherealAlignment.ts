@@ -28,7 +28,7 @@ class EtherealAlignment extends DrawCard {
                     destination: Location.RemovedFromGame
                 }))
             ]))
-            .effect('restore {0}');
+            .chatText('restore {0}');
     }
 }
 

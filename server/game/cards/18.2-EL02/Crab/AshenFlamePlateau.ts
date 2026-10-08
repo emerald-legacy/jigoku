@@ -25,6 +25,6 @@ export default class AshenFlamePlateau extends ProvinceCard {
                     })
                 ]
             })))
-            .effect((context) => msg`prevent ${context.player.opponent} from triggering character abilities this conflict`);
+            .chatText((context) => msg`prevent ${context.player.opponent} from triggering character abilities this conflict`);
     }
 }

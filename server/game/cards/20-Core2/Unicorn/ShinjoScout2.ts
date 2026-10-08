@@ -25,6 +25,6 @@ export default class ShinjoScout2 extends DrawCard {
                     effect: cannotTriggerAbilities()
                 })
             }))
-            .effect('avoid the dangers of their exploration');
+            .chatText('avoid the dangers of their exploration');
     }
 }

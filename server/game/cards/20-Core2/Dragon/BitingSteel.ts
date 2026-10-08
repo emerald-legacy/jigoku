@@ -41,7 +41,7 @@ export default class BitingSteel extends DrawCard {
                 ),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add the skill bonus of {0} ({1}) to their duel total', (context) => [getAttachmentSkill(context.target)]);
+            .chatText('add the skill bonus of {0} ({1}) to their duel total', (context) => [getAttachmentSkill(context.target)]);
 
         this.conflictAction('Send an enemy home', { conflictType: ConflictType.Military })
             .condition((context) => context.player.hasAffinity('fire', context))

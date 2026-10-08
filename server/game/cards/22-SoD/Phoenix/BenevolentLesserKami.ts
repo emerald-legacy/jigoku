@@ -39,7 +39,7 @@ export default class BenevolentLesserKami extends DrawCard {
                     effect: addTrait('void')
                 })
             })
-            .effect((context) => msg`gain the ${context.selects.select.choice} trait`);
+            .chatText((context) => msg`gain the ${context.selects.select.choice} trait`);
 
         this.action('Shuffle into deck')
             .gameAction(returnToDeck({

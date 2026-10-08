@@ -21,7 +21,7 @@ class MoveAsOne extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .effect('look at the top eight cards of their deck for a kiho')
+            .chatText('look at the top eight cards of their deck for a kiho')
             .max(perConflict(1));
     }
 }

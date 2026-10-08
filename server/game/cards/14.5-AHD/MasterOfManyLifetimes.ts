@@ -33,7 +33,7 @@ class MasterOfManyLifetimes extends DrawCard {
                     })
                 ])
             }))
-            .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [context.event.card ?? '', context.target?.location ?? '']);
+            .chatText('prevent {1} from leaving play, putting it into {2} instead', (context) => [context.event.card ?? '', context.target?.location ?? '']);
     }
 }
 

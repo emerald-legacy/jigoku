@@ -19,6 +19,6 @@ export default class DeadEyesSensei extends DrawCard {
                     effect: addTrait('berserker')
                 })
             ]))
-            .effect('ready and remove a fate from {0}, giving them the Berserker trait');
+            .chatText('ready and remove a fate from {0}, giving them the Berserker trait');
     }
 }

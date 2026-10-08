@@ -20,7 +20,7 @@ export default class AdeptOfTheWaves extends DrawCard {
                     effect: addKeyword('covert')
                 };
             }))
-            .effect('grant Covert during {1} conflicts to {0}', () => [this.getCurrentElementSymbol(COVERT_ELEMENT)]);
+            .chatText('grant Covert during {1} conflicts to {0}', () => [this.getCurrentElementSymbol(COVERT_ELEMENT)]);
     }
 
     getPrintedElementSymbols() {

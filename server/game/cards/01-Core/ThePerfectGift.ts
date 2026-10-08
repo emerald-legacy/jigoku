@@ -43,7 +43,7 @@ class ThePerfectGift extends DrawCard {
                     deck: Location.ConflictDeck
                 }))
             ]))
-            .effect('give each player a gift');
+            .chatText('give each player a gift');
     }
 }
 

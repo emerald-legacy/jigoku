@@ -18,7 +18,7 @@ export default class HouseOfLeaves extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyGlory(2)
             }))
-            .effect('give +2 glory to {0} for this phase')
+            .chatText('give +2 glory to {0} for this phase')
             .phase(Phase.Conflict);
     }
 }

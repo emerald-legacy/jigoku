@@ -32,7 +32,7 @@ class SoshiAoi extends DrawCard {
                         addTrait('courtier')]
                 }))
             })
-            .effect('{1}{2}', context => {
+            .chatText('{1}{2}', context => {
                 if(context.selects.select.choice === 'Give +1/+0 and the Bushi trait') {
                     return ['give +1/+0 and the bushi trait to ', context.targets.character];
                 }

@@ -19,7 +19,7 @@ class ShadowedVillage extends DrawCard {
             .draw((context) => ({
                 amount: context.event.origin instanceof BaseCard && context.event.origin.isDishonored ? 2 : 1
             }))
-            .effect('draw {1} card{2}', (context) => (context.event.origin instanceof BaseCard && context.event.origin.isDishonored ? ['2', 's'] : ['a', '']));
+            .chatText('draw {1} card{2}', (context) => (context.event.origin instanceof BaseCard && context.event.origin.isDishonored ? ['2', 's'] : ['a', '']));
     }
 }
 

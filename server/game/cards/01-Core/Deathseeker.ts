@@ -16,7 +16,7 @@ class Deathseeker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent
             }, injure())
-            .effect('{1} {0}', (context) => context.target.getFate() > 0 ? 'remove 1 fate from' : 'discard');
+            .chatText('{1} {0}', (context) => context.target.getFate() > 0 ? 'remove 1 fate from' : 'discard');
     }
 }
 

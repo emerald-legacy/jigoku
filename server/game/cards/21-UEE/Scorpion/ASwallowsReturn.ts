@@ -43,7 +43,7 @@ export default class ASwallowsReturn extends DrawCard {
                     target: (context.costs.reveal ?? []).filter((card) => card.location === Location.ConflictDeck)
                 }))
             ]))
-            .effect('choose one of those to play')
+            .chatText('choose one of those to play')
             .cannotBeMirrored();
     }
 }

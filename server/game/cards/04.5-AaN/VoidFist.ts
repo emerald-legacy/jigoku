@@ -17,7 +17,7 @@ class VoidFist extends DrawCard {
                         myCard.hasTrait('monk') && myCard.militarySkill >= card.militarySkill
                     )
             }, bow(), sendHome())
-            .effect('bow {0} and send them home');
+            .chatText('bow {0} and send them home');
     }
 }
 

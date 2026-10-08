@@ -23,11 +23,11 @@ export default class EbbAndFlow extends DrawCard {
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .effect((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
+            .chatText((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
             .afterwardsIf((context) => context.player.fate > 0 && loseFate().canAffect(context.player, context))
             .onAffinity(Element.Water, {
                 prompt: 'Pay 1 fate to swap abilities?',
-                effect: (context) => msg`swap the abilities of ${context.targets.mine} and ${context.targets.opponents}`
+                chatText: (context) => msg`swap the abilities of ${context.targets.mine} and ${context.targets.opponents}`
             })
             .gameAction(joint([
                 loseFate(),

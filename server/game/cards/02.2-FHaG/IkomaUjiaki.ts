@@ -29,7 +29,7 @@ class IkomaUjiaki extends DrawCard {
                     gameAction: putIntoConflict()
                 }))
             ]))
-            .effect('reveal their dynasty cards and put up to two of them into play');
+            .chatText('reveal their dynasty cards and put up to two of them into play');
     }
 }
 

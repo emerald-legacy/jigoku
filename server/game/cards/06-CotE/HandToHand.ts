@@ -11,7 +11,7 @@ class HandToHand extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
             }, discardFromPlay())
-            .effect('discard {0} from play')
+            .chatText('discard {0} from play')
             .opponentMayResolveAgain('Resolve Hand to Hand\'s ability again?');
     }
 }

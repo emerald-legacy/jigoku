@@ -9,7 +9,7 @@ class PerfectLandEthos extends DrawCard {
             .gameAction(discardStatusToken(context => ({
                 target: context.game.findAnyCardsInAnyList((card) => card.hasStatusTokens).flatMap((card) => card.statusTokens)
             })))
-            .effect('discard each status token');
+            .chatText('discard each status token');
     }
 }
 

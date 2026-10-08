@@ -28,7 +28,7 @@ class AcolyteOfKoyane extends DrawCard {
                     target: context.targets.character
                 }))
             })
-            .effect('{1} until the end of the conflict', context => [[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]]);
+            .chatText('{1} until the end of the conflict', context => [[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]]);
     }
 }
 

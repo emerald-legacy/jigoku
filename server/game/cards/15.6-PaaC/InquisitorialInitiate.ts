@@ -33,7 +33,7 @@ export default class InquisitorialInitiate extends DrawCard {
                     messageArgs: (card, player) => [player, card]
                 }))
             ]))
-            .effect((context) => {
+            .chatText((context) => {
                 const count = context.targets.target.length;
                 return msg`make ${context.player.opponent} reveal ${count} card${count === 1 ? '' : 's'} and discard ${count === 1 ? 'it' : 'one of them'}`;
             });

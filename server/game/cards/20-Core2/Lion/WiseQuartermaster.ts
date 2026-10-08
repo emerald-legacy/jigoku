@@ -30,6 +30,6 @@ export default class WiseQuartermaster extends DrawCard {
                     gameAction: attach({ attachment: context.target })
                 };
             }))
-            .effect('move {0} to another {1}', (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']);
+            .chatText('move {0} to another {1}', (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']);
     }
 }

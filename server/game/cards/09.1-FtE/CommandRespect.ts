@@ -17,7 +17,7 @@ class CommandRespect extends DrawCard {
                     sourceContext.source.type === CardType.Event ? [costs.giveHonorToOpponent(1)] : []
                 )
             }))
-            .effect('force {1} to give them an honor as an additional cost to play an event until the end of the conflict', context => [context.player.opponent])
+            .chatText('force {1} to give them an honor as an additional cost to play an event until the end of the conflict', context => [context.player.opponent])
             .max(perConflict(1));
     }
 }

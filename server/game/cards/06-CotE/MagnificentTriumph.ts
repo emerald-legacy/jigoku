@@ -24,6 +24,6 @@ export default class MagnificentTriumph extends DrawCard {
                     })
                 ]
             })))
-            .effect('give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent\'s events', () => ['military', 'political']);
+            .chatText('give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent\'s events', () => ['military', 'political']);
     }
 }

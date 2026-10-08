@@ -14,7 +14,7 @@ class HirumaSkirmisher extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: addKeyword('covert')
             })
-            .effect('give itself Covert until the end of the phase');
+            .chatText('give itself Covert until the end of the phase');
     }
 }
 

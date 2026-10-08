@@ -24,6 +24,6 @@ export default class AsakoMaezawa2 extends DrawCard {
                     falseGameAction: draw({ amount: 0 }) //do nothing
                 })
             ]))
-            .effect('bow {0}');
+            .chatText('bow {0}');
     }
 }

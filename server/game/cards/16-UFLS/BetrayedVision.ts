@@ -28,7 +28,7 @@ export default class BetrayedVision extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: copyCard(context.targets.cardToCopy)
             })))
-            .effect((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
+            .chatText((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

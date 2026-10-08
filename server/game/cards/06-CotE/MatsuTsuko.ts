@@ -11,6 +11,6 @@ export default class MatsuTsuko extends DrawCard {
                 targetController: context.player,
                 effect: reduceNextPlayedCardCost(2)
             }))
-            .effect('reduce the cost of their next card played this conflict by 2');
+            .chatText('reduce the cost of their next card played this conflict by 2');
     }
 }

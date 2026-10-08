@@ -64,6 +64,6 @@ export default class UndeadHorror extends BaseOni {
                     ]
                 };
             }))
-            .effect('attach a random character from {1}\'s dynasty discard pile to {2}', (context) => [context.player.opponent, context.source]);
+            .chatText('attach a random character from {1}\'s dynasty discard pile to {2}', (context) => [context.player.opponent, context.source]);
     }
 }

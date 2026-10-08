@@ -19,7 +19,7 @@ class AdornedTemple extends DrawCard {
             .draw((context) => ({
                 amount: context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? 2 : 1
             }))
-            .effect('draw {1} card{2}', (context) => (context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']));
+            .chatText('draw {1} card{2}', (context) => (context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']));
     }
 }
 

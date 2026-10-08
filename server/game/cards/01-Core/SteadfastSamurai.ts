@@ -18,7 +18,7 @@ class SteadfastSamurai extends DrawCard {
                     cardCannot('discardFromPlay')
                 ]
             })
-            .effect('stop him being discarded or losing fate in this phase');
+            .chatText('stop him being discarded or losing fate in this phase');
     }
 }
 

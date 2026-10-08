@@ -22,7 +22,7 @@ class KarmicTwist extends DrawCard {
                     amount: context.target?.getFate() ?? 0
                 })
             })))
-            .effect('move fate from {0} to another non-unique character');
+            .chatText('move fate from {0} to another non-unique character');
     }
 }
 

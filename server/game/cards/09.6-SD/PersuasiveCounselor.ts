@@ -11,7 +11,7 @@ class PersuasiveCounselor extends DrawCard {
                 targetController: context.player,
                 effect: eventsCannotBeCancelled()
             }))
-            .effect('prevent their events from being cancelled this conflict');
+            .chatText('prevent their events from being cancelled this conflict');
     }
 }
 

@@ -13,7 +13,7 @@ class RaiseTheAlarm extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.isInConflictProvince() && card.isFacedown()
             }, flipDynasty())
-            .effect('flip the card in the conflict province faceup')
+            .chatText('flip the card in the conflict province faceup')
             .cannotBeMirrored()
             .then()
             .handler((context) => {

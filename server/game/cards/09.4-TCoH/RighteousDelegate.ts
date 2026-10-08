@@ -44,7 +44,7 @@ class RighteousDelegate extends DrawCard {
                     };
                 })
             ]))
-            .effect('give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}', () => ['military', 'political']);
+            .chatText('give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}', () => ['military', 'political']);
     }
 }
 

@@ -25,7 +25,7 @@ class BayushiShoju extends DrawCard {
                     })
                 ]
             })))
-            .effect('reduce {0}\'s political skill by 1 - they will die if they reach 0')
+            .chatText('reduce {0}\'s political skill by 1 - they will die if they reach 0')
             .limit(perRound(2));
     }
 }

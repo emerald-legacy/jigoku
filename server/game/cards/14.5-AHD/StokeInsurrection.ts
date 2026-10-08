@@ -42,7 +42,7 @@ export default class StokeInsurrection extends DrawCard {
                     gameAction: putIntoConflict()
                 }))
             ]))
-            .effect('reveal {1}\'s dynasty cards and put up to two of them into play', (context) => context.player.opponent ? [context.player.opponent] : []);
+            .chatText('reveal {1}\'s dynasty cards and put up to two of them into play', (context) => context.player.opponent ? [context.player.opponent] : []);
     }
 
     private getFaceDownProvinceCards(player: Player) {

@@ -25,7 +25,7 @@ class JewelOfTheKhamasin extends DrawCard {
                     effect: modifyProvinceStrength(-1)
                 }))
             }))
-            .effect('reduce an attacked province strength by 1')
+            .chatText('reduce an attacked province strength by 1')
             .limit(unlimitedPerConflict());
     }
 }

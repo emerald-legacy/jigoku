@@ -21,6 +21,6 @@ export default class ShatteredBladePass extends ProvinceCard {
                     effect: additionalAction()
                 }))
             ]))
-            .effect('ready {0} and move it into the conflict, taking an additional action');
+            .chatText('ready {0} and move it into the conflict, taking an additional action');
     }
 }

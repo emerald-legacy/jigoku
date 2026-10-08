@@ -22,8 +22,8 @@ export interface SelectTokenProperties extends TokenActionProperties {
     message?: string;
     messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => MsgArg[];
     gameAction: GameAction;
-    effect?: string;
-    effectArgs?: (context: AbilityContext) => EffectArg[];
+    chatText?: string;
+    chatTextArgs?: (context: AbilityContext) => EffectArg[];
 }
 
 export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<
@@ -40,11 +40,11 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         subActionProperties: (tokens: StatusToken | StatusToken[]) => ({ target: tokens })
     };
 
-    /** A custom `effect` brings its own arguments, from `{0}` on. */
+    /** A custom `chatText` brings its own arguments, from `{0}` on. */
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { effect, effectArgs } = this.getProperties(context);
-        if(effect) {
-            return [effect, (effectArgs && effectArgs(context)) || []];
+        const { chatText, chatTextArgs } = this.getProperties(context);
+        if(chatText) {
+            return [chatText, (chatTextArgs && chatTextArgs(context)) || []];
         }
         return super.getEffectMessage(context, additionalProperties);
     }

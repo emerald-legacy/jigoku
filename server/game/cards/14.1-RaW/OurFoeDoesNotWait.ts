@@ -26,7 +26,7 @@ class OurFoeDoesNotWait extends DrawCard {
                     destination: context.target.location
                 })
             }))
-            .effect('look at the top eight cards of their dynasty deck')
+            .chatText('look at the top eight cards of their dynasty deck')
             .max(perConflictOpportunity(1));
     }
 }

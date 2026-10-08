@@ -16,6 +16,6 @@ export default class ShibaBodyguard extends DrawCard {
             }, placeFate((context) => ({
                 origin: context.player
             })))
-            .effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.player]);
+            .chatText('place a fate from {1}\'s fate pool on {0}', (context) => [context.player]);
     }
 }

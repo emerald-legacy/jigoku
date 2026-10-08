@@ -29,6 +29,6 @@ export default class CripplingCurse extends DrawCard {
                     target: cardsInPlay(context, (c) => c.getFate() !== 0)
                 }))
             ]))
-            .effect('discard all characters without fate and remove 1 fate from each character with fate');
+            .chatText('discard all characters without fate and remove 1 fate from each character with fate');
     }
 }

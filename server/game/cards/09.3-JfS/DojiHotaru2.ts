@@ -25,7 +25,7 @@ class DojiHotaru2 extends DrawCard {
                 }
             })
             .gainHonor()
-            .effect('gain 1 honor')
+            .chatText('gain 1 honor')
             .limit(unlimitedPerConflict());
     }
 }

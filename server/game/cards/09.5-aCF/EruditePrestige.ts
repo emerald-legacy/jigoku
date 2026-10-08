@@ -19,7 +19,7 @@ class EruditePrestige extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyPoliticalSkill(1)
             }))
-            .effect((context) => msg`give +1${'political'} to ${context.source.parentCharacter}`)
+            .chatText((context) => msg`give +1${'political'} to ${context.source.parentCharacter}`)
             .limit(unlimitedPerConflict());
     }
 }

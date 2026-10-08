@@ -10,7 +10,7 @@ class FourTemplesAdvisor extends DrawCard {
                 onMoveFate: (event, context) => event.origin && event.origin.type === 'ring' && event.recipient === context.player
             })
             .draw()
-            .effect('draw a card')
+            .chatText('draw a card')
             .limit(unlimitedPerConflict());
     }
 }

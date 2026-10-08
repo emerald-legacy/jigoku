@@ -11,6 +11,6 @@ export default class PassionatePoet extends DrawCard {
                 target: context.game.currentConflict?.getCharacters(context.player.opponent),
                 effect: modifyBothSkills(-1)
             }))
-            .effect(() => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`);
+            .chatText(() => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`);
     }
 }

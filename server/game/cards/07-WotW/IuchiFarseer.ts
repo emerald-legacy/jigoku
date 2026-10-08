@@ -15,7 +15,7 @@ class IuchiFarseer extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Opponent
             }, reveal())
-            .effect('reveal {0}');
+            .chatText('reveal {0}');
     }
 }
 

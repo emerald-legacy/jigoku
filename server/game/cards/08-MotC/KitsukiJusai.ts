@@ -20,7 +20,7 @@ class KitsukiJusai extends DrawCard {
                 messageArgs: ring => [context.player, context.player.opponent, ring],
                 gameAction: placeFateOnRing({ origin: context.player.opponent })
             })))
-            .effect((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);
+            .chatText((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);
     }
 }
 

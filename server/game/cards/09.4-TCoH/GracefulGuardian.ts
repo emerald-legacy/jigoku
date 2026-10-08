@@ -16,7 +16,7 @@ class GracefulGuardian extends DrawCard {
                     amount: 1
                 })
             })
-            .effect('increase the cost of cards played by 1 for each player\'s next action opportunity');
+            .chatText('increase the cost of cards played by 1 for each player\'s next action opportunity');
     }
 }
 

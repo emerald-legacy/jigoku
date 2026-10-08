@@ -20,10 +20,10 @@ export default class EarthsExamination extends DrawCard {
                     trait: 'earth',
                     prompt: context.target.isTainted ? undefined : 'Bow that character?',
                     gameAction: bow(),
-                    effect: 'bow {0}',
-                    effectArgs: (context) => [context.target]
+                    chatText: 'bow {0}',
+                    chatTextArgs: (context) => [context.target]
                 }))
             ]))
-            .effect((context) => msg`reveal ${context.target ?? ''}'s corruption`);
+            .chatText((context) => msg`reveal ${context.target ?? ''}'s corruption`);
     }
 }

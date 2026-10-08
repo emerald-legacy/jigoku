@@ -32,7 +32,7 @@ export default class CloudHands extends DrawCard {
                     target: context.targets.myCharacter
                 }))
             ]))
-            .effect('honor {1} and set their base skills to equal {2}\'s base skills', context => [context.targets.myCharacter, context.targets.oppCharacter])
+            .chatText('honor {1} and set their base skills to equal {2}\'s base skills', context => [context.targets.myCharacter, context.targets.oppCharacter])
             .max(perConflict(1));
     }
 }

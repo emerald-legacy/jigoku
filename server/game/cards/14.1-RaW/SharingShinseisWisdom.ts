@@ -24,6 +24,6 @@ export default class SharingShinseisWisdom extends ProvinceCard {
                     origin: context.target
                 })
             })))
-            .effect('move 1 fate from {0} to another character');
+            .chatText('move 1 fate from {0} to another character');
     }
 }

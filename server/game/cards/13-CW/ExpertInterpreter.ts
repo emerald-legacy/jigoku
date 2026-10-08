@@ -41,7 +41,7 @@ class ExpertInterpreter extends DrawCard {
                     restricts: 'characters'
                 })
             })))
-            .effect('prevent characters from entering play while the {1} is contested{2}', (context) => [
+            .chatText('prevent characters from entering play while the {1} is contested{2}', (context) => [
                 context.rings.myRing,
                 honorTransferMessage(context, context.rings.oppRing, (name) => 'also apply this effect to the ' + name)
             ]);

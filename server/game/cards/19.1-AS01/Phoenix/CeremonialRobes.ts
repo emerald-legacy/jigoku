@@ -67,7 +67,7 @@ export default class CeremonialRobes extends DrawCard {
 
                 this.resolveSteps(context, steps, context.player.dynastyDeck.slice(0, 3));
             })
-            .effect('look at the top 3 cards of their dynasty deck')
+            .chatText('look at the top 3 cards of their dynasty deck')
             .evenDuringDynasty();
     }
 

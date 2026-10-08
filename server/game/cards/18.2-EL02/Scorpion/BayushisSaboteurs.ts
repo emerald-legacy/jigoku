@@ -48,6 +48,6 @@ export default class BayushisSaboteurs extends DrawCard {
                     target: defender(context).getDynastyCardsInProvince(Location.Provinces)
                 }))
             })
-            .effect('{1} all of {2}\'s dynasty cards', (context) => [context.select === DISCARD ? 'discard' : 'flip facedown', defender(context)]);
+            .chatText('{1} all of {2}\'s dynasty cards', (context) => [context.select === DISCARD ? 'discard' : 'flip facedown', defender(context)]);
     }
 }

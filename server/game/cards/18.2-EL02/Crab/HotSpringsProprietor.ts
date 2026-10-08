@@ -16,7 +16,7 @@ class HotSpringsProprietor extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 1,
                 gameAction: putIntoPlay()
             })
-            .effect('search their dynasty deck for a character with printed cost 1 or less and put it into play');
+            .chatText('search their dynasty deck for a character with printed cost 1 or less and put it into play');
     }
 }
 

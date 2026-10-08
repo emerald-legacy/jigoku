@@ -18,7 +18,7 @@ class Gossip extends DrawCard {
                     params: context.costs.namedCard
                 })
             }))
-            .effect('prevent {1} from playing cards named {2} from their hand this phase', (context) => [context.player.opponent, context.costs.namedCard]);
+            .chatText('prevent {1} from playing cards named {2} from their hand this phase', (context) => [context.player.opponent, context.costs.namedCard]);
     }
 }
 

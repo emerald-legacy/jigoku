@@ -31,6 +31,6 @@ export default class EmperorsSummons extends ProvinceCard {
                     ]
                 })
             })))
-            .effect('choose a character to place in a province');
+            .chatText('choose a character to place in a province');
     }
 }

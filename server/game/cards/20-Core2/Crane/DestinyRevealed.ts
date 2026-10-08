@@ -37,7 +37,7 @@ export default class DestinyRevealed extends DrawCard {
                 onCardReadied: targetedByOpponentRingEffect
             })
             .cancel()
-            .effect((context) => msg`cancel the effects of the ${context.event.context?.source}`);
+            .chatText((context) => msg`cancel the effects of the ${context.event.context?.source}`);
     }
 }
 

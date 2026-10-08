@@ -27,7 +27,7 @@ export default class DeployedGarrison extends DrawCard {
             .cardLastingEffect({
                 effect: doesNotBow()
             })
-            .effect('not bow during the conflict resolution');
+            .chatText('not bow during the conflict resolution');
     }
 
     private conflictNearHolding(context: AbilityContext, conflict: Conflict) {

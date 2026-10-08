@@ -13,6 +13,6 @@ export default class LordsAscendancy extends ProvinceCard {
             }, placeFate((context) => ({
                 origin: context.target.controller
             })))
-            .effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller]);
+            .chatText('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller]);
     }
 }

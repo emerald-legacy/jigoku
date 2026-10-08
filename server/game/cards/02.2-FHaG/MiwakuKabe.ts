@@ -10,7 +10,7 @@ class MiwakuKabe extends DrawCard {
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
             })
             .gameAction(returnToDeck({ shuffle: true }))
-            .effect('shuffle itself back into the dynasty deck');
+            .chatText('shuffle itself back into the dynasty deck');
     }
 }
 

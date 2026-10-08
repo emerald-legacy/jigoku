@@ -18,7 +18,7 @@ class Leniency extends DrawCard {
             }, cancel({
                 replacementGameAction: putIntoPlay()
             }))
-            .effect('put {0} into play instead of resolving the ring effect')
+            .chatText('put {0} into play instead of resolving the ring effect')
             .cannotBeMirrored();
     }
 }

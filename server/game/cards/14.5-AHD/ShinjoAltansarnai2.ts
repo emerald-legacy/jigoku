@@ -35,7 +35,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .effect('search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict');
+            .chatText('search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict');
     }
 }
 

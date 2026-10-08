@@ -21,6 +21,6 @@ export default class YoungIseZumi extends DrawCard {
                 target: context.costs.ringPaidFateTo || context.game.rings.air,
                 effect: cannotDeclareRing(() => true)
             })))
-            .effect((context) => msg`prevent conflicts from being declared with the ${context.costs.ringPaidFateTo}`);
+            .chatText((context) => msg`prevent conflicts from being declared with the ${context.costs.ringPaidFateTo}`);
     }
 }

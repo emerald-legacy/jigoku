@@ -22,7 +22,7 @@ export default class VengefulKami extends DrawCard {
                         .getConflictProvinces()
                         .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict) && province.getElement().includes(ring.element))
             }, resolveRingEffect())
-            .effect('resolve the {0} effect')
+            .chatText('resolve the {0} effect')
             .max(perConflict(1));
 
         this.persistentEffect({

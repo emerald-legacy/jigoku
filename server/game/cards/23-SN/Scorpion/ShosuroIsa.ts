@@ -21,7 +21,7 @@ export default class ShosuroIsa extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => !card.isUnique()
             }, putIntoPlay())
-            .effect('manifest a shadow of {0}')
+            .chatText('manifest a shadow of {0}')
             .afterwardsIf((context) => context.target.location === Location.PlayArea)
             .gameAction(
                 cardLastingEffect((context) => ({

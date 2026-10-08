@@ -24,6 +24,6 @@ export default class MatsuTsuko2 extends DrawCard {
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: breakProvince()
             }))
-            .effect('break an attacked province');
+            .chatText('break an attacked province');
     }
 }

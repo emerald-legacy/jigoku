@@ -17,7 +17,7 @@ class AsahinaArtisan extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyPoliticalSkill(3)
             }))
-            .effect('give {0} +3{1} skill', () => 'political');
+            .chatText('give {0} +3{1} skill', () => 'political');
     }
 }
 

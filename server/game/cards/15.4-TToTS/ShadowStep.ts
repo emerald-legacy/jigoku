@@ -28,7 +28,7 @@ class ShadowStep extends DrawCard {
                     }))
                 })
             ]))
-            .effect('remove {0} from the game, then put it back into play');
+            .chatText('remove {0} from the game, then put it back into play');
     }
 }
 

@@ -81,6 +81,6 @@ export default class KitsukiMasanori extends DrawCard {
                     };
                 })
             ]))
-            .effect('search for a Technique or Title');
+            .chatText('search for a Technique or Title');
     }
 }

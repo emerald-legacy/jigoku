@@ -20,7 +20,7 @@ class Enlightenment extends DrawCard {
                     }
                 })
             ]))
-            .effect('resolve all claimed ring effects');
+            .chatText('resolve all claimed ring effects');
     }
 }
 

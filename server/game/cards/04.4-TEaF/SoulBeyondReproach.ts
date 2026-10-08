@@ -14,7 +14,7 @@ class SoulBeyondReproach extends DrawCard {
                 honor(),
                 honor()
             ]))
-            .effect('honor {0}, then honor it again');
+            .chatText('honor {0}, then honor it again');
     }
 }
 

@@ -13,7 +13,7 @@ class MatsuKoso extends DrawCard {
                 target: this.getTargets(context),
                 effect: modifyMilitarySkill((card) => -card.printedPoliticalSkill)
             }))
-            .effect((context) => msg`lower the military skill of ${this.getTargets(context)} by their respective printed political skill`);
+            .chatText((context) => msg`lower the military skill of ${this.getTargets(context)} by their respective printed political skill`);
     }
 
     // A dash or 0 printed political skill would change nothing, and applying the effect

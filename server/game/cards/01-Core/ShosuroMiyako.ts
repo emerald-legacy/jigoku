@@ -29,6 +29,6 @@ export default class ShosuroMiyako extends DrawCard {
                     gameAction: dishonor()
                 }))
             })
-            .effect((context) => msg`force ${context.player.opponent ?? ''} to ${context.select.toLowerCase()}`);
+            .chatText((context) => msg`force ${context.player.opponent ?? ''} to ${context.select.toLowerCase()}`);
     }
 }

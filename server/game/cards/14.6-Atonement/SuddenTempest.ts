@@ -26,7 +26,7 @@ class SuddenTempest extends DrawCard {
                     })
                 }))
             ]))
-            .effect('remove the {0} from the unclaimed ring pool until the end of the round');
+            .chatText('remove the {0} from the unclaimed ring pool until the end of the round');
     }
 }
 

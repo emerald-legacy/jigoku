@@ -38,7 +38,7 @@ class ExpertBartering extends DrawCard {
                     otherwiseAction: discardFromPlay({ target: context.source })
                 }))
             ]))
-            .effect((context) => msg`switch ${context.source} with ${context.target}`)
+            .chatText((context) => msg`switch ${context.source} with ${context.target}`)
             .cannotTargetFirst();
     }
 }

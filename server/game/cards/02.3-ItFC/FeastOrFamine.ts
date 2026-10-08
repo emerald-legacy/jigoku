@@ -22,6 +22,6 @@ export default class FeastOrFamine extends ProvinceCard {
                     origin: context.target
                 })
             })))
-            .effect('move 1 fate from {0} to a character they control');
+            .chatText('move 1 fate from {0} to a character they control');
     }
 }

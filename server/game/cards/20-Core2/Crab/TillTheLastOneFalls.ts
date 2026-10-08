@@ -19,7 +19,7 @@ export default class TillTheLastOneFalls extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(this.bonus(context))
             })))
-            .effect('give {0} +{1}{2}/+{1}{3}', (context) => [this.bonus(context), 'military', 'political'])
+            .chatText('give {0} +{1}{2}/+{1}{3}', (context) => [this.bonus(context), 'military', 'political'])
             .max(perConflict(1));
     }
 

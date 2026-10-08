@@ -26,7 +26,7 @@ class SoshiDiviner extends DrawCard {
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             })))
-            .effect('move {1} to {2}', context => [
+            .chatText('move {1} to {2}', context => [
                 context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
                 context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
             ]);

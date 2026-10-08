@@ -25,7 +25,7 @@ class PurityOfSpirit extends DrawCard {
                     })
                 }))
             ]))
-            .effect('honor {0}. Their status token will be discarded at the end of the conflict');
+            .chatText('honor {0}. Their status token will be discarded at the end of the conflict');
     }
 }
 

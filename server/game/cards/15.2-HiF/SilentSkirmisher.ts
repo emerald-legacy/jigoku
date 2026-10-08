@@ -17,7 +17,7 @@ class SilentSkirmisher extends DrawCard {
             .cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             })
-            .effect(() => msg`give itself +2${'military'}`);
+            .chatText(() => msg`give itself +2${'military'}`);
     }
 }
 

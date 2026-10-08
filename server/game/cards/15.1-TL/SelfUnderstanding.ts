@@ -26,7 +26,7 @@ export default class SelfUnderstanding extends DrawCard {
                     player: context.player,
                     target: context.player.getClaimedRings()
                 })),
-                effect: 'resolve all their claimed ring effects'
+                chatText: 'resolve all their claimed ring effects'
             })
         });
     }

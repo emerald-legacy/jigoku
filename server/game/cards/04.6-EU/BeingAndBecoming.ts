@@ -21,7 +21,7 @@ class BeingAndBecoming extends DrawCard {
                 amount: context.ring.fate,
                 target: context.source.parentCharacter ?? []
             })))
-            .effect((context) => msg`move ${context.ring.fate} fate from ${context.ring} to ${context.source.parentCharacter}`);
+            .chatText((context) => msg`move ${context.ring.fate} fate from ${context.ring} to ${context.source.parentCharacter}`);
     }
 }
 

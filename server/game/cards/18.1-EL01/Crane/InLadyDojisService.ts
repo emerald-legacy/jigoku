@@ -31,7 +31,7 @@ export default class InLadyDojisService extends DrawCard {
                     effect: [cannotBeDeclaredAsDefender()]
                 }))
             })
-            .effect('prevent {1} from being declared as {2} this phase', (context) => [
+            .chatText('prevent {1} from being declared as {2} this phase', (context) => [
                 context.targets.character,
                 context.selects.select.choice === 'Prevent Attacking' ? 'an attacker' : 'a defender'
             ])

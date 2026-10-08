@@ -18,6 +18,6 @@ export default class StrikeBeneathTheVeil extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(context.target ? penalty(context.target) : 0)
             })))
-            .effect('give {0} {1}{2} and {1}{3}', (context) => [penalty(context.target), 'military','political']);
+            .chatText('give {0} {1}{2} and {1}{3}', (context) => [penalty(context.target), 'military','political']);
     }
 }

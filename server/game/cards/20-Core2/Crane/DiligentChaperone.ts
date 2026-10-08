@@ -55,6 +55,6 @@ export default class DiligentChaperone extends DrawCard {
                 message: '{0} honors {1}',
                 messageArgs: (card, player) => [player, card]
             }))
-            .effect('protect the honor of the Crane');
+            .chatText('protect the honor of the Crane');
     }
 }

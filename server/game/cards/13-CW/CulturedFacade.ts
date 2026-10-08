@@ -13,7 +13,7 @@ class CulturedFacade extends DrawCard {
                     restricts: 'eventPlayedByHigherBidPlayer'
                 })
             }))
-            .effect('prevent characters from being targeted by events played by players with a higher bid value than that of the character\'s controller');
+            .chatText('prevent characters from being targeted by events played by players with a higher bid value than that of the character\'s controller');
     }
 }
 

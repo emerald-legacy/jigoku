@@ -13,7 +13,7 @@ class HallOfVictories extends DrawCard {
             .gainHonor(context => ({
                 target: context.game.currentConflict?.winner ?? undefined
             }))
-            .effect((context) => msg`make ${context.game.currentConflict?.winner?.name ?? ''} gain 1 honor`)
+            .chatText((context) => msg`make ${context.game.currentConflict?.winner?.name ?? ''} gain 1 honor`)
             .limit(unlimitedPerConflict());
     }
 }

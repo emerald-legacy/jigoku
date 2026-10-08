@@ -12,7 +12,7 @@ class MinamiKazeRegulars extends DrawCard {
                     context.game.currentConflict?.hasMoreParticipants(context.player)
             })
             .gainFate().draw()
-            .effect('gain a fate and draw a card');
+            .chatText('gain a fate and draw a card');
     }
 }
 

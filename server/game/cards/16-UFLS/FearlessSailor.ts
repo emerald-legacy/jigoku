@@ -15,7 +15,7 @@ class FearlessSailor extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(-2)
             }))
-            .effect('give {0} -2{1}', () => ['military']);
+            .chatText('give {0} -2{1}', () => ['military']);
     }
 }
 

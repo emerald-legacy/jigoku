@@ -38,7 +38,7 @@ export default class IllusionaryDecoy extends DrawCard {
                     }
                 })
             ]))
-            .effect('put {0} into play in the conflict')
+            .chatText('put {0} into play in the conflict')
             .max(perConflict(1))
             .location(Location.Hand);
 

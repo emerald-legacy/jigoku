@@ -19,7 +19,7 @@ class StrideTheWaves extends DrawCard {
                 .sendHome(context => ({ target: context.source.parentCharacter ?? [] }))
             .otherwise()
                 .moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }))
-            .effect('{3} {1} {2}', context => {
+            .chatText('{3} {1} {2}', context => {
                 const parent = context.source.parentCharacter;
                 return [
                     parent ?? '',

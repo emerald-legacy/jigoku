@@ -17,6 +17,6 @@ export default class ShinjoSora extends DrawCard {
                 canEnterConflict: () => true,
                 leavingPlayMessage: '{0} grows tired and decides to have a nap'
             })))
-            .effect('release the hounds');
+            .chatText('release the hounds');
     }
 }

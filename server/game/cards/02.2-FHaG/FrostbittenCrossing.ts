@@ -13,6 +13,6 @@ export default class FrostbittenCrossing extends ProvinceCard {
             .discardFromPlay((context) => ({
                 target: context.target.attachments
             }))
-            .effect('remove all attachments from {0}');
+            .chatText('remove all attachments from {0}');
     }
 }

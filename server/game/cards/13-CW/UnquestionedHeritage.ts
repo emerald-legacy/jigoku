@@ -24,7 +24,7 @@ class UnquestionedHeritage extends DrawCard {
                     otherwiseAction: discardFromPlay({ target: context.target })
                 })
             })))
-            .effect('move {0} to another character');
+            .chatText('move {0} to another character');
     }
 }
 

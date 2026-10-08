@@ -19,7 +19,7 @@ class Shukujo extends DrawCard {
                 title: 'Switch the conflict type',
                 condition: (context) => context.source.isParticipating(),
                 printedAbility: false,
-                effect: 'switch the conflict type',
+                chatText: 'switch the conflict type',
                 gameAction: switchConflictType()
             })
         });

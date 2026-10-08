@@ -15,6 +15,6 @@ export default class Desolation extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()
             }))
-            .effect('blank {1}\'s provinces until the end of the phase', (context) => context.player.opponent?.name ?? '');
+            .chatText('blank {1}\'s provinces until the end of the phase', (context) => context.player.opponent?.name ?? '');
     }
 }

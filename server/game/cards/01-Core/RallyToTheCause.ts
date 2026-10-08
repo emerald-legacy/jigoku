@@ -10,6 +10,6 @@ export default class RallyToTheCause extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source && this.game.isDuringConflict()
             })
             .gameAction(switchConflictType())
-            .effect('switch the conflict type');
+            .chatText('switch the conflict type');
     }
 }

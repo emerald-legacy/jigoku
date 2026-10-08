@@ -17,8 +17,8 @@ class BeliefInTheLittleTeacher extends DrawCard {
                     messageArgs: (token, player) => [player, token],
                     gameAction: discardStatusToken()
                 })),
-                effect: 'discard a status token from {1}',
-                effectArgs: (context) => [context.source]
+                chatText: 'discard a status token from {1}',
+                chatTextArgs: (context) => [context.source]
             })
         });
     }

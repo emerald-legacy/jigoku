@@ -20,6 +20,6 @@ export default class KayoTheShrinetender extends DrawCard {
                     effect: increaseLimitOnAbilities()
                 })
             ]))
-            .effect('ready {0} and add an additional use to each of its abilities');
+            .chatText('ready {0} and add an additional use to each of its abilities');
     }
 }

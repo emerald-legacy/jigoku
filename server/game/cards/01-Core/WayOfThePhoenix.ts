@@ -18,7 +18,7 @@ export default class WayOfThePhoenix extends DrawCard {
                 target: context.ring.getElements().map((element) => this.game.rings[element]),
                 effect: cannotDeclareRing((player) => player === context.player.opponent)
             })))
-            .effect('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent ?? '')
+            .chatText('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent ?? '')
             .max(perPhase(1));
     }
 }

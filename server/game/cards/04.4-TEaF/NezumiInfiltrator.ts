@@ -55,7 +55,7 @@ export default class NezumiInfiltrator extends DrawCard {
                     }
                 }))
             }))
-            .effect('change the province strength of an attacked province')
+            .chatText('change the province strength of an attacked province')
             .max(perConflict(1));
     }
 }

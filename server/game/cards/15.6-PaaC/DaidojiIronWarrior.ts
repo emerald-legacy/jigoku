@@ -19,7 +19,7 @@ class DaidojiIronWarrior extends DrawCard {
                     amount: Math.max(0, context.player.hand.length - 4)
                 }))
             ]))
-            .effect('make both players discard down to 4 cards');
+            .chatText('make both players discard down to 4 cards');
     }
 }
 

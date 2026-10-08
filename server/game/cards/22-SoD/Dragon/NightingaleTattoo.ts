@@ -37,6 +37,6 @@ export default class NightingaleTattoo extends DrawCard {
                 message: (assigned, context) =>
                     msg`${context.player.opponent} chooses ${assigned.shuffle} to be shuffled into ${context.player}'s deck. ${assigned.remove} is removed from the game`
             }))
-            .effect((context) => msg`have ${context.player.opponent} shuffle one of ${context.targets.target} into ${context.player}'s conflict deck`);
+            .chatText((context) => msg`have ${context.player.opponent} shuffle one of ${context.targets.target} into ${context.player}'s conflict deck`);
     }
 }

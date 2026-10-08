@@ -42,7 +42,7 @@ export default class WhiteLotusMethod extends DrawCard {
                     })
                 ]
             })))
-            .effect('move a status token to {1}{2}', (context) => [
+            .chatText('move a status token to {1}{2}', (context) => [
                 context.targets[RECIPIENT],
                 doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''
             ]);

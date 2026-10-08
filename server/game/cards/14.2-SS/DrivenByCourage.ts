@@ -17,7 +17,7 @@ export default class DrivenByCourage extends ProvinceCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(2)
             }))
-            .effect('give {0} +2{1} and +2{2}', () => ['political', 'military'])
+            .chatText('give {0} +2{1} and +2{2}', () => ['political', 'military'])
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 

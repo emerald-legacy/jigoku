@@ -34,7 +34,7 @@ class WickedTetsubo extends DrawCard {
                     effect: setPoliticalSkill(0)
                 }))
             })
-            .effect((context) => msg`set ${context.targets.character}'s ${context.selects.effect.choice.toLowerCase()} skill to 0`);
+            .chatText((context) => msg`set ${context.targets.character}'s ${context.selects.effect.choice.toLowerCase()} skill to 0`);
     }
 }
 

@@ -19,7 +19,7 @@ class Harmonize extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.costLessThan((context.targets.myCharacter.getCost() ?? 0) + 1)
             }, sendHome())
-            .effect((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
+            .chatText((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
             .cannotBeMirrored();
     }
 }

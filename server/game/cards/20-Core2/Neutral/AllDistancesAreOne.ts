@@ -23,13 +23,13 @@ export default class AllDistancesAreOne extends DrawCard {
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card) => [context.player, card]
             }))
-            .effect('move the conflict to another eligible province')
+            .chatText('move the conflict to another eligible province')
             .thenIf((context) => !context.costs.originalProvince?.isBroken)
             .gameAction(onAffinity((context) => ({
                 trait: 'water',
                 prompt: 'Flip the original province facedown?',
-                effect: 'flip {0} facedown',
-                effectArgs: () => [context.costs.originalProvince],
+                chatText: 'flip {0} facedown',
+                chatTextArgs: () => [context.costs.originalProvince],
                 gameAction: turnFacedown({ target: context.costs.originalProvince })
             })));
     }

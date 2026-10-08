@@ -20,7 +20,7 @@ class SakeHouseSmuggler extends DrawCard {
                     effect: reduceNextPlayedCardCost(1, (card) => card.type !== CardType.Event)
                 }))
             ]))
-            .effect('reduce the cost of each player\'s next non-event card by 1')
+            .chatText('reduce the cost of each player\'s next non-event card by 1')
             .phase(Phase.Conflict);
     }
 }

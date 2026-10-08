@@ -26,7 +26,7 @@ export default class AgashaSumiko2 extends DrawCard {
                     amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
                 }))
             ]))
-            .effect((context) => msg`make ${context.player.opponent} ${this.getChatMessage(context)}`);
+            .chatText((context) => msg`make ${context.player.opponent} ${this.getChatMessage(context)}`);
     }
 
     private getChatMessage(context: TriggeredAbilityContext) {

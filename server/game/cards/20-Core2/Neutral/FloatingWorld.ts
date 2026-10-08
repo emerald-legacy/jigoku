@@ -12,6 +12,6 @@ export default class FloatingWorld extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, dishonor())
-            .effect('dishonor {0}');
+            .chatText('dishonor {0}');
     }
 }

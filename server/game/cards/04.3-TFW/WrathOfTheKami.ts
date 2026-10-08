@@ -16,7 +16,7 @@ class WrathOfTheKami extends DrawCard {
                 targetLocation: Location.Provinces,
                 effect: modifyProvinceStrength(1)
             }))
-            .effect('add 1 to the province strength of {1}', context => [context.source.controller.getProvinceCardInProvince(context.source.location)])
+            .chatText('add 1 to the province strength of {1}', context => [context.source.controller.getProvinceCardInProvince(context.source.location)])
             .limit(unlimitedPerConflict());
     }
 }

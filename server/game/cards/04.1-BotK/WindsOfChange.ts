@@ -10,7 +10,7 @@ class WindsOfChange extends DrawCard {
             .gameAction(returnRing(context => ({
                 target: context.game.rings.air
             })))
-            .effect('return the air ring to the unclaimed pool');
+            .chatText('return the air ring to the unclaimed pool');
     }
 }
 

@@ -19,7 +19,7 @@ export default class Firebrand extends DrawCard {
                 player: context.player,
                 target: context.game.rings[this.getCurrentElementSymbol(ELEMENT_TO_RESOLVE)]
             })))
-            .effect((context) => msg`resolve the ${context.game.rings.fire} effect`);
+            .chatText((context) => msg`resolve the ${context.game.rings.fire} effect`);
     }
 
     public getPrintedElementSymbols() {

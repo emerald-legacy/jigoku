@@ -21,7 +21,7 @@ class TaintedHero extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()
             })
-            .effect('blank himself');
+            .chatText('blank himself');
     }
 }
 

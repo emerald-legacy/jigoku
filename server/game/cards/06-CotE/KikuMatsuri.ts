@@ -20,6 +20,6 @@ export default class KikuMatsuri extends ProvinceCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, honor())
-            .effect((context) => msg`honor ${context.targets.myCharacter} and ${context.targets.oppCharacter}`);
+            .chatText((context) => msg`honor ${context.targets.myCharacter} and ${context.targets.oppCharacter}`);
     }
 }

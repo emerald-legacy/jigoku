@@ -19,7 +19,7 @@ export default class CompositeYumi extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyMilitarySkill(1)
             }))
-            .effect((context) => msg`give +1${'military'} to ${context.source.parentCharacter}`)
+            .chatText((context) => msg`give +1${'military'} to ${context.source.parentCharacter}`)
             .limit(unlimitedPerConflict());
     }
 

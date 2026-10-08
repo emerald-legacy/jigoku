@@ -13,7 +13,7 @@ class ShosuroIbuki extends DrawCard {
             .removeFate(context => ({
                 target: context.game.currentConflict?.getParticipants((participant) => participant !== context.source) ?? []
             }))
-            .effect('remove one fate from each other participating character');
+            .chatText('remove one fate from each other participating character');
     }
 }
 

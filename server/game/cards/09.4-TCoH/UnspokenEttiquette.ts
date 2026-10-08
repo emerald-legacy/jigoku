@@ -9,7 +9,7 @@ class UnspokenEtiquette extends DrawCard {
             .dishonor(context => ({
                 target: context.game.currentConflict?.getParticipants((card) => !card.hasTrait('courtier')) ?? []
             }))
-            .effect('dishonor each participating non-courtier');
+            .chatText('dishonor each participating non-courtier');
     }
 }
 

@@ -27,7 +27,7 @@ class ByAnyMeans extends DrawCard {
                 target: context.targets.myCharacter,
                 effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: [SkillType.Military] })
             })))
-            .effect('set {1}\'s base military skill to equal {2}\'s current military skill', context => [context.targets.myCharacter, context.targets.oppCharacter]);
+            .chatText('set {1}\'s base military skill to equal {2}\'s current military skill', context => [context.targets.myCharacter, context.targets.oppCharacter]);
     }
 }
 

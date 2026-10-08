@@ -34,7 +34,7 @@ export default class Hayate extends DrawCard {
                 cardCondition: (card, context) => card !== context.source,
                 optional: true
             }, moveToConflict())
-            .effect('move {0}{1}{2} into the conflict', (context) => [
+            .chatText('move {0}{1}{2} into the conflict', (context) => [
                 !Array.isArray(context.targets.optional) ? ' and ' : '',
                 !Array.isArray(context.targets.optional) ? context.targets.optional : ''
             ]);

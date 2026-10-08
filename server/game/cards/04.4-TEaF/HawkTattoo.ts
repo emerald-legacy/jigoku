@@ -24,7 +24,7 @@ class HawkTattoo extends DrawCard {
                 duration: Duration.UntilPassPriority,
                 effect: context.source.parentCharacter?.hasTrait('monk') ? additionalAction() : []
             })))
-            .effect('move {1} into the conflict{2}', context => [context.source.parentCharacter, context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : '']);
+            .chatText('move {1} into the conflict{2}', context => [context.source.parentCharacter, context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : '']);
     }
 }
 

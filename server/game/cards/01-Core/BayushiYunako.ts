@@ -15,7 +15,7 @@ class BayushiYunako extends DrawCard {
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .effect('switch {0}\'s military and political skill');
+            .chatText('switch {0}\'s military and political skill');
     }
 }
 

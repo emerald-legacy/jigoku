@@ -12,7 +12,7 @@ class UtakuYumino extends DrawCard {
             .cost(costs.discardCard({ location: Location.Hand }))
             .condition(() => this.game.isDuringConflict())
             .cardLastingEffect({ effect: modifyBothSkills(2) })
-            .effect('give {0} +2/+2')
+            .chatText('give {0} +2/+2')
             .limit(perConflict(1));
     }
 }

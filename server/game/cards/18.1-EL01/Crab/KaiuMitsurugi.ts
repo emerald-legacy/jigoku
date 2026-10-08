@@ -27,7 +27,7 @@ class KaiuMitsurugi extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .effect('gain 1 fate and draw 1 card');
+            .chatText('gain 1 fate and draw 1 card');
     }
 }
 

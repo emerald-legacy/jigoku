@@ -19,7 +19,7 @@ class PrayersToEbisu extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .effect('draw a card, make each player with 19 or more honor lose 4 honor, and make each player with 6 or fewer honor gain 4 honor');
+            .chatText('draw a card, make each player with 19 or more honor lose 4 honor, and make each player with 6 or fewer honor gain 4 honor');
     }
 }
 

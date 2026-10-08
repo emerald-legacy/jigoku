@@ -51,7 +51,7 @@ export default class LaughingThunder extends DrawCard {
 
                 return { gameActions };
             }))
-            .effect('claim the effects of {0} as its own');
+            .chatText('claim the effects of {0} as its own');
     }
 
 

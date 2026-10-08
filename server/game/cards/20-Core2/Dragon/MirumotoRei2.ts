@@ -23,7 +23,7 @@ export default class MirumotoRei2 extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect((context) => msg`add ${this.getWeaponCount(context)} to their duel total`);
+            .chatText((context) => msg`add ${this.getWeaponCount(context)} to their duel total`);
 
         this.conflictAction('Duel an opposing character', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({

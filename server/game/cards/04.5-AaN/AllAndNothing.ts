@@ -23,7 +23,7 @@ class AllAndNothing extends DrawCard {
                 })
             })))
             .draw()
-            .effect('resolve {0} effect instead of the void effect');
+            .chatText('resolve {0} effect instead of the void effect');
     }
 }
 

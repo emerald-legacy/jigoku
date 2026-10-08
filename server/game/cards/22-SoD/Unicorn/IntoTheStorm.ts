@@ -29,7 +29,7 @@ export default class IntoTheStorm extends DrawCard {
                     })
                 }))
             ]))
-            .effect('increase the cost of events this conflict by 1{1}', context => [
+            .chatText('increase the cost of events this conflict by 1{1}', context => [
                 context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''
             ]);
     }

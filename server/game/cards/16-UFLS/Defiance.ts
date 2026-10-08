@@ -15,7 +15,7 @@ class Defiance extends DrawCard {
             }, cardLastingEffect(context => ({
                 effect: modifyBothSkills(context.player.opponent?.showBid ?? 0)
             })))
-            .effect('give {0} +{1}{2}/+{1}{3}', context => [context.player.opponent?.showBid ?? 0, 'military', 'political']);
+            .chatText('give {0} +{1}{2}/+{1}{3}', context => [context.player.opponent?.showBid ?? 0, 'military', 'political']);
     }
 }
 

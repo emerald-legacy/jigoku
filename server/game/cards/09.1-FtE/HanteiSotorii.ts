@@ -15,7 +15,7 @@ class HanteiSotorii extends DrawCard {
             }, cardLastingEffect(() => ({
                 effect: modifyGlory(3)
             })))
-            .effect('give {0} +3 glory until the end of the conflict');
+            .chatText('give {0} +3 glory until the end of the conflict');
     }
 }
 

@@ -13,6 +13,6 @@ export default class UndergroundOphidiarium extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Attachment && card.hasTrait('poison'),
                 gameAction: moveCard({ destination: Location.Hand })
             })
-            .effect('search conflict deck to reveal a poison attachment and add it to their hand');
+            .chatText('search conflict deck to reveal a poison attachment and add it to their hand');
     }
 }

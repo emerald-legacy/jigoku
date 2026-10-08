@@ -16,7 +16,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .effect('switch {0}\'s military and political skill')
+            .chatText('switch {0}\'s military and political skill')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)));
     }
 

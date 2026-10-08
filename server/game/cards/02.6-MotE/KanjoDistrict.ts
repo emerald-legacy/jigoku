@@ -13,7 +13,7 @@ class KanjoDistrict extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, bow(), sendHome())
-            .effect('bow and send {0} home');
+            .chatText('bow and send {0} home');
     }
 }
 

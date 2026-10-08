@@ -15,7 +15,7 @@ export default class StandYourGround extends DrawCard {
                     target: context.event.card.getStatusToken(CharacterStatus.Honored)
                 })
             }))
-            .effect('prevent {1} from leaving play', (context) => context.event.card)
+            .chatText('prevent {1} from leaving play', (context) => context.event.card)
             .cannotBeMirrored();
     }
 }

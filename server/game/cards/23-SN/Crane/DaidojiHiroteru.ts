@@ -35,6 +35,6 @@ export default class DaidojiHiroteru extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: addKeyword('covert')
             }))
-            .effect((context) => msg`give ${context.event.card} covert until the end of the phase`);
+            .chatText((context) => msg`give ${context.event.card} covert until the end of the phase`);
     }
 }

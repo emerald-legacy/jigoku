@@ -19,6 +19,6 @@ export default class FortunesField extends ProvinceCard {
                     (card) => card.type === CardType.Character || card.hasTrait('follower')
                 )
             }))
-            .effect('reduce the cost of their next character or follower this round by 1');
+            .chatText('reduce the cost of their next character or follower this round by 1');
     }
 }

@@ -27,7 +27,7 @@ class ProceduralInterference extends DrawCard {
                     amount: 2
                 })
             })
-            .effect('{1}{2}', context => {
+            .chatText('{1}{2}', context => {
                 if(context.selects.select.choice === 'Let opponent gain 2 honor') {
                     return ['gain 2 honor', ''];
                 }

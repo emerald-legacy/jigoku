@@ -39,7 +39,7 @@ export default class BambooTattoo extends DrawCard {
                     trueGameAction: dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
                 })
             ]))
-            .effect((context) => msg`ready${this.isSelfTrigger(context) ? ' and dishonor' : ''} ${context.source.parentCharacter}`);
+            .chatText((context) => msg`ready${this.isSelfTrigger(context) ? ' and dishonor' : ''} ${context.source.parentCharacter}`);
     }
 
     private isSelfTrigger(context: TriggeredAbilityContext) {

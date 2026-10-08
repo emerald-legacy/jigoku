@@ -12,7 +12,7 @@ class FawningDiplomat extends DrawCard {
             .gameAction(claimImperialFavor(context => ({
                 target: context.player
             })))
-            .effect('claim the Emperor\'s favor as she leaves play');
+            .chatText('claim the Emperor\'s favor as she leaves play');
     }
 }
 

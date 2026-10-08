@@ -32,7 +32,7 @@ class AkodoToshiro extends DrawCard {
                     })
                 }))
             ]))
-            .effect('gain +5/+0 - provinces cannot be broken during this conflict');
+            .chatText('gain +5/+0 - provinces cannot be broken during this conflict');
     }
 }
 

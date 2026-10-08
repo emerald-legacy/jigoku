@@ -19,7 +19,7 @@ class CrisisBreaker extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('berserker')
             }, ready(), moveToConflict())
-            .effect('ready {0} and move it into the conflict');
+            .chatText('ready {0} and move it into the conflict');
     }
 }
 

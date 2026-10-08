@@ -12,7 +12,7 @@ class ProveYourSkill extends DrawCard {
             .tokenTarget({
                 cardType: CardType.Character
             }, discardStatusToken())
-            .effect((context) => msg`discard ${context.token[0].card}'s ${context.token}`);
+            .chatText((context) => msg`discard ${context.token[0].card}'s ${context.token}`);
     }
 
     canPlay(context: AbilityContext, playType: string) {

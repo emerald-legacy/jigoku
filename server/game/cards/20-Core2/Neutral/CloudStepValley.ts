@@ -33,6 +33,6 @@ export default class CloudStepValley extends ProvinceCard {
                 sendHome(({ targets }) => ({ target: targets[STARTED_IN_CONFLICT] })),
                 moveToConflict(({ targets }) => ({ target: targets[STARTED_AT_HOME] }))
             ]))
-            .effect('move {1} home, and move {2} to the conflict', (context) => [context.targets[STARTED_IN_CONFLICT], context.targets[STARTED_AT_HOME]]);
+            .chatText('move {1} home, and move {2} to the conflict', (context) => [context.targets[STARTED_IN_CONFLICT], context.targets[STARTED_AT_HOME]]);
     }
 }

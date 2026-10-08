@@ -31,7 +31,7 @@ class WayfarersCamp extends DrawCard {
                     messageArgs: (card, player) => [player, card]
                 })
             ]))
-            .effect('play two cards from their provinces')
+            .chatText('play two cards from their provinces')
             .phase(Phase.Dynasty);
     }
 }

@@ -11,7 +11,7 @@ class StarryHeavenSanctuary extends DrawCard {
                 events.reduce((total, event) => total + (event.is(EventName.OnMoveFate) ? event.fate ?? 0 : 0), 0) >=
                     4)
             .gainFate(2)
-            .effect('gain 2 fate');
+            .chatText('gain 2 fate');
     }
 }
 

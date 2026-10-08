@@ -21,7 +21,7 @@ export default class ShiroGisu extends StrongholdCard {
                 reveal: false,
                 placeOnBottomInRandomOrder: true
             })
-            .effect('look at the top {1} cards of their conflict deck', (context) => this.getCharactersWithoutFate(context));
+            .chatText('look at the top {1} cards of their conflict deck', (context) => this.getCharactersWithoutFate(context));
     }
 
     private getCharactersWithoutFate(context: AbilityContext) {

@@ -19,7 +19,7 @@ class IllustriousPlagiarist extends DrawCard {
                 target: context.source,
                 effect: context.target?.abilities.actions.map((action: CardAction) => gainAbility(AbilityType.Action, action)) ?? []
             })))
-            .effect('copy {0}\'s action abilities');
+            .chatText('copy {0}\'s action abilities');
     }
 
     private topmostEvent(context: AbilityContext): DrawCard | undefined {

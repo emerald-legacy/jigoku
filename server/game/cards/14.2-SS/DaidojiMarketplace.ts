@@ -13,7 +13,7 @@ class DaidojiMarketplace extends DrawCard {
             .gameAction(reveal(context => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
-            .effect('reveal {1}', context => context.player.getProvinceCardInProvince(context.source.location));
+            .chatText('reveal {1}', context => context.player.getProvinceCardInProvince(context.source.location));
     }
 }
 

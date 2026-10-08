@@ -32,7 +32,7 @@ class DaidojiIenori extends DrawCard {
                     effect: effect
                 };
             }))
-            .effect('set the skills of {0} to 3{1}/3{2}{3}', context => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
+            .chatText('set the skills of {0} to 3{1}/3{2}{3}', context => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
     }
 }
 

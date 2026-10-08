@@ -58,7 +58,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     }
                 }
             })))
-            .effect('dishonor or send home {0}')
+            .chatText('dishonor or send home {0}')
             .max(perConflict(1));
     }
 }

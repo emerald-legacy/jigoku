@@ -24,7 +24,7 @@ export default class FortifiedLumberCamp extends DrawCard {
                     discardFromPlay({ target: context.target.attachments })
                 ]
             })))
-            .effect((context) => msg`discard ${this.cardsInProvince(context.target).concat(context.target.attachments)}`);
+            .chatText((context) => msg`discard ${this.cardsInProvince(context.target).concat(context.target.attachments)}`);
     }
 
     private cardsInProvince(targetProvince: ProvinceCard) {

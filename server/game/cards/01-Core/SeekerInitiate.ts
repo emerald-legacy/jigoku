@@ -18,7 +18,7 @@ class SeekerInitiate extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .effect('look at the top 5 cards of their conflict deck');
+            .chatText('look at the top 5 cards of their conflict deck');
     }
 }
 

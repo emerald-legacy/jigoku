@@ -26,7 +26,7 @@ describe('ability builder checks for settings the engine would ignore', function
             const step = this.builder.draw().then();
 
             expect(() => step.limit(perRound(1))).toThrowError('Test: limit() belongs to the ability, before then()');
-            expect(() => step.effect('draw')).toThrowError('Test: a then step prints its message with message()');
+            expect(() => step.chatText('draw')).toThrowError('Test: a then step prints its message with message()');
         });
 
         it('rejects two targets with one name', function() {

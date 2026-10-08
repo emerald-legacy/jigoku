@@ -9,7 +9,7 @@ class VenerableFortunist extends DrawCard {
             .cost(costs.returnRings(1, (ring, context) => (context.player.role?.getElement() ?? []).some(a => ring.hasElement(a))))
             .condition(context => !!context.player.role)
             .gainFate(2)
-            .effect('gain 2 fate');
+            .chatText('gain 2 fate');
     }
 }
 

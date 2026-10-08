@@ -34,7 +34,7 @@ export default class HonoredVeterans extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
             }, honor())
-            .effect((context) => msg`honor ${this.getCharacters(context)}`);
+            .chatText((context) => msg`honor ${this.getCharacters(context)}`);
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {

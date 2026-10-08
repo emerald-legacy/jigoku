@@ -24,7 +24,7 @@ class OpenFieldSkirmisher extends DrawCard {
                     effect: modifyProvinceStrength(-3)
                 }))
             }))
-            .effect('reduce the strength of an attacked province by 3');
+            .chatText('reduce the strength of an attacked province by 3');
     }
 }
 

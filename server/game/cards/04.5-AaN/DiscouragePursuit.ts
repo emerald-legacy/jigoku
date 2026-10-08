@@ -16,7 +16,7 @@ class DiscouragePursuit extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(-4)
             }))
-            .effect('reduce {0}\'s military skill by 4');
+            .chatText('reduce {0}\'s military skill by 4');
     }
 }
 

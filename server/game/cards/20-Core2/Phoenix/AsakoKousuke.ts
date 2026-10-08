@@ -60,7 +60,7 @@ export default class AsakoKousuke extends DrawCard {
 
                 return Object.fromEntries(choices);
             })
-            .effect('clarify what it means to be {2}. The exposition reveals that {1} is {2}', (context) => [
+            .chatText('clarify what it means to be {2}. The exposition reveals that {1} is {2}', (context) => [
                 context.tokens[ORIGINL_TOKEN][0].card,
                 context.selects.selection.choice === 'Turn it into Honored'
                     ? 'honored'

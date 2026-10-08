@@ -14,7 +14,7 @@ class ParagonOfGrace extends DrawCard {
                 discardAtRandom((context) => ({ target: context.source.isHonored ? context.player.opponent : [] })),
                 chosenDiscard((context) => ({ target: context.source.isHonored ? [] : context.player.opponent }))
             ]))
-            .effect((context) => msg`make ${context.player.opponent ?? ''} discard 1 card${context.source.isHonored ? ' at random' : ''}`);
+            .chatText((context) => msg`make ${context.player.opponent ?? ''} discard 1 card${context.source.isHonored ? ' at random' : ''}`);
     }
 }
 

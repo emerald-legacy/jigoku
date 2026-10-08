@@ -30,6 +30,6 @@ export default class KyudenIsawa extends StrongholdCard {
                     }
                 })
             }))
-            .effect('play a spell event from discard');
+            .chatText('play a spell event from discard');
     }
 }

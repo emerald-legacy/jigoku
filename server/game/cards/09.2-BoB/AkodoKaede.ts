@@ -21,7 +21,7 @@ class AkodoKaede extends DrawCard {
                 target: context.source,
                 replacementGameAction: removeFate()
             }))
-            .effect('prevent {1} from leaving play', context => context.event.card);
+            .chatText('prevent {1} from leaving play', context => context.event.card);
     }
 }
 

@@ -16,7 +16,7 @@ class OracleOfStone extends DrawCard {
                     amount: 2
                 }))
             ]))
-            .effect('make both players draw 2 cards, then discard 2 cards');
+            .chatText('make both players draw 2 cards, then discard 2 cards');
     }
 }
 

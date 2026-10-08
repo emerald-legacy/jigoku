@@ -121,8 +121,8 @@ describe('CardAbility displayMessage', function () {
             const ability = new TriggeredAbility(source, AbilityType.WouldInterrupt, {
                 when: { onCardAbilityInitiated: () => true },
                 cost: costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
-                effect: 'cancel {1}',
-                effectArgs: (context) => context.event.card
+                chatText: 'cancel {1}',
+                chatTextArgs: (context) => context.event.card
             });
             const context = new TriggeredAbilityContext({
                 game,

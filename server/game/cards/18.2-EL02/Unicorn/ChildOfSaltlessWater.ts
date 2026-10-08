@@ -31,6 +31,6 @@ export default class ChildOfSaltlessWater extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: setMilitarySkill(context.target.printedStrength)
             }))
-            .effect((context) => msg`set its ${'military'} to ${context.target.printedStrength}`);
+            .chatText((context) => msg`set its ${'military'} to ${context.target.printedStrength}`);
     }
 }

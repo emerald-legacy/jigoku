@@ -23,6 +23,6 @@ export default class ZealousInspector extends DrawCard {
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(1)
             }))
-            .effect('gain an additional action — time to deliver swift punishment for the wicked');
+            .chatText('gain an additional action — time to deliver swift punishment for the wicked');
     }
 }

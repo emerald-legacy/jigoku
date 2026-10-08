@@ -24,7 +24,7 @@ class DojiDiplomat extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces
             }, reveal())
-            .effect((context) => msg`reveal ${context.targets.myProvince} and ${context.targets.oppProvince}`);
+            .chatText((context) => msg`reveal ${context.targets.myProvince} and ${context.targets.oppProvince}`);
     }
 }
 

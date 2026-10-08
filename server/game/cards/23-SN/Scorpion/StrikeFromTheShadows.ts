@@ -17,7 +17,7 @@ export default class StrikeFromTheShadows extends DrawCard {
                     modifyBothSkills(1)
                 ]
             }))
-            .effect(() => msg`give all participating Shinobi they control +1${'military'}/+1${'political'} until the end of the conflict`)
+            .chatText(() => msg`give all participating Shinobi they control +1${'military'}/+1${'political'} until the end of the conflict`)
             .max(perConflict(1));
     }
 }

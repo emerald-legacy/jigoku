@@ -13,7 +13,7 @@ class MarkOfShame extends DrawCard {
                 dishonor(context => ({ target: context.source.parentCharacter ?? [] })),
                 dishonor(context => ({ target: context.source.parentCharacter ?? [] }))
             ]))
-            .effect('dishonor {1}, then dishonor it again', context => context.source.parentCharacter);
+            .chatText('dishonor {1}, then dishonor it again', context => context.source.parentCharacter);
     }
 }
 

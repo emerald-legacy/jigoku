@@ -20,7 +20,7 @@ class KaitoNobukai extends DrawCard {
                     effect: cardCannot('moveToConflict')
                 }))
             ]))
-            .effect('bow all participating characters and prevent characters from moving into this conflict');
+            .chatText('bow all participating characters and prevent characters from moving into this conflict');
     }
 }
 

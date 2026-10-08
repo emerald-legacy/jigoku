@@ -44,6 +44,6 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                     ]
                 };
             }))
-            .effect('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
+            .chatText('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
     }
 }

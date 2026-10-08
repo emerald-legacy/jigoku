@@ -19,7 +19,7 @@ class SeizeTheDay extends DrawCard {
                     this.game.raiseEvent(EventName.OnPassFirstPlayer, { player: otherPlayer }, () => this.game.setFirstPlayer(otherPlayer));
                 }
             })
-            .effect('become first player');
+            .chatText('become first player');
     }
 }
 

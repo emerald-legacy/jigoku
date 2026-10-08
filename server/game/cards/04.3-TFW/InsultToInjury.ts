@@ -12,7 +12,7 @@ export default class InsultToInjury extends DrawCard {
                         (card) => card.controller === context.player && card.hasTrait('duelist')
                     ) ?? false
             })
-            .effect('{1}', (context) => {
+            .chatText('{1}', (context) => {
                 const loser = context.event.loser;
                 return [
                     (loser?.length ?? 0) > 1

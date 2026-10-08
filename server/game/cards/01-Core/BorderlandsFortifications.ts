@@ -17,7 +17,7 @@ class BorderlandsFortifications extends DrawCard {
                 switch: true,
                 switchTarget: context.target.isDrawCard() ? context.target : undefined
             })))
-            .effect('swap it with {1}', (context) => context.target.isFacedown() ? 'a facedown card' : context.target);
+            .chatText('swap it with {1}', (context) => context.target.isFacedown() ? 'a facedown card' : context.target);
     }
 }
 

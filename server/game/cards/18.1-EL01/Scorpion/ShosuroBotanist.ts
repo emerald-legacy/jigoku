@@ -12,7 +12,7 @@ class ShosuroBotanist extends DrawCard {
                 controller: Players.Self,
                 cardCondition: card => !card.hasTrait('weapon')
             }, returnToHand())
-            .effect('return {0} to {1}\'s hand', context => [context.target.owner]);
+            .chatText('return {0} to {1}\'s hand', context => [context.target.owner]);
     }
 }
 

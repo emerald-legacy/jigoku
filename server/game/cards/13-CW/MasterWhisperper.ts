@@ -13,7 +13,7 @@ class MasterWhisperer extends DrawCard {
                 chosenDiscard({ targets: false, target: player, amount: 3 }),
                 draw({ target: player, amount: 3 })
             ])))
-            .effect('make {1}{2} draw 3 cards', context => {
+            .chatText('make {1}{2} draw 3 cards', context => {
                 const player = context.select === context.player.name ? context.player : context.player.opponent;
                 if(!player) {
                     return [context.player, ''];

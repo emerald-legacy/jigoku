@@ -39,7 +39,7 @@ class OfferTestimony extends DrawCard {
                 const lowestCostPlayers = revealedCards.filter((card) => card.getCost() === lowestCost).map((card) => card.controller);
                 return { target: [context.targets.myCharacter, context.targets.oppCharacter].filter((card) => lowestCostPlayers.includes(card.controller)) };
             }))
-            .effect('make each player choose a ready participating character they control: {1}', context => [Object.values(context.targets)]);
+            .chatText('make each player choose a ready participating character they control: {1}', context => [Object.values(context.targets)]);
     }
 }
 

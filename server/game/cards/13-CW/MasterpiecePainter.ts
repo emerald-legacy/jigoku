@@ -21,7 +21,7 @@ class MasterpiecePainter extends DrawCard {
                     this.revealAndMayPlayAbility(opponent)
                 ])
             ))
-            .effect('make {1} reveal the top card of their deck. They may play their card until the end of the phase', context => context.select);
+            .chatText('make {1} reveal the top card of their deck. They may play their card until the end of the phase', context => context.select);
     }
 
     revealAndMayPlayAbility(player: Player) {

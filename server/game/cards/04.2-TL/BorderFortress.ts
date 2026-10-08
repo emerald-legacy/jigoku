@@ -13,6 +13,6 @@ export default class BorderFortress extends ProvinceCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.isFacedown()
             }, reveal({ chatMessage: true }))
-            .effect((context) => msg`reveal ${context.target.controller}'s facedown province in their ${context.target.location}`);
+            .chatText((context) => msg`reveal ${context.target.controller}'s facedown province in their ${context.target.location}`);
     }
 }

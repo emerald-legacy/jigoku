@@ -12,7 +12,7 @@ export default class WaitUntilItSings extends DrawCard {
                 targetController: context.player,
                 effect: additionalActionAfterWindowCompleted(1)
             }))
-            .effect('take an action before conflict resolution')
+            .chatText('take an action before conflict resolution')
             .max(perConflict(1));
     }
 }

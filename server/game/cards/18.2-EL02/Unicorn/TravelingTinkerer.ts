@@ -13,6 +13,6 @@ export default class TravelingTinkerer extends DrawCard {
             }, cardLastingEffect({
                 effect: switchAttachmentSkillModifiers()
             }))
-            .effect('switch the skill modifiers of {0}');
+            .chatText('switch the skill modifiers of {0}');
     }
 }

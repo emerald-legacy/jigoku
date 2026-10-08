@@ -18,7 +18,7 @@ class GuardiansOfRokugan extends DrawCard {
                 gameAction: putIntoPlay(),
                 shuffle: (ctx) => (ctx.game.currentConflict?.skillDifference ?? 0) >= ctx.player.dynastyDeck.length
             })
-            .effect('look at the top {1} cards of their deck for a character costing {1} or less to put into play', (context) => [context.game.currentConflict?.skillDifference ?? 0]);
+            .chatText('look at the top {1} cards of their deck for a character costing {1} or less to put into play', (context) => [context.game.currentConflict?.skillDifference ?? 0]);
     }
 }
 

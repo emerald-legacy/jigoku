@@ -29,7 +29,7 @@ class CourtGames extends DrawCard {
                     gameAction: dishonor()
                 }))
             })
-            .effect('{1}', context => context.select.toLowerCase())
+            .chatText('{1}', context => context.select.toLowerCase())
             .max(perConflict(1));
     }
 }

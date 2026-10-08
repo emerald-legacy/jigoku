@@ -18,7 +18,7 @@ class EtherealDreamer extends DrawCard {
                 condition: () => context.ring.isContested(),
                 effect: modifyBothSkills(2)
             }))
-            .effect('give herself +2{1}/+2{2} while the {0} is contested', () => (['military', 'political']));
+            .chatText('give herself +2{1}/+2{2} while the {0} is contested', () => (['military', 'political']));
     }
 }
 

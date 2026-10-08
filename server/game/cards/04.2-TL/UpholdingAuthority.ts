@@ -62,7 +62,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                         : [{ text: 'Don\'t discard anything', handler: () => context.game.addMessage('{0} chooses not to discard anything', context.player) }]
                 }))
             ]))
-            .effect('look at the attacking player\'s hand and choose a card to be discarded');
+            .chatText('look at the attacking player\'s hand and choose a card to be discarded');
     }
 
     private chosenCard(properties: MenuPromptProperties): DrawCard | undefined {

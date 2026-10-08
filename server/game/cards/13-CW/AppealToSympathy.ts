@@ -17,7 +17,7 @@ class AppealToSympathy extends DrawCard {
                     destination: context.event.card.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
                 }))
             ]))
-            .effect('cancel the effects of {1} and {2}', (context) => {
+            .chatText('cancel the effects of {1} and {2}', (context) => {
                 const card = context.event.card;
                 return [
                     card,

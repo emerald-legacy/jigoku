@@ -44,6 +44,6 @@ export default class IllustriousForge extends ProvinceCard {
                     target: context.player
                 }))
             ]))
-            .effect('search the top 5 cards of their conflict deck for an attachment and put it into play');
+            .chatText('search the top 5 cards of their conflict deck for an attachment and put it into play');
     }
 }

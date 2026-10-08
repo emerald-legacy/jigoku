@@ -27,7 +27,7 @@ class StolenSecrets extends DrawCard {
                     cardHandler: (card) => this.stealCard(card, opponent.conflictDeck.slice(0, 4).filter((c) => c !== card), context)
                 });
             })
-            .effect('look at the top 4 cards of {1}\'s conflict deck and remove one from the game', (context) => context.player.opponent);
+            .chatText('look at the top 4 cards of {1}\'s conflict deck and remove one from the game', (context) => context.player.opponent);
     }
 
     private stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext) {

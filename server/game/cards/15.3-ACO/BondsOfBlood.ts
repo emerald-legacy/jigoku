@@ -13,7 +13,7 @@ class BondsOfBlood extends DrawCard {
                 cardType: CardType.Character
             }, sendHome())
             .sendHome(context => ({ target: context.costs.dishonor }))
-            .effect('send {1} home', context => [context.costs.dishonor === context.target ? [context.target] : [context.target, context.costs.dishonor]])
+            .chatText('send {1} home', context => [context.costs.dishonor === context.target ? [context.target] : [context.target, context.costs.dishonor]])
             .cannotTargetFirst();
     }
 

@@ -17,7 +17,7 @@ class GiverOfGifts extends DrawCard {
                 messageArgs: (card) => [context.player, context.target, card],
                 gameAction: attach({ attachment: context.target })
             })))
-            .effect('move {0} to another character');
+            .chatText('move {0} to another character');
     }
 }
 

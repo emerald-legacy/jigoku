@@ -17,6 +17,6 @@ export default class ShiroYogo extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: cannotTriggerAbilities()
             }))
-            .effect('prevent {0} from triggering their abilities until the end of the phase');
+            .chatText('prevent {0} from triggering their abilities until the end of the phase');
     }
 }

@@ -27,7 +27,7 @@ class MyAncestorsStrength extends DrawCard {
                 target: context.targets.shugenja,
                 effect: copyBaseSkillEffects(context.targets.ancestor)
             })))
-            .effect((context) => msg`set ${context.targets.shugenja}'s base skills to those of ${context.targets.ancestor}`);
+            .chatText((context) => msg`set ${context.targets.shugenja}'s base skills to those of ${context.targets.ancestor}`);
     }
 }
 

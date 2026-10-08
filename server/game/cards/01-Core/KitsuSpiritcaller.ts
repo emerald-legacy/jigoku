@@ -15,7 +15,7 @@ class KitsuSpiritcaller extends DrawCard {
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self
             }, putIntoConflict())
-            .effect('call {0} back from the dead until the end of the conflict')
+            .chatText('call {0} back from the dead until the end of the conflict')
             .then()
             .cardLastingEffect((context) => ({
                 target: context.target,

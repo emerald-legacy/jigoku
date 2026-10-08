@@ -9,7 +9,7 @@ class FestivalForTheFortunes extends DrawCard {
             .honor(() => ({
                 target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character)
             }))
-            .effect('honor each character');
+            .chatText('honor each character');
     }
 }
 

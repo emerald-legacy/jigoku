@@ -18,7 +18,7 @@ class OniMask extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating()
             }, cardLastingEffect({ effect: blank() }))
-            .effect('blank {0} until the end of the conflict');
+            .chatText('blank {0} until the end of the conflict');
     }
 }
 

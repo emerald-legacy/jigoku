@@ -47,8 +47,8 @@ export default class SanctifiedEarth extends DrawCard {
 
                 onAffinity({
                     trait: 'earth',
-                    effect: 'make {0} invulnerable to opponent\'s send home',
-                    effectArgs: (context) => [context.target],
+                    chatText: 'make {0} invulnerable to opponent\'s send home',
+                    chatTextArgs: (context) => [context.target],
                     gameAction: cardLastingEffect((context) => ({
                         target: context.target,
                         effect: cardCannot({
@@ -58,6 +58,6 @@ export default class SanctifiedEarth extends DrawCard {
                     }))
                 })
             ]))
-            .effect((context) => msg`give +2${'military'} and +2${'political'} to ${context.target}`);
+            .chatText((context) => msg`give +2${'military'} and +2${'political'} to ${context.target}`);
     }
 }

@@ -27,7 +27,7 @@ export default class JurojinsCurse extends DrawCard {
                     })
                 })
             })
-            .effect('resolve a second fate phase after this')
+            .chatText('resolve a second fate phase after this')
             .max(perRound(1));
     }
 }

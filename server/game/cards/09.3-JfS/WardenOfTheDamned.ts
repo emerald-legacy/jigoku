@@ -28,7 +28,7 @@ class WardenOfTheDamned extends DrawCard {
                     gameAction: sacrifice()
                 }))
             ]))
-            .effect('force both players to sacrifice a dishonored character');
+            .chatText('force both players to sacrifice a dishonored character');
     }
 }
 

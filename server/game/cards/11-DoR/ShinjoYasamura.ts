@@ -18,7 +18,7 @@ class ShinjoYasamura extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: cannotBeDeclaredAsDefender()
             }))
-            .effect('prevent {1} from defending this phase', (context) => context.event.context.target);
+            .chatText('prevent {1} from defending this phase', (context) => context.event.context.target);
     }
 }
 

@@ -13,7 +13,7 @@ class AcclaimedGeishaHouse extends DrawCard {
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed()
             }, switchConflictElement())
-            .effect('switch the contested ring with the {0}');
+            .chatText('switch the contested ring with the {0}');
     }
 }
 

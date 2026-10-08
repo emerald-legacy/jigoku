@@ -35,7 +35,7 @@ class RecklessAvenger extends DrawCard {
                     target: context.targets.secondCharacter
                 }))
             }))
-            .effect('ready {1}{2}{3}', context => [
+            .chatText('ready {1}{2}{3}', context => [
                 this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter,
                 this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : '',
                 this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''

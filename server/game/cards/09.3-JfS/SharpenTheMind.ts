@@ -15,7 +15,7 @@ class SharpenTheMind extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyBothSkills(3)
             }))
-            .effect((context) => msg`give +3${'military'}/+3${'political'} to ${context.source.parentCharacter}`);
+            .chatText((context) => msg`give +3${'military'}/+3${'political'} to ${context.source.parentCharacter}`);
     }
 }
 

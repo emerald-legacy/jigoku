@@ -27,7 +27,7 @@ class DiplomaticGiftGiver extends DrawCard {
             }, placeFate(context => ({
                 origin: context.player.firstPlayer ? context.player.opponent : context.player
             })))
-            .effect((context) => msg`gift a fate onto ${context.targets.firstCharacter} and ${context.targets.secondCharacter}`);
+            .chatText((context) => msg`gift a fate onto ${context.targets.firstCharacter} and ${context.targets.secondCharacter}`);
     }
 }
 

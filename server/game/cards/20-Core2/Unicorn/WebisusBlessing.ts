@@ -17,7 +17,7 @@ export default class WebisusBlessing extends DrawCard {
                 optional: true,
                 tokenCondition: (token, context) => token !== context.tokens.first[0]
             }, discardStatusToken())
-            .effect('discard {1}\'s {2}{3}{4}{5}{6}', (context) =>
+            .chatText('discard {1}\'s {2}{3}{4}{5}{6}', (context) =>
                 context.tokens.second
                     ? [
                         context.tokens.first[0].card,

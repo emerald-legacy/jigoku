@@ -21,7 +21,7 @@ class DanceOfChikushoDo extends DrawCard {
                     this.fillProvinces(opponent)
                 ])
             ))
-            .effect('have {1} place 2 cards in each unbroken province they control', context => context.select)
+            .chatText('have {1} place 2 cards in each unbroken province they control', context => context.select)
             .max(perRound(1));
     }
 

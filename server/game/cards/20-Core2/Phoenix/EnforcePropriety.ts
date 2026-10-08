@@ -36,6 +36,6 @@ export default class EnforcePropriety extends DrawCard {
                 },
                 messageArgs: [context.player, context.event.card]
             })))
-            .effect('enforce the proper protocol');
+            .chatText('enforce the proper protocol');
     }
 }

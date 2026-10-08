@@ -22,7 +22,7 @@ export default class TogashiAcolyte extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyBothSkills(1)
             }))
-            .effect((context) => msg`give +1${'political'} and +1${'military'} to ${context.source.parentCharacter}`)
+            .chatText((context) => msg`give +1${'political'} and +1${'military'} to ${context.source.parentCharacter}`)
             .limit(unlimitedPerConflict());
     }
 }

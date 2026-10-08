@@ -41,7 +41,7 @@ export default class DiscipleOfDeception extends DrawCard {
                     targetCard.updateStatusTokenEffects();
                 }
             }))
-            .effect('replace {1}\'s {2} with {3} until the end of the conflict', (context) => [
+            .chatText('replace {1}\'s {2} with {3} until the end of the conflict', (context) => [
                 context.tokens.second[0].card,
                 context.tokens.second,
                 context.tokens.first

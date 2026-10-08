@@ -56,7 +56,7 @@ export default class CastleOfAir extends DrawCard {
                     })
                 }))
             ]))
-            .effect('increase the strength of an attacked province by 4{1}', context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);
+            .chatText('increase the strength of an attacked province by 4{1}', context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);
     }
 
     onHonorLoss(event: Event & EventPayload<EventName.OnModifyHonor>) {

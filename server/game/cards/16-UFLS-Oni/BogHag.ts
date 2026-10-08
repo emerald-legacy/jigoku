@@ -18,6 +18,6 @@ export default class BogHag extends BaseOni {
             .gameAction(discardCard((context) => ({
                 target: context.player.opponent?.conflictDeck.slice(0, 8) ?? []
             })))
-            .effect((context) => msg`discard the top 8 cards of ${context.player.opponent}'s conflict deck`);
+            .chatText((context) => msg`discard the top 8 cards of ${context.player.opponent}'s conflict deck`);
     }
 }

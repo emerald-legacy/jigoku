@@ -12,7 +12,7 @@ class CityOfLies extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: reduceNextPlayedCardCost(1, (card) => card.type === CardType.Event)
             }))
-            .effect('reduce the cost of their next event by 1');
+            .chatText('reduce the cost of their next event by 1');
     }
 }
 

@@ -55,6 +55,6 @@ export default class SandRoadMerchant extends DrawCard {
                     })
                 ]
             })))
-            .effect('look at the top two cards of their opponent\'s conflict deck');
+            .chatText('look at the top two cards of their opponent\'s conflict deck');
     }
 }

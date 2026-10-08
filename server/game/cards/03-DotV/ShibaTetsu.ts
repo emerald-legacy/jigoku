@@ -12,7 +12,7 @@ class ShibaTetsu extends DrawCard {
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('spell') && this.game.isDuringConflict()
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
-            .effect(() => msg`give him +1${'military'}/+1${'political'}`)
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
             .limit(unlimitedPerConflict());
     }
 }

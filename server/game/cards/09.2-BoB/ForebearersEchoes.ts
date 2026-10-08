@@ -31,7 +31,7 @@ class ForebearersEchoes extends DrawCard {
                     })
                 }))
             ]))
-            .effect('put {0} into play in the conflict and apply a lasting effect to {0}');
+            .chatText('put {0} into play in the conflict and apply a lasting effect to {0}');
     }
 }
 

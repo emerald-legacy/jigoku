@@ -8,6 +8,6 @@ export default class BayushiManipulator extends DrawCard {
         this.reaction('Increase bid by 1')
             .when({ onHonorDialsRevealed: (event) => event.isHonorBid })
             .gameAction(modifyBid())
-            .effect('increase their bid by 1');
+            .chatText('increase their bid by 1');
     }
 }

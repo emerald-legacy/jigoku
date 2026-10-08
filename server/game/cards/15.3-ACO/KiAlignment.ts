@@ -21,7 +21,7 @@ class KiAlignment extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .effect('look at the top eight cards of their deck for up to two kihos');
+            .chatText('look at the top eight cards of their deck for up to two kihos');
     }
 }
 

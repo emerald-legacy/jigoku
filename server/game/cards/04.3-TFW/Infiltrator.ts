@@ -28,7 +28,7 @@ export default class Infiltrator extends DrawCard {
                     }
                 };
             }))
-            .effect('look at the top card of an opponent\'s deck and play or discard it');
+            .chatText('look at the top card of an opponent\'s deck and play or discard it');
     }
 
     canPlay(context: AbilityContext, playType: string) {

@@ -13,7 +13,7 @@ class StayYourHand extends DrawCard {
                     (event.context.targets.target && Object.values(event.context.targets.target).some((card) => card.controller === context.player)))
             })
             .cancel()
-            .effect('cancel the duel originating from {1}', (context) => context.event.context.source)
+            .chatText('cancel the duel originating from {1}', (context) => context.event.context.source)
             .cannotBeMirrored();
     }
 }

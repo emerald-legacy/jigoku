@@ -13,7 +13,7 @@ class HidaSugi extends DrawCard {
             .target({
                 location: Location.DynastyDiscardPile
             }, moveCard({ destination: Location.DynastyDeck, bottom: true}))
-            .effect('move {0} to bottom of {1}\'s dynasty deck', context => [context.target.controller]);
+            .chatText('move {0} to bottom of {1}\'s dynasty deck', context => [context.target.controller]);
     }
 }
 

@@ -36,7 +36,7 @@ export default class TributeToANewDawn extends DrawCard {
             .gameAction(removeFromGame((context) => ({
                 target: this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])
             })))
-            .effect('remove {1} from the game', (context) => [this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])]);
+            .chatText('remove {1} from the game', (context) => [this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])]);
     }
 
     private getAffectedAttachments(context: AbilityContext<DrawCard>, keptAttachments: DrawCard[]) {

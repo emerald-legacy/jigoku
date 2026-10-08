@@ -24,7 +24,7 @@ export default class CraneIndustry extends DrawCard {
                     match: (card) => !this.hasEventBeenPlayedByThisPlayer(card)
                 })
             }))
-            .effect('reduce the cost of the first copy of each event they play this conflict by 1')
+            .chatText('reduce the cost of the first copy of each event they play this conflict by 1')
             .max(perConflict(1));
     }
 

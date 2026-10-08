@@ -40,8 +40,8 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                             })
                         ])
                     },
-                    effect: 'give {0} +2{1}{2}',
-                    effectArgs: (context) => ['military',
+                    chatText: 'give {0} +2{1}{2}',
+                    chatTextArgs: (context) => ['military',
                         context.source.isParticipating() === (!!context.target?.isDrawCard() && context.target.isParticipating()) ? '' :
                             context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home']
                 })

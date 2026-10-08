@@ -27,7 +27,7 @@ class AgashaShunsen extends DrawCard {
                 subActionProperties: card => ({ attachment: card })
             })))
             .gameAction(shuffleDeck({ deck: Location.ConflictDeck }))
-            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', context => (context.costs.returnedRings ?? []).length);
+            .chatText('search their deck for an attachment costing {1} or less and attach it to {0}', context => (context.costs.returnedRings ?? []).length);
     }
 }
 

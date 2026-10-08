@@ -14,7 +14,7 @@ export default class LayOfTheLand extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => !card.isBroken && card.location !== Location.StrongholdProvince
             }, reveal(), turnFacedown())
-            .effect('{1} {2}', (context) => {
+            .chatText('{1} {2}', (context) => {
                 const target = context.target;
                 return target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location];
             });

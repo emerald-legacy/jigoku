@@ -17,6 +17,6 @@ export default class MantraOfWater extends DrawCard {
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, ready())
             .draw()
-            .effect('ready {0} and draw a card');
+            .chatText('ready {0} and draw a card');
     }
 }

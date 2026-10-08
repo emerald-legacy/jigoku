@@ -52,6 +52,6 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                     deck: Location.ConflictDeck
                 }))
             ]))
-            .effect('give each player a valuable good');
+            .chatText('give each player a valuable good');
     }
 }

@@ -16,6 +16,6 @@ export default class ShinjoArcher extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(-2)
             }))
-            .effect('give {0} -2{2}/-2{3}', (context) => [context.source, 'military', 'political']);
+            .chatText('give {0} -2{2}/-2{3}', (context) => [context.source, 'military', 'political']);
     }
 }

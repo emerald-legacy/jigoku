@@ -32,7 +32,7 @@ class IronFoundationsStance extends DrawCard {
                     trueGameAction: draw((context) => ({ target: context.player }))
                 })
             ]))
-            .effect('prevent opponents\' actions from bowing or moving home {0}{1}', (context) => (context.player.isKihoPlayedThisConflict(context, this) ? ' and draw 1 card' : ''));
+            .chatText('prevent opponents\' actions from bowing or moving home {0}{1}', (context) => (context.player.isKihoPlayedThisConflict(context, this) ? ' and draw 1 card' : ''));
     }
 }
 

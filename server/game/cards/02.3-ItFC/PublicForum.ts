@@ -12,7 +12,7 @@ export default class PublicForum extends ProvinceCard {
             .cancel((context) => ({
                 replacementGameAction: addToken({ target: context.source })
             }))
-            .effect('add an honor token to {0} instead of breaking it');
+            .chatText('add an honor token to {0} instead of breaking it');
     }
 
     cannotBeStrongholdProvince() {

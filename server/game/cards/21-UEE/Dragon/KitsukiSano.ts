@@ -20,7 +20,7 @@ export default class KitsukiSano extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add 2 to their duel total');
+            .chatText('add 2 to their duel total');
 
         this.conflictAction('Draw 2 cards, discard 2 cards')
             .condition((context) =>

@@ -47,7 +47,7 @@ class Logistics extends DrawCard {
                 })),
                 draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] }))
             ]))
-            .effect('move {1} to {2}{3}', (context) => [
+            .chatText('move {1} to {2}{3}', (context) => [
                 context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
                 context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province,
                 context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''

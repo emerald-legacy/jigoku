@@ -136,8 +136,8 @@ interface AbilityDraft {
     gameActions: GameAction[];
     handler?: (context: AbilityContext) => void;
     condition?: (context: AbilityContext) => boolean;
-    effect?: string | ((context: AbilityContext) => MessageArgs);
-    effectArgs?: (context: AbilityContext) => EffectArg;
+    chatText?: string | ((context: AbilityContext) => MessageArgs);
+    chatTextArgs?: (context: AbilityContext) => EffectArg;
     limit?: AbilityLimit;
     max?: AbilityLimit;
     location?: Location | Location[];
@@ -671,13 +671,13 @@ export class AbilityBuilder<
 
     /**
      * "With [trait] affinity" (usually an element, but any trait, e.g. Shadow): this step's game actions resolve only if the player has that affinity.
-     * `prompt` asks the player first ("Pay 1 fate to swap abilities?"); `effect` is what the chat says the affinity does.
+     * `prompt` asks the player first ("Pay 1 fate to swap abilities?"); `chatText` is what the chat says the affinity does.
      */
     onAffinity(trait: string, options: AffinityOptions<BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         this.#once('affinity', trait, 'onAffinity()');
         this.draft.affinityOptions = {
             ...(options.prompt !== undefined ? { prompt: options.prompt } : {}),
-            ...(options.effect ? { effect: this.#checked(options.effect, this.draft.specs) } : {})
+            ...(options.chatText ? { chatText: this.#checked(options.chatText, this.draft.specs) } : {})
         };
         return this;
     }
@@ -873,18 +873,21 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** A format whose `{0}` is the target, with its later arguments; or a `msg` template. */
-    effect(message: string, args?: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => EffectArg): this;
-    effect(message: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs): this;
-    effect(
+    /**
+     * What the chat says the ability does, after "{player} uses {card} to …": a format whose `{0}` is the target,
+     * with its later arguments; or a `msg` template.
+     */
+    chatText(message: string, args?: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => EffectArg): this;
+    chatText(message: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs): this;
+    chatText(
         message: string | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs),
         args?: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => EffectArg
     ): this {
         if(this.draft.isStep) {
             throw new Error(`${this.draft.title}: a then step prints its message with message()`);
         }
-        this.#once('effect', typeof message === 'string' ? message : this.#checked(message, this.draft.specs), 'effect()');
-        this.draft.effectArgs = args && this.#checked(args, this.draft.specs);
+        this.#once('chatText', typeof message === 'string' ? message : this.#checked(message, this.draft.specs), 'chatText()');
+        this.draft.chatTextArgs = args && this.#checked(args, this.draft.specs);
         return this;
     }
 
@@ -1000,7 +1003,7 @@ export class AbilityBuilder<
     /** A then step's message, as a `msg` template; nothing is printed when it returns `undefined`. */
     message(fn: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs | undefined): this {
         if(!this.draft.isStep) {
-            throw new Error(`${this.draft.title}: the ability's own message is its effect()`);
+            throw new Error(`${this.draft.title}: the ability's own message is its chatText()`);
         }
         this.#once('message', this.#checked(fn, this.draft.specs), 'message()');
         return this;
@@ -1174,8 +1177,8 @@ function commonProperties(ability: AbilityDraft) {
         ...gameActionProperties(draft),
         ...(draft.handler ? { handler: draft.handler } : {}),
         ...(draft.onResolve ? { onResolve: draft.onResolve } : {}),
-        ...(draft.effect !== undefined ? { effect: draft.effect } : {}),
-        ...(draft.effectArgs ? { effectArgs: draft.effectArgs } : {}),
+        ...(draft.chatText !== undefined ? { chatText: draft.chatText } : {}),
+        ...(draft.chatTextArgs ? { chatTextArgs: draft.chatTextArgs } : {}),
         ...(draft.limit ? { limit: draft.limit } : {}),
         ...(draft.max ? { max: draft.max } : {}),
         ...(draft.location ? { location: draft.location } : {}),
@@ -1253,7 +1256,7 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
 
 interface AffinityOptions<Context = AbilityContext> {
     prompt?: string;
-    effect?: (context: Context) => MessageArgs;
+    chatText?: (context: Context) => MessageArgs;
 }
 
 /** The game actions, inside one affinity action when the ability or step has `onAffinity()`. */
@@ -1267,14 +1270,14 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
     }
     const trait = draft.affinity;
     const gameAction = oneAction(actions);
-    const { prompt, effect } = draft.affinityOptions ?? {};
+    const { prompt, chatText } = draft.affinityOptions ?? {};
     return { gameAction: [GameActions.onAffinity((context) => {
-        const [format, args] = effect ? effect(context) : [undefined, undefined];
+        const [format, args] = chatText ? chatText(context) : [undefined, undefined];
         return {
             trait,
             gameAction,
             ...(prompt !== undefined ? { prompt } : {}),
-            ...(format !== undefined ? { effect: format, effectArgs: args } : {})
+            ...(format !== undefined ? { chatText: format, chatTextArgs: args } : {})
         };
     })] };
 }
@@ -1290,7 +1293,7 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     checkHandler(draft);
     const step = withBranches(draft);
     checkCombinations(step);
-    if(step.effect !== undefined) {
+    if(step.chatText !== undefined) {
         throw new Error(`${step.title}: a then step prints its message with message()`);
     }
     const abilityOnly = ABILITY_ONLY.filter((key) => step[key] !== undefined);

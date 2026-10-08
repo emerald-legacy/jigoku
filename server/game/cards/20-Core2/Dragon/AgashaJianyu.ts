@@ -38,7 +38,7 @@ export default class AgashaJianyu extends DrawCard {
                     ]
                 };
             }))
-            .effect('give {0} +{1}{2}/+{3}{4}', (context) => {
+            .chatText('give {0} +{1}{2}/+{3}{4}', (context) => {
                 const bonus = bonusBase(context);
                 return [2 * bonus, 'military', 1 * bonus, 'political'];
             });

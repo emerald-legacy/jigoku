@@ -39,7 +39,7 @@ export default class ScoutsSteed extends DrawCard {
                     ]
                 })
             ))
-            .effect('ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now', (context) => {
+            .chatText('ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now', (context) => {
                 const target = context.target;
                 return [
                     context.source.parentCharacter,

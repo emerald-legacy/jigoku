@@ -29,7 +29,7 @@ export default class StarlitSkies extends DrawCard {
                     context.player.moveCard(card, isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
                 }));
             })
-            .effect((context) => msg`look at the top 3 cards of ${context.player}'s ${(context.select ?? '').toLowerCase()}`)
+            .chatText((context) => msg`look at the top 3 cards of ${context.player}'s ${(context.select ?? '').toLowerCase()}`)
             .evenDuringDynasty();
     }
 

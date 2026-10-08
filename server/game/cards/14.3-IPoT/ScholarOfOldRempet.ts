@@ -17,7 +17,7 @@ class ScholarOfOldRempet extends DrawCard {
             }, cardLastingEffect({
                 effect: immunity({ restricts: 'events' })
             }))
-            .effect('make {0} immune to events');
+            .chatText('make {0} immune to events');
     }
 }
 

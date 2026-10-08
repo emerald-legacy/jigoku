@@ -21,7 +21,7 @@ class UtakuKamoko extends DrawCard {
                 targets: true
             }))
             .gameAction(ready(), honor())
-            .effect('ready and honor {0}');
+            .chatText('ready and honor {0}');
     }
 }
 

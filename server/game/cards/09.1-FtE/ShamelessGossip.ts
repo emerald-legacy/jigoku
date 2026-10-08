@@ -33,7 +33,7 @@ class ShamelessGossip extends DrawCard {
                     recipient: context.targets.second
                 }))
             })))
-            .effect((context) => msg`move a status token from ${context.targets.first} to ${context.targets.second}`);
+            .chatText((context) => msg`move a status token from ${context.targets.first} to ${context.targets.second}`);
     }
 }
 

@@ -18,6 +18,6 @@ export default class SoshiIllusionist extends DrawCard {
                 messageArgs: (token, player) => [player, token],
                 gameAction: discardStatusToken()
             })))
-            .effect('discard a status token from {0}');
+            .chatText('discard a status token from {0}');
     }
 }

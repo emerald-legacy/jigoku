@@ -17,7 +17,7 @@ class ElementalInversion extends DrawCard {
                 })),
                 switchConflictElement()
             ]))
-            .effect('move all fate from the {0} and switch it with the contested ring');
+            .chatText('move all fate from the {0} and switch it with the contested ring');
     }
 }
 

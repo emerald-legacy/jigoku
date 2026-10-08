@@ -43,7 +43,7 @@ export default class WeKnow extends DrawCard {
                 }
                 return choices;
             })
-            .effect('{1}{2}{3}', (context) => {
+            .chatText('{1}{2}{3}', (context) => {
                 if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
                     return [
                         'draw two cards and cause ',

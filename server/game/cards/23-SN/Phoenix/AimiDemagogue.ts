@@ -29,6 +29,6 @@ export default class AimiDemagogue extends DrawCard {
                 }
                 return { gameActions };
             }))
-            .effect('give {1}{0} pride until the end of the conflict', (context) => [context.target.controller !== context.player ? 'itself and ' : '']);
+            .chatText('give {1}{0} pride until the end of the conflict', (context) => [context.target.controller !== context.player ? 'itself and ' : '']);
     }
 }

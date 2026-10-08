@@ -17,6 +17,6 @@ export default class MantraOfFire extends DrawCard {
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, placeFate())
             .draw()
-            .effect('add a fate to {0} and draw a card');
+            .chatText('add a fate to {0} and draw a card');
     }
 }

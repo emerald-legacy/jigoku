@@ -29,7 +29,7 @@ export default class Coward extends DrawCard {
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: dishonor()
             }))
-            .effect('dishonor a duel challenger');
+            .chatText('dishonor a duel challenger');
 
         this.reaction('Dishonor a character')
             .when({

@@ -21,7 +21,7 @@ class ClarityOfPurpose extends DrawCard {
                     applyingPlayer: context.player
                 })
             })))
-            .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of a political conflict');
+            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of a political conflict');
     }
 }
 

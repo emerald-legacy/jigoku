@@ -16,7 +16,7 @@ export default class KitsuSpiritcaller2 extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.isFaction('lion')
             }, putIntoConflict())
-            .effect('call {0} back from the dead until the end of the conflict')
+            .chatText('call {0} back from the dead until the end of the conflict')
             .then()
             .cardLastingEffect((context) => ({
                 target: context.target,

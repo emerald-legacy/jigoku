@@ -17,7 +17,7 @@ class UnleashTheDjinn extends DrawCard {
                     setPoliticalSkill(3)
                 ]
             }))
-            .effect(() => msg`make all participating characters 3${'military'}/3${'political'}`);
+            .chatText(() => msg`make all participating characters 3${'military'}/3${'political'}`);
     }
 }
 

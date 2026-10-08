@@ -15,7 +15,7 @@ class ShosuroHametsu extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .effect('search conflict deck to reveal a poison card and add it to their hand');
+            .chatText('search conflict deck to reveal a poison card and add it to their hand');
     }
 }
 

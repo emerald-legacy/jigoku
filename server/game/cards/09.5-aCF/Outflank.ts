@@ -19,7 +19,7 @@ class Outflank extends DrawCard {
             }, cardLastingEffect({
                 effect: cannotBeDeclaredAsDefender()
             }))
-            .effect('prevent {0} from declaring as a defender this conflict')
+            .chatText('prevent {0} from declaring as a defender this conflict')
             .max(perConflict(1));
     }
 }

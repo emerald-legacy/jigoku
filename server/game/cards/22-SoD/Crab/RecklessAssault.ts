@@ -15,7 +15,7 @@ export default class RecklessAssault extends DrawCard {
                 target: this.getCharacters(context),
                 effect: cannotBeDeclaredAsDefender()
             }))
-            .effect('prevent characters with less than 3{1} from defending (this affects {2})', (context) => ['military', this.getCharacters(context)]);
+            .chatText('prevent characters with less than 3{1} from defending (this affects {2})', (context) => ['military', this.getCharacters(context)]);
     }
 
     private getCharacters(context: AbilityContext) {

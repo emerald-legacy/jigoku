@@ -38,7 +38,7 @@ class WalkingTheWay extends DrawCard {
                     })
                 });
             })
-            .effect('look at the top three cards of their dynasty deck');
+            .chatText('look at the top three cards of their dynasty deck');
     }
 }
 

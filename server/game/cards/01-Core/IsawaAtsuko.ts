@@ -18,7 +18,7 @@ class IsawaAtsuko extends DrawCard {
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)
             })))
-            .effect('give friendly characters +1/+1 and opposing characters -1/-1');
+            .chatText('give friendly characters +1/+1 and opposing characters -1/-1');
     }
 
     getPrintedElementSymbols() {

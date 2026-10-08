@@ -18,7 +18,7 @@ class BattleAspirant extends DrawCard {
             }, cardLastingEffect({
                 effect: mustBeDeclaredAsDefender()
             }))
-            .effect('force {0} to declare as a defender this conflict');
+            .chatText('force {0} to declare as a defender this conflict');
     }
 }
 

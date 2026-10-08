@@ -27,6 +27,6 @@ export default class AkodoAsuka extends DrawCard {
                 shuffle: true,
                 reveal: false
             })
-            .effect('look at the top {1} cards of their conflict deck', (context) => charactersOnYourSide(context));
+            .chatText('look at the top {1} cards of their conflict deck', (context) => charactersOnYourSide(context));
     }
 }

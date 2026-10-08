@@ -39,7 +39,7 @@ export default class KitsukiSeiji extends DrawCard {
                         return { replacementGameAction: noAction() };
                 }
             })
-            .effect('put the fate that would go on the {1} ring on {0} instead', () => [this.getCurrentElementSymbol(ELEMENT_KEY)]);
+            .chatText('put the fate that would go on the {1} ring on {0} instead', () => [this.getCurrentElementSymbol(ELEMENT_KEY)]);
     }
 
     public getPrintedElementSymbols() {

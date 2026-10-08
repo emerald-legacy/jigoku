@@ -19,7 +19,7 @@ export default class KakitaBlade2 extends DrawCard {
                     duration: Duration.UntilSelfPassPriority,
                     effect: [gainActionPhasePriority(), additionalAction()]
                 })),
-                effect: 'take an action at the start of the conflict'
+                chatText: 'take an action at the start of the conflict'
             })
         });
     }

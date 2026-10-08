@@ -16,7 +16,7 @@ class DisguisedProtector extends DrawCard {
                 targetController: context.player.opponent,
                 effect: changePlayerSkillModifier(context.player.opponent ? context.player.opponent.showBid : 0)
             })))
-            .effect('add the bid on each players dial to their skill total');
+            .chatText('add the bid on each players dial to their skill total');
     }
 }
 

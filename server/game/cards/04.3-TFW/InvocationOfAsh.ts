@@ -16,7 +16,7 @@ class InvocationOfAsh extends DrawCard {
                 attach((context) => ({ attachment: context.source })),
                 removeFate()
             ]))
-            .effect('move {1} to {0}, then remove a fate from {0}', context => context.source);
+            .chatText('move {1} to {0}, then remove a fate from {0}', context => context.source);
     }
 }
 

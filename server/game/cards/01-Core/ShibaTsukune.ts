@@ -43,7 +43,7 @@ class ShibaTsukune extends DrawCard {
                     return true;
                 }
             }))
-            .effect('resolve up to 2 ring effects');
+            .chatText('resolve up to 2 ring effects');
     }
 
     private resolveRing(player: Player, ring: Ring) {

@@ -33,7 +33,7 @@ export default class RoadToShakyakuMura extends DrawCard {
                     })
                 ])
             }))
-            .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [
+            .chatText('prevent {1} from leaving play, putting it into {2} instead', (context) => [
                 context.event.card ?? '',
                 context.costs.captureLocationCost ?? ''
             ]);

@@ -26,8 +26,8 @@ export default class GraspOfEarth2 extends DrawCard {
                     onMoveToConflict: (event, context) =>
                         event.card.type === CardType.Character && context.source.isParticipating()
                 },
-                effect: 'deny {1}\'s movement',
-                effectArgs: (context) => [context.event.card],
+                chatText: 'deny {1}\'s movement',
+                chatTextArgs: (context) => [context.event.card],
                 gameAction: cancel()
             })
         });

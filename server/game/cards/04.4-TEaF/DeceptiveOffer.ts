@@ -25,7 +25,7 @@ class DeceptiveOffer extends DrawCard {
                 })),
                 'Give your opponent 1 honor': takeHonor()
             })
-            .effect('{1}{2}', context => {
+            .chatText('{1}{2}', context => {
                 if(context.selects.select.choice === 'Give your opponent 1 honor') {
                     return ['take 1 honor from ', context.player.opponent];
                 }

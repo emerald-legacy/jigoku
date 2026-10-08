@@ -24,7 +24,7 @@ class YogoAsami extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({ effect: modifyMilitarySkill(-2) }))
-            .effect('reduce {0}\'s military skill by 2');
+            .chatText('reduce {0}\'s military skill by 2');
     }
 }
 

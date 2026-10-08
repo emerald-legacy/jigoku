@@ -32,7 +32,7 @@ class ShrineMaiden extends DrawCard {
                     this.game.addMessage('{0} discards {1}', context.player, toDiscard);
                 }
             })
-            .effect('take any revealed spells into their hand');
+            .chatText('take any revealed spells into their hand');
     }
 }
 

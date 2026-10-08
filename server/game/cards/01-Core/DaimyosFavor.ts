@@ -24,7 +24,7 @@ class DaimyosFavor extends DrawCard {
                     limit: fixed(1)
                 })
             }))
-            .effect('reduce the cost of the next attachment they play on {1} by 1', context => context.source.parentCharacter);
+            .chatText('reduce the cost of the next attachment they play on {1} by 1', context => context.source.parentCharacter);
     }
 }
 

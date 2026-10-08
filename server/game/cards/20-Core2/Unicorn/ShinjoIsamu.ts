@@ -28,6 +28,6 @@ export default class ShinjoIsamu extends DrawCard {
                         .getConflictProvinces()
                         .some((province) => province.getElement().includes(ring.element))
             }, resolveRingEffect())
-            .effect('resolve the {0} effect');
+            .chatText('resolve the {0} effect');
     }
 }

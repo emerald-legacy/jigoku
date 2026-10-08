@@ -37,7 +37,7 @@ export default class Pressure extends DrawCard {
                 message: '{0} chooses {1}',
                 messageArgs: (cards) => [context.player, cards]
             }))
-            .effect('move a character home and prevent it from participating in the conflict')
+            .chatText('move a character home and prevent it from participating in the conflict')
             .max(perConflict(1));
     }
 }

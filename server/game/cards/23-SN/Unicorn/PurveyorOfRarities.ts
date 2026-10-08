@@ -16,7 +16,7 @@ export default class PurveyorOfRarities extends DrawCard {
                 .gainFate(1)
             .otherwise()
                 .cardLastingEffect((context) => ({ target: context.source, effect: modifyBothSkills(3) }))
-            .effect('give +{1}{2}/+{1}{3} to {4}{5}', context => this.cardCondition(context.costs.discardCard) ?
+            .chatText('give +{1}{2}/+{1}{3} to {4}{5}', context => this.cardCondition(context.costs.discardCard) ?
                 [1, 'military', 'political', context.source, ' and gain 1 fate'] :
                 [3, 'military', 'political', context.source, ''])
             .max(perConflict(1));

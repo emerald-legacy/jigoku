@@ -40,7 +40,7 @@ export default class ToConnectThePeople extends DrawCard {
                     ])
                 })
             ]))
-            .effect((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
+            .chatText((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
             .max(perRound(1));
     }
 

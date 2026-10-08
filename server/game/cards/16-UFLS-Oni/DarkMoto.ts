@@ -22,6 +22,6 @@ export default class DarkMoto extends BaseOni {
                     effect: doesNotBow()
                 }))
             ]))
-            .effect('place a fate on and prevent {0} from bowing as a result of conflict resolution');
+            .chatText('place a fate on and prevent {0} from bowing as a result of conflict resolution');
     }
 }

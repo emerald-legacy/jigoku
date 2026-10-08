@@ -17,7 +17,7 @@ export default class EarnestSculptor extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .effect('look at the top 8 cards of their deck');
+            .chatText('look at the top 8 cards of their deck');
 
         this.interrupt('Reduce cost of next Jade card')
             .when({
@@ -43,6 +43,6 @@ export default class EarnestSculptor extends DrawCard {
                         card === context.event.card || card === context.event.context.source
                 )
             }))
-            .effect((context) => msg`reduce the cost of ${context.event.context.source} by 1`);
+            .chatText((context) => msg`reduce the cost of ${context.event.context.source} by 1`);
     }
 }

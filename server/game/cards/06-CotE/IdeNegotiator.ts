@@ -25,6 +25,6 @@ export default class IdeNegotiator extends DrawCard {
                     }
                 }
             })))
-            .effect('modify their honor dial');
+            .chatText('modify their honor dial');
     }
 }

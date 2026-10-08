@@ -28,7 +28,7 @@ class RepentantLegion extends DrawCard {
                     destination: Location.ProvinceFour
                 }))
             ]))
-            .effect('put 1 card into each of their non-stronghold provinces');
+            .chatText('put 1 card into each of their non-stronghold provinces');
     }
 }
 

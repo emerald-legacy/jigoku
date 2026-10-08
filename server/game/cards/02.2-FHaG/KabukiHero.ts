@@ -12,7 +12,7 @@ class KabukiHero extends DrawCard {
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(context.source.politicalSkill)
             }))
-            .effect('give itself +{1}{2}/+0{3} until the end of the conflict', context => [context.source.politicalSkill, 'military', 'political']);
+            .chatText('give itself +{1}{2}/+0{3} until the end of the conflict', context => [context.source.politicalSkill, 'military', 'political']);
     }
 }
 

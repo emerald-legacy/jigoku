@@ -56,7 +56,7 @@ class TradingOnTheSandRoad extends DrawCard {
                     destination: Location.RemovedFromGame
                 }))
             ]))
-            .effect('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round');
+            .chatText('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round');
     }
 }
 

@@ -47,7 +47,7 @@ export default class LoyalWarhound extends DrawCard {
                                 return !flags.includes('wasAttachedThisRound');
                             },
                             printedAbility: false,
-                            effect: 'detach itself',
+                            chatText: 'detach itself',
                             gameAction: detach()
                         }),
                         // Matched dynamically so the protection follows this card if it is reattached
@@ -82,6 +82,6 @@ export default class LoyalWarhound extends DrawCard {
 
                 return { gameActions };
             }))
-            .effect('attach itself to {0}');
+            .chatText('attach itself to {0}');
     }
 }

@@ -14,7 +14,7 @@ class AsahinaMaeko extends DrawCard {
                 }),
                 targetController: Players.Any
             })
-            .effect('increase the cost of cards this conflict for both players');
+            .chatText('increase the cost of cards this conflict for both players');
     }
 }
 

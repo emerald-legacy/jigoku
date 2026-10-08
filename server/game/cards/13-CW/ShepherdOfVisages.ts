@@ -14,7 +14,7 @@ class ShepherdOfVisages extends DrawCard {
             }, cardLastingEffect(() => ({
                 effect: modifyGlory(-2)
             })))
-            .effect('give {0} -2 glory until the end of the conflict');
+            .chatText('give {0} -2 glory until the end of the conflict');
     }
 }
 

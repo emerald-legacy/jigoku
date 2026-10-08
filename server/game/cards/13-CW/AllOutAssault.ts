@@ -15,7 +15,7 @@ class AllOutAssault extends DrawCard {
                 targetController: Players.Any,
                 effect: mustDeclareMaximumAttackers()
             })
-            .effect('force each player to attack with as many characters as they can each conflict');
+            .chatText('force each player to attack with as many characters as they can each conflict');
     }
 }
 

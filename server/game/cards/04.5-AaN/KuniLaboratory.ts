@@ -16,7 +16,7 @@ class KuniLaboratory extends DrawCard {
                 onPhaseStarted: event => event.phase === Phase.Conflict
             })
             .loseHonor(context => ({ target: context.player }))
-            .effect('lose an honor');
+            .chatText('lose an honor');
     }
 }
 

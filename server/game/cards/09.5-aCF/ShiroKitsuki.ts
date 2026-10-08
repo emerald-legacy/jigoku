@@ -33,7 +33,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                     }))
                 })
             }))
-            .effect((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.namedCard}`)
+            .chatText((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.namedCard}`)
             .limit(unlimitedPerConflict());
     }
 }

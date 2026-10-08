@@ -34,7 +34,7 @@ class DirectingTheBattle extends DrawCard {
                     target: context.targets.character
                 }))
             })
-            .effect('{1}{2}{3}{4}', context => {
+            .chatText('{1}{2}{3}{4}', context => {
                 if(context.selects.select.choice === 'Move this character home') {
                     return ['send ', context.targets.character, ' home', ''];
                 }

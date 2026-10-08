@@ -17,7 +17,7 @@ export default class HonorsReward extends ProvinceCard {
             }, cardLastingEffect(() => ({
                 effect: modifyGlory(3)
             })))
-            .effect('give {0} +3 glory')
+            .chatText('give {0} +3 glory')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 

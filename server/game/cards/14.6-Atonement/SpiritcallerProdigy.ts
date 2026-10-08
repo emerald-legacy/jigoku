@@ -16,7 +16,7 @@ class SpiritcallerProdigy extends DrawCard {
                 cardCondition: card => card.isFaction('lion') && card.costLessThan(4),
                 controller: Players.Self
             }, putIntoPlay())
-            .effect('call {0} back from the dead');
+            .chatText('call {0} back from the dead');
     }
 }
 

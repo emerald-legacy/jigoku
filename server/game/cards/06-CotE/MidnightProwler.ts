@@ -23,6 +23,6 @@ export default class MidnightProwler extends DrawCard {
                 message: '{0} chooses to discard {1}',
                 messageArgs: (card, player) => [player, card]
             })))
-            .effect((context) => msg`look at the top two cards of ${context.player.opponent}'s conflict deck`);
+            .chatText((context) => msg`look at the top two cards of ${context.player.opponent}'s conflict deck`);
     }
 }

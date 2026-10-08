@@ -14,7 +14,7 @@ export default class BustlingAcademy extends DrawCard {
                 location: Location.Provinces,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]
             }, moveCard({ destination: Location.DynastyDiscardPile }))
-            .effect('discard {0} and refill it faceup')
+            .chatText('discard {0} and refill it faceup')
             .then()
             .refillFaceup((context) => {
                 const moveEvent = context.previousEvents[0];

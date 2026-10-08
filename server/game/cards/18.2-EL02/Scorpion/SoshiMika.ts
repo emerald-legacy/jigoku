@@ -19,7 +19,7 @@ class SoshiMika extends DrawCard {
                     amount: 2
                 }))
             ]))
-            .effect('have each player lose an honor and draw two cards');
+            .chatText('have each player lose an honor and draw two cards');
 
         this.action('Flip the Imperial Favor')
             .gameAction(flipImperialFavor(context => ({

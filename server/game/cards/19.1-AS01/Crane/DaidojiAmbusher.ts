@@ -26,7 +26,7 @@ export default class DaidojiAmbusher extends DrawCard {
                     trueGameAction: injure()
                 })
             ]))
-            .effect('give {0} -2{1}{2}', (context) => [
+            .chatText('give {0} -2{1}{2}', (context) => [
                 'military',
                 this.triggerKickerEffect(context, Timing.BEFORE_PENALTY)
                     ? ` and ${this.shouldDiscardTarget(context) ? 'discard them' : 'remove a fate from them'}`

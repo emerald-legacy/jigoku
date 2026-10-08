@@ -11,7 +11,7 @@ class WarriorPoet extends DrawCard {
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)
             }))
-            .effect('reduce the skill of all opposing characters');
+            .chatText('reduce the skill of all opposing characters');
     }
 }
 

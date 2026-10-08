@@ -16,6 +16,6 @@ export default class IsawaMoriSeido extends StrongholdCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: modifyGlory(2)
             }))
-            .effect('give +2 glory to {0} until the end of the phase');
+            .chatText('give +2 glory to {0} until the end of the phase');
     }
 }

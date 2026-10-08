@@ -14,7 +14,7 @@ class YoungHarrier extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => card.isFaction('crane')),
                 effect: cardCannot('dishonor')
             }))
-            .effect('prevent Crane characters from being dishonored this phase');
+            .chatText('prevent Crane characters from being dishonored this phase');
     }
 }
 

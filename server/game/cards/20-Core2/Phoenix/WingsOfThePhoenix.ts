@@ -24,8 +24,8 @@ export default class WingsOfThePhoenix extends DrawCard {
                         target: context.game.currentConflict?.getCharacters(context.player.opponent),
                         effect: modifyBothSkills(-1)
                     })),
-                    effect: 'give all participating enemies -1{1}/-1{2} until the end of the conflict',
-                    effectArgs: ['military', 'political']
+                    chatText: 'give all participating enemies -1{1}/-1{2} until the end of the conflict',
+                    chatTextArgs: ['military', 'political']
                 })
             ]));
     }

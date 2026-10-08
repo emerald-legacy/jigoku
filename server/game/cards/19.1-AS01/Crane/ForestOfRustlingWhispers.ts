@@ -23,6 +23,6 @@ export default class ForestOfRustlingWhispers extends ProvinceCard {
                     }
                 }
             }))
-            .effect('honor or dishonor {0}');
+            .chatText('honor or dishonor {0}');
     }
 }

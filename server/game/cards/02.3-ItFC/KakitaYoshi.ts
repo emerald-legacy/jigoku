@@ -18,7 +18,7 @@ class KakitaYoshi extends DrawCard {
                     match: (card) => card.type === CardType.Event
                 })
             }))
-            .effect('draw 3 cards, and reduce the cost of events this conflict');
+            .chatText('draw 3 cards, and reduce the cost of events this conflict');
     }
 }
 

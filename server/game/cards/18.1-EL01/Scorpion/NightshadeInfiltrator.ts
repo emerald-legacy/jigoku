@@ -17,7 +17,7 @@ class NightshadeInfiltrator extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(-3)
             }))
-            .effect('give {0} -3{1}/-3{2}', () => ['military', 'political']);
+            .chatText('give {0} -3{1}/-3{2}', () => ['military', 'political']);
     }
 }
 

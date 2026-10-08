@@ -16,7 +16,7 @@ class TogashiYoshi extends DrawCard {
                 target: context.ring,
                 gameAction: takeFateFromRing()
             })))
-            .effect((context) => msg`gain 1 fate from the ${context.ring}`);
+            .chatText((context) => msg`gain 1 fate from the ${context.ring}`);
     }
 }
 

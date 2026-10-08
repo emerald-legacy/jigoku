@@ -45,7 +45,7 @@ class AgashaProdigys extends DrawCard {
                     otherwiseAction: discardFromPlay({ target: [] })
                 }))
             ]))
-            .effect('discard the top card of their deck and attempt to attach it to {1}{2}', (context) => [
+            .chatText('discard the top card of their deck and attempt to attach it to {1}{2}', (context) => [
                 context.targets.myCharacter,
                 honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)
             ]);

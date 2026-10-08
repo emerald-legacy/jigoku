@@ -19,7 +19,7 @@ class NaturalNegotiator extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: switchBaseSkills()
             }))
-            .effect((context) => msg`switch ${context.source.parentCharacter}'s base ${'military'} and ${'political'} skill`);
+            .chatText((context) => msg`switch ${context.source.parentCharacter}'s base ${'military'} and ${'political'} skill`);
     }
 }
 

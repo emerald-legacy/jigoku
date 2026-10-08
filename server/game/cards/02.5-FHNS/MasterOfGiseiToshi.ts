@@ -22,7 +22,7 @@ class MasterOfGiseiToshi extends DrawCard {
                     restricts: 'nonSpellEvents'
                 })
             }))
-            .effect('prevent non-spell events from being played while {0} is contested');
+            .chatText('prevent non-spell events from being played while {0} is contested');
     }
 }
 

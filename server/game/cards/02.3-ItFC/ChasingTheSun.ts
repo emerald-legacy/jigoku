@@ -15,7 +15,7 @@ class ChasingTheSun extends DrawCard {
                 messageArgs: (card, player) => [player, card],
                 gameAction: moveConflict()
             })
-            .effect('move the conflict to another eligible province')
+            .chatText('move the conflict to another eligible province')
             .cannotBeMirrored();
     }
 }

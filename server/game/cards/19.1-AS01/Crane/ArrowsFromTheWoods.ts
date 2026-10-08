@@ -16,7 +16,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyMilitarySkill(this.penaltyValue(context))
             }))
-            .effect('give {1}\'s participating characters {2}{3}', (context) => [context.player.opponent, this.penaltyValue(context), 'military'])
+            .chatText('give {1}\'s participating characters {2}{3}', (context) => [context.player.opponent, this.penaltyValue(context), 'military'])
             .max(perConflict(1));
     }
 

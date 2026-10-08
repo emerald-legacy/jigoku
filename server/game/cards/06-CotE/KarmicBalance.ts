@@ -17,7 +17,7 @@ class KarmicBalance extends DrawCard {
                 destination: Location.ConflictDeck,
                 target: context.player.opponent ? [...context.player.opponent.conflictDiscardPile, ...context.player.opponent.hand] : []
             })), draw((context) => ({ target: context.game.getPlayers(), amount: 4 })), moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame })))
-            .effect('shuffle hand and discard pile into conflict deck and draw 4 cards');
+            .chatText('shuffle hand and discard pile into conflict deck and draw 4 cards');
     }
 
     canPlay(context: AbilityContext) {

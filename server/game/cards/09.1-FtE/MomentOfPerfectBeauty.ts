@@ -17,7 +17,7 @@ class MomentOfPerfectBeauty extends DrawCard {
                 targetController: context.player.opponent,
                 effect: resolveConflictEarly()
             }))
-            .effect((context) => msg`resolve the conflict after ${context.player.opponent}'s next action`);
+            .chatText((context) => msg`resolve the conflict after ${context.player.opponent}'s next action`);
     }
 }
 

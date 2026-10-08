@@ -45,7 +45,7 @@ export default class TwinSoulTemple extends StrongholdCard {
                     };
                 }
             })))
-            .effect('replace a printed element symbol with a different one');
+            .chatText('replace a printed element symbol with a different one');
     }
 
     getChoices(element: ElementSymbol): string[] {

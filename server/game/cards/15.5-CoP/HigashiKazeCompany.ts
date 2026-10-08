@@ -18,7 +18,7 @@ class HigashiKazeCompany extends DrawCard {
             }, cardLastingEffect({
                 effect: doesNotBow()
             }))
-            .effect('prevent {0} from bowing at the end of the conflict');
+            .chatText('prevent {0} from bowing at the end of the conflict');
     }
 }
 

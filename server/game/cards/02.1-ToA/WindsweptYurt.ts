@@ -19,7 +19,7 @@ class WindsweptYurt extends DrawCard {
                 }))
             })
             .refillFaceup((context) => ({ location: context.cardStateWhenInitiated?.location ?? [] }))
-            .effect('give each player 2 {1}', context => context.select === 'Each player gains 2 fate' ? 'fate' : 'honor');
+            .chatText('give each player 2 {1}', context => context.select === 'Each player gains 2 fate' ? 'fate' : 'honor');
     }
 }
 

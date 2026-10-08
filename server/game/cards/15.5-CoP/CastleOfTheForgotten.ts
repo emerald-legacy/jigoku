@@ -18,6 +18,6 @@ export default class CastleOfTheForgotten extends StrongholdCard {
                 effect: setConflictDeclarationType(ConflictType.Military),
                 duration: Duration.UntilEndOfPhase
             })
-            .effect(() => msg`make all future conflicts ${'military'} for this phase`);
+            .chatText(() => msg`make all future conflicts ${'military'} for this phase`);
     }
 }

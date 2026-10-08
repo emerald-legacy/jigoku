@@ -15,7 +15,7 @@ export default class SeppunRyo extends DrawCard {
                 effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add 1 to their duel total');
+            .chatText('add 1 to their duel total');
 
         this.conflictAction('Initiate a military duel to bow')
             .initiateDuel((context) => {

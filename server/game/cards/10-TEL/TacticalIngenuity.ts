@@ -14,7 +14,7 @@ class TacticalIngenuity extends DrawCard {
             effect: gainAbility(AbilityType.Action, {
                 title: 'Reveal and draw an event',
                 condition: (context) => context.source.isParticipating(),
-                effect: 'look at the top four cards of their deck',
+                chatText: 'look at the top four cards of their deck',
                 gameAction: deckSearch({
                     cardsToLookAt: 4,
                     cardCondition: (card) => card.type === CardType.Event,

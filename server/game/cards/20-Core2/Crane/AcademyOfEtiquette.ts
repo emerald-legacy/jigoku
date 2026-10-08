@@ -22,6 +22,6 @@ export default class AcademyOfEtiquette extends DrawCard {
                 effect: addKeyword('courtesy'),
                 duration: Duration.UntilEndOfPhase
             })))
-            .effect('give {0} courtesy');
+            .chatText('give {0} courtesy');
     }
 }

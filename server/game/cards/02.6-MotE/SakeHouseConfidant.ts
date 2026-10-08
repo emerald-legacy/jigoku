@@ -13,7 +13,7 @@ class SakeHouseConfidant extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => card.hasTrait('shinobi')),
                 effect: modifyPoliticalSkill(2)
             }))
-            .effect('give their Shinobi +0/+2');
+            .chatText('give their Shinobi +0/+2');
     }
 }
 

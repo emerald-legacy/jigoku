@@ -42,6 +42,6 @@ export default class IronMountainCastle extends StrongholdCard {
                     (card) => card === context.event.context?.source
                 )
             }))
-            .effect('reduce the cost of their next attachment by 1');
+            .chatText('reduce the cost of their next attachment by 1');
     }
 }

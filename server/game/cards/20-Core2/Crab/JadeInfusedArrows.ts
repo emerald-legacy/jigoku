@@ -15,7 +15,7 @@ export default class JadeInfusedArrows extends DrawCard {
                 target: context.source.parentCharacter ?? [],
                 effect: modifyMilitarySkill(this.bonusAmount(context))
             }))
-            .effect('give +{1}{2} to {3}{4}', (context) => [
+            .chatText('give +{1}{2} to {3}{4}', (context) => [
                 this.bonusAmount(context),
                 'military',
                 context.source.parentCharacter ?? '',

@@ -40,7 +40,7 @@ export default class DaidojiOta extends DrawCard {
                     messageArgs: (cards) => [context.player.opponent, cards]
                 }))
             })
-            .effect('make {1}{2}', (context) =>
+            .chatText('make {1}{2}', (context) =>
                 context.select === 'Discard an event'
                     ? [context.player.opponent, ' discard an event']
                     : [context.player.opponent, ' reveal their hand']);

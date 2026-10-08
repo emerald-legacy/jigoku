@@ -21,7 +21,7 @@ export default class ShibasOath extends DrawCard {
             .honor((context) => ({
                 target: context.source.parentCharacter ?? []
             }))
-            .effect('honor {1}', (context) => context.source.parentCharacter);
+            .chatText('honor {1}', (context) => context.source.parentCharacter);
 
         this.whileAttached({
             effect: gainAbility(AbilityType.WouldInterrupt, {
@@ -48,8 +48,8 @@ export default class ShibasOath extends DrawCard {
                         destination: Location.Hand
                     })
                 ]),
-                effect: 'cancel the effects of {1} and return {2} to their hand',
-                effectArgs: (context) => [context.event.card, this]
+                chatText: 'cancel the effects of {1} and return {2} to their hand',
+                chatTextArgs: (context) => [context.event.card, this]
             })
         });
     }

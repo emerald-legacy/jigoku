@@ -46,7 +46,7 @@ export default class AncientStoneGuardian extends DrawCard {
             }, sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.secondCharacter)
             ))
-            .effect('present an opportunity to sneak around {0} and find some secrets{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}', (context) =>
+            .chatText('present an opportunity to sneak around {0} and find some secrets{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}', (context) =>
                 this.effectsForCard(context.targets.firstCharacter).concat(
                     this.effectsForCard(context.targets.secondCharacter)
                 ));

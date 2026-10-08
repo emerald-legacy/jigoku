@@ -15,7 +15,7 @@ export default class PathOfReflection extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash()
             }, cardLastingEffect({ effect: switchBaseSkills() }))
-            .effect('switch {0}\'s military and political skill')
+            .chatText('switch {0}\'s military and political skill')
             .conflictProvinceCondition((province, context) =>
                 province.isElement(this.getCurrentElementSymbol(this.provinceElement)) ||
                 (context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(this.conflictElement)) ?? false));

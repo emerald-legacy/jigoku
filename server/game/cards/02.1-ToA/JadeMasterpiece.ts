@@ -18,7 +18,7 @@ class JadeMasterpiece extends DrawCard {
                 messageArgs: ring => [context.player, context.ring, ring],
                 gameAction: placeFateOnRing({ origin: context.ring })
             })))
-            .effect('move 1 fate from {0} to an unclaimed ring');
+            .chatText('move 1 fate from {0} to an unclaimed ring');
     }
 }
 

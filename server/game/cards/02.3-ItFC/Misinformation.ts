@@ -13,7 +13,7 @@ class Misinformation extends DrawCard {
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)
             }))
-            .effect(() => msg`give all opposing characters -1${'military'}/-1${'political'}`);
+            .chatText(() => msg`give all opposing characters -1${'military'}/-1${'political'}`);
     }
 }
 

@@ -31,7 +31,7 @@ class ApprenticeEngineer extends DrawCard {
                     discardCard()
                 ])
             })))
-            .effect('put {0} into a province');
+            .chatText('put {0} into a province');
     }
 }
 

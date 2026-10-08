@@ -17,7 +17,7 @@ class MasashigisSacrifice extends DrawCard {
                 target: context.game.currentConflict?.getDefenders(),
                 effect: doesNotBow()
             }))
-            .effect('prevent defending characters from bowing at the end of the conflict');
+            .chatText('prevent defending characters from bowing at the end of the conflict');
     }
 }
 

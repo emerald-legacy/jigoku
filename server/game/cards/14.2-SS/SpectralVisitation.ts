@@ -50,7 +50,7 @@ export default class SpectralVisitation extends ProvinceCard {
                     messageArgs: (card) => [context.player, card, context.source]
                 }))
             ]))
-            .effect('put a dynasty character into play')
+            .chatText('put a dynasty character into play')
             .cannotTargetFirst();
     }
 }

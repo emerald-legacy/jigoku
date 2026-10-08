@@ -24,7 +24,7 @@ class PillowBook extends DrawCard {
                     ]
                 };
             })
-            .effect('make the top card of their deck playable until the end of the conflict');
+            .chatText('make the top card of their deck playable until the end of the conflict');
     }
 }
 

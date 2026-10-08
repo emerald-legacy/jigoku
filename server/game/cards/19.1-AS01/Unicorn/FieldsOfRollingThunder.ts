@@ -35,6 +35,6 @@ export default class FieldsOfRollingThunder extends DrawCard {
                     };
                 })
             ]))
-            .effect('honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict', (context) => [context.source.controller]);
+            .chatText('honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict', (context) => [context.source.controller]);
     }
 }

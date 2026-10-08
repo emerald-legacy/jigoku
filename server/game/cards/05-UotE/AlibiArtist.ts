@@ -17,7 +17,7 @@ class AlibiArtist extends DrawCard {
                 reveal: false,
                 placeOnBottomInRandomOrder: true
             })
-            .effect('look at the top two cards of their conflict deck');
+            .chatText('look at the top two cards of their conflict deck');
     }
 }
 

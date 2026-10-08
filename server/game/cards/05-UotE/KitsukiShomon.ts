@@ -30,6 +30,6 @@ export default class KitsukiShomon extends DrawCard {
                 window.addThenAbility(thenAbility, context);
                 context.cancel();
             })
-            .effect('dishonor {0} instead of {1}', (context) => context.event.card);
+            .chatText('dishonor {0} instead of {1}', (context) => context.event.card);
     }
 }

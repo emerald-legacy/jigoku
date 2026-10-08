@@ -20,7 +20,7 @@ export default class AppeasingTheRestless extends DrawCard {
                 this.moveFate(context, MAX_FATE);
                 context.game.queueSimpleStep(() => this.injure(context, context.costs.bow));
             })
-            .effect('move up to 3 fate onto Spirit characters{1}{2}', (context) => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow])
+            .chatText('move up to 3 fate onto Spirit characters{1}{2}', (context) => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow])
             .cannotTargetFirst();
     }
 

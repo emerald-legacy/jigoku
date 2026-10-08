@@ -33,7 +33,7 @@ class MiyaSatoshi extends DrawCard {
                     }
                 });
             })
-            .effect('search for an Imperial card and place it in a province');
+            .chatText('search for an Imperial card and place it in a province');
     }
 }
 

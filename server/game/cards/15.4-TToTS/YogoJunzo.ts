@@ -16,7 +16,7 @@ class YogoJunzo extends DrawCard {
                         amount: context.target?.getFate() ?? 0
                     }))
                 },
-                effect: 'remove all fate from {0}'
+                chatText: 'remove all fate from {0}'
             })
         });
 

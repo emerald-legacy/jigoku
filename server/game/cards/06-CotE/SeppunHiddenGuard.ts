@@ -23,7 +23,7 @@ class SeppunHiddenGuard extends DrawCard {
                 cancel(),
                 discardAtRandom((context) => ({ target: context.event.context.player }))
             ]))
-            .effect('cancel the effects of {1}, and force {2} to discard a card at random', (context) => [context.event.card, context.event.context.player]);
+            .chatText('cancel the effects of {1}, and force {2} to discard a card at random', (context) => [context.event.card, context.event.context.player]);
     }
 }
 

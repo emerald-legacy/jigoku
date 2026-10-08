@@ -87,6 +87,6 @@ export default class RiddlesOfTheHenshin extends DrawCard {
         this.action('Resolve ring effects')
             .condition((context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0)
             .handler((context) => new Process(getNumberOfMonks(context), context).promptPlayer())
-            .effect('resolve ring effects');
+            .chatText('resolve ring effects');
     }
 }

@@ -35,7 +35,7 @@ export default class TheHundredHandStrike extends DrawCard {
                 target: context.targets.punchee,
                 effect: modifyBothSkills(penalty(context))
             }))
-            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.targets.punchee])
+            .chatText('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.targets.punchee])
             .max(perConflict(1))
             .afterwardsIf((context) => context.targets.puncher.hasTrait('tattooed') &&
                 context.game.currentConflict !== null &&

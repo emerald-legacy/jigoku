@@ -14,7 +14,7 @@ class Kudaka extends DrawCard {
                 onClaimRing: (event, context) => claimsRingOf(this, elementSymbol.key, event) && event.player === context.player
             })
             .gainFate().draw()
-            .effect('gain 1 fate and draw 1 card')
+            .chatText('gain 1 fate and draw 1 card')
             .limit(perRound(2));
     }
 

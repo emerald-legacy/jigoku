@@ -23,7 +23,7 @@ class CalledToWar extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.honorTakenFromOpponent)
             }, placeFate())
-            .effect('place a fate on {1}{2}', (context) => [
+            .chatText('place a fate on {1}{2}', (context) => [
                 context.targets.myCharacter,
                 honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate on ' + name)
             ]);

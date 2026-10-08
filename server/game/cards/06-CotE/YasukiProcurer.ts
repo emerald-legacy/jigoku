@@ -18,7 +18,7 @@ class YasukiProcurer extends DrawCard {
                     limit: fixed(1)
                 })
             }))
-            .effect('reduce the cost of their next attachment or character played this phase by 1');
+            .chatText('reduce the cost of their next attachment or character played this phase by 1');
     }
 }
 
