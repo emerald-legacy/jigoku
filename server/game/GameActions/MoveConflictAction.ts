@@ -40,7 +40,7 @@ export class MoveConflictAction<C extends AbilityContext = AbilityContext> exten
         if(newProvince.isFacedown()) {
             const revealEvent = context.game.actions
                 .reveal()
-                .getEvent(newProvince, context.game.getFrameworkContext());
+                .getEvent(newProvince, context.game.getGameContext());
             context.game.openThenEventWindow(revealEvent);
         }
     }

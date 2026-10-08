@@ -78,6 +78,6 @@ export class ConflictPhase extends Phase {
             gameAction: (winner: Player | null) =>
                 winner ? claimImperialFavor({ target: winner }) : null
         })
-            .resolve(undefined, this.game.getFrameworkContext());
+            .resolve(undefined, this.game.getGameContext());
     }
 }

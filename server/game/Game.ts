@@ -827,7 +827,7 @@ class Game {
      * cards, and performs it on all legal targets.
      */
     applyGameAction(context: AbilityContext | null, actions: GameActionRequest): Event[] {
-        const resolvedContext = context ?? this.getFrameworkContext();
+        const resolvedContext = context ?? this.getGameContext();
         const events: Event[] = [];
         for(const action of Object.keys(actions)) {
             if(isOwnKey(APPLY_CARD_ACTIONS, action)) {
@@ -852,8 +852,14 @@ class Game {
         return events;
     }
 
-    getFrameworkContext(player: Player | null = null): AbilityContext {
-        return new AbilityContext({ game: this, player: player ?? undefined });
+    /** A context for the game's own rules acting for `player`, outside any card ability. */
+    getFrameworkContext(player: Player): AbilityContext {
+        return new AbilityContext({ game: this, player });
+    }
+
+    /** A context for game-level rules that act for no player (the fate phase, the end of a conflict); its `player` is missing. */
+    getGameContext(): AbilityContext {
+        return new AbilityContext({ game: this });
     }
 
     initiateConflict(
@@ -885,7 +891,7 @@ class Game {
     takeControl(player: Player, card: DrawCard): void {
         if(
             card.controller === player ||
-            !card.checkRestrictions(EffectName.TakeControl, this.getFrameworkContext())
+            !card.checkRestrictions(EffectName.TakeControl, this.getFrameworkContext(player))
         ) {
             return;
         }

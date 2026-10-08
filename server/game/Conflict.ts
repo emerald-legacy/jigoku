@@ -206,7 +206,7 @@ export class Conflict extends GameObject {
         if(!newRing) {
             throw new Error('switchElement called for non-existant element');
         }
-        if(this.attackingPlayer.checkRestrictions('takeFateFromRings', this.game.getFrameworkContext()) && newRing.fate > 0) {
+        if(this.attackingPlayer.checkRestrictions('takeFateFromRings', this.game.getFrameworkContext(this.attackingPlayer)) && newRing.fate > 0) {
             this.game.addMessage('{0} takes {1} fate from {2}', this.attackingPlayer, newRing.fate, newRing);
             const fate = newRing.fate;
             this.attackingPlayer.modifyFate(newRing.fate);
@@ -473,7 +473,7 @@ export class Conflict extends GameObject {
             if(!cannotContribute) {
                 cannotContribute = !card.checkRestrictions(
                     'contributeSkillToConflictResolution',
-                    this.game.getFrameworkContext()
+                    this.game.getFrameworkContext(card.controller)
                 );
             }
             if(cannotContribute) {

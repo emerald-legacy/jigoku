@@ -179,7 +179,7 @@ export class Duel extends GameObject {
         }
 
         const losers =
-            this.loser?.filter((card) => card.checkRestrictions('loseDuels', card.game.getFrameworkContext())) ?? [];
+            this.loser?.filter((card) => card.checkRestrictions('loseDuels', card.game.getFrameworkContext(card.controller))) ?? [];
         if(losers.length > 0) {
             this.loser = losers;
         } else {

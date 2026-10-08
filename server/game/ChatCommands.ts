@@ -199,7 +199,7 @@ class ChatCommands {
             num > 1 ? 's' : ''
         );
 
-        GameActions.discardAtRandom({ amount: num }).resolve(player, this.game.getFrameworkContext());
+        GameActions.discardAtRandom({ amount: num }).resolve(player, this.game.getFrameworkContext(player));
     }
 
     moveCardToDeckBottom(player: Player): void {
@@ -215,7 +215,7 @@ class ChatCommands {
                     : Location.DynastyDeck;
                 GameActions.moveCard({ target: card, bottom: true, destination: cardNewLocation }).resolve(
                     player,
-                    this.game.getFrameworkContext()
+                    this.game.getFrameworkContext(player)
                 );
                 this.game.addMessage(
                     '{0} uses a command to move {1} from their {2} to the bottom of their {3}.',
@@ -266,7 +266,7 @@ class ChatCommands {
             controller: Players.Self,
             cardCondition: (card: BaseCard) => card.isFacedown(),
             onSelect: (p: Player, card: BaseCard) => {
-                GameActions.reveal({ target: card }).resolve(p, this.game.getFrameworkContext());
+                GameActions.reveal({ target: card }).resolve(p, this.game.getFrameworkContext(p));
                 this.game.addMessage('{0} reveals {1}', p, card);
                 return true;
             }

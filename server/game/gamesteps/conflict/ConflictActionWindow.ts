@@ -38,7 +38,7 @@ class ConflictActionWindow extends ActionWindow {
             } else {
                 const provinces = this.conflict.getConflictProvinces();
                 provinces.forEach((province: ProvinceCard) => {
-                    if(!province.isBroken && province.checkRestrictions('break', this.game.getFrameworkContext()) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
+                    if(!province.isBroken && province.checkRestrictions('break', this.game.getFrameworkContext(this.conflict.attackingPlayer)) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
                         breakingProvinces.push(province);
                     }
                 });

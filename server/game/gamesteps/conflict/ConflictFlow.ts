@@ -123,7 +123,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     if(
                         this.conflict.attackingPlayer.checkRestrictions(
                             'chooseConflictRing',
-                            this.game.getFrameworkContext()
+                            this.game.getFrameworkContext(this.conflict.attackingPlayer)
                         ) ||
                         !this.conflict.attackingPlayer.opponent
                     ) {
@@ -359,7 +359,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                         this.conflict.ring.fate > 0 &&
                         this.conflict.attackingPlayer.checkRestrictions(
                             'takeFateFromRings',
-                            this.game.getFrameworkContext()
+                            this.game.getFrameworkContext(this.conflict.attackingPlayer)
                         )
                     ) {
                         this.game.addMessage(
@@ -825,7 +825,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.game.addMessage('{0} loses {1} honor for not defending the conflict', this.conflict.loser, honorLoss);
             loseHonor({ dueToUnopposed: true, amount: honorLoss }).resolve(
                 this.conflict.loser,
-                this.game.getFrameworkContext(this.conflict.loser)
+                this.conflict.loser ? this.game.getFrameworkContext(this.conflict.loser) : this.game.getGameContext()
             );
         }
     }
@@ -882,7 +882,7 @@ class ConflictFlow extends BaseStepWithPipeline {
         const winner = this.conflict.winner;
         if(
             winner &&
-            winner.checkRestrictions('claimRings', this.game.getFrameworkContext())
+            winner.checkRestrictions('claimRings', this.game.getFrameworkContext(winner))
         ) {
             this.game.raiseEvent(
                 EventName.OnClaimRing,
@@ -904,14 +904,14 @@ class ConflictFlow extends BaseStepWithPipeline {
 
         // Create bow events for attackers
         const attackerBows = this.conflict.attackers.map((card: DrawCard) =>
-            ({ card, event: bow().getEvent(card, this.game.getFrameworkContext()) })
+            ({ card, event: bow().getEvent(card, this.game.getGameContext()) })
         );
         // Cancel any events where attacker shouldn't bow
         attackerBows.forEach(({ card, event }) => (event.cancelled = !card.bowsOnReturnHome()));
 
         // Create bow events for defenders
         const defenderBows = this.conflict.defenders.map((card: DrawCard) =>
-            ({ card, event: bow().getEvent(card, this.game.getFrameworkContext()) })
+            ({ card, event: bow().getEvent(card, this.game.getGameContext()) })
         );
         // Cancel any events where defender shouldn't bow
         defenderBows.forEach(({ card, event }) => (event.cancelled = !card.bowsOnReturnHome()));

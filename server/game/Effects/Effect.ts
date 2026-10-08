@@ -103,7 +103,8 @@ class Effect<T extends GameObject = GameObject> {
     }
 
     refreshContext() {
-        this.context = this.game.getFrameworkContext(this.source.getEffectController() ?? null);
+        const controller = this.source.getEffectController();
+        this.context = controller ? this.game.getFrameworkContext(controller) : this.game.getGameContext();
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- an effect's source need not be a card (framework context)
         this.context.source = this.source as BaseCard;
         if(this.ability) {

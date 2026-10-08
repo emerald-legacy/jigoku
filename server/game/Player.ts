@@ -629,7 +629,7 @@ class Player extends GameObject {
     deckRanOutOfCards(deck: string): void {
         const discardPile = this.getSourceList(deck + ' discard pile');
         const action = GameActions.loseHonor({ amount: this.game.rules.deckoutHonorLoss });
-        if(action.canAffect(this, this.game.getFrameworkContext())) {
+        if(action.canAffect(this, this.game.getFrameworkContext(this))) {
             this.game.addMessage(
                 '{0}\'s {1} deck has run out of cards, so they lose {2} honor',
                 this,
@@ -639,7 +639,7 @@ class Player extends GameObject {
         } else {
             this.game.addMessage('{0}\'s {1} deck has run out of cards', this, deck);
         }
-        action.resolve(this, this.game.getFrameworkContext());
+        action.resolve(this, this.game.getFrameworkContext(this));
         this.game.queueSimpleStep(() => {
             discardPile.forEach((card: BaseCard) => this.moveCard(card, deck + ' deck'));
             if(deck === 'dynasty') {

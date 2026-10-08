@@ -671,7 +671,7 @@ class DrawCard extends BaseCard {
     }
 
     private applyPersonalHonor(action: GameAction, message: string): void {
-        const frameworkContext = this.game.getFrameworkContext();
+        const frameworkContext = this.game.getFrameworkContext(this.controller);
         if(action.canAffect(this.controller, frameworkContext)) {
             this.game.addMessage(message, this.controller, this);
         }
@@ -742,7 +742,7 @@ class DrawCard extends BaseCard {
             }
         }
 
-        const frameworkContext = this.game.getFrameworkContext();
+        const frameworkContext = this.game.getGameContext();
 
         if(this.anyEffect(EffectName.CanOnlyBeDeclaredAsAttackerWithCondition)) {
             for(const condition of this.getEffects(EffectName.CanOnlyBeDeclaredAsAttackerWithCondition)) {
@@ -773,7 +773,7 @@ class DrawCard extends BaseCard {
 
     canDeclareAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         return (
-            this.checkRestrictions('declareAsDefender', this.game.getFrameworkContext()) &&
+            this.checkRestrictions('declareAsDefender', this.game.getFrameworkContext(this.controller)) &&
             this.canParticipateAsDefender(conflictType) &&
             this.location === Location.PlayArea &&
             !this.bowed &&

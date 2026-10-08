@@ -44,7 +44,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
                     player.honorBidModifier = 0;
                     this.game.actions
                         .setHonorDial({ value: this.bid[player.uuid] })
-                        .resolve(player, this.game.getFrameworkContext());
+                        .resolve(player, this.game.getFrameworkContext(player));
                 }
             };
             if(this.raiseEvent) {
@@ -66,7 +66,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
         return completed;
     }
 
-    transferHonorAfterBid(context = this.game.getFrameworkContext()) {
+    transferHonorAfterBid(context = this.game.getGameContext()) {
         const firstPlayer = this.game.getFirstPlayer();
         if(!firstPlayer || !firstPlayer.opponent) {
             return;

@@ -56,7 +56,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
             }
         }
 
-        const context = this.game.getFrameworkContext();
+        const context = this.game.getGameContext();
 
         this.game.queueSimpleStep(() => this.bidHandler(result, context));
 

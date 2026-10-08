@@ -46,7 +46,7 @@ export class LeavesPlayAction<
                 if(attachment.location === Location.PlayArea) {
                     const attachmentEvent = context.game.actions
                         .discardFromPlay()
-                        .getEvent(attachment, context.game.getFrameworkContext());
+                        .getEvent(attachment, context.game.getGameContext());
                     attachmentEvent.order = event.order - 1;
                     const previousCondition = attachmentEvent.condition;
                     attachmentEvent.condition = (attachmentEvent) =>
@@ -57,10 +57,10 @@ export class LeavesPlayAction<
             }
 
             // Add an imminent triggering condition for removing fate
-            if(evCard.allowGameAction('removeFate', context.game.getFrameworkContext())) {
+            if(evCard.allowGameAction('removeFate', context.game.getGameContext())) {
                 const fateEvent = context.game.actions
                     .removeFate({ amount: evCard.getFate() })
-                    .getEvent(evCard, context.game.getFrameworkContext());
+                    .getEvent(evCard, context.game.getGameContext());
                 fateEvent.order = event.order - 1;
                 fateEvent.isContingent = true;
                 contingentEvents.push(fateEvent);
