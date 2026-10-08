@@ -213,12 +213,7 @@ export class ChatCommands {
                     player,
                     this.game.getFrameworkContext(player)
                 );
-                this.game.addMessage(
-                    '{0} uses a command to move {1} from their {2} to the bottom of their {3}.',
-                    player,
-                    card,
-                    cardInitialLocation
-                );
+                this.game.addMessage(msg`${player} uses a command to move ${card} from their ${cardInitialLocation} to the bottom of their ${cardNewLocation}.`);
                 return true;
             }
         });
