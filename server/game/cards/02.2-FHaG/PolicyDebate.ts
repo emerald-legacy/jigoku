@@ -36,8 +36,7 @@ export default class PolicyDebate extends DrawCard {
                             player: duel.loserController === context.player ? Players.Opponent : Players.Self,
                             cards: this.losersHand(duel),
                             targets: true,
-                            message: '{0} chooses {1} to be discarded',
-                            messageArgs: (card) => [duel.loserController?.opponent ?? '', card],
+                            message: (_context, card) => msg`${duel.loserController?.opponent ?? ''} chooses ${card} to be discarded`,
                             gameAction: discardCard()
                         })
                     ])

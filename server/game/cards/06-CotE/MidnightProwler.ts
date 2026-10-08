@@ -20,8 +20,7 @@ export default class MidnightProwler extends DrawCard {
                 cards: context.player.opponent?.conflictDeck.slice(0, 2) ?? [],
                 options: [{ text: 'Do not discard either card', handler: () => true }],
                 gameAction: moveCard({ destination: Location.ConflictDiscardPile }),
-                message: '{0} chooses to discard {1}',
-                messageArgs: (card, player) => [player, card]
+                message: (_context, card, player) => msg`${player} chooses to discard ${card}`
             })))
             .chatText((context) => msg`look at the top two cards of ${context.player.opponent}'s conflict deck`);
     }

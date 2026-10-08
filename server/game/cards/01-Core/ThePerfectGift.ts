@@ -21,16 +21,14 @@ class ThePerfectGift extends DrawCard {
                     activePromptTitle: 'Choose a card to give to yourself',
                     cards: context.player.conflictDeck.slice(0, 4),
                     targets: true,
-                    message: '{0} chooses {1} to give to {2}',
-                    messageArgs: (card, player) => [player, card, context.player],
+                    message: (context, card, player) => msg`${player} chooses ${card} to give to ${context.player}`,
                     gameAction: moveCard({ destination: Location.Hand })
                 })),
                 cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give your opponent',
                     cards: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     targets: true,
-                    message: '{0} chooses {1} to give to {2}',
-                    messageArgs: (card, player) => [player, card, context.player.opponent],
+                    message: (context, card, player) => msg`${player} chooses ${card} to give to ${context.player.opponent}`,
                     gameAction: moveCard({ destination: Location.Hand })
                 })),
                 shuffleDeck((context) => ({

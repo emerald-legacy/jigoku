@@ -466,7 +466,7 @@ export function duelLastingEffect<C extends AbilityContext = AbilityContext>(pro
 //////////////
 // META
 //////////////
-export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CardMenuProperties, C>): CardMenuAction<C> {
+export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<CardMenuProperties<C>, C>): CardMenuAction<C> {
     return new CardMenuAction<C>(propertyFactory);
 }
 export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties<C>, C>): ChooseGameAction<C> {

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Location, PlayType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { cardMenu, discardCard, playCard, sequential } from '../../../GameActions/GameActions.js';
@@ -36,8 +37,7 @@ export default class ASwallowsReturn extends DrawCard {
                         playType: PlayType.PlayFromHand,
                         source: context.source
                     }),
-                    message: '{0} chooses to play {1} and discard {2}',
-                    messageArgs: (card, player) => [player, card.name, context.costs.reveal?.filter((c) => c !== card)]
+                    message: (context, card, player) => msg`${player} chooses to play ${card.name} and discard ${context.costs.reveal?.filter((c) => c !== card)}`
                 })),
                 discardCard((context) => ({
                     target: (context.costs.reveal ?? []).filter((card) => card.location === Location.ConflictDeck)

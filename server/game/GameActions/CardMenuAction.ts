@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Players, type EventName } from '../Constants.js';
@@ -9,22 +9,22 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
-export interface CardMenuProperties extends CardActionProperties {
+export interface CardMenuProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     options?: HandlerMenuOption[];
     targets?: boolean;
-    message?: string;
-    messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => MsgArg[];
+    /** The chat line once a card is chosen. */
+    message?: (context: C, card: DrawCard, chooser: Player) => MessageArgs;
     subActionProperties?: (card: DrawCard) => Record<string, unknown>;
     gameAction: GameAction;
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
 }
 
 export class CardMenuAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
-    CardMenuProperties,
+    CardMenuProperties<C>,
     EventName,
     C,
     'activePromptTitle' | 'targets' | 'cards' | 'subActionProperties' | 'cardCondition'
@@ -98,9 +98,9 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
                     context,
                     Object.assign({}, additionalProperties, properties.subActionProperties(card))
                 );
-                if(properties.message && properties.messageArgs) {
-                    const cards = properties.cards.filter((card) => cardCondition(card, context));
-                    context.game.addMessage(properties.message, ...properties.messageArgs(card, player, cards));
+                if(properties.message) {
+                    const [format, args] = properties.message(context, card, player);
+                    context.game.addMessage(format, ...args);
                 }
             }
         };

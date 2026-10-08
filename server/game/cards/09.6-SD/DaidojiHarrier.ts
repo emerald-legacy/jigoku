@@ -27,8 +27,7 @@ class DaidojiHarrier extends DrawCard {
                 cardMenu((context) => ({
                     cards: context.targets.target.filter((card) => card.isDrawCard()),
                     gameAction: discardCard(),
-                    message: '{0} chooses {1} to be discarded',
-                    messageArgs: (card, player) => [player, card]
+                    message: (_context, card, player) => msg`${player} chooses ${card} to be discarded`
                 }))
             ]))
             .chatText((context) => msg`make ${context.player.opponent} reveal 2 cards and discard one of them`);

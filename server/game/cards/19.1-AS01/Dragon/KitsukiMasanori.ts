@@ -49,8 +49,7 @@ export default class KitsukiMasanori extends DrawCard {
                                     target: context.source
                                 }),
                                 gameAction: attach(),
-                                message: '{0} takes {1} and attaches it to {2}',
-                                messageArgs: (card) => [context.source.controller, card, context.source]
+                                message: (context, card) => msg`${context.source.controller} takes ${card} and attaches it to ${context.source}`
                             })),
                             message: (_context, _target, player) => msg`${player} searches their discard pile`
                         },

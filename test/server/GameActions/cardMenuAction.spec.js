@@ -129,17 +129,15 @@ describe('CardMenuAction', function() {
             expect(this.gameAction.hasLegalTarget).toHaveBeenCalledWith(this.context, jasmine.objectContaining({ name: 'A' }));
         });
 
-        it('should invoke messageArgs with (chosenCard, player, filteredCards)', function() {
-            const messageArgs = jasmine.createSpy('messageArgs').and.returnValue(['arg1', 'arg2']);
-            const cardCondition = (card) => card === this.cardA;
+        it('should invoke message with (context, chosenCard, chooser)', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['picked {0}', ['arg1', 'arg2']]);
             const action = new CardMenuAction({
                 cards: [this.cardA, this.cardB], gameAction: this.gameAction,
-                cardCondition,
-                message: 'picked {0}', messageArgs
+                message
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).cardHandler(this.cardA);
-            expect(messageArgs).toHaveBeenCalledWith(this.cardA, this.player, [this.cardA]);
+            expect(message).toHaveBeenCalledWith(this.context, this.cardA, this.player);
             expect(this.game.addMessage).toHaveBeenCalledWith('picked {0}', 'arg1', 'arg2');
         });
 

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location, TargetMode } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cardMenu, discardCard, lookAt, multipleContext } from '../../GameActions/GameActions.js';
@@ -26,13 +27,12 @@ export default class IsawaTadaka2 extends DrawCard {
                         lookAt(() => ({
                             target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
                         })),
-                        cardMenu((context) => ({
+                        cardMenu({
                             cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             targets: true,
-                            message: '{0} chooses {1} to be discarded',
-                            messageArgs: (card) => [context.player, card],
+                            message: (context, card) => msg`${context.player} chooses ${card} to be discarded`,
                             gameAction: discardCard()
-                        }))
+                        })
                     ]
                 };
             }))

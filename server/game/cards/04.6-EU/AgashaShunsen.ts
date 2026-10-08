@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { attach, cardMenu, shuffleDeck } from '../../GameActions/GameActions.js';
@@ -18,8 +19,7 @@ class AgashaShunsen extends DrawCard {
                     card.type === CardType.Attachment &&
                         card.costLessThan(context.costs.returnedRings ? context.costs.returnedRings.length + 1 : 1)
                 ),
-                message: '{0} chooses to attach {1} to {2}',
-                messageArgs: (card) => [context.player, card, context.target],
+                message: (context, card) => msg`${context.player} chooses to attach ${card} to ${context.target}`,
                 options: [
                     { text: 'Don\'t attach a card', handler: () => this.game.addMessage('{0} chooses not to attach anything to {1}', context.player, context.target) }
                 ],

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import { cardMenu, putIntoConflict, sequential, shuffleDeck } from '../../GameActions/GameActions.js';
@@ -26,8 +27,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                         }
                     ],
 
-                    message: '{0} chooses to put {1} into the conflict',
-                    messageArgs: (card, player) => [player, card],
+                    message: (_context, card, player) => msg`${player} chooses to put ${card} into the conflict`,
                     gameAction: putIntoConflict()
                 })),
                 shuffleDeck((context) => ({

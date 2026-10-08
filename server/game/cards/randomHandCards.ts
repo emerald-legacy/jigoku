@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { cardMenu, discardCard } from '../GameActions/GameActions.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
@@ -8,11 +9,10 @@ export function randomHandCards(player: Player | undefined, amount: number): Dra
 }
 
 export function chooseCardToDiscard(cards: DrawCard[]) {
-    return cardMenu((context) => ({
+    return cardMenu({
         cards,
         targets: true,
-        message: '{0} chooses {1} to be discarded',
-        messageArgs: (card) => [context.player, card],
+        message: (context, card) => msg`${context.player} chooses ${card} to be discarded`,
         gameAction: discardCard()
-    }));
+    });
 }
