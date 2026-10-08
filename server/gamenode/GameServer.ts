@@ -122,13 +122,18 @@ export class GameServer implements GameRouter {
     handleError(game: Game, e: Error) {
         logger.error(`Game error: ${e.message}\n${e.stack}`);
 
-        const debugData: Record<string, unknown> = {};
+        let debugData: Record<string, unknown> = {};
 
-        if(e.message.includes('Maximum call stack')) {
-            debugData.badSerializaton = detectBinary(game.getState());
-        } else {
-            debugData.pipeline = game.pipeline.getDebugInfo();
-            debugData.effectEngine = game.effectEngine.getDebugInfo();
+        // collecting can hit the same broken state that caused the error; the report must still go out
+        try {
+            if(e.message.includes('Maximum call stack')) {
+                debugData.badSerializaton = detectBinary(game.getState());
+            } else {
+                debugData.pipeline = game.pipeline.getDebugInfo();
+                debugData.effectEngine = game.effectEngine.getDebugInfo();
+            }
+        } catch(err) {
+            debugData = { omitted: `could not be collected: ${err}` };
         }
 
         const playerNames = game.getPlayers().map((p) => p.name);

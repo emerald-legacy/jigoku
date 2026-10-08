@@ -323,6 +323,22 @@ describe('GameServer.handleError', () => {
         expect(arg.errorMessage).toBe('boom');
         expect((arg.debugData as { omitted?: string }).omitted).toContain('could not be serialized');
     });
+
+    it('still reports the error when collecting the debug data throws', () => {
+        const ctx = makeCtx();
+        const game = makeErroringGame({ step: 'ConflictFlow' });
+        game.effectEngine = { getDebugInfo: () => {
+            throw new Error('broken again');
+        } };
+
+        expect(() => call('handleError', ctx, game, new Error('boom'))).not.toThrow();
+
+        const { command, arg } = sentPayload(ctx);
+        expect(command).toBe('GAMEERROR');
+        expect(arg.errorMessage).toBe('boom');
+        expect(arg.debugData).toEqual({ omitted: 'could not be collected: Error: broken again' });
+        expect(game.addMessage).toHaveBeenCalled();
+    });
 });
 
 describe('GameServer.runAndCatchErrors', () => {
