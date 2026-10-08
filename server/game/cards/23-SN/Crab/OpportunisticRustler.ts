@@ -20,12 +20,9 @@ export default class OpportunisticRustler extends DrawCard {
                 deck: DeckType.Dynasty,
                 placeOnBottomInRandomOrder: true,
                 shuffle: false,
-                // [player] puts [card] faceup into the attacked province and gives [source] +XMIL
-                // [player] removes [card] from the game and gives [source] +XMIL
-                message: '{0} {1} {2} {3} {4} +{5}{6}',
-                messageArgs: (context, cards) => cards[0].hasTrait('cavalry') ?
-                    [context.player, 'removes', cards, 'from the game and gives', context.source, cards[0].getTraits().size, 'military'] :
-                    [context.player, 'puts', cards, 'faceup into the attacked province and gives', context.source, cards[0].getTraits().size, 'military'],
+                message: (context, cards) => cards[0].hasTrait('cavalry')
+                    ? msg`${context.player} removes ${cards} from the game and gives ${context.source} +${cards[0].getTraits().size}${'military'}`
+                    : msg`${context.player} puts ${cards} faceup into the attacked province and gives ${context.source} +${cards[0].getTraits().size}${'military'}`,
                 gameAction: multipleContext((context) => {
                     const selected = context.deckSearchSelected[0];
                     if(!selected || !context.game.currentConflict) {

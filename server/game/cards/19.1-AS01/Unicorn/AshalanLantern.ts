@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Duration, Location, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
@@ -53,13 +54,7 @@ export default class AshalanLantern extends DrawCard {
                             context.player.opponent
                         );
                     },
-                    message: '{0}{1}{2}{3}',
-                    messageArgs: (context, selectedCards) => [
-                        context.player,
-                        selectedCards.length > 0 ? ' compels ' : ' takes nothing',
-                        selectedCards,
-                        selectedCards.length > 0 ? ' into service' : ''
-                    ]
+                    message: (context, selectedCards) => msg`${context.player}${selectedCards.length > 0 ? ' compels ' : ' takes nothing'}${selectedCards}${selectedCards.length > 0 ? ' into service' : ''}`
                 }))
             ]))
             .chatText('look for a character on the top of {1}\'s dynasty deck. They reveal {2}', (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]);

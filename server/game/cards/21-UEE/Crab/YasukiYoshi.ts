@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { DeckType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,7 +15,7 @@ export default class YasukiYoshi extends DrawCard {
                 deck: DeckType.Conflict,
                 cardCondition: (card) => card.name === 'Writ of Survey',
                 selectedCardsHandler: (context, _, [card]) =>
-                    attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])
+                    attachSearchedCard(context, context.source, card, (card) => msg`${context.source} receives their ${card}`)
             });
 
         this.reaction('Cause honor loss to the conflict loser')

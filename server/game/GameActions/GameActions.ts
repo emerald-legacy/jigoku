@@ -306,7 +306,7 @@ export function chosenReturnToDeck<C extends AbilityContext = AbilityContext>(pr
  * default reveal = true
  * default cardCondition = always true
  */
-export function deckSearch<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DeckSearchProperties, C>): DeckSearchAction<C> {
+export function deckSearch<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<DeckSearchProperties<C>, C>): DeckSearchAction<C> {
     return new DeckSearchAction<C>(propertyFactory);
 }
 /**

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
@@ -37,13 +38,7 @@ export default class UtakuTakeko extends DrawCard {
                 }),
 
                 shuffle: true,
-                message: '{0} recalls a {1} relative who is {2} {3}',
-                messageArgs: (context, cards) => [
-                    context.source,
-                    this.msgDistance(cards[0]),
-                    this.msgArticle(cards[0]),
-                    cards[0]
-                ]
+                message: (context, cards) => msg`${context.source} recalls a ${this.msgDistance(cards[0])} relative who is ${this.msgArticle(cards[0])} ${cards[0]}`
             }));
     }
 

@@ -21,8 +21,7 @@ export default class KakitaRusumi extends DrawCard {
                 deck: DeckType.Dynasty,
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),
-                message: '{0} puts {1} into play {2}',
-                messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
+                message: (context, cards) => msg`${context.player} puts ${cards} into play ${statusOfIntern(context)}`,
                 shuffle: true,
                 gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
             })

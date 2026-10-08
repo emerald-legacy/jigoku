@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
@@ -12,10 +13,7 @@ class KakitaTaneharu extends DrawCard {
                 reveal: false,
                 placeOnBottomInRandomOrder: true,
                 shuffle: false,
-                message: '{0} puts a card underneath {1}',
-                messageArgs: (context) => {
-                    return [context.player, context.source];
-                },
+                message: (context) => msg`${context.player} puts a card underneath ${context.source}`,
                 gameAction: placeCardUnderneath({
                     destination: this
                 })

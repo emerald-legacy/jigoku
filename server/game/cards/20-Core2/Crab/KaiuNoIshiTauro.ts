@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, DeckType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { attach, deckSearch } from '../../../GameActions/GameActions.js';
@@ -27,7 +28,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                         context.game.addMessage('{0} takes nothing', context.player);
                         return;
                     }
-                    attachSearchedCard(context, context.target, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.target]);
+                    attachSearchedCard(context, context.target, card, (card) => msg`${event.player} takes ${card} and attaches it to ${context.target}`);
                 }
             })))
             .chatText('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnedRings ?? []).length);

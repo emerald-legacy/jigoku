@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { addTrait, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, DeckType } from '../../../Constants.js';
@@ -15,7 +16,7 @@ export default class KakitaMio extends DrawCard {
                 deck: DeckType.Conflict,
                 cardCondition: (card) => card.name === 'Writ of Sanctification',
                 selectedCardsHandler: (context, _, [card]) =>
-                    attachSearchedCard(context, context.source, card, '{0} receives their {1}', (card) => [context.source, card])
+                    attachSearchedCard(context, context.source, card, (card) => msg`${context.source} receives their ${card}`)
             });
 
         this.conflictAction('Give Corrupt to a character', { evenFromHome: true })

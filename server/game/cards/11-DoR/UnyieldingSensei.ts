@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, Location, DeckType } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
@@ -19,10 +20,9 @@ class UnyieldingSensei extends DrawCard {
                 deck: DeckType.Dynasty,
                 cardCondition: (card) => card.type === CardType.Character,
                 shuffle: false,
-                message: '{0} puts {1} into {2}',
-                messageArgs: (context, cards) => {
+                message: (context, cards) => {
                     const province = context.target;
-                    return [context.player, cards, province?.isFacedown() ? 'a facedown province' : province?.name];
+                    return msg`${context.player} puts ${cards} into ${province?.isFacedown() ? 'a facedown province' : province?.name}`;
                 },
                 gameAction: moveCard((context) => ({
                     destination: context.target?.location,

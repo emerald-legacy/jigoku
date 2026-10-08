@@ -61,7 +61,7 @@ export default class KitsukiMasanori extends DrawCard {
                                 reveal: true,
                                 cardCondition: (card, context) => isSearchableCard(card, context),
                                 selectedCardsHandler: (context, event, [card]) =>
-                                    attachSearchedCard(context, context.source, card, '{0} takes {1} and attaches it to {2}', (card) => [event.player, card, context.source])
+                                    attachSearchedCard(context, context.source, card, (card) => msg`${event.player} takes ${card} and attaches it to ${context.source}`)
                             }),
                             message: (_context, _target, player) => msg`${player} searches their conflict deck`
                         }

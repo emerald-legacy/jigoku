@@ -33,8 +33,7 @@ export default class CinderSalamander extends DrawCard {
                     cardCondition: (card) => this.isSalamanderCard(card),
                     shuffle: true,
                     gameAction: putIntoPlay(),
-                    message: '{0} finds {1} in their deck',
-                    messageArgs: (context, cards) => [context.player, this.salamanderCountToText(cards.length)]
+                    message: (context, cards) => msg`${context.player} finds ${this.salamanderCountToText(cards.length)} in their deck`
                 }),
                 selectCards({
                     activePromptTitle: 'Select characters to put into play from your provinces',
