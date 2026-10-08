@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { discardStatusToken, selectToken } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
@@ -14,8 +15,7 @@ export default class SoshiIllusionist extends DrawCard {
             }, selectToken((context) => ({
                 card: context.target,
                 activePromptTitle: 'Which token do you wish to discard?',
-                message: '{0} discards {1}',
-                messageArgs: (token, player) => [player, token],
+                message: (_context, token, player) => msg`${player} discards ${token}`,
                 gameAction: discardStatusToken()
             })))
             .chatText('discard a status token from {0}');

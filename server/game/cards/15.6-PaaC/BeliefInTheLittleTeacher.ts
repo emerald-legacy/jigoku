@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { discardStatusToken, selectToken } from '../../GameActions/GameActions.js';
@@ -13,8 +14,7 @@ class BeliefInTheLittleTeacher extends DrawCard {
                 gameAction: selectToken((context) => ({
                     card: context.source,
                     activePromptTitle: 'Which token do you wish to discard?',
-                    message: '{0} discards {1}',
-                    messageArgs: (token, player) => [player, token],
+                    message: (_context, token, player) => msg`${player} discards ${token}`,
                     gameAction: discardStatusToken()
                 })),
                 chatText: 'discard a status token from {1}',

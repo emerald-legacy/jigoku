@@ -515,7 +515,7 @@ export function selectCards<C extends AbilityContext = AbilityContext, const K e
         ? (context) => eraseSelectCardsProperties(propertyFactory(context))
         : eraseSelectCardsProperties(propertyFactory));
 }
-export function selectToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, C>): SelectTokenAction<C> {
+export function selectToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties<C>, C>): SelectTokenAction<C> {
     return new SelectTokenAction<C>(propertyFactory);
 }
 export function sequential<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): SequentialAction<C> {

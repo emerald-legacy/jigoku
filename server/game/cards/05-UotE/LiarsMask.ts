@@ -12,8 +12,7 @@ class LiarsMask extends DrawCard {
             .gameAction(selectToken((context) => ({
                 card: context.source.parentCharacter ?? undefined,
                 activePromptTitle: 'Which token do you wish to discard?',
-                message: '{0} discards {1}',
-                messageArgs: (token, player) => [player, token],
+                message: (_context, token, player) => msg`${player} discards ${token}`,
                 gameAction: discardStatusToken()
             })))
             .chatText((context) => msg`discard a status token from ${context.source.parentCharacter}`);

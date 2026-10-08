@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { Players, type EventName } from '../Constants.js';
@@ -10,7 +10,7 @@ import type { GameAction } from './GameAction.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 import type { EffectArg } from '../Interfaces.js';
 
-export interface SelectTokenProperties extends TokenActionProperties {
+export interface SelectTokenProperties<C extends AbilityContext = AbilityContext> extends TokenActionProperties {
     activePromptTitle?: string;
     card?: BaseCard;
     player?: Players.Self | Players.Opponent;
@@ -19,15 +19,15 @@ export interface SelectTokenProperties extends TokenActionProperties {
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
     cancelHandler?: () => void;
     subActionProperties?: (tokens: StatusToken | StatusToken[]) => Record<string, unknown>;
-    message?: string;
-    messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => MsgArg[];
+    /** The chat line once the tokens are chosen. */
+    message?: (context: C, tokens: StatusToken | StatusToken[], chooser: Player) => MessageArgs;
     gameAction: GameAction;
     chatText?: string;
     chatTextArgs?: (context: AbilityContext) => EffectArg[];
 }
 
 export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<
-    SelectTokenProperties,
+    SelectTokenProperties<C>,
     EventName,
     C,
     'activePromptTitle' | 'tokenCondition' | 'singleToken' | 'subActionProperties'
@@ -105,16 +105,13 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         const validTokens = properties.card.statusTokens.filter((token) =>
             properties.gameAction.canAffect(token, context)
         );
-        const messageArgs = properties.messageArgs;
         if(properties.singleToken && validTokens.length > 1) {
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: properties.activePromptTitle,
                 options: validTokens.map((token) => ({
                     text: token.name,
                     handler: () => {
-                        if(properties.message && messageArgs) {
-                            context.game.addMessage(properties.message, ...messageArgs(token, player));
-                        }
+                        this.#addMessage(properties.message, context, token, player);
                         context.tokens[this.name] = [token];
                         properties.gameAction.addEventsToArray(
                             events,
@@ -127,14 +124,19 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
             });
         } else {
             context.tokens[this.name] = validTokens;
-            if(properties.message && messageArgs) {
-                context.game.addMessage(properties.message, ...messageArgs(validTokens, player));
-            }
+            this.#addMessage(properties.message, context, validTokens, player);
             properties.gameAction.addEventsToArray(
                 events,
                 context,
                 Object.assign({}, additionalProperties, properties.subActionProperties(validTokens))
             );
+        }
+    }
+
+    #addMessage(message: SelectTokenProperties<C>['message'], context: C, tokens: StatusToken | StatusToken[], chooser: Player): void {
+        if(message) {
+            const [format, args] = message(context, tokens, chooser);
+            context.game.addMessage(format, ...args);
         }
     }
 

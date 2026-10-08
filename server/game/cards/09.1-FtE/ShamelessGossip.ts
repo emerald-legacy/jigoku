@@ -27,8 +27,7 @@ class ShamelessGossip extends DrawCard {
             }, selectToken((context) => ({
                 card: context.targets.first,
                 activePromptTitle: 'Which token do you wish to move?',
-                message: '{0} chooses to move {1}',
-                messageArgs: (token, player) => [player, token],
+                message: (_context, token, player) => msg`${player} chooses to move ${token}`,
                 gameAction: moveStatusToken(() => ({
                     recipient: context.targets.second
                 }))

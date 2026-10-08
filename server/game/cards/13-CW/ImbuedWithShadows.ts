@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -30,8 +31,7 @@ class ImbuedWithShadows extends DrawCard {
         return targets.map((target) => selectToken(() => ({
             card: target,
             activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
-            message: '{0} discards {1} from {2}',
-            messageArgs: (token, player) => [player, token, target],
+            message: (_context, token, player) => msg`${player} discards ${token} from ${target}`,
             gameAction: discardStatusToken()
         })));
     }
