@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { blank, delayedEffect } from '../../effects.js';
 import { cardLastingEffect, gainHonor, loseHonor } from '../../GameActions/GameActions.js';
@@ -14,8 +15,7 @@ class LoyalChallenger extends DrawCard {
                         afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
                             context.source.isDrawCard() && context.source.isParticipating()
                     },
-                    message: '{0} gains 1 honor due to {1} winning a conflict',
-                    messageArgs: (context) => [context.player, context.source],
+                    message: (context) => msg`${context.player} gains 1 honor due to ${context.source} winning a conflict`,
                     gameAction: gainHonor((context) => ({ target: context.player }))
                 }),
                 delayedEffect({
@@ -23,8 +23,7 @@ class LoyalChallenger extends DrawCard {
                         afterConflict: (event, context) => event.conflict.loser === context.source.controller &&
                             context.source.isDrawCard() && context.source.isParticipating()
                     },
-                    message: '{0} loses 1 honor due to {1} losing a conflict',
-                    messageArgs: (context) => [context.player, context.source],
+                    message: (context) => msg`${context.player} loses 1 honor due to ${context.source} losing a conflict`,
                     gameAction: loseHonor((context) => ({ target: context.player }))
                 })
             ]

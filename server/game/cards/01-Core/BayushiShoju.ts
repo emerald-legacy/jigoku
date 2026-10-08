@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 import { perRound } from '../../AbilityLimit.js';
@@ -19,8 +20,7 @@ class BayushiShoju extends DrawCard {
                     modifyPoliticalSkill(-1),
                     delayedEffect({
                         condition: () => context.target.politicalSkill < 1,
-                        message: '{0} is discarded due to {1}\'s lasting effect',
-                        messageArgs: [context.target, context.source],
+                        message: () => msg`${context.target} is discarded due to ${context.source}'s lasting effect`,
                         gameAction: discardFromPlay()
                     })
                 ]

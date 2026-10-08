@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Duration, EventName, Players, ConflictType } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { delayedEffect } from '../../effects.js';
@@ -26,8 +27,7 @@ export default class InfernoGuardInvoker extends DrawCard {
                     when: {
                         onConflictFinished: () => this.provinceBroken
                     },
-                    message: '{1} is discarded, burned to a pile of ash due to the delayed effect of {0}',
-                    messageArgs: [context.source, context.target],
+                    message: () => msg`${context.target} is discarded, burned to a pile of ash due to the delayed effect of ${context.source}`,
                     gameAction: sacrifice({ target: context.target })
                 })
             })))

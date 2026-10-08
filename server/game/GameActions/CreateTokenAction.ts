@@ -68,8 +68,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
                     when: {
                         onConflictFinished: () => true
                     },
-                    message: leavingPlayMessage,
-                    messageArgs: [token],
+                    message: () => [leavingPlayMessage, [token]],
                     gameAction: context.game.actions.discardFromPlay()
                 })
             })

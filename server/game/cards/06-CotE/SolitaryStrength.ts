@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
@@ -19,8 +20,7 @@ class SolitaryStrength extends DrawCard {
                     }
                     return false;
                 },
-                message: '{0} is discarded from play as {1} is not participating alone in the conflict',
-                messageArgs: (context) => [context.source, context.source.parentCharacter],
+                message: (context) => msg`${context.source} is discarded from play as ${context.source.parentCharacter} is not participating alone in the conflict`,
                 gameAction: discardFromPlay()
             })
         });

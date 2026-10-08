@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, Location, Element } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
@@ -23,8 +24,7 @@ class FeralNingyo extends DrawCard {
                         when: {
                             onConflictFinished: () => true
                         },
-                        message: '{0} returns to the deck and shuffles due to its delayed effect',
-                        messageArgs: (context) => [context.source],
+                        message: (context) => msg`${context.source} returns to the deck and shuffles due to its delayed effect`,
                         gameAction: returnToDeck({ shuffle: true })
                     })
                 }))

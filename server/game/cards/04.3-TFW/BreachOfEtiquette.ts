@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
@@ -17,8 +18,7 @@ class BreachOfEtiquette extends DrawCard {
                             onCardAbilityTriggered: (event) =>
                                 event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
                         },
-                        message: '{1} loses 1 honor due to {0}',
-                        messageArgs: (effectContext) => [context.player, effectContext.source],
+                        message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player}`,
                         multipleTrigger: true,
                         gameAction: loseHonor()
                     })
@@ -30,8 +30,7 @@ class BreachOfEtiquette extends DrawCard {
                             onCardAbilityTriggered: (event) =>
                                 event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
                         },
-                        message: '{1} loses 1 honor due to {0}',
-                        messageArgs: (effectContext) => [context.player.opponent, effectContext.source],
+                        message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player.opponent}`,
                         multipleTrigger: true,
                         gameAction: loseHonor()
                     })

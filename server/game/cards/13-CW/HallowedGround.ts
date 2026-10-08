@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Element, Players } from '../../Constants.js';
 import { playerCannot, playerDelayedEffect } from '../../effects.js';
@@ -28,8 +29,7 @@ class HallowedGround extends DrawCard {
                 when: {
                     afterConflict: (event, context) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
                 },
-                message: '{0} loses 1 honor due to the constant effect of {1}',
-                messageArgs: (effectContext) => [effectContext.player.opponent, effectContext.source],
+                message: (effectContext) => msg`${effectContext.player.opponent} loses 1 honor due to the constant effect of ${effectContext.source}`,
                 multipleTrigger: true,
                 gameAction: loseHonor()
             })

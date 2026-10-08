@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { cardCannot, delayedEffect } from '../../../effects.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
@@ -16,8 +17,7 @@ export default class ServitorOfStone extends DrawCard {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => !this.controllerHasShugenjaAtSameLocation(context),
-                message: '{0} is discarded from play because {1} controls no Shugenja at their location',
-                messageArgs: (context) => [context.source, context.player],
+                message: (context) => msg`${context.source} is discarded from play because ${context.player} controls no Shugenja at their location`,
                 gameAction: discardFromPlay()
             })
         });

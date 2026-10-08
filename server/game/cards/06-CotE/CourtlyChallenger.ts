@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { DuelType } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
 import { dishonor, draw, honor } from '../../GameActions/GameActions.js';
@@ -13,16 +14,14 @@ export default class CourtlyChallenger extends DrawCard {
                     when: {
                         afterDuel: (event, context) => event.winner?.some((card) => card === context.source) ?? false
                     },
-                    message: '{0} is honored due to winning a duel',
-                    messageArgs: (context) => [context.source],
+                    message: (context) => msg`${context.source} is honored due to winning a duel`,
                     gameAction: honor()
                 }),
                 delayedEffect({
                     when: {
                         afterDuel: (event, context) => event.loser?.some((card) => card === context.source) ?? false
                     },
-                    message: '{0} is dishonored due to losing a duel',
-                    messageArgs: (context) => [context.source],
+                    message: (context) => msg`${context.source} is dishonored due to losing a duel`,
                     gameAction: dishonor()
                 })
             ]

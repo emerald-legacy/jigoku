@@ -79,8 +79,7 @@ class ExposedCourtyard extends DrawCard {
                                     }
                                 },
                                 multipleTrigger: true,
-                                message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                                messageArgs: [context.target, context.source],
+                                message: () => msg`${context.target} returns to the bottom of the deck due to ${context.source}'s effect`,
                                 gameAction: returnToDeck({
                                     location: Location.Any,
                                     bottom: true

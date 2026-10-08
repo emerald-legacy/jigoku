@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Duration } from '../../../Constants.js';
 import { delayedEffect } from '../../../effects.js';
 import { discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
@@ -36,8 +37,7 @@ export default class KakitaRusumi extends DrawCard {
                         when: {
                             onConflictFinished: () => true
                         },
-                        message: '{0} is discarded from play due to {1}\'s effect',
-                        messageArgs: [target, context.source],
+                        message: () => msg`${target} is discarded from play due to ${context.source}'s effect`,
                         gameAction: discardFromPlay()
                     })
                 };

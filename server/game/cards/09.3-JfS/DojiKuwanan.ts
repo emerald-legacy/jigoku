@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { delayedEffect } from '../../effects.js';
 import { bow, discardFromPlay } from '../../GameActions/GameActions.js';
@@ -11,11 +12,7 @@ class DojiKuwanan extends DrawCard {
             effect: delayedEffect({
                 condition: (context) =>
                     context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
-                message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context) => [
-                    context.source,
-                    context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
-                ],
+                message: (context) => msg`${context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')} is discarded from play as its controller controls ${context.source}`,
                 gameAction: discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
                 }))

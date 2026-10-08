@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
 import { cardLastingEffect, chooseAction, playerLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
@@ -29,8 +30,7 @@ export default class MapmakerApprentice extends DrawCard {
                             return eventsPlayed <= 1;
                         }
                     },
-                    message: '{0} changes the province strength of an attacked province due to the delayed effect of {1}',
-                    messageArgs: () => [context.player, context.source],
+                    message: () => msg`${context.player} changes the province strength of an attacked province due to the delayed effect of ${context.source}`,
                     multipleTrigger: true,
                     gameAction: selectCard((context) => ({
                         activePromptTitle: 'Choose an attacked province',

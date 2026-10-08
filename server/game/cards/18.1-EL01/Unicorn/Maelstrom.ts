@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Element, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -107,8 +108,7 @@ export default class Maelstrom extends ProvinceCard {
                                             target.isParticipating() &&
                                             target.controller === triggeringPlayer
                                 },
-                                message: '{0} is honored due to {1}\'s effect',
-                                messageArgs: [target, context.source],
+                                message: () => msg`${target} is honored due to ${context.source}'s effect`,
                                 gameAction: honor()
                             })
                         })

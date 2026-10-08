@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
@@ -13,8 +14,7 @@ class Castigated extends DrawCard {
         this.whileAttached({
             effect: delayedEffect({
                 condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.politicalSkill < 1,
-                message: '{0} is discarded by {1}',
-                messageArgs: (context) => [context.source.parentCharacter, context.source],
+                message: (context) => msg`${context.source.parentCharacter} is discarded by ${context.source}`,
                 gameAction: discardFromPlay()
             })
         });

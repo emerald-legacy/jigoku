@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { delayedEffect } from '../../effects.js';
@@ -28,8 +29,7 @@ class ChampionsOfYomi extends DrawCard {
                         when: {
                             onPhaseEnded: () => true
                         },
-                        message: '{0} is removed from the game due to its delayed effect',
-                        messageArgs: (context) => [context.source],
+                        message: (context) => msg`${context.source} is removed from the game due to its delayed effect`,
                         gameAction: removeFromGame()
                     })
                 }))

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { delayedEffect, entersPlayWithStatus, takeControl } from '../../../effects.js';
 import {
@@ -57,9 +58,7 @@ export default class BayushiShinobu extends DrawCard {
                             amount: 2,
                             target: context.player
                         }),
-                        message: '{0} loses 2 honor due to the delayed effect of {1}',
-                        messageArgs: [context.player, context.source]
-                    }),
+                        message: () => msg`${context.player} loses 2 honor due to the delayed effect of ${context.source}`}),
                     duration: Duration.UntilEndOfPhase
                 }))
             ]))

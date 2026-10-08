@@ -16,7 +16,7 @@ import type { Duel } from '../Duel.js';
 import type { ElementSymbolInfo } from '../ElementSymbol.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { EffectBase } from './EffectBase.js';
 import type { GainedAbilityValue } from './GainAbility.js';
 import type { DynamicMatch } from './GainAllAbilitiesDynamic.js';
@@ -45,7 +45,7 @@ export interface ParticipantCostEffect {
 interface DelayedEffectCallbacks<N extends EventName, S extends BaseCard> {
     condition(context: AbilityContext<S>): unknown;
     trigger(event: GameEvent<N>, context: AbilityContext<S>): unknown;
-    messageArgs(context: AbilityContext<S>, targets: GameObject[]): MsgArg[];
+    message(context: AbilityContext<S>, targets: GameObject[]): MessageArgs;
 }
 
 /** `S` is the card whose effect it is, like a trigger's `WhenType<S>`. */
@@ -57,8 +57,8 @@ export type DelayedEffectValue<S extends BaseCard = BaseCard> = {
     multipleTrigger?: boolean;
     onlyRemoveOnSuccess?: boolean;
     gameAction: GameAction;
-    message?: string;
-    messageArgs?: MsgArg[] | DelayedEffectCallbacks<EventName, S>['messageArgs'];
+    /** The chat line when it fires; `targets` are what it affects. */
+    message?: DelayedEffectCallbacks<EventName, S>['message'];
 };
 
 // Method syntax on purpose: cards narrow the card type.

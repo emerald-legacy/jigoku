@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Location, Duration, Phase } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { delayedEffect } from '../../../effects.js';
@@ -30,8 +31,7 @@ export default class MirumotoHitori extends DrawCard {
                             when: {
                                 onPhaseStarted: (event) => event.phase === Phase.Dynasty
                             },
-                            message: '{0} is put into play due to {0}\'s effect',
-                            messageArgs: [context.source],
+                            message: () => msg`${context.source} is put into play due to ${context.source}'s effect`,
                             gameAction: putIntoPlay((context) => ({
                                 location: Location.Any,
                                 target: context.source

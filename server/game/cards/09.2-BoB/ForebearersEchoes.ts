@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Duration, Location, Players, ConflictType } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
@@ -25,8 +26,7 @@ class ForebearersEchoes extends DrawCard {
                         when: {
                             onConflictFinished: () => true
                         },
-                        message: '{1} returns to the bottom of the dynasty deck due to the delayed effect of {0}',
-                        messageArgs: [context.source, context.target],
+                        message: () => msg`${context.target} returns to the bottom of the dynasty deck due to the delayed effect of ${context.source}`,
                         gameAction: returnToDeck({ bottom: true })
                     })
                 }))

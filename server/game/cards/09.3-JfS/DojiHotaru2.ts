@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
@@ -10,8 +11,7 @@ class DojiHotaru2 extends DrawCard {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => !!context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan'),
-                message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context) => [context.source, context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')],
+                message: (context) => msg`${context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')} is discarded from play as its controller controls ${context.source}`,
                 gameAction: discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')
                 }))

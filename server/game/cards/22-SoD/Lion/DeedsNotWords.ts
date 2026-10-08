@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import {
@@ -32,9 +33,7 @@ export default class DeedsNotWords extends DrawCard {
                                 context.player === event.conflict.winner
                         },
                         gameAction: claimImperialFavor(() => ({ target: context.player })),
-                        message: '{0} claims the Imperial Favor due to the delayed effect of {1}',
-                        messageArgs: [context.player, context.source]
-                    })
+                        message: () => msg`${context.player} claims the Imperial Favor due to the delayed effect of ${context.source}`})
                 }))
             ]))
             .chatText('give {0} +2{1}', () => ['military'])

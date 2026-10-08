@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
@@ -31,8 +32,7 @@ export default class KakitaTechnique extends DrawCard {
                             onCardPlayed: (event, context) =>
                                 event.player === context.player && event.card.type === CardType.Event
                         },
-                        message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',
-                        messageArgs: () => [context.target, 'military', 'political', context.source],
+                        message: () => msg`${context.target} gets +1${'military'} and +1${'political'} due to the delayed effect of ${context.source}`,
                         multipleTrigger: true,
                         gameAction: cardLastingEffect({
                             target: context.target,

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Duration, Location, Players } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { delayedEffect } from '../../../effects.js';
@@ -25,8 +26,7 @@ export default class KitsuSpiritcaller2 extends DrawCard {
                     when: {
                         onConflictFinished: () => true
                     },
-                    message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                    messageArgs: [context.target, context.source],
+                    message: () => msg`${context.target} returns to the bottom of the deck due to ${context.source}'s effect`,
                     gameAction: returnToDeck({ bottom: true })
                 })
             }));

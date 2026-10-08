@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Duration, TargetMode } from '../../Constants.js';
 import { delayedEffect, modifyBaseMilitarySkillMultiplier } from '../../effects.js';
@@ -24,8 +25,7 @@ class FuryOfTheDamned extends DrawCard {
                         when: {
                             onConflictFinished: () => true
                         },
-                        message: '{1} {2} sacrificed due to {0}\'s delayed effect',
-                        messageArgs: [context.source, context.targets.target, (Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'],
+                        message: () => msg`${context.targets.target} ${(Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'} sacrificed due to ${context.source}'s delayed effect`,
                         gameAction: sacrifice()
                     })
                 }))

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { delayedEffect, modifyMilitarySkill } from '../../effects.js';
@@ -20,8 +21,7 @@ class BayushiAramoro extends DrawCard {
                     modifyMilitarySkill(-2),
                     delayedEffect({
                         condition: () => context.target.militarySkill < 1,
-                        message: '{0} is discarded due to {1}\'s lasting effect',
-                        messageArgs: [context.target, context.source],
+                        message: () => msg`${context.target} is discarded due to ${context.source}'s lasting effect`,
                         gameAction: discardFromPlay()
                     })
                 ]

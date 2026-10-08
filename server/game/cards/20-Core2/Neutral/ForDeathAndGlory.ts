@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, Duration, ConflictType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
@@ -36,8 +37,7 @@ export default class ForDeathAndGlory extends DrawCard {
                         effect: [
                             delayedEffect({
                                 when: { onConflictFinished: () => true },
-                                message: '{1} is discarded from play due to the delayed effect of {0}',
-                                messageArgs: [context.source, context.targets[CHARACTER]],
+                                message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
                                 gameAction: sacrifice({
                                     target: context.targets[CHARACTER]
                                 })

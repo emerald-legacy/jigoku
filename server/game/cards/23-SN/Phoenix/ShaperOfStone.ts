@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
 import { conditional, gainHonor, playerLastingEffect } from '../../../GameActions/GameActions.js';
@@ -34,8 +35,7 @@ export default class ShaperOfStone extends DrawCard {
                     when: {
                         onPhaseEnded: (event) => event.phase === Phase.Conflict
                     },
-                    message: '{0}{1}{2}',
-                    messageArgs: () => context.target.isBroken ? ['', '', ''] : [context.player, ' gains 1 honor due to the delayed effect of ', context.source],
+                    message: () => context.target.isBroken ? msg`${''}${''}${''}` : msg`${context.player}${' gains 1 honor due to the delayed effect of '}${context.source}`,
                     gameAction: conditional({
                         condition: () => !context.target.isBroken,
                         trueGameAction: gainHonor({

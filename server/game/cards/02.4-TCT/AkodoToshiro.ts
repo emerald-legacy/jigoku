@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, delayedEffect, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect, discardFromPlay, multiple } from '../../GameActions/GameActions.js';
@@ -26,8 +27,7 @@ class AkodoToshiro extends DrawCard {
                         when: {
                             onConflictFinished: () => !context.player.cardsInPlay.some((card) => card.hasTrait('commander'))
                         },
-                        message: '{0} is discarded due to his delayed effect',
-                        messageArgs: [context.source],
+                        message: () => msg`${context.source} is discarded due to his delayed effect`,
                         gameAction: discardFromPlay()
                     })
                 }))

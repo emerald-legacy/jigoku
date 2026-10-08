@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Phase, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { playerDelayedEffect, refillProvinceTo } from '../../effects.js';
@@ -18,8 +19,7 @@ export default class CityOfTheRichFrog extends ProvinceCard {
                 when: {
                     onPhaseEnded: (event) => event.phase === Phase.Setup
                 },
-                message: '{0} fills to 3 cards',
-                messageArgs: (effectContext) => [effectContext.source],
+                message: (effectContext) => msg`${effectContext.source} fills to 3 cards`,
                 gameAction: fillProvince((context) => ({
                     location: context.source.location,
                     fillTo: 3

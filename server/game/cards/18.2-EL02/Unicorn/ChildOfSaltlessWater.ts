@@ -11,8 +11,7 @@ export default class ChildOfSaltlessWater extends DrawCard {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => context.source.isDrawCard() && !context.source.isParticipating(),
-                message: '{0} is discarded from play as it is at home',
-                messageArgs: (context) => [context.source],
+                message: (context) => msg`${context.source} is discarded from play as it is at home`,
                 gameAction: discardFromPlay((context) => ({
                     target: context.source
                 }))

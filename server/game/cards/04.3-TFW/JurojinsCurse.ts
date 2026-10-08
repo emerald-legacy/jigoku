@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Duration, Phase } from '../../Constants.js';
 import { perRound } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
@@ -20,8 +21,7 @@ export default class JurojinsCurse extends DrawCard {
                     when: {
                         onPhaseEnded: (event) => event.phase === Phase.Fate
                     },
-                    message: '{0} takes hold',
-                    messageArgs: (context) => [context.source],
+                    message: (context) => msg`${context.source} takes hold`,
                     gameAction: handler({
                         handler: (context) => context.game.queueStep(new FatePhase(context.game))
                     })

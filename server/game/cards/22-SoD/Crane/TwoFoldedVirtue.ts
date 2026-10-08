@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, gainHonor, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,9 +26,7 @@ export default class TwoFoldedVirtue extends DrawCard {
                                 context.player === event.conflict.loser
                         },
                         gameAction: gainHonor({ target: context.player }),
-                        message: '{0} gains 1 honor due to the delayed effect of {1}',
-                        messageArgs: [context.player, context.source]
-                    })
+                        message: () => msg`${context.player} gains 1 honor due to the delayed effect of ${context.source}`})
                 }))
             ]))
             .chatText('grant +2{1} to {0} and, if they lose the current conflict, gain 1 honor', () => ['military']);
