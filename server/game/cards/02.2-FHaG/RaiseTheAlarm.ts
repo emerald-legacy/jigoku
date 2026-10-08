@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players, ConflictType } from '../../Constants.js';
 import { flipDynasty, putIntoConflict } from '../../GameActions/GameActions.js';
@@ -19,10 +20,10 @@ class RaiseTheAlarm extends DrawCard {
             .handler((context) => {
                 const card = context.target;
                 if(card.type === CardType.Character && card.allowGameAction('putIntoConflict', context)) {
-                    this.game.addMessage('{0} is revealed and brought into the conflict', card);
+                    this.game.addMessage(msg`${card} is revealed and brought into the conflict`);
                     putIntoConflict().resolve(card, context);
                 } else {
-                    this.game.addMessage('{0} is revealed but cannot be brought into the conflict', card);
+                    this.game.addMessage(msg`${card} is revealed but cannot be brought into the conflict`);
                 }
             });
     }

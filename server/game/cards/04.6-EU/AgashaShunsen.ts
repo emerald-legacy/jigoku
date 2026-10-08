@@ -21,7 +21,7 @@ class AgashaShunsen extends DrawCard {
                 ),
                 message: (context, card) => msg`${context.player} chooses to attach ${card} to ${context.target}`,
                 options: [
-                    { text: 'Don\'t attach a card', handler: () => this.game.addMessage('{0} chooses not to attach anything to {1}', context.player, context.target) }
+                    { text: 'Don\'t attach a card', handler: () => this.game.addMessage(msg`${context.player} chooses not to attach anything to ${context.target}`) }
                 ],
                 gameAction: attach(),
                 subActionProperties: (card) => ({ attachment: card })

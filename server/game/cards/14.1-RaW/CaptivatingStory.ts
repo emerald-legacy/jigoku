@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import {
@@ -31,7 +32,7 @@ class CaptivatingStory extends DrawCard {
                     choices: ['Yes'].concat(context.player.getNumberOfFaceupProvinces() > 0 ? ['No'] : []),
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage) {
-                            context.game.addMessage('{0} chooses {1}to remove a fate from {2} to honor them', context.player, choice === 'No' ? 'not ' : '', context.target);
+                            context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to remove a fate from ${context.target} to honor them`);
                         }
                         return { amount: choice === 'Yes' ? 1 : 0 };
                     },

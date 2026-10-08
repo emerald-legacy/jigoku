@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Players, CardType, EventName, AbilityType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import * as costs from '../../../costs/index.js';
@@ -42,7 +43,7 @@ export default class RiftToToshigoku extends ProvinceCard {
             !event.cancelled
         ) {
             event.cancel();
-            this.game.addMessage('{0} cancels the ring effect', this);
+            this.game.addMessage(msg`${this} cancels the ring effect`);
         }
     }
 }

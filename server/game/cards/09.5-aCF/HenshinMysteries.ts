@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { AbilityType, EventName } from '../../Constants.js';
@@ -19,7 +20,7 @@ export default class HenshinMysteries extends ProvinceCard {
             !event.cancelled
         ) {
             event.cancel();
-            this.game.addMessage('{0} cancels the ring being claimed', this);
+            this.game.addMessage(msg`${this} cancels the ring being claimed`);
         }
     }
 }

@@ -43,7 +43,7 @@ describe('Maze of Illusion', function() {
                 this.player2.clickCard(this.matsuBerserker);
                 this.player2.clickPrompt('5');
                 this.player1.clickPrompt('Even');
-                expect(this.chatSpy).toHaveBeenCalledWith('{0} guesses {1}', this.player1.player, 'Even');
+                expect(this.chatSpy).toHaveBeenCalledWith(['{0} guesses {1}', [this.player1.player, 'Even']]);
                 expect(this.chatSpy).toHaveBeenCalledWith(['{0} reveals a bid of {1}', [this.player2.player, 5]]);
             });
 

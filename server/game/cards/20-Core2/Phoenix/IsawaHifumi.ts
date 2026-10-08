@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { playCard } from '../../../GameActions/GameActions.js';
@@ -86,7 +87,7 @@ export default class IsawaHifumi extends DrawCard {
                     playType: PlayType.PlayFromHand,
                     postHandler: (eventContext) => {
                         const card = eventContext.source;
-                        context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
+                        context.game.addMessage(msg`${card} is removed from the game by ${context.source}'s ability`);
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })

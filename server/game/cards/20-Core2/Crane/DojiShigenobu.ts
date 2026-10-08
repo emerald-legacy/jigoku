@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { bow, menuPrompt, sendHome } from '../../../GameActions/GameActions.js';
@@ -23,7 +24,7 @@ export default class DojiShigenobu extends DrawCard {
                 choices: ['Yes', 'No'],
                 choiceHandler: (choice, displayMessage) => {
                     if(displayMessage && choice === 'Yes') {
-                        context.game.addMessage('{0} chooses to move {1} home', context.player, context.source);
+                        context.game.addMessage(msg`${context.player} chooses to move ${context.source} home`);
                     }
                     return { target: choice === 'Yes' ? context.source : [] };
                 },

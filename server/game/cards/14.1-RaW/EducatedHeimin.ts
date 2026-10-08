@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { customRefillProvince } from '../../effects.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
@@ -26,7 +27,7 @@ class EducatedHeimin extends ProvinceAttachment {
                         discarded.forEach((card) => {
                             player.moveCard(card, Location.DynastyDiscardPile);
                         });
-                        this.game.addMessage('{0} chooses a card to put into {1} and discards {2} from the constant effect of Educated Heimin', player, province.isFacedown() ? 'a facedown province' : province.name, discarded);
+                        this.game.addMessage(msg`${player} chooses a card to put into ${province.isFacedown() ? 'a facedown province' : province.name} and discards ${discarded} from the constant effect of Educated Heimin`);
                     }
                 });
             })

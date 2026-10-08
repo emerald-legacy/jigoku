@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { EventName, Location, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { putIntoPlay } from '../../../GameActions/GameActions.js';
@@ -39,10 +40,7 @@ export default class RelentlessGloryseeker extends DrawCard {
             this.location !== Location.RemovedFromGame &&
             this.ressurrectionsThisRound >= MAXIMUM_RESSURRECTIONS
         ) {
-            this.game.addMessage(
-                '{0} is removed from the game due to leaving play - may their tales lead them to Yomi',
-                this
-            );
+            this.game.addMessage(msg`${this} is removed from the game due to leaving play - may their tales lead them to Yomi`);
             this.owner.moveCard(this, Location.RemovedFromGame);
         }
     }

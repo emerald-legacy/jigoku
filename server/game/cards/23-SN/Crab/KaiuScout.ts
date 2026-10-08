@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -29,10 +30,10 @@ export default class KaiuScout extends DrawCard {
 
         const turnFaceup = () => {
             if(chosen.length > 0) {
-                this.game.addMessage('{0} turns {1} faceup', context.player, chosen);
+                this.game.addMessage(msg`${context.player} turns ${chosen} faceup`);
                 context.game.applyGameAction(context, { flipDynasty: chosen });
             } else {
-                this.game.addMessage('{0} does not turn any cards faceup', context.player);
+                this.game.addMessage(msg`${context.player} does not turn any cards faceup`);
             }
         };
         const chooseCard = () => {

@@ -24,13 +24,7 @@ export default class UpholdingAuthority extends ProvinceCard {
             choiceHandler: (choice, displayMessage, properties) => {
                 const chosenCard = this.chosenCard(properties);
                 if(displayMessage) {
-                    this.game.addMessage(
-                        '{0} chooses to discard {1} cop{2} of {3}',
-                        context.player,
-                        choice,
-                        choice === '1' ? 'y' : 'ies',
-                        chosenCard
-                    );
+                    this.game.addMessage(msg`${context.player} chooses to discard ${choice} cop${choice === '1' ? 'y' : 'ies'} of ${chosenCard}`);
                 }
                 return {
                     target: context.game.currentConflict?.attackingPlayer.hand
@@ -59,7 +53,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                     gameAction: gameAction,
                     options: context.choosingPlayerOverride
                         ? []
-                        : [{ text: 'Don\'t discard anything', handler: () => context.game.addMessage('{0} chooses not to discard anything', context.player) }]
+                        : [{ text: 'Don\'t discard anything', handler: () => context.game.addMessage(msg`${context.player} chooses not to discard anything`) }]
                 }))
             ]))
             .chatText('look at the attacking player\'s hand and choose a card to be discarded');

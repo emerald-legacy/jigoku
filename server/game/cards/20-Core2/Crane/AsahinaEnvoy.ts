@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { deckSearch } from '../../../GameActions/GameActions.js';
 import { CardType, DeckType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -23,16 +24,11 @@ export default class AsahinaEnvoy extends DrawCard {
                 shuffle: true,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length === 0) {
-                        return this.game.addMessage('{0} selects no characters', event.player);
+                        return this.game.addMessage(msg`${event.player} selects no characters`);
                     }
 
                     const target = context.target;
-                    this.game.addMessage(
-                        '{0} selects {1} and puts it into {2}',
-                        event.player,
-                        cards,
-                        target?.facedown ? target.location : (target ?? '')
-                    );
+                    this.game.addMessage(msg`${event.player} selects ${cards} and puts it into ${target?.facedown ? target.location : (target ?? '')}`);
 
                     for(const card of cards) {
                         if(target) {

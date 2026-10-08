@@ -47,12 +47,7 @@ class SurgingWave extends DrawCard {
                             choices: ['Yes', 'No'],
                             choiceHandler: (choice, displayMessage) => {
                                 if(displayMessage) {
-                                    context.game.addMessage(
-                                        '{0} chooses {1}to spend a fate to prevent {2} from bowing during conflict resolution',
-                                        context.player,
-                                        choice === 'No' ? 'not ' : '',
-                                        context.target
-                                    );
+                                    context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to spend a fate to prevent ${context.target} from bowing during conflict resolution`);
                                 }
                                 return { amount: choice === 'Yes' ? 1 : 0 };
                             },

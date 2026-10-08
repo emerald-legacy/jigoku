@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { handler } from '../../GameActions/GameActions.js';
@@ -27,11 +28,11 @@ class ShojusDiviner extends DrawCard {
 
         const finish = () => {
             if(remaining.length > 0) {
-                this.game.addMessage('{0} discards {1}', context.player, remaining);
+                this.game.addMessage(msg`${context.player} discards ${remaining}`);
                 remaining.forEach((card) => context.player.moveCard(card, Location.ConflictDiscardPile));
             }
             if(chosen.length > 0) {
-                this.game.addMessage('{0} places {1} card{2} on top of their deck', context.player, chosen.length, chosen.length > 1 ? 's' : '');
+                this.game.addMessage(msg`${context.player} places ${chosen.length} card${chosen.length > 1 ? 's' : ''} on top of their deck`);
                 context.player.conflictDeck.splice(0, chosen.length, ...chosen);
             }
         };

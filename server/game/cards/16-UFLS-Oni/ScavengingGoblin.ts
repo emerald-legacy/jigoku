@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
 import { handler, multipleContext, removeFromGame } from '../../GameActions/GameActions.js';
@@ -42,18 +43,9 @@ export default class ScavengingGoblin extends BaseOni {
                         }),
                         handler({
                             handler: (context) => {
-                                context.game.addMessage(
-                                    '{0} {1} removed from the game from the top of {2}\'s conflict deck',
-                                    cardsToRemove,
-                                    cardsToRemove.length > 1 ? 'are' : 'is',
-                                    context.player.opponent
-                                );
+                                context.game.addMessage(msg`${cardsToRemove} ${cardsToRemove.length > 1 ? 'are' : 'is'} removed from the game from the top of ${context.player.opponent}'s conflict deck`);
                                 if(attachmentsToRemove.length > 0) {
-                                    context.game.addMessage(
-                                        '{0} {1} removed from the game due to sharing a name with a card that was removed from the deck',
-                                        attachmentsToRemove,
-                                        attachmentsToRemove.length > 1 ? 'are' : 'is'
-                                    );
+                                    context.game.addMessage(msg`${attachmentsToRemove} ${attachmentsToRemove.length > 1 ? 'are' : 'is'} removed from the game due to sharing a name with a card that was removed from the deck`);
                                 }
                             }
                         })

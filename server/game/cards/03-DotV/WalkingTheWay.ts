@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { reduceCost } from '../../effects.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -28,7 +29,7 @@ class WalkingTheWay extends DrawCard {
                         location: Location.Provinces,
                         controller: Players.Self,
                         onSelect: (player, card) => {
-                            this.game.addMessage('{0} discards {1}, replacing it with {2}', player, card, cardFromDeck);
+                            this.game.addMessage(msg`${player} discards ${card}, replacing it with ${cardFromDeck}`);
                             player.moveCard(cardFromDeck, card.location);
                             cardFromDeck.facedown = false;
                             player.moveCard(card, Location.DynastyDiscardPile);

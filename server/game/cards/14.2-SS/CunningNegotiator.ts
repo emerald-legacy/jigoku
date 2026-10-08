@@ -24,15 +24,9 @@ export default class CunningNegotiator extends DrawCard {
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {
                                 if(choice === 'Yes') {
-                                    context.game.addMessage(
-                                        '{0} chooses to trigger a province ability',
-                                        context.player
-                                    );
+                                    context.game.addMessage(msg`${context.player} chooses to trigger a province ability`);
                                 } else {
-                                    context.game.addMessage(
-                                        '{0} chooses not to trigger a province ability',
-                                        context.player
-                                    );
+                                    context.game.addMessage(msg`${context.player} chooses not to trigger a province ability`);
                                 }
                             }
                             return {

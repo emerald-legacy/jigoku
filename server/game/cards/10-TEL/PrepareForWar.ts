@@ -78,12 +78,7 @@ class PrepareForWar extends DrawCard {
                 optional: true,
                 choiceHandler: (choice, displayMessage) => {
                     if(displayMessage && choice === 'Yes') {
-                        this.game.addMessage(
-                            '{0} chooses to discard {1} from {2}',
-                            context.player,
-                            token,
-                            context.target
-                        );
+                        this.game.addMessage(msg`${context.player} chooses to discard ${token} from ${context.target}`);
                     }
 
                     return { target: choice === 'Yes' ? token : [] };

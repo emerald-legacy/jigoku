@@ -36,7 +36,7 @@ class MagnificentLighthouse extends DrawCard {
             context: context,
             cards: cards,
             cardHandler: (card) => {
-                this.game.addMessage('{0} chooses to discard {1}', context.player, card);
+                this.game.addMessage(msg`${context.player} chooses to discard ${card}`);
                 opponent.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
                 this.chooseBottom(context, opponent, cards.filter((c) => c !== card), canSkip);
             },
@@ -53,7 +53,7 @@ class MagnificentLighthouse extends DrawCard {
             context: context,
             cards: cards,
             cardHandler: (card) => {
-                this.game.addMessage('{0} places a card on the bottom of the deck', context.player, card);
+                this.game.addMessage(msg`${context.player} places a card on the bottom of the deck`);
                 opponent.moveCard(card, card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
             },
             options: canSkip ? [{ text: 'None', handler: () => true }] : []

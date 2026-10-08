@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -25,11 +26,11 @@ class ShrineMaiden extends DrawCard {
                 });
 
                 if(toHand.length && toDiscard.length) {
-                    this.game.addMessage('{0} adds {1} to their hand and discards {2}', context.player, toHand, toDiscard);
+                    this.game.addMessage(msg`${context.player} adds ${toHand} to their hand and discards ${toDiscard}`);
                 } else if(toHand.length) {
-                    this.game.addMessage('{0} adds {1} to their hand', context.player, toHand);
+                    this.game.addMessage(msg`${context.player} adds ${toHand} to their hand`);
                 } else {
-                    this.game.addMessage('{0} discards {1}', context.player, toDiscard);
+                    this.game.addMessage(msg`${context.player} discards ${toDiscard}`);
                 }
             })
             .chatText('take any revealed spells into their hand');

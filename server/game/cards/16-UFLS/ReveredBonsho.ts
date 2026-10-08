@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { customFatePhaseFateRemoval } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
@@ -68,7 +69,7 @@ class ReveredBonsho extends DrawCard {
         ringFate.forEach((obj) => {
             if(obj.fate > 0) {
                 placeFateOnRing({ target: obj.ring, amount: obj.fate }).addEventsToArray(moveEvents, context);
-                context.game.addMessage('{0} places {1} fate on the {2} due to the effects of {3}', targetPlayer, obj.fate, obj.ring, this);
+                context.game.addMessage(msg`${targetPlayer} places ${obj.fate} fate on the ${obj.ring} due to the effects of ${this}`);
             }
         });
         context.game.openThenEventWindow(moveEvents);

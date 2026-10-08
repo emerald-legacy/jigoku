@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, EventName, Location } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import * as costs from '../../../costs/index.js';
@@ -19,7 +20,7 @@ export default class BloodthirstyOnryo extends DrawCard {
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(event.card === this && this.location !== Location.RemovedFromGame) {
-            this.game.addMessage('{0} is removed from the game due to leaving play', this);
+            this.game.addMessage(msg`${this} is removed from the game due to leaving play`);
             this.owner.moveCard(this, Location.RemovedFromGame);
         }
     }

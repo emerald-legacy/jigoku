@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 import { menuPrompt, placeFate, removeFate } from '../../GameActions/GameActions.js';
@@ -27,7 +28,7 @@ class TheFiresOfJustice extends DrawCard {
                     choices: Array.from(Array(context.player.opponent?.fate), (_x, i) => (i + 1).toString()),
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage) {
-                            this.game.addMessage('{0} chooses to move {1} fate from {2}\'s pool to {3}', context.player, choice, context.player.opponent, context.targets.character);
+                            this.game.addMessage(msg`${context.player} chooses to move ${choice} fate from ${context.player.opponent}'s pool to ${context.targets.character}`);
                         }
                         return { target: context.targets.character, amount: parseInt(choice) };
                     },

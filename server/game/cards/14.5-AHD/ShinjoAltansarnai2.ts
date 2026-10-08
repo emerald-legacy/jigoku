@@ -22,7 +22,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                         {
                             text: 'Don\'t choose a character',
                             handler() {
-                                context.game.addMessage('{0} chooses not to put a character into play', context.player);
+                                context.game.addMessage(msg`${context.player} chooses not to put a character into play`);
                             }
                         }
                     ],

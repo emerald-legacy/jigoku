@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Duration, Location } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { gainActionPhasePriority, playerDelayedEffect } from '../../../effects.js';
@@ -25,7 +26,7 @@ export default class SneakAttack extends DrawCard {
                         }
 
                         this.setAsideCards = shuffle(opponent.hand).slice(0, 2);
-                        this.game.addMessage('{0} sets aside {1}', opponent, this.setAsideCards);
+                        this.game.addMessage(msg`${opponent} sets aside ${this.setAsideCards}`);
                         for(const card of this.setAsideCards) {
                             opponent.moveCard(card, Location.RemovedFromGame);
                         }
@@ -42,7 +43,7 @@ export default class SneakAttack extends DrawCard {
                                     return;
                                 }
                                 const opponent = this.setAsideCards[0].owner;
-                                context.game.addMessage('{0} picks back their cards', opponent);
+                                context.game.addMessage(msg`${opponent} picks back their cards`);
                                 for(const card of this.setAsideCards) {
                                     opponent.moveCard(card, Location.Hand);
                                 }

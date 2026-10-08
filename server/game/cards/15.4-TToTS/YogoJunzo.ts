@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { AbilityType, CardType, Players} from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
@@ -29,7 +30,7 @@ class YogoJunzo extends DrawCard {
                 choices: Array.from(Array(context.target.getFate()), (_x, i) => (i + 1).toString()),
                 choiceHandler: (choice, displayMessage) => {
                     if(displayMessage) {
-                        this.game.addMessage('{0} chooses to move {1} fate from {2} to {3}\'s pool', context.player, choice, context.target, context.player);
+                        this.game.addMessage(msg`${context.player} chooses to move ${choice} fate from ${context.target} to ${context.player}'s pool`);
                     }
                     return { target: context.target, amount: parseInt(choice), recipient:context.target.controller };
                 },

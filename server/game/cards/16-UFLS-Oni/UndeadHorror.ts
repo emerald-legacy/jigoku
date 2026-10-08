@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { blank, changeType, gainAbility, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import { attach, cardLastingEffect, handler, sequentialContext } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
@@ -58,7 +59,7 @@ export default class UndeadHorror extends BaseOni {
                         }),
                         handler({
                             handler: (context) => {
-                                context.game.addMessage('{0} is attached to {1}', targetCard, context.source);
+                                context.game.addMessage(msg`${targetCard} is attached to ${context.source}`);
                             }
                         })
                     ]

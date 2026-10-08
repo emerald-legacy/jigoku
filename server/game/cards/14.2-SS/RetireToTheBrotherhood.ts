@@ -62,10 +62,10 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         const myEnter = enteredPlay.filter((a) => a.controller === context.player);
                         const oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
                         if(myEnter.length > 0) {
-                            this.game.addMessage('{0} puts {1} into play', context.player, myEnter);
+                            this.game.addMessage(msg`${context.player} puts ${myEnter} into play`);
                         }
                         if(oppEnter.length > 0) {
-                            this.game.addMessage('{0} puts {1} into play', context.player.opponent, oppEnter);
+                            this.game.addMessage(msg`${context.player.opponent} puts ${oppEnter} into play`);
                         }
                     }
                 }),

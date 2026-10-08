@@ -53,12 +53,7 @@ export default class CeremonialRobes extends DrawCard {
                         callback: (chosenCard) => {
                             context.player.moveCard(chosenCard, Location.DynastyDiscardPile);
                             if(chosenCard.hasTrait('spirit')) {
-                                this.game.addMessage(
-                                    '{0} was a Spirit! {1} and {2} lose 1 honor',
-                                    chosenCard,
-                                    context.player,
-                                    context.player.opponent
-                                );
+                                this.game.addMessage(msg`${chosenCard} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`);
                                 loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
                                     .resolve(chosenCard, context);
                             }

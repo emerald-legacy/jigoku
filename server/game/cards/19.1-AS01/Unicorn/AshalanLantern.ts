@@ -47,12 +47,7 @@ export default class AshalanLantern extends DrawCard {
                         };
                     }),
                     remainingCardsHandler: (context, _event, cards) => {
-                        context.game.addMessage(
-                            '{0} puts {1} on the top of {2}\'s dynasty deck',
-                            context.player,
-                            cards,
-                            context.player.opponent
-                        );
+                        context.game.addMessage(msg`${context.player} puts ${cards} on the top of ${context.player.opponent}'s dynasty deck`);
                     },
                     message: (context, selectedCards) => msg`${context.player}${selectedCards.length > 0 ? ' compels ' : ' takes nothing'}${selectedCards}${selectedCards.length > 0 ? ' into service' : ''}`
                 }))

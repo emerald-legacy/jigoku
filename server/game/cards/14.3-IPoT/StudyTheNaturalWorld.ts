@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { addElement, delayedEffect } from '../../effects.js';
@@ -33,7 +34,7 @@ class StudyTheNaturalWorld extends DrawCard {
                             choices: ['Yes', 'No'],
                             choiceHandler: (choice, displayMessage) => {
                                 if(displayMessage && choice === 'Yes') {
-                                    context.game.addMessage('{0} chooses to resolve all elements of the contested ring due to the delayed effect of {1}', context.player, context.source);
+                                    context.game.addMessage(msg`${context.player} chooses to resolve all elements of the contested ring due to the delayed effect of ${context.source}`);
                                 }
                                 return { target: (choice === 'Yes' ? (context.game.currentConflict?.ring?.getElements() ?? []) : []) };
                             },

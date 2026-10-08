@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, discardCard, menuPrompt, sequential } from '../../../GameActions/GameActions.js';
@@ -27,12 +28,7 @@ export default class ToStormAFortress extends DrawCard {
                             );
 
                         if(displayMessage && choice === 'Yes') {
-                            context.game.addMessage(
-                                '{0}\'s {1} discards {2}',
-                                context.player,
-                                context.source,
-                                cardsToDiscard
-                            );
+                            context.game.addMessage(msg`${context.player}'s ${context.source} discards ${cardsToDiscard}`);
                         }
                         return { target: choice === 'Yes' ? cardsToDiscard : [] };
                     },

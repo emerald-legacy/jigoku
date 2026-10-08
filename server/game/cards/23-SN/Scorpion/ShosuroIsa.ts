@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { EventName, Players, Duration, Location } from '../../../Constants.js';
 import { addTrait, setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect, handler, putIntoPlay } from '../../../GameActions/GameActions.js';
@@ -46,10 +47,7 @@ export default class ShosuroIsa extends DrawCard {
             event.card.location !== Location.RemovedFromGame
         ) {
             this.shadows = this.shadows.filter((a) => a !== event.card);
-            this.game.addMessage(
-                '{0} fades into nothingness and is removed from the game due to leaving play',
-                event.card
-            );
+            this.game.addMessage(msg`${event.card} fades into nothingness and is removed from the game due to leaving play`);
             event.card.owner.moveCard(event.card, Location.RemovedFromGame);
         }
     }

@@ -46,12 +46,7 @@ export default class PalmStrike extends DrawCard {
             .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
             .onResolve((context) => {
                 if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
-                    context.game.addMessage(
-                        '{0} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of {1}{2}',
-                        context.targets[TARGET_TO_BOW],
-                        context.targets[TARGET_MONK].isUnique() ? '' : 'the ',
-                        context.targets[TARGET_MONK]
-                    );
+                    context.game.addMessage(msg`${context.targets[TARGET_TO_BOW]} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of ${context.targets[TARGET_MONK].isUnique() ? '' : 'the '}${context.targets[TARGET_MONK]}`);
                 }
             });
     }

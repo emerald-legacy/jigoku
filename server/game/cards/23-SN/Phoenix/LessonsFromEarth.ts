@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { chosenDiscard, draw, handler, multipleContext } from '../../../GameActions/GameActions.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
@@ -34,7 +35,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 } else {
                     gameActions.push(handler({
                         handler: () => {
-                            context.game.addMessage('{0}\'s affinity to Earth prevents them from discarding a card', loser);
+                            context.game.addMessage(msg`${loser}'s affinity to Earth prevents them from discarding a card`);
                         }
                     }));
                 }

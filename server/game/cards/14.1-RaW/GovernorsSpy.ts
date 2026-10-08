@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
@@ -48,7 +49,7 @@ class GovernorsSpy extends DrawCard {
                     card.location !== Location.StrongholdProvince &&
                     (unplacedCards.length > emptyProvinces().length || emptyProvinces().includes(card.location)),
                 onSelect: (player, card) => {
-                    this.game.addMessage('{0} places a card', player);
+                    this.game.addMessage(msg`${player} places a card`);
                     unplacedCards = unplacedCards.filter((a) => a !== currentCard);
                     destinations.set(currentCard, card.location);
                     if(unplacedCards.length > 0) {
@@ -70,7 +71,7 @@ class GovernorsSpy extends DrawCard {
             emptyProvinces().forEach((location) => {
                 context.refillProvince(targetPlayer, location);
             });
-            this.game.addMessage('{0} has finished placing cards', context.player);
+            this.game.addMessage(msg`${context.player} has finished placing cards`);
         });
     }
 }

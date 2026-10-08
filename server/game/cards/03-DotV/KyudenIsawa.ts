@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location, PlayType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -25,7 +26,7 @@ export default class KyudenIsawa extends StrongholdCard {
                     playType: PlayType.PlayFromHand,
                     postHandler: (spellContext) => {
                         const card = spellContext.source;
-                        context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
+                        context.game.addMessage(msg`${card} is removed from the game by ${context.source}'s ability`);
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })

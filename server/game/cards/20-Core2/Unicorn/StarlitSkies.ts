@@ -22,10 +22,10 @@ export default class StarlitSkies extends DrawCard {
                 }
                 const isDynasty = topThree[0].isDynasty;
                 this.chooseCard(context, 'Select a card to discard', topThree, 3, (card) => {
-                    context.game.addMessage('{0} chooses to discard {1}', context.player, card);
+                    context.game.addMessage(msg`${context.player} chooses to discard ${card}`);
                     context.player.moveCard(card, isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
                 }, (rest) => this.chooseCard(context, 'Select a card to put on the bottom of the deck', rest, 2, (card) => {
-                    context.game.addMessage('{0} places a card on the bottom of the deck', context.player, card);
+                    context.game.addMessage(msg`${context.player} places a card on the bottom of the deck`);
                     context.player.moveCard(card, isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
                 }));
             })

@@ -77,11 +77,7 @@ describe('Agasha Shunsen', function () {
                 this.player1.clickRing('earth');
                 this.chat = spyOn(this.game, 'addMessage');
                 this.player1.clickPrompt('Don\'t attach a card');
-                expect(this.chat).toHaveBeenCalledWith(
-                    '{0} chooses not to attach anything to {1}',
-                    this.player1.player,
-                    this.agashaShunsen
-                );
+                expect(this.chat).toHaveBeenCalledWith(['{0} chooses not to attach anything to {1}', [this.player1.player, this.agashaShunsen]]);
                 expect(this.chat).toHaveBeenCalledWith(['{0} is shuffling their conflict deck', [this.player1.player]]);
             });
         });

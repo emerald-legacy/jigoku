@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration } from '../../Constants.js';
 import { perConflict } from '../../AbilityLimit.js';
@@ -39,7 +40,7 @@ class UnderSiege extends DrawCard {
                                 handler: (context) => {
                                     if(this.targetPlayer && this.setAsideCards.length > 0) {
                                         const targetPlayer = this.targetPlayer;
-                                        context.game.addMessage('{0} picks up their original hand', targetPlayer);
+                                        context.game.addMessage(msg`${targetPlayer} picks up their original hand`);
 
                                         this.setAsideCards.forEach((card) => {
                                             targetPlayer.moveCard(card, Location.Hand);
@@ -68,7 +69,7 @@ class UnderSiege extends DrawCard {
                                 const setAsideCards = [...player.hand];
                                 this.targetPlayer = player;
                                 this.setAsideCards = setAsideCards;
-                                this.game.addMessage('{0} sets their hand aside and draws 5 cards', player);
+                                this.game.addMessage(msg`${player} sets their hand aside and draws 5 cards`);
                                 if(setAsideCards.length > 0) {
                                     setAsideCards.forEach((card) => {
                                         player.moveCard(card, Location.RemovedFromGame);

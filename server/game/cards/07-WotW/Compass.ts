@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
@@ -25,7 +26,7 @@ class Compass extends DrawCard {
                         .map(({ text, location }) => ({
                             text,
                             handler: () => {
-                                this.game.addMessage('{0} chooses to look at the top 3 cards of their {1}', context.player, location);
+                                this.game.addMessage(msg`${context.player} chooses to look at the top 3 cards of their ${location}`);
                                 this.moveToBottomHandler(context, context.player.getSourceList(location).slice(0, 3), location);
                             }
                         }))
@@ -42,7 +43,7 @@ class Compass extends DrawCard {
                 cards: cards,
                 options: [{ text: 'Done', handler: () => this.moveToTopHandler(context, cards, deck) }],
                 cardHandler: (card) => {
-                    this.game.addMessage('{0} places a card on the bottom of their {1}', context.player, deck);
+                    this.game.addMessage(msg`${context.player} places a card on the bottom of their ${deck}`);
                     context.player.moveCard(card, deck, { bottom: true });
                     cards = cards.filter((c) => c !== card);
                     this.moveToBottomHandler(context, cards, deck);
@@ -60,7 +61,7 @@ class Compass extends DrawCard {
                 context: context,
                 cards: cards,
                 cardHandler: (card) => {
-                    this.game.addMessage('{0} places a card on the top of their {1}', context.player, deck);
+                    this.game.addMessage(msg`${context.player} places a card on the top of their ${deck}`);
                     context.player.moveCard(card, deck);
                     cards = cards.filter((c) => c !== card);
                     this.moveToTopHandler(context, cards, deck);

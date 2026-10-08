@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { delayedEffect } from '../effects.js';
 import { handler } from '../GameActions/GameActions.js';
@@ -72,14 +73,7 @@ export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
         event.limitedPlaySource = this.card;
         this.played++;
         const remaining = this.options.max - this.played;
-        context.game.addMessage(
-            '{0} {1} due to the ability of {2} ({3} use{4} remaining)',
-            context.player,
-            this.options.description,
-            context.source,
-            remaining,
-            remaining === 1 ? '' : 's'
-        );
+        context.game.addMessage(msg`${context.player} ${this.options.description} due to the ability of ${context.source} (${remaining} use${remaining === 1 ? '' : 's'} remaining)`);
         this.options.afterPlay?.(event, context);
     }
 

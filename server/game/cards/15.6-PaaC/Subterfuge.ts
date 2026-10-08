@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { discardCard, draw, handler, sequentialContext } from '../../GameActions/GameActions.js';
 import { Phase } from '../../Constants.js';
@@ -30,18 +31,9 @@ class Subterfuge extends DrawCard {
                             }),
                             handler({
                                 handler: (context) => {
-                                    context.game.addMessage(
-                                        '{0} discards {1}',
-                                        context.player.opponent,
-                                        cardsToDiscard
-                                    );
+                                    context.game.addMessage(msg`${context.player.opponent} discards ${cardsToDiscard}`);
                                     if(drawAmount > 0) {
-                                        context.game.addMessage(
-                                            '{0} draws {1} card{2}',
-                                            context.player.opponent,
-                                            drawAmount,
-                                            drawAmount > 1 ? 's' : ''
-                                        );
+                                        context.game.addMessage(msg`${context.player.opponent} draws ${drawAmount} card${drawAmount > 1 ? 's' : ''}`);
                                     }
                                 }
                             }),

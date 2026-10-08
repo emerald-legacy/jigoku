@@ -22,7 +22,7 @@ export default class ExcellenceAttained extends ProvinceCard {
                         {
                             text: 'Take nothing',
                             handler: () => {
-                                this.game.addMessage('{0} takes nothing', context.player);
+                                this.game.addMessage(msg`${context.player} takes nothing`);
                                 return true;
                             }
                         }

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { deckSearch } from '../../GameActions/GameActions.js';
 import { Location, CardType, Players, TargetMode, DeckType } from '../../Constants.js';
@@ -27,13 +28,13 @@ class TheWesternWind extends DrawCard {
                         return;
                     }
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1} and puts {2} into {3}', event.player, cards, cards.length > 1 ? 'them' : 'it', target.facedown ? target.location : target);
+                        this.game.addMessage(msg`${event.player} selects ${cards} and puts ${cards.length > 1 ? 'them' : 'it'} into ${target.facedown ? target.location : target}`);
                         cards.forEach((card) => {
                             event.player.moveCard(card, target.location);
                             card.facedown = false;
                         });
                     } else {
-                        this.game.addMessage('{0} selects no characters', event.player);
+                        this.game.addMessage(msg`${event.player} selects no characters`);
                     }
                 }
             }));

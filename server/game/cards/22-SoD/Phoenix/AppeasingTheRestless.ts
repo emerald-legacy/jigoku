@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { Players, CardType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
@@ -46,7 +47,7 @@ export default class AppeasingTheRestless extends DrawCard {
             cardCondition: (card) => this.canReceiveFate(card, context),
             buttons: [{ text: 'Done', arg: 'done' }],
             onSelect: (player, card) => {
-                context.game.addMessage('{0} moves 1 fate from their pool onto {1}', player, card);
+                context.game.addMessage(msg`${player} moves 1 fate from their pool onto ${card}`);
                 placeFate({ origin: player }).resolve(card, context);
                 context.game.queueSimpleStep(() => this.moveFate(context, remaining - 1));
                 return true;

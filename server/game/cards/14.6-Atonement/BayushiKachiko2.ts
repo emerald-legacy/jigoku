@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { canPlayFromOutOfPlay, registerToPlayFromOutOfPlay } from '../../effects.js';
 import { CardType, Location, Players, PlayType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -16,7 +17,7 @@ export default class BayushiKachiko2 extends DrawCard {
                 event.card.type === CardType.Event,
             description: 'plays a card from their opponent\'s conflict discard pile',
             afterPlay: (event, context) => {
-                context.game.addMessage('{0} is removed from the game due to the ability of {1}', event.card, context.source);
+                context.game.addMessage(msg`${event.card} is removed from the game due to the ability of ${context.source}`);
                 event.card.owner.moveCard(event.card, Location.RemovedFromGame);
             }
         });

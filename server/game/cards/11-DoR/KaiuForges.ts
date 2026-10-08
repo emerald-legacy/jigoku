@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players } from '../../Constants.js';
 
@@ -22,7 +23,7 @@ class KaiuForges extends DrawCard {
                         {
                             text: 'Take nothing',
                             handler: () => {
-                                this.game.addMessage('{0} takes nothing', context.player);
+                                this.game.addMessage(msg`${context.player} takes nothing`);
                                 context.player.shuffleDynastyDeck();
                                 return true;
                             }
@@ -41,7 +42,7 @@ class KaiuForges extends DrawCard {
                                 targets: false,
                                 cardCondition: (card) => cards.includes(card) && card.hasTrait('kaiu-wall'),
                                 onSelect: (player, card) => {
-                                    this.game.addMessage('{0} chooses to replace {1} with {2}', player, card, cardFromDeck);
+                                    this.game.addMessage(msg`${player} chooses to replace ${card} with ${cardFromDeck}`);
                                     context.player.moveCard(cardFromDeck, provinceLocation);
                                     context.player.moveCard(card, Location.DynastyDeck);
                                     cardFromDeck.facedown = false;
@@ -50,7 +51,7 @@ class KaiuForges extends DrawCard {
                                 }
                             });
                         } else {
-                            this.game.addMessage('{0} cannot put a holding into play because there is no Kaiu Wall in the selected province', context.player);
+                            this.game.addMessage(msg`${context.player} cannot put a holding into play because there is no Kaiu Wall in the selected province`);
                             context.player.shuffleDynastyDeck();
                         }
                     }

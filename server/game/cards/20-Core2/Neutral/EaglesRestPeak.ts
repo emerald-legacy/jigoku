@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { playerDelayedEffect } from '../../../effects.js';
@@ -26,7 +27,7 @@ export default class EaglesRestPeak extends ProvinceCard {
 
                         handler({
                             handler: () => {
-                                this.game.addMessage('{0} sets aside {1}', opponent, setAsideCards);
+                                this.game.addMessage(msg`${opponent} sets aside ${setAsideCards}`);
                                 if(opponent) {
                                     for(const card of setAsideCards) {
                                         opponent.moveCard(card, Location.RemovedFromGame);
@@ -42,7 +43,7 @@ export default class EaglesRestPeak extends ProvinceCard {
                                 when: { onConflictFinished: () => true },
                                 gameAction: handler({
                                     handler: (context) => {
-                                        context.game.addMessage('{0} picks back their cards', opponent);
+                                        context.game.addMessage(msg`${opponent} picks back their cards`);
                                         if(opponent) {
                                             for(const card of setAsideCards) {
                                                 opponent.moveCard(card, Location.Hand);

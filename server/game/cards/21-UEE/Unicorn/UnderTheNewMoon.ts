@@ -22,12 +22,7 @@ export default class UnderTheNewMoon extends DrawCard {
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
                     if(displayMessage) {
-                        this.game.addMessage(
-                            '{0} will attack with {1} character{2}',
-                            context.player,
-                            choice,
-                            choice === '1' ? '' : 's'
-                        );
+                        this.game.addMessage(msg`${context.player} will attack with ${choice} character${choice === '1' ? '' : 's'}`);
                     }
                     return {
                         effect: defendersChosenFirstDuringConflict(amount)

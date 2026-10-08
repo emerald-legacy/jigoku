@@ -67,7 +67,7 @@ export default class CastleOfAir extends DrawCard {
             !event.cancelled
         ) {
             event.cancel();
-            this.game.addMessage('{0} cancels the honor loss', this);
+            this.game.addMessage(msg`${this} cancels the honor loss`);
         }
     }
 

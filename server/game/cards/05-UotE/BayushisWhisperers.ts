@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { handler, lookAt, sequential } from '../../GameActions/GameActions.js';
 import { playerCannot } from '../../effects.js';
@@ -28,7 +29,7 @@ class BayushisWhisperers extends DrawCard {
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {
-        this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
+        this.game.addMessage(msg`${player} names ${cardName} - ${player.opponent} cannot play copies of this card this phase`);
         context.source.untilEndOfPhase({
             targetController: context.player.opponent,
             effect: playerCannot({

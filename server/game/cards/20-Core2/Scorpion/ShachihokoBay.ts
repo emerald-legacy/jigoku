@@ -48,12 +48,7 @@ class Process {
 
     private stealCardsAndContinue() {
         if(this.cardsToSteal.size > 0) {
-            this.context.game.addMessage(
-                '{0} takes {1} from {2}\'s deck',
-                this.context.player,
-                Array.from(this.cardsToSteal),
-                this.context.player.opponent
-            );
+            this.context.game.addMessage(msg`${this.context.player} takes ${Array.from(this.cardsToSteal)} from ${this.context.player.opponent}'s deck`);
             for(const card of this.cardsToSteal) {
                 this.context.player.moveCard(card, Location.RemovedFromGame);
                 card.controller = this.context.player;

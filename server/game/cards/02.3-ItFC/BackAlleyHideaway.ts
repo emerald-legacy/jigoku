@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Phase, PlayType, EventName, CardType } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
@@ -72,13 +73,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
     }
 
     executeHandler(context: AbilityContext & { chooseFate: number }) {
-        context.game.addMessage(
-            '{0} plays {1} from {2} with {3} additional fate',
-            context.player,
-            context.source,
-            context.source.parent,
-            context.chooseFate
-        );
+        context.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.parent} with ${context.chooseFate} additional fate`);
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
             (action) => action.title !== 'Play this character from Back-Alley Hideaway'
         );

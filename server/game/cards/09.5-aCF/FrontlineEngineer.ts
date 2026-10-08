@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import { modifyGlory } from '../../effects.js';
@@ -29,7 +30,7 @@ class FrontlineEngineer extends DrawCard {
                             {
                                 text: 'Take nothing',
                                 handler: () => {
-                                    this.game.addMessage('{0} takes nothing', context.player);
+                                    this.game.addMessage(msg`${context.player} takes nothing`);
                                     context.player.shuffleDynastyDeck();
                                     return true;
                                 }
@@ -40,7 +41,7 @@ class FrontlineEngineer extends DrawCard {
                                 return;
                             }
                             const cards = context.player.getDynastyCardsInProvince(province.location);
-                            this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
+                            this.game.addMessage(msg`${context.player} discards ${cards}, replacing it with ${cardFromDeck}`);
                             context.player.moveCard(cardFromDeck, province.location);
                             cardFromDeck.facedown = false;
                             cards.forEach((element) => {

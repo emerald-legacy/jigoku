@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
 import type { Event } from '../../Events/Event.js';
@@ -32,7 +33,7 @@ class ShibaTsukune extends DrawCard {
                             return true;
                         },
                         onSelect: (player, secondRing) => {
-                            this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
+                            this.game.addMessage(msg`${player} resolves ${[firstRing, secondRing]}`);
                             const events: Event[] = [];
                             resolveRingEffect({ target: [firstRing, secondRing] })
                                 .addEventsToArray(events, this.game.getFrameworkContext(player));
@@ -47,7 +48,7 @@ class ShibaTsukune extends DrawCard {
     }
 
     private resolveRing(player: Player, ring: Ring) {
-        this.game.addMessage('{0} resolves {1}', player, ring);
+        this.game.addMessage(msg`${player} resolves ${ring}`);
         this.game.openThenEventWindow(resolveRingEffect().getEvent(ring, this.game.getFrameworkContext(player)));
     }
 }

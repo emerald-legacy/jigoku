@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
@@ -53,13 +54,7 @@ export default class MiokosSong extends StrongholdCard {
                                 opponent.moveCard(goToBottom, Location.DynastyDeck, { bottom: true });
                             }
 
-                            context.game.addMessage(
-                                '{0} puts {1} into {2}, discarding {3}',
-                                context.player,
-                                selectedCard,
-                                province.isFacedown() ? province.location : province,
-                                cardsFromProvince
-                            );
+                            context.game.addMessage(msg`${context.player} puts ${selectedCard} into ${province.isFacedown() ? province.location : province}, discarding ${cardsFromProvince}`);
                         }
                     });
                 }

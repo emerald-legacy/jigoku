@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { chooseAction, conditional, lookAt, multiple, noAction, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
@@ -22,7 +23,7 @@ class EmissaryOfLies extends DrawCard {
                 }
                 this.game.promptWithMenu(opponent, {
                     selectCardName: (player: Player, cardName: string) => {
-                        this.game.addMessage('{0} names {1} - {2} must choose if they want to reveal their hand', player, cardName, context.player);
+                        this.game.addMessage(msg`${player} names ${cardName} - ${context.player} must choose if they want to reveal their hand`);
                         this.offerToRevealHand(context, context.target, cardName);
                         return true;
                     }

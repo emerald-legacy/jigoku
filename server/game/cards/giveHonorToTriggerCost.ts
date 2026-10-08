@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { Cost } from '../costs/Cost.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
@@ -20,7 +21,7 @@ export function giveHonorToTriggerCost(recipient: Player): Cost {
             const events: Event[] = [];
             const honorAction = takeHonor({ target: context.player.opponent });
             events.push(honorAction.getEvent(context.player, context));
-            context.game.addMessage('{0} gives {1} 1 honor to trigger {2}\'s ability', context.player, recipient, context.source);
+            context.game.addMessage(msg`${context.player} gives ${recipient} 1 honor to trigger ${context.source}'s ability`);
 
             return events;
         },

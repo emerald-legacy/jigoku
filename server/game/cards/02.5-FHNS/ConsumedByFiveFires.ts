@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -25,7 +26,7 @@ class ConsumedByFiveFires extends DrawCard {
         }
         const opponent = context.player.opponent;
         if(fateRemaining === 0 || !opponent.cardsInPlay.some((card) => card.allowGameAction('removeFate', context) && !Object.keys(targets).includes(card.uuid))) {
-            this.game.addMessage('{0} chooses to: {1}', context.player, messages);
+            this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
             const keys = Object.keys(targets);
             const events = keys.map((key) => {
                 const card = opponent.cardsInPlay.find((c) => c.uuid === key);
@@ -61,7 +62,7 @@ class ConsumedByFiveFires extends DrawCard {
                 return true;
             },
             onCancel: () => {
-                this.game.addMessage('{0} chooses to: {1}', context.player, messages);
+                this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
                 const keys = Object.keys(targets);
                 const events = this.game.applyGameAction(context, { removeFate: opponent.cardsInPlay.filter((card) => keys.includes(card.uuid)) });
                 events.forEach((event) => {

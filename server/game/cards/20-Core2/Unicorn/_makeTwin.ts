@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { blank } from '../../../effects.js';
 import {
     attach,
@@ -28,7 +29,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {
                         if(cards.length === 0) {
-                            context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, event.player);
+                            context.game.addMessage(msg`${event.player} finds no copies of ${opt.siblingName}`);
                             return;
                         }
 
@@ -72,12 +73,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                         returnToDeck({ target: replacedCharacter, shuffle: true })
                             .resolve(replacedCharacter, context);
 
-                        context.game.addMessage(
-                            '{0} replaces {1} with {2}',
-                            event.player,
-                            replacedCharacter,
-                            newCharacter
-                        );
+                        context.game.addMessage(msg`${event.player} replaces ${replacedCharacter} with ${newCharacter}`);
                     }
                 })
                 .chatText(opt.chatText);

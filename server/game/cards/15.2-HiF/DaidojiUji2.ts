@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { hideWhenFaceUp } from '../../effects.js';
 import { TargetMode, DeckType } from '../../Constants.js';
@@ -16,7 +17,7 @@ class DaidojiUji2 extends DrawCard {
                 reveal: false,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1} cards', event.player, cards.length);
+                        this.game.addMessage(msg`${event.player} selects ${cards.length} cards`);
                         cards.forEach((card) => {
                             context.player.moveCard(card, this.uuid);
                             card.controller = context.source.controller;
@@ -32,7 +33,7 @@ class DaidojiUji2 extends DrawCard {
                             });
                         });
                     } else {
-                        this.game.addMessage('{0} selects no cards', event.player);
+                        this.game.addMessage(msg`${event.player} selects no cards`);
                     }
                 }
             });

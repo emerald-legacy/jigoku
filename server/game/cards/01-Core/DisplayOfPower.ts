@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
@@ -28,7 +29,7 @@ class DisplayOfPower extends DrawCard {
         if(event.cancelled) {
             return;
         }
-        this.game.addMessage('{0} cancels the ring effect and {1} may resolve it and then claims it', context.source, context.player);
+        this.game.addMessage(msg`${context.source} cancels the ring effect and ${context.player} may resolve it and then claims it`);
         const conflict = this.game.currentConflict;
         if(!conflict) {
             return;

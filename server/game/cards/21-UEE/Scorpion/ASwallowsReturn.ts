@@ -28,7 +28,7 @@ export default class ASwallowsReturn extends DrawCard {
                         {
                             text: 'Play nothing',
                             handler: () => {
-                                this.game.addMessage('{0} takes nothing', context.player);
+                                this.game.addMessage(msg`${context.player} takes nothing`);
                                 return true;
                             }
                         }

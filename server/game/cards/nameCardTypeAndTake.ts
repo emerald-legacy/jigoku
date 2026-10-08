@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Location } from '../Constants.js';
 import type { Cost } from '../costs/Cost.js';
 import type DrawCard from '../DrawCard.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 
 const CARD_TYPES = [CardType.Attachment, CardType.Character, CardType.Event];
 
@@ -41,7 +41,7 @@ export function takeUpToTwoOfNamedType(context: AbilityContext, revealed: readon
 
     const discardRest = () => {
         const cards = others.concat(matching);
-        context.game.addMessage('{0} discards {1}', context.player, cards);
+        context.game.addMessage(msg`${context.player} discards ${cards}`);
         for(const card of cards) {
             context.player.moveCard(card, Location.ConflictDiscardPile);
         }
@@ -56,7 +56,7 @@ export function takeUpToTwoOfNamedType(context: AbilityContext, revealed: readon
             context: context,
             cards: matching,
             cardHandler: (card) => {
-                context.game.addMessage('{0} adds {1} to their hand', context.player, card);
+                context.game.addMessage(msg`${context.player} adds ${card} to their hand`);
                 context.player.moveCard(card, Location.Hand);
                 matching = matching.filter((c) => c !== card);
                 chooseCard(picksLeft - 1);

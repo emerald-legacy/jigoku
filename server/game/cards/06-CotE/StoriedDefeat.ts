@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { CardAbility } from '../../CardAbility.js';
 import { CardType, EventName } from '../../Constants.js';
 import {
@@ -30,12 +31,7 @@ export default class StoriedDefeat extends DrawCard {
                     ),
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage) {
-                            context.game.addMessage(
-                                '{0} chooses {1}to spend a fate to dishonor {2}',
-                                context.player,
-                                choice === 'No' ? 'not ' : '',
-                                context.target
-                            );
+                            context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to spend a fate to dishonor ${context.target}`);
                         }
                         return { amount: choice === 'Yes' ? 1 : 0 };
                     },

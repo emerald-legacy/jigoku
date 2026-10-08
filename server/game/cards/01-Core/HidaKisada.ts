@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { Event } from '../../Events/Event.js';
@@ -48,13 +49,7 @@ export default class HidaKisada extends DrawCard {
             !this.game.conflictRecord.some((conflict) => conflict.winner === this.controller.opponent)
         ) {
             event.cancel();
-            this.game.addMessage(
-                '{0} attempts to initiate {1}{2}, but {3} cancels it',
-                event.context.player,
-                event.card,
-                event.card.type === CardType.Event ? '' : '\'s ability',
-                this
-            );
+            this.game.addMessage(msg`${event.context.player} attempts to initiate ${event.card}${event.card.type === CardType.Event ? '' : '\'s ability'}, but ${this} cancels it`);
         }
     }
 

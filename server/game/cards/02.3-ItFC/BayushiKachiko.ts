@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { bow, menuPrompt, sendHome, sequential } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
@@ -18,7 +19,7 @@ class BayushiKachiko extends DrawCard {
                     choices: ['Yes', 'No'],
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage && choice === 'Yes') {
-                            context.game.addMessage('{0} chooses to bow {1} due to {2}\'s ability', context.player, context.target, context.source);
+                            context.game.addMessage(msg`${context.player} chooses to bow ${context.target} due to ${context.source}'s ability`);
                         }
                         return { target: (choice === 'Yes' ? context.target : []) };
                     },

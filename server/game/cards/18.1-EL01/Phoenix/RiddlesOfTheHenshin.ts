@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -56,7 +57,7 @@ class Process {
     }
 
     private resolveRings(player: Player) {
-        this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
+        this.context.game.addMessage(msg`${player} resolves ${this.chosenRings}`);
         const action = resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
         const events: Event[] = [];
         action.addEventsToArray(events, this.context.game.getFrameworkContext(player));

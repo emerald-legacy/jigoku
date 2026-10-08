@@ -39,14 +39,14 @@ export default class NegotiationTable extends DrawCard {
                     once('Draw 1 card', () => this.eachPlayerDraws(context, opponent)),
                     once('Choose and ready a character', () => this.eachPlayerReadies(context, opponent)),
                     once('Gain 1 fate', () => this.eachPlayerGainsFate(context, opponent)),
-                    { text: 'Done', handler: () => this.game.addMessage('{0} chooses not to do an action', opponent) }
+                    { text: 'Done', handler: () => this.game.addMessage(msg`${opponent} chooses not to do an action`) }
                 );
                 prompt();
             });
     }
 
     private eachPlayerDraws(context: AbilityContext, opponent: Player) {
-        this.game.addMessage('{0} chooses to have each player draw a card', opponent);
+        this.game.addMessage(msg`${opponent} chooses to have each player draw a card`);
 
         draw((ctx) => ({
             target: ctx.player.opponent
@@ -59,7 +59,7 @@ export default class NegotiationTable extends DrawCard {
     }
 
     private eachPlayerReadies(context: AbilityContext, opponent: Player) {
-        this.game.addMessage('{0} chooses to have each player ready a character', opponent);
+        this.game.addMessage(msg`${opponent} chooses to have each player ready a character`);
         const bowedCharacters =
             context.player.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length +
             opponent.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length;
@@ -89,7 +89,7 @@ export default class NegotiationTable extends DrawCard {
     }
 
     private eachPlayerGainsFate(context: AbilityContext, opponent: Player) {
-        this.game.addMessage('{0} chooses to have each player gain a fate', opponent);
+        this.game.addMessage(msg`${opponent} chooses to have each player gain a fate`);
 
         gainFate((ctx) => ({
             target: ctx.player.opponent

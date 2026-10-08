@@ -35,14 +35,14 @@ class MercenaryCompany extends DrawCard {
                                             duration: Duration.Custom,
                                             effect: takeControl(opponent)
                                         });
-                                        this.game.addMessage('{0} places a fate on and takes control of {1}', opponent, context.source);
+                                        this.game.addMessage(msg`${opponent} places a fate on and takes control of ${context.source}`);
                                     });
                                 }
                             },
                             {
                                 text: 'No',
                                 handler: () => {
-                                    this.game.addMessage('{0} chooses not to hire {1}', opponent, context.source);
+                                    this.game.addMessage(msg`${opponent} chooses not to hire ${context.source}`);
                                 }
                             }
                         ]

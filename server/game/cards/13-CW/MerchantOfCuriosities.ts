@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
@@ -66,7 +67,7 @@ function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: bool
 
                 const honorAction = takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
-                context.game.addMessage('{0} chooses to discard a card and give {1} 1 honor', context.player.opponent, context.player);
+                context.game.addMessage(msg`${context.player.opponent} chooses to discard a card and give ${context.player} 1 honor`);
 
                 return events;
             }

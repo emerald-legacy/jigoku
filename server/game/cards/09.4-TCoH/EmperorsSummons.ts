@@ -16,7 +16,7 @@ export default class EmperorsSummons extends ProvinceCard {
             .gameAction(cardMenu((context) => ({
                 cards: context.player.dynastyDeck.filter((card) => card.type === CardType.Character),
                 options: [
-                    { text: 'Select nothing', handler: () => this.game.addMessage('{0} selects nothing from their deck', context.player) }
+                    { text: 'Select nothing', handler: () => this.game.addMessage(msg`${context.player} selects nothing from their deck`) }
                 ],
                 // the menu's chosen character reaches the select's message here
                 subActionProperties: (character) => ({

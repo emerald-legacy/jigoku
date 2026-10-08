@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -28,14 +29,7 @@ export default class TwinSoulTemple extends StrongholdCard {
                         return {};
                     }
                     if(displayMessage) {
-                        this.game.addMessage(
-                            '{0} replaces {1}\'s {2} ({3}) symbol with {4}',
-                            context.player,
-                            context.elementCard,
-                            context.element.prettyName,
-                            this.capitalize(context.element.element),
-                            this.capitalize(newElement)
-                        );
+                        this.game.addMessage(msg`${context.player} replaces ${context.elementCard}'s ${context.element.prettyName} (${this.capitalize(context.element.element)}) symbol with ${this.capitalize(newElement)}`);
                     }
                     return {
                         effect: replacePrintedElement({

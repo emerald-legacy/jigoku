@@ -25,7 +25,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 reveal: true,
                 selectedCardsHandler: (context, event, [card]) => {
                     if(!card) {
-                        context.game.addMessage('{0} takes nothing', context.player);
+                        context.game.addMessage(msg`${context.player} takes nothing`);
                         return;
                     }
                     attachSearchedCard(context, context.target, card, (card) => msg`${event.player} takes ${card} and attaches it to ${context.target}`);

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { GameMode } from '../../../GameMode.js';
 import { CardType, TargetMode, DeckType, Location, Players } from '../../Constants.js';
 import { hideWhenFaceUp } from '../../effects.js';
@@ -18,7 +19,7 @@ export default class KaiuShihobu extends DrawCard {
                 deck: DeckType.Dynasty,
                 selectedCardsHandler: (_context, event, cards) => {
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1}', event.player, cards);
+                        this.game.addMessage(msg`${event.player} selects ${cards}`);
                         cards.forEach((card) => {
                             event.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
                             event.player.moveCard(card, Location.UnderneathStronghold);
@@ -32,7 +33,7 @@ export default class KaiuShihobu extends DrawCard {
                             });
                         });
                     } else {
-                        this.game.addMessage('{0} selects no holdings', event.player);
+                        this.game.addMessage(msg`${event.player} selects no holdings`);
                     }
                 }
             });

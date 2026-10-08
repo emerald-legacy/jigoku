@@ -67,7 +67,7 @@ function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: Draw
             if(context.costs.maelstromCostPaid) {
                 const discardAction = discardCard({ target: context.costs.maelstromCost });
                 const event = discardAction.getEvent(context.costs.maelstromCost, context);
-                context.game.addMessage('{0} chooses to discard a card', context.player);
+                context.game.addMessage(msg`${context.player} chooses to discard a card`);
                 return [event];
             }
 

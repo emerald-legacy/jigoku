@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { delayedEffect } from '../../effects.js';
 import { cardLastingEffect, dishonor, menuPrompt, moveToConflict, sequential } from '../../GameActions/GameActions.js';
@@ -23,7 +24,7 @@ class YogoHiroue extends DrawCard {
                             choices: ['Yes', 'No'],
                             choiceHandler: (choice, displayMessage) => {
                                 if(displayMessage && choice === 'Yes') {
-                                    context.game.addMessage('{0} chooses to dishonor {1} due to {2}\'s delayed effect', context.player, context.target, context.source);
+                                    context.game.addMessage(msg`${context.player} chooses to dishonor ${context.target} due to ${context.source}'s delayed effect`);
                                 }
                                 return { target: (choice === 'Yes' ? context.target : []) };
                             },

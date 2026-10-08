@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Duration, EventName, Location, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -62,11 +63,7 @@ export default class TheEmptyCity extends ProvinceCard {
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Location.RemovedFromGame) {
-            this.game.addMessage(
-                '{1} is removed from the game, as it was invoked by the {0} this round',
-                this,
-                event.card
-            );
+            this.game.addMessage(msg`${event.card} is removed from the game, as it was invoked by the ${this} this round`);
             this.owner.moveCard(event.card, Location.RemovedFromGame);
         }
     }

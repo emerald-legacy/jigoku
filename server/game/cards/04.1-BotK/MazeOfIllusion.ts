@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { bow, dishonor, setHonorDial } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
@@ -40,7 +41,7 @@ export default class MazeOfIllusion extends DrawCard {
     }
 
     private resolveAbility(choice: Choice, value: number, context: AbilityContext) {
-        this.game.addMessage('{0} guesses {1}', context.player.opponent, choice);
+        this.game.addMessage(msg`${context.player.opponent} guesses ${choice}`);
         setHonorDial({ value }).resolve(context.player, context);
         if((choice === 'Odd') === (value % 2 === 0)) {
             context.game.applyGameAction(context, { bow: context.target, dishonor: context.target });
