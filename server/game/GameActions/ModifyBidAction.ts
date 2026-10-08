@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -61,7 +61,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
             if(player.honorBid === 0) {
                 const event = this.getEvent(player, context, additionalProperties);
                 event.direction = Direction.Increase;
-                context.game.addMessage('{0} chooses to increase their honor bid', player);
+                context.game.addMessage(msg`${player} chooses to increase their honor bid`);
                 events.push(event);
             } else {
                 context.game.promptWithHandlerMenu(player, {
@@ -70,10 +70,10 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
                     choiceHandler: (choice: string) => {
                         const event = this.getEvent(player, context, additionalProperties);
                         if(choice === 'Increase honor bid') {
-                            context.game.addMessage('{0} chooses to increase their honor bid', player);
+                            context.game.addMessage(msg`${player} chooses to increase their honor bid`);
                             event.direction = Direction.Increase;
                         } else {
-                            context.game.addMessage('{0} chooses to decrease their honor bid', player);
+                            context.game.addMessage(msg`${player} chooses to decrease their honor bid`);
                             event.direction = Direction.Decrease;
                         }
                         events.push(event);

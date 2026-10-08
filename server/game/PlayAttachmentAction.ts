@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { CardType, Location, Phase } from './Constants.js';
@@ -49,7 +50,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     displayMessage(context: AbilityContext) {
         const t = context.target;
         const target = t && t.type === CardType.Province && t.isFacedown() ? t.location : t;
-        context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, target);
+        context.game.addMessage(msg`${context.player} plays ${context.source}, attaching it to ${target}`);
     }
 
     executeHandler(context: AbilityContext<DrawCard>) {

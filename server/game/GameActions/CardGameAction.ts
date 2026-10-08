@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -66,20 +67,10 @@ export class CardGameAction<
                         const properties = { amount: targetingCosts, target: context.player };
                         const cost = new LoseFateAction(properties);
                         if(cost.canAffect(context.player, context)) {
-                            context.game.addMessage(
-                                '{0} pays {1} fate in order to target {2}',
-                                context.player,
-                                targetingCosts,
-                                costTarget.name
-                            );
+                            context.game.addMessage(msg`${context.player} pays ${targetingCosts} fate in order to target ${costTarget.name}`);
                             cost.resolve(context.player, context);
                         } else {
-                            context.game.addMessage(
-                                '{0} cannot pay {1} fate in order to target {2}',
-                                context.player,
-                                targetingCosts,
-                                costTarget.name
-                            );
+                            context.game.addMessage(msg`${context.player} cannot pay ${targetingCosts} fate in order to target ${costTarget.name}`);
                             allCostsPaid = false;
                         }
                     }

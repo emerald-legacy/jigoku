@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameAction, GameActionTarget } from '../GameActions/GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type Player from '../Player.js';
 
 /**
@@ -17,10 +17,10 @@ export function payAdditionalCost(
 ): boolean {
     const game = context.game;
     if(!cost.hasLegalTarget(context)) {
-        game.addMessage('{0} cannot pay the additional cost required to {1}', payer, purpose);
+        game.addMessage(msg`${payer} cannot pay the additional cost required to ${purpose}`);
         return false;
     }
     cost.resolve(target, context);
-    game.addMessage('{0} {1} in order to {2}', payer, game.gameChat.nested(chatText ? chatText(context) : cost.getEffectMessage(context)), purpose);
+    game.addMessage(msg`${payer} ${game.gameChat.nested(chatText ? chatText(context) : cost.getEffectMessage(context))} in order to ${purpose}`);
     return true;
 }

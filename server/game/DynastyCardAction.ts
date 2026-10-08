@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
@@ -40,21 +41,11 @@ export class DynastyCardAction extends BaseAction {
     }
 
     displayMessage(context: AbilityContext): void {
-        context.game.addMessage(
-            '{0} plays {1} with {2} additional fate',
-            context.player,
-            context.source,
-            context.chooseFate
-        );
+        context.game.addMessage(msg`${context.player} plays ${context.source} with ${context.chooseFate} additional fate`);
         if(context.source.checkRestrictions('placeFate', context)) {
             for(const effect of context.source.getRawEffects()) {
                 if(isEffectOf(effect, EffectName.GainExtraFateWhenPlayed)) {
-                    context.game.addMessage(
-                        '{0} enters play with {1} additional fate due to {2}',
-                        context.source,
-                        effect.getValue(context.source),
-                        effect.context.source
-                    );
+                    context.game.addMessage(msg`${context.source} enters play with ${effect.getValue(context.source)} additional fate due to ${effect.context.source}`);
                 }
             }
         }

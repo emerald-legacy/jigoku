@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
@@ -69,7 +69,7 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
 
         const player = card.owner;
         if(properties.destination && card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
-            context.game.addMessage('{0} is discarded instead since it can\'t enter a province legally!', card);
+            context.game.addMessage(msg`${card} is discarded instead since it can't enter a province legally!`);
             properties.destination = Location.ConflictDiscardPile;
         }
         if(

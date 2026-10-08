@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { DeckType, EventName, Location, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/random.js';
@@ -232,13 +232,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
                 for(const card of shuffle(cardsToMove)) {
                     player.moveCard(card, deckLocation, { bottom: true });
                 }
-                context.game.addMessage(
-                    '{0} puts {1} card{2} on the bottom of their {3} deck',
-                    player,
-                    cardsToMove.length,
-                    cardsToMove.length > 1 ? 's' : '',
-                    isDynasty ? 'dynasty' : 'conflict'
-                );
+                context.game.addMessage(msg`${player} puts ${cardsToMove.length} card${cardsToMove.length > 1 ? 's' : ''} on the bottom of their ${isDynasty ? 'dynasty' : 'conflict'} deck`);
             }
         }
     }
@@ -280,20 +274,15 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         }
 
         if(properties.reveal) {
-            return context.game.addMessage('{0} takes {1}', choosingPlayer, Array.from(selectedCards));
+            return context.game.addMessage(msg`${choosingPlayer} takes ${Array.from(selectedCards)}`);
         }
 
-        context.game.addMessage(
-            '{0} takes {1} {2}',
-            choosingPlayer,
-            selectedCards.size,
-            selectedCards.size > 1 ? 'cards' : 'card'
-        );
+        context.game.addMessage(msg`${choosingPlayer} takes ${selectedCards.size} ${selectedCards.size > 1 ? 'cards' : 'card'}`);
     }
 
     #takesNothing(properties: ResolvedDeckSearchProperties<C>, context: C, event: GameEvent<EventName.OnDeckSearch>): void {
         const choosingPlayer = (properties.choosingPlayer || event.player);
-        context.game.addMessage('{0} takes nothing', choosingPlayer);
+        context.game.addMessage(msg`${choosingPlayer} takes nothing`);
         if(properties.takesNothingGameAction) {
             const action = properties.takesNothingGameAction;
             context.game.queueSimpleStep(() => {

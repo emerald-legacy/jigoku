@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -85,7 +85,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
 
     eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
         const context = event.context;
-        context.game.addMessage('{0} discards {1}', event.player, event.cards);
+        context.game.addMessage(msg`${event.player} discards ${event.cards}`);
         event.discardedCards = event.cards;
         for(const card of event.cards ?? []) {
             event.player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);

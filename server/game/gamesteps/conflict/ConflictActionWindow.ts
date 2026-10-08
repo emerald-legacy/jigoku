@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { ActionWindow } from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
@@ -28,7 +29,7 @@ export class ConflictActionWindow extends ActionWindow {
         const completed = super.continue();
         if(!completed && this.displayTotals) {
             const conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
-            this.game.addMessage('{0} - Attacker: {1} Defender: {2}', conflictText, this.conflict.attackerSkill, this.conflict.defenderSkill);
+            this.game.addMessage(msg`${conflictText} - Attacker: ${this.conflict.attackerSkill} Defender: ${this.conflict.defenderSkill}`);
             let winnerText = 'Attacker is winning the conflict';
             const breakingProvinces: ProvinceCard[] = [];
             if(this.conflict.attackerSkill === 0 && this.conflict.defenderSkill === 0) {

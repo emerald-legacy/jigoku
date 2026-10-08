@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { EffectName, Location, Phase, PlayType, Players } from './Constants.js';
@@ -62,12 +63,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         extraFate = extraFate + legendaryFate;
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         const atHomeHandler = () => {
-            context.game.addMessage(
-                '{0} plays {1} at home with {2} additional fate',
-                context.player,
-                context.source,
-                context.chooseFate
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source} at home with ${context.chooseFate} additional fate`);
             const effect = context.source.getEffects(EffectName.EntersPlayForOpponent);
             const player = effect.length > 0 ? Players.Opponent : Players.Self;
             context.game.openEventWindow([
@@ -80,12 +76,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             ]);
         };
         const intoConflictHandler = () => {
-            context.game.addMessage(
-                '{0} plays {1} into the conflict with {2} additional fate',
-                context.player,
-                context.source,
-                context.chooseFate
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source} into the conflict with ${context.chooseFate} additional fate`);
             context.game.openEventWindow([
                 putIntoConflict({ fate: context.chooseFate }).getEvent(context.source, context),
                 cardPlayedEvent

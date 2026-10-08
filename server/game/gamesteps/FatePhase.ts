@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { Phase, CardType, Players, EffectName, EventName, Location, TargetMode } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
@@ -149,21 +150,21 @@ export class FatePhase extends PhaseStep {
                 onSelect: (player: Player, cards) => {
                     cardsToDiscard = cardsToDiscard.concat(cards.filter((card) => card.isDrawCard()));
                     if(cardsToDiscard.length > 0) {
-                        this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
+                        this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
                         this.game.applyGameAction(this.game.getGameContext(), { discardCard: cardsToDiscard });
                     }
                     return true;
                 },
                 onCancel: () => {
                     if(cardsToDiscard.length > 0) {
-                        this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
+                        this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
                         this.game.applyGameAction(this.game.getGameContext(), { discardCard: cardsToDiscard });
                     }
                     return true;
                 }
             });
         } else if(cardsToDiscard.length > 0) {
-            this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
+            this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
             this.game.applyGameAction(this.game.getGameContext(), { discardCard: cardsToDiscard });
         }
 

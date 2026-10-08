@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type Player from '../Player.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
@@ -125,11 +125,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
                             if(refusalMessage) {
                                 context.game.addMessage(refusalMessage(context, opponent));
                             } else {
-                                context.game.addMessage(
-                                    '{0} chooses to refuse the duel and {1}',
-                                    opponent,
-                                    context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))
-                                );
+                                context.game.addMessage(msg`${opponent} chooses to refuse the duel and ${context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))}`);
                             }
                             refuseGameAction.addEventsToArray(events, context, additionalProperties);
                         }

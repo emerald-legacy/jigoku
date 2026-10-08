@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { UiPrompt } from './UiPrompt.js';
 import { EventName, Location, Players, EffectName } from '../Constants.js';
 import type Game from '../Game.js';
@@ -147,7 +148,7 @@ export class ActionWindow extends UiPrompt {
                 controller: Players.Self,
                 cardCondition: (card: BaseCard) => card.isFaceup(),
                 onSelect: (player: Player, card: BaseCard) => {
-                    this.game.addMessage('{0} uses {1}\'s ability', player, card);
+                    this.game.addMessage(msg`${player} uses ${card}'s ability`);
                     this.prevPlayerPassed = false;
                     this.nextPlayer();
                     return true;
@@ -187,7 +188,7 @@ export class ActionWindow extends UiPrompt {
     }
 
     pass() {
-        this.game.addMessage('{0} passes', this.currentPlayer);
+        this.game.addMessage(msg`${this.currentPlayer} passes`);
 
         if(this.prevPlayerPassed || !this.currentPlayer.opponent) {
             this.attemptComplete();
@@ -233,7 +234,7 @@ export class ActionWindow extends UiPrompt {
 
         if(p1.actionCount > 0) {
             if(!p1.actionsTaken) {
-                this.game.addMessage('{0} has a bonus action during resolution!', player1);
+                this.game.addMessage(msg`${player1} has a bonus action during resolution!`);
                 this.prevPlayerPassed = false;
                 // Set the current player to player1
                 if(this.currentPlayer !== player1) {
@@ -245,7 +246,7 @@ export class ActionWindow extends UiPrompt {
         }
         if(p2.actionCount > 0) {
             if(!p2.actionsTaken) {
-                this.game.addMessage('{0} has a bonus action during resolution!', player2);
+                this.game.addMessage(msg`${player2} has a bonus action during resolution!`);
                 this.prevPlayerPassed = false;
                 // Set the current player to player1
                 if(this.currentPlayer !== player2) {

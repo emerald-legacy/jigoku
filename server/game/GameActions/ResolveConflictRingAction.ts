@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
@@ -34,7 +34,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
         const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
-            eventContext.game.addMessage('{0}\'s ring effect is cancelled.', eventContext.player);
+            eventContext.game.addMessage(msg`${eventContext.player}'s ring effect is cancelled.`);
             event.cancel();
             return;
         }
@@ -97,7 +97,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
                 );
                 return true;
             },
-            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage('{0} chooses not to resolve the conflict ring', cancelPlayer),
+            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage(msg`${cancelPlayer} chooses not to resolve the conflict ring`),
             onMenuCommand: (menuPlayer: Player, arg: string) => {
                 if(arg === 'all') {
                     this.resolveRingEffects(menuPlayer, elements.concat(chosenElements));

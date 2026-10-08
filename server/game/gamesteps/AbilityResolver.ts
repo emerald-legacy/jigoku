@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { createCardPlayedEvent } from '../Events/cardPlayedEvent.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
@@ -167,7 +168,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
         }
         this.cancelled = this.costResults.events.some((event: Event) => event.getResolutionEvent().cancelled);
         if(this.cancelled) {
-            this.game.addMessage('{0} attempted to use {1}, but did not successfully pay the required costs', this.context.player, this.context.source);
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
         }
     }
 
@@ -179,7 +180,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
 
         if(!this.context.ability.hasLegalTargets(this.context)) {
             // Ability cannot resolve, so display a message and cancel it
-            this.game.addMessage('{0} attempted to use {1}, but there are insufficient legal targets', this.context.player, this.context.source);
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but there are insufficient legal targets`);
             this.cancelled = true;
         } else if(this.targetResults.delayTargeting) {
             // Targeting was delayed due to an opponent needing to choose targets (which shouldn't happen until costs have been paid), so continue

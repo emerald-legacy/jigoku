@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { EventName, Location, Players, PlayType, TargetMode } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
@@ -425,7 +426,7 @@ export function optionalOpponentLoseHonor(
         },
         payEvent: (context) => {
             if(context.costs[NAME]) {
-                context.game.addMessage('{0} chooses to lose 1 honor', context.player.opponent, context.player);
+                context.game.addMessage(msg`${context.player.opponent} chooses to lose 1 honor`);
                 return [
                     context.game.actions
                         .loseHonor({ target: context.player.opponent })
@@ -478,7 +479,7 @@ export function optionalTakeHonorFromOpponent(canPayFunc = (_context: AbilityCon
             if(context.costs.honorTakenFromOpponent) {
                 const events = [];
 
-                context.game.addMessage('{0} chooses to give {1} 1 honor', context.player.opponent, context.player);
+                context.game.addMessage(msg`${context.player.opponent} chooses to give ${context.player} 1 honor`);
                 const honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
 

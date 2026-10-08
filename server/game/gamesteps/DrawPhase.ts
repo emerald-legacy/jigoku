@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { EffectName, Phase } from '../Constants.js';
 import { draw } from '../GameActions/GameActions.js';
 import type Game from '../Game.js';
@@ -34,7 +35,7 @@ export class DrawPhase extends PhaseStep {
         for(const player of this.game.getPlayers()) {
             const min = player.honorBid === 0 ? 0 : 1;
             const amount = Math.max(player.honorBid + player.sumEffects(EffectName.ModifyCardsDrawnInDrawPhase), min);
-            this.game.addMessage('{0} draws {1} cards for the draw phase', player, amount);
+            this.game.addMessage(msg`${player} draws ${amount} cards for the draw phase`);
             draw({ amount }).resolve(player, this.game.getFrameworkContext(player));
         }
     }

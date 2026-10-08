@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { Phase, PlayType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
@@ -30,7 +31,7 @@ export class DuplicateUniqueAction extends PlayCardSourceAction {
     }
 
     displayMessage(context: AbilityContext): void {
-        context.game.addMessage('{0} discards a duplicate to add 1 fate to {1}', context.player, context.source);
+        context.game.addMessage(msg`${context.player} discards a duplicate to add 1 fate to ${context.source}`);
     }
 
     executeHandler(context: AbilityContext<DrawCard>): void {

@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -35,12 +36,7 @@ export class RevealAction<C extends AbilityContext = AbilityContext> extends Car
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         if(properties.chatMessage) {
-            context.game.addMessage(
-                '{0} reveals {1} due to {2}',
-                properties.player || context.player,
-                event.card,
-                context.source
-            );
+            context.game.addMessage(msg`${properties.player || context.player} reveals ${event.card} due to ${context.source}`);
         }
         event.card.facedown = false;
     }

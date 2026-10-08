@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { EffectName, EventName } from '../../Constants.js';
 import type Game from '../../Game.js';
 import { ActionWindow } from '../ActionWindow.js';
@@ -46,7 +47,7 @@ export class DynastyActionWindow extends ActionWindow {
     }
 
     #handlePassingFate(): void {
-        this.game.addMessage('{0} is the first to pass, and gains 1 fate', this.currentPlayer);
+        this.game.addMessage(msg`${this.currentPlayer} is the first to pass, and gains 1 fate`);
         this.game.raiseEvent(
             EventName.OnPassDuringDynasty,
             { player: this.currentPlayer, firstToPass: true },
@@ -55,7 +56,7 @@ export class DynastyActionWindow extends ActionWindow {
     }
 
     #handleSimplePass(): void {
-        this.game.addMessage('{0} passes', this.currentPlayer);
+        this.game.addMessage(msg`${this.currentPlayer} passes`);
         this.game.raiseEvent(EventName.OnPassDuringDynasty, { player: this.currentPlayer, firstToPass: false });
     }
 
@@ -65,7 +66,7 @@ export class DynastyActionWindow extends ActionWindow {
             this.currentPlayer.opponent?.anyEffect?.(EffectName.RestartDynastyPhase)
         ) {
             const effectSource = this.currentPlayer.mostRecentEffect(EffectName.RestartDynastyPhase);
-            this.game.addMessage('The dynasty phase is ended due to the effects of {0}', effectSource);
+            this.game.addMessage(msg`The dynasty phase is ended due to the effects of ${effectSource}`);
             this.complete();
         }
     }

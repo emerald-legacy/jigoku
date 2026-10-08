@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -31,14 +32,14 @@ export class PerformGloryCountAction<C extends AbilityContext = AbilityContext> 
         let winner: Player | null = game.getFirstPlayer() ?? null;
         if(winner && winner.opponent) {
             if(gloryTotals[0] === gloryTotals[1]) {
-                game.addMessage('Both players are tied in glory at {0}.', gloryTotals[0]);
+                game.addMessage(msg`Both players are tied in glory at ${gloryTotals[0]}.`);
                 game.raiseEvent(EventName.OnFavorGloryTied);
                 winner = null;
             } else if(gloryTotals[0] < gloryTotals[1]) {
                 winner = winner.opponent;
-                game.addMessage('{0} wins the glory count {1} vs {2}', winner, gloryTotals[1], gloryTotals[0]);
+                game.addMessage(msg`${winner} wins the glory count ${gloryTotals[1]} vs ${gloryTotals[0]}`);
             } else {
-                game.addMessage('{0} wins the glory count {1} vs {2}', winner, gloryTotals[0], gloryTotals[1]);
+                game.addMessage(msg`${winner} wins the glory count ${gloryTotals[0]} vs ${gloryTotals[1]}`);
             }
         }
 

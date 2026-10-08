@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
 import { Location } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
@@ -89,9 +90,9 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
                     player.replaceDynastyCard(location);
                 }
                 player.shuffleDynastyDeck();
-                this.game.addMessage('{0} has mulliganed {1} cards from the dynasty deck', player, this.selectedCards[player.name].length);
+                this.game.addMessage(msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the dynasty deck`);
             } else {
-                this.game.addMessage('{0} has kept all dynasty cards', player);
+                this.game.addMessage(msg`${player} has kept all dynasty cards`);
             }
             player.clearSelectedCards();
             player.clearSelectableCards();

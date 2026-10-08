@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import { TakeHonorAction } from '../GameActions/TakeHonorAction.js';
@@ -87,7 +88,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
         var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);
-        this.game.addMessage('{0} gives {1} {2} honor', givingPlayer, receivingPlayer, amountToTransfer);
+        this.game.addMessage(msg`${givingPlayer} gives ${receivingPlayer} ${amountToTransfer} honor`);
         const gameAction = new TakeHonorAction({ amount: Math.abs(difference), afterBid: true });
         gameAction.resolve(givingPlayer, context);
     }
@@ -109,7 +110,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     menuCommand(player: Player, bid: string): boolean {
-        this.game.addMessage('{0} has chosen a bid.', player);
+        this.game.addMessage(msg`${player} has chosen a bid.`);
 
         this.bid[player.uuid] = parseInt(bid);
 

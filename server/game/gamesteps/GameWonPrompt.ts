@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
@@ -29,7 +30,7 @@ export class GameWonPrompt extends AllPlayerPrompt {
     }
 
     menuCommand(player: Player): boolean {
-        this.game.addMessage('{0} wants to continue', player);
+        this.game.addMessage(msg`${player} wants to continue`);
 
         this.clickedButton[player.name] = true;
 

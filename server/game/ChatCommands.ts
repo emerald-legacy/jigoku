@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { rollDie } from './utils/random.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
@@ -54,39 +55,39 @@ export class ChatCommands {
     }
 
     startClocks(player: Player): void {
-        this.game.addMessage('{0} restarts the timers', player);
+        this.game.addMessage(msg`${player} restarts the timers`);
         this.game.getPlayers().forEach((p: Player) => p.clock.manuallyResume());
     }
 
     stopClocks(player: Player): void {
-        this.game.addMessage('{0} stops the timers', player);
+        this.game.addMessage(msg`${player} stops the timers`);
         this.game.getPlayers().forEach((p: Player) => p.clock.manuallyPause());
     }
 
     modifyClock(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 60);
-        this.game.addMessage('{0} adds {1} seconds to their clock', player, num);
+        this.game.addMessage(msg`${player} adds ${num} seconds to their clock`);
         player.clock.modify(num);
     }
 
     random(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 4);
         if(num > 1) {
-            this.game.addMessage('{0} rolls a d{1}: {2}', player, num, rollDie(num));
+            this.game.addMessage(msg`${player} rolls a d${num}: ${rollDie(num)}`);
         }
     }
 
     draw(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 1);
 
-        this.game.addMessage('{0} uses the /draw command to draw {1} cards to their hand', player, num);
+        this.game.addMessage(msg`${player} uses the /draw command to draw ${num} cards to their hand`);
 
         player.drawCardsToHand(num);
     }
 
     claimFavor(player: Player, args: string[]): void {
         const type = args[1] || 'military';
-        this.game.addMessage('{0} uses /claim-favor to claim the emperor\'s {1} favor', player, type);
+        this.game.addMessage(msg`${player} uses /claim-favor to claim the emperor's ${type} favor`);
         player.claimImperialFavor(type);
         const otherPlayer = player.opponent;
         if(otherPlayer) {
@@ -95,7 +96,7 @@ export class ChatCommands {
     }
 
     discardFavor(player: Player): void {
-        this.game.addMessage('{0} uses /discard-favor to discard the imperial favor', player);
+        this.game.addMessage(msg`${player} uses /discard-favor to discard the imperial favor`);
         player.loseImperialFavor();
     }
 
@@ -108,7 +109,7 @@ export class ChatCommands {
             onSelect: (p: Player, card: BaseCard) => {
                 card.honor();
 
-                this.game.addMessage('{0} uses the /honor command to honor {1}', p, card);
+                this.game.addMessage(msg`${p} uses the /honor command to honor ${card}`);
                 return true;
             }
         });
@@ -123,14 +124,14 @@ export class ChatCommands {
             onSelect: (p: Player, card: BaseCard) => {
                 card.dishonor();
 
-                this.game.addMessage('{0} uses the /dishonor command to dishonor {1}', p, card);
+                this.game.addMessage(msg`${p} uses the /dishonor command to dishonor ${card}`);
                 return true;
             }
         });
     }
 
     duel(player: Player): void {
-        this.game.addMessage('{0} initiates a duel', player);
+        this.game.addMessage(msg`${player} initiates a duel`);
         this.game.queueStep(new HonorBidPrompt(this.game, 'Choose your bid for the duel'));
     }
 
@@ -155,7 +156,7 @@ export class ChatCommands {
                     } else {
                         this.game.currentConflict.addDefenders(characters);
                     }
-                    this.game.addMessage('{0} uses the /move-to-conflict command', p);
+                    this.game.addMessage(msg`${p} uses the /move-to-conflict command`);
                     return true;
                 }
             });
@@ -180,7 +181,7 @@ export class ChatCommands {
                     }
                     this.game.currentConflict.removeFromConflict(card);
 
-                    this.game.addMessage('{0} uses the /send-home command to send {1} home', p, card);
+                    this.game.addMessage(msg`${p} uses the /send-home command to send ${card} home`);
                     return true;
                 }
             });
@@ -192,12 +193,7 @@ export class ChatCommands {
     discard(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 1);
 
-        this.game.addMessage(
-            '{0} uses the /discard command to discard {1} card{2} at random',
-            player,
-            num,
-            num > 1 ? 's' : ''
-        );
+        this.game.addMessage(msg`${player} uses the /discard command to discard ${num} card${num > 1 ? 's' : ''} at random`);
 
         GameActions.discardAtRandom({ amount: num }).resolve(player, this.game.getFrameworkContext(player));
     }
@@ -245,13 +241,7 @@ export class ChatCommands {
                 const numTokens = card.tokens[token] || 0;
 
                 card.addToken(token, num - numTokens);
-                this.game.addMessage(
-                    '{0} uses the /token command to set the {1} token count of {2} to {3}',
-                    p,
-                    token,
-                    card,
-                    num - numTokens
-                );
+                this.game.addMessage(msg`${p} uses the /token command to set the ${token} token count of ${card} to ${num - numTokens}`);
 
                 return true;
             }
@@ -267,7 +257,7 @@ export class ChatCommands {
             cardCondition: (card: BaseCard) => card.isFacedown(),
             onSelect: (p: Player, card: BaseCard) => {
                 GameActions.reveal({ target: card }).resolve(p, this.game.getFrameworkContext(p));
-                this.game.addMessage('{0} reveals {1}', p, card);
+                this.game.addMessage(msg`${p} reveals ${card}`);
                 return true;
             }
         });
@@ -286,12 +276,7 @@ export class ChatCommands {
                     return true;
                 }
                 card.modifyFate(num);
-                this.game.addMessage(
-                    '{0} uses the /add-fate command to set the fate count of {1} to {2}',
-                    p,
-                    card,
-                    card.getFate()
-                );
+                this.game.addMessage(msg`${p} uses the /add-fate command to set the fate count of ${card} to ${card.getFate()}`);
 
                 return true;
             }
@@ -311,12 +296,7 @@ export class ChatCommands {
                     return true;
                 }
                 card.modifyFate(-num);
-                this.game.addMessage(
-                    '{0} uses the /rem-fate command to set the fate count of {1} to {2}',
-                    p,
-                    card,
-                    card.getFate()
-                );
+                this.game.addMessage(msg`${p} uses the /rem-fate command to set the fate count of ${card} to ${card.getFate()}`);
 
                 return true;
             }
@@ -331,22 +311,12 @@ export class ChatCommands {
         if(ring) {
 
             ring.modifyFate(num);
-            this.game.addMessage(
-                '{0} uses the /add-fate-ring command to set the fate count of the ring of {1} to {2}',
-                player,
-                ringElement,
-                ring.getFate()
-            );
+            this.game.addMessage(msg`${player} uses the /add-fate-ring command to set the fate count of the ring of ${ringElement} to ${ring.getFate()}`);
         } else {
             this.game.promptForRingSelect(player, {
                 onSelect: (p: Player, ring: Ring) => {
                     ring.modifyFate(num);
-                    this.game.addMessage(
-                        '{0} uses the /add-fate-ring command to set the fate count of the ring of {1} to {2}',
-                        p,
-                        ring.element,
-                        ring.getFate()
-                    );
+                    this.game.addMessage(msg`${p} uses the /add-fate-ring command to set the fate count of the ring of ${ring.element} to ${ring.getFate()}`);
                     return true;
                 }
             });
@@ -363,22 +333,12 @@ export class ChatCommands {
         if(ring) {
 
             ring.modifyFate(-num);
-            this.game.addMessage(
-                '{0} uses the /rem-fate-ring command to set the fate count of the ring of {1} to {2}',
-                player,
-                ringElement,
-                ring.getFate()
-            );
+            this.game.addMessage(msg`${player} uses the /rem-fate-ring command to set the fate count of the ring of ${ringElement} to ${ring.getFate()}`);
         } else {
             this.game.promptForRingSelect(player, {
                 onSelect: (p: Player, ring: Ring) => {
                     ring.modifyFate(-num);
-                    this.game.addMessage(
-                        '{0} uses the /rem-fate-ring command to set the fate count of the ring of {1} to {2}',
-                        p,
-                        ring.element,
-                        ring.getFate()
-                    );
+                    this.game.addMessage(msg`${p} uses the /rem-fate-ring command to set the fate count of the ring of ${ring.element} to ${ring.getFate()}`);
                     return true;
                 }
             });
@@ -394,20 +354,12 @@ export class ChatCommands {
         if(ring) {
 
             ring.claimRing(player);
-            this.game.addMessage(
-                '{0} uses the /claim-ring command to claim the ring of {1}',
-                player,
-                ringElement
-            );
+            this.game.addMessage(msg`${player} uses the /claim-ring command to claim the ring of ${ringElement}`);
         } else {
             this.game.promptForRingSelect(player, {
                 onSelect: (p: Player, ring: Ring) => {
                     ring.claimRing(p);
-                    this.game.addMessage(
-                        '{0} uses the /claim-ring command to claim the ring of {1}',
-                        p,
-                        ring.element
-                    );
+                    this.game.addMessage(msg`${p} uses the /claim-ring command to claim the ring of ${ring.element}`);
                     return true;
                 }
             });
@@ -423,21 +375,13 @@ export class ChatCommands {
         if(ring) {
 
             ring.resetRing();
-            this.game.addMessage(
-                '{0} uses the /unclaim-ring command to set the ring of {1} as unclaimed',
-                player,
-                ringElement
-            );
+            this.game.addMessage(msg`${player} uses the /unclaim-ring command to set the ring of ${ringElement} as unclaimed`);
         } else {
             this.game.promptForRingSelect(player, {
                 ringCondition: (ring: Ring) => ring.claimed,
                 onSelect: (p: Player, ring: Ring) => {
                     ring.resetRing();
-                    this.game.addMessage(
-                        '{0} uses the /unclaim-ring command to set the ring of {1} as unclaimed',
-                        p,
-                        ring.element
-                    );
+                    this.game.addMessage(msg`${p} uses the /unclaim-ring command to set the ring of ${ring.element} as unclaimed`);
                     return true;
                 }
             });
@@ -454,10 +398,10 @@ export class ChatCommands {
     manual(player: Player | undefined): void {
         if(this.game.manualMode) {
             this.game.manualMode = false;
-            this.game.addMessage('{0} switches manual mode off', player);
+            this.game.addMessage(msg`${player} switches manual mode off`);
         } else {
             this.game.manualMode = true;
-            this.game.addMessage('{0} switches manual mode on', player);
+            this.game.addMessage(msg`${player} switches manual mode on`);
         }
     }
 

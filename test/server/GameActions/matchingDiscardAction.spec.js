@@ -105,7 +105,7 @@ describe('DiscardMatchingAction', function() {
 
             it('should log a does-not-discard message', function() {
                 this.action.eventHandler(this.event);
-                expect(this.game.addMessage).toHaveBeenCalledWith('{0} does not discard anything', this.player);
+                expect(this.game.addMessage).toHaveBeenCalledWith(['{0} does not discard anything', [this.player]]);
             });
         });
 
@@ -144,7 +144,7 @@ describe('DiscardMatchingAction', function() {
 
             it('should call addMessage to reveal cards', function() {
                 this.action.eventHandler(this.event);
-                expect(this.game.addMessage).toHaveBeenCalledWith('{0} reveals {1}', this.player, [this.cardA, this.cardB]);
+                expect(this.game.addMessage).toHaveBeenCalledWith(['{0} reveals {1}', [this.player, [this.cardA, this.cardB]]]);
             });
         });
 

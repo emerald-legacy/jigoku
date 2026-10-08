@@ -1,3 +1,4 @@
+import { msg } from '../game/GameChat.js';
 import axios from 'axios';
 import fs from 'fs';
 import http from 'http';
@@ -468,7 +469,7 @@ export class GameServer implements GameRouter {
         player.socket = socket;
 
         if(!game.isSpectator(player)) {
-            game.addMessage('{0} has connected to the game server', player);
+            game.addMessage(msg`${player} has connected to the game server`);
         }
 
         this.sendGameState(game);

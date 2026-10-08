@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
 import { shuffle } from '../../utils/random.js';
 import { Location } from '../../Constants.js';
@@ -110,7 +111,7 @@ export class SetupProvincesPrompt extends AllPlayerPrompt {
             stronghold.facedown = true;
         }
         this.clickedDone[player.uuid] = true;
-        this.game.addMessage('{0} has placed their provinces', player);
+        this.game.addMessage(msg`${player} has placed their provinces`);
         player.moveCard(stronghold, Location.StrongholdProvince);
         const shuffled = shuffle(this.selectableCards[player.uuid]);
         const provinces = [...new Set(this.selectedCards[player.uuid].concat(shuffled))];

@@ -1,7 +1,7 @@
 import type { DeckDTO, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import type { CardLibrary } from './types/CardClass.js';
 import { ChatCommands } from './ChatCommands.js';
-import { GameChat } from './GameChat.js';
+import { msg, GameChat } from './GameChat.js';
 import type { MessageArgs, MsgArg } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
@@ -555,7 +555,7 @@ export class Game {
             return;
         }
 
-        this.addMessage('{0} has won the game', winner);
+        this.addMessage(msg`${winner} has won the game`);
 
         this.winner = winner;
         this.finishedAt = new Date();
@@ -699,10 +699,7 @@ export class Game {
         if(this.rules.setupHaveStrongholds) {
             if(playerWithNoStronghold) {
                 this.queueSimpleStep(() => {
-                    this.addMessage(
-                        'Invalid Deck Detected: {0} does not have a stronghold in their decklist',
-                        playerWithNoStronghold
-                    );
+                    this.addMessage(msg`Invalid Deck Detected: ${playerWithNoStronghold} does not have a stronghold in their decklist`);
                     return false;
                 });
                 this.continue();
@@ -713,7 +710,7 @@ export class Game {
                 const numProvinces = this.provinceCards.filter((a) => a.controller === player);
                 if(numProvinces.length !== 5) {
                     this.queueSimpleStep(() => {
-                        this.addMessage('Invalid Deck Detected: {0} has {1} provinces', player, numProvinces.length);
+                        this.addMessage(msg`Invalid Deck Detected: ${player} has ${numProvinces.length} provinces`);
                         return false;
                     });
                     this.continue();
@@ -991,7 +988,7 @@ export class Game {
                 });
 
                 if(!player.checkRestrictions('haveImperialFavor', this.getFrameworkContext(player)) && player.imperialFavor !== '') {
-                    this.addMessage('The imperial favor is discarded as {0} cannot have it', player.name);
+                    this.addMessage(msg`The imperial favor is discarded as ${player.name} cannot have it`);
                     player.loseImperialFavor();
                 }
             }

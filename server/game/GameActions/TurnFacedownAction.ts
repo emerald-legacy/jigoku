@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName } from '../Constants.js';
@@ -26,7 +27,7 @@ export class TurnFacedownAction<C extends AbilityContext = AbilityContext> exten
 
         card.leavesPlay();
         if(card.isConflictProvince()) {
-            context.game.addMessage('{0} is immediately revealed again!', card);
+            context.game.addMessage(msg`${card} is immediately revealed again!`);
             card.inConflict = true;
 
             context.game.raiseEvent(EventName.OnCardRevealed, {

@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { isEnumValue } from './utils/helpers.js';
 import { shuffle } from './utils/random.js';
 import { HonorTracker } from './HonorTracker.js';
@@ -630,14 +631,9 @@ export class Player extends GameObject {
         const discardPile = this.getSourceList(deck + ' discard pile');
         const action = GameActions.loseHonor({ amount: this.game.rules.deckoutHonorLoss });
         if(action.canAffect(this, this.game.getFrameworkContext(this))) {
-            this.game.addMessage(
-                '{0}\'s {1} deck has run out of cards, so they lose {2} honor',
-                this,
-                deck,
-                this.game.rules.deckoutHonorLoss
-            );
+            this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards, so they lose ${this.game.rules.deckoutHonorLoss} honor`);
         } else {
-            this.game.addMessage('{0}\'s {1} deck has run out of cards', this, deck);
+            this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards`);
         }
         action.resolve(this, this.game.getFrameworkContext(this));
         this.game.queueSimpleStep(() => {
@@ -710,7 +706,7 @@ export class Player extends GameObject {
 
     shuffleConflictDeck(): void {
         if(this.name !== 'Dummy Player') {
-            this.game.addMessage('{0} is shuffling their conflict deck', this);
+            this.game.addMessage(msg`${this} is shuffling their conflict deck`);
         }
         this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Conflict });
         this.conflictDeck = shuffle(this.conflictDeck);
@@ -718,7 +714,7 @@ export class Player extends GameObject {
 
     shuffleDynastyDeck(): void {
         if(this.name !== 'Dummy Player') {
-            this.game.addMessage('{0} is shuffling their dynasty deck', this);
+            this.game.addMessage(msg`${this} is shuffling their dynasty deck`);
         }
         this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Dynasty });
         this.dynastyDeck = shuffle(this.dynastyDeck);
@@ -905,7 +901,7 @@ export class Player extends GameObject {
             display = card;
         }
 
-        this.game.addMessage('{0} manually moves {1} from their {2} to their {3}', this, display, source, target);
+        this.game.addMessage(msg`${this} manually moves ${display} from their ${source} to their ${target}`);
         this.moveCard(card, target);
         this.game.checkGameState(true);
     }
@@ -1063,18 +1059,18 @@ export class Player extends GameObject {
         const sovereign = this.game.rules.imperialFavorSovereign;
         if(!this.game.rules.imperialFavorHasSides) {
             this.imperialFavor = 'both';
-            this.game.addMessage('{0} claims the ' + sovereign + ' favor!', this);
+            this.game.addMessage(msg`${this} claims the ${sovereign} favor!`);
             return;
         }
         if(favorType && favorType !== FavorType.Both) {
             this.imperialFavor = favorType;
-            this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, favorType);
+            this.game.addMessage(msg`${this} claims the ${sovereign} ${favorType} favor!`);
             return;
         }
 
         const claim = (type: string) => () => {
             this.imperialFavor = type;
-            this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, type);
+            this.game.addMessage(msg`${this} claims the ${sovereign} ${type} favor!`);
         };
         this.game.promptWithHandlerMenu(this, {
             activePromptTitle: 'Which side of the Imperial Favor would you like to claim?',
@@ -1257,7 +1253,7 @@ export class Player extends GameObject {
 
     setShowBid(bid: number): void {
         this.showBid = bid;
-        this.game.addMessage('{0} reveals a bid of {1}', this, bid);
+        this.game.addMessage(msg`${this} reveals a bid of ${bid}`);
     }
 
     isTopConflictCardShown(activePlayer?: StateViewer): boolean {

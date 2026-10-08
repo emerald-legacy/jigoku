@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players } from '../Constants.js';
 import type { Cost, CostContext, Result } from './Cost.js';
@@ -155,13 +156,7 @@ export class ReduceableFateCost implements Cost {
         for(const alternatePool of this.getAlternateFatePools(context)) {
             const amount = context.costs.alternateFate.get(alternatePool);
             if(amount) {
-                context.game.addMessage(
-                    '{0} takes {1} fate from {2} to pay the cost of {3}',
-                    context.player,
-                    amount,
-                    alternatePool,
-                    context.source
-                );
+                context.game.addMessage(msg`${context.player} takes ${amount} fate from ${alternatePool} to pay the cost of ${context.source}`);
                 removeFate({ amount }).resolve(alternatePool, context);
                 totalAlternateFate += amount;
             }

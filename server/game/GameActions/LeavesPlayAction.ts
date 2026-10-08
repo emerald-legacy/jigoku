@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -29,11 +30,7 @@ export class LeavesPlayAction<
             event.cardStateWhenLeftPlay = evCard.createSnapshot();
             if(evCard.isAncestral() && event.isContingent) {
                 event.destination = Location.Hand;
-                context.game.addMessage(
-                    '{0} returns to {1}\'s hand due to its Ancestral keyword',
-                    evCard,
-                    evCard.owner
-                );
+                context.game.addMessage(msg`${evCard} returns to ${evCard.owner}'s hand due to its Ancestral keyword`);
             }
         };
         event.createContingentEvents = () => {
@@ -73,11 +70,7 @@ export class LeavesPlayAction<
         const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {
-            card.game.addMessage(
-                '{0} is not a legal location for {1} and it is discarded',
-                event.destination,
-                card
-            );
+            card.game.addMessage(msg`${event.destination} is not a legal location for ${card} and it is discarded`);
             event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
         }
         card.owner.moveCard(card, event.destination, event.options || {});

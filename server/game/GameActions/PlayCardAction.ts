@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { BaseAction } from '../BaseAction.js';
@@ -72,19 +73,10 @@ class PlayCardResolver extends AbilityResolver {
             const location =
                 (this.initiateAbility && this.gameActionProperties.destination) || Location.ConflictDiscardPile;
             if(location === Location.RemovedFromGame) {
-                this.game.addMessage(
-                    '{0} is removed from the game by {1}\'s effect',
-                    this.context.source,
-                    this.gameActionContext.source
-                );
+                this.game.addMessage(msg`${this.context.source} is removed from the game by ${this.gameActionContext.source}'s effect`);
             }
             if(location === Location.ConflictDeck && this.gameActionProperties.destinationOptions.bottom) {
-                this.game.addMessage(
-                    '{0} is placed on the bottom of {1}\'s deck by {2}\'s effect',
-                    this.context.source,
-                    this.context.player,
-                    this.gameActionContext.source
-                );
+                this.game.addMessage(msg`${this.context.source} is placed on the bottom of ${this.context.player}'s deck by ${this.gameActionContext.source}'s effect`);
             }
             this.context.player.moveCard(this.context.source, location, this.gameActionProperties.destinationOptions);
         }

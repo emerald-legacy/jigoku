@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { EffectName, EventName, Phase } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
@@ -58,7 +59,7 @@ export class DynastyPhase extends PhaseStep {
             }
             if(revealedCards.size > 0) {
                 this.game.queueSimpleStep(() =>
-                    this.game.addMessage('{0} reveals {1}', player, Array.from(revealedCards))
+                    this.game.addMessage(msg`${player} reveals ${Array.from(revealedCards)}`)
                 );
             }
         }
@@ -86,7 +87,7 @@ export class DynastyPhase extends PhaseStep {
                 restarted = true;
                 player.resetHonorEvents(this.game.roundNumber, this.game.currentPhase);
                 const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
-                this.game.addMessage('{0} has started a new dynasty phase!', effectSource);
+                this.game.addMessage(msg`${effectSource} has started a new dynasty phase!`);
                 const dynastyPhase = new DynastyPhase(this.game, false);
                 this.game.queueStep(dynastyPhase);
             }

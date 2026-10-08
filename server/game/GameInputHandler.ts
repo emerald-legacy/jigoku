@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import * as MenuCommands from './MenuCommands.js';
 import type { MenuItem } from './MenuCommands.js';
 import { Phase } from './Constants.js';
@@ -134,11 +135,11 @@ export class GameInputHandler {
         if(!player.showConflict) {
             player.showConflictDeck();
 
-            this.game.addMessage('{0} is looking at their conflict deck', player);
+            this.game.addMessage(msg`${player} is looking at their conflict deck`);
         } else {
             player.showConflict = false;
 
-            this.game.addMessage('{0} stops looking at their conflict deck', player);
+            this.game.addMessage(msg`${player} stops looking at their conflict deck`);
         }
     }
 
@@ -152,11 +153,11 @@ export class GameInputHandler {
         if(!player.showDynasty) {
             player.showDynastyDeck();
 
-            this.game.addMessage('{0} is looking at their dynasty deck', player);
+            this.game.addMessage(msg`${player} is looking at their dynasty deck`);
         } else {
             player.showDynasty = false;
 
-            this.game.addMessage('{0} stops looking at their dynasty deck', player);
+            this.game.addMessage(msg`${player} stops looking at their dynasty deck`);
         }
     }
 
@@ -187,7 +188,7 @@ export class GameInputHandler {
         if(player[stat] < 0) {
             player[stat] = 0;
         } else {
-            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, player[stat], (value > 0 ? '+' : '') + value);
+            this.game.addMessage(msg`${player} sets ${stat} to ${player[stat]} (${(value > 0 ? '+' : '') + value})`);
         }
     }
 
@@ -230,7 +231,7 @@ export class GameInputHandler {
             return;
         }
 
-        this.game.addMessage('{0} concedes', player);
+        this.game.addMessage(msg`${player} concedes`);
 
         const otherPlayer = this.game.getOtherPlayer(player);
 

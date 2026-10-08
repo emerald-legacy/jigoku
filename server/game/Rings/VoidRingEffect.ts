@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { CardType } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
@@ -27,17 +28,12 @@ export class VoidRingEffect extends BaseAbility {
 
     public executeHandler(context: AbilityContext): void {
         if(context.target) {
-            context.game.addMessage(
-                '{0} resolves the {1} ring, removing a fate from {2}',
-                context.player,
-                'void',
-                context.target
-            );
+            context.game.addMessage(msg`${context.player} resolves the ${'void'} ring, removing a fate from ${context.target}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'void', targetUuid: context.target.uuid, effect: 'remove-fate' });
             context.game.applyGameAction(context, { removeFate: context.target });
         } else {
-            context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'void');
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'void'} ring`);
             this.onResolution(false);
         }
     }

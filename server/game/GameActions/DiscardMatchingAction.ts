@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName, Location } from '../Constants.js';
@@ -69,12 +69,12 @@ export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> ex
         event.cards = cardsToDiscard;
         event.discardedCards = cardsToDiscard;
         if(event.reveal) {
-            player.game.addMessage('{0} reveals {1}', player, cards);
+            player.game.addMessage(msg`${player} reveals ${cards}`);
         }
         if(cardsToDiscard.length > 0) {
-            player.game.addMessage('{0} discards {1}', player, cardsToDiscard);
+            player.game.addMessage(msg`${player} discards ${cardsToDiscard}`);
         } else {
-            player.game.addMessage('{0} does not discard anything', player);
+            player.game.addMessage(msg`${player} does not discard anything`);
         }
 
         for(const card of cardsToDiscard) {

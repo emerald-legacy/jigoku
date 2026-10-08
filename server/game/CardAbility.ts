@@ -10,7 +10,7 @@ import BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
-import type { MessageArgs, MsgArg } from './GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
@@ -221,13 +221,7 @@ export class CardAbility extends ThenAbility {
             context.source.location !== Location.Hand &&
             context.source.location !== Location.BeingPlayed
         ) {
-            this.game.addMessage(
-                '{0} plays {1} from {2} {3}',
-                context.player,
-                context.source,
-                context.source.controller === context.player ? 'their' : 'their opponent\'s',
-                this.getLocationMessage(context.source.location, context)
-            );
+            this.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.controller === context.player ? 'their' : 'their opponent\'s'} ${this.getLocationMessage(context.source.location, context)}`);
         }
 
         if(this.properties.message) {

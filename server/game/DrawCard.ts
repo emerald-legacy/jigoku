@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
@@ -130,12 +131,12 @@ export class DrawCard extends BaseCard {
             // cannot have fate or status tokens
             const events: Event[] = [];
             if(this.fate > 0) {
-                this.game.addMessage('{0} fate is removed from {1} as it can no longer legally have fate', this.fate, this);
+                this.game.addMessage(msg`${this.fate} fate is removed from ${this} as it can no longer legally have fate`);
                 this.game.actions.removeFate({ target: this, amount: this.fate }).addEventsToArray(events, context);
                 result = true;
             }
             if(this.statusTokens.length > 0) {
-                this.game.addMessage('Status tokens are removed from {0} as it can no longer legally have status tokens', this);
+                this.game.addMessage(msg`Status tokens are removed from ${this} as it can no longer legally have status tokens`);
                 for(const token of this.statusTokens) {
                     this.game.actions.discardStatusToken({ target: token }).addEventsToArray(events, context);
                 }
@@ -627,12 +628,7 @@ export class DrawCard extends BaseCard {
             for(const card of cardsUnderneath) {
                 this.controller.moveCard(card, Location.RemovedFromGame);
             }
-            this.game.addMessage(
-                '{0} {1} removed from the game due to {2} leaving play',
-                cardsUnderneath,
-                cardsUnderneath.length === 1 ? 'is' : 'are',
-                this
-            );
+            this.game.addMessage(msg`${cardsUnderneath} ${cardsUnderneath.length === 1 ? 'is' : 'are'} removed from the game due to ${this} leaving play`);
         }
 
         const wasParticipating = this.isParticipating();

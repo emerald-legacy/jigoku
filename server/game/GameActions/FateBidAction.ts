@@ -1,4 +1,4 @@
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
@@ -62,7 +62,7 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                 const actions: Array<LoseFateAction> = [];
                 for(const [player, amount] of result.bids) {
-                    context.game.addMessage('{0} spends {1} fate', player, amount);
+                    context.game.addMessage(msg`${player} spends ${amount} fate`);
                     actions.push(new LoseFateAction({ amount, target: player }));
                 }
                 new JointGameAction(actions).resolve(undefined, context);

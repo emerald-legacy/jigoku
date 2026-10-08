@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
@@ -88,13 +88,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     eventHandler(event: ActionEvent<EventName.OnCardMoved, C>): void {
         const cards = event.cards ?? [];
         const context = event.context;
-        context.game.addMessage(
-            '{0} returns {1} card{2} to{3} their deck',
-            event.player,
-            cards.length,
-            cards.length === 1 ? '' : 's',
-            event.bottom ? ' the bottom of' : ''
-        );
+        context.game.addMessage(msg`${event.player} returns ${cards.length} card${cards.length === 1 ? '' : 's'} to${event.bottom ? ' the bottom of' : ''} their deck`);
         event.discardedCards = cards;
         const players: Player[] = [];
         for(const card of cards) {

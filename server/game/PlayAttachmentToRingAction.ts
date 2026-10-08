@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { Phase, PlayType, TargetMode } from './Constants.js';
@@ -50,7 +51,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     }
 
     displayMessage(context: AbilityContext) {
-        context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, context.ring);
+        context.game.addMessage(msg`${context.player} plays ${context.source}, attaching it to ${context.ring}`);
     }
 
     executeHandler(context: AbilityContext<DrawCard>) {

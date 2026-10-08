@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { GameRules } from '../GameRules.js';
 import { CardType } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
@@ -26,17 +27,17 @@ export class WaterRingEffect extends BaseAbility {
 
     public executeHandler(context: AbilityContext) {
         if(!context.target) {
-            context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'water');
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'water'} ring`);
             this.onResolution(false);
             return;
         }
         if(context.target.bowed) {
-            context.game.addMessage('{0} resolves the {1} ring, readying {2}', context.player, 'water', context.target);
+            context.game.addMessage(msg`${context.player} resolves the ${'water'} ring, readying ${context.target}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'ready' });
             context.game.applyGameAction(context, { ready: context.target });
         } else {
-            context.game.addMessage('{0} resolves the {1} ring, bowing {2}', context.player, 'water', context.target);
+            context.game.addMessage(msg`${context.player} resolves the ${'water'} ring, bowing ${context.target}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'bow' });
             context.game.applyGameAction(context, { bow: context.target });

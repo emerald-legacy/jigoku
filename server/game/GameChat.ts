@@ -44,7 +44,7 @@ export class GameChat {
             noAvatar: player.user.settings?.disableGravatar
         };
 
-        this.addMessage('{0} {1}', playerArg, message);
+        this.addMessage(msg`${playerArg} ${message}`);
     }
 
     /** A `msg` template, or a format with its arguments. */

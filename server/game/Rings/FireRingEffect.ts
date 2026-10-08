@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { CardType, Element } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
@@ -27,7 +28,7 @@ export class FireRingEffect extends BaseAbility {
     public executeHandler(context: AbilityContext) {
         const target = context.target;
         if(!target) {
-            context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'fire'} ring`);
             this.onResolution(false);
             return;
         }
@@ -38,12 +39,7 @@ export class FireRingEffect extends BaseAbility {
             options.push({
                 text: `Honor ${target.name}`,
                 handler: () => {
-                    context.game.addMessage(
-                        '{0} resolves the {1} ring, honoring {2}',
-                        context.player,
-                        'fire',
-                        target
-                    );
+                    context.game.addMessage(msg`${context.player} resolves the ${'fire'} ring, honoring ${target}`);
                     this.onResolution(true);
                     context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'honor' });
                     context.game.applyGameAction(context, { honor: target });
@@ -55,12 +51,7 @@ export class FireRingEffect extends BaseAbility {
             options.push({
                 text: `Dishonor ${target.name}`,
                 handler: () => {
-                    context.game.addMessage(
-                        '{0} resolves the {1} ring, dishonoring {2}',
-                        context.player,
-                        'fire',
-                        target
-                    );
+                    context.game.addMessage(msg`${context.player} resolves the ${'fire'} ring, dishonoring ${target}`);
                     this.onResolution(true);
                     context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'dishonor' });
                     context.game.applyGameAction(context, { dishonor: target });
@@ -74,7 +65,7 @@ export class FireRingEffect extends BaseAbility {
             options.push({
                 text: 'Don\'t resolve the fire ring',
                 handler: () => {
-                    context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
+                    context.game.addMessage(msg`${context.player} chooses not to resolve the ${'fire'} ring`);
                     this.onResolution(false);
                 }
             });

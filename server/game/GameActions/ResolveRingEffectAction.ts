@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName } from '../Constants.js';
@@ -71,7 +72,7 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
         const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
-            context.game.addMessage('{0}\'s ring effect is cancelled.', context.player);
+            context.game.addMessage(msg`${context.player}'s ring effect is cancelled.`);
             event.cancel();
             return;
         }

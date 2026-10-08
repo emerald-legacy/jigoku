@@ -216,22 +216,14 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     : 0;
             const costEvents: Event[] = [];
             if(!this.conflict.conflictPassed && totalFateCost > 0) {
-                this.game.addMessage(
-                    '{0} pays {1} fate to declare their attackers',
-                    this.conflict.attackingPlayer,
-                    totalFateCost
-                );
+                this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalFateCost} fate to declare their attackers`);
                 payFate(totalFateCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
             }
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
-                this.game.addMessage(
-                    '{0} pays {1} honor to declare their attackers',
-                    this.conflict.attackingPlayer,
-                    totalHonorCost
-                );
+                this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalHonorCost} honor to declare their attackers`);
                 this.conflict.attackers.forEach((card) => {
                     const effects = card.getEffects(EffectName.HonorCostToDeclare);
                     effects.forEach((effect) => {
@@ -243,12 +235,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 });
             }
             if(!this.conflict.conflictPassed && totalCardCost > 0) {
-                this.game.addMessage(
-                    '{0} must discard {1} card{2} to declare their attackers',
-                    this.conflict.attackingPlayer,
-                    totalCardCost,
-                    totalCardCost > 1 ? 's' : ''
-                );
+                this.game.addMessage(msg`${this.conflict.attackingPlayer} must discard ${totalCardCost} card${totalCardCost > 1 ? 's' : ''} to declare their attackers`);
                 const props = {
                     numCards: totalCardCost,
                     manuallyRaiseEvent: true,
@@ -286,12 +273,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
             const totalFateCost = province ? province.getFateCostToAttack() : 0;
             if(!this.conflict.conflictPassed && province && totalFateCost > 0) {
-                this.game.addMessage(
-                    '{0} pays {1} fate to declare a conflict at {2}',
-                    this.conflict.attackingPlayer,
-                    totalFateCost,
-                    provinceName
-                );
+                this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalFateCost} fate to declare a conflict at ${provinceName}`);
                 const costEvents: Event[] = [];
                 const costToRings = province.sumEffects(EffectName.FateCostToRingToDeclareConflictAgainst);
                 payFateToRing(costToRings).addEventsToArray?.(
@@ -302,12 +284,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.game.queueSimpleStep(() => {
                     if(costEvents.length > 0) {
                         const placeFateEvent: AnyEvent = costEvents[0];
-                        this.game.addMessage(
-                            '{0} places {1} fate on the {2}',
-                            this.conflict.attackingPlayer,
-                            costToRings,
-                            placeFateEvent.recipient || 'ring'
-                        );
+                        this.game.addMessage(msg`${this.conflict.attackingPlayer} places ${costToRings} fate on the ${placeFateEvent.recipient || 'ring'}`);
                     }
                     this.game.openThenEventWindow(costEvents);
                 });
@@ -327,13 +304,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             this.conflict.conflictProvince && this.conflict.conflictProvince.isFacedown()
                 ? provinceSlot
                 : this.conflict.conflictProvince;
-        this.game.addMessage(
-            '{0} is initiating a {1} conflict at {2}, contesting {3}',
-            this.conflict.attackingPlayer,
-            this.conflict.conflictType,
-            provinceName,
-            this.conflict.ring
-        );
+        this.game.addMessage(msg`${this.conflict.attackingPlayer} is initiating a ${this.conflict.conflictType} conflict at ${provinceName}, contesting ${this.conflict.ring}`);
 
         const params = {
             conflict: this.conflict,
@@ -362,12 +333,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                             this.game.getFrameworkContext(this.conflict.attackingPlayer)
                         )
                     ) {
-                        this.game.addMessage(
-                            '{0} takes {1} fate from {2}',
-                            this.conflict.attackingPlayer,
-                            this.conflict.ring.fate,
-                            this.conflict.ring
-                        );
+                        this.game.addMessage(msg`${this.conflict.attackingPlayer} takes ${this.conflict.ring.fate} fate from ${this.conflict.ring}`);
                         this.game.actions
                             .takeFateFromRing({
                                 target: this.conflict.ring,
@@ -384,10 +350,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     this.game.openThenEventWindow(events);
                     this.game.raiseEvent(EventName.OnTheCrashingWave, { conflict: this.conflict });
                 } else {
-                    this.game.addMessage(
-                        '{0} has failed to initiate a conflict because they no longer have any legal attackers',
-                        this.conflict.attackingPlayer
-                    );
+                    this.game.addMessage(msg`${this.conflict.attackingPlayer} has failed to initiate a conflict because they no longer have any legal attackers`);
                     this.conflict.conflictFailedToInitiate = true;
                     event.cancel();
                 }
@@ -605,12 +568,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        this.game.addMessage(
-            '{0} has initiated a {1} conflict with skill {2}',
-            this.conflict.attackingPlayer,
-            this.conflict.conflictType,
-            this.conflict.attackerSkill
-        );
+        this.game.addMessage(msg`${this.conflict.attackingPlayer} has initiated a ${this.conflict.conflictType} conflict with skill ${this.conflict.attackerSkill}`);
     }
 
     promptForDefenders(beingChosenFirst = false): void {
@@ -661,11 +619,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             );
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
                 const costEvents: Event[] = [];
-                this.game.addMessage(
-                    '{0} pays {1} honor to declare their defenders',
-                    this.conflict.defendingPlayer,
-                    totalHonorCost
-                );
+                this.game.addMessage(msg`${this.conflict.defendingPlayer} pays ${totalHonorCost} honor to declare their defenders`);
                 this.conflict.defenders.forEach((card) => {
                     const effects = card.getEffects(EffectName.HonorCostToDeclare);
                     effects.forEach((effect) => {
@@ -693,13 +647,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
         this.conflict.defendingPlayer.cardsInPlay.forEach((card: DrawCard) => (card.covert = false));
 
         if(this.conflict.defenders.length > 0) {
-            this.game.addMessage(
-                '{0} has defended with skill {1}',
-                this.conflict.defendingPlayer,
-                this.conflict.defenderSkill
-            );
+            this.game.addMessage(msg`${this.conflict.defendingPlayer} has defended with skill ${this.conflict.defenderSkill}`);
         } else {
-            this.game.addMessage('{0} does not defend the conflict', this.conflict.defendingPlayer);
+            this.game.addMessage(msg`${this.conflict.defendingPlayer} does not defend the conflict`);
         }
     }
 
@@ -746,7 +696,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         if(!this.conflict.winner && !this.conflict.loser) {
             this.game.addMessage('There is no winner or loser for this conflict because both sides have 0 skill');
         } else {
-            this.game.addMessage('{0} won a {1} conflict', this.conflict.winner, this.conflict.conflictType);
+            this.game.addMessage(msg`${this.conflict.winner} won a ${this.conflict.conflictType} conflict`);
         }
         return true;
     }
@@ -755,13 +705,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         if(!this.conflict.winner && !this.conflict.loser) {
             this.game.addMessage('There is no winner or loser for this conflict because both sides have 0 skill');
         } else {
-            this.game.addMessage(
-                '{0} won a {1} conflict {2} vs {3}',
-                this.conflict.winner,
-                this.conflict.conflictType,
-                this.conflict.winnerSkill,
-                this.conflict.loserSkill
-            );
+            this.game.addMessage(msg`${this.conflict.winner} won a ${this.conflict.conflictType} conflict ${this.conflict.winnerSkill} vs ${this.conflict.loserSkill}`);
         }
     }
 
@@ -813,7 +757,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
         if(!this.game.rules.conflictHaveUnopposedHonorLoss) {
             if(this.conflict.conflictUnopposed) {
-                this.game.addMessage('{0} has won an unopposed conflict', this.conflict.winner);
+                this.game.addMessage(msg`${this.conflict.winner} has won an unopposed conflict`);
             }
             return;
         }
@@ -822,7 +766,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             const honorLossMods = this.conflict.sumEffects(EffectName.ModifyUnopposedHonorLoss);
 
             const honorLoss = Math.max(0, 1 + honorLossMods);
-            this.game.addMessage('{0} loses {1} honor for not defending the conflict', this.conflict.loser, honorLoss);
+            this.game.addMessage(msg`${this.conflict.loser} loses ${honorLoss} honor for not defending the conflict`);
             loseHonor({ dueToUnopposed: true, amount: honorLoss }).resolve(
                 this.conflict.loser,
                 this.conflict.loser ? this.game.getFrameworkContext(this.conflict.loser) : this.game.getGameContext()

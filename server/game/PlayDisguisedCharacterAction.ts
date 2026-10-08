@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { CardType, EffectName, EventName, Phase, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
@@ -126,13 +127,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
             });
         }
         context.game.queueSimpleStep(() => {
-            context.game.addMessage(
-                '{0} plays {1}{2} using Disguised, choosing to replace {3}',
-                context.player,
-                context.source,
-                intoConflict ? ' into the conflict' : '',
-                replacedCharacter
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source}${intoConflict ? ' into the conflict' : ''} using Disguised, choosing to replace ${replacedCharacter}`);
             const gameAction = intoConflict
                 ? context.game.actions.putIntoConflict({ target: context.source, fate: extraFate, status })
                 : context.game.actions.putIntoPlay({ target: context.source, fate: extraFate, status });

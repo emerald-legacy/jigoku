@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import { CardType, EffectName, Element, Location } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
 import { cardCannot } from './effects.js';
@@ -219,7 +220,7 @@ export class ProvinceCard extends BaseCard {
             return;
         }
 
-        this.game.addMessage('{0} has broken {1}!', this.controller.opponent, this);
+        this.game.addMessage(msg`${this.controller.opponent} has broken ${this}!`);
 
         if(this.game.rules.winConReachedConquestVictory(this)) {
             this.game.recordWinner(this.controller.opponent, 'conquest');
@@ -240,11 +241,11 @@ export class ProvinceCard extends BaseCard {
                     {
                         text: 'Yes',
                         handler: () => {
-                            this.game.addMessage('{0} chooses to discard {1}', choosingPlayer, cardLabel());
+                            this.game.addMessage(msg`${choosingPlayer} chooses to discard ${cardLabel()}`);
                             this.game.applyGameAction(this.game.getGameContext(), { discardCard: dynastyCard });
                         }
                     },
-                    { text: 'No', handler: () => this.game.addMessage('{0} chooses not to discard {1}', choosingPlayer, cardLabel()) }
+                    { text: 'No', handler: () => this.game.addMessage(msg`${choosingPlayer} chooses not to discard ${cardLabel()}`) }
                 ]
             });
         }

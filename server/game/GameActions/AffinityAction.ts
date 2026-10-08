@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
@@ -88,7 +89,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         if(properties.chatText === undefined) {
             // without an chatText text, the action's own chatText message says what the affinity does
             const chatText = context.game.gameChat.nested(properties.gameAction.getEffectMessage(context));
-            context.game.addMessage(`{0} channels their ${properties.trait} affinity to {1}`, context.player, chatText);
+            context.game.addMessage(msg`${context.player} channels their ${properties.trait} affinity to ${chatText}`);
             return;
         }
         const args = properties.chatTextArgs ? derive(properties.chatTextArgs, context) : [];

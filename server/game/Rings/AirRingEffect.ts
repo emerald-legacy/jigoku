@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { TargetMode } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
@@ -32,33 +33,19 @@ export class AirRingEffect extends BaseAbility {
                 context.game.currentPhase,
                 2
             );
-            context.game.addMessage(
-                '{0} resolves the {1} ring, gaining {2} honor',
-                context.player,
-                'air',
-                amountToTransfer
-            );
+            context.game.addMessage(msg`${context.player} resolves the ${'air'} ring, gaining ${amountToTransfer} honor`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'gain-honor' });
             return context.game.actions.gainHonor({ amount: 2 }).resolve(context.player, context);
         }
         if(context.select === AIR_CHOICE.TAKE_1) {
-            context.game.addMessage(
-                '{0} resolves the {1} ring, taking 1 honor from {2}',
-                context.player,
-                'air',
-                context.player.opponent
-            );
+            context.game.addMessage(msg`${context.player} resolves the ${'air'} ring, taking 1 honor from ${context.player.opponent}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'take-honor' });
             return context.game.actions.takeHonor().resolve(context.player.opponent, context);
         }
         if(!context.game.currentConflict || context.game.currentConflict.element === 'air') {
-            context.game.addMessage(
-                '{0} chooses not to resolve the {1} ring',
-                context.player,
-                context.game.currentConflict ? 'air' : undefined
-            );
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${context.game.currentConflict ? 'air' : undefined} ring`);
             this.onResolution(false);
         }
     }

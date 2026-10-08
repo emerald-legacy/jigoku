@@ -82,7 +82,7 @@ describe('Agasha Shunsen', function () {
                     this.player1.player,
                     this.agashaShunsen
                 );
-                expect(this.chat).toHaveBeenCalledWith('{0} is shuffling their conflict deck', this.player1.player);
+                expect(this.chat).toHaveBeenCalledWith(['{0} is shuffling their conflict deck', [this.player1.player]]);
             });
         });
     });

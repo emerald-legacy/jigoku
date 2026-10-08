@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import Player from '../Player.js';
 import { Clock, Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
@@ -39,7 +40,7 @@ export class ChessClock extends Clock implements ClockInterface {
     public opponentStart() {}
 
     protected timeRanOut() {
-        this.player.game.addMessage('{0}\'s clock has run out', this.player);
+        this.player.game.addMessage(msg`${this.player}'s clock has run out`);
         if(this.player.opponent && this.player.opponent.clock.timeLeft > 0) {
             this.player.game.recordWinner(this.player.opponent, 'clock');
         }

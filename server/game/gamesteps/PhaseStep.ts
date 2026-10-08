@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { EventName, Phase } from '../Constants.js';
 import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
@@ -33,7 +34,7 @@ export class PhaseStep extends BaseStepWithPipeline {
         this.game.raiseEvent(EventName.OnPhaseStarted, { phase: this.name }, () => {
             this.game.currentPhase = this.name;
             if(this.name !== Phase.Setup) {
-                this.game.addAlert('endofround', 'Round {0} - {1} phase', this.game.roundNumber, this.name);
+                this.game.addAlert('endofround', msg`Round ${this.game.roundNumber} - ${this.name} phase`);
             }
         });
     }
