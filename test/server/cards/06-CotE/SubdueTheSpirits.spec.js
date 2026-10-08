@@ -69,15 +69,15 @@ describe('Subdue the Spirits', function() {
                     });
 
                     it('should add glory to both skills of each participating character you control', function() {
-                        expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(4);
-                        expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(4);
+                        expect(this.adeptOfTheWaves.militarySkill).toBe(4);
+                        expect(this.adeptOfTheWaves.politicalSkill).toBe(4);
                     });
 
                     it('should not effect characters outside of the conflict and characters you do not control', function() {
-                        expect(this.meddlingMediator.getMilitarySkill()).toBe(0);
-                        expect(this.meddlingMediator.getPoliticalSkill()).toBe(3);
-                        expect(this.dojiWhisperer.getMilitarySkill()).toBe(0);
-                        expect(this.dojiWhisperer.getPoliticalSkill()).toBe(3);
+                        expect(this.meddlingMediator.militarySkill).toBe(0);
+                        expect(this.meddlingMediator.politicalSkill).toBe(3);
+                        expect(this.dojiWhisperer.militarySkill).toBe(0);
+                        expect(this.dojiWhisperer.politicalSkill).toBe(3);
                     });
 
                     it('should add in addition to honor effects', function() {
@@ -86,8 +86,8 @@ describe('Subdue the Spirits', function() {
                         this.player1.clickPrompt('Honor a friendly character');
                         this.player1.clickCard(this.adeptOfTheWaves);
                         expect(this.adeptOfTheWaves.isHonored).toBe(true);
-                        expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(6);
-                        expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(6);
+                        expect(this.adeptOfTheWaves.militarySkill).toBe(6);
+                        expect(this.adeptOfTheWaves.politicalSkill).toBe(6);
                     });
 
                     it('should add in addition to dishonor effects', function() {
@@ -95,8 +95,8 @@ describe('Subdue the Spirits', function() {
                         this.player2.clickPrompt('Dishonor an opposing character');
                         this.player1.clickCard(this.adeptOfTheWaves);
                         expect(this.adeptOfTheWaves.isDishonored).toBe(true);
-                        expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(2);
-                        expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(2);
+                        expect(this.adeptOfTheWaves.militarySkill).toBe(2);
+                        expect(this.adeptOfTheWaves.politicalSkill).toBe(2);
                     });
 
                     it('should not affect a new character in the conflict', function() {
@@ -105,31 +105,31 @@ describe('Subdue the Spirits', function() {
                         this.player1.clickPrompt('0');
                         this.player1.clickPrompt('Conflict');
                         expect(this.seekerOfKnowledge.inConflict).toBe(true);
-                        expect(this.seekerOfKnowledge.getMilitarySkill()).toBe(0);
-                        expect(this.seekerOfKnowledge.getPoliticalSkill()).toBe(2);
+                        expect(this.seekerOfKnowledge.militarySkill).toBe(0);
+                        expect(this.seekerOfKnowledge.politicalSkill).toBe(2);
                     });
 
                     it('should take account of any changes to glory', function() {
                         this.player2.pass();
                         this.player1.clickCard(this.isawaMoriSeido);
                         this.player1.clickCard(this.adeptOfTheWaves);
-                        expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(6);
-                        expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(6);
+                        expect(this.adeptOfTheWaves.militarySkill).toBe(6);
+                        expect(this.adeptOfTheWaves.politicalSkill).toBe(6);
                     });
 
                     it('should be overridden by a set effect', function() {
                         this.player2.clickCard(this.apprenticeEarthcaller);
                         this.player2.clickCard(this.adeptOfTheWaves);
-                        expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(2);
-                        expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(2);
+                        expect(this.adeptOfTheWaves.militarySkill).toBe(2);
+                        expect(this.adeptOfTheWaves.politicalSkill).toBe(2);
                     });
 
                     it('should last until the end of the conflict', function() {
                         this.noMoreActions();
                         this.player1.clickPrompt('Don\'t Resolve');
                         expect(this.player1).toHavePrompt('Action Window');
-                        expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(2);
-                        expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(2);
+                        expect(this.adeptOfTheWaves.militarySkill).toBe(2);
+                        expect(this.adeptOfTheWaves.politicalSkill).toBe(2);
                     });
 
                 });

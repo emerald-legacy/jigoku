@@ -30,8 +30,8 @@ describe('Daikyu Reprint', function () {
         });
 
         it('should give +2 mil when first player and +1 when 2nd', function () {
-            expect(this.hotaru.getMilitarySkill()).toBe(3 + 2);
-            expect(this.toturi.getMilitarySkill()).toBe(6 + 1);
+            expect(this.hotaru.militarySkill).toBe(3 + 2);
+            expect(this.toturi.militarySkill).toBe(6 + 1);
         });
 
         it('should react when a character moves in', function () {

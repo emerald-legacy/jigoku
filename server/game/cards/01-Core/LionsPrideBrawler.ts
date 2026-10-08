@@ -10,7 +10,7 @@ class LionsPrideBrawler extends DrawCard {
             .condition(context => context.source.isAttacking())
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
+                cardCondition: (card, context) => card.militarySkill <= context.source.militarySkill
             }, bow());
     }
 }

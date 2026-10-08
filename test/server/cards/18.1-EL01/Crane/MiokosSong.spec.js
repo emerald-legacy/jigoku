@@ -22,12 +22,12 @@ describe('Mioko\'s Song', function () {
             });
 
             it('gives skill bonus to dishonored crane characters', function () {
-                expect(this.ahma.getMilitarySkill()).toBe(1);
-                expect(this.ahma.getPoliticalSkill()).toBe(2);
-                expect(this.yoshi.getMilitarySkill()).toBe(0);
-                expect(this.yoshi.getPoliticalSkill()).toBe(4);
-                expect(this.daisetsu.getMilitarySkill()).toBe(0);
-                expect(this.daisetsu.getPoliticalSkill()).toBe(1);
+                expect(this.ahma.militarySkill).toBe(1);
+                expect(this.ahma.politicalSkill).toBe(2);
+                expect(this.yoshi.militarySkill).toBe(0);
+                expect(this.yoshi.politicalSkill).toBe(4);
+                expect(this.daisetsu.militarySkill).toBe(0);
+                expect(this.daisetsu.politicalSkill).toBe(1);
             });
         });
 

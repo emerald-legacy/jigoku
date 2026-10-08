@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
 function skillBonus(card: DrawCard) {
-    return card.getMilitarySkill();
+    return card.militarySkill;
 }
 
 export default class MotoOktai extends DrawCard {

@@ -12,7 +12,7 @@ class MotoNergui extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     const participants = (context.game.currentConflict?.getParticipants() ?? []);
-                    return participants.includes(card) && card.getGlory() === Math.max(...participants.map((c) => c.getGlory()));
+                    return participants.includes(card) && card.glory === Math.max(...participants.map((c) => c.glory));
                 }
             }, sendHome());
     }

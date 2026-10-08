@@ -97,7 +97,7 @@ describe('Strange Mirror', function () {
                 this.player1.clickCard(this.outrider);
                 this.player1.clickPrompt('Done');
                 this.player1.clickPrompt('Sacrifice Strange Mirror');
-                expect(this.outrider.getMilitarySkill()).toBe(this.outrider.printedMilitarySkill + 2);
+                expect(this.outrider.militarySkill).toBe(this.outrider.printedMilitarySkill + 2);
             });
 
             it('returns the event to its owner\'s conflict discard pile', function () {

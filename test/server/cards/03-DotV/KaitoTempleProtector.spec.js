@@ -109,8 +109,8 @@ describe('Kaito Temple Protector', function() {
                     this.player1.clickCard(this.masterOfTheSpear);
                     this.player2.clickCard(this.kaitoTempleProtector);
                     this.player2.clickCard(this.masterOfTheSpear);
-                    expect(this.kaitoTempleProtector.getBaseMilitarySkill()).toBe(this.masterOfTheSpear.getMilitarySkill());
-                    expect(this.kaitoTempleProtector.getBasePoliticalSkill()).toBe(this.masterOfTheSpear.getPoliticalSkill());
+                    expect(this.kaitoTempleProtector.getBaseMilitarySkill()).toBe(this.masterOfTheSpear.militarySkill);
+                    expect(this.kaitoTempleProtector.getBasePoliticalSkill()).toBe(this.masterOfTheSpear.politicalSkill);
                 });
 
                 it('should set as political dash if target is political dash', function() {

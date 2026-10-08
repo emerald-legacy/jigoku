@@ -3,7 +3,7 @@ import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 function skillBonus(companion: DrawCard): number {
-    return companion.getGlory();
+    return companion.glory;
 }
 
 export default class SagenOfHoneyedWords extends DrawCard {

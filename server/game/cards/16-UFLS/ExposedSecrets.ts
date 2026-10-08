@@ -9,7 +9,7 @@ class ExposedSecrets extends DrawCard {
         this.conflictAction('Bow attacking character', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && card.getPoliticalSkill() <= card.controller.showBid
+                cardCondition: card => card.isParticipating() && card.politicalSkill <= card.controller.showBid
             }, bow());
     }
 }

@@ -38,14 +38,14 @@ describe('The Scorpion Clan Coup', function() {
                 province: this.p1
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5 - 1);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4 - 1);
+            expect(this.kuwanan.militarySkill).toBe(5 - 1);
+            expect(this.kuwanan.politicalSkill).toBe(4 - 1);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should not work if you don\'t have an imperial card', function () {
@@ -57,14 +57,14 @@ describe('The Scorpion Clan Coup', function() {
                 province: this.p1
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4);
+            expect(this.kuwanan.militarySkill).toBe(5);
+            expect(this.kuwanan.politicalSkill).toBe(4);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should work during a conflict at another province if faceup', function () {
@@ -79,14 +79,14 @@ describe('The Scorpion Clan Coup', function() {
                 province: this.p2
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5 - 1);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4 - 1);
+            expect(this.kuwanan.militarySkill).toBe(5 - 1);
+            expect(this.kuwanan.politicalSkill).toBe(4 - 1);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should not work if facedown', function () {
@@ -101,14 +101,14 @@ describe('The Scorpion Clan Coup', function() {
                 province: this.p2
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4);
+            expect(this.kuwanan.militarySkill).toBe(5);
+            expect(this.kuwanan.politicalSkill).toBe(4);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should not work on attack', function () {
@@ -124,8 +124,8 @@ describe('The Scorpion Clan Coup', function() {
                 province: this.player1p1
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4);
+            expect(this.kuwanan.militarySkill).toBe(5);
+            expect(this.kuwanan.politicalSkill).toBe(4);
         });
     });
 });

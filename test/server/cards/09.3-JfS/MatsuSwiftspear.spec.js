@@ -19,19 +19,19 @@ describe('Matsu Swiftspear', function() {
             });
 
             it('should have no effect if you have more cards than your opponent', function() {
-                expect(this.matsuSwiftspear.getMilitarySkill()).toBe(this.matsuSwiftspear.printedMilitarySkill);
+                expect(this.matsuSwiftspear.militarySkill).toBe(this.matsuSwiftspear.printedMilitarySkill);
             });
 
             it('should have no effect if you have the same number of cards as your opponent', function() {
                 this.player1.playAttachment(this.fingerOfJade, this.matsuSwiftspear);
-                expect(this.matsuSwiftspear.getMilitarySkill()).toBe(this.matsuSwiftspear.printedMilitarySkill);
+                expect(this.matsuSwiftspear.militarySkill).toBe(this.matsuSwiftspear.printedMilitarySkill);
             });
 
             it('should give matsu swiftspear +2 military if you have fewer cards than your opponent', function() {
                 this.player1.playAttachment(this.fingerOfJade, this.matsuSwiftspear);
                 this.player2.pass();
                 this.player1.playAttachment(this.ornateFan, this.matsuSwiftspear);
-                expect(this.matsuSwiftspear.getMilitarySkill()).toBe(this.matsuSwiftspear.printedMilitarySkill + 2);
+                expect(this.matsuSwiftspear.militarySkill).toBe(this.matsuSwiftspear.printedMilitarySkill + 2);
             });
         });
     });

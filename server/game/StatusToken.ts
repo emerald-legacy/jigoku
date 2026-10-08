@@ -89,7 +89,7 @@ export class StatusToken extends EffectSource {
         }
         const effect: StatusTokenEffect = {
             match: this.card,
-            effect: modifyBothSkills((card: DrawCard) => -card.getGlory()),
+            effect: modifyBothSkills((card: DrawCard) => -card.glory),
             ref: []
         };
         this.persistentEffects.push(effect);
@@ -102,7 +102,7 @@ export class StatusToken extends EffectSource {
         }
         const effect: StatusTokenEffect = {
             match: this.card,
-            effect: modifyBothSkills((card: DrawCard) => card.getGlory()),
+            effect: modifyBothSkills((card: DrawCard) => card.glory),
             ref: []
         };
         this.persistentEffects.push(effect);

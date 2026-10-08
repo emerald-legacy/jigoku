@@ -21,10 +21,10 @@ class FulfillYourDuty extends DrawCard {
                 messageArgs: cards => [context.player, cards],
                 gameAction: cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
-                    effect: modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.getMilitarySkill() : 0)
+                    effect: modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0)
                 }))
             }))
-            .effect('add {1} to an attacked province\'s strength', context => context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.getMilitarySkill() : 0);
+            .effect('add {1} to an attacked province\'s strength', context => context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0);
     }
 }
 

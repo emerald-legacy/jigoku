@@ -74,8 +74,8 @@ describe('Shinjo Archer', function() {
             this.player1.clickCard(this.solemnScholar);
 
             expect(this.shinjoArcher.inConflict).toBe(false);
-            expect(this.solemnScholar.getMilitarySkill()).toBe(0);
-            expect(this.solemnScholar.getPoliticalSkill()).toBe(0);
+            expect(this.solemnScholar.militarySkill).toBe(0);
+            expect(this.solemnScholar.politicalSkill).toBe(0);
 
             expect(this.getChatLogs(3)).toContain('player1 uses Shinjo Archer, moving Shinjo Archer home to give Solemn Scholar -2military/-2political');
 
@@ -83,8 +83,8 @@ describe('Shinjo Archer', function() {
             this.player1.pass();
 
             expect(this.player1).toHavePrompt('Action Window');
-            expect(this.solemnScholar.getMilitarySkill()).toBe(1);
-            expect(this.solemnScholar.getPoliticalSkill()).toBe(1);
+            expect(this.solemnScholar.militarySkill).toBe(1);
+            expect(this.solemnScholar.politicalSkill).toBe(1);
         });
 
         it('should move Shinjo Archer to the conflict and give the target -2/-2 unitl end of conflict', function() {
@@ -101,8 +101,8 @@ describe('Shinjo Archer', function() {
             this.player1.clickCard(this.solemnScholar);
 
             expect(this.shinjoArcher.inConflict).toBe(true);
-            expect(this.solemnScholar.getMilitarySkill()).toBe(0);
-            expect(this.solemnScholar.getPoliticalSkill()).toBe(0);
+            expect(this.solemnScholar.militarySkill).toBe(0);
+            expect(this.solemnScholar.politicalSkill).toBe(0);
 
             expect(this.getChatLogs(3)).toContain('player1 uses Shinjo Archer, moving Shinjo Archer to the conflict to give Solemn Scholar -2military/-2political');
         });

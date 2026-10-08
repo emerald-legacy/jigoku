@@ -31,7 +31,7 @@ describe('Seeking The Truth', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.katana);
                 this.player1.clickCard('matsu-berserker');
-                expect(this.berserker.getMilitarySkill()).toBe(5);
+                expect(this.berserker.militarySkill).toBe(5);
                 this.player2.pass();
                 this.player1.pass();
                 expect(this.player2).toHavePrompt('Triggered Abilities');

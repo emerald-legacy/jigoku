@@ -33,8 +33,8 @@ describe('Noble Vanguard', function () {
 
             expect(this.katana.location).toBe('removed from game');
             expect(this.uji.attachments.length).toBe(1);
-            expect(this.uji.getMilitarySkill()).toBe(7);
-            expect(this.uji.getPoliticalSkill()).toBe(3);
+            expect(this.uji.militarySkill).toBe(7);
+            expect(this.uji.politicalSkill).toBe(3);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Noble Vanguard to attach the top card of their conflict deck to Daidoji Uji as a +1/+1 attachment'
             );

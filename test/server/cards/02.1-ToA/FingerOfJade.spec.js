@@ -51,7 +51,7 @@ describe('Finger of Jade', function() {
                 this.player2.clickCard(this.doomedShugenja);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.mountainsAnvilCastle.bowed).toBe(true);
-                expect(this.doomedShugenja.getMilitarySkill()).toBe(4);
+                expect(this.doomedShugenja.militarySkill).toBe(4);
             });
 
             it('should prompt the player for their own abilities when the correct setting is activated', function() {

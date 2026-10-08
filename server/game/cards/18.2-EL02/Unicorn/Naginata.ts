@@ -30,7 +30,7 @@ export default class Naginata extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
+                        card.isParticipating() && card.militarySkill < context.source.militarySkill,
                     gameAction: bow()
                 }
             })

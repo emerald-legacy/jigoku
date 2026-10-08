@@ -35,17 +35,17 @@ describe('Petal Village Estate', function() {
             });
 
             it('should give +1/+1 only to the controller\'s imperial characters in play', function() {
-                expect(this.attendantToTheEmperor.getMilitarySkill()).toBe(this.attendantToTheEmperor.getBaseMilitarySkill() + 1);
-                expect(this.attendantToTheEmperor.getPoliticalSkill()).toBe(this.attendantToTheEmperor.getBasePoliticalSkill() + 1);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(this.miyaMystic.getBaseMilitarySkill() + 1);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(this.miyaMystic.getBasePoliticalSkill() + 1);
+                expect(this.attendantToTheEmperor.militarySkill).toBe(this.attendantToTheEmperor.getBaseMilitarySkill() + 1);
+                expect(this.attendantToTheEmperor.politicalSkill).toBe(this.attendantToTheEmperor.getBasePoliticalSkill() + 1);
+                expect(this.miyaMystic.militarySkill).toBe(this.miyaMystic.getBaseMilitarySkill() + 1);
+                expect(this.miyaMystic.politicalSkill).toBe(this.miyaMystic.getBasePoliticalSkill() + 1);
 
-                expect(this.bayushiShoju.getMilitarySkill()).toBe(this.bayushiShoju.getBaseMilitarySkill());
-                expect(this.bayushiShoju.getPoliticalSkill()).toBe(this.bayushiShoju.getBasePoliticalSkill());
-                expect(this.hanteiDaisetsu.getMilitarySkill()).toBe(this.hanteiDaisetsu.getBaseMilitarySkill());
-                expect(this.hanteiDaisetsu.getPoliticalSkill()).toBe(this.hanteiDaisetsu.getBasePoliticalSkill());
-                expect(this.hanteiSotorii.getMilitarySkill()).toBe(this.hanteiSotorii.getBaseMilitarySkill());
-                expect(this.hanteiSotorii.getPoliticalSkill()).toBe(this.hanteiSotorii.getBasePoliticalSkill());
+                expect(this.bayushiShoju.militarySkill).toBe(this.bayushiShoju.getBaseMilitarySkill());
+                expect(this.bayushiShoju.politicalSkill).toBe(this.bayushiShoju.getBasePoliticalSkill());
+                expect(this.hanteiDaisetsu.militarySkill).toBe(this.hanteiDaisetsu.getBaseMilitarySkill());
+                expect(this.hanteiDaisetsu.politicalSkill).toBe(this.hanteiDaisetsu.getBasePoliticalSkill());
+                expect(this.hanteiSotorii.militarySkill).toBe(this.hanteiSotorii.getBaseMilitarySkill());
+                expect(this.hanteiSotorii.politicalSkill).toBe(this.hanteiSotorii.getBasePoliticalSkill());
             });
 
             it('should give +1/+1 to a controller\'s imperial character when it is played from hand', function() {
@@ -56,8 +56,8 @@ describe('Petal Village Estate', function() {
                 this.player1.clickPrompt('Conflict');
 
                 // test card abilities have taken effect
-                expect(this.bayushiKachiko.getMilitarySkill()).toBe(this.bayushiKachiko.getBaseMilitarySkill() + 1);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.bayushiKachiko.getBasePoliticalSkill() + 1);
+                expect(this.bayushiKachiko.militarySkill).toBe(this.bayushiKachiko.getBaseMilitarySkill() + 1);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.bayushiKachiko.getBasePoliticalSkill() + 1);
             });
         });
     });

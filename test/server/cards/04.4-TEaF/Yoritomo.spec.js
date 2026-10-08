@@ -24,26 +24,26 @@ describe('Yoritomo', function() {
             });
 
             it('should set his initial skill modifier to an amount equal to his controller\'s fate pool', function() {
-                expect(this.yoritomo.getMilitarySkill()).toBe(this.baseSkill + this.initialFate);
+                expect(this.yoritomo.militarySkill).toBe(this.baseSkill + this.initialFate);
             });
 
             it('should increase his skill modifier any time his fate pool increases', function() {
                 this.player1.clickCard(this.yurt);
                 this.player1.clickPrompt('Each player gains 2 fate');
-                expect(this.yoritomo.getMilitarySkill()).toBe(this.baseSkill + this.initialFate + 2);
+                expect(this.yoritomo.militarySkill).toBe(this.baseSkill + this.initialFate + 2);
             });
 
             it('should decrease his skill modifier any time his fate pool decreases', function() {
                 this.player1.clickCard('seeker-of-knowledge', 'hand');
                 this.player1.clickPrompt('0');
-                expect(this.yoritomo.getMilitarySkill()).toBe(this.baseSkill + this.initialFate - 2);
+                expect(this.yoritomo.militarySkill).toBe(this.baseSkill + this.initialFate - 2);
             });
 
             it('should be disabled if his textbox is blanked', function() {
                 this.player1.clickPrompt('Pass');
                 this.player2.clickCard('cloud-the-mind', 'hand');
                 this.player2.clickCard(this.yoritomo);
-                expect(this.yoritomo.getMilitarySkill()).toBe(this.baseSkill);
+                expect(this.yoritomo.militarySkill).toBe(this.baseSkill);
             });
         });
     });

@@ -29,13 +29,13 @@ export default class LetHimGoBy extends DrawCard {
                     cardLastingEffect({
                         target: duel.winner,
                         effect: modifyMilitarySkill(
-                            (duel.loser ?? []).reduce((total, card) => total + card.getMilitarySkill(), 0)
+                            (duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)
                         )
                     }),
                 message: '{0} gets +{1}{2} skill',
                 messageArgs: (duel) => [
                     duel.winner,
-                    (duel.loser ?? []).reduce((total, card) => total + card.getMilitarySkill(), 0),
+                    (duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0),
                     'military'
                 ]
             }))

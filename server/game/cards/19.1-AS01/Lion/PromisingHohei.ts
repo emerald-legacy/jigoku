@@ -12,7 +12,7 @@ export default class PromisingHohei extends DrawCard {
             targetController: Players.Any,
             effect: reduceCost({
                 amount: 1,
-                targetCondition: (target) => target.isCharacter() && target.getGlory() >= 2,
+                targetCondition: (target) => target.isCharacter() && target.glory >= 2,
                 match: (card, source) => card === source
             })
         });

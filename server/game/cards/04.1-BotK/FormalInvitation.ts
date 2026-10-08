@@ -11,7 +11,7 @@ class FormalInvitation extends DrawCard {
     }
 
     canAttach(card: DrawCard) {
-        if(card.getType() === CardType.Character && card.getGlory() < 2) {
+        if(card.getType() === CardType.Character && card.glory < 2) {
             return false;
         }
 

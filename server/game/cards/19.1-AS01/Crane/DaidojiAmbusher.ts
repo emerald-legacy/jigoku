@@ -42,8 +42,8 @@ export default class DaidojiAmbusher extends DrawCard {
         }
         const targetZero =
             timing === Timing.BEFORE_PENALTY
-                ? target.getMilitarySkill() <= 2
-                : target.getMilitarySkill() === 0;
+                ? target.militarySkill <= 2
+                : target.militarySkill === 0;
 
         return isDishonored && targetZero;
     }

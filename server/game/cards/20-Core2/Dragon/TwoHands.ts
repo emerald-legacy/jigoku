@@ -55,13 +55,13 @@ function calcTwoHandsEffect(context: AbilityContext, chosen: DrawCard | DrawCard
         return {
             targets,
             type: 'military',
-            value: Math.min(...targets.map((card) => card.getMilitarySkill()))
+            value: Math.min(...targets.map((card) => card.militarySkill))
         };
     }
 
     return {
         targets,
         type: 'political',
-        value: Math.min(...targets.map((card) => card.getPoliticalSkill()))
+        value: Math.min(...targets.map((card) => card.politicalSkill))
     };
 }

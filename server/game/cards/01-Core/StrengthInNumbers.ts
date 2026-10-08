@@ -12,7 +12,7 @@ class StrengthInNumbers extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: card =>
                     card.isDefending() &&
-                    card.getGlory() <= (this.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0)
+                    card.glory <= (this.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0)
             }, sendHome())
             .cannotBeMirrored();
     }

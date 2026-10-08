@@ -16,7 +16,7 @@ export default class DragonsClaw extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: (card, context) =>
-                        card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
+                        card.isParticipating() && card.militarySkill < context.source.militarySkill,
                     gameAction: multiple([bow(), sendHome()])
                 }
             })

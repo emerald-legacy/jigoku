@@ -240,11 +240,11 @@ export class Duel extends GameObject {
             case DuelType.Military:
                 return this.game.rules.duelRules === 'printedSkill'
                     ? card.printedMilitarySkill
-                    : card.getMilitarySkill();
+                    : card.militarySkill;
             case DuelType.Political:
                 return this.game.rules.duelRules === 'printedSkill'
                     ? card.printedPoliticalSkill
-                    : card.getPoliticalSkill();
+                    : card.politicalSkill;
             case DuelType.Glory:
                 return this.game.rules.duelRules === 'printedSkill' ? card.printedGlory : card.glory;
         }

@@ -27,15 +27,15 @@ describe('Till the Last One Falls!', function () {
                 defenders: [this.challenger, this.scholar]
             });
 
-            const brashMil = this.brash.getMilitarySkill();
-            const brashPol = this.brash.getPoliticalSkill();
+            const brashMil = this.brash.militarySkill;
+            const brashPol = this.brash.politicalSkill;
 
             this.player2.pass();
             this.player1.clickCard(this.card);
             expect(this.player1).toBeAbleToSelect(this.brash);
             this.player1.clickCard(this.brash);
-            expect(this.brash.getMilitarySkill()).toBe(brashMil + 4);
-            expect(this.brash.getPoliticalSkill()).toBe(brashPol + 4);
+            expect(this.brash.militarySkill).toBe(brashMil + 4);
+            expect(this.brash.politicalSkill).toBe(brashPol + 4);
             expect(this.getChatLogs(5)).toContain('player1 plays Till the Last One Falls! to give Brash Samurai +4military/+4political');
         });
 

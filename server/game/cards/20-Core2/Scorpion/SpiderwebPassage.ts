@@ -24,8 +24,8 @@ export default class SpiderwebPassage extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) =>
                     card.isParticipating() &&
-                    ((!card.hasDash('political') && card.getPoliticalSkill() === 0) ||
-                        (!card.hasDash('military') && card.getMilitarySkill() === 0))
+                    ((!card.hasDash('political') && card.politicalSkill === 0) ||
+                        (!card.hasDash('military') && card.militarySkill === 0))
             })
             .gameAction(conditional(context => {
                 const discardCount = shinobiCount(context);

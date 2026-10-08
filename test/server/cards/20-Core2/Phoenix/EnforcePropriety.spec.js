@@ -48,7 +48,7 @@ describe('Enforce Propriety', function () {
             this.player1.clickPrompt('Give 1 fate to player2');
             expect(this.player1.fate).toBe(initialFateP1 - 1);
             expect(this.player2.fate).toBe(initialFateP2 + 1);
-            expect(this.matsuBerserker.getMilitarySkill()).toBe(5);
+            expect(this.matsuBerserker.militarySkill).toBe(5);
             expect(this.getChatLogs(5)).toContain(
                 'player1 gives 1 fate to player2 - the fortunes will be appeased, order is maintained'
             );
@@ -78,7 +78,7 @@ describe('Enforce Propriety', function () {
             this.player1.clickPrompt('Let the effects be canceled');
             expect(this.player1.fate).toBe(initialFateP1);
             expect(this.player2.fate).toBe(initialFateP2);
-            expect(this.matsuBerserker.getMilitarySkill()).toBe(3);
+            expect(this.matsuBerserker.militarySkill).toBe(3);
             expect(this.getChatLogs(5)).toContain(
                 'player1 refuses to appease the fortunes - the effects of A Perfect Cut are canceled'
             );

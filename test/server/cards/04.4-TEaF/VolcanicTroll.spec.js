@@ -17,13 +17,13 @@ describe('Volcanic Troll', function() {
                     attackers: ['volcanic-troll'],
                     ring:'fire'
                 });
-                expect(this.volcanicTroll.getMilitarySkill()).toBe(3);
-                expect(this.volcanicTroll.getPoliticalSkill()).toBe(3);
+                expect(this.volcanicTroll.militarySkill).toBe(3);
+                expect(this.volcanicTroll.politicalSkill).toBe(3);
             });
 
             it('should be active while fire is unclaimed', function() {
-                expect(this.volcanicTroll.getMilitarySkill()).toBe(5);
-                expect(this.volcanicTroll.getPoliticalSkill()).toBe(5);
+                expect(this.volcanicTroll.militarySkill).toBe(5);
+                expect(this.volcanicTroll.politicalSkill).toBe(5);
             });
         });
     });

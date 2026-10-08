@@ -23,29 +23,29 @@ describe('Shinjo Trailblazer', function() {
             });
 
             it('should give +2/+2', function() {
-                const militarySkill = this.shinjoTrailblazer.getMilitarySkill();
-                const politicalSkill = this.shinjoTrailblazer.getPoliticalSkill();
+                const militarySkill = this.shinjoTrailblazer.militarySkill;
+                const politicalSkill = this.shinjoTrailblazer.politicalSkill;
                 this.player1.declareConflict('military', null, [this.shinjoTrailblazer], 'air');
                 this.player1.clickCard(this.shinjoTrailblazer);
-                expect(this.shinjoTrailblazer.getMilitarySkill()).toBe(militarySkill + 2);
-                expect(this.shinjoTrailblazer.getPoliticalSkill()).toBe(politicalSkill + 2);
+                expect(this.shinjoTrailblazer.militarySkill).toBe(militarySkill + 2);
+                expect(this.shinjoTrailblazer.politicalSkill).toBe(politicalSkill + 2);
             });
 
             it('should expire at the end of the conflict', function() {
-                const militarySkill = this.shinjoTrailblazer.getMilitarySkill();
-                const politicalSkill = this.shinjoTrailblazer.getPoliticalSkill();
+                const militarySkill = this.shinjoTrailblazer.militarySkill;
+                const politicalSkill = this.shinjoTrailblazer.politicalSkill;
                 this.player1.declareConflict('military', null, [this.shinjoTrailblazer], 'air');
                 this.player1.clickCard(this.shinjoTrailblazer);
-                expect(this.shinjoTrailblazer.getMilitarySkill()).toBe(militarySkill + 2);
-                expect(this.shinjoTrailblazer.getPoliticalSkill()).toBe(politicalSkill + 2);
+                expect(this.shinjoTrailblazer.militarySkill).toBe(militarySkill + 2);
+                expect(this.shinjoTrailblazer.politicalSkill).toBe(politicalSkill + 2);
                 this.player2.assignDefenders([]);
                 this.player2.pass();
                 this.player1.pass();
                 this.player1.clickPrompt('No');
                 this.player1.clickPrompt('Don\'t Resolve');
                 expect(this.player1).toHavePrompt('Action Window');
-                expect(this.shinjoTrailblazer.getMilitarySkill()).toBe(militarySkill);
-                expect(this.shinjoTrailblazer.getPoliticalSkill()).toBe(politicalSkill);
+                expect(this.shinjoTrailblazer.militarySkill).toBe(militarySkill);
+                expect(this.shinjoTrailblazer.politicalSkill).toBe(politicalSkill);
             });
         });
     });

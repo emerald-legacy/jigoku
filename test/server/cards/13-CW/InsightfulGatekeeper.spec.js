@@ -16,7 +16,7 @@ describe('Insightful Gatekeeper', function() {
 
         it('should not work outside of conflicts', function() {
             this.player2.claimRing('void');
-            expect(this.gatekeeper.getMilitarySkill()).toBe(this.gatekeeper.getBaseMilitarySkill());
+            expect(this.gatekeeper.militarySkill).toBe(this.gatekeeper.getBaseMilitarySkill());
         });
 
         it('should give +2 mil when participating when opponent has more rings', function() {
@@ -28,7 +28,7 @@ describe('Insightful Gatekeeper', function() {
                 type: 'military'
             });
 
-            expect(this.gatekeeper.getMilitarySkill()).toBe(this.gatekeeper.getBaseMilitarySkill() + 2);
+            expect(this.gatekeeper.militarySkill).toBe(this.gatekeeper.getBaseMilitarySkill() + 2);
         });
 
         it('should not give +2 mil when participating when opponent has equal rings', function() {
@@ -39,7 +39,7 @@ describe('Insightful Gatekeeper', function() {
                 type: 'military'
             });
 
-            expect(this.gatekeeper.getMilitarySkill()).toBe(this.gatekeeper.getBaseMilitarySkill());
+            expect(this.gatekeeper.militarySkill).toBe(this.gatekeeper.getBaseMilitarySkill());
         });
 
         it('should not give +2 mil when participating when you have more rings', function() {
@@ -51,7 +51,7 @@ describe('Insightful Gatekeeper', function() {
                 type: 'military'
             });
 
-            expect(this.gatekeeper.getMilitarySkill()).toBe(this.gatekeeper.getBaseMilitarySkill());
+            expect(this.gatekeeper.militarySkill).toBe(this.gatekeeper.getBaseMilitarySkill());
         });
 
         it('should give +2 mil when not participating', function() {
@@ -63,7 +63,7 @@ describe('Insightful Gatekeeper', function() {
                 type: 'military'
             });
 
-            expect(this.gatekeeper.getMilitarySkill()).toBe(this.gatekeeper.getBaseMilitarySkill());
+            expect(this.gatekeeper.militarySkill).toBe(this.gatekeeper.getBaseMilitarySkill());
         });
     });
 });

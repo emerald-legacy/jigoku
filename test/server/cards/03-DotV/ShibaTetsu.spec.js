@@ -40,11 +40,11 @@ describe('Shiba Tetsu', function() {
                 });
 
                 it('should increase its military skill', function() {
-                    expect(this.shiba.getMilitarySkill()).toBe(3);
+                    expect(this.shiba.militarySkill).toBe(3);
                 });
 
                 it('should increase its political skill', function() {
-                    expect(this.shiba.getPoliticalSkill()).toBe(2);
+                    expect(this.shiba.politicalSkill).toBe(2);
                 });
             });
 
@@ -63,8 +63,8 @@ describe('Shiba Tetsu', function() {
 
                 it('should resolve again', function() {
                     this.player1.clickCard(this.shiba);
-                    expect(this.shiba.getMilitarySkill()).toBe(4);
-                    expect(this.shiba.getPoliticalSkill()).toBe(3);
+                    expect(this.shiba.militarySkill).toBe(4);
+                    expect(this.shiba.politicalSkill).toBe(3);
                 });
             });
         });

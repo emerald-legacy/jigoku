@@ -329,7 +329,7 @@ describe('Contemplative Wisdom', function() {
             this.player1.clickCard(this.alchemist);
             this.player1.clickRing('water');
 
-            expect(this.alchemist.getPoliticalSkill()).toBe(this.alchemist.getBasePoliticalSkill() + 2);
+            expect(this.alchemist.politicalSkill).toBe(this.alchemist.getBasePoliticalSkill() + 2);
         });
 
         it('should allow doubling up abilities by giving your ability to yourself', function() {

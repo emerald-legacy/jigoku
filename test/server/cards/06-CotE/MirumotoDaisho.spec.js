@@ -28,12 +28,12 @@ describe('Mirumoto Daisho', function () {
             });
 
             it('should give +2 mil, +2 pol', function () {
-                const militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
-                const politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
+                const militarySkill = this.mirumotoRaitsugu.militarySkill;
+                const politicalSkill = this.mirumotoRaitsugu.politicalSkill;
                 this.player1.clickCard(this.mirumotoDaisho);
                 this.player1.clickCard(this.mirumotoRaitsugu);
-                expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(militarySkill + 2);
-                expect(this.mirumotoRaitsugu.getPoliticalSkill()).toBe(politicalSkill + 2);
+                expect(this.mirumotoRaitsugu.militarySkill).toBe(militarySkill + 2);
+                expect(this.mirumotoRaitsugu.politicalSkill).toBe(politicalSkill + 2);
             });
 
             it('if character already has 2 restricted attachments, the controller should be prompted to remove one', function () {

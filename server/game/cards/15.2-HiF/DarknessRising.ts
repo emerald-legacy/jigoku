@@ -21,7 +21,7 @@ class DarknessRising extends DrawCard {
     }
 
     getLegalTargetsForCard(card: DrawCard | undefined, context: AbilityContext) {
-        return context.game.requireConflict().getParticipants().filter((c) => !card || (c.getMilitarySkill() < card.getMilitarySkill() && c.allowGameAction('bow', context)));
+        return context.game.requireConflict().getParticipants().filter((c) => !card || (c.militarySkill < card.militarySkill && c.allowGameAction('bow', context)));
     }
 }
 

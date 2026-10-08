@@ -18,7 +18,7 @@ class BayushiShoju extends DrawCard {
                 effect: [
                     modifyPoliticalSkill(-1),
                     delayedEffect({
-                        condition: () => context.target.getPoliticalSkill() < 1,
+                        condition: () => context.target.politicalSkill < 1,
                         message: '{0} is discarded due to {1}\'s lasting effect',
                         messageArgs: [context.target, context.source],
                         gameAction: discardFromPlay()

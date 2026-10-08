@@ -87,16 +87,16 @@ describe('Togashi Acolyte', function () {
                     defenders: []
                 });
 
-                const mil = this.whisperer.getMilitarySkill();
-                const pol = this.whisperer.getPoliticalSkill();
+                const mil = this.whisperer.militarySkill;
+                const pol = this.whisperer.politicalSkill;
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);
                 this.player1.clickPrompt('player2');
                 expect(this.player1).toBeAbleToSelect(this.acolyte);
                 this.player1.clickCard(this.acolyte);
-                expect(this.whisperer.getMilitarySkill()).toBe(mil + 1);
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol + 1);
+                expect(this.whisperer.militarySkill).toBe(mil + 1);
+                expect(this.whisperer.politicalSkill).toBe(pol + 1);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.getChatLogs(3)).toContain(
                     'player1 uses Togashi Acolyte to give +1political and +1military to Doji Whisperer'
@@ -114,15 +114,15 @@ describe('Togashi Acolyte', function () {
                     defenders: []
                 });
 
-                const mil = this.whisperer.getMilitarySkill();
-                const pol = this.whisperer.getPoliticalSkill();
+                const mil = this.whisperer.militarySkill;
+                const pol = this.whisperer.politicalSkill;
 
                 this.player2.clickCard(this.p2BHC);
                 this.player2.clickPrompt('player2');
                 expect(this.player1).not.toBeAbleToSelect(this.acolyte);
                 this.player1.clickCard(this.acolyte);
-                expect(this.whisperer.getMilitarySkill()).toBe(mil);
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol);
+                expect(this.whisperer.militarySkill).toBe(mil);
+                expect(this.whisperer.politicalSkill).toBe(pol);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
@@ -137,14 +137,14 @@ describe('Togashi Acolyte', function () {
                     defenders: []
                 });
 
-                const pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.politicalSkill;
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);
                 this.player1.clickPrompt('player2');
                 expect(this.player1).not.toBeAbleToSelect(this.acolyte);
                 this.player1.clickCard(this.acolyte);
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol);
+                expect(this.whisperer.politicalSkill).toBe(pol);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 

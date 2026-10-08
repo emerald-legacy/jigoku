@@ -23,17 +23,17 @@ describe('Kobo Ichi Kai Jujutsu', function() {
         });
 
         it('should have a bonus equal to the number of claimed rings by your opponent', function() {
-            const mil = this.challenger.getMilitarySkill();
+            const mil = this.challenger.militarySkill;
 
             this.player2.claimRing('earth');
             this.player2.claimRing('fire');
             this.game.checkGameState(true);
 
-            expect(this.challenger.getMilitarySkill()).toBe(mil + 2);
+            expect(this.challenger.militarySkill).toBe(mil + 2);
         });
 
         it('should count rings considered claimed', function() {
-            const mil = this.challenger.getMilitarySkill();
+            const mil = this.challenger.militarySkill;
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.shrine);
@@ -41,7 +41,7 @@ describe('Kobo Ichi Kai Jujutsu', function() {
             expect(this.player2).toHavePrompt('Choose a ring');
             this.player2.clickRing('air');
 
-            expect(this.challenger.getMilitarySkill()).toBe(mil + 1);
+            expect(this.challenger.militarySkill).toBe(mil + 1);
         });
     });
 });

@@ -117,9 +117,9 @@ describe('Iuchi Soulweaver', function () {
 
                 this.player2.pass();
                 this.player1.clickCard(this.djinn);
-                expect(this.sotorii.getMilitarySkill()).toBe(3);
-                expect(this.adept.getMilitarySkill()).toBe(3);
-                expect(this.soulweaver.getMilitarySkill()).toBe(this.soulweaver.getBaseMilitarySkill());
+                expect(this.sotorii.militarySkill).toBe(3);
+                expect(this.adept.militarySkill).toBe(3);
+                expect(this.soulweaver.militarySkill).toBe(this.soulweaver.getBaseMilitarySkill());
             });
         });
 
@@ -244,9 +244,9 @@ describe('Iuchi Soulweaver', function () {
 
                 this.player2.pass();
                 this.player1.clickCard(this.djinn);
-                expect(this.sotorii.getMilitarySkill()).toBe(3);
-                expect(this.adept.getMilitarySkill()).toBe(3);
-                expect(this.soulweaver.getMilitarySkill()).toBe(3);
+                expect(this.sotorii.militarySkill).toBe(3);
+                expect(this.adept.militarySkill).toBe(3);
+                expect(this.soulweaver.militarySkill).toBe(3);
             });
 
             it('considered to be participating (constant effects)', function () {
@@ -258,7 +258,7 @@ describe('Iuchi Soulweaver', function () {
                 });
 
                 this.player2.pass();
-                expect(this.infantry.getMilitarySkill()).toBe(2);
+                expect(this.infantry.militarySkill).toBe(2);
             });
 
             it('does not bow if its at home', function () {

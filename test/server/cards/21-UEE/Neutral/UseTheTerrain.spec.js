@@ -28,13 +28,13 @@ describe('Use the Terrain', function () {
                     defenders: [this.challenger]
                 });
 
-                const riderMil = this.rider.getMilitarySkill();
-                const scholarMil = this.scholar.getMilitarySkill();
+                const riderMil = this.rider.militarySkill;
+                const scholarMil = this.scholar.militarySkill;
 
                 this.player2.pass();
                 this.player1.clickCard(this.terrain);
-                expect(this.rider.getMilitarySkill()).toBe(riderMil + 1);
-                expect(this.scholar.getMilitarySkill()).toBe(scholarMil + 1);
+                expect(this.rider.militarySkill).toBe(riderMil + 1);
+                expect(this.scholar.militarySkill).toBe(scholarMil + 1);
                 expect(this.getChatLogs(5)).toContain('player1 plays Use the Terrain to give all characters they control +1military');
             });
 
@@ -80,10 +80,10 @@ describe('Use the Terrain', function () {
                     defenders: [this.challenger]
                 });
 
-                const riderMil = this.rider.getMilitarySkill();
+                const riderMil = this.rider.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.terrain);
-                expect(this.rider.getMilitarySkill()).toBe(riderMil + 2);
+                expect(this.rider.militarySkill).toBe(riderMil + 2);
                 expect(this.getChatLogs(5)).toContain('player1 plays Use the Terrain to give all characters they control +2military');
             });
         });

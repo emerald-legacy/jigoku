@@ -179,7 +179,7 @@ describe('Blackmail', function() {
             });
 
             it('should only have one instance of the constant ability in effect', function() {
-                expect(this.yogoOutcast.getPoliticalSkill()).toBe(3);
+                expect(this.yogoOutcast.politicalSkill).toBe(3);
             });
         });
 

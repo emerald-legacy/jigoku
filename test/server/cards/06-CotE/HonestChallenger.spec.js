@@ -15,12 +15,12 @@ describe('Honest Challenger', function() {
             });
 
             it('should have +2 mil if controller has composure', function() {
-                const military = this.honestChallenger.getMilitarySkill();
+                const military = this.honestChallenger.militarySkill;
                 expect(this.player1.player.hasComposure()).toBe(false);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
                 expect(this.player1.player.hasComposure()).toBe(true);
-                expect(this.honestChallenger.getMilitarySkill()).toBe(military + 2);
+                expect(this.honestChallenger.militarySkill).toBe(military + 2);
             });
         });
 

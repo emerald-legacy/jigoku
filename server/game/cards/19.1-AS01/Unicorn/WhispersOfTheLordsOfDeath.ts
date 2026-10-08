@@ -37,7 +37,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                 return maxMil;
             }
 
-            const cardMil = card.getMilitarySkill();
+            const cardMil = card.militarySkill;
             return cardMil > maxMil ? cardMil : maxMil;
         }, 0);
     }

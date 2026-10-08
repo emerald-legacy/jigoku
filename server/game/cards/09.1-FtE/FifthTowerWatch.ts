@@ -14,7 +14,7 @@ class FifthTowerWatch extends DrawCard {
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.getMilitarySkill() < context.event.card.getMilitarySkill()
+                cardCondition: (card, context) => card.militarySkill < context.event.card.militarySkill
             }, bow());
     }
 }

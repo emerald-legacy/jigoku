@@ -26,9 +26,9 @@ export default class DevelopingMasterpiece extends DrawCard {
             .cost(costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
             .gainHonor((context) => ({
-                amount: capturedParent(context)?.getGlory() ?? 0
+                amount: capturedParent(context)?.glory ?? 0
             }))
-            .effect((context) => msg`gain ${capturedParent(context)?.getGlory() ?? 0} honor`)
+            .effect((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`)
             .onResolve((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
                 context.game.addMessage('>>>> Matsuo Bashō <<<<');

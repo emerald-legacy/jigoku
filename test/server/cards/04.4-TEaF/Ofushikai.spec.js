@@ -25,8 +25,8 @@ describe('Ofushikai', function() {
             it('should increase the attached characters military an political skills when attached', function() {
                 this.player1.playAttachment('ofushikai', 'shiba-tsukune');
                 expect(this.player2).toHavePrompt('Action Window');
-                expect(this.shibaTsukune.getMilitarySkill()).toBe(this.shibaTsukune.getBaseMilitarySkill() + this.ofushikaiMilitaryBonus);
-                expect(this.shibaTsukune.getPoliticalSkill()).toBe(this.shibaTsukune.getBasePoliticalSkill() + this.ofushikaiPoliticalBonus);
+                expect(this.shibaTsukune.militarySkill).toBe(this.shibaTsukune.getBaseMilitarySkill() + this.ofushikaiMilitaryBonus);
+                expect(this.shibaTsukune.politicalSkill).toBe(this.shibaTsukune.getBasePoliticalSkill() + this.ofushikaiPoliticalBonus);
             });
 
             it('should grant the ability to a character that is a phoenix champion when attached', function() {
@@ -64,8 +64,8 @@ describe('Ofushikai', function() {
                 it('should attach and increase the characters skills by +2/+3', function() {
                     this.player1.clickCard('ofushikai');
                     this.player1.clickCard(this.yoritomo);
-                    expect(this.yoritomo.getMilitarySkill()).toBe(this.yoritomo.getBaseMilitarySkill() + this.player1.fate + this.sealOfThePhoenixMilitaryBonus + this.ofushikaiMilitaryBonus);
-                    expect(this.yoritomo.getPoliticalSkill()).toBe(this.yoritomo.getBasePoliticalSkill() + this.player1.fate + this.sealOfThePhoenixPoliticalBonus + this.ofushikaiPoliticalBonus);
+                    expect(this.yoritomo.militarySkill).toBe(this.yoritomo.getBaseMilitarySkill() + this.player1.fate + this.sealOfThePhoenixMilitaryBonus + this.ofushikaiMilitaryBonus);
+                    expect(this.yoritomo.politicalSkill).toBe(this.yoritomo.getBasePoliticalSkill() + this.player1.fate + this.sealOfThePhoenixPoliticalBonus + this.ofushikaiPoliticalBonus);
                     expect(this.player2).toHavePrompt('Action Window');
                 });
 

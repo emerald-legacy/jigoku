@@ -52,7 +52,7 @@ describe('Stowaway', function() {
             expect(this.player1).toBeAbleToSelect(this.fan);
             expect(this.player1).toBeAbleToSelect(this.katana);
 
-            const mil = this.stowaway.getMilitarySkill();
+            const mil = this.stowaway.militarySkill;
 
             this.player1.clickCard(this.katana);
             expect(this.player1).not.toBeAbleToSelect(this.mine);
@@ -64,7 +64,7 @@ describe('Stowaway', function() {
 
             this.player1.clickPrompt('Done');
 
-            expect(this.stowaway.getMilitarySkill()).toBe(mil + 1);
+            expect(this.stowaway.militarySkill).toBe(mil + 1);
             expect(this.katana.location).toBe(this.stowaway.uuid);
             expect(this.letGo.location).toBe(this.stowaway.uuid);
 
@@ -97,7 +97,7 @@ describe('Stowaway', function() {
             expect(this.player1).toBeAbleToSelect(this.fan);
             expect(this.player1).toBeAbleToSelect(this.katana);
 
-            const mil = this.stowaway.getMilitarySkill();
+            const mil = this.stowaway.militarySkill;
 
             this.player1.clickCard(this.mine);
             expect(this.player1).toBeAbleToSelect(this.mine);
@@ -108,7 +108,7 @@ describe('Stowaway', function() {
 
             this.player1.clickPrompt('Done');
 
-            expect(this.stowaway.getMilitarySkill()).toBe(mil);
+            expect(this.stowaway.militarySkill).toBe(mil);
             expect(this.mine.location).toBe(this.stowaway.uuid);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Stowaway to place Iron Mine beneath Stowaway');

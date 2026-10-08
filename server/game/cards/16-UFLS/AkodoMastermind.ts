@@ -19,7 +19,7 @@ class AkodoMastermind extends DrawCard {
             .condition(context => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.getGlory() <= this.getGloryCheck(context.player, context.costs.removeFromGame)
+                cardCondition: (card, context) => card.isParticipating() && card.glory <= this.getGloryCheck(context.player, context.costs.removeFromGame)
             }, bow())
             .cannotTargetFirst();
     }

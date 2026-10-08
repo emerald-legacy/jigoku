@@ -110,8 +110,8 @@ describe('Kakita Technique', function () {
             it('lasting delayed effect', function () {
                 this.player1.fate = 20;
 
-                const baseMil = this.kuwanan.getMilitarySkill();
-                const basePol = this.kuwanan.getPoliticalSkill();
+                const baseMil = this.kuwanan.militarySkill;
+                const basePol = this.kuwanan.politicalSkill;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -130,15 +130,15 @@ describe('Kakita Technique', function () {
                     'Doji Kuwanan gets +1military and +1political due to the delayed effect of Kakita Technique'
                 );
 
-                expect(this.kuwanan.getMilitarySkill()).toBe(baseMil + 1);
-                expect(this.kuwanan.getPoliticalSkill()).toBe(basePol + 1);
+                expect(this.kuwanan.militarySkill).toBe(baseMil + 1);
+                expect(this.kuwanan.politicalSkill).toBe(basePol + 1);
 
                 this.atws.forEach((atw, i) => {
                     this.player2.pass();
                     this.player1.clickCard(atw);
                     this.player1.clickCard(this.scholar);
-                    expect(this.kuwanan.getMilitarySkill()).toBe(baseMil + 2 + i);
-                    expect(this.kuwanan.getPoliticalSkill()).toBe(basePol + 2 + i);
+                    expect(this.kuwanan.militarySkill).toBe(baseMil + 2 + i);
+                    expect(this.kuwanan.politicalSkill).toBe(basePol + 2 + i);
                 });
             });
 

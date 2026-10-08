@@ -15,12 +15,12 @@ describe('Sincere Challenger', function() {
             });
 
             it('should have +2 pol if controller has composure', function() {
-                const political = this.sincereChallenger.getPoliticalSkill();
+                const political = this.sincereChallenger.politicalSkill;
                 expect(this.player1.player.hasComposure()).toBe(false);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
                 expect(this.player1.player.hasComposure()).toBe(true);
-                expect(this.sincereChallenger.getPoliticalSkill()).toBe(political + 2);
+                expect(this.sincereChallenger.politicalSkill).toBe(political + 2);
             });
         });
 
@@ -159,8 +159,8 @@ describe('Sincere Challenger', function() {
 
                 // unaffected by non-targeted effects from events
                 this.player1.clickCard(this.unleashTheDjinn);
-                expect(this.sincereChallenger.getPoliticalSkill()).toBe(2);
-                expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(3);
+                expect(this.sincereChallenger.politicalSkill).toBe(2);
+                expect(this.adeptOfTheWaves.politicalSkill).toBe(3);
             });
         });
     });

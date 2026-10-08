@@ -33,22 +33,22 @@ describe('A Plague of Yokai', function () {
         it('skill penalty and action ability', function () {
             this.player1.clickCard(this.plague1);
             this.player1.clickCard(this.challenger);
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.shadows],
                 defenders: [this.challenger, this.kuwanan, this.yoshi]
             });
-            expect(this.challenger.getMilitarySkill()).toBe(2);
-            expect(this.challenger.getPoliticalSkill()).toBe(2);
+            expect(this.challenger.militarySkill).toBe(2);
+            expect(this.challenger.politicalSkill).toBe(2);
 
             this.player2.clickCard(this.plague4);
             this.player2.clickCard(this.shadows);
 
-            expect(this.challenger.getMilitarySkill()).toBe(2);
-            expect(this.challenger.getPoliticalSkill()).toBe(2);
+            expect(this.challenger.militarySkill).toBe(2);
+            expect(this.challenger.politicalSkill).toBe(2);
 
             const length = this.player1.conflictDeck.length;
 
@@ -70,10 +70,10 @@ describe('A Plague of Yokai', function () {
             expect(this.shadows.isDishonored).toBe(true);
 
             expect(this.plague2.parent).toBe(this.yoshi);
-            expect(this.challenger.getMilitarySkill()).toBe(1);
-            expect(this.challenger.getPoliticalSkill()).toBe(1);
-            expect(this.yoshi.getMilitarySkill()).toBe(0);
-            expect(this.yoshi.getPoliticalSkill()).toBe(4);
+            expect(this.challenger.militarySkill).toBe(1);
+            expect(this.challenger.politicalSkill).toBe(1);
+            expect(this.yoshi.militarySkill).toBe(0);
+            expect(this.yoshi.politicalSkill).toBe(4);
 
             expect(this.player1.conflictDeck.length).toBe(length - 1);
 

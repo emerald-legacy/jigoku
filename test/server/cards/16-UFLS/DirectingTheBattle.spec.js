@@ -92,12 +92,12 @@ describe('Directing the Battle', function() {
                 defenders: [this.defender, this.whisperer],
                 ring: 'void'
             });
-            const mil = this.whisperer.getMilitarySkill();
+            const mil = this.whisperer.militarySkill;
             this.player2.pass();
             this.player1.clickCard(this.directing);
             this.player1.clickCard(this.whisperer);
             this.player2.clickPrompt('Give +3 Military');
-            expect(this.whisperer.getMilitarySkill()).toBe(mil + 3);
+            expect(this.whisperer.militarySkill).toBe(mil + 3);
             expect(this.getChatLogs(5)).toContain('player1 plays Directing the Battle to give Doji Whisperer +3military');
         });
 

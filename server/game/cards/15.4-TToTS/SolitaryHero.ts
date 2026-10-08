@@ -17,7 +17,7 @@ class SolitaryHero extends DrawCard {
                 context.source.isParticipatingFor(context.player) &&
                 (context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
             .removeFate((context) => ({
-                target: context.game.currentConflict?.getParticipants((card) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) ?? []
+                target: context.game.currentConflict?.getParticipants((card) => card.militarySkill <= context.source.militarySkill && card !== context.source) ?? []
             }));
     }
 }

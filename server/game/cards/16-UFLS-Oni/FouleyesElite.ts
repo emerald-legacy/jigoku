@@ -15,7 +15,7 @@ export default class FouleyesElite extends BaseOni {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.getMilitarySkill() <= context.source.getMilitarySkill()
+                cardCondition: (card, context) => card.militarySkill <= context.source.militarySkill
             }, bow());
     }
 }

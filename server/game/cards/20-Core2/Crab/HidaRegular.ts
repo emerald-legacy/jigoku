@@ -14,7 +14,7 @@ export default class HidaRegular extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill()
+                    card.isParticipating() && card.militarySkill <= context.source.militarySkill
             }, removeFate());
     }
 }

@@ -57,8 +57,8 @@ describe('Pride', function () {
 
             expect(this.katana.location).toBe('removed from game');
             expect(this.challenger.attachments.length).toBe(2);
-            expect(this.challenger.getMilitarySkill()).toBe(5);
-            expect(this.challenger.getPoliticalSkill()).toBe(5);
+            expect(this.challenger.militarySkill).toBe(5);
+            expect(this.challenger.politicalSkill).toBe(5);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Pride, bowing Pride to attach the top card of their conflict deck to Doji Challenger as a +1/+1 attachment'
             );

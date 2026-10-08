@@ -17,8 +17,8 @@ describe('Sagen of Honeyed Words', function () {
         });
 
         it('gets buffed by companion glory', function () {
-            const baseMil = this.sagenOfHoneyedWords.getMilitarySkill();
-            const basePol = this.sagenOfHoneyedWords.getPoliticalSkill();
+            const baseMil = this.sagenOfHoneyedWords.militarySkill;
+            const basePol = this.sagenOfHoneyedWords.politicalSkill;
 
             this.initiateConflict({
                 attackers: [this.sagenOfHoneyedWords, this.bayushiManipulator],
@@ -33,16 +33,16 @@ describe('Sagen of Honeyed Words', function () {
             expect(this.player1).not.toBeAbleToSelect(this.asahinaDiviner);
 
             this.player1.clickCard(this.bayushiManipulator);
-            expect(this.sagenOfHoneyedWords.getMilitarySkill()).toBe(baseMil + 1);
-            expect(this.sagenOfHoneyedWords.getPoliticalSkill()).toBe(basePol + 1);
+            expect(this.sagenOfHoneyedWords.militarySkill).toBe(baseMil + 1);
+            expect(this.sagenOfHoneyedWords.politicalSkill).toBe(basePol + 1);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Sagen of Honeyed Words to get +1military and +1political'
             );
         });
 
         it('gets buffed by companion glory including glory bonuses', function () {
-            const baseMil = this.sagenOfHoneyedWords.getMilitarySkill();
-            const basePol = this.sagenOfHoneyedWords.getPoliticalSkill();
+            const baseMil = this.sagenOfHoneyedWords.militarySkill;
+            const basePol = this.sagenOfHoneyedWords.politicalSkill;
 
             this.initiateConflict({
                 attackers: [this.sagenOfHoneyedWords, this.bayushiManipulator],
@@ -61,8 +61,8 @@ describe('Sagen of Honeyed Words', function () {
             expect(this.player1).not.toBeAbleToSelect(this.asahinaDiviner);
 
             this.player1.clickCard(this.bayushiManipulator);
-            expect(this.sagenOfHoneyedWords.getMilitarySkill()).toBe(baseMil + 4);
-            expect(this.sagenOfHoneyedWords.getPoliticalSkill()).toBe(basePol + 4);
+            expect(this.sagenOfHoneyedWords.militarySkill).toBe(baseMil + 4);
+            expect(this.sagenOfHoneyedWords.politicalSkill).toBe(basePol + 4);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Sagen of Honeyed Words to get +4military and +4political'
             );

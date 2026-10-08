@@ -11,7 +11,7 @@ export default class LancerOfThe9thLegion extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill()
+                    card.isParticipating() && card.militarySkill <= context.source.militarySkill
             }, bow());
     }
 }

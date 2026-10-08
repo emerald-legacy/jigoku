@@ -18,15 +18,15 @@ describe('Ikoma Anakazu', function() {
             });
 
             it('should have no effect if no provinces have been broken this phase', function() {
-                expect(this.ikomaAnakazu.getMilitarySkill()).toBe(3);
-                expect(this.ikomaAnakazu.getPoliticalSkill()).toBe(3);
+                expect(this.ikomaAnakazu.militarySkill).toBe(3);
+                expect(this.ikomaAnakazu.politicalSkill).toBe(3);
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.ikomaAnakazu],
                     defenders: []
                 });
-                expect(this.ikomaAnakazu.getMilitarySkill()).toBe(3);
-                expect(this.ikomaAnakazu.getPoliticalSkill()).toBe(3);
+                expect(this.ikomaAnakazu.militarySkill).toBe(3);
+                expect(this.ikomaAnakazu.politicalSkill).toBe(3);
             });
 
             it('should have no effect if your opponent has not broken a province this phase', function() {
@@ -47,8 +47,8 @@ describe('Ikoma Anakazu', function() {
                     ring: 'earth'
                 });
                 expect(this.ikomaAnakazu.isParticipating()).toBe(true);
-                expect(this.ikomaAnakazu.getMilitarySkill()).toBe(3);
-                expect(this.ikomaAnakazu.getPoliticalSkill()).toBe(3);
+                expect(this.ikomaAnakazu.militarySkill).toBe(3);
+                expect(this.ikomaAnakazu.politicalSkill).toBe(3);
             });
 
             it('should give +3/+3 if your opponent has broken a province this phase and Ikoma Anakazu is participating', function() {
@@ -71,8 +71,8 @@ describe('Ikoma Anakazu', function() {
                     ring: 'earth'
                 });
                 expect(this.ikomaAnakazu.isParticipating()).toBe(true);
-                expect(this.ikomaAnakazu.getMilitarySkill()).toBe(6);
-                expect(this.ikomaAnakazu.getPoliticalSkill()).toBe(6);
+                expect(this.ikomaAnakazu.militarySkill).toBe(6);
+                expect(this.ikomaAnakazu.politicalSkill).toBe(6);
             });
         });
     });

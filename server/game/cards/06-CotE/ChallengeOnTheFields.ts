@@ -18,7 +18,7 @@ export default class ChallengeOnTheFields extends DrawCard {
                 statistic: (card, duelRules) =>
                     duelRules === 'printedSkill'
                         ? card.printedMilitarySkill + participatingCharacters(card.controller) - 1
-                        : card.getMilitarySkill(),
+                        : card.militarySkill,
                 challengerEffect: modifyMilitarySkill(participatingCharacters(context.player) - 1),
                 targetEffect: modifyMilitarySkill(
                     context.player.opponent ? participatingCharacters(context.player.opponent) - 1 : 0

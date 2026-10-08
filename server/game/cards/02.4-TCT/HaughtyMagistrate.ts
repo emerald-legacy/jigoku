@@ -8,7 +8,7 @@ class HaughtyMagistrate extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
             effect: cannotContribute((_conflict, context) => {
-                return (card) => context.source.isDrawCard() && card.getGlory() < context.source.getGlory() && card !== context.source;
+                return (card) => context.source.isDrawCard() && card.glory < context.source.glory && card !== context.source;
             })
         });
     }

@@ -200,9 +200,9 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                const mil = this.skirmisher.getMilitarySkill();
+                const mil = this.skirmisher.militarySkill;
                 this.player1.clickCard(this.deadeyes);
-                expect(this.skirmisher.getMilitarySkill()).toBe(mil + 2);
+                expect(this.skirmisher.militarySkill).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Dead Eyes to grant +2military to Silent Skirmisher, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill');
 
@@ -230,10 +230,10 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                const mil = this.skirmisher.getMilitarySkill();
+                const mil = this.skirmisher.militarySkill;
                 this.player1.clickCard(this.deadeyes);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.skirmisher.getMilitarySkill()).toBe(mil);
+                expect(this.skirmisher.militarySkill).toBe(mil);
             });
         });
 

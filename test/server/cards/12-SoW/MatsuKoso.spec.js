@@ -37,12 +37,12 @@ describe('Matsu Koso', function() {
             this.player2.pass();
             this.player1.clickCard(this.matsuKoso);
 
-            expect(this.matsuKoso.getMilitarySkill()).toBe(this.matsuKoso.printedMilitarySkill); // Printed pol is NaN
-            expect(this.kitsuMotso.getMilitarySkill()).toBe(this.kitsuMotso.printedMilitarySkill - this.kitsuMotso.printedPoliticalSkill);
-            expect(this.matsuBerserker.getMilitarySkill()).toBe(this.matsuBerserker.printedMilitarySkill); // Printed pol is NaN
-            expect(this.solemnScholar.getMilitarySkill()).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
-            expect(this.shibaTsukune.getMilitarySkill()).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
-            expect(this.isawaUona.getMilitarySkill()).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
+            expect(this.matsuKoso.militarySkill).toBe(this.matsuKoso.printedMilitarySkill); // Printed pol is NaN
+            expect(this.kitsuMotso.militarySkill).toBe(this.kitsuMotso.printedMilitarySkill - this.kitsuMotso.printedPoliticalSkill);
+            expect(this.matsuBerserker.militarySkill).toBe(this.matsuBerserker.printedMilitarySkill); // Printed pol is NaN
+            expect(this.solemnScholar.militarySkill).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
+            expect(this.shibaTsukune.militarySkill).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
+            expect(this.isawaUona.militarySkill).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
             expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Kitsu Motso, Solemn Scholar and Shiba Tsukune by their respective printed political skill');
         });
 
@@ -60,12 +60,12 @@ describe('Matsu Koso', function() {
 
             this.player1.clickCard(this.matsuKoso);
 
-            expect(this.matsuKoso.getMilitarySkill()).toBe(this.matsuKoso.printedMilitarySkill); // Printed pol is NaN
-            expect(this.kitsuMotso.getMilitarySkill()).toBe(this.kitsuMotso.printedMilitarySkill - this.kitsuMotso.printedPoliticalSkill);
-            expect(this.matsuBerserker.getMilitarySkill()).toBe(this.matsuBerserker.printedMilitarySkill); // Printed pol is NaN
-            expect(this.solemnScholar.getMilitarySkill()).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
-            expect(this.shibaTsukune.getMilitarySkill()).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
-            expect(this.isawaUona.getMilitarySkill()).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
+            expect(this.matsuKoso.militarySkill).toBe(this.matsuKoso.printedMilitarySkill); // Printed pol is NaN
+            expect(this.kitsuMotso.militarySkill).toBe(this.kitsuMotso.printedMilitarySkill - this.kitsuMotso.printedPoliticalSkill);
+            expect(this.matsuBerserker.militarySkill).toBe(this.matsuBerserker.printedMilitarySkill); // Printed pol is NaN
+            expect(this.solemnScholar.militarySkill).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
+            expect(this.shibaTsukune.militarySkill).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
+            expect(this.isawaUona.militarySkill).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
             expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Solemn Scholar, Shiba Tsukune and Kitsu Motso by their respective printed political skill');
         });
 
@@ -103,11 +103,11 @@ describe('Matsu Koso', function() {
             this.player2.clickCard(this.myAncestorsStrength);
             this.player2.clickCard(this.solemnScholar);
             this.player2.clickCard(this.fushicho);
-            expect(this.solemnScholar.getMilitarySkill()).toBe(this.fushicho.printedMilitarySkill); // Base Fushicho
+            expect(this.solemnScholar.militarySkill).toBe(this.fushicho.printedMilitarySkill); // Base Fushicho
             this.player1.clickCard(this.matsuKoso);
 
-            expect(this.matsuKoso.getMilitarySkill()).toBe(this.matsuKoso.printedMilitarySkill); // Printed pol is NaN
-            expect(this.solemnScholar.getMilitarySkill()).toBe(this.fushicho.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill); // Base Fushicho - printed Solemn Scholar
+            expect(this.matsuKoso.militarySkill).toBe(this.matsuKoso.printedMilitarySkill); // Printed pol is NaN
+            expect(this.solemnScholar.militarySkill).toBe(this.fushicho.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill); // Base Fushicho - printed Solemn Scholar
         });
     });
 });

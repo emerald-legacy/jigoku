@@ -476,9 +476,9 @@ class DrawCard extends BaseCard {
      */
     getSkill(type: string | undefined): number {
         if(type === 'military') {
-            return this.getMilitarySkill();
+            return this.militarySkill;
         } else if(type === 'political') {
-            return this.getPoliticalSkill();
+            return this.politicalSkill;
         }
         return 0;
     }
@@ -500,10 +500,6 @@ class DrawCard extends BaseCard {
     }
 
     get glory(): number {
-        return this.getGlory();
-    }
-
-    getGlory(): number {
         return effectiveSkill(sumModifiers(this.skillCalculator.getGloryModifiers()));
     }
 

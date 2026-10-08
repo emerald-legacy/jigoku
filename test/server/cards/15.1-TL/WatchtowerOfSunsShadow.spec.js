@@ -48,17 +48,17 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.p1
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5 - 2);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4 - 2);
+            expect(this.kuwanan.militarySkill).toBe(5 - 2);
+            expect(this.kuwanan.politicalSkill).toBe(4 - 2);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3 - 1);
-            expect(this.challenger.getPoliticalSkill()).toBe(3 - 1);
+            expect(this.challenger.militarySkill).toBe(3 - 1);
+            expect(this.challenger.politicalSkill).toBe(3 - 1);
 
-            expect(this.kisada.getMilitarySkill()).toBe(7);
-            expect(this.kisada.getPoliticalSkill()).toBe(2);
+            expect(this.kisada.militarySkill).toBe(7);
+            expect(this.kisada.politicalSkill).toBe(2);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should work during a conflict at another kaiu wall', function () {
@@ -75,17 +75,17 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.p2
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5 - 2);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4 - 2);
+            expect(this.kuwanan.militarySkill).toBe(5 - 2);
+            expect(this.kuwanan.politicalSkill).toBe(4 - 2);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3 - 1);
-            expect(this.challenger.getPoliticalSkill()).toBe(3 - 1);
+            expect(this.challenger.militarySkill).toBe(3 - 1);
+            expect(this.challenger.politicalSkill).toBe(3 - 1);
 
-            expect(this.kisada.getMilitarySkill()).toBe(7);
-            expect(this.kisada.getPoliticalSkill()).toBe(2);
+            expect(this.kisada.militarySkill).toBe(7);
+            expect(this.kisada.politicalSkill).toBe(2);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should not work during a conflict not at a kaiu wall', function () {
@@ -102,17 +102,17 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.p3
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4);
+            expect(this.kuwanan.militarySkill).toBe(5);
+            expect(this.kuwanan.politicalSkill).toBe(4);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.kisada.getMilitarySkill()).toBe(7);
-            expect(this.kisada.getPoliticalSkill()).toBe(2);
+            expect(this.kisada.militarySkill).toBe(7);
+            expect(this.kisada.politicalSkill).toBe(2);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should not work during a conflict not at a holding', function () {
@@ -129,17 +129,17 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.p4
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4);
+            expect(this.kuwanan.militarySkill).toBe(5);
+            expect(this.kuwanan.politicalSkill).toBe(4);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.kisada.getMilitarySkill()).toBe(7);
-            expect(this.kisada.getPoliticalSkill()).toBe(2);
+            expect(this.kisada.militarySkill).toBe(7);
+            expect(this.kisada.politicalSkill).toBe(2);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should not work on attack', function () {
@@ -159,17 +159,17 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.player1p1
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4);
+            expect(this.kuwanan.militarySkill).toBe(5);
+            expect(this.kuwanan.politicalSkill).toBe(4);
 
-            expect(this.challenger.getMilitarySkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
-            expect(this.kisada.getMilitarySkill()).toBe(7);
-            expect(this.kisada.getPoliticalSkill()).toBe(2);
+            expect(this.kisada.militarySkill).toBe(7);
+            expect(this.kisada.politicalSkill).toBe(2);
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
         });
 
         it('should update if you put fate on a character', function () {
@@ -186,8 +186,8 @@ describe('Watchtower of Suns Shadow', function() {
                 province: this.p1
             });
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5 - 2);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4 - 2);
+            expect(this.kuwanan.militarySkill).toBe(5 - 2);
+            expect(this.kuwanan.politicalSkill).toBe(4 - 2);
 
             this.player2.pass();
             this.player1.clickCard(this.crane);
@@ -199,8 +199,8 @@ describe('Watchtower of Suns Shadow', function() {
 
             expect(this.kuwanan.fate).toBe(3);
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(5 - 3);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(4 - 3);
+            expect(this.kuwanan.militarySkill).toBe(5 - 3);
+            expect(this.kuwanan.politicalSkill).toBe(4 - 3);
         });
 
         it('forced interrupt', function () {

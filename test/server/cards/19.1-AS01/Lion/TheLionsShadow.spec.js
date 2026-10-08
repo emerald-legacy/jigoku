@@ -47,12 +47,12 @@ describe('The Lions Shadow', function () {
             });
 
             it('should make it so glory isn\'t affecting when dishonored', function () {
-                expect(this.messageRunner.getPoliticalSkill()).toBe(0);
+                expect(this.messageRunner.politicalSkill).toBe(0);
 
                 this.player1.clickCard(this.lionsShadow);
                 this.player1.clickCard(this.messageRunner);
 
-                expect(this.messageRunner.getPoliticalSkill()).toBe(1);
+                expect(this.messageRunner.politicalSkill).toBe(1);
             });
         });
 

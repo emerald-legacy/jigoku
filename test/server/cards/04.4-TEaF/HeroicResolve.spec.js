@@ -22,8 +22,8 @@ describe('Heroic Resolve', function () {
                 });
 
                 it('and it should increase attached characters military and political skills by 1.', function () {
-                    expect(this.akodoToturi.getMilitarySkill()).toBe(this.akodoToturi.getBaseMilitarySkill() + 1);
-                    expect(this.akodoToturi.getPoliticalSkill()).toBe(this.akodoToturi.getBasePoliticalSkill() + 1);
+                    expect(this.akodoToturi.militarySkill).toBe(this.akodoToturi.getBaseMilitarySkill() + 1);
+                    expect(this.akodoToturi.politicalSkill).toBe(this.akodoToturi.getBasePoliticalSkill() + 1);
                 });
 
                 describe('When less than two rings are claimed by controlling player', function () {

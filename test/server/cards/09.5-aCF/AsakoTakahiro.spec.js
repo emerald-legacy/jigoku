@@ -29,39 +29,39 @@ describe('Asako Takahiro', function() {
             });
 
             it('should give +2 pol for each honored character in the conflict', function() {
-                expect(this.takahiro.getPoliticalSkill()).toBe(1);
+                expect(this.takahiro.politicalSkill).toBe(1);
                 this.player2.clickCard('way-of-the-crane');
                 this.player2.clickCard(this.whisperer);
-                expect(this.takahiro.getPoliticalSkill()).toBe(3);
+                expect(this.takahiro.politicalSkill).toBe(3);
                 this.player1.clickCard('way-of-the-crane');
                 this.player1.clickCard(this.challenger);
-                expect(this.takahiro.getPoliticalSkill()).toBe(3);
+                expect(this.takahiro.politicalSkill).toBe(3);
                 this.player2.pass();
                 this.player1.clickCard('way-of-the-crane', 'hand');
                 this.player1.clickCard(this.brash);
-                expect(this.takahiro.getPoliticalSkill()).toBe(5);
+                expect(this.takahiro.politicalSkill).toBe(5);
             });
 
             it('should give +2 mil for each dishonored character in the conflict', function() {
-                expect(this.takahiro.getMilitarySkill()).toBe(1);
+                expect(this.takahiro.militarySkill).toBe(1);
                 this.player2.clickCard('way-of-the-scorpion');
                 this.player2.clickCard(this.whisperer);
-                expect(this.takahiro.getMilitarySkill()).toBe(3);
+                expect(this.takahiro.militarySkill).toBe(3);
                 this.player1.clickCard('way-of-the-scorpion');
                 this.player1.clickCard(this.brash);
-                expect(this.takahiro.getMilitarySkill()).toBe(5);
+                expect(this.takahiro.militarySkill).toBe(5);
                 this.player2.playAttachment('mark-of-shame', this.challenger);
                 this.player2.clickCard('mark-of-shame');
-                expect(this.takahiro.getMilitarySkill()).toBe(5);
+                expect(this.takahiro.militarySkill).toBe(5);
             });
 
             it('should not give skill pump if takahiro is honored or dishonored', function() {
                 this.player2.clickCard('way-of-the-scorpion');
                 this.player2.clickCard(this.takahiro);
-                expect(this.takahiro.getMilitarySkill()).toBe(0);
+                expect(this.takahiro.militarySkill).toBe(0);
                 this.player1.clickCard('soul-beyond-reproach');
                 this.player1.clickCard(this.takahiro);
-                expect(this.takahiro.getPoliticalSkill()).toBe(3);
+                expect(this.takahiro.politicalSkill).toBe(3);
             });
         });
     });

@@ -26,7 +26,7 @@ class Daikyu extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
+                        card.militarySkill < context.source.militarySkill && card.isParticipating(),
                     gameAction: bow()
                 }
             })

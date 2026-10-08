@@ -50,7 +50,7 @@ describe('To Storm A Fortress', function () {
             expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
 
             this.player1.clickCard(this.togashiInitiate);
-            expect(this.togashiInitiate.getMilitarySkill()).toBe(3);
+            expect(this.togashiInitiate.militarySkill).toBe(3);
             expect(this.getChatLogs(5)).toContain(
                 'player1 plays To Storm a Fortress to grant +2military to Togashi Initiate'
             );
@@ -78,7 +78,7 @@ describe('To Storm A Fortress', function () {
             expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
 
             this.player1.clickCard(this.togashiInitiate);
-            expect(this.togashiInitiate.getMilitarySkill()).toBe(3);
+            expect(this.togashiInitiate.militarySkill).toBe(3);
             expect(this.getChatLogs(5)).toContain(
                 'player1 plays To Storm a Fortress to grant +2military to Togashi Initiate'
             );
