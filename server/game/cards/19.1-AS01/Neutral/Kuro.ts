@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import {
-    conditional,
     moveToConflict,
     playCard,
     playerLastingEffect,
@@ -42,13 +41,13 @@ export default class Kuro extends DrawCard {
                         attachContext.target = context.source;
                         attachContext.targets.target = context.source;
                     }
-                })),
-                conditional((conditionalContext) => ({
-                    condition: (context) => context.source.isDrawCard() && context.source.isParticipating(),
-                    trueGameAction: sendHome({ target: conditionalContext.source }),
-                    falseGameAction: moveToConflict({ target: conditionalContext.source })
                 }))
             ]))
-            .chatText((context) => msg`seek the lost treasure '${context.target}'. ${context.source.isParticipating() ? 'Kuro returns home with their treasure' : 'Kuro swoops into the conflict'}`);
+            .chatText((context) => msg`seek the lost treasure '${context.target}'. ${context.source.isParticipating() ? 'Kuro returns home with their treasure' : 'Kuro swoops into the conflict'}`)
+            .afterwards()
+            .if((context) => context.source.isDrawCard() && context.source.isParticipating())
+            .gameAction(sendHome((context) => ({ target: context.source })))
+            .otherwise()
+            .gameAction(moveToConflict((context) => ({ target: context.source })));
     }
 }

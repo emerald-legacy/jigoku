@@ -1255,14 +1255,20 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
         throw new Error(`${draft.title}: if() and otherwise() each need a game action`);
     }
     const condition = branch.condition;
-    const branches = GameActions.conditional({ condition: (context) => condition(context), trueGameAction: oneAction(yes), falseGameAction: oneAction(no) });
+    const conditional = (trueActions: GameAction[], falseActions: GameAction[]) =>
+        GameActions.conditional({ condition: (context) => condition(context), trueGameAction: oneAction(trueActions), falseGameAction: oneAction(falseActions) });
     const before = actions.slice(0, branch.from);
     if(branch.target === undefined) {
-        return { ...draft, branch: undefined, gameActions: [...before, branches] };
+        return { ...draft, branch: undefined, gameActions: [...before, conditional(yes, no)] };
     }
     const entry = draft.targets[branch.target];
     const own = 'gameAction' in entry ? entry.gameAction : undefined;
-    const gameAction = own === undefined ? branches : [...(Array.isArray(own) ? own : [own]), branches];
+    // a target's own actions go into both branches: without otherwise(), the false branch is just them, so
+    // only cards they (or the true branch, when it holds) can affect stay selectable
+    const ownActions = own === undefined ? [] : Array.isArray(own) ? own : [own];
+    const gameAction = ownActions.length === 0
+        ? conditional(yes, no)
+        : conditional([...ownActions, ...yes], branch.otherwiseFrom === undefined ? ownActions : [...ownActions, ...no]);
     return { ...draft, branch: undefined, gameActions: before, targets: { ...draft.targets, [branch.target]: { ...entry, gameAction } } };
 }
 

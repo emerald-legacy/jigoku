@@ -3,13 +3,9 @@ import { EventName, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import * as costs from '../../../costs/index.js';
 import {
-    conditional,
     draw,
     gainFate,
-    gainHonor,
-    handler,
-    multiple,
-    sequential
+    gainHonor
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,21 +26,15 @@ export default class PlantedFields extends DrawCard {
                     !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             })
             .cost(costs.sacrificeSelf())
-            .gameAction(sequential([
-                conditional((context) => ({
-                    target: context.player,
-                    condition: this.hasAnyCopyTriggered(context.player.name),
-                    trueGameAction: gainHonor({ amount: 2 }),
-                    falseGameAction: multiple([
-                        gainFate({ amount: 2 }),
-                        draw({ amount: 2 })
-                    ])
-                })),
-                handler({
-                    handler: (context) => this.triggeredByPlayer.add(context.player.name)
-                })
-            ]))
-            .chatText((context) => msg`${this.hasAnyCopyTriggered(context.player.name) ? 'gain 2 honor' : 'gain 2 fate and draw 2 cards'}`);
+            .if((context) => this.hasAnyCopyTriggered(context.player.name))
+            .gameAction(gainHonor((context) => ({ target: context.player, amount: 2 })))
+            .otherwise()
+            .gameAction(gainFate((context) => ({ target: context.player, amount: 2 })), draw((context) => ({ target: context.player, amount: 2 })))
+            .chatText((context) => msg`${this.hasAnyCopyTriggered(context.player.name) ? 'gain 2 honor' : 'gain 2 fate and draw 2 cards'}`)
+            .afterwards()
+            .handler((context) => {
+                this.triggeredByPlayer.add(context.player.name);
+            });
     }
 
     private hasAnyCopyTriggered(playerName: string): boolean {

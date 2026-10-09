@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, CharacterStatus, Players } from '../../Constants.js';
-import { conditional, putIntoPlay, removeFromGame, sequential } from '../../GameActions/GameActions.js';
+import { putIntoPlay, removeFromGame } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
     static id = 'shadow-step';
@@ -11,24 +11,15 @@ class ShadowStep extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.hasTrait('mythic'),
                 controller: Players.Self
-            }, sequential([
-                removeFromGame((context) => ({
-                    target: context.target
-                })),
-                conditional({
-                    condition: (context) => {
-                        return !!context.target?.hasTrait('shadow');
-                    },
-                    trueGameAction: putIntoPlay((context) => ({
-                        target: context.target
-                    })),
-                    falseGameAction: putIntoPlay((context) => ({
-                        target: context.target,
-                        status: CharacterStatus.Dishonored
-                    }))
-                })
-            ]))
-            .chatText('remove {0} from the game, then put it back into play');
+            }, removeFromGame((context) => ({
+                target: context.target
+            })))
+            .chatText('remove {0} from the game, then put it back into play')
+            .afterwards()
+            .if((context) => !!context.target?.hasTrait('shadow'))
+            .gameAction(putIntoPlay((context) => ({ target: context.target })))
+            .otherwise()
+            .gameAction(putIntoPlay((context) => ({ target: context.target, status: CharacterStatus.Dishonored })));
     }
 }
 

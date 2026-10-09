@@ -76,9 +76,11 @@ describe('if() and otherwise() in the ability builder', function() {
 
             const properties = toActionProps(this.draft);
             expect(properties.gameAction).toBeUndefined();
-            const [own, branches] = properties.target.gameAction;
-            expect(own.name).toBe('bow');
+            const branches = properties.target.gameAction;
             expect(branches).toEqual(jasmine.any(ConditionalAction));
+            // the target's own action is in both branches: without otherwise() the false branch is just that
+            expect(branches.getProperties(this.context).trueGameAction.getProperties(this.context).gameActions.map((action) => action.name)).toEqual(['bow', 'gainHonor']);
+            expect(branches.getProperties(this.context).falseGameAction.name).toBe('bow');
         });
 
         it('keeps the branches on the ability when it has game actions of its own', function() {
