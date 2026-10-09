@@ -24,7 +24,7 @@ import { ThenEventWindow } from './Events/ThenEventWindow.js';
 import { AbilityResolver } from './gamesteps/AbilityResolver.js';
 import { SimultaneousEffectWindow } from './gamesteps/SimultaneousEffectWindow.js';
 import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
-import type { ForcedTriggeredAbilityWindow } from './gamesteps/ForcedTriggeredAbilityWindow.js';
+import type { TriggerWindow } from './gamesteps/TriggerWindow.js';
 import type { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
 import type { MenuHandlers, MenuPromptProperties } from './gamesteps/MenuPrompt.js';
 import type { HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
@@ -145,7 +145,7 @@ export class Game {
     createdAt: Date;
     savedGameId?: string;
     gameType?: string;
-    currentAbilityWindow: ForcedTriggeredAbilityWindow | SimultaneousEffectWindow | null;
+    currentAbilityWindow: TriggerWindow | SimultaneousEffectWindow | null;
     currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;

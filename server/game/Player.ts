@@ -11,7 +11,7 @@ import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { RingEffects } from './RingEffects.js';
+import { RingAbilities } from './RingAbilities.js';
 import { PlayableLocation } from './PlayableLocation.js';
 import { PlayerCostManager } from './PlayerCostManager.js';
 import { PlayerConflictManager, type ConflictDeclarationProperties } from './PlayerConflictManager.js';
@@ -1292,7 +1292,7 @@ export class Player extends GameObject {
             elements = [elements];
         }
         optional = optional && elements.length === 1;
-        let effects = elements.map((element) => RingEffects.contextFor(this, element, optional));
+        let effects = elements.map((element) => RingAbilities.contextFor(this, element, optional));
         effects = [...effects].sort((a, b) => {
             const aVal = this.firstPlayer ? a.ability.defaultPriority : -a.ability.defaultPriority;
             const bVal = this.firstPlayer ? b.ability.defaultPriority : -b.ability.defaultPriority;

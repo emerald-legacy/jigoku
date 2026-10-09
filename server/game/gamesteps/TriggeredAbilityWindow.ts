@@ -1,4 +1,4 @@
-import { ForcedTriggeredAbilityWindow } from './ForcedTriggeredAbilityWindow.js';
+import { TriggerWindow } from './TriggerWindow.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { CardType, EventName, AbilityType } from '../Constants.js';
 import type Player from '../Player.js';
@@ -8,7 +8,7 @@ import type { EventWindow } from '../Events/EventWindow.js';
 import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type { TriggerChoice } from '../TriggeredAbility.js';
 
-export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
+export class TriggeredAbilityWindow extends TriggerWindow {
     complete: boolean;
     prevPlayerPassed: boolean;
     resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: TriggeredAbility; event: Event | Event[] }>>;

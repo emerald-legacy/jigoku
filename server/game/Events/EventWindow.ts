@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
-import { ForcedTriggeredAbilityWindow } from '../gamesteps/ForcedTriggeredAbilityWindow.js';
+import { TriggerWindow } from '../gamesteps/TriggerWindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import { TriggeredAbilityWindow } from '../gamesteps/TriggeredAbilityWindow.js';
 import { AbilityType } from '../Constants.js';
@@ -82,7 +82,7 @@ export class EventWindow extends BaseStepWithPipeline {
         }
 
         if([AbilityType.ForcedReaction, AbilityType.ForcedInterrupt].includes(abilityType)) {
-            this.queueStep(new ForcedTriggeredAbilityWindow(this.game, abilityType, this));
+            this.queueStep(new TriggerWindow(this.game, abilityType, this));
         } else {
             this.queueStep(new TriggeredAbilityWindow(this.game, abilityType, this));
         }

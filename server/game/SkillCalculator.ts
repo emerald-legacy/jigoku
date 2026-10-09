@@ -2,10 +2,10 @@ import { StatModifier } from './StatModifier.js';
 import { EffectName } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';
-import type { EffectBase } from './Effects/EffectBase.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
 import { SkillType } from './Constants.js';
 
-export type Exclusions = EffectName[] | ((effect: EffectBase) => boolean);
+export type Exclusions = EffectName[] | ((effect: EffectApplier) => boolean);
 
 const skillEffectNames = {
     military: {

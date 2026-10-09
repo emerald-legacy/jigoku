@@ -32,7 +32,7 @@ type MilitaryModifierName = typeof MilitaryModifiers[number];
 type PoliticalModifierName = typeof PoliticalModifiers[number];
 type ProvinceStrengthModifierName = typeof ProvinceStrengthModifiers[number];
 
-const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectBase<EffectName, GameObject, unknown>) => boolean>> = {
+const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectApplier<EffectName, GameObject, unknown>) => boolean>> = {
     [EffectName.ModifyBaseMilitarySkillMultiplier]: (card) => card.hasDash('military'),
     [EffectName.ModifyBasePoliticalSkillMultiplier]: (card) => card.hasDash('political'),
     [EffectName.ModifyBothSkills]: (card) => card.hasDash('military') && card.hasDash('political'),
@@ -53,10 +53,10 @@ const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectBase<Ef
 };
 
 /**
- * What an `Effect` applies to its targets. `N` is the effect's name, which decides its value
+ * What an `ActiveEffect` applies to its targets. `N` is the effect's name, which decides its value
  * type; `T` is the kind of object the effect's builder targets.
  */
-export abstract class EffectBase<N extends EffectName = EffectName, T extends GameObject = GameObject, V = EffectValueMap[N]> {
+export abstract class EffectApplier<N extends EffectName = EffectName, T extends GameObject = GameObject, V = EffectValueMap[N]> {
     type: N;
     context!: AbilityContext;
     duration?: Duration | null;
@@ -96,19 +96,19 @@ export abstract class EffectBase<N extends EffectName = EffectName, T extends Ga
         return !dashCheck || !target.isDrawCard() || !dashCheck(target, this);
     }
 
-    isMilitaryModifier(): this is EffectBase<MilitaryModifierName> {
+    isMilitaryModifier(): this is EffectApplier<MilitaryModifierName> {
         return MilitaryModifiers.some((name) => name === this.type);
     }
 
-    isPoliticalModifier(): this is EffectBase<PoliticalModifierName> {
+    isPoliticalModifier(): this is EffectApplier<PoliticalModifierName> {
         return PoliticalModifiers.some((name) => name === this.type);
     }
 
-    isSkillModifier(): this is EffectBase<MilitaryModifierName | PoliticalModifierName> {
+    isSkillModifier(): this is EffectApplier<MilitaryModifierName | PoliticalModifierName> {
         return this.isMilitaryModifier() || this.isPoliticalModifier();
     }
 
-    isProvinceStrengthModifier(): this is EffectBase<ProvinceStrengthModifierName> {
+    isProvinceStrengthModifier(): this is EffectApplier<ProvinceStrengthModifierName> {
         return ProvinceStrengthModifiers.some((name) => name === this.type);
     }
 }

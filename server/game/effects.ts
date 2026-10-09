@@ -27,7 +27,7 @@ import type { DetachedValue } from './Effects/DetachedEffect.js';
 import type { DynamicMatch } from './Effects/GainAllAbilitiesDynamic.js';
 import type { CostReducerProps } from './CostReducer.js';
 import type { RestrictionProperties } from './Effects/Restriction.js';
-import type { EffectBase } from './Effects/EffectBase.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { Conflict } from './Conflict.js';
 import type { Faction } from './BaseCard.js';
 import type { Duel } from './Duel.js';
@@ -206,7 +206,7 @@ export const Effects = {
     setProvinceStrengthBonus: (value: FlexibleValue<number>) => EffectBuilder.card.flexible(EffectName.SetProvinceStrengthBonus, value),
     provinceCannotHaveSkillIncreased: () => EffectBuilder.card.static(EffectName.ProvinceCannotHaveSkillIncreased, true),
     switchBaseSkills: () => EffectBuilder.card.static(EffectName.SwitchBaseSkills, true),
-    suppressEffects: (condition: (effect: EffectBase) => boolean) =>
+    suppressEffects: (condition: (effect: EffectApplier) => boolean) =>
         EffectBuilder.card.static(EffectName.SuppressEffects, new SuppressEffect(condition)),
     takeControl: (player: Player | undefined) => EffectBuilder.card.static(EffectName.TakeControl, player),
     participatesFromHome: () => EffectBuilder.card.static(EffectName.ParticipatesFromHome, true),

@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import type { AbilityContext } from './AbilityContext.js';
 import { type CardType, EffectName, Stage } from './Constants.js';
 import { isEffectOf } from './Effects/types.js';
-import type { EffectBase } from './Effects/EffectBase.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -24,8 +24,8 @@ export class GameObject {
     protected id: string;
     public printedType = '';
     public facedown = false;
-    protected effects: EffectBase[] = [];
-    protected effectsByType = new Map<EffectName, EffectBase[]>();
+    protected effects: EffectApplier[] = [];
+    protected effectsByType = new Map<EffectName, EffectApplier[]>();
     private suppressEffectCount = 0;
 
     public constructor(
@@ -49,7 +49,7 @@ export class GameObject {
         this._name = value;
     }
 
-    public addEffect(effect: EffectBase) {
+    public addEffect(effect: EffectApplier) {
         this.effects.push(effect);
         const bucket = this.effectsByType.get(effect.type);
         if(bucket) {
@@ -62,7 +62,7 @@ export class GameObject {
         }
     }
 
-    public removeEffect(effect: EffectBase) {
+    public removeEffect(effect: EffectApplier) {
         if(effect.type === EffectName.SuppressEffects) {
             this.suppressEffectCount--;
         }
@@ -212,7 +212,7 @@ export class GameObject {
     // hand-copying in subclasses could not reach it and silently dropped it.
     protected cloneEffectStateInto(target: GameObject): void {
         target.effects = [...this.effects];
-        const clonedIndex = new Map<EffectName, EffectBase[]>();
+        const clonedIndex = new Map<EffectName, EffectApplier[]>();
         for(const [type, bucket] of this.effectsByType) {
             clonedIndex.set(type, [...bucket]);
         }

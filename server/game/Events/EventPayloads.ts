@@ -11,7 +11,7 @@ import type { CharacterStatus, ConflictType, DeckType, DuelType, EventName, Loca
 import type { Direction } from '../GameActions/ModifyBidAction.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
-import type { EffectMatch } from '../Effects/Effect.js';
+import type { EffectMatch } from '../Effects/ActiveEffect.js';
 import type { Event } from './Event.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';

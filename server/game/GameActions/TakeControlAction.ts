@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { Duration, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { Effects } from '../effects.js';
-import type { EffectUntil } from '../Effects/Effect.js';
+import type { EffectUntil } from '../Effects/ActiveEffect.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import { CardLastingEffectAction } from './CardLastingEffectAction.js';

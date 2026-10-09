@@ -8,7 +8,7 @@ import type DrawCard from './DrawCard.js';
 import { StatModifier, type StatModifierSummary } from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 import { isEffectOf } from './Effects/types.js';
-import type { EffectBase } from './Effects/EffectBase.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { NumericEffectName } from './Effects/EffectValueMap.js';
 import type { StateViewer } from './types/StateViewer.js';
 
@@ -98,7 +98,7 @@ export class ProvinceCard extends BaseCard {
 
     getStrengthModifiers(): StatModifier[] {
         const effectsOf = <N extends NumericEffectName>(type: N) => this.getRawEffects().filter((effect) => isEffectOf(effect, type));
-        const setModifier = (effect: EffectBase<NumericEffectName>) =>
+        const setModifier = (effect: EffectApplier<NumericEffectName>) =>
             StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect));
 
         // Set effects override everything

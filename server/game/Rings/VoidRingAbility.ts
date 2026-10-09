@@ -4,7 +4,7 @@ import { CardType } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
 import DrawCard from '../DrawCard.js';
 
-export class VoidRingEffect extends BaseAbility {
+export class VoidRingAbility extends BaseAbility {
     public title = 'Void Ring Effect';
     public cannotTargetFirst = true;
     public defaultPriority = 2; // Default resolution priority when players have ordering switched off

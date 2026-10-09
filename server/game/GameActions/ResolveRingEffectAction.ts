@@ -5,7 +5,7 @@ import { EffectName, EventName } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import Ring from '../Ring.js';
-import { RingEffects } from '../RingEffects.js';
+import { RingAbilities } from '../RingAbilities.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
@@ -44,12 +44,12 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
                 : rings.sort(
                     (a, b) =>
                         (context.player.firstPlayer ? 1 : -1) *
-                          (RingEffects.contextFor(context.player, a.element).ability.defaultPriority -
-                              RingEffects.contextFor(context.player, b.element).ability.defaultPriority)
+                          (RingAbilities.contextFor(context.player, a.element).ability.defaultPriority -
+                              RingAbilities.contextFor(context.player, b.element).ability.defaultPriority)
                 );
             const ringProperties = { ...additionalProperties, optional: false };
             const effectObjects = sortedRings.map((ring) => ({
-                title: RingEffects.getRingName(ring.element) + ' Effect',
+                title: RingAbilities.getRingName(ring.element) + ' Effect',
                 handler: () => context.game.openEventWindow(this.getEvent(ring, context, ringProperties))
             }));
             events.push(
@@ -78,7 +78,7 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
         }
 
         context.game.resolveAbility(
-            RingEffects.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
+            RingAbilities.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
                 event.effectivellyResolvedEffect = resolved;
             })
         );

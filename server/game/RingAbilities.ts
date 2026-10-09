@@ -1,8 +1,8 @@
-import { AirRingEffect } from './Rings/AirRingEffect.js';
-import { EarthRingEffect } from './Rings/EarthRingEffect.js';
-import { FireRingEffect } from './Rings/FireRingEffect.js';
-import { VoidRingEffect } from './Rings/VoidRingEffect.js';
-import { WaterRingEffect } from './Rings/WaterRingEffect.js';
+import { AirRingAbility } from './Rings/AirRingAbility.js';
+import { EarthRingAbility } from './Rings/EarthRingAbility.js';
+import { FireRingAbility } from './Rings/FireRingAbility.js';
+import { VoidRingAbility } from './Rings/VoidRingAbility.js';
+import { WaterRingAbility } from './Rings/WaterRingAbility.js';
 import { AbilityContext } from './AbilityContext.js';
 import { BaseAbility } from './BaseAbility.js';
 import Player from './Player.js';
@@ -22,25 +22,25 @@ function ringForElement(element: Element) {
     switch(element) {
         case Element.Air:
             return (optional: boolean, rules: GameRules, onResolution: ResolutionCb) =>
-                new AirRingEffect(optional, rules, onResolution);
+                new AirRingAbility(optional, rules, onResolution);
         case Element.Earth:
             return (optional: boolean, rules: GameRules, onResolution: ResolutionCb) =>
-                new EarthRingEffect(optional, rules, onResolution);
+                new EarthRingAbility(optional, rules, onResolution);
         case Element.Fire:
             return (optional: boolean, _rules: GameRules, onResolution: ResolutionCb) =>
-                new FireRingEffect(optional, onResolution);
+                new FireRingAbility(optional, onResolution);
         case Element.Void:
             return (optional: boolean, _rules: GameRules, onResolution: ResolutionCb) =>
-                new VoidRingEffect(optional, onResolution);
+                new VoidRingAbility(optional, onResolution);
         case Element.Water:
             return (optional: boolean, rules: GameRules, onResolution: ResolutionCb) =>
-                new WaterRingEffect(optional, rules, onResolution);
+                new WaterRingAbility(optional, rules, onResolution);
         default:
             throw new Error(`Unknown ring effect of ${element}`);
     }
 }
 
-export class RingEffects {
+export class RingAbilities {
     static contextFor(
         player: Player,
         element: Element,

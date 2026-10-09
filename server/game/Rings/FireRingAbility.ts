@@ -5,7 +5,7 @@ import { BaseAbility } from '../BaseAbility.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import DrawCard from '../DrawCard.js';
 
-export class FireRingEffect extends BaseAbility {
+export class FireRingAbility extends BaseAbility {
     public title = 'Fire Ring Effect';
     public cannotTargetFirst = true;
     public defaultPriority = 4; // Default resolution priority when players have ordering switched off

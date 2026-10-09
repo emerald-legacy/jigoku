@@ -7,7 +7,7 @@ import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
 import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from '../TriggeredAbility.js';
-import type { Effect } from './Effect.js';
+import type { ActiveEffect } from './ActiveEffect.js';
 import type {
     ActionProps,
     PersistentEffectProps,
@@ -36,7 +36,7 @@ interface CopiedProps {
 type PersistentGain = GainedPersistentProps & { printedAbility: boolean; location: Location; abilityType?: AbilityType };
 
 // read back as a stored persistent effect, which has no duration
-type PersistentGainValue = PersistentGain & { ref?: Effect[]; duration?: Duration };
+type PersistentGainValue = PersistentGain & { ref?: ActiveEffect[]; duration?: Duration };
 
 type Grant =
     | { kind: AbilityType.Action; properties: ActionProps }

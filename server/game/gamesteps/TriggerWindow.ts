@@ -16,7 +16,11 @@ function promptCardFor(context: TriggerChoice): BaseCard | undefined {
     return Event.promptCardOf(context.event);
 }
 
-export class ForcedTriggeredAbilityWindow extends BaseStep {
+/**
+ * The window in which the triggered abilities of some events resolve. On its own it resolves the forced ones;
+ * `TriggeredAbilityWindow` (optional triggers, with passing) and `KeywordAbilityWindow` build on it.
+ */
+export class TriggerWindow extends BaseStep {
     choices: TriggerChoice[];
     events: Event[];
     eventWindow: EventWindow;

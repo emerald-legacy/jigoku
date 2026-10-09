@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 import { changeConflictSkillFunctionPlayer } from '../../../effects.js';
 import type { Conflict } from '../../../Conflict.js';
 import { isEffectOf } from '../../../Effects/types.js';
-import type { EffectBase } from '../../../Effects/EffectBase.js';
+import type { EffectApplier } from '../../../Effects/EffectApplier.js';
 
 export default class ShoreOfTheAshenFlames extends ProvinceCard {
     static id = 'shore-of-the-ashen-flames';
@@ -13,7 +13,7 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
             effect: changeConflictSkillFunctionPlayer((card, conflict: Conflict) => {
-                const exclusionFunction = (effect: EffectBase) => {
+                const exclusionFunction = (effect: EffectApplier) => {
                     if(isEffectOf(effect, EffectName.AttachmentMilitarySkillModifier)) {
                         const value = effect.getValue(card);
                         return value > 0;

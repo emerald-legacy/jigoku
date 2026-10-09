@@ -8,7 +8,7 @@ import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type { EventName } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
-import type { EffectBase } from './EffectBase.js';
+import type { EffectApplier } from './EffectApplier.js';
 import type Player from '../Player.js';
 import type { TargetLocation } from '../Interfaces.js';
 
@@ -43,7 +43,8 @@ export interface EffectProperties<T extends GameObject = GameObject> {
 }
 
 /**
- * Represents a card based effect applied to one or more targets.
+ * An effect while it is active: which targets it reaches, for how long and under what condition;
+ * its `effect` (an `EffectApplier`) applies it to each of them.
  *
  * Properties:
  * match            - function that takes a card/player/ring and context object
@@ -68,7 +69,7 @@ export interface EffectProperties<T extends GameObject = GameObject> {
  *                    to match.  Card effects only.
  * effect           - object representing the effect to be applied.
  */
-export class Effect<T extends GameObject = GameObject> {
+export class ActiveEffect<T extends GameObject = GameObject> {
     game: Game;
     source: EffectSource;
     match: EffectMatch<T>;
@@ -78,13 +79,13 @@ export class Effect<T extends GameObject = GameObject> {
     location: Location;
     canChangeZoneOnce: boolean;
     canChangeZoneNTimes: number;
-    effect: EffectBase<EffectName, T>;
+    effect: EffectApplier<EffectName, T>;
     ability: BaseAbility | undefined;
     targets: T[];
     context!: AbilityContext;
     endingMessage: string | undefined;
 
-    constructor(game: Game, source: EffectSource, properties: EffectProperties<T>, effect: EffectBase<EffectName, T>) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<T>, effect: EffectApplier<EffectName, T>) {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);

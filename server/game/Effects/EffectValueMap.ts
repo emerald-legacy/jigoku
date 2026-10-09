@@ -17,7 +17,7 @@ import type { ElementSymbolInfo } from '../ElementSymbol.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
-import type { EffectBase } from './EffectBase.js';
+import type { EffectApplier } from './EffectApplier.js';
 import type { GainedAbilityValue } from './GainAbility.js';
 import type { DynamicMatch } from './GainAllAbilitiesDynamic.js';
 
@@ -107,7 +107,7 @@ export interface EffectValueMap {
     [EffectName.CanBeTriggeredByOpponent]: boolean;
     [EffectName.CanOnlyBeDeclaredAsAttackerWithElement]: Element;
     [EffectName.CanOnlyBeDeclaredAsAttackerWithCondition]: (props: ICanOnlyBeDeclaredAsAttackerWithCondition) => boolean;
-    [EffectName.CannotApplyLastingEffects]: (effect: EffectBase<EffectName, GameObject, unknown>) => boolean;
+    [EffectName.CannotApplyLastingEffects]: (effect: EffectApplier<EffectName, GameObject, unknown>) => boolean;
     [EffectName.CannotBeAttacked]: boolean;
     [EffectName.CannotHaveConflictsDeclaredOfType]: string;
     [EffectName.CannotHaveOtherRestrictedAttachments]: BaseCard;
@@ -182,7 +182,7 @@ export interface EffectValueMap {
     [EffectName.SetProvinceStrengthBonus]: number;
     [EffectName.SetProvinceStrength]: number;
     [EffectName.SwitchBaseSkills]: boolean;
-    [EffectName.SuppressEffects]: EffectBase<EffectName, GameObject, unknown>[];
+    [EffectName.SuppressEffects]: EffectApplier<EffectName, GameObject, unknown>[];
     [EffectName.TakeControl]: Player | undefined;
     [EffectName.UnlessActionCost]: UnlessActionCostValue;
     [EffectName.AddElement]: Element | Element[];

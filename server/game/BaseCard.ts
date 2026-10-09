@@ -40,7 +40,7 @@ import Ring from './Ring.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type { StrongholdCard } from './StrongholdCard.js';
 import type { RoleCard } from './RoleCard.js';
-import type { Effect } from './Effects/Effect.js';
+import type { ActiveEffect } from './Effects/ActiveEffect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { AbilityLimitIncrease } from './Effects/EffectValueMap.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
@@ -65,7 +65,7 @@ export interface StoredPersistentEffect {
     targetLocation?: TargetLocation;
     effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
-    ref?: Effect[];
+    ref?: ActiveEffect[];
     type?: EffectName;
     abilityType?: AbilityType;
     isKeywordEffect?: boolean;

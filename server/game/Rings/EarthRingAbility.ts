@@ -4,7 +4,7 @@ import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { EARTH_CHOICE, type GameRules } from '../GameRules.js';
 
-export class EarthRingEffect extends BaseAbility {
+export class EarthRingAbility extends BaseAbility {
     public title = 'Earth Ring Effect';
     public cannotTargetFirst = true;
     public defaultPriority = 1; // Default resolution priority when players have ordering switched off

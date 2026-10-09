@@ -1,14 +1,14 @@
-import { Effect, type EffectProperties } from './Effect.js';
+import { ActiveEffect, type EffectProperties } from './ActiveEffect.js';
 import type { EffectName } from '../Constants.js';
 import { Duel } from '../Duel.js';
 import type { EffectSource } from '../EffectSource.js';
 import type Game from '../Game.js';
-import type { EffectBase } from './EffectBase.js';
+import type { EffectApplier } from './EffectApplier.js';
 
-export class DuelEffect extends Effect<Duel> {
+export class DuelEffect extends ActiveEffect<Duel> {
     duel: Duel | undefined;
 
-    constructor(game: Game, source: EffectSource, properties: EffectProperties<Duel>, effect: EffectBase<EffectName, Duel>) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<Duel>, effect: EffectApplier<EffectName, Duel>) {
         super(game, source, properties, effect);
         // Override any erroneous match passed through properties
         this.match = () => true;

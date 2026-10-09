@@ -1,6 +1,6 @@
 import { Duration, EffectName, EventName } from './Constants.js';
-import type { Effect } from './Effects/Effect.js';
-import type { EffectUntil } from './Effects/Effect.js';
+import type { ActiveEffect } from './Effects/ActiveEffect.js';
+import type { EffectUntil } from './Effects/ActiveEffect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { DelayedEffectValue, DelayedEffectWhen } from './Effects/EffectValueMap.js';
 import type { AbilityContext } from './AbilityContext.js';
@@ -24,12 +24,12 @@ function untilEnds<N extends EventName>(until: EffectUntil, name: N, event: Even
 interface CustomDurationEvent {
     name: string;
     handler: (...args: unknown[]) => void;
-    effect: Effect;
+    effect: ActiveEffect;
 }
 
 export class EffectEngine {
     events: EventRegistrar;
-    effects: Array<Effect> = [];
+    effects: Array<ActiveEffect> = [];
     customDurationEvents: CustomDurationEvent[] = [];
     newEffect = false;
 
@@ -44,7 +44,7 @@ export class EffectEngine {
         ]);
     }
 
-    add(effect: Effect) {
+    add(effect: ActiveEffect) {
         this.effects.push(effect);
         if(effect.duration === Duration.Custom) {
             this.registerCustomDurationEvents(effect);
@@ -54,8 +54,8 @@ export class EffectEngine {
     }
 
     checkDelayedEffects(events: Event[]) {
-        const effectsToTrigger: { effect: Effect; properties: DelayedEffectValue }[] = [];
-        const effectsToRemove: Effect[] = [];
+        const effectsToTrigger: { effect: ActiveEffect; properties: DelayedEffectValue }[] = [];
+        const effectsToRemove: ActiveEffect[] = [];
         for(const effect of this.effects.filter((effect) => effect.isEffectActive())) {
             const delayedEffect = effect.effect;
             // a delayed effect is static, so it has a value without a target
@@ -180,7 +180,7 @@ export class EffectEngine {
         }
     }
 
-    registerCustomDurationEvents(effect: Effect) {
+    registerCustomDurationEvents(effect: ActiveEffect) {
         if(!effect.until) {
             return;
         }
@@ -196,7 +196,7 @@ export class EffectEngine {
         }
     }
 
-    unregisterCustomDurationEvents(effect: Effect) {
+    unregisterCustomDurationEvents(effect: ActiveEffect) {
         const remainingEvents: CustomDurationEvent[] = [];
         for(const event of this.customDurationEvents) {
             if(event.effect === effect) {
@@ -208,7 +208,7 @@ export class EffectEngine {
         this.customDurationEvents = remainingEvents;
     }
 
-    createCustomDurationHandler(customDurationEffect: Effect) {
+    createCustomDurationHandler(customDurationEffect: ActiveEffect) {
         // the custom duration events are emitted with the event alone
         return (...args: unknown[]) => {
             const event = args[0];
@@ -223,8 +223,8 @@ export class EffectEngine {
         };
     }
 
-    unapplyAndRemove(match: (effect: Effect) => boolean) {
-        const toRemove: Effect[] = [];
+    unapplyAndRemove(match: (effect: ActiveEffect) => boolean) {
+        const toRemove: ActiveEffect[] = [];
         for(const effect of this.effects) {
             if(match(effect)) {
                 toRemove.push(effect);

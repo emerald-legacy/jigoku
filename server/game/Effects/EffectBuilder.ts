@@ -7,9 +7,9 @@ import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
-import type { Effect } from './Effect.js';
-import type { EffectProperties } from './Effect.js';
-import type { EffectBase } from './EffectBase.js';
+import type { ActiveEffect } from './ActiveEffect.js';
+import type { EffectProperties } from './ActiveEffect.js';
+import type { EffectApplier } from './EffectApplier.js';
 import type { EffectValueMap, FlexibleEffectName } from './EffectValueMap.js';
 import { CardEffect } from './CardEffect.js';
 import { ConflictEffect } from './ConflictEffect.js';
@@ -26,7 +26,7 @@ export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel | Confl
 
 // Method syntax on purpose: a factory for a narrower target type is still an `EffectFactory`.
 interface Factory<T extends GameObject> {
-    create(game: Game, source: EffectSource, props: EffectProperties<T>): Effect;
+    create(game: Game, source: EffectSource, props: EffectProperties<T>): ActiveEffect;
 }
 /** `appliesTo` is never set; it records what the effect targets, so `match` can be typed by it. */
 export type EffectFactory<T extends GameObject = EffectTarget> = Factory<T>['create'] & { readonly appliesTo?: T };
@@ -38,7 +38,7 @@ function isCalculation<V, T>(value: FlexibleValue<V, T>): value is DynamicValue<
     return typeof value === 'function';
 }
 
-type Container<T extends GameObject> = new (game: Game, source: EffectSource, props: EffectProperties<T>, effect: EffectBase<EffectName, T>) => Effect<T>;
+type Container<T extends GameObject> = new (game: Game, source: EffectSource, props: EffectProperties<T>, effect: EffectApplier<EffectName, T>) => ActiveEffect<T>;
 
 /** Effect factories for one kind of target; each checks its value against `EffectValueMap`. */
 function effectsFor<T extends GameObject>(Container: Container<T>) {

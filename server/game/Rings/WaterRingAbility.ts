@@ -4,7 +4,7 @@ import { CardType } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 
-export class WaterRingEffect extends BaseAbility {
+export class WaterRingAbility extends BaseAbility {
     public title = 'Water Ring Effect';
     public cannotTargetFirst = true;
     public defaultPriority = 3; // Default resolution priority when players have ordering switched off

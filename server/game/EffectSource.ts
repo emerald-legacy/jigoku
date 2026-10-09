@@ -2,9 +2,9 @@ import { GameObject } from './GameObject.js';
 import { Location, Duration } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import type { Effect } from './Effects/Effect.js';
+import type { ActiveEffect } from './Effects/ActiveEffect.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
-import type { EffectProperties } from './Effects/Effect.js';
+import type { EffectProperties } from './Effects/ActiveEffect.js';
 
 type EffectSourceProperties = EffectProperties<EffectTarget> & { effect?: EffectFactory | EffectFactory[] };
 
@@ -58,7 +58,7 @@ export class EffectSource extends GameObject {
         return undefined;
     }
 
-    public getPersistentEffectRecords(): readonly { ref?: Effect[] }[] {
+    public getPersistentEffectRecords(): readonly { ref?: ActiveEffect[] }[] {
         return [];
     }
 
@@ -124,7 +124,7 @@ export class EffectSource extends GameObject {
      * Adds a persistent/lasting/delayed effect to the effect engine
      * @param {Object} properties - properties for the effect - see Effects/Effect.js
      */
-    addEffectToEngine(properties: EffectSourceProperties): Effect[] {
+    addEffectToEngine(properties: EffectSourceProperties): ActiveEffect[] {
         const { effect, ...rest } = properties;
         if(Array.isArray(effect)) {
             return effect.map((factory) => this.game.effectEngine.add(factory(this.game, this, rest)));
@@ -135,8 +135,8 @@ export class EffectSource extends GameObject {
         return [];
     }
 
-    removeEffectFromEngine(effectArray: Effect[]): void {
-        this.game.effectEngine.unapplyAndRemove((effect: Effect) => effectArray.includes(effect));
+    removeEffectFromEngine(effectArray: ActiveEffect[]): void {
+        this.game.effectEngine.unapplyAndRemove((effect: ActiveEffect) => effectArray.includes(effect));
     }
 
     removeLastingEffects(): void {

@@ -5,7 +5,7 @@ import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { AIR_CHOICE, type GameRules } from '../GameRules.js';
 
-export class AirRingEffect extends BaseAbility {
+export class AirRingAbility extends BaseAbility {
     public title = 'Air Ring Effect';
     public cannotTargetFirst = true;
     public defaultPriority = 5; // Default resolution priority when players have ordering switched off
