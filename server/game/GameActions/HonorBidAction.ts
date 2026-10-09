@@ -33,15 +33,15 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         return [context.player];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return this.getProperties(context).giveHonor
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return this.getProperties(context, additionalProperties).giveHonor
             ? ['bid honor', []]
             : ['have {0} select a value on their honor dial', []];
     }
 
     /** The bidding players; none when giving honor, whose message names nobody. */
-    protected effectMessageTarget(context: C): MsgArg {
-        const properties = this.getProperties(context);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.giveHonor) {
             return undefined;
         }

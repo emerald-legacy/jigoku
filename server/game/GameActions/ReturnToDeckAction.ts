@@ -33,8 +33,8 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         ];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', []];
         }
@@ -42,7 +42,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.getProperties(context);
+        const properties = this.getProperties(context, additionalProperties);
         let location: Location[] = Array.isArray(properties.location) ? [...properties.location] : [properties.location];
         const index = location.indexOf(Location.Provinces);
         if(index > -1) {

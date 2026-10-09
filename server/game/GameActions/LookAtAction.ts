@@ -20,16 +20,16 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         message: (context: AbilityContext, cards: BaseCard[]) => msg`${context.source} sees ${cards}`
     };
 
-    canAffect(card: BaseCard, context: C) {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}) {
         if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
         }
-        return super.canAffect(card, context);
+        return super.canAffect(card, context, additionalProperties);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
-        const cards = targetList(target).filter((card) => this.canAffect(card, context));
+        const cards = targetList(target).filter((card) => this.canAffect(card, context, additionalProperties));
         if(cards.length === 0) {
             return;
         }

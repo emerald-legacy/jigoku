@@ -4,7 +4,7 @@ import { AbilityContext } from './AbilityContext.js';
 import { BaseCardAbility } from './BaseCardAbility.js';
 import type { BaseAbilityProperties, DeclaredGameAction } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
-import type { GameAction } from './GameActions/GameAction.js';
+import type { HeldAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { EventWindow } from './Events/EventWindow.js';
 import type { ThenEventWindow } from './Events/ThenEventWindow.js';
@@ -79,11 +79,11 @@ export class ThenAbility extends BaseCardAbility {
         }
     }
 
-    getGameActions(context: AbilityContext): GameAction[] {
+    getGameActions(context: AbilityContext): HeldAction[] {
         // if there are any targets, look for gameActions attached to them
         const actions = this.targets.flatMap((target) => target.getGameAction(context));
         // look for a gameAction on the ability itself, on an attachment execute that action on its parent, otherwise on the card itself
-        return actions.concat(this.gameAction);
+        return actions.concat(this.gameAction.map((action) => ({ action, overrides: {} })));
     }
 
     executeHandler(context: AbilityContext): void {
@@ -99,9 +99,9 @@ export class ThenAbility extends BaseCardAbility {
         if(typeof then === 'function') {
             then = then(context);
         }
-        for(const action of actions) {
+        for(const { action, overrides } of actions) {
             this.game.queueSimpleStep(() => {
-                action.addEventsToArray(context.events, context);
+                action.addEventsToArray(context.events, context, overrides);
             });
         }
         this.game.queueSimpleStep(() => {

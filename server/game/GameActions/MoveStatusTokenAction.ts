@@ -25,7 +25,7 @@ export class MoveStatusTokenAction<C extends AbilityContext = AbilityContext> ex
     }
 
     canAffect(token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const { recipient } = this.getProperties(context);
+        const { recipient } = this.getProperties(context, additionalProperties);
         if(recipient.location !== Location.PlayArea) {
             return false;
         } else if(
@@ -48,7 +48,7 @@ export class MoveStatusTokenAction<C extends AbilityContext = AbilityContext> ex
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenMoved, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
-        const { recipient } = this.getProperties(context);
+        const { recipient } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
         event.donor = token.card ?? undefined;

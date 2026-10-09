@@ -18,17 +18,6 @@ describe('SelectCardAction', function() {
         this.gameAction = buildGameActionSpy();
     });
 
-    describe('getProperties()', function() {
-        it('should install a setDefaultTarget closure that returns the wrapped target', function() {
-            const action = new SelectCardAction({
-                target: 'tgt', selector: this.selector, gameAction: this.gameAction
-            });
-            action.getProperties(this.context);
-            const installedFn = this.gameAction.setDefaultTarget.calls.mostRecent().args[0];
-            expect(installedFn()).toEqual(['tgt']);
-        });
-    });
-
     describe('canAffect()', function() {
         it('should ask the selector with the current player by default', function() {
             const action = new SelectCardAction({ selector: this.selector, gameAction: this.gameAction });

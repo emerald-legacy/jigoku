@@ -16,8 +16,8 @@ export class LoseFateAction<C extends AbilityContext = AbilityContext> extends P
     eventName = EventName.OnModifyFate;
     defaultProperties = { amount: 1 };
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['make {0} lose {1} fate', [this.getProperties(context).amount]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['make {0} lose {1} fate', [this.getProperties(context, additionalProperties).amount]];
     }
 
     getCostMessage(context: C): MessageArgs {

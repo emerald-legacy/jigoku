@@ -16,8 +16,8 @@ export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> e
     name = 'takeFateFromRing';
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1, removeOnly: false };
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         return ['{2} {1} fate from {0}', [properties.amount, properties.removeOnly ? 'remove' : 'take']];
     }
 

@@ -30,8 +30,8 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         return [context.player];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', []];
         }
@@ -39,8 +39,8 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     /** The direction, or the amount when the player picks the direction. */
-    protected effectMessageTarget(context: C): MsgArg {
-        const properties = this.getProperties(context);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.direction === Direction.Prompt ? properties.amount : properties.direction;
     }
 

@@ -13,8 +13,8 @@ export interface ShuffleDeckProperties extends PlayerActionProperties {
 export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ShuffleDeckProperties, EventName.Unnamed, C> {
     name = 'shuffleDeck';
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['shuffle {0}\'s {1}', [this.getProperties(context).deck]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['shuffle {0}\'s {1}', [this.getProperties(context, additionalProperties).deck]];
     }
 
     defaultTargets(context: C): Player[] {

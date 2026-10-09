@@ -66,8 +66,8 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
         });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C) {
-        const properties = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context);
     }
 }

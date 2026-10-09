@@ -47,12 +47,12 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
         return ['giving {1} honor to {2}', [amountToTransfer, opponent]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['take {1} honor from {0}', [0]];
         }
-        const amountToTransfer = this.getAmountToTransfer(opponent, context.player, context, this.getProperties(context).amount);
+        const amountToTransfer = this.getAmountToTransfer(opponent, context.player, context, this.getProperties(context, additionalProperties).amount);
         return ['take {1} honor from {0}', [amountToTransfer]];
     }
 

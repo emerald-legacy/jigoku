@@ -88,12 +88,11 @@ export class EffectEngine {
             return {
                 title: context.source.name + '\'s effect' + (targets.length === 1 ? ' on ' + targets[0].name : ''),
                 handler: () => {
-                    properties.gameAction.setDefaultTarget(() => targets);
-                    if(properties.message && properties.gameAction.hasLegalTarget(context)) {
+                    if(properties.message && properties.gameAction.hasLegalTarget(context, { target: targets })) {
                         this.game.addMessage(properties.message(context, targets));
                     }
                     const actionEvents: Event[] = [];
-                    properties.gameAction.addEventsToArray(actionEvents, context);
+                    properties.gameAction.addEventsToArray(actionEvents, context, { target: targets });
                     this.game.queueSimpleStep(() => this.game.openThenEventWindow(actionEvents));
                     this.game.queueSimpleStep(() => context.refill());
                 }

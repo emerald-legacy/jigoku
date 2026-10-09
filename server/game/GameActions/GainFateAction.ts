@@ -26,8 +26,8 @@ export class GainFateAction<C extends AbilityContext = AbilityContext> extends P
         return ['gain {0} fate', []];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        return this.getProperties(context).amount;
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).amount;
     }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {

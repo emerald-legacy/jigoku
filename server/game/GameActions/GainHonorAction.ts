@@ -20,8 +20,8 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     restriction = RestrictionType.GainHonor;
     eventName = EventName.OnModifyHonor;
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         const [, amountToTransfer] = CalculateHonorLimit(
             context.player,
             context.game.roundNumber,

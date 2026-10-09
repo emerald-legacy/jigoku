@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import { targetList, type ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent, type ActionOverrides } from './GameAction.js';
 
 export type DishonorProvinceProperties = CardActionProperties;
 
@@ -20,8 +20,8 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
     }
 
     /** A facedown province is named by its location. */
-    protected effectMessageTarget(context: C): MsgArg {
-        return targetList(this.getProperties(context).target).map((target) => target.isFacedown() ? target.location : target);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return targetList(this.getProperties(context, additionalProperties).target).map((target) => target.isFacedown() ? target.location : target);
     }
 
     canAffect(card: BaseCard, context: C): boolean {

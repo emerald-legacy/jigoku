@@ -6,7 +6,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { CardAbility } from '../CardAbility.js';
-import type { GameAction } from '../GameActions/GameAction.js';
+import type { GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
@@ -55,8 +55,10 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
         return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
-        return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
+    getGameAction(context: AbilityContext): HeldAction[] {
+        return this.properties.gameAction
+            .filter((action) => action.hasLegalTarget(context))
+            .map((action) => ({ action, overrides: {} }));
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {

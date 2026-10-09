@@ -70,8 +70,8 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const amount = derive(this.getProperties(context).cardsToLookAt, context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const amount = derive(this.getProperties(context, additionalProperties).cardsToLookAt, context);
         const message =
             amount > 0
                 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of their deck`
@@ -102,7 +102,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const player = properties.player || context.player;
-        const event = this.getEvent(player, context);
+        const event = this.getEvent(player, context, additionalProperties);
         const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
         if(event.amount === -1) {
@@ -248,10 +248,9 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         const gameAction = this.getProperties(context).gameAction;
         if(gameAction) {
             const selectedArray = Array.from(selectedCards);
-            gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
-                if(gameAction.hasLegalTarget(context)) {
-                    gameAction.resolve(undefined, context);
+                if(gameAction.hasLegalTarget(context, { target: selectedArray })) {
+                    gameAction.resolve(selectedArray, context);
                 }
                 return true;
             });

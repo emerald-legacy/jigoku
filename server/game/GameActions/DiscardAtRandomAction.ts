@@ -21,8 +21,8 @@ export class DiscardAtRandomAction<C extends AbilityContext = AbilityContext> ex
 
     restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;
-    protected effectMessage(context: C): MessageArgs {
-        const { amount } = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount } = this.getProperties(context, additionalProperties);
         return ['make {0} discard {1} {2} at random', [amount, amount > 1 ? 'cards' : 'card']];
     }
 

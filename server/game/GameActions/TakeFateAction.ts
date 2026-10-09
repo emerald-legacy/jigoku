@@ -20,8 +20,8 @@ export class TakeFateAction<C extends AbilityContext = AbilityContext> extends P
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['take {1} fate from {0}', [this.getProperties(context).amount]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['take {1} fate from {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {

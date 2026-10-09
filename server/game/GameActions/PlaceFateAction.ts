@@ -21,8 +21,8 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
     defaultProperties = { amount: 1 };
-    protected effectMessage(context: C): MessageArgs {
-        return ['place {1} fate on {0}', [this.getProperties(context).amount]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['place {1} fate on {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {

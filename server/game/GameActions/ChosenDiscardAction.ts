@@ -24,8 +24,8 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
     restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['make {0} discard {1} cards', [this.getProperties(context).amount]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['make {0} discard {1} cards', [this.getProperties(context, additionalProperties).amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -45,14 +45,14 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
             const amount = Math.min(availableHand.length, properties.amount);
             if(amount > 0) {
                 if(amount >= availableHand.length) {
-                    const event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = availableHand;
                     events.push(event);
                     return;
                 }
 
                 if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
-                    const event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = availableHand.slice(0, amount);
                     events.push(event);
                     return;
@@ -66,7 +66,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     cardCondition: (card: BaseCard) => properties.cardCondition(card, context),
                     onSelect: (player: Player, cards: BaseCard[]) => {
-                        const event = this.getEvent(player, context);
+                        const event = this.getEvent(player, context, additionalProperties);
                         event.cards = cards;
                         events.push(event);
                         return true;

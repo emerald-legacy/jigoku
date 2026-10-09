@@ -41,8 +41,8 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         const [target] = targetList(properties.target);
         const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
         if(properties.shuffle) {

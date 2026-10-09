@@ -1,4 +1,4 @@
-import type { ActionOverrides } from './GameActions/GameAction.js';
+import type { ActionOverrides, HeldAction } from './GameActions/GameAction.js';
 import { AbilityTargetAbility } from './AbilityTargets/AbilityTargetAbility.js';
 import { AbilityTargetCard } from './AbilityTargets/AbilityTargetCard.js';
 import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
@@ -40,7 +40,7 @@ interface AbilityTarget extends DependentTarget {
     resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
-    getGameAction(context: AbilityContext): GameAction[];
+    getGameAction(context: AbilityContext): HeldAction[];
 }
 
 /**

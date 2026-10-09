@@ -18,8 +18,8 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
     cost = 'moving {0} into the conflict';
     effect = 'move {0} into the conflict';
     targetType = [CardType.Character];
-    canAffect(card: DrawCard, context: C): boolean {
-        const properties = this.getProperties(context);
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -44,7 +44,7 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnMoveToConflict, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.getProperties(context);
+        const properties = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }

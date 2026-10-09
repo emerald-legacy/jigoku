@@ -24,8 +24,8 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['place {0} underneath {1}', [this.getProperties(context).destination]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['place {0} underneath {1}', [this.getProperties(context, additionalProperties).destination]];
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {

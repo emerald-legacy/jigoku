@@ -22,10 +22,10 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         if(this.hasLegalTarget(context, additionalProperties)) {
             for(const gameAction of properties.gameActions) {
-                gameAction.addEventsToArray(events, context, additionalProperties);
+                gameAction.addEventsToArray(events, context, overrides);
             }
         }
     }

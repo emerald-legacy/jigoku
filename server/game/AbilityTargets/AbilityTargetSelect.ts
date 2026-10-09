@@ -2,7 +2,7 @@ import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { SelectChoice } from './SelectChoice.js';
 import { Stage, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameAction } from '../GameActions/GameAction.js';
+import type { GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
 import type { EffectSource } from '../EffectSource.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
@@ -57,13 +57,13 @@ export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectPr
         return (Array.isArray(choice) ? choice : [choice]).some((action) => action.hasLegalTarget(contextCopy));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
+    getGameAction(context: AbilityContext): HeldAction[] {
         if(!context.selects[this.name]) {
             return [];
         }
         const choice: ChoiceValue = this.getChoices(context)[context.selects[this.name].choice];
         if(typeof choice !== 'function') {
-            return Array.isArray(choice) ? choice : [choice];
+            return (Array.isArray(choice) ? choice : [choice]).map((action) => ({ action, overrides: {} }));
         }
         return [];
     }

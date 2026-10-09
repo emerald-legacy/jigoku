@@ -39,12 +39,6 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         cardCondition: () => true
     };
 
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
-        return properties;
-    }
-
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.cards.some((c) =>
@@ -113,7 +107,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.targets ||
-            properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
+            properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, { ...additionalProperties, target: properties.target })
         );
     }
 }

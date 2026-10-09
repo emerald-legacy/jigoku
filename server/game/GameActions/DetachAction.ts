@@ -13,8 +13,8 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
     eventName = EventName.OnCardDetached;
     targetType = [CardType.Attachment];
 
-    protected effectMessage(context: C): MessageArgs {
-        const [target] = targetList(this.getProperties(context).target);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const [target] = targetList(this.getProperties(context, additionalProperties).target);
         return ['detach {1} from {0}', [target.parent]];
     }
 

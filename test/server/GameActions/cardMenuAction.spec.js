@@ -12,13 +12,13 @@ describe('CardMenuAction', function() {
         this.gameAction = buildGameActionSpy();
     });
 
-    describe('getProperties()', function() {
-        it('should install setDefaultTarget on the underlying gameAction', function() {
+    describe('targets', function() {
+        it('should pass each card to the gameAction as its target', function() {
             const action = new CardMenuAction({
                 cards: [this.cardA], gameAction: this.gameAction
             });
-            action.getProperties(this.context);
-            expect(this.gameAction.setDefaultTarget).toHaveBeenCalled();
+            action.hasLegalTarget(this.context);
+            expect(this.gameAction.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: this.cardA });
         });
     });
 

@@ -40,15 +40,15 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         const targets = targetList(properties.target);
         const indices = targets.map((_, idx) => `{${idx + 1}}`);
         return ['initiate a ' + properties.type.toString() + ' duel : {0} vs. ' + indices.join(' and '), targets];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        return this.getProperties(context).challenger;
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).challenger;
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -106,7 +106,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             additionalProperties
         );
         const addDuelEventsHandler = () => {
-            const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context));
+            const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context, additionalProperties));
             if(cards.length === 0) {
                 return;
             }

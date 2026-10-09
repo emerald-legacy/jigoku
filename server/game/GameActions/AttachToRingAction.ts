@@ -18,8 +18,8 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
     eventName = EventName.OnCardAttached;
     targetType = ['ring'];
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['attach {1} to {0}', [this.getProperties(context).attachment]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['attach {1} to {0}', [this.getProperties(context, additionalProperties).attachment]];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {

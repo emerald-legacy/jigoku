@@ -4,7 +4,7 @@ import { CardType, Stage, Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import type { GameAction } from '../GameActions/GameAction.js';
+import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
@@ -24,9 +24,6 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
         super(name, properties, ability);
         this.properties.location = this.properties.location || Location.PlayArea;
         this.selector = this.getSelector(properties);
-        for(const gameAction of this.properties.gameAction) {
-            gameAction.setDefaultTarget((context: AbilityContext) => context.elements[name]);
-        }
     }
 
     getSelector(properties: AbilityTargetElementSymbolProperties): CardSelectorInstance {
@@ -52,8 +49,15 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
         return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
-        return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
+    getGameAction(context: AbilityContext): HeldAction[] {
+        const overrides = this.actionOverrides(context);
+        return this.properties.gameAction
+            .filter((action) => action.hasLegalTarget(context, overrides))
+            .map((action) => ({ action, overrides }));
+    }
+
+    protected actionOverrides(context: AbilityContext): ActionOverrides {
+        return { target: context.elements[this.name] };
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
@@ -120,7 +124,7 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context))) {
+        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context)))) {
             return true;
         }
         return this.getChoosingPlayer(context) === context.player;

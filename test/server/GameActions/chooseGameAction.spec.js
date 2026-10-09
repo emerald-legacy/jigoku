@@ -12,24 +12,23 @@ describe('ChooseGameAction', function() {
         this.actionB = buildGameActionSpy();
     });
 
-    describe('getProperties()', function() {
-        it('should install a setDefaultTarget closure that returns the wrapped target', function() {
+    describe('targets', function() {
+        it('should pass its target to every action it offers', function() {
             const action = new ChooseGameAction({
                 target: 'tgt',
-                choices: { A: { action: this.actionA } }
-            });
-            action.getProperties(this.context);
-            const installedFn = this.actionA.setDefaultTarget.calls.mostRecent().args[0];
-            expect(installedFn()).toEqual(['tgt']);
-        });
-
-        it('should install setDefaultTarget on every option action', function() {
-            const action = new ChooseGameAction({
                 choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
-            action.getProperties(this.context);
-            expect(this.actionA.setDefaultTarget).toHaveBeenCalled();
-            expect(this.actionB.setDefaultTarget).toHaveBeenCalled();
+            action.addEventsToArray([], this.context);
+            expect(this.actionA.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: ['tgt'] });
+            expect(this.actionB.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: ['tgt'] });
+        });
+
+        it('should pass nothing when it has no target, so each action keeps its own default', function() {
+            const action = new ChooseGameAction({
+                choices: { A: { action: this.actionA } }
+            });
+            action.addEventsToArray([], this.context);
+            expect(this.actionA.hasLegalTarget).toHaveBeenCalledWith(this.context, {});
         });
     });
 
@@ -90,7 +89,7 @@ describe('ChooseGameAction', function() {
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('B');
             const step = this.game.queueSimpleStep.calls.mostRecent().args[0];
             step();
-            expect(this.actionB.addEventsToArray).toHaveBeenCalledWith(events, this.context);
+            expect(this.actionB.addEventsToArray).toHaveBeenCalledWith(events, this.context, {});
             expect(this.actionA.addEventsToArray).not.toHaveBeenCalled();
         });
 

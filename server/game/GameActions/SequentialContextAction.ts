@@ -10,8 +10,9 @@ export interface SequentialContextProperties extends GameActionProperties {
 }
 
 export class SequentialContextAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<SequentialContextProperties, C> {
-    getEffectMessage(context: C): MessageArgs {
-        return this.getProperties(context).gameActions[0].getEffectMessage(context);
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return properties.gameActions[0].getEffectMessage(context, overrides);
     }
 
     protected children(properties: SequentialContextProperties) {
@@ -19,12 +20,12 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
-                if(gameAction.hasLegalTarget(context, additionalProperties)) {
+                if(gameAction.hasLegalTarget(context, overrides)) {
                     const eventsForThisAction: Event[] = [];
-                    gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
+                    gameAction.addEventsToArray(eventsForThisAction, context, overrides);
                     context.game.queueSimpleStep(() => {
                         for(const event of eventsForThisAction) {
                             events.push(event);

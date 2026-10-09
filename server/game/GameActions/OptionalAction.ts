@@ -20,18 +20,18 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameAction.getEffectMessage(context);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return properties.gameAction.getEffectMessage(context, overrides);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
 
         context.player.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: properties.prompt,
             source: context.source,
             options: [
-                { text: 'Yes', handler: () => this.resolveAction(properties, events, context, additionalProperties) },
+                { text: 'Yes', handler: () => this.resolveAction(properties, events, context, overrides) },
                 { text: 'No', handler: () => this.skipAction(properties, context) }
             ]
         });
@@ -41,9 +41,9 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends C
         properties: OptionalProperties,
         events: Event[],
         context: C,
-        additionalProperties: ActionOverrides = {}
+        overrides: ActionOverrides = {}
     ) {
-        properties.gameAction.addEventsToArray(events, context, additionalProperties);
+        properties.gameAction.addEventsToArray(events, context, overrides);
         const args = properties.chatTextArgs ? derive(properties.chatTextArgs, context) : [];
         const nextArg = args.length;
         const msg = `{${nextArg}} chooses to ${properties.chatText ?? ''}`;

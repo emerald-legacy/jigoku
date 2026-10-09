@@ -17,8 +17,8 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         token: CharacterStatus.Honored
     };
 
-    canAffect(card: BaseCard, context: C): boolean {
-        const { token } = this.getProperties(context);
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const { token } = this.getProperties(context, additionalProperties);
         if(
             (token === CharacterStatus.Honored && card.isHonored) ||
             (token === CharacterStatus.Dishonored && card.isDishonored)
@@ -35,8 +35,8 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         return super.canAffect(card, context);
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['give {0} a {1} status token', [this.getProperties(context).token]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['give {0} a {1} status token', [this.getProperties(context, additionalProperties).token]];
     }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenGained, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {

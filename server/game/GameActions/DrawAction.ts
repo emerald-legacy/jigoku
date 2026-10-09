@@ -19,8 +19,8 @@ export class DrawAction<C extends AbilityContext = AbilityContext> extends Playe
         amount: 1
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        const { amount } = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount } = this.getProperties(context, additionalProperties);
         return ['draw ' + amount + (amount > 1 ? ' cards' : ' card'), []];
     }
 

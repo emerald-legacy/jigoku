@@ -55,8 +55,8 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
-    canAffect(card: DrawCard, context: C): boolean {
-        const properties = this.getProperties(context);
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         const contextCopy = context.copy({ source: card });
         const player = this.getPutIntoPlayPlayer(contextCopy);
         const targetSide = properties.side || this.getDefaultSide(contextCopy);

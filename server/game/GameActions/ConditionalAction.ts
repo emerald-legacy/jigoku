@@ -1,4 +1,4 @@
-import type { ActionOverrides } from './GameAction.js';
+import type { ActionOverrides, WithDefaults } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -21,12 +21,15 @@ export class ConditionalAction<C extends AbilityContext = AbilityContext> extend
     }
 
     /** Only the branch the condition picks. */
-    protected resolving(context: C, additionalProperties: ActionOverrides = {}): GameAction[] {
-        return [this.getGameAction(context, additionalProperties)];
+    protected resolving(context: C, properties: WithDefaults<ConditionalProperties<C>, 'falseGameAction'>): GameAction[] {
+        return [this.#pick(context, properties)];
     }
 
     getGameAction(context: C, additionalProperties: ActionOverrides = {}): GameAction {
-        const properties = this.getProperties(context, additionalProperties);
+        return this.#pick(context, this.getProperties(context, additionalProperties));
+    }
+
+    #pick(context: C, properties: WithDefaults<ConditionalProperties<C>, 'falseGameAction'>): GameAction {
         let condition = properties.condition;
         if(typeof condition === 'function') {
             condition = condition(context, properties);
@@ -34,11 +37,13 @@ export class ConditionalAction<C extends AbilityContext = AbilityContext> extend
         return condition ? properties.trueGameAction : properties.falseGameAction;
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        return this.getGameAction(context).getEffectMessage(context);
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return this.#pick(context, properties).getEffectMessage(context, overrides);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
-        this.getGameAction(context, additionalProperties).addEventsToArray(events, context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        this.#pick(context, properties).addEventsToArray(events, context, overrides);
     }
 }

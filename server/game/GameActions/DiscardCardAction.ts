@@ -26,7 +26,7 @@ export class DiscardCardAction<C extends AbilityContext = AbilityContext> extend
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
-        const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context));
+        const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context, additionalProperties));
         if(cards.length === 0) {
             return;
         }

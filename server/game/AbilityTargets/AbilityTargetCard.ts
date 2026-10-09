@@ -4,7 +4,7 @@ import { Stage, Players, EffectName, TargetMode, RestrictionType } from '../Cons
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import type { GameAction } from '../GameActions/GameAction.js';
+import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
@@ -22,9 +22,6 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
 
     constructor(name: string, properties: AbilityTargetCardProperties, ability: OwningAbility) {
         super(name, properties, ability);
-        for(const gameAction of this.properties.gameAction) {
-            gameAction.setDefaultTarget((context: AbilityContext) => context.targets[name]);
-        }
         this.selector = this.getSelector(properties);
     }
 
@@ -36,7 +33,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
             }
             return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
                    (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-                   (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy)));
+                   (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy))));
         };
         return CardSelector.for(Object.assign({}, properties, { cardCondition: cardCondition, targets: true }));
     }
@@ -54,8 +51,15 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         return this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
-        return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
+    getGameAction(context: AbilityContext): HeldAction[] {
+        const overrides = this.actionOverrides(context);
+        return this.properties.gameAction
+            .filter((action) => action.hasLegalTarget(context, overrides))
+            .map((action) => ({ action, overrides }));
+    }
+
+    protected actionOverrides(context: AbilityContext): ActionOverrides {
+        return { target: context.targets[this.name] };
     }
 
     getAllLegalTargets(context: AbilityContext): BaseCard[] {
@@ -132,7 +136,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
     checkGameActionsForTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
         return this.getAllLegalTargets(context).some((card) => {
             const contextCopy = this.getContextCopy(card, context);
-            if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(contextCopy))) {
+            if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(contextCopy, this.actionOverrides(contextCopy)))) {
                 return true;
             } else if(this.dependentTarget) {
                 // only a card target looks further down the chain

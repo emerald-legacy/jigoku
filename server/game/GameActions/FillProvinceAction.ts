@@ -20,12 +20,12 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
         return [context.player];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['fills {0} to {1} cards!', [this.getProperties(context).fillTo]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['fills {0} to {1} cards!', [this.getProperties(context, additionalProperties).fillTo]];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        return this.getProperties(context).location;
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).location;
     }
 
     eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {

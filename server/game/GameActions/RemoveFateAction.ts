@@ -26,8 +26,8 @@ export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends
         return ['removing {1} fate from {0}', [properties.amount]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['remove {1} fate from {0}', [this.getProperties(context).amount]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['remove {1} fate from {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
     canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {

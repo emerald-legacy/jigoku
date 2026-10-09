@@ -24,8 +24,8 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
         return ['placing {1} fate on the {0}', [properties.amount]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.origin) {
             return ['move {1} fate from {2} to {0}', [properties.amount, properties.origin]];
         }

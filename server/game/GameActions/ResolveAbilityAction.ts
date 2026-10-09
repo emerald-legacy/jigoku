@@ -107,8 +107,8 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         subResolution: false
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['resolve {0}\'s {1} ability', [this.getProperties(context).ability.title]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -143,8 +143,8 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         );
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C): boolean {
-        const properties = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context));
     }
 }

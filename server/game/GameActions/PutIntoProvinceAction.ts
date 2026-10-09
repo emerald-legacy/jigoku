@@ -37,8 +37,8 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
         return ['putting {0} into {1}', [properties.destination]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         const [target] = targetList(properties.target);
         const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
         return ['move {0} to {1}\'s {2}', [destinationController, properties.destination]];

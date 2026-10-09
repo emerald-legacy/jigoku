@@ -39,9 +39,9 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const legalChoices = options(properties.choices).filter(([_, option]) =>
-            option.action.hasLegalTarget(context)
+            option.action.hasLegalTarget(context, overrides)
         );
         if(legalChoices.length === 0) {
             return;
@@ -61,7 +61,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
             if(choice.message) {
                 context.game.addMessage(choice.message(context, properties.target, player));
             }
-            context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
+            context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context, overrides));
         };
         context.game.promptWithHandlerMenu(player, {
             activePromptTitle,

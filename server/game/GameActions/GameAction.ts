@@ -46,6 +46,12 @@ function fillDefaults<T extends object>(properties: Partial<T>, defaults: Partia
 /** What a caller adds to an action's properties when it resolves or checks it, such as a composite's target. Never mutated. */
 export type ActionOverrides = Readonly<Record<string, unknown>>;
 
+/** A game action with what its holder passes it: a target's actions get what was chosen for the target. */
+export interface HeldAction {
+    action: GameAction;
+    overrides: ActionOverrides;
+}
+
 const baseDefaults = { cannotBeCancelled: false, optional: false };
 
 const hasTarget = (properties: object | undefined) => !!properties && 'target' in properties;
@@ -67,7 +73,6 @@ export class GameAction<
     effect = '';
     isNoAction?: boolean;
     defaultProperties?: Partial<P> & Defaults<P, D>;
-    #defaultTargetsOverride?: (context: AbilityContext) => TargetValue;
     // Method syntax keeps an action for a narrower context assignable to GameAction.
     readonly #own: { resolve(context: C): P };
 
@@ -84,35 +89,28 @@ export class GameAction<
         return [];
     }
 
-    getDefaultTargets(context: C): TargetValue {
-        return this.#defaultTargetsOverride ? this.#defaultTargetsOverride(context) : this.defaultTargets(context);
-    }
-
     getProperties(context: C, additionalProperties: ActionOverrides = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
         return this.#resolveProperties(context, additionalProperties).properties;
     }
 
     /**
-     * A composite's properties. The actions it holds target what it targets; when it has no target given
-     * (by its own properties, its caller or whoever holds it), each keeps its own default target.
+     * A composite's properties and what it passes the actions it holds, from one evaluation: its caller's overrides,
+     * plus its target when it was given one (by its own properties or its caller). Without one, each keeps its own default target.
      */
     protected getCompositeProperties(
         context: C,
-        additionalProperties: ActionOverrides,
-        actions: (properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>) => (GameAction | undefined)[]
-    ): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+        additionalProperties: ActionOverrides = {}
+    ): { properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>; overrides: ActionOverrides } {
         const { properties, targetGiven } = this.#resolveProperties(context, additionalProperties);
-        for(const action of actions(properties)) {
-            action?.setDefaultTarget(targetGiven ? () => properties.target : undefined);
-        }
-        return properties;
+        const overrides: ActionOverrides = targetGiven ? { ...additionalProperties, target: properties.target } : additionalProperties;
+        return { properties, overrides };
     }
 
     #resolveProperties(context: C, additionalProperties: ActionOverrides) {
         const defaults = this.defaultProperties;
         const own = this.#own.resolve(context);
         const properties = Object.assign(
-            { target: this.getDefaultTargets(context) },
+            { target: this.defaultTargets(context) },
             baseDefaults,
             defaults,
             additionalProperties,
@@ -124,7 +122,7 @@ export class GameAction<
         }
         const rawTarget: GameActionTarget | GameActionTarget[] | undefined = properties.target;
         const targets = (Array.isArray(rawTarget) ? rawTarget : [rawTarget]).filter((target) => !!target);
-        const targetGiven = this.#defaultTargetsOverride !== undefined || hasTarget(additionalProperties) || hasTarget(own);
+        const targetGiven = hasTarget(additionalProperties) || hasTarget(own);
         return { properties: Object.assign(properties, { target: targets }), targetGiven };
     }
 
@@ -146,11 +144,6 @@ export class GameAction<
     /** `{0}` of the effect message: `undefined` for a message without one. */
     protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return this.getProperties(context, additionalProperties).target;
-    }
-
-    /** Without a function, the action falls back to its own default targets. */
-    setDefaultTarget(func: ((context: AbilityContext) => TargetValue) | undefined): void {
-        this.#defaultTargetsOverride = func;
     }
 
     canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -218,11 +211,8 @@ export class GameAction<
         target: undefined | GameActionTarget | GameActionTarget[],
         context: C
     ): void {
-        if(target) {
-            this.setDefaultTarget(() => target);
-        }
         const events: Event[] = [];
-        this.addEventsToArray(events, context);
+        this.addEventsToArray(events, context, target ? { target } : {});
         context.game.queueSimpleStep(() => context.game.openEventWindow(events));
     }
 

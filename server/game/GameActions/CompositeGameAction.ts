@@ -17,17 +17,14 @@ export abstract class CompositeGameAction<P extends GameActionProperties = GameA
     protected abstract children(properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>): (GameAction | undefined)[];
 
     /** The actions it would resolve now; by default all it holds. */
-    protected resolving(context: C, additionalProperties: ActionOverrides = {}): GameAction[] {
-        return this.children(this.getProperties(context, additionalProperties)).filter((action) => action !== undefined);
-    }
-
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
-        return this.getCompositeProperties(context, additionalProperties, (properties) => this.children(properties));
+    protected resolving(_context: C, properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>): GameAction[] {
+        return this.children(properties).filter((action) => action !== undefined);
     }
 
     hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const legal = (action: GameAction) => action.hasLegalTarget(context, additionalProperties);
-        const actions = this.resolving(context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const legal = (action: GameAction) => action.hasLegalTarget(context, overrides);
+        const actions = this.resolving(context, properties);
         return this.requiresAll ? actions.every(legal) : actions.some(legal);
     }
 
@@ -37,12 +34,14 @@ export abstract class CompositeGameAction<P extends GameActionProperties = GameA
     }
 
     canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const affects = (action: GameAction) => action.canAffect(target, context, additionalProperties);
-        const actions = this.resolving(context, additionalProperties);
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const affects = (action: GameAction) => action.canAffect(target, context, overrides);
+        const actions = this.resolving(context, properties);
         return this.requiresAll ? actions.every(affects) : actions.some(affects);
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        return this.resolving(context, additionalProperties).some((action) => action.hasTargetsChosenByInitiatingPlayer(context, additionalProperties));
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return this.resolving(context, properties).some((action) => action.hasTargetsChosenByInitiatingPlayer(context, overrides));
     }
 }

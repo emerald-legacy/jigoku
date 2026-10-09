@@ -27,8 +27,8 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     restriction = RestrictionType.ReturnToDeck;
     eventName = EventName.OnCardMoved;
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['make {0} return {1} cards to their deck', [this.getProperties(context).amount]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['make {0} return {1} cards to their deck', [this.getProperties(context, additionalProperties).amount]];
     }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -45,14 +45,14 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
             const amount = Math.min(player.hand.length, properties.amount);
             if(amount > 0) {
                 if(amount === player.hand.length) {
-                    const event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = player.hand.slice(0, amount);
                     events.push(event);
                     return;
                 }
 
                 if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
-                    const event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = shuffle(player.hand).slice(0, amount);
                     events.push(event);
                     return;
@@ -66,7 +66,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
                     location: Location.Hand,
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     onSelect: (selectingPlayer: Player, cards: BaseCard | BaseCard[]) => {
-                        const event = this.getEvent(selectingPlayer, context);
+                        const event = this.getEvent(selectingPlayer, context, additionalProperties);
                         event.cards = Array.isArray(cards) ? cards : [cards];
                         events.push(event);
                         return true;

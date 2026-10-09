@@ -25,8 +25,8 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
         return ['losing {1} honor', [properties.amount]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['make {0} lose ' + this.getProperties(context).amount + ' honor', []];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['make {0} lose ' + this.getProperties(context, additionalProperties).amount + ' honor', []];
     }
 
     defaultTargets(context: C): Player[] {

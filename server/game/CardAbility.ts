@@ -7,7 +7,6 @@ import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName, Phase, Blocker } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import BaseCard from './BaseCard.js';
-import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
 import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
@@ -269,10 +268,11 @@ export class CardAbility extends ThenAbility {
         if(typeof effect === 'function') {
             [effectMessage, effectArgs] = effect(context);
         } else if(!effectMessage) {
-            const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
+            const gameActions = this.getGameActions(context).filter(({ action, overrides }) => action.hasLegalTarget(context, overrides));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
-                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
+                const { action, overrides } = gameActions[0];
+                [effectMessage, extraArgs] = action.getEffectMessage(context, overrides);
             }
         } else {
             effectArgs.push(context.chatTarget());

@@ -2,7 +2,7 @@ import { Players, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
 import type Player from '../Player.js';
-import type { GameAction } from '../GameActions/GameAction.js';
+import type { ActionOverrides, HeldAction } from '../GameActions/GameAction.js';
 
 export interface AbilityTargetBaseProperties {
     dependsOn?: string;
@@ -27,7 +27,12 @@ export abstract class AbilityTargetBase<P extends AbilityTargetBaseProperties> {
     abstract resolve(context: AbilityContext, targetResults: TargetResults): void;
     abstract checkTarget(context: AbilityContext): boolean;
     abstract hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
-    abstract getGameAction(context: AbilityContext): GameAction[];
+    abstract getGameAction(context: AbilityContext): HeldAction[];
+
+    /** What this target's game actions get: what was chosen for it. */
+    protected actionOverrides(_context: AbilityContext): ActionOverrides {
+        return {};
+    }
 
     canResolve(context: AbilityContext): boolean {
         // if this depends on another target, that will check hasLegalTarget already

@@ -51,8 +51,8 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         subResolution: false
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['resolve {0}\'s {1} ability', [this.getProperties(context).ability.title]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -73,8 +73,8 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C) {
-        const properties = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
+        const properties = this.getProperties(context, additionalProperties);
         return (
             properties.ability &&
             properties.ability.hasTargetsChosenByInitiatingPlayer &&

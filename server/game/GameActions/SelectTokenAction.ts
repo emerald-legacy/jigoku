@@ -43,7 +43,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
 
     /** A custom `chatText` brings its own arguments, from `{0}` on. */
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { chatText, chatTextArgs } = this.getProperties(context);
+        const { chatText, chatTextArgs } = this.getProperties(context, additionalProperties);
         if(chatText) {
             return [chatText, (chatTextArgs && chatTextArgs(context)) || []];
         }

@@ -15,8 +15,8 @@ export class SetHonorDialAction<C extends AbilityContext = AbilityContext> exten
 
     name = 'setHonorDial';
     eventName = EventName.OnSetHonorDial;
-    protected effectMessage(context: C): MessageArgs {
-        return ['set {0}\'s dial to {1}', [this.getProperties(context).value]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['set {0}\'s dial to {1}', [this.getProperties(context, additionalProperties).value]];
     }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {

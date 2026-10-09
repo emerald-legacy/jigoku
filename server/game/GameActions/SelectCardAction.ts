@@ -128,7 +128,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
 
     /** A custom `chatText` brings its own arguments, from `{0}` on. */
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { chatText, chatTextArgs } = this.getProperties(context);
+        const { chatText, chatTextArgs } = this.getProperties(context, additionalProperties);
         if(chatText) {
             return [chatText, (chatTextArgs && chatTextArgs(context)) || []];
         }
@@ -141,7 +141,6 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
 
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
         const { cardCondition, subActionProperties } = properties;
         let selector = properties.selector;
         if(!selector) {

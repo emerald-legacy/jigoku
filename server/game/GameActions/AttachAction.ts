@@ -39,8 +39,8 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         wasACharacter: false
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.takeControl) {
             return ['take control of and attach {2}\'s {1} to {0}', [properties.attachment, properties.attachment?.parent]];
         } else if(properties.giveControl) {

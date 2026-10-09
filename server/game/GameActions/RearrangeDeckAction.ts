@@ -33,8 +33,8 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         return [context.player];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const { amount, deck } = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount, deck } = this.getProperties(context, additionalProperties);
         return ['rearrange the top {1} cards of {0}\'s {2}', [derive(amount, context), deck]];
     }
 

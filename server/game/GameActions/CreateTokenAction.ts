@@ -30,8 +30,8 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
         canEnterConflict: () => true
     };
 
-    canAffect(card: BaseCard, context: C): boolean {
-        const { canEnterConflict } = this.getProperties(context);
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const { canEnterConflict } = this.getProperties(context, additionalProperties);
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
             return false;

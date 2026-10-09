@@ -23,12 +23,12 @@ describe('CompositeGameAction', function() {
         expect(action.canAffect('card', this.context)).toBe(false);
     });
 
-    it('passes the overrides on to each action', function() {
-        const overrides = { target: 'card' };
+    it('passes the overrides on to each action, with its target', function() {
+        const overrides = { target: 'card', destination: 'hand' };
         this.actionA.hasLegalTarget.and.returnValue(false);
         new MultipleGameAction([this.actionA, this.actionB]).hasLegalTarget(this.context, overrides);
-        expect(this.actionA.hasLegalTarget).toHaveBeenCalledWith(this.context, overrides);
-        expect(this.actionB.hasLegalTarget).toHaveBeenCalledWith(this.context, overrides);
+        expect(this.actionA.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: ['card'], destination: 'hand' });
+        expect(this.actionB.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: ['card'], destination: 'hand' });
     });
 
     it('lets its actions answer allTargetsLegal, as they may target something else', function() {
