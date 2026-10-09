@@ -43,7 +43,7 @@ export default class MapmakerApprentice extends DrawCard {
                             return { target: card };
                         },
                         gameAction: chooseAction({
-                            options: {
+                            choices: {
                                 'Raise attacked province\'s strength by 2': {
                                     action: cardLastingEffect({
                                         targetLocation: Location.Provinces,

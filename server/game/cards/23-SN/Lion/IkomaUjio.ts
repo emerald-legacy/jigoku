@@ -14,7 +14,7 @@ export default class IkomaUjio extends DrawCard {
                 gameAction: (duel, context) => chooseAction({
                     target: duel.loser,
                     player: duel.loserController !== context.source.controller ? Players.Opponent : Players.Self,
-                    options: {
+                    choices: {
                         'Give opponent 1 honor': {
                             action: takeHonor({
                                 target: duel.loserController

@@ -27,7 +27,7 @@ export default class StewardOfCrypticLore extends DrawCard {
                     return { target: card };
                 },
                 gameAction: chooseAction(() => ({
-                    options: {
+                    choices: {
                         'Raise attacked province\'s strength by 3': {
                             action: cardLastingEffect(() => ({
                                 targetLocation: Location.Provinces,

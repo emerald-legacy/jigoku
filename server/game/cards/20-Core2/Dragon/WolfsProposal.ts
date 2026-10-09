@@ -9,21 +9,17 @@ export default class WolfsProposal extends DrawCard {
     setupCardAbilities() {
         this.action('Adjust glory')
             .gameAction(chooseAction({
-                options: {
-                    'Increase glory': {
-                        action: cardLastingEffect((context) => ({
-                            target: context.source.parentCharacter ?? [],
-                            duration: Duration.UntilEndOfPhase,
-                            effect: modifyGlory(2)
-                        }))
-                    },
-                    'Decrease glory': {
-                        action: cardLastingEffect((context) => ({
-                            target: context.source.parentCharacter ?? [],
-                            duration: Duration.UntilEndOfPhase,
-                            effect: modifyGlory(-2)
-                        }))
-                    }
+                choices: {
+                    'Increase glory': cardLastingEffect((context) => ({
+                        target: context.source.parentCharacter ?? [],
+                        duration: Duration.UntilEndOfPhase,
+                        effect: modifyGlory(2)
+                    })),
+                    'Decrease glory': cardLastingEffect((context) => ({
+                        target: context.source.parentCharacter ?? [],
+                        duration: Duration.UntilEndOfPhase,
+                        effect: modifyGlory(-2)
+                    }))
                 }
             }));
     }

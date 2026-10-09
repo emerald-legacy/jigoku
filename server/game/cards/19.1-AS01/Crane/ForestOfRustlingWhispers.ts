@@ -13,7 +13,7 @@ export default class ForestOfRustlingWhispers extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, chooseAction({
-                options: {
+                choices: {
                     'Honor this character': {
                         action: honor(),
                         message: (_context, target, player) => msg`${player} chooses to honor ${target}`

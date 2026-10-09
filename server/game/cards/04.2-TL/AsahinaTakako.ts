@@ -20,10 +20,8 @@ export default class AsahinaTakako extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self
             }, chooseAction((context) => ({
-                options: {
-                    Discard: {
-                        action: discardCard({ target: context.target })
-                    },
+                choices: {
+                    Discard: discardCard({ target: context.target }),
                     'Switch with another card': {
                         action: selectCard({
                             activePromptTitle: 'Choose a card to switch with',

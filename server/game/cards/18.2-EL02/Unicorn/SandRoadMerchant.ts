@@ -41,7 +41,7 @@ export default class SandRoadMerchant extends DrawCard {
                         return {
                             activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                             player: Players.Opponent,
-                            options: {
+                            choices: {
                                 'Leave on top of your deck': {
                                     action: noAction(),
                                     message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on top of their deck`

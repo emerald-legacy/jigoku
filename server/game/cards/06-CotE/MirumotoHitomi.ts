@@ -27,7 +27,7 @@ export default class MirumotoHitomi extends DrawCard {
                             chooseAction({
                                 target: card,
                                 player: context.player !== card.controller ? Players.Opponent : Players.Self,
-                                options: {
+                                choices: {
                                     'Dishonor this character': {
                                         action: dishonor(),
                                         message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`

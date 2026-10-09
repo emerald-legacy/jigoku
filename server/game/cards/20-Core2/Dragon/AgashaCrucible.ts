@@ -35,7 +35,7 @@ export default class AgashaCrucible extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }, chooseAction({
-                options,
+                choices: options,
                 activePromptTitle: 'Choose Trait to gain'
             }))
             .chatText('give {0} another Elemental Trait, and take another action');

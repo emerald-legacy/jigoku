@@ -9,7 +9,7 @@ export default class IdeNegotiator extends DrawCard {
         this.reaction('Modify honor dial')
             .when({ onHonorDialsRevealed: () => true })
             .gameAction(chooseAction((context) => ({
-                options: {
+                choices: {
                     'Increase bid by 1': {
                         action: setHonorDial({
                             target: context.player,

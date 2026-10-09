@@ -30,23 +30,21 @@ export default class FloatingFortress extends DrawCard {
                 })),
                 chooseAction({
                     activePromptTitle: 'Move the holding to into the attacked provinces?',
-                    options: {
-                        Yes: {
-                            action: selectCard((context) => ({
-                                activePromptTitle: 'Choose an attacked province',
-                                hidePromptIfSingleCard: true,
-                                cardType: CardType.Province,
-                                location: Location.Provinces,
-                                message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,
-                                cardCondition: (card) => card.isConflictProvince(),
-                                subActionProperties: (card) => ({
-                                    target: context.source,
-                                    destination: card.location
-                                }),
-                                gameAction: moveCard({})
-                            }))
-                        },
-                        No: { action: noAction() }
+                    choices: {
+                        Yes: selectCard((context) => ({
+                            activePromptTitle: 'Choose an attacked province',
+                            hidePromptIfSingleCard: true,
+                            cardType: CardType.Province,
+                            location: Location.Provinces,
+                            message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,
+                            cardCondition: (card) => card.isConflictProvince(),
+                            subActionProperties: (card) => ({
+                                target: context.source,
+                                destination: card.location
+                            }),
+                            gameAction: moveCard({})
+                        })),
+                        No: noAction()
                     }
                 })
             ]))

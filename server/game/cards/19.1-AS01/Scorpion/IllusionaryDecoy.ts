@@ -24,17 +24,15 @@ export default class IllusionaryDecoy extends DrawCard {
             .gameAction(multiple([
                 putIntoConflict((context) => ({ target: context.source })),
                 chooseAction({
-                    options: {
-                        'Move another of your characters home': {
-                            action: selectCard({
-                                controller: Players.Self,
-                                cardType: CardType.Character,
-                                cardCondition: (card) => card.isCharacter() && card.isParticipating(),
-                                message: (context, card, player) => msg`${player} moves home ${card} - they were an ${context.source}`,
-                                gameAction: sendHome()
-                            })
-                        },
-                        Done: { action: noAction() }
+                    choices: {
+                        'Move another of your characters home': selectCard({
+                            controller: Players.Self,
+                            cardType: CardType.Character,
+                            cardCondition: (card) => card.isCharacter() && card.isParticipating(),
+                            message: (context, card, player) => msg`${player} moves home ${card} - they were an ${context.source}`,
+                            gameAction: sendHome()
+                        }),
+                        Done: noAction()
                     }
                 })
             ]))

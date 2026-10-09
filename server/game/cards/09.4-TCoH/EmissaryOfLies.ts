@@ -31,19 +31,17 @@ class EmissaryOfLies extends DrawCard {
         chooseAction({
             activePromptTitle: 'Do you want to reveal your hand?',
             waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not',
-            options: {
-                'Yes': {
-                    action: multiple([
-                        lookAt({
-                            target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
-                        }),
-                        conditional({
-                            condition: () => !context.player.hand.some((card) => card.name === cardName),
-                            trueGameAction: sendHome({ target: character })
-                        })
-                    ])
-                },
-                'No': { action: noAction() }
+            choices: {
+                'Yes': multiple([
+                    lookAt({
+                        target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
+                    }),
+                    conditional({
+                        condition: () => !context.player.hand.some((card) => card.name === cardName),
+                        trueGameAction: sendHome({ target: character })
+                    })
+                ]),
+                'No': noAction()
             }
         }).resolve(undefined, context);
     }

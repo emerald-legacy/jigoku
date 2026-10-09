@@ -44,7 +44,7 @@ export default class SpiderwebPassage extends DrawCard {
                     trueGameAction: chooseAction((context) => ({
                         player: Players.Opponent,
                         activePromptTitle: 'Select one',
-                        options: {
+                        choices: {
                             [`Discard ${discardCount} random cards from hand`]: {
                                 action: discardFromHandAction,
                                 message: (_context, _target, player) => msg`${player} distracts the Shinobi`

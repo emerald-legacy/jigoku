@@ -62,7 +62,7 @@ export default class StrangeMirror extends DrawCard {
                 chooseEvent,
                 chooseAction((context) => ({
                     activePromptTitle: 'Choose a cost for Strange Mirror',
-                    options: {
+                    choices: {
                         'Sacrifice Strange Mirror': {
                             action: sacrifice({ target: context.source }),
                             message: (context, _target, player) => msg`${player} sacrifices ${context.source}`

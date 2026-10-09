@@ -35,7 +35,7 @@ export default class NezumiInfiltrator extends DrawCard {
                     return { target: card };
                 },
                 gameAction: chooseAction(() => ({
-                    options: {
+                    choices: {
                         'Raise attacked province\'s strength by 1': {
                             action: cardLastingEffect({
                                 targetLocation: Location.Provinces,

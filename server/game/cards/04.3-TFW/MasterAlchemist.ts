@@ -17,7 +17,7 @@ export default class MasterAlchemist extends DrawCard {
                 activePromptTitle: 'Choose a character to honor or dishonor',
                 cardType: CardType.Character
             }, chooseAction({
-                options: {
+                choices: {
                     'Honor this character': {
                         action: honor(),
                         message: (_context, target, player) => msg`${player} chooses to honor ${target}`

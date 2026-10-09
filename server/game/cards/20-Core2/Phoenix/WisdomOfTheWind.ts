@@ -23,7 +23,7 @@ export default class WisdomOfTheWind extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, sequential([
                 chooseAction({
-                    options: {
+                    choices: {
                         'Honor this character': {
                             action: honor(),
                             message: (_context, target, player) => msg`${player} chooses to honor ${target}`

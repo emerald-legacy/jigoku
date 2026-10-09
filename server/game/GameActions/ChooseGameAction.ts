@@ -12,7 +12,8 @@ export interface ChooseActionProperties<C extends AbilityContext = AbilityContex
     activePromptTitle?: string;
     waitingPromptTitle?: string;
     player?: Players.Self | Players.Opponent;
-    options: { [label: string]: ChooseActionOption<C> };
+    /** One button per label: its game action, or the action with a chat line. Like `select`'s choices, but chosen while resolving. */
+    choices: { [label: string]: GameAction | ChooseActionOption<C> };
 }
 
 export interface ChooseActionOption<C extends AbilityContext = AbilityContext> {
@@ -21,25 +22,29 @@ export interface ChooseActionOption<C extends AbilityContext = AbilityContext> {
     message?: (context: C, target: GameActionTarget | GameActionTarget[] | undefined, chooser: Player) => MessageArgs;
 }
 
-export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseActionProperties<C>, EventName, C, 'activePromptTitle' | 'options'> {
+/** Each choice with its label, a bare game action as an option without a chat line. */
+function options<C extends AbilityContext>(choices: ChooseActionProperties<C>['choices']): [string, ChooseActionOption<C>][] {
+    return Object.entries(choices).map(([label, choice]) => [label, choice instanceof GameAction ? { action: choice } : choice]);
+}
+
+export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseActionProperties<C>, EventName, C, 'activePromptTitle' | 'choices'> {
     effect = 'choose between different actions';
     defaultProperties = {
         activePromptTitle: 'Select an action:',
-        options: {}
+        choices: {}
     };
 
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
-        return this.getCompositeProperties(context, additionalProperties, (properties) => Object.values(properties.options).map((option) => option.action));
+        return this.getCompositeProperties(context, additionalProperties, (properties) => options(properties.choices).map(([_, option]) => option.action));
     }
 
     hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const { options } = this.getProperties(context, additionalProperties);
-        return Object.values(options).some(({ action }) => action.hasLegalTarget(context));
+        return options(this.getProperties(context, additionalProperties).choices).some(([_, { action }]) => action.hasLegalTarget(context));
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        const legalChoices = Object.entries(properties.options).filter(([_, option]) =>
+        const legalChoices = options(properties.choices).filter(([_, option]) =>
             option.action.hasLegalTarget(context)
         );
         if(legalChoices.length === 0) {
@@ -73,12 +78,10 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
     }
 
     canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const { options } = this.getProperties(context, additionalProperties);
-        return Object.values(options).some(({ action }) => action.canAffect(target, context));
+        return options(this.getProperties(context, additionalProperties).choices).some(([_, { action }]) => action.canAffect(target, context));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C) {
-        const { options } = this.getProperties(context);
-        return Object.values(options).some(({ action }) => action.hasTargetsChosenByInitiatingPlayer(context));
+        return options(this.getProperties(context).choices).some(([_, { action }]) => action.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

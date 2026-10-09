@@ -15,15 +15,11 @@ export default class DojiReiha extends DrawCard {
                         honor({ target: duel.participants }),
                         chooseAction((context) => ({
                             player: duel.winningPlayer === context.player ? Players.Self : Players.Opponent,
-                            options: {
-                                'Move all duel participants home': {
-                                    action: sendHome({
-                                        target: duel.participants
-                                    })
-                                },
-                                'Do nothing': {
-                                    action: noAction()
-                                }
+                            choices: {
+                                'Move all duel participants home': sendHome({
+                                    target: duel.participants
+                                }),
+                                'Do nothing': noAction()
                             }
                         }))
                     ])

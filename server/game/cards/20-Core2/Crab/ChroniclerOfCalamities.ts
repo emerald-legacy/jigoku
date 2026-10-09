@@ -27,7 +27,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                         .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
             }, chooseAction((context) => ({
                 activePromptTitle: 'Select one',
-                options: {
+                choices: {
                     'Dishonor it': {
                         action: dishonor({ target: context.target }),
                         message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`

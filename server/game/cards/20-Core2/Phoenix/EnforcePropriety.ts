@@ -25,7 +25,7 @@ export default class EnforcePropriety extends DrawCard {
             .gameAction(chooseAction((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Select one',
-                options: {
+                choices: {
                     [`Give 1 fate to ${context.player.name}`]: {
                         action: takeFate({ target: context.player.opponent }),
                         message: (context, _target, player) => msg`${player} gives 1 fate to ${context.player} - the fortunes will be appeased, order is maintained`

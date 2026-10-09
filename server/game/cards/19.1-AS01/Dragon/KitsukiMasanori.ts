@@ -37,7 +37,7 @@ export default class KitsukiMasanori extends DrawCard {
             .gameAction(sequential([
                 chooseAction({
                     activePromptTitle: 'Select where to search',
-                    options: {
+                    choices: {
                         'Search discard pile': {
                             action: cardMenu((context) => ({
                                 activePromptTitle: selectAttachmentPrompt,

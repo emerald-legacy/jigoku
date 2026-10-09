@@ -33,7 +33,7 @@ export default class VillageDoshin extends DrawCard {
                 .gameAction(chooseAction((context) => ({
                     player: Players.Opponent,
                     activePromptTitle: 'Select one',
-                    options: {
+                    choices: {
                         [`Discard ${DOSHIN_TAX} random cards from hand`]: {
                             action: discardAtRandom({
                                 amount: DOSHIN_TAX,

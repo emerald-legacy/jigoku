@@ -14,14 +14,12 @@ export default class Infiltrator extends DrawCard {
                 const topCard = context.player.opponent?.conflictDeck[0];
                 return {
                     activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
-                    options: {
-                        'Play this card': {
-                            action: playCard({
-                                target: topCard,
-                                playType: PlayType.PlayFromHand,
-                                source: this
-                            })
-                        },
+                    choices: {
+                        'Play this card': playCard({
+                            target: topCard,
+                            playType: PlayType.PlayFromHand,
+                            source: this
+                        }),
                         'Discard this card': {
                             action: discardCard({ target: topCard }),
                             message: (_context, _target, player) => msg`${player} chooses to discard ${topCard}`
