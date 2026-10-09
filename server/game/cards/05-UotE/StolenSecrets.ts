@@ -1,10 +1,10 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, ConflictType } from '../../Constants.js';
+import { Location, CardType, ConflictType, RemainingCards, TargetMode } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { canPlayFromOwn, hideWhenFaceUp } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { rearrangeDeck } from '../../GameActions/GameActions.js';
+import { deckSearch } from '../../GameActions/GameActions.js';
 
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
@@ -16,22 +16,20 @@ class StolenSecrets extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }))
             .condition((context) => this.game.isDuringConflict(ConflictType.Political) && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
-            .handler((context) => {
-                const opponent = context.player.opponent;
-                if(!opponent) {
-                    return;
-                }
-                this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Choose a card to remove from the game',
-                    context: context,
-                    cards: opponent.conflictDeck.slice(0, 4),
-                    cardHandler: (card) => this.stealCard(card, opponent.conflictDeck.slice(0, 4).filter((c) => c !== card), context)
-                });
-            })
+            .gameAction(deckSearch((context) => ({
+                activePromptTitle: 'Choose a card to remove from the game',
+                player: context.player.opponent,
+                choosingPlayer: context.player,
+                cardsToLookAt: 4,
+                mode: TargetMode.Exactly,
+                numCards: 1,
+                remainingCards: RemainingCards.TopAnyOrder,
+                selectedCardsHandler: (context, _event, [card]) => card && this.stealCard(card, context)
+            })))
             .chatText((context) => msg`look at the top 4 cards of ${context.player.opponent}'s conflict deck and remove one from the game`);
     }
 
-    private stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext) {
+    private stealCard(card: DrawCard, context: AbilityContext) {
         card.owner.removeCardFromPile(card);
         card.controller = context.player;
         card.moveTo(Location.RemovedFromGame);
@@ -47,9 +45,6 @@ class StolenSecrets extends DrawCard {
             ]
         });
         this.game.checkGameState();
-        if(remainingCards.length > 1 && context.player.opponent) {
-            rearrangeDeck({ amount: remainingCards.length }).resolve(context.player.opponent, context);
-        }
     }
 }
 

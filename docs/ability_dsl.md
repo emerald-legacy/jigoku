@@ -613,6 +613,7 @@ deckSearch({
     cardCondition: (card) => card.hasTrait('spell'),
     gameAction: moveCard({ destination: Location.Hand }),
     takesNothingGameAction: draw(),
+    doneButtonText: 'Done',        // the button ending the choice (default "Take nothing", then "Done")
     message: (context, cards, chooser) => msg`${chooser} takes ${cards}`,   // default: "<chooser> takes <cards>" (or "… takes 1 card" unrevealed)
     remainingCards: RemainingCards.Shuffle, // the looked-at cards not taken (default Shuffle)
     reveal: true,                  // reveal selected cards to all

@@ -31,6 +31,8 @@ export interface DeckSearchProperties<C extends AbilityContext = AbilityContext>
     remainingCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     takesNothingGameAction?: GameAction;
+    /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */
+    doneButtonText?: string;
 }
 
 type DeckSearchDefaults =
@@ -70,12 +72,12 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const amount = derive(this.getProperties(context, additionalProperties).cardsToLookAt, context);
-        const message =
-            amount > 0
-                ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of their deck`
-                : 'search their deck';
-        return [message, []];
+        const { cardsToLookAt, player } = this.getProperties(context, additionalProperties);
+        const amount = derive(cardsToLookAt, context);
+        // another player's deck is named
+        const deck = player && player !== context.player ? '{1}\'s deck' : 'their deck';
+        const message = amount > 0 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of ${deck}` : `search ${deck}`;
+        return [message, player && player !== context.player ? [player] : []];
     }
 
     protected effectMessageTarget(): MsgArg {
@@ -164,7 +166,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
                 properties.cardCondition(card, context) &&
                 (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
                 (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties)),
-            options: canCancel ? [{ text: selectedCards.size > 0 ? 'Done' : 'Take nothing', handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
+            options: canCancel ? [{ text: properties.doneButtonText ?? (selectedCards.size > 0 ? 'Done' : 'Take nothing'), handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
             cardHandler: (card: DrawCard) => {
                 const newSelectedCards = new Set(selectedCards);
                 newSelectedCards.add(card);

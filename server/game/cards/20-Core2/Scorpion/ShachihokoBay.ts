@@ -1,82 +1,10 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { Location } from '../../../Constants.js';
+import { Location, RemainingCards, TargetMode } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { canPlayFromOwn } from '../../../effects.js';
 import type DrawCard from '../../../DrawCard.js';
-import { handler, rearrangeDeck } from '../../../GameActions/GameActions.js';
+import { deckSearch, rearrangeDeck } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
-
-class Process {
-    private topCards: Set<DrawCard>;
-    private cardsToSteal: Set<DrawCard> = new Set();
-
-    public constructor(private context: AbilityContext) {
-        this.topCards = new Set(context.player.opponent?.conflictDeck.slice(0, 6) ?? []);
-    }
-
-    public start() {
-        if(this.topCards.size > 0) {
-            this.stealPrompt();
-        }
-    }
-
-    private get topCardsArray() {
-        return Array.from(this.topCards);
-    }
-
-    private stealPrompt() {
-        const x = this.cardsToSteal.size + 1;
-        const y = Math.min(3, this.topCards.size);
-        this.context.game.promptWithHandlerMenu(this.context.player, {
-            activePromptTitle: `Select a card to take for you (${x} of ${y})`,
-            context: this.context,
-            cards: this.topCardsArray,
-            cardHandler: (card) => this.stealChosen(card),
-            options: [{ text: 'Done', handler: () => this.stealCardsAndContinue() }]
-        });
-    }
-
-    private stealChosen(card: DrawCard): void {
-        this.topCards.delete(card);
-        this.cardsToSteal.add(card);
-        if(this.cardsToSteal.size < 3) {
-            this.stealPrompt();
-        } else {
-            this.stealCardsAndContinue();
-        }
-    }
-
-    private stealCardsAndContinue() {
-        if(this.cardsToSteal.size > 0) {
-            this.context.game.addMessage(msg`${this.context.player} takes ${Array.from(this.cardsToSteal)} from ${this.context.player.opponent}'s deck`);
-            for(const card of this.cardsToSteal) {
-                this.context.player.moveCard(card, Location.RemovedFromGame);
-                card.controller = this.context.player;
-                this.context.source.lastingEffect({
-                    until: {
-                        onCardMoved: (event) =>
-                            event.card === card && event.originalLocation === Location.RemovedFromGame
-                    },
-                    match: card,
-                    effect: [canPlayFromOwn(Location.RemovedFromGame, [card], this.context.source)]
-                });
-            }
-        }
-
-        const remaining = this.topCardsArray;
-        if(remaining.length === 0) {
-            return;
-        }
-        const opponent = this.context.player.opponent;
-        if(!opponent) {
-            return;
-        }
-        rearrangeDeck({
-            amount: remaining.length,
-            message: (context, ordered) => msg`${context.player} returns ${ordered.length} cards to the top of ${opponent}'s deck`
-        }).resolve(opponent, this.context);
-    }
-}
 
 export default class ShachihokoBay extends ProvinceCard {
     static id = 'shachihoko-bay';
@@ -87,8 +15,46 @@ export default class ShachihokoBay extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.game.currentConflict && Boolean(context.player.opponent)
             })
-            .gameAction(handler({
-                handler: (context) => new Process(context).start()
-            }));
+            .gameAction(deckSearch((context) => ({
+                activePromptTitle: 'Select up to 3 cards to take',
+                player: context.player.opponent,
+                choosingPlayer: context.player,
+                cardsToLookAt: 6,
+                mode: TargetMode.UpTo,
+                numCards: 3,
+                remainingCards: RemainingCards.TopAnyOrder,
+                selectedCardsHandler: (context, _event, cards) => this.steal(context, cards),
+                remainingCardsHandler: (context, _event, cards) => this.returnToTop(context, cards)
+            })));
+    }
+
+    private steal(context: AbilityContext, cards: DrawCard[]): void {
+        if(cards.length === 0) {
+            return;
+        }
+        this.game.addMessage(msg`${context.player} takes ${cards} from ${context.player.opponent}'s deck`);
+        for(const card of cards) {
+            context.player.moveCard(card, Location.RemovedFromGame);
+            card.controller = context.player;
+            context.source.lastingEffect({
+                until: {
+                    onCardMoved: (event) => event.card === card && event.originalLocation === Location.RemovedFromGame
+                },
+                match: card,
+                effect: [canPlayFromOwn(Location.RemovedFromGame, [card], context.source)]
+            });
+        }
+    }
+
+    /** Like `RemainingCards.TopAnyOrder`, with a chat line. */
+    private returnToTop(context: AbilityContext, cards: DrawCard[]): void {
+        const opponent = context.player.opponent;
+        if(cards.length === 0 || !opponent) {
+            return;
+        }
+        rearrangeDeck({
+            cards,
+            message: (context, ordered) => msg`${context.player} returns ${ordered.length} cards to the top of ${opponent}'s deck`
+        }).resolve(opponent, context);
     }
 }
