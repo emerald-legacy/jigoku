@@ -1,9 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { Location, RemainingCards, TargetMode } from '../../../Constants.js';
+import { RemainingCards, TargetMode } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { canPlayFromOwn } from '../../../effects.js';
 import type DrawCard from '../../../DrawCard.js';
-import { deckSearch, rearrangeDeck } from '../../../GameActions/GameActions.js';
+import { deckSearch, rearrangeDeck, setAside } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 export default class ShachihokoBay extends ProvinceCard {
@@ -29,21 +28,11 @@ export default class ShachihokoBay extends ProvinceCard {
     }
 
     private steal(context: AbilityContext, cards: DrawCard[]): void {
-        if(cards.length === 0) {
-            return;
-        }
-        this.game.addMessage(msg`${context.player} takes ${cards} from ${context.player.opponent}'s deck`);
-        for(const card of cards) {
-            context.player.moveCard(card, Location.RemovedFromGame);
-            card.controller = context.player;
-            context.source.lastingEffect({
-                until: {
-                    onCardMoved: (event) => event.card === card && event.originalLocation === Location.RemovedFromGame
-                },
-                match: card,
-                effect: [canPlayFromOwn(Location.RemovedFromGame, [card], context.source)]
-            });
-        }
+        setAside({
+            target: cards,
+            playableBy: context.player,
+            message: (context, cards) => msg`${context.player} takes ${cards} from ${context.player.opponent}'s deck`
+        }).resolve(cards, context);
     }
 
     /** Like `RemainingCards.TopAnyOrder`, with a chat line. */

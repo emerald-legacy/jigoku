@@ -535,6 +535,7 @@ The tables below cover the most-used factories; the authoritative list lives in 
 | `addToken()` | source | Add a token to a card |
 | `createToken()` | source | Create a token character |
 | `placeCardUnderneath()` | source | Place under another card |
+| `setAside({ hidden?, returnAtEndOfConflict?, playableBy?, message? })` | source | Set cards aside, out of play: `hidden` keeps them facedown to the others, `returnAtEndOfConflict` gives them back to their owner's hand when the conflict ends, `playableBy` lets that player control and play them as if in hand. `message: (context, cards) => msg\`…\`` is written once |
 | `cardLastingEffect({ effect, duration? })` | source | Apply a lasting effect to specific cards |
 
 ### Player actions

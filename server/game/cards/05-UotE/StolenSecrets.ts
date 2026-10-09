@@ -1,10 +1,9 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, ConflictType, RemainingCards, TargetMode } from '../../Constants.js';
+import { CardType, ConflictType, RemainingCards, TargetMode } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
-import { canPlayFromOwn, hideWhenFaceUp } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { deckSearch } from '../../GameActions/GameActions.js';
+import { deckSearch, setAside } from '../../GameActions/GameActions.js';
 
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
@@ -30,21 +29,7 @@ class StolenSecrets extends DrawCard {
     }
 
     private stealCard(card: DrawCard, context: AbilityContext) {
-        card.owner.removeCardFromPile(card);
-        card.controller = context.player;
-        card.moveTo(Location.RemovedFromGame);
-        context.player.removedFromGame.unshift(card);
-        context.source.lastingEffect({
-            until: {
-                onCardMoved: (event) => event.card === card && event.originalLocation === Location.RemovedFromGame
-            },
-            match: card,
-            effect: [
-                hideWhenFaceUp(),
-                canPlayFromOwn(Location.RemovedFromGame, [card], this)
-            ]
-        });
-        this.game.checkGameState();
+        setAside({ target: card, hidden: true, playableBy: context.player }).resolve(card, context);
     }
 }
 

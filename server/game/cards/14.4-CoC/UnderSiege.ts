@@ -2,101 +2,69 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration } from '../../Constants.js';
 import { perConflict } from '../../AbilityLimit.js';
-import { hideWhenFaceUp, playerDelayedEffect } from '../../effects.js';
+import { playerDelayedEffect } from '../../effects.js';
 import {
     chosenDiscard,
     conditional,
     draw,
     handler,
+    noAction,
     playerLastingEffect,
-    sequential
+    sequential,
+    sequentialContext,
+    setAside
 } from '../../GameActions/GameActions.js';
-import type Player from '../../Player.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
-
-    private setAsideCards: DrawCard[] = [];
-    private targetPlayer: Player | null = null;
 
     setupCardAbilities() {
         this.reaction('Place defender under siege')
             .when({
                 onConflictDeclared: (_event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
             })
-            .gameAction(sequential([
-                playerLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfRound,
-                    targetController: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
-                    effect: playerDelayedEffect({
-                        when: {
-                            onConflictFinished: () => true
-                        },
-                        gameAction: sequential([
-                            chosenDiscard(() => ({
-                                amount: 1000 //discard the entire hand
-                            })),
-                            handler({
-                                handler: (context) => {
-                                    if(this.targetPlayer && this.setAsideCards.length > 0) {
-                                        const targetPlayer = this.targetPlayer;
-                                        context.game.addMessage(msg`${targetPlayer} picks up their original hand`);
-
-                                        this.setAsideCards.forEach((card) => {
-                                            targetPlayer.moveCard(card, Location.Hand);
-                                        });
-                                    }
-                                    this.setAsideCards = [];
-                                    this.targetPlayer = null;
-                                }
+            .gameAction(sequentialContext((context) => {
+                const defender = context.game.currentConflict?.defendingPlayer ?? undefined;
+                const hand = defender ? [...defender.hand] : [];
+                return {
+                    gameActions: [
+                        playerLastingEffect({
+                            duration: Duration.UntilEndOfRound,
+                            targetController: defender,
+                            effect: playerDelayedEffect({
+                                when: {
+                                    onConflictFinished: () => true
+                                },
+                                gameAction: sequential([
+                                    chosenDiscard(() => ({
+                                        amount: 1000 //discard the entire hand
+                                    })),
+                                    handler({
+                                        handler: (context) => {
+                                            const setAside = hand.filter((card) => card.location === Location.RemovedFromGame);
+                                            if(defender && setAside.length > 0) {
+                                                context.game.addMessage(msg`${defender} picks up their original hand`);
+                                                setAside.forEach((card) => defender.moveCard(card, Location.Hand));
+                                            }
+                                        }
+                                    })
+                                ])
                             })
-                        ])
-                    })
-                })),
-                conditional({
-                    condition: (context) => {
-                        const conflict = context.game.currentConflict;
-                        return conflict !== null && conflict.defendingPlayer !== null && conflict.defendingPlayer.hand.length > 0;
-                    },
-                    trueGameAction: sequential([
-                        handler({
-                            handler: (context) => {
-                                const conflict = context.game.currentConflict;
-                                if(!conflict || !conflict.defendingPlayer) {
-                                    return;
-                                }
-                                const player = conflict.defendingPlayer;
-                                const setAsideCards = [...player.hand];
-                                this.targetPlayer = player;
-                                this.setAsideCards = setAsideCards;
-                                this.game.addMessage(msg`${player} sets their hand aside and draws 5 cards`);
-                                if(setAsideCards.length > 0) {
-                                    setAsideCards.forEach((card) => {
-                                        player.moveCard(card, Location.RemovedFromGame);
-                                        card.lastingEffect({
-                                            until: {
-                                                onCardMoved: (event) => event.card === card && event.originalLocation === Location.RemovedFromGame
-                                            },
-                                            match: card,
-                                            effect: hideWhenFaceUp()
-                                        });
-                                    });
-                                }
-                            }
                         }),
-                        draw((context) => ({
-                            target: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
-                            amount: 5
-                        }))
-                    ]),
-                    falseGameAction: handler({
-                        handler: () => {
-                            this.setAsideCards = [];
-                            this.targetPlayer = null;
-                        }
-                    })
-                })
-            ]))
+                        setAside({
+                            target: hand,
+                            hidden: true,
+                            message: () => msg`${defender} sets their hand aside and draws 5 cards`
+                        }),
+                        // "If they do"
+                        conditional({
+                            condition: hand.length > 0,
+                            trueGameAction: draw({ target: defender, amount: 5 }),
+                            falseGameAction: noAction()
+                        })
+                    ]
+                };
+            }))
             .chatText((context) => msg`place ${context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''} under siege`)
             .max(perConflict(1));
     }

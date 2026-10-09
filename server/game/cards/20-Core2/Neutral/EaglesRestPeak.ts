@@ -1,8 +1,7 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Duration, Location } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { playerDelayedEffect } from '../../../effects.js';
-import { handler, lookAt, playerLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
+import { lookAt, sequentialContext, setAside } from '../../../GameActions/GameActions.js';
 import { shuffle } from '../../../utils/random.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
@@ -24,34 +23,10 @@ export default class EaglesRestPeak extends ProvinceCard {
                 return {
                     gameActions: [
                         lookAt({ target: setAsideCards }),
-
-                        handler({
-                            handler: () => {
-                                this.game.addMessage(msg`${opponent} sets aside ${setAsideCards}`);
-                                if(opponent) {
-                                    for(const card of setAsideCards) {
-                                        opponent.moveCard(card, Location.RemovedFromGame);
-                                    }
-                                }
-                            }
-                        }),
-
-                        playerLastingEffect({
-                            duration: Duration.UntilEndOfRound,
-                            targetController: opponent,
-                            effect: playerDelayedEffect({
-                                when: { onConflictFinished: () => true },
-                                gameAction: handler({
-                                    handler: (context) => {
-                                        context.game.addMessage(msg`${opponent} picks back their cards`);
-                                        if(opponent) {
-                                            for(const card of setAsideCards) {
-                                                opponent.moveCard(card, Location.Hand);
-                                            }
-                                        }
-                                    }
-                                })
-                            })
+                        setAside({
+                            target: setAsideCards,
+                            returnAtEndOfConflict: true,
+                            message: (_context, cards) => msg`${opponent} sets aside ${cards}`
                         })
                     ]
                 };

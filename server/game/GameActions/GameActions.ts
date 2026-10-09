@@ -93,6 +93,7 @@ import { SendHomeAction, SendHomeProperties } from './SendHomeAction.js';
 import { SequentialAction } from './SequentialAction.js';
 import { SequentialContextAction, SequentialContextProperties } from './SequentialContextAction.js';
 import { SetHonorDialAction, SetDialProperties } from './SetHonorDialAction.js';
+import { SetAsideAction, SetAsideProperties } from './SetAsideAction.js';
 import { ShuffleDeckAction, ShuffleDeckProperties } from './ShuffleDeckAction.js';
 import { SwitchConflictElementAction, SwitchConflictElementProperties } from './SwitchConflictElementAction.js';
 import { SwitchConflictTypeAction, SwitchConflictTypeProperties } from './SwitchConflictTypeAction.js';
@@ -377,6 +378,10 @@ export function setHonorDial<C extends AbilityContext = AbilityContext>(property
 } // value
 export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ShuffleDeckProperties, C>): ShuffleDeckAction<C> {
     return new ShuffleDeckAction<C>(propertyFactory);
+}
+/** Sets cards aside, out of play; optionally hidden, returned at the end of the conflict, or playable by a player. */
+export function setAside<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SetAsideProperties, C> = {}): SetAsideAction<C> {
+    return new SetAsideAction<C>(propertyFactory);
 }
 export function takeFate<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TransferFateProperties, C> = {}): TakeFateAction<C> {
     return new TakeFateAction<C>(propertyFactory);
