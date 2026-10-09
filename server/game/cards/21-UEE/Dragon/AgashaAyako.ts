@@ -1,6 +1,6 @@
 import { reduceCost } from '../../../effects.js';
 import { playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
-import { CardType, DeckType, Duration, PlayType } from '../../../Constants.js';
+import { CardType, DeckType, Duration, PlayType, Blocker } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 
@@ -33,7 +33,7 @@ export default class AgashaAyako extends DrawCard {
                             resetOnCancel: false,
                             playType: PlayType.Other,
                             playAction: target ? [new PlayCharacterAsIfFromHandAtHome(target)] : undefined,
-                            ignoredRequirements: ['phase']
+                            ignoredBlockers: [Blocker.WrongPhase]
                         };
                     })
                 ])

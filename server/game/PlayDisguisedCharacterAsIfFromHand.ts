@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import { PlayType } from './Constants.js';
+import { PlayType, Blocker } from './Constants.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
 import DrawCard from './DrawCard.js';
@@ -16,11 +16,11 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        const newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
+            ? ignoredBlockers
+            : ignoredBlockers.concat(Blocker.WrongLocation);
+        return super.meetsRequirements(context, newIgnoredBlockers);
     }
 }
 

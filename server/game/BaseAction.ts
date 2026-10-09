@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import { AbilityType } from './Constants.js';
+import { AbilityType, Blocker } from './Constants.js';
 import { BaseCardAbility } from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { Cost } from './costs/Cost.js';
@@ -20,12 +20,12 @@ export class BaseAction extends BaseCardAbility {
         super(card, properties);
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         if(this.breaksLimitedRule(context)) {
-            return 'limited';
+            return Blocker.LimitedAlreadyPlayed;
         }
 
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     getReducedCost(context: AbilityContext): number {

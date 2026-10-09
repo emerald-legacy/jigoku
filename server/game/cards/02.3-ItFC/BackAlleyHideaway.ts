@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Location, Phase, PlayType, EventName, CardType } from '../../Constants.js';
+import { Location, Phase, PlayType, EventName, CardType, Blocker } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import { ThenAbility } from '../../ThenAbility.js';
 import { customDetachedCard } from '../../effects.js';
@@ -55,21 +55,21 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
 
     meetsRequirements(context = this.createContext()) {
         if(context.game.currentPhase !== Phase.Dynasty) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
         if(context.source.location !== this.backAlleyCard.uuid) {
-            return 'location';
+            return Blocker.WrongLocation;
         }
         if(
             !(context.source.isDrawCard() && context.source.canPlay(context, PlayType.PlayFromProvince)) ||
             !(context.source.parent instanceof DrawCard && context.source.parent.canTriggerAbilities(context))
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
         if(!this.canPayCosts(context)) {
-            return 'cost';
+            return Blocker.CannotPayCost;
         }
-        return '';
+        return Blocker.None;
     }
 
     executeHandler(context: AbilityContext & { chooseFate: number }) {

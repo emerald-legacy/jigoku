@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { Phase, PlayType, TargetMode } from './Constants.js';
+import { Phase, PlayType, TargetMode, Blocker } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import type Ring from './Ring.js';
@@ -19,31 +19,31 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         });
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
         if(
-            !ignoredRequirements.includes('phase') &&
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
             context.game.currentPhase === Phase.Dynasty &&
             !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
         if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         }
         if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
 
         if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         }
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     canResolveTargets() {

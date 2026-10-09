@@ -1,6 +1,6 @@
 import { resolveAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Blocker } from '../../Constants.js';
 import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class TheMirrorsGaze extends DrawCard {
@@ -20,7 +20,7 @@ class TheMirrorsGaze extends DrawCard {
             .gameAction(resolveAbility((context) => ({
                 target: context.event.card,
                 ability: context.event.ability,
-                ignoredRequirements: ['cost', 'condition', 'limit'],
+                ignoredBlockers: [Blocker.CannotPayCost, Blocker.ConditionNotMet, Blocker.LimitReached],
                 event: context.event.context instanceof TriggeredAbilityContext ? context.event.context.event : undefined
             })));
     }

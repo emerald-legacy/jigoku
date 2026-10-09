@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, PlayType } from '../../../Constants.js';
+import { CardType, DeckType, PlayType, Blocker } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import { playCard } from '../../../GameActions/GameActions.js';
@@ -33,7 +33,7 @@ export default class UtakuTakeko extends DrawCard {
                                 new PlayDisguisedCharacterAsIfFromHandAtHome(target)
                             ]
                             : undefined,
-                        ignoredRequirements: ['phase']
+                        ignoredBlockers: [Blocker.WrongPhase]
                     };
                 }),
 

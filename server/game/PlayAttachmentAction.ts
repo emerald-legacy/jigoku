@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { CardType, Location, Phase } from './Constants.js';
+import { CardType, Location, Phase, Blocker } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
 import type BaseCard from './BaseCard.js';
@@ -23,28 +23,28 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
         });
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
         if(
-            !ignoredRequirements.includes('phase') &&
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
             context.game.currentPhase === Phase.Dynasty &&
             !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
         if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(context.source, context.playType)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         }
-        if(!ignoredRequirements.includes('cannotTrigger') && !context.source.canPlay(context, context.playType)) {
-            return 'cannotTrigger';
+        if(!ignoredBlockers.includes(Blocker.CannotTrigger) && !context.source.canPlay(context, context.playType)) {
+            return Blocker.CannotTrigger;
         }
 
         if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         }
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     displayMessage(context: AbilityContext) {

@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import { CardAbility } from './CardAbility.js';
-import { AbilityType, CardType, EffectName, Phase } from './Constants.js';
+import { AbilityType, CardType, EffectName, Phase, Blocker } from './Constants.js';
 import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -50,38 +50,38 @@ export class CardAction extends CardAbility {
         }
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []) {
-        if(!ignoredRequirements.includes('location') && !this.isInValidLocation(context)) {
-            return 'location';
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []) {
+        if(!ignoredBlockers.includes(Blocker.WrongLocation) && !this.isInValidLocation(context)) {
+            return Blocker.WrongLocation;
         }
 
-        if(!ignoredRequirements.includes('province') && !this.checkProvinceCondition(context)) {
-            return 'province';
+        if(!ignoredBlockers.includes(Blocker.WrongProvince) && !this.checkProvinceCondition(context)) {
+            return Blocker.WrongProvince;
         }
 
-        if(!ignoredRequirements.includes('phase') && this.phase !== 'any' && this.phase !== this.game.currentPhase) {
-            return 'phase';
+        if(!ignoredBlockers.includes(Blocker.WrongPhase) && this.phase !== 'any' && this.phase !== this.game.currentPhase) {
+            return Blocker.WrongPhase;
         }
 
         if(
-            !ignoredRequirements.includes('phase') &&
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
             this.game.currentPhase === Phase.Dynasty &&
             !this.#passDynastyPhaseRequirements()
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
 
         const canOpponentTrigger = this.card.anyEffect(EffectName.CanBeTriggeredByOpponent);
         const canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
-        if(!ignoredRequirements.includes('player') && this.card.type !== CardType.Event && !canPlayerTrigger) {
-            return 'player';
+        if(!ignoredBlockers.includes(Blocker.WrongPlayer) && this.card.type !== CardType.Event && !canPlayerTrigger) {
+            return Blocker.WrongPlayer;
         }
 
-        if(!ignoredRequirements.includes('condition') && this.condition && !this.condition(context)) {
-            return 'condition';
+        if(!ignoredBlockers.includes(Blocker.ConditionNotMet) && this.condition && !this.condition(context)) {
+            return Blocker.ConditionNotMet;
         }
 
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     checkProvinceCondition(context: AbilityContext) {

@@ -4,7 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { BaseAction } from '../BaseAction.js';
 import type BaseCard from '../BaseCard.js';
 import type { BaseCardAbility } from '../BaseCardAbility.js';
-import { Location, PlayType, Stage, type EventName } from '../Constants.js';
+import { Location, PlayType, Stage, type EventName, Blocker } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
@@ -102,7 +102,7 @@ export interface PlayCardProperties extends CardActionProperties {
     ignoreFateCost?: boolean;
     source?: BaseCard;
     allowReactions?: boolean;
-    ignoredRequirements?: string[];
+    ignoredBlockers?: Blocker[];
     playAction?: BaseAction | BaseAction[];
     payFateToOpponent?: boolean;
     /** The event a reaction is played in response to, when it is played again (Dragon Tattoo). */
@@ -117,7 +117,7 @@ type PlayCardDefaults =
     | 'payCosts'
     | 'ignoreFateCost'
     | 'allowReactions'
-    | 'ignoredRequirements';
+    | 'ignoredBlockers';
 
 type ResolvedPlayCardProperties = WithDefaults<PlayCardProperties, PlayCardDefaults>;
 
@@ -137,7 +137,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         payCosts: true,
         ignoreFateCost: false,
         allowReactions: false,
-        ignoredRequirements: []
+        ignoredBlockers: []
     };
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
@@ -151,15 +151,15 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
     getLegalAbilities(card: DrawCard, context: C, properties: ResolvedPlayCardProperties): PlayableAbility[] {
         const playable = this.getLegalActions(card, context, properties).concat(this.getLegalReactions(card, context, properties));
         return playable.filter(({ ability, createContext }) => {
-            const ignoredRequirements = ['location', 'player', ...properties.ignoredRequirements];
+            const ignoredBlockers = [Blocker.WrongLocation, Blocker.WrongPlayer, ...properties.ignoredBlockers];
             if(!properties.payCosts) {
-                ignoredRequirements.push('cost');
+                ignoredBlockers.push(Blocker.CannotPayCost);
             }
             const newContext = createContext(context.player);
             newContext.gameActionsResolutionChain = context.gameActionsResolutionChain.concat(this);
             newContext.ignoreFateCost = properties.ignoreFateCost;
             this.setPlayType(newContext, properties.playType);
-            return !ability.meetsRequirements(newContext, ignoredRequirements);
+            return ability.meetsRequirements(newContext, ignoredBlockers) === Blocker.None;
         });
     }
 

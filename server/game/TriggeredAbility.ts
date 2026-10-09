@@ -1,7 +1,7 @@
 import { CardAbility } from './CardAbility.js';
 import type { CardAbilityProperties } from './CardAbility.js';
 import { TriggeredAbilityContext, type TriggeringEvent } from './TriggeredAbilityContext.js';
-import { Stage, CardType, EffectName, EventName, AbilityType } from './Constants.js';
+import { Stage, CardType, EffectName, EventName, AbilityType, Blocker } from './Constants.js';
 import { eventNamesIn, isEnumValue } from './utils/helpers.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
@@ -55,27 +55,27 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         this.condition = properties.condition;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         const canOpponentTrigger =
             this.card.anyEffect(EffectName.CanBeTriggeredByOpponent) &&
             this.abilityType !== AbilityType.ForcedInterrupt &&
             this.abilityType !== AbilityType.ForcedReaction;
         const canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
 
-        if(!ignoredRequirements.includes('player') && !canPlayerTrigger) {
+        if(!ignoredBlockers.includes(Blocker.WrongPlayer) && !canPlayerTrigger) {
             if(
                 this.card.type !== CardType.Event ||
                 !context.player.isCardInPlayableLocation(this.card, context.playType)
             ) {
-                return 'player';
+                return Blocker.WrongPlayer;
             }
         }
 
-        if(!ignoredRequirements.includes('condition') && this.condition && !this.condition(context)) {
-            return 'condition';
+        if(!ignoredBlockers.includes(Blocker.ConditionNotMet) && this.condition && !this.condition(context)) {
+            return Blocker.ConditionNotMet;
         }
 
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     eventHandler(event: Event, window: ChoiceWindow): void {
@@ -84,7 +84,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
             if(
                 this.card.reactions.includes(this) &&
                 this.isTriggeredByEvent(event, context) &&
-                this.meetsRequirements(context) === ''
+                this.meetsRequirements(context) === Blocker.None
             ) {
                 window.addChoice(context);
             }
@@ -97,7 +97,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
             if(
                 this.card.reactions.includes(this) &&
                 this.aggregateWhen?.(events, context) &&
-                this.meetsRequirements(context) === ''
+                this.meetsRequirements(context) === Blocker.None
             ) {
                 window.addChoice(context);
             }

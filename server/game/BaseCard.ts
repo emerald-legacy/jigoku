@@ -13,17 +13,7 @@ import Game from './Game.js';
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import {
-    AbilityType,
-    CardType,
-    CharacterStatus,
-    Duration,
-    EffectName,
-    type Element,
-    EventName,
-    Location,
-    Players
-} from './Constants.js';
+import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, Blocker } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import {
     ActionProps,
@@ -734,10 +724,10 @@ export class BaseCard extends EffectSource {
         this.game.emitEvent(EventName.OnCardMoved, { card: this, originalLocation, newLocation: targetLocation });
     }
 
-    canTriggerAbilities(context: AbilityContext, ignoredRequirements: string[] = []): boolean {
+    canTriggerAbilities(context: AbilityContext, ignoredBlockers: Blocker[] = []): boolean {
         return (
             this.isFaceup() &&
-            (ignoredRequirements.includes('triggeringRestrictions') ||
+            (ignoredBlockers.includes(Blocker.TriggeringRestricted) ||
                 this.checkRestrictions('triggerAbilities', context))
         );
     }

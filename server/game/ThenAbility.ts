@@ -1,3 +1,4 @@
+import { Blocker } from './Constants.js';
 import type { MessageArgs } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
 import { BaseCardAbility } from './BaseCardAbility.js';
@@ -45,7 +46,7 @@ export class ThenAbility extends BaseCardAbility {
                 return false;
             }
             const thenAbility = new ThenAbility(this.card, then);
-            return thenAbility.meetsRequirements(thenAbility.createThenContext(context)) === '';
+            return thenAbility.meetsRequirements(thenAbility.createThenContext(context)) === Blocker.None;
         }
         return false;
     }

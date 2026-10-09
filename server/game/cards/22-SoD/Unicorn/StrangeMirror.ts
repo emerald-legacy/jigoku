@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, PlayType, Players } from '../../../Constants.js';
+import { CardType, Location, PlayType, Players, Blocker } from '../../../Constants.js';
 import {
     chooseAction,
     injure,
@@ -43,7 +43,7 @@ export default class StrangeMirror extends DrawCard {
                 source: this,
                 playType: PlayType.PlayFromHand,
                 // the event sits underneath a card, which is not a playable location
-                ignoredRequirements: ['location'],
+                ignoredBlockers: [Blocker.WrongLocation],
                 destination: Location.ConflictDiscardPile,
                 // a played event returns to its owner's discard pile, not the pile of
                 // whoever played it out from underneath

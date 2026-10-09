@@ -5,7 +5,7 @@ import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
 import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
 import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
 import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType, Players, EventName } from './Constants.js';
+import { Stage, TargetMode, AbilityType, Players, EventName, Blocker } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
@@ -169,20 +169,20 @@ export class BaseAbility {
         return new AbilityTargetCard(name, normalized, this);
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         // check legal targets exist
         // check costs can be paid
         // check for potential to change game state
-        if(!this.canPayCosts(context) && !ignoredRequirements.includes('cost')) {
-            return 'cost';
+        if(!this.canPayCosts(context) && !ignoredBlockers.includes(Blocker.CannotPayCost)) {
+            return Blocker.CannotPayCost;
         }
         if(this.targets.length === 0) {
             if(this.gameAction.length > 0 && !this.checkGameActionsForPotential(context)) {
-                return 'condition';
+                return Blocker.ConditionNotMet;
             }
-            return '';
+            return Blocker.None;
         }
-        return this.canResolveTargets(context) ? '' : 'target';
+        return this.canResolveTargets(context) ? Blocker.None : Blocker.NoLegalTarget;
     }
 
     checkGameActionsForPotential(context: AbilityContext): boolean {

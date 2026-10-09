@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EffectName, Location, Phase, PlayType, Players } from './Constants.js';
+import { EffectName, Location, Phase, PlayType, Players, Blocker } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
@@ -22,36 +22,36 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
+    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
         if(
-            !ignoredRequirements.includes('phase') &&
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
             context.game.currentPhase === Phase.Dynasty &&
             !context.game.rules.dynastyPhaseCanPlayConflictCharacters
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
         if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         }
         if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
         if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         }
         if(
             !context.player.checkRestrictions('playCharacter', context) ||
             !context.player.checkRestrictions('enterPlay', context)
         ) {
-            return 'restriction';
+            return Blocker.CannotPlaceFate;
         }
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     public executeHandler(context: AbilityContext<DrawCard>): void {

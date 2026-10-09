@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, Duration, Location, PlayType } from '../../../Constants.js';
+import { CardType, DeckType, Duration, Location, PlayType, Blocker } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
@@ -42,7 +42,7 @@ export default class AshalanLantern extends DrawCard {
                                     new PlayDisguisedCharacterAsIfFromHandIntoConflict(target)
                                 ]
                                 : undefined,
-                            ignoredRequirements: ['phase'],
+                            ignoredBlockers: [Blocker.WrongPhase],
                             postHandler: () => context.player.moveCard(context.source, Location.ConflictDiscardPile)
                         };
                     }),

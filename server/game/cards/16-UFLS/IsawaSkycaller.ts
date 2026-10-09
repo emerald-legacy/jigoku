@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { gainPlayAction } from '../../effects.js';
 import { PlayIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
-import { Element, Location, PlayType } from '../../Constants.js';
+import { Element, Location, PlayType, Blocker } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -20,9 +20,9 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
-        const newIgnoredRequirements = ignoredRequirements.includes('location') ? ignoredRequirements : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation) ? ignoredBlockers : ignoredBlockers.concat(Blocker.WrongLocation);
+        return super.meetsRequirements(context, newIgnoredBlockers);
     }
 }
 

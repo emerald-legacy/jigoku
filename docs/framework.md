@@ -249,7 +249,7 @@ this.action('...')
 
 ### Keeper of Secret Names interaction
 
-`resolveAbility` with `ignoredRequirements: ['province']` bypasses `checkProvinceCondition`, allowing Keeper to trigger any province's action. This is why a province action's `condition` must NOT contain `isConflictProvince()` — if it did, Keeper would be blocked by the condition even with the province check bypassed.
+`resolveAbility` with `ignoredBlockers: [Blocker.WrongProvince]` bypasses `checkProvinceCondition`, allowing Keeper to trigger any province's action. This is why a province action's `condition` must NOT contain `isConflictProvince()` — if it did, Keeper would be blocked by the condition even with the province check bypassed.
 
 ---
 
@@ -504,24 +504,26 @@ playerLastingEffect((context) => ({
 // Resolve another card's ability (used by Keeper of Secret Names: the action of its province target)
 resolveAbility((context) => ({
     ability: context.target.abilities.actions[0],
-    ignoredRequirements: ['province'],
+    ignoredBlockers: [Blocker.WrongProvince],
     choosingPlayerOverride: context.choosingPlayerOverride
 }))
 ```
 
-### `ignoredRequirements` values
+### `ignoredBlockers` values
 
-| Value | What it skips |
-|-------|--------------|
-| `'location'` | Location validity check |
-| `'province'` | `checkProvinceCondition` (province must be conflict province) |
-| `'phase'` | Phase restriction |
-| `'player'` | Player/controller permission |
-| `'condition'` | The ability's `condition` function |
-| `'cost'` | Cost payment |
-| `'limit'` | Usage limit |
-| `'max'` | Per-title `max` cap |
-| `'triggeringRestrictions'` | Triggering restriction checks |
+`meetsRequirements` returns the first `Blocker` that stops the ability, or `Blocker.None`. Listing a `Blocker` in `ignoredBlockers` skips that check:
+
+| Blocker | What it skips |
+|---------|--------------|
+| `Blocker.WrongLocation` | Location validity check |
+| `Blocker.WrongProvince` | `checkProvinceCondition` (province must be conflict province) |
+| `Blocker.WrongPhase` | Phase restriction |
+| `Blocker.WrongPlayer` | Player/controller permission |
+| `Blocker.ConditionNotMet` | The ability's `condition` function |
+| `Blocker.CannotPayCost` | Cost payment |
+| `Blocker.LimitReached` | Usage limit |
+| `Blocker.MaxReached` | Per-title `max` cap |
+| `Blocker.TriggeringRestricted` | Triggering restriction checks |
 
 ---
 
@@ -695,15 +697,15 @@ A target without a `cardType` holds a `BaseCard`, which has no `isParticipating(
 
 ## Province Card Engine Internals
 
-`CardAction.meetsRequirements()` checks in order:
+`CardAction.meetsRequirements()` checks in order, returning the first `Blocker` it hits:
 
-1. **location** — card in valid location
-2. **province** — `checkProvinceCondition()` (skippable with `ignoredRequirements: ['province']`)
-3. **phase** — action valid for current phase
-4. **player** — correct player
-5. **condition** — custom `condition` callback (skippable with `ignoredRequirements: ['condition']`)
-6. **cost** — costs payable
-7. **target** — valid targets exist
+1. **`WrongLocation`** — card in valid location
+2. **`WrongProvince`** — `checkProvinceCondition()` (skippable with `ignoredBlockers: [Blocker.WrongProvince]`)
+3. **`WrongPhase`** — action valid for current phase
+4. **`WrongPlayer`** — correct player
+5. **`ConditionNotMet`** — custom `condition` callback (skippable with `ignoredBlockers: [Blocker.ConditionNotMet]`)
+6. **`CannotPayCost`** — costs payable
+7. **`NoLegalTarget`** — valid targets exist
 
 `checkProvinceCondition`:
 

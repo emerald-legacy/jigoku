@@ -4,7 +4,7 @@ import type { CardAction } from './CardAction.js';
 import { ThenAbility } from './ThenAbility.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
-import { Location, CardType, EffectName, Phase } from './Constants.js';
+import { Location, CardType, EffectName, Phase, Blocker } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -128,45 +128,45 @@ export class CardAbility extends ThenAbility {
         return defaultedLocation;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         if(this.card.isBlank() && this.printedAbility) {
-            return 'blank';
+            return Blocker.Blanked;
         }
 
         if(
-            (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
+            (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredBlockers)) ||
             (this.card.type === CardType.Event && this.card.isDrawCard() && !this.card.canPlay(context, context.playType))
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
 
         if(this.isKeywordAbility() && !this.card.canInitiateKeywords(context)) {
-            return 'cannotInitiate';
+            return Blocker.CannotInitiate;
         }
 
-        if(!ignoredRequirements.includes('limit') && this.limit.isAtMax(context.player)) {
-            return 'limit';
+        if(!ignoredBlockers.includes(Blocker.LimitReached) && this.limit.isAtMax(context.player)) {
+            return Blocker.LimitReached;
         }
 
-        if(!ignoredRequirements.includes('max') && this.max && context.player.isAbilityAtMax(this.maxIdentifier)) {
-            return 'max';
+        if(!ignoredBlockers.includes(Blocker.MaxReached) && this.max && context.player.isAbilityAtMax(this.maxIdentifier)) {
+            return Blocker.MaxReached;
         }
 
         if(this.breaksLimitedRule(context)) {
-            return 'limited';
+            return Blocker.LimitedAlreadyPlayed;
         }
 
         if(
-            !ignoredRequirements.includes('phase') &&
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
             !this.isKeywordAbility() &&
             this.card.isDynasty &&
             this.card.type === CardType.Event &&
             context.game.currentPhase !== Phase.Dynasty
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
 
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {

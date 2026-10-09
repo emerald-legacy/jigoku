@@ -3,7 +3,7 @@ import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { EffectName, Phase, PlayType, EventName } from './Constants.js';
+import { EffectName, Phase, PlayType, EventName, Blocker } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -17,27 +17,27 @@ export class DynastyCardAction extends BaseAction {
         super(card, [chooseFate(PlayType.PlayFromProvince), payReduceableFateCost()]);
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
-            return 'facedown';
-        } else if(!ignoredRequirements.includes('player') && context.player !== this.card.controller) {
-            return 'player';
-        } else if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phase.Dynasty) {
-            return 'phase';
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.Facedown) && this.card.isFacedown()) {
+            return Blocker.Facedown;
+        } else if(!ignoredBlockers.includes(Blocker.WrongPlayer) && context.player !== this.card.controller) {
+            return Blocker.WrongPlayer;
+        } else if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Dynasty) {
+            return Blocker.WrongPhase;
         } else if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(this.card, PlayType.PlayFromProvince)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         } else if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !this.card.canPlay(context, PlayType.PlayFromProvince)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         } else if(this.card.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         }
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     displayMessage(context: AbilityContext): void {

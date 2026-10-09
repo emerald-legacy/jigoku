@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { resolveAbility } from '../../GameActions/GameActions.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, Blocker } from '../../Constants.js';
 
 class CountrysideTrader extends DrawCard {
     static id = 'countryside-trader';
@@ -20,7 +20,7 @@ class CountrysideTrader extends DrawCard {
                 target: context.targetAbility?.card,
                 ability: context.targetAbility,
                 player: context.player,
-                ignoredRequirements: ['condition'],
+                ignoredBlockers: [Blocker.ConditionNotMet],
                 choosingPlayerOverride: context.choosingPlayerOverride
             })));
     }

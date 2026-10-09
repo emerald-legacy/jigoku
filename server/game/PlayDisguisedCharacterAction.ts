@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { CardType, EffectName, EventName, Phase, Players } from './Constants.js';
+import { CardType, EffectName, EventName, Phase, Players, Blocker } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import BaseCard from './BaseCard.js';
@@ -79,25 +79,25 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phase.Conflict) {
-            return 'phase';
+    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Conflict) {
+            return Blocker.WrongPhase;
         } else if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(context.source, context.playType)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         } else if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !context.source.canPlay(context, context.playType)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         } else if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         } else if(!context.player.checkRestrictions('enterPlay', context)) {
-            return 'restriction';
+            return Blocker.CannotPlaceFate;
         }
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     public executeHandler(context: AbilityContext<DrawCard>) {

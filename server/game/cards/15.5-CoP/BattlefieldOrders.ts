@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { reduceCost } from '../../effects.js';
 import { resolveAbility } from '../../GameActions/GameActions.js';
-import { CardType, Players, Location, AbilityType, ConflictType } from '../../Constants.js';
+import { CardType, Players, Location, AbilityType, ConflictType, Blocker } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
 class BattlefieldOrders extends DrawCard {
@@ -26,7 +26,7 @@ class BattlefieldOrders extends DrawCard {
                 target: context.targetAbility.card,
                 ability: context.targetAbility,
                 player: context.targetAbility.card.controller,
-                ignoredRequirements: ['player'],
+                ignoredBlockers: [Blocker.WrongPlayer],
                 choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
             })))
             .chatText((context) => msg`trigger ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);

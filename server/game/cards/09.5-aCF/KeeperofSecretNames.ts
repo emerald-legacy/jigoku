@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, Blocker } from '../../Constants.js';
 import { resolveAbility } from '../../GameActions/GameActions.js';
 
 class KeeperOfSecretNames extends DrawCard {
@@ -14,7 +14,7 @@ class KeeperOfSecretNames extends DrawCard {
                 cardCondition: (card) => card.abilities.actions.length > 0 && !card.isBroken
             }, resolveAbility((context) => ({
                 ability: context.target.abilities.actions[0],
-                ignoredRequirements: ['province'],
+                ignoredBlockers: [Blocker.WrongProvince],
                 choosingPlayerOverride: context.choosingPlayerOverride
             })));
     }

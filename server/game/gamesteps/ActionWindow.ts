@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import { UiPrompt } from './UiPrompt.js';
-import { EventName, Location, Players, EffectName } from '../Constants.js';
+import { EventName, Location, Players, EffectName, Blocker } from '../Constants.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -46,7 +46,7 @@ export class ActionWindow extends UiPrompt {
 
         const actions = card.getActions();
 
-        const legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === '');
+        const legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === Blocker.None);
 
         if(legalActions.length === 0) {
             return false;
