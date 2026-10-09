@@ -30,7 +30,8 @@ import {
     FavorType,
     Location,
     Players,
-    PlayType
+    PlayType,
+    RestrictionType
 } from './Constants.js';
 import type Game from './Game.js';
 import type { Socket } from '../Socket.js';
@@ -1028,7 +1029,7 @@ export class Player extends GameObject {
     }
 
     hasAffinity(trait: string, context?: AbilityContext): boolean {
-        if(!this.checkRestrictions('haveAffinity', context ?? this.game.getFrameworkContext(this))) {
+        if(!this.checkRestrictions(RestrictionType.HaveAffinity, context ?? this.game.getFrameworkContext(this))) {
             return false;
         }
 

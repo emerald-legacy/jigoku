@@ -1,5 +1,6 @@
 import { cardCannot, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { RestrictionType } from '../../../Constants.js';
 
 export default class MasterOfTheBlade extends DrawCard {
     static id = 'master-of-the-blade';
@@ -11,7 +12,7 @@ export default class MasterOfTheBlade extends DrawCard {
                 effect: [
                     doesNotBow(),
                     cardCannot({
-                        cannot: 'bow',
+                        cannot: RestrictionType.Bow,
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })

@@ -1,7 +1,7 @@
 import { putIntoConflict } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, type PlayType } from '../../Constants.js';
 
 class FromTheShadows extends DrawCard {
     static id = 'from-the-shadows';
@@ -16,8 +16,8 @@ class FromTheShadows extends DrawCard {
             }, putIntoConflict({ status: 'dishonored' }));
     }
 
-    canPlay(context: AbilityContext, type: string): boolean {
-        return !!context.player.opponent && context.player.isLessHonorable() && super.canPlay(context, type);
+    canPlay(context: AbilityContext, playType?: PlayType): boolean {
+        return !!context.player.opponent && context.player.isLessHonorable() && super.canPlay(context, playType);
     }
 }
 

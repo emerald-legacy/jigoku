@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
+import { RestrictionType } from '../../Constants.js';
 
 class CulturedFacade extends DrawCard {
     static id = 'cultured-facade';
@@ -9,7 +10,7 @@ class CulturedFacade extends DrawCard {
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
                 effect: cardCannot({
-                    cannot: 'target',
+                    cannot: RestrictionType.Target,
                     restricts: 'eventPlayedByHigherBidPlayer'
                 })
             }))

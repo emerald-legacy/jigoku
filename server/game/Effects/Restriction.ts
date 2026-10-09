@@ -1,5 +1,5 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Location, Phase, Stage } from '../Constants.js';
+import { AbilityType, CardType, Location, Phase, type PlayType, RestrictionType, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -10,7 +10,7 @@ import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 
 type RestrictionCheck = (context: AbilityContext, effect: Restriction, card?: BaseCard) => boolean;
-type RestrictionType = string | RestrictionCheck | (string | RestrictionCheck)[];
+type RestrictionCondition = string | RestrictionCheck | (string | RestrictionCheck)[];
 
 const checkRestrictions: Record<string, RestrictionCheck> = {
     abilitiesTriggeredByOpponents: (context, effect) =>
@@ -160,23 +160,29 @@ const isMoveToHandAction = (gameAction: unknown) =>
 
 const printedCostOf = (card: BaseCard) => (card.isDrawCard() ? card.printedCost ?? 0 : 0);
 
-const leavePlayTypes = new Set(['discardFromPlay', 'sacrifice', 'returnToHand', 'returnToDeck', 'removeFromGame']);
+const leavePlayTypes = new Set<RestrictionType | PlayType | undefined>([
+    RestrictionType.DiscardFromPlay,
+    RestrictionType.Sacrifice,
+    RestrictionType.ReturnToHand,
+    RestrictionType.ReturnToDeck,
+    RestrictionType.RemoveFromGame
+]);
 
 export interface RestrictionProperties {
-    type?: string;
-    restricts?: RestrictionType;
+    type?: RestrictionType | PlayType;
+    restricts?: RestrictionCondition;
     applyingPlayer?: Player;
     params?: unknown;
-    cannot?: RestrictionType;
+    cannot?: RestrictionType | PlayType;
 }
 
 export class Restriction extends EffectValueBase<Restriction> {
-    type?: string;
-    restriction?: RestrictionType;
+    type?: RestrictionType | PlayType;
+    restriction?: RestrictionCondition;
     applyingPlayer?: Player;
     params: unknown;
 
-    constructor(properties: string | RestrictionProperties) {
+    constructor(properties: RestrictionType | PlayType | RestrictionProperties) {
         super();
         if(typeof properties === 'string') {
             this.type = properties;
@@ -192,8 +198,9 @@ export class Restriction extends EffectValueBase<Restriction> {
         return this;
     }
 
-    isMatch(type: string, context: AbilityContext, card?: BaseCard): boolean {
-        if(this.type === 'leavePlay') {
+    /** `type` undefined: only a restriction that names no type matches. */
+    isMatch(type: RestrictionType | PlayType | undefined, context: AbilityContext, card?: BaseCard): boolean {
+        if(this.type === RestrictionType.LeavePlay) {
             return leavePlayTypes.has(type) && this.checkCondition(context, card);
         }
 

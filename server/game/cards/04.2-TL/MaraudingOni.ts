@@ -1,6 +1,7 @@
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 class MaraudingOni extends DrawCard {
     static id = 'marauding-oni';
@@ -8,8 +9,8 @@ class MaraudingOni extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                cardCannot('honor'),
-                cardCannot('dishonor')
+                cardCannot(RestrictionType.Honor),
+                cardCannot(RestrictionType.Dishonor)
             ]
         });
 

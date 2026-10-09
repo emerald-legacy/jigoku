@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type Player from '../Player.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
+import { CardType, Duration, EventName, Location, type DuelType, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { Duel } from '../Duel.js';
@@ -31,6 +31,7 @@ export interface DuelProperties extends CardActionProperties {
 
 export class DuelAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelProperties, EventName.OnDuelInitiated, C> {
     name = 'duel';
+    restriction = RestrictionType.Duel;
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
@@ -65,7 +66,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         if(card === properties.challenger) {
             return false; //cannot duel yourself
         }
-        if(!card.checkRestrictions('duel', context)) {
+        if(!card.checkRestrictions(RestrictionType.Duel, context)) {
             return false;
         }
 

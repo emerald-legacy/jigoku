@@ -1,4 +1,4 @@
-import { Element, Players } from '../../../Constants.js';
+import { Element, Players, RestrictionType } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
 import { addTrait, immunity, playerCannot } from '../../../effects.js';
@@ -20,10 +20,10 @@ export default class JealousAncestor extends DrawCard {
         });
 
         this.addAttachedEffectOnOpponent(
-            playerCannot({ cannot: 'draw', restricts: 'opponentsCardEffects' })
+            playerCannot({ cannot: RestrictionType.Draw, restricts: 'opponentsCardEffects' })
         );
-        this.addAttachedEffectOnOpponent(playerCannot({ cannot: 'move', restricts: 'toHand' }));
-        this.addAttachedEffectOnOpponent(playerCannot({ cannot: 'returnToHand' }));
+        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.Move, restricts: 'toHand' }));
+        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.ReturnToHand }));
     }
 
     public getPrintedElementSymbols() {

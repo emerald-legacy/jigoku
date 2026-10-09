@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { EntersPlayStatus } from '../Constants.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location, Players } from '../Constants.js';
+import { CardType, EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -25,6 +25,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
     PutIntoPlayDefaults
 > {
     name = 'putIntoPlay';
+    restriction = RestrictionType.PutIntoPlay;
     eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';
     targetType = [CardType.Character];
@@ -66,9 +67,9 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
             return false;
         } else if(card.location === Location.PlayArea || card.isFacedown()) {
             return false;
-        } else if(!card.checkRestrictions('putIntoPlay', context)) {
+        } else if(!card.checkRestrictions(RestrictionType.PutIntoPlay, context)) {
             return false;
-        } else if(!player.checkRestrictions('enterPlay', contextCopy)) {
+        } else if(!player.checkRestrictions(RestrictionType.EnterPlay, contextCopy)) {
             return false;
         } else if(this.intoConflict) {
             // There is no current conflict, or no context (cards must be put into play by a player, not a framework event)
@@ -79,7 +80,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
             if(card.hasDash(context.game.currentConflict.conflictType)) {
                 return false;
             }
-            if(!card.checkRestrictions('putIntoConflict', context)) {
+            if(!card.checkRestrictions(RestrictionType.PutIntoConflict, context)) {
                 return false;
             }
 

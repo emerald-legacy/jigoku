@@ -1,5 +1,6 @@
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { RestrictionType } from '../../../Constants.js';
 
 export default class BorderlandsDefender extends DrawCard {
     static id = 'borderlands-defender';
@@ -9,11 +10,11 @@ export default class BorderlandsDefender extends DrawCard {
             condition: (context) => context.source.isDefending(),
             effect: [
                 cardCannot({
-                    cannot: 'sendHome',
+                    cannot: RestrictionType.SendHome,
                     restricts: 'opponentsCardEffects'
                 }),
                 cardCannot({
-                    cannot: 'bow',
+                    cannot: RestrictionType.Bow,
                     restricts: 'opponentsCardEffects'
                 })
             ]

@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { CardType, EffectName, Element, Location } from './Constants.js';
+import { CardType, EffectName, Element, Location, RestrictionType } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
 import { cardCannot } from './effects.js';
 import BaseCard from './BaseCard.js';
@@ -38,7 +38,7 @@ export class ProvinceCard extends BaseCard {
         this.persistentEffect({
             condition: (context) => context.source.hasEminent(),
             location: Location.Any,
-            effect: cardCannot('turnFacedown')
+            effect: cardCannot(RestrictionType.TurnFacedown)
         });
     }
 

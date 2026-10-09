@@ -17,7 +17,7 @@ import { CourtesyAbility } from './KeywordAbilities/CourtesyAbility.js';
 import { PrideAbility } from './KeywordAbilities/PrideAbility.js';
 import { SincerityAbility } from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import type Player from './Player.js';
@@ -570,12 +570,12 @@ export class DrawCard extends BaseCard {
         this.fate = Math.max(0, this.fate + amount);
     }
 
-    canPlay(context: AbilityContext, type: string = 'play'): boolean {
+    canPlay(context: AbilityContext, playType?: PlayType): boolean {
         return (
-            this.checkRestrictions(type, context) &&
-            context.player.checkRestrictions(type, context) &&
-            this.checkRestrictions('play', context) &&
-            context.player.checkRestrictions('play', context) &&
+            this.checkRestrictions(playType, context) &&
+            context.player.checkRestrictions(playType, context) &&
+            this.checkRestrictions(RestrictionType.Play, context) &&
+            context.player.checkRestrictions(RestrictionType.Play, context) &&
             (!this.hasPrintedKeyword('peaceful') || !this.game.currentConflict)
         );
     }
@@ -676,7 +676,7 @@ export class DrawCard extends BaseCard {
     }
 
     canBeBypassedByCovert(context: AbilityContext): boolean {
-        return !this.isCovert() && this.checkRestrictions('applyCovert', context);
+        return !this.isCovert() && this.checkRestrictions(RestrictionType.ApplyCovert, context);
     }
 
     /** The ring and type are undefined while attackers are picked before the ring. */
@@ -756,7 +756,7 @@ export class DrawCard extends BaseCard {
             ? [ConflictType.Military, ConflictType.Political].some((type) => this.canParticipateAsAttacker(type))
             : this.canParticipateAsAttacker(conflictType);
         return (
-            this.checkRestrictions('declareAsAttacker', frameworkContext) &&
+            this.checkRestrictions(RestrictionType.DeclareAsAttacker, frameworkContext) &&
             canParticipate &&
             this.location === Location.PlayArea &&
             !this.bowed
@@ -765,7 +765,7 @@ export class DrawCard extends BaseCard {
 
     canDeclareAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         return (
-            this.checkRestrictions('declareAsDefender', this.game.getFrameworkContext(this.controller)) &&
+            this.checkRestrictions(RestrictionType.DeclareAsDefender, this.game.getFrameworkContext(this.controller)) &&
             this.canParticipateAsDefender(conflictType) &&
             this.location === Location.PlayArea &&
             !this.bowed &&

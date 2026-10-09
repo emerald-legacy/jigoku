@@ -1,5 +1,5 @@
 import type { EntersPlayStatus } from '../Constants.js';
-import type { CardType, ConflictType, Element, EventName, Players, PlayType, SkillType } from '../Constants.js';
+import type { CardType, ConflictType, Element, EventName, Players, PlayType, RestrictionType, SkillType } from '../Constants.js';
 import { EffectName } from '../Constants.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -24,7 +24,7 @@ import type { DynamicMatch } from './GainAllAbilitiesDynamic.js';
 // Structural view of Restriction (consumers only call `.isMatch`); `card?: GameObject` so the
 // base GameObject.checkRestrictions can pass `this` without a downcast (isMatch's method params
 // are bivariant, so a real Restriction still satisfies this).
-type RestrictionLike = { isMatch(type: string, context: AbilityContext, card?: GameObject): boolean };
+type RestrictionLike = { isMatch(type: RestrictionType | PlayType | undefined, context: AbilityContext, card?: GameObject): boolean };
 
 export type FatePool = DrawCard | Ring;
 

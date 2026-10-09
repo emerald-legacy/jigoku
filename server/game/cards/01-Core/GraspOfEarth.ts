@@ -1,4 +1,4 @@
-import { Location, Players, PlayType } from '../../Constants.js';
+import { Location, Players, PlayType, RestrictionType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot, playerCannot, reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
@@ -24,7 +24,7 @@ export default class GraspOfEarth extends DrawCard {
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
             .cardLastingEffect((context) => ({
                 target: context.player.opponent?.cardsInPlay.slice(),
-                effect: cardCannot('moveToConflict')
+                effect: cardCannot(RestrictionType.MoveToConflict)
             }))
             .playerLastingEffect((context) => ({
                 targetController: context.player.opponent,

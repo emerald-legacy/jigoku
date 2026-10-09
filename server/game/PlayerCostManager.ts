@@ -8,7 +8,8 @@ import {
     EventName,
     Location,
     Players,
-    PlayType
+    PlayType,
+    RestrictionType
 } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
@@ -104,7 +105,7 @@ export class PlayerCostManager {
         const rings = alternateFatePools.filter((a) => a.printedType === 'ring');
         const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
         if(
-            !this.player.checkRestrictions('takeFateFromRings', context ?? this.player.game.getFrameworkContext(this.player)) ||
+            !this.player.checkRestrictions(RestrictionType.TakeFateFromRings, context ?? this.player.game.getFrameworkContext(this.player)) ||
             maho
         ) {
             rings.forEach((ring) => {

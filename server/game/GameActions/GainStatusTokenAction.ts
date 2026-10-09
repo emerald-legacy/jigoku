@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CharacterStatus, EventName } from '../Constants.js';
+import { CharacterStatus, EventName, RestrictionType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -25,10 +25,10 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         ) {
             return false;
         }
-        if(token === CharacterStatus.Dishonored && !card.checkRestrictions('receiveDishonorToken', context)) {
+        if(token === CharacterStatus.Dishonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
             return false;
         }
-        if(token === CharacterStatus.Honored && !card.checkRestrictions('receiveHonorToken', context)) {
+        if(token === CharacterStatus.Honored && !card.checkRestrictions(RestrictionType.ReceiveHonorToken, context)) {
             return false;
         }
 

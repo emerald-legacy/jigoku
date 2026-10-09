@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -8,6 +8,7 @@ export type BowProperties = CardActionProperties;
 
 export class BowAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BowProperties, EventName.OnCardBowed, C> {
     name = 'bow';
+    restriction = RestrictionType.Bow;
     eventName = EventName.OnCardBowed;
     cost = 'bowing {0}';
     effect = 'bow {0}';

@@ -4,6 +4,7 @@ import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { AbilityResolver } from '../AbilityResolver.js';
 import type { Conflict } from '../../Conflict.js';
+import { RestrictionType } from '../../Constants.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',
@@ -39,7 +40,7 @@ export class ConflictActionWindow extends ActionWindow {
             } else {
                 const provinces = this.conflict.getConflictProvinces();
                 provinces.forEach((province: ProvinceCard) => {
-                    if(!province.isBroken && province.checkRestrictions('break', this.game.getFrameworkContext(this.conflict.attackingPlayer)) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
+                    if(!province.isBroken && province.checkRestrictions(RestrictionType.Break, this.game.getFrameworkContext(this.conflict.attackingPlayer)) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
                         breakingProvinces.push(province);
                     }
                 });

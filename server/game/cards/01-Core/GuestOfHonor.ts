@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class GuestOfHonor extends DrawCard {
@@ -10,7 +10,7 @@ class GuestOfHonor extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Opponent,
             effect: playerCannot({
-                cannot: 'play',
+                cannot: RestrictionType.Play,
                 restricts: 'events'
             })
         });

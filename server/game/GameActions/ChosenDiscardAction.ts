@@ -3,7 +3,7 @@ import { msg, type MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventName, Location, Players, TargetMode } from '../Constants.js';
+import { EventName, Location, Players, TargetMode, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
@@ -21,6 +21,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
         cardCondition: () => true
     };
     name = 'discard';
+    restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;
 
     protected effectMessage(context: C): MessageArgs {

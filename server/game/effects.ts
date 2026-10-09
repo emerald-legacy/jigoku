@@ -14,7 +14,7 @@ import { gainAbility } from './Effects/Library/gainAbility.js';
 import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAttacker.js';
 import { reduceCost } from './Effects/Library/reduceCost.js';
 import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachmentSkillModifiers.js';
-import { EffectName, PlayType, CardType, Players } from './Constants.js';
+import { EffectName, PlayType, CardType, Players, RestrictionType } from './Constants.js';
 import type { Location } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type BaseCard from './BaseCard.js';
@@ -96,8 +96,8 @@ export const Effects = {
     cannotApplyLastingEffects: (condition: EffectValueMap[EffectName.CannotApplyLastingEffects]) =>
         EffectBuilder.card.static(EffectName.CannotApplyLastingEffects, condition),
     cannotBeAttacked: () => EffectBuilder.card.static(EffectName.CannotBeAttacked, true),
-    cannotBeDeclaredAsAttacker: () => cardCannot('declareAsAttacker'),
-    cannotBeDeclaredAsDefender: () => cardCannot('declareAsDefender'),
+    cannotBeDeclaredAsAttacker: () => cardCannot(RestrictionType.DeclareAsAttacker),
+    cannotBeDeclaredAsDefender: () => cardCannot(RestrictionType.DeclareAsDefender),
     cannotHaveConflictsDeclaredOfType: (type: FlexibleValue<string>) =>
         EffectBuilder.card.flexible(EffectName.CannotHaveConflictsDeclaredOfType, type),
     cannotHaveOtherRestrictedAttachments: (card: BaseCard) =>
@@ -106,10 +106,10 @@ export const Effects = {
         EffectBuilder.card.static(EffectName.CannotParticipateAsAttacker, type),
     cannotParticipateAsDefender: (type: string = 'both') =>
         EffectBuilder.card.static(EffectName.CannotParticipateAsDefender, type),
-    cannotReceiveDishonorToken: () => cardCannot('receiveDishonorToken'),
-    cannotReceiveHonorToken: () => cardCannot('receiveHonorToken'),
-    cannotReceiveTaintedToken: () => cardCannot('receiveTaintedToken'),
-    cannotTriggerAbilities: () => cardCannot('triggerAbilities'),
+    cannotReceiveDishonorToken: () => cardCannot(RestrictionType.ReceiveDishonorToken),
+    cannotReceiveHonorToken: () => cardCannot(RestrictionType.ReceiveHonorToken),
+    cannotReceiveTaintedToken: () => cardCannot(RestrictionType.ReceiveTaintedToken),
+    cannotTriggerAbilities: () => cardCannot(RestrictionType.TriggerAbilities),
     cardCannot,
     changeContributionFunction: (func: (card: DrawCard) => number) => EffectBuilder.card.static(EffectName.ChangeContributionFunction, func),
     changeType: (type: CardType) => EffectBuilder.card.static(EffectName.ChangeType, type),
@@ -151,7 +151,7 @@ export const Effects = {
     honorStatusDoesNotModifySkill: () => EffectBuilder.card.flexible(EffectName.HonorStatusDoesNotModifySkill, true),
     taintedStatusDoesNotCostHonor: () => EffectBuilder.card.flexible(EffectName.TaintedStatusDoesNotCostHonor, true),
     honorStatusReverseModifySkill: () => EffectBuilder.card.flexible(EffectName.HonorStatusReverseModifySkill, true),
-    immunity: (properties: string | RestrictionProperties) => EffectBuilder.card.static(EffectName.AbilityRestrictions, new Restriction(properties)),
+    immunity: (properties: RestrictionType | PlayType | RestrictionProperties) => EffectBuilder.card.static(EffectName.AbilityRestrictions, new Restriction(properties)),
     increaseLimitOnAbilities: (abilities?: AbilityLimitIncrease) => EffectBuilder.card.static(EffectName.IncreaseLimitOnAbilities, abilities ?? true),
     increaseLimitOnPrintedAbilities: (abilities?: EffectValueMap[EffectName.IncreaseLimitOnPrintedAbilities]) =>
         EffectBuilder.card.static(EffectName.IncreaseLimitOnPrintedAbilities, abilities ?? true),
@@ -185,7 +185,7 @@ export const Effects = {
     mustBeChosen: (properties: RestrictionProperties) =>
         EffectBuilder.card.static(
             EffectName.MustBeChosen,
-            new Restriction(Object.assign({ type: 'target' }, properties))
+            new Restriction(Object.assign({ type: RestrictionType.Target }, properties))
         ),
     mustBeDeclaredAsAttacker,
     mustBeDeclaredAsAttackerIfType: (type: string = 'both') =>
@@ -279,7 +279,7 @@ export const Effects = {
         reduceCost(Object.assign({}, properties, { amount: -properties.amount })),
     modifyCardsDrawnInDrawPhase: (amount: FlexibleValue<number, Player>) =>
         EffectBuilder.player.flexible(EffectName.ModifyCardsDrawnInDrawPhase, amount),
-    playerCannot: (properties: string | RestrictionProperties) =>
+    playerCannot: (properties: RestrictionType | PlayType | RestrictionProperties) =>
         EffectBuilder.player.static(
             EffectName.AbilityRestrictions,
             new Restriction(
@@ -329,7 +329,7 @@ export const Effects = {
     additionalActionAfterWindowCompleted: (amount: number = 1) =>
         EffectBuilder.player.static(EffectName.AdditionalActionAfterWindowCompleted, amount),
     // Conflict effects
-    charactersCannot: (properties: string | RestrictionProperties) =>
+    charactersCannot: (properties: RestrictionType | PlayType | RestrictionProperties) =>
         EffectBuilder.conflict.static(
             EffectName.AbilityRestrictions,
             new Restriction(

@@ -1,5 +1,6 @@
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { RestrictionType } from '../../../Constants.js';
 
 export default class ObservantDaidoji extends DrawCard {
     static id = 'observant-daidoji';
@@ -8,7 +9,7 @@ export default class ObservantDaidoji extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
             effect: cardCannot({
-                cannot: 'target',
+                cannot: RestrictionType.Target,
                 restricts: 'opponentsEvents'
             })
         });

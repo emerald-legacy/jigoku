@@ -1,5 +1,5 @@
 import { ActiveEffect, type EffectMatchFn, type EffectProperties } from './ActiveEffect.js';
-import { Location, Players, CardType } from '../Constants.js';
+import { Location, Players, CardType, RestrictionType } from '../Constants.js';
 import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -38,7 +38,7 @@ export class CardEffect extends ActiveEffect<BaseCard> {
         }
         const sourceController = this.source.getEffectController();
         return (
-            target.checkRestrictions('applyEffect', this.context) &&
+            target.checkRestrictions(RestrictionType.ApplyEffect, this.context) &&
             (this.targetController !== Players.Self || target.controller === sourceController) &&
             (this.targetController !== Players.Opponent || target.controller !== sourceController)
         );

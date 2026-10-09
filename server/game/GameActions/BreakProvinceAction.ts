@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -9,6 +9,7 @@ export type BreakProperties = CardActionProperties;
 
 export class BreakProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BreakProperties, EventName.OnBreakProvince, C> {
     name = 'break';
+    restriction = RestrictionType.Break;
     eventName = EventName.OnBreakProvince;
     targetType = [CardType.Province];
     cost = 'breaking {0}';

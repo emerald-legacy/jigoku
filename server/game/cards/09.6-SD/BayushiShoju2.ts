@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phase, Players } from '../../Constants.js';
+import { Phase, Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { draw, loseHonor, multiple } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class BayushiShoju2 extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            effect: playerCannot('haveImperialFavor')
+            effect: playerCannot(RestrictionType.HaveImperialFavor)
         });
 
         this.forcedReaction('After the conflict phase begins')

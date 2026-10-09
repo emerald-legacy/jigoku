@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EffectName, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 import { targetList } from './GameAction.js';
@@ -25,6 +25,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
     'switch' | 'shuffle' | 'faceup' | 'bottom' | 'changePlayer' | 'discardDestinationCards'
 > {
     name = 'move';
+    restriction = RestrictionType.Move;
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties = {
         switch: false,
@@ -57,7 +58,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         const { changePlayer, destination } = this.getProperties(context, additionalProperties);
         return (
             (!changePlayer ||
-                (card.checkRestrictions(EffectName.TakeControl, context) &&
+                (card.checkRestrictions(RestrictionType.TakeControl, context) &&
                     !(card.isDrawCard() && card.anotherUniqueInPlay(context.player)))) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
             card.location !== Location.PlayArea &&

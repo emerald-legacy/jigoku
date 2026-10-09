@@ -5,7 +5,7 @@ import {
     playerCannot
 } from '../../../effects.js';
 import { taint } from '../../../GameActions/GameActions.js';
-import { CardType, Phase, Players } from '../../../Constants.js';
+import { CardType, Phase, Players, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
@@ -32,7 +32,7 @@ export default class KuniJuurou extends DrawCard {
 
     private controllerCannotPayHonorCostsEffect() {
         this.persistentEffect({
-            effect: playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })
+            effect: playerCannot({ cannot: RestrictionType.LoseHonor, restricts: 'loseHonorAsCost' })
         });
 
         /**

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, ConflictType } from '../../Constants.js';
+import { Players, CardType, ConflictType, RestrictionType } from '../../Constants.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -16,7 +16,7 @@ class ClarityOfPurpose extends DrawCard {
                 effect: doesNotBow()
             }), cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'bow',
+                    cannot: RestrictionType.Bow,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })

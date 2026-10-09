@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 
 import type { AbilityContext } from './AbilityContext.js';
-import { type CardType, EffectName, Stage } from './Constants.js';
+import { type CardType, EffectName, type PlayType, RestrictionType, Stage } from './Constants.js';
 import { isEffectOf } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap.js';
@@ -114,7 +114,7 @@ export class GameObject {
         return gameAction.canAffect(this, context);
     }
 
-    public checkRestrictions(actionType: string, context: AbilityContext) {
+    public checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext) {
         return !this.getEffects(EffectName.AbilityRestrictions).some((restriction) =>
             restriction.isMatch(actionType, context, this)
         );
@@ -147,7 +147,7 @@ export class GameObject {
     }
 
     public canBeTargeted(context: AbilityContext, selectedCards: GameObject | GameObject[] = []) {
-        if(!this.checkRestrictions('target', context)) {
+        if(!this.checkRestrictions(RestrictionType.Target, context)) {
             return false;
         }
         let targets = selectedCards;
@@ -167,13 +167,13 @@ export class GameObject {
 
             return (
                 availableFate >= targetingCost &&
-                (targetingCost === 0 || context.player.checkRestrictions('spendFate', context))
+                (targetingCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
             );
         } else if(context.stage === Stage.Target || context.stage === Stage.Effect) {
             //We paid costs first, or targeting has to be done after costs have been paid
             return (
                 context.player.fate >= targetingCost &&
-                (targetingCost === 0 || context.player.checkRestrictions('spendFate', context))
+                (targetingCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
             );
         }
 

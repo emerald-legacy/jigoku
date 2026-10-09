@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phase } from '../../Constants.js';
+import { Duration, Phase, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 
 class SteadfastSamurai extends DrawCard {
@@ -14,8 +14,8 @@ class SteadfastSamurai extends DrawCard {
             .cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: [
-                    cardCannot('removeFate'),
-                    cardCannot('discardFromPlay')
+                    cardCannot(RestrictionType.RemoveFate),
+                    cardCannot(RestrictionType.DiscardFromPlay)
                 ]
             })
             .chatText('stop him being discarded or losing fate in this phase');

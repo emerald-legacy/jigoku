@@ -1,7 +1,7 @@
 import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -9,6 +9,7 @@ export type TurnCardFacedownProperties = CardActionProperties;
 
 export class TurnFacedownAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName.OnCardTurnedFacedown, C> {
     name = 'turnFacedown';
+    restriction = RestrictionType.TurnFacedown;
     eventName = EventName.OnCardTurnedFacedown;
     cost = 'turning {0} facedown';
     effect = 'turn {0} facedown';

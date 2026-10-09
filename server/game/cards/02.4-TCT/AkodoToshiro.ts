@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, delayedEffect, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect, discardFromPlay, multiple } from '../../GameActions/GameActions.js';
-import { Duration, Location } from '../../Constants.js';
+import { Duration, Location, RestrictionType } from '../../Constants.js';
 
 class AkodoToshiro extends DrawCard {
     static id = 'akodo-toshiro';
@@ -14,7 +14,7 @@ class AkodoToshiro extends DrawCard {
                 cardLastingEffect(() => ({
                     target: this.game.provinceCards,
                     targetLocation: Location.Provinces,
-                    effect: cardCannot('break')
+                    effect: cardCannot(RestrictionType.Break)
                 })),
                 cardLastingEffect((context) => ({
                     target: context.source,

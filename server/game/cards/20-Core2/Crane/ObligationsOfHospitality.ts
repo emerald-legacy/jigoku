@@ -1,4 +1,4 @@
-import { CardType, Players, Location } from '../../../Constants.js';
+import { CardType, Players, Location, type PlayType } from '../../../Constants.js';
 import { reduceCost, takeControl } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -26,7 +26,7 @@ export default class ObligationsOfHospitality extends DrawCard {
             .chatText('take control of {0}');
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return !!context.player.opponent && context.player.isMoreHonorable() && super.canPlay(context, playType);
     }
 }

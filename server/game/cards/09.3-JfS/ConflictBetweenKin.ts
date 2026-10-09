@@ -1,4 +1,4 @@
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { cardCannot } from '../../effects.js';
 
@@ -12,11 +12,11 @@ export default class ConflictBetweenKin extends ProvinceCard {
             match: (card) => card.isParticipating(),
             effect: [
                 cardCannot({
-                    cannot: 'target',
+                    cannot: RestrictionType.Target,
                     restricts: 'eventsWithSameClan'
                 }),
                 cardCannot({
-                    cannot: 'target',
+                    cannot: RestrictionType.Target,
                     restricts: 'attachmentsWithSameClan'
                 })
             ]

@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location, Players } from '../Constants.js';
+import { EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type { Cost, CostContext, Result } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
@@ -44,7 +44,7 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        return context.player.fate >= minCost && context.player.checkRestrictions('spendFate', context);
+        return context.player.fate >= minCost && context.player.checkRestrictions(RestrictionType.SpendFate, context);
     }
 
     protected getAlternateFatePools(context: AbilityContext<DrawCard>): Set<BaseCard | Ring> {
@@ -265,7 +265,7 @@ export class ReduceableFateCost implements Cost {
         if(context.source.isTemptationsMaho()) {
             return 0;
         }
-        if(context.player.checkRestrictions('spendFate', context)) {
+        if(context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
             return context.player.fate;
         }
         return 0;

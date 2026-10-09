@@ -1,6 +1,6 @@
 import { cardCannot, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, multiple, onAffinity } from '../../../GameActions/GameActions.js';
-import { CardType, EventName, Players } from '../../../Constants.js';
+import { CardType, EventName, Players, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -52,7 +52,7 @@ export default class SanctifiedEarth extends DrawCard {
                     gameAction: cardLastingEffect((context) => ({
                         target: context.target,
                         effect: cardCannot({
-                            cannot: 'sendHome',
+                            cannot: RestrictionType.SendHome,
                             restricts: 'opponentsCardEffects'
                         })
                     }))

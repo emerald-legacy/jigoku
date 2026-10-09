@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 import { resolveRingEffect } from '../../GameActions/GameActions.js';
 import { RingAbilities } from '../../RingAbilities.js';
@@ -10,7 +10,7 @@ class TogashiMitsu2 extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
-                cannot: 'applyCovert',
+                cannot: RestrictionType.ApplyCovert,
                 restricts: 'opponentsCardEffects'
             })
         });

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType, RestrictionType } from '../../../Constants.js';
 import { gainAbility, playerCannot } from '../../../effects.js';
 import { returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -24,7 +24,7 @@ export default class DaiTsuchi extends DrawCard {
                 .playerLastingEffect((context) => ({
                     targetController: context.target?.owner,
                     effect: playerCannot({
-                        cannot: 'play',
+                        cannot: RestrictionType.Play,
                         restricts: 'copiesOfX',
                         params: context.target?.name
                     })

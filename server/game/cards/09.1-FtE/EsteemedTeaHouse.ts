@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
 import { returnToHand } from '../../GameActions/GameActions.js';
-import { CardType, Duration } from '../../Constants.js';
+import { CardType, Duration, RestrictionType } from '../../Constants.js';
 
 class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';
@@ -18,7 +18,7 @@ class EsteemedTeaHouse extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 targetController: context.target?.owner,
                 effect: playerCannot({
-                    cannot: 'play',
+                    cannot: RestrictionType.Play,
                     restricts: 'copiesOfX',
                     params: context.target?.name
                 })

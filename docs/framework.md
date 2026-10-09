@@ -531,9 +531,9 @@ resolveAbility((context) => ({
 
 ```typescript
 doesNotBow()
-cardCannot({ cannot: 'ready', restricts: 'cardEffects' })
-cardCannot({ cannot: 'target', restricts: 'opponentsCardEffects' })
-cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
+cardCannot({ cannot: RestrictionType.Ready, restricts: 'cardEffects' })
+cardCannot({ cannot: RestrictionType.Target, restricts: 'opponentsCardEffects' })
+cardCannot({ cannot: RestrictionType.ApplyCovert, restricts: 'opponentsCardEffects' })
 modifyMilitarySkill(2)
 modifyPoliticalSkill(2)
 modifyBothSkills(1)
@@ -542,8 +542,8 @@ gainAbility.action('Title', (ability) => ability...)   // a granted ability is w
 switchBaseSkills()
 cannotContribute(() => (card) => condition)
 changeConflictSkillFunction((card) => card.getGlory())
-playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })  // preferred
-playerCannot('takeFateFromRings')                                     // legacy short form (string)
+playerCannot({ cannot: RestrictionType.LoseHonor, restricts: 'loseHonorAsCost' })
+playerCannot(RestrictionType.TakeFateFromRings)                                     // short form
 suppressEffects((effect) => condition)
 gainPlayAction(SomePlayClass)
 setApparentFate(0)
@@ -594,7 +594,7 @@ card.getPoliticalSkill()
 card.getGlory()
 card.location                   // Location string
 card.allowGameAction('bow', context)   // can that game action affect it; names are GameActions exports
-card.checkRestrictions('break', context) // only the restrictions on a named action
+card.checkRestrictions(RestrictionType.Break, context) // only the restrictions of that type
 ```
 
 ---

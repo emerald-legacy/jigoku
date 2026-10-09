@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../Constants.js';
 
 class IronFoundationsStance extends DrawCard {
     static id = 'iron-foundations-stance';
@@ -15,13 +15,13 @@ class IronFoundationsStance extends DrawCard {
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
             }, cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'sendHome',
+                    cannot: RestrictionType.SendHome,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })
             })), cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'bow',
+                    cannot: RestrictionType.Bow,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })

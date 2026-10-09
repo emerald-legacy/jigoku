@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
+import { Element, type PlayType } from '../../Constants.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
@@ -16,7 +16,7 @@ class KatanaOfFire extends DrawCard {
         });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!controlsShugenja(context.player)) {
             return false;
         }

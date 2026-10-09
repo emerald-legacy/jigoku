@@ -13,7 +13,7 @@ import Game from './Game.js';
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, Blocker } from './Constants.js';
+import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, type PlayType, Blocker, RestrictionType } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import {
     ActionProps,
@@ -475,21 +475,21 @@ export class BaseCard extends EffectSource {
             targetLocation: Location.Any,
             effect: [
                 playerCannot({
-                    cannot: 'placeFateWhenPlayingCharacterFromProvince',
+                    cannot: RestrictionType.PlaceFateWhenPlayingCharacterFromProvince,
                     restricts: 'source'
                 }),
                 cardCannot({
-                    cannot: 'putIntoPlay',
+                    cannot: RestrictionType.PutIntoPlay,
                     restricts: 'cardEffects'
                 }),
                 cardCannot({
-                    cannot: 'placeFate'
+                    cannot: RestrictionType.PlaceFate
                 }),
                 cardCannot({
-                    cannot: 'preventedFromLeavingPlay'
+                    cannot: RestrictionType.PreventedFromLeavingPlay
                 }),
                 cardCannot({
-                    cannot: 'enterPlay',
+                    cannot: RestrictionType.EnterPlay,
                     restricts: 'nonDynastyPhase'
                 }),
                 legendaryFate(fate)
@@ -728,12 +728,12 @@ export class BaseCard extends EffectSource {
         return (
             this.isFaceup() &&
             (ignoredBlockers.includes(Blocker.TriggeringRestricted) ||
-                this.checkRestrictions('triggerAbilities', context))
+                this.checkRestrictions(RestrictionType.TriggerAbilities, context))
         );
     }
 
     canInitiateKeywords(context: AbilityContext): boolean {
-        return this.isFaceup() && this.checkRestrictions('initiateKeywords', context);
+        return this.isFaceup() && this.checkRestrictions(RestrictionType.InitiateKeywords, context);
     }
 
     getModifiedLimitMax(player: Player, ability: CardAbility, max: number): number {
@@ -813,7 +813,7 @@ export class BaseCard extends EffectSource {
         return this.printedFaction;
     }
 
-    checkRestrictions(actionType: string, context: AbilityContext): boolean {
+    checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext): boolean {
         const player = context?.player || this.controller;
         const conflict = context?.game?.currentConflict;
         return (

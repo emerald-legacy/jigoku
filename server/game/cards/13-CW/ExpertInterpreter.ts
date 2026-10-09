@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, Phase } from '../../Constants.js';
+import { Duration, Players, Phase, RestrictionType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
 import { ringLastingEffect } from '../../GameActions/GameActions.js';
@@ -23,7 +23,7 @@ class ExpertInterpreter extends DrawCard {
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
                 effect: playerCannot({
-                    cannot: 'enterPlay',
+                    cannot: RestrictionType.EnterPlay,
                     restricts: 'characters'
                 })
             })))
@@ -38,7 +38,7 @@ class ExpertInterpreter extends DrawCard {
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
                 effect: playerCannot({
-                    cannot: 'enterPlay',
+                    cannot: RestrictionType.EnterPlay,
                     restricts: 'characters'
                 })
             })))

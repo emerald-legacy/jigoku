@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
@@ -11,7 +11,7 @@ class KaitoTempleProtector extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             effect: cardCannot({
-                cannot: 'sendHome',
+                cannot: RestrictionType.SendHome,
                 restricts: 'opponentsCardEffects'
             })
         });

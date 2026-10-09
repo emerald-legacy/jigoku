@@ -1,4 +1,4 @@
-import { Players } from '../../../Constants.js';
+import { Players, RestrictionType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { playerCannot } from '../../../effects.js';
 import { returnRing } from '../../../GameActions/GameActions.js';
@@ -11,7 +11,7 @@ export default class DarbukaOfBanishment extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             effect: playerCannot({
-                cannot: 'haveAffinity',
+                cannot: RestrictionType.HaveAffinity,
                 restricts: 'unlessMeishodo'
             })
         });

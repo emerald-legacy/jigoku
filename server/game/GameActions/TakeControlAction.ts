@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { Duration, EventName, Location } from '../Constants.js';
+import { Duration, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { Effects } from '../effects.js';
 import type { EffectUntil } from '../Effects/ActiveEffect.js';
@@ -19,6 +19,7 @@ export interface TakeControlProperties extends CardActionProperties {
 
 export class TakeControlAction<C extends AbilityContext = AbilityContext> extends CardLastingEffectAction<C> {
     name = 'takeControl';
+    restriction = RestrictionType.TakeControl;
     effect = 'take control of {0}';
     defaultProperties = {
         duration: Duration.Custom,

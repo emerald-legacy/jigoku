@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType } from '../../Constants.js';
+import { CardType, type PlayType } from '../../Constants.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 
 class MagistratesIntervention extends DrawCard {
@@ -20,7 +20,7 @@ class MagistratesIntervention extends DrawCard {
             .dishonor((context) => ({ target: context.target }));
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!context.player.cardsInPlay.some((card) => card.getType() === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
             return false;
         }

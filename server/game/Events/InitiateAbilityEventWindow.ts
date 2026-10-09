@@ -1,6 +1,6 @@
 import { EventWindow } from './EventWindow.js';
 import { TriggeredAbilityWindow } from '../gamesteps/TriggeredAbilityWindow.js';
-import { EventName, AbilityType } from '../Constants.js';
+import { EventName, AbilityType, RestrictionType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 import type { GameEvent } from './EventPayloads.js';
@@ -40,7 +40,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
             const ability = context.ability;
             const alternatePools = context.player.getAlternateFatePools(this.playEvent.card, context);
             const alternatePoolTotal = alternatePools.reduce((total: number, pool: { fate: number }) => total + pool.fate, 0);
-            const maxPlayerFate = context.player.checkRestrictions('spendFate', context) ? context.player.fate : 0;
+            const maxPlayerFate = context.player.checkRestrictions(RestrictionType.SpendFate, context) ? context.player.fate : 0;
             const reducedCost = ability.getReducedCost(context);
             return Math.max(reducedCost - maxPlayerFate - alternatePoolTotal, 0);
         }

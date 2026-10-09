@@ -1,5 +1,5 @@
 import { UiPrompt } from '../UiPrompt.js';
-import { Location, ConflictType } from '../../Constants.js';
+import { Location, ConflictType, RestrictionType } from '../../Constants.js';
 import { AttackersMatrix } from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import { CovertAbility } from '../../KeywordAbilities/CovertAbility.js';
@@ -262,8 +262,8 @@ export class InitiateConflictPrompt extends UiPrompt {
             let targetable = false;
 
             for(const context of covertContexts) {
-                if(context.player.checkRestrictions('initiateKeywords', context)) {
-                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
+                if(context.player.checkRestrictions(RestrictionType.InitiateKeywords, context)) {
+                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions(RestrictionType.Target, context)) {
                         targetable = true;
                     }
                 }

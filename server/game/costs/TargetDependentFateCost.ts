@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type { Cost } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
@@ -26,13 +26,13 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             this.ignoreType
         );
 
-        if(reducedCost !== 0 && context.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context))) {
+        if(reducedCost !== 0 && context.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions(RestrictionType.GainFate, context))) {
             return false;
         }
 
         return (
             context.player.fate >= reducedCost &&
-            (reducedCost === 0 || context.player.checkRestrictions('spendFate', context))
+            (reducedCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
         );
     }
 

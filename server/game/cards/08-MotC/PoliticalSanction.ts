@@ -3,7 +3,7 @@ import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type Ring from '../../Ring.js';
 import { cannotTriggerAbilities } from '../../effects.js';
-import { ConflictType } from '../../Constants.js';
+import { ConflictType, type PlayType } from '../../Constants.js';
 
 class PoliticalSanction extends DrawCard {
     static id = 'political-sanction';
@@ -14,7 +14,7 @@ class PoliticalSanction extends DrawCard {
         });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(context.game.isDuringConflict(ConflictType.Political)) {
             const conflict = this.game.currentConflict;
             if(!conflict) {

@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../../Constants.js';
 
 class YogoTadashi extends DrawCard {
     static id = 'yogo-tadashi';
@@ -19,7 +19,7 @@ class YogoTadashi extends DrawCard {
                 controller: Players.Any
             }, cardLastingEffect({
                 effect: cardCannot({
-                    cannot: 'target',
+                    cannot: RestrictionType.Target,
                     restricts: 'opponentsEvents'
                 })
             }))

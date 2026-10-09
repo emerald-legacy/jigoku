@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -16,6 +16,7 @@ export interface PlaceFateRingProperties extends RingActionProperties {
 
 export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'placeFate';
+    restriction = RestrictionType.PlaceFate;
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1 };
     getCostMessage(context: C): MessageArgs {
@@ -35,7 +36,7 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
         const properties = this.getProperties(context, additionalProperties);
         if(
             properties.origin &&
-            (!properties.origin.checkRestrictions('spendFate', context) || properties.origin.fate === 0)
+            (!properties.origin.checkRestrictions(RestrictionType.SpendFate, context) || properties.origin.fate === 0)
         ) {
             return false;
         }

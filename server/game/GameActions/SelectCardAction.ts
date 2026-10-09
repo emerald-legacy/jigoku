@@ -5,7 +5,7 @@ import type BaseCard from '../BaseCard.js';
 import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { CardSelector, type SingleCardMode } from '../CardSelector.js';
 import type { BaseCardSelector } from '../CardSelectors/BaseCardSelector.js';
-import { CardType, EffectName, Location, Players, TargetMode, type EventName } from '../Constants.js';
+import { CardType, EffectName, Location, Players, TargetMode, type EventName, RestrictionType } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -181,7 +181,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
                 .filter((card: BaseCard) =>
                     card
                         .getEffects(EffectName.MustBeChosen)
-                        .some((restriction) => restriction.isMatch('target', context))
+                        .some((restriction) => restriction.isMatch(RestrictionType.Target, context))
                 );
         }
         if(!properties.selector.hasEnoughTargets(context, player)) {

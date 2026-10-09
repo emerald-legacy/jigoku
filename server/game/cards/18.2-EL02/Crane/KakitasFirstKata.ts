@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, EventName, Players } from '../../../Constants.js';
+import { CardType, EventName, Players, RestrictionType } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -27,19 +27,19 @@ export default class KakitasFirstKata extends DrawCard {
                 cardCondition: (card) => card.hasTrait('duelist') || card.isFaction('crane')
             }, cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'sendHome',
+                    cannot: RestrictionType.SendHome,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })
             })), cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'moveToConflict',
+                    cannot: RestrictionType.MoveToConflict,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })
             })), cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'bow',
+                    cannot: RestrictionType.Bow,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })

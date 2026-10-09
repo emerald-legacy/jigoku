@@ -1,7 +1,7 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Stage } from '../Constants.js';
+import { CardType, EventName, type RestrictionType, Stage } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameObject } from '../GameObject.js';
@@ -61,6 +61,8 @@ export class GameAction<
     targetType: string[] = [];
     eventName = EventName.Unnamed;
     name = '';
+    /** What a restriction names to forbid this action; without one, only restrictions that name no type apply. */
+    restriction?: RestrictionType;
     cost = '';
     effect = '';
     isNoAction?: boolean;
@@ -156,7 +158,7 @@ export class GameAction<
         return (
             this.targetType.includes(target.type) &&
             !context.gameActionsResolutionChain.some((action) => action === this) &&
-            ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.name, context))
+            ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.restriction, context))
         );
     }
 

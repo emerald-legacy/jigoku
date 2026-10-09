@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType, type PlayType } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 
@@ -24,7 +24,7 @@ class Castigated extends DrawCard {
         return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!context.game.isDuringConflict(ConflictType.Political) || !context.player.cardsInPlay.some((card) => card.getType() === CardType.Character && card.hasTrait('imperial'))) {
             return false;
         }

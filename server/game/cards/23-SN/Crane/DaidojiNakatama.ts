@@ -1,6 +1,6 @@
 import { cardCannot } from '../../../effects.js';
 import { dishonor, multiple, ready } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaidojiNakatama extends DrawCard {
@@ -11,11 +11,11 @@ export default class DaidojiNakatama extends DrawCard {
             condition: (context) => context.source.isAttacking() && context.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
             effect: [
                 cardCannot({
-                    cannot: 'sendHome',
+                    cannot: RestrictionType.SendHome,
                     restricts: 'opponentsCardEffects'
                 }),
                 cardCannot({
-                    cannot: 'moveToConflict',
+                    cannot: RestrictionType.MoveToConflict,
                     restricts: 'opponentsCardEffects'
                 })
             ]

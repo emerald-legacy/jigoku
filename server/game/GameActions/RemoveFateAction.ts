@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -17,6 +17,7 @@ export interface RemoveFateProperties extends CardActionProperties {
 
 export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFateProperties, EventName.OnMoveFate, C, 'amount'> {
     name = 'removeFate';
+    restriction = RestrictionType.RemoveFate;
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
     defaultProperties = { amount: 1 };

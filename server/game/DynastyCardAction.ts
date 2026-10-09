@@ -3,7 +3,7 @@ import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { EffectName, Phase, PlayType, EventName, Blocker } from './Constants.js';
+import { EffectName, Phase, PlayType, EventName, Blocker, RestrictionType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -42,7 +42,7 @@ export class DynastyCardAction extends BaseAction {
 
     displayMessage(context: AbilityContext): void {
         context.game.addMessage(msg`${context.player} plays ${context.source} with ${context.chooseFate} additional fate`);
-        if(context.source.checkRestrictions('placeFate', context)) {
+        if(context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             for(const effect of context.source.getRawEffects()) {
                 if(isEffectOf(effect, EffectName.GainExtraFateWhenPlayed)) {
                     context.game.addMessage(msg`${context.source} enters play with ${effect.getValue(context.source)} additional fate due to ${effect.context.source}`);
@@ -54,7 +54,7 @@ export class DynastyCardAction extends BaseAction {
     executeHandler(context: AbilityContext): void {
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        if(!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
+import { RestrictionType } from '../../Constants.js';
 
 class IchigenkinSoloist extends DrawCard {
     static id = 'ichigenkin-soloist';
@@ -7,7 +8,7 @@ class IchigenkinSoloist extends DrawCard {
     setupCardAbilities() {
         this.composure({
             effect: cardCannot({
-                cannot: 'target',
+                cannot: RestrictionType.Target,
                 restricts: 'opponentsTriggeredAbilities'
             })
         });

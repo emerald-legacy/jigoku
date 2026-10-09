@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { EventName, Location, Players, PlayType, TargetMode } from '../Constants.js';
+import { EventName, Location, Players, PlayType, TargetMode, RestrictionType } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
@@ -91,16 +91,16 @@ export function chooseFate(type: PlayType): Cost {
             context.chooseFate = 0;
 
             let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
-            if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.PlaceFateWhenPlayingCharacter, context)) {
                 extrafate = 0;
             }
             if(
-                !context.player.checkRestrictions('placeFateWhenPlayingCharacterFromProvince', context) &&
+                !context.player.checkRestrictions(RestrictionType.PlaceFateWhenPlayingCharacterFromProvince, context) &&
                 type === PlayType.PlayFromProvince
             ) {
                 extrafate = 0;
             }
-            if(!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
                 extrafate = 0;
             }
 
@@ -338,7 +338,7 @@ export function payOptionalFate(amount: number, forcePayment: (context: AbilityC
                 if(context.player.fate < amount) {
                     fateAvailable = false;
                 }
-                if(!context.player.checkRestrictions('spendFate', context)) {
+                if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
                     fateAvailable = false;
                 }
                 return fateAvailable;
@@ -359,7 +359,7 @@ export function payOptionalFate(amount: number, forcePayment: (context: AbilityC
             if(context.player.fate < amount) {
                 fateAvailable = false;
             }
-            if(!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
                 fateAvailable = false;
             }
 

@@ -1,7 +1,7 @@
 import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, RestrictionType } from '../../Constants.js';
 
 class YoungHarrier extends DrawCard {
     static id = 'young-harrier';
@@ -12,7 +12,7 @@ class YoungHarrier extends DrawCard {
             .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.player.cardsInPlay.filter((card) => card.isFaction('crane')),
-                effect: cardCannot('dishonor')
+                effect: cardCannot(RestrictionType.Dishonor)
             }))
             .chatText('prevent Crane characters from being dishonored this phase');
     }

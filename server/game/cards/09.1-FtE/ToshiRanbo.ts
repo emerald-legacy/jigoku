@@ -1,4 +1,4 @@
-import { Location } from '../../Constants.js';
+import { Location, RestrictionType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { cardCannot, gainExtraFateWhenPlayed } from '../../effects.js';
 
@@ -9,7 +9,7 @@ export default class ToshiRanbo extends ProvinceCard {
         this.facedown = false;
 
         this.persistentEffect({
-            effect: cardCannot('turnFacedown')
+            effect: cardCannot(RestrictionType.TurnFacedown)
         });
 
         this.persistentEffect({

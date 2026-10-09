@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location, Players, TargetMode } from '../Constants.js';
+import { EventName, Location, Players, TargetMode, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
@@ -24,6 +24,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         bottom: false
     };
     name = 'returnToDeck';
+    restriction = RestrictionType.ReturnToDeck;
     eventName = EventName.OnCardMoved;
 
     protected effectMessage(context: C): MessageArgs {

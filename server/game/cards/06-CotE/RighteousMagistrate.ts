@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class RighteousMagistrate extends DrawCard {
@@ -11,13 +11,13 @@ class RighteousMagistrate extends DrawCard {
             targetController: Players.Any,
             effect: [
                 playerCannot({
-                    cannot: 'loseHonor'
+                    cannot: RestrictionType.LoseHonor
                 }),
                 playerCannot({
-                    cannot: 'gainHonor'
+                    cannot: RestrictionType.GainHonor
                 }),
                 playerCannot({
-                    cannot: 'takeHonor'
+                    cannot: RestrictionType.TakeHonor
                 })
             ]
         });

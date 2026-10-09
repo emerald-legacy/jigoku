@@ -46,7 +46,7 @@ import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { AbilityType, EffectName, EventName, Location, ConflictType, Element, Players, Phase } from './Constants.js';
+import { AbilityType, EventName, Location, ConflictType, Element, Players, Phase, RestrictionType } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import type { ChoiceWindow } from './TriggeredAbility.js';
 import { rulesFor, type GameRules } from './GameRules.js';
@@ -932,7 +932,7 @@ export class Game {
     takeControl(player: Player, card: DrawCard): void {
         if(
             card.controller === player ||
-            !card.checkRestrictions(EffectName.TakeControl, this.getFrameworkContext(player))
+            !card.checkRestrictions(RestrictionType.TakeControl, this.getFrameworkContext(player))
         ) {
             return;
         }
@@ -1023,7 +1023,7 @@ export class Game {
                     }
                 });
 
-                if(!player.checkRestrictions('haveImperialFavor', this.getFrameworkContext(player)) && player.imperialFavor !== '') {
+                if(!player.checkRestrictions(RestrictionType.HaveImperialFavor, this.getFrameworkContext(player)) && player.imperialFavor !== '') {
                     this.addMessage(msg`The imperial favor is discarded as ${player.name} cannot have it`);
                     player.loseImperialFavor();
                 }

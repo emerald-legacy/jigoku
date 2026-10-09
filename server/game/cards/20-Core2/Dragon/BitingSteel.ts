@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DuelType, Duration, Players, ConflictType } from '../../../Constants.js';
+import { CardType, DuelType, Duration, Players, ConflictType, type PlayType } from '../../../Constants.js';
 import { modifyDuelistSkill } from '../../../effects.js';
 import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -61,7 +61,7 @@ export default class BitingSteel extends DrawCard {
         );
     }
 
-    public canPlay(context: AbilityContext, playType: string) {
+    public canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

@@ -1,7 +1,7 @@
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType } from '../../../Constants.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
@@ -25,7 +25,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                         target: context.game.findAnyCardsInPlay(
                             (card) => card.getType() === CardType.Character
                         ),
-                        effect: cardCannot('moveToConflict')
+                        effect: cardCannot(RestrictionType.MoveToConflict)
                     })),
                     chatText: 'forbid all players from moving characters into the conflict'
                 })

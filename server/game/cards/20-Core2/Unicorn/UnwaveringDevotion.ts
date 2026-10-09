@@ -1,5 +1,6 @@
 import { cardCannot, modifyGlory } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { RestrictionType } from '../../../Constants.js';
 
 export default class UnwaveringDevotion extends DrawCard {
     static id = 'unwavering-devotion';
@@ -13,7 +14,7 @@ export default class UnwaveringDevotion extends DrawCard {
         this.persistentEffect({
             match: (card, context) => card === context?.source.parentCharacter,
             effect: cardCannot({
-                cannot: 'target',
+                cannot: RestrictionType.Target,
                 restricts: 'opponentsCharacterAbilitiesWithLowerGlory'
             })
         });

@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { DuelType } from '../../Constants.js';
+import { DuelType, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -16,7 +16,7 @@ export default class DazzlingDuelist extends DrawCard {
                 gameAction: (duel) =>
                     playerLastingEffect({
                         targetController: duel.loserController,
-                        effect: duel.loser ? playerCannot('claimRings') : []
+                        effect: duel.loser ? playerCannot(RestrictionType.ClaimRings) : []
                     })
             }));
     }

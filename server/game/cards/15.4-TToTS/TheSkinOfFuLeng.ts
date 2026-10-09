@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { canBeTriggeredByOpponent, playerCannot } from '../../effects.js';
 
 class TheSkinOfFuLeng extends DrawCard {
@@ -14,7 +14,7 @@ class TheSkinOfFuLeng extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             effect: playerCannot({
-                cannot: 'triggerAbilities',
+                cannot: RestrictionType.TriggerAbilities,
                 restricts: ['charactersWithNoFate', 'nonForcedAbilities']
             })
         });

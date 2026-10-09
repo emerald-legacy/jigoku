@@ -1,5 +1,5 @@
 import { addTrait, cardCannot } from '../../../effects.js';
-import { Phase } from '../../../Constants.js';
+import { Phase, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MountainTattoo extends DrawCard {
@@ -12,7 +12,7 @@ export default class MountainTattoo extends DrawCard {
 
         this.whileAttached({
             effect: cardCannot({
-                cannot: 'target',
+                cannot: RestrictionType.Target,
                 restricts: 'opponentsEvents',
                 source: this
             })
@@ -21,7 +21,7 @@ export default class MountainTattoo extends DrawCard {
         this.whileAttached({
             condition: (context) => context.game.currentPhase !== Phase.Fate,
             effect: cardCannot({
-                cannot: 'ready',
+                cannot: RestrictionType.Ready,
                 source: this
             })
         });

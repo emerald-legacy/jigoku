@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phase } from '../../Constants.js';
+import { Duration, Phase, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -16,10 +16,10 @@ class DivineAncestry extends DrawCard {
                 targetController: context.player,
                 effect: [
                     playerCannot({
-                        cannot: 'loseHonor'
+                        cannot: RestrictionType.LoseHonor
                     }),
                     playerCannot({
-                        cannot: 'takeHonor'
+                        cannot: RestrictionType.TakeHonor
                     })
                 ]
             }))

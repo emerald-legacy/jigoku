@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class IkomaTsanuri2 extends DrawCard {
@@ -10,7 +10,7 @@ class IkomaTsanuri2 extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Opponent,
             effect: playerCannot({
-                cannot: 'triggerAbilities',
+                cannot: RestrictionType.TriggerAbilities,
                 restricts: 'attackedProvinceNonForced'
             })
         });

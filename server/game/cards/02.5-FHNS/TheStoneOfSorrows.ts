@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class TheStoneOfSorrows extends DrawCard {
@@ -9,7 +9,7 @@ class TheStoneOfSorrows extends DrawCard {
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.bowed,
             targetController: Players.Opponent,
-            effect: playerCannot('takeFateFromRings')
+            effect: playerCannot(RestrictionType.TakeFateFromRings)
         });
     }
 }

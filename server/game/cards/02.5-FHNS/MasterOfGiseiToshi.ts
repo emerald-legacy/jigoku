@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phase, Players } from '../../Constants.js';
+import { Duration, Phase, Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class MasterOfGiseiToshi extends DrawCard {
@@ -18,7 +18,7 @@ class MasterOfGiseiToshi extends DrawCard {
                 targetController: Players.Any,
                 condition: () => this.game.currentConflict?.ring === context.ring,
                 effect: playerCannot({
-                    cannot: 'play',
+                    cannot: RestrictionType.Play,
                     restricts: 'nonSpellEvents'
                 })
             }))

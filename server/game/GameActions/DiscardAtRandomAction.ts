@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location } from '../Constants.js';
+import { EventName, Location, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/random.js';
@@ -18,6 +18,8 @@ export class DiscardAtRandomAction<C extends AbilityContext = AbilityContext> ex
     defaultProperties = { amount: 1 };
 
     name = 'discard';
+
+    restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;
     protected effectMessage(context: C): MessageArgs {
         const { amount } = this.getProperties(context);

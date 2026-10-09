@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
+import { RestrictionType } from '../../Constants.js';
 
 class TheStrengthOfTheMountain extends DrawCard {
     static id = 'the-strength-of-the-mountain';
@@ -14,12 +15,12 @@ class TheStrengthOfTheMountain extends DrawCard {
                 target: context.game.currentConflict?.getDefenders(),
                 effect: [
                     cardCannot({
-                        cannot: 'sendHome',
+                        cannot: RestrictionType.SendHome,
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     }),
                     cardCannot({
-                        cannot: 'bow',
+                        cannot: RestrictionType.Bow,
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })

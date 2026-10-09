@@ -1,5 +1,6 @@
 import { cardCannot, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 class Pragmatism extends DrawCard {
     static id = 'pragmatism';
@@ -14,8 +15,8 @@ class Pragmatism extends DrawCard {
             effect: [
                 modifyMilitarySkill(1),
                 modifyPoliticalSkill(1),
-                cardCannot('honor'),
-                cardCannot('dishonor')
+                cardCannot(RestrictionType.Honor),
+                cardCannot(RestrictionType.Dishonor)
             ]
         });
     }

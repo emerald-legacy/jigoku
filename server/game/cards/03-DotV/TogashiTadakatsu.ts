@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class TogashiTadakatsu extends DrawCard {
@@ -8,7 +8,7 @@ class TogashiTadakatsu extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: playerCannot('chooseConflictRing')
+            effect: playerCannot(RestrictionType.ChooseConflictRing)
         });
     }
 }

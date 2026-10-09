@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 import { cardLastingEffect, ready, sequential } from '../../GameActions/GameActions.js';
 
@@ -16,17 +16,17 @@ class WayOfTheWarrior extends DrawCard {
                 cardLastingEffect((context) => ({
                     effect: [
                         cardCannot({
-                            cannot: 'sendHome',
+                            cannot: RestrictionType.SendHome,
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player
                         }),
                         cardCannot({
-                            cannot: 'bow',
+                            cannot: RestrictionType.Bow,
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player
                         }),
                         cardCannot({
-                            cannot: 'dishonor',
+                            cannot: RestrictionType.Dishonor,
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player
                         })

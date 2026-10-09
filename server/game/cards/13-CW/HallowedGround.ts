@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Element, Players } from '../../Constants.js';
+import { Element, Players, RestrictionType } from '../../Constants.js';
 import { playerCannot, playerDelayedEffect } from '../../effects.js';
 import { loseHonor } from '../../GameActions/GameActions.js';
 
@@ -18,7 +18,7 @@ class HallowedGround extends DrawCard {
             targetController: Players.Opponent,
             condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
             effect: playerCannot({
-                cannot: 'placeFateWhenPlayingCharacter'
+                cannot: RestrictionType.PlaceFateWhenPlayingCharacter
             })
         });
 

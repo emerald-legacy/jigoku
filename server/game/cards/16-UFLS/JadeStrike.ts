@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType } from '../../Constants.js';
+import { CardType, type PlayType } from '../../Constants.js';
 import { setBaseMilitarySkill, setBasePoliticalSkill } from '../../effects.js';
 import { cardLastingEffect, multiple, removeFate } from '../../GameActions/GameActions.js';
 import { controlsShugenja } from '../controlsShugenja.js';
@@ -28,7 +28,7 @@ class JadeStrike extends DrawCard {
             .chatText((context) => msg`${context.target.isTainted ? 'remove a fate from and ' : ''}set the base skills of ${context.chatTarget()} to 0${'military'}/0${'political'}`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

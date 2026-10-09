@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
+import { RestrictionType } from '../../Constants.js';
 
 class WhiteHordeVanguard extends DrawCard {
     static id = 'white-horde-vanguard';
@@ -9,15 +10,15 @@ class WhiteHordeVanguard extends DrawCard {
             condition: (context) => context.game.isDuringConflict() && context.game.conflictRecord.filter((record) => record.completed).length === 0,
             effect: [
                 cardCannot({
-                    cannot: 'sendHome',
+                    cannot: RestrictionType.SendHome,
                     restricts: 'opponentsCardEffects'
                 }),
                 cardCannot({
-                    cannot: 'moveToConflict',
+                    cannot: RestrictionType.MoveToConflict,
                     restricts: 'opponentsCardEffects'
                 }),
                 cardCannot({
-                    cannot: 'bow',
+                    cannot: RestrictionType.Bow,
                     restricts: 'opponentsCardEffects'
                 })
             ]

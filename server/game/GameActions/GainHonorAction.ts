@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
@@ -16,6 +16,8 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     defaultProperties = { amount: 1, dueToStatusToken: false };
 
     name = 'gainHonor';
+
+    restriction = RestrictionType.GainHonor;
     eventName = EventName.OnModifyHonor;
 
     protected effectMessage(context: C): MessageArgs {

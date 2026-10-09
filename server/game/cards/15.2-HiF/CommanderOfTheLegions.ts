@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
-import { CardType, Phase } from '../../Constants.js';
+import { CardType, Phase, RestrictionType } from '../../Constants.js';
 
 class CommanderOfTheLegions extends DrawCard {
     static id = 'commander-of-the-legions';
@@ -23,7 +23,7 @@ class CommanderOfTheLegions extends DrawCard {
                 && (card.printedCost ?? 0) <= 3
                 && card !== context?.source
                 && card.controller === context?.player,
-            effect: cardCannot('removeFate')
+            effect: cardCannot(RestrictionType.RemoveFate)
         });
     }
 }

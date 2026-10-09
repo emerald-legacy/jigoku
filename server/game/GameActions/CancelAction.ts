@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { AnyEvent, TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
@@ -58,7 +58,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         if(
             context.event.name === EventName.OnCardLeavesPlay &&
             context.event.card &&
-            !context.event.card.checkRestrictions('preventedFromLeavingPlay', context)
+            !context.event.card.checkRestrictions(RestrictionType.PreventedFromLeavingPlay, context)
         ) {
             cannotBeCancelled = true;
         }

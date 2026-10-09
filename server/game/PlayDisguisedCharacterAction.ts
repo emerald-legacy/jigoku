@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { CardType, EffectName, EventName, Phase, Players, Blocker } from './Constants.js';
+import { CardType, EffectName, EventName, Phase, Players, Blocker, RestrictionType } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import BaseCard from './BaseCard.js';
@@ -56,7 +56,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
         );
         const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
         return (
-            context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions('spendFate', context))
+            context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
         );
     }
 
@@ -94,7 +94,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
             return Blocker.CannotTrigger;
         } else if(context.source.anotherUniqueInPlay(context.player)) {
             return Blocker.DuplicateUnique;
-        } else if(!context.player.checkRestrictions('enterPlay', context)) {
+        } else if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
             return Blocker.CannotPlaceFate;
         }
         return super.meetsRequirements(context, ignoredBlockers);
@@ -103,7 +103,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     public executeHandler(context: AbilityContext<DrawCard>) {
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;

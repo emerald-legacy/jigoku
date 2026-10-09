@@ -3,6 +3,7 @@ import { cardCannot } from '../../../effects.js';
 import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
+import { RestrictionType } from '../../../Constants.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
@@ -27,7 +28,7 @@ export default class VengefulKami extends DrawCard {
 
         this.persistentEffect({
             effect: cardCannot({
-                cannot: 'applyCovert',
+                cannot: RestrictionType.ApplyCovert,
                 restricts: 'opponentsCardEffects'
             })
         });

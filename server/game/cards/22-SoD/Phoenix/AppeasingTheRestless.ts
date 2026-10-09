@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, RestrictionType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
 import { injure, placeFate } from '../../../GameActions/GameActions.js';
@@ -28,7 +28,7 @@ export default class AppeasingTheRestless extends DrawCard {
     }
 
     private canMoveFate(context: AbilityContext) {
-        return context.player.fate > 0 && context.player.checkRestrictions('spendFate', context);
+        return context.player.fate > 0 && context.player.checkRestrictions(RestrictionType.SpendFate, context);
     }
 
     private canReceiveFate(card: DrawCard, context: AbilityContext) {

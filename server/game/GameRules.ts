@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { CardAction } from './CardAction.js';
-import { AbilityType, Location, Phase } from './Constants.js';
+import { AbilityType, Location, Phase, RestrictionType } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import { GameMode } from '../GameMode.js';
@@ -90,7 +90,7 @@ const Stronghold: GameRules = {
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.GAIN_2]: () => true,
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
-            Boolean(context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context)),
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions(RestrictionType.TakeHonor, context)),
         [AIR_CHOICE.SKIP]: () => optional
     }),
     ringEarthChoices: (optional: boolean): RingChoices => ({
@@ -129,7 +129,7 @@ const Skirmish: GameRules = {
     setupStartingHandSize: 3,
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
-            Boolean(context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context)),
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions(RestrictionType.TakeHonor, context)),
         [AIR_CHOICE.SKIP]: () => optional
     }),
     ringEarthChoices: (optional: boolean): RingChoices => ({

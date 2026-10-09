@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Conflict } from '../../../Conflict.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import { cardCannot, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class DeployedGarrison extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
-                cannot: 'applyCovert',
+                cannot: RestrictionType.ApplyCovert,
                 restricts: 'opponentsCardEffects'
             })
         });

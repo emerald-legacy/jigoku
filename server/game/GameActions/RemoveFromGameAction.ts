@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import { LeavesPlayAction } from './LeavesPlayAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -13,6 +13,7 @@ export interface RemoveFromGameProperties extends CardActionProperties {
 
 export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<RemoveFromGameProperties, C> {
     name = 'removeFromGame';
+    restriction = RestrictionType.RemoveFromGame;
     cost = 'removing {0} from the game';
     targetType = [CardType.Character, CardType.Attachment, CardType.Holding, CardType.Event];
     effect = 'remove {0} from the game';

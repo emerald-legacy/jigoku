@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import { LeavesPlayAction, type LeavesPlayEvent } from './LeavesPlayAction.js';
@@ -15,6 +15,7 @@ export interface ReturnToDeckProperties extends CardActionProperties {
 
 export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<ReturnToDeckProperties, C, 'bottom' | 'shuffle' | 'location'> {
     name = 'returnToDeck';
+    restriction = RestrictionType.ReturnToDeck;
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties = {
         bottom: false,

@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EffectName, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
@@ -50,7 +50,7 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
             additionalProperties
         );
         const canMove =
-            (!changePlayer || card.checkRestrictions(EffectName.TakeControl, context)) &&
+            (!changePlayer || card.checkRestrictions(RestrictionType.TakeControl, context)) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
             card.location === Location.PlayArea &&
             super.canAffect(card, context);

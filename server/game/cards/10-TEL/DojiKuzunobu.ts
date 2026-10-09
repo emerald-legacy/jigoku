@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType } from '../../Constants.js';
 
 class DojiKuzuNobu extends DrawCard {
     static id = 'doji-kuzunobu';
@@ -10,7 +10,7 @@ class DojiKuzuNobu extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,
             effect: playerCannot({
-                cannot: 'triggerAbilities',
+                cannot: RestrictionType.TriggerAbilities,
                 restricts: 'reactions'
             })
         });

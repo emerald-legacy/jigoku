@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -12,6 +12,7 @@ export interface LoseFateProperties extends PlayerActionProperties {
 
 export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C, 'amount'> {
     name = 'spendFate';
+    restriction = RestrictionType.SpendFate;
     eventName = EventName.OnModifyFate;
     defaultProperties = { amount: 1 };
 

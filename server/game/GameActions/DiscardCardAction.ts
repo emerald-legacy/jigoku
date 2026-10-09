@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
@@ -19,7 +19,7 @@ export class DiscardCardAction<C extends AbilityContext = AbilityContext> extend
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return (
-            (card.location !== Location.Hand || card.controller.checkRestrictions('discard', context)) &&
+            (card.location !== Location.Hand || card.controller.checkRestrictions(RestrictionType.Discard, context)) &&
             super.canAffect(card, context, additionalProperties)
         );
     }

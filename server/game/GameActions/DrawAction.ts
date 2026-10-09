@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -12,6 +12,7 @@ export interface DrawProperties extends PlayerActionProperties {
 
 export class DrawAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DrawProperties, EventName.OnCardsDrawn, C, 'amount'> {
     name = 'draw';
+    restriction = RestrictionType.Draw;
     eventName = EventName.OnCardsDrawn;
 
     defaultProperties = {

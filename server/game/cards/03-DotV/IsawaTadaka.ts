@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, Element } from '../../Constants.js';
+import { Players, Element, RestrictionType } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -13,7 +13,7 @@ class IsawaTadaka extends DrawCard {
             targetController: Players.Opponent,
             condition: (context) => context.player.opponent === undefined || !hasClaimedRing(this, elementSymbol.key, context.player.opponent),
             effect: playerCannot({
-                cannot: 'play',
+                cannot: RestrictionType.Play,
                 restricts: 'copiesOfDiscardEvents'
             })
         });

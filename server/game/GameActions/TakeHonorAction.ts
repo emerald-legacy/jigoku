@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EffectName, EventName } from '../Constants.js';
+import { EffectName, EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
@@ -14,6 +14,7 @@ export interface TransferHonorProperties extends PlayerActionProperties {
 
 export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferHonorProperties, EventName.OnTransferHonor, C, 'amount' | 'afterBid'> {
     name = 'takeHonor';
+    restriction = RestrictionType.TakeHonor;
     eventName = EventName.OnTransferHonor;
     defaultProperties = { amount: 1, afterBid: false };
 

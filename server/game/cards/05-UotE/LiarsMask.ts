@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { discardStatusToken, selectToken } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
+import type { PlayType } from '../../Constants.js';
 
 class LiarsMask extends DrawCard {
     static id = 'liar-s-mask';
@@ -18,7 +19,7 @@ class LiarsMask extends DrawCard {
             .chatText((context) => msg`discard a status token from ${context.source.parentCharacter}`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(context.player.honor > 6) {
             return false;
         }

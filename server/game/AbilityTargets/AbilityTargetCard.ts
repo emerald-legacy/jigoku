@@ -1,6 +1,6 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { Stage, Players, EffectName, TargetMode } from '../Constants.js';
+import { Stage, Players, EffectName, TargetMode, RestrictionType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
@@ -76,7 +76,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }
         const mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
-            card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch('target', context))
+            card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch(RestrictionType.Target, context))
         );
         const promptProperties = {
             waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',

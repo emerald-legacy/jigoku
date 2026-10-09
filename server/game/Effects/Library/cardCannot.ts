@@ -1,13 +1,14 @@
 import type BaseCard from '../../BaseCard.js';
-import { EffectName } from '../../Constants.js';
+import { EffectName, type PlayType, type RestrictionType } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { Restriction } from '../Restriction.js';
 
 type Props =
-    | string
+    | RestrictionType
+    | PlayType
     | {
-          cannot: string;
+          cannot: RestrictionType | PlayType;
           applyingPlayer?: Player;
           restricts?: string;
           source?: BaseCard;

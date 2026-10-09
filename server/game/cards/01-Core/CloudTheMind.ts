@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { blank } from '../../effects.js';
 import { controlsShugenja } from '../controlsShugenja.js';
+import type { PlayType } from '../../Constants.js';
 
 class CloudTheMind extends DrawCard {
     static id = 'cloud-the-mind';
@@ -12,7 +13,7 @@ class CloudTheMind extends DrawCard {
         });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

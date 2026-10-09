@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { cardCannot } from '../../../effects.js';
 import { bow, cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
-import { CardType, Duration, EventName } from '../../../Constants.js';
+import { CardType, Duration, EventName, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -26,7 +26,7 @@ export default class LongJourneyHome extends DrawCard {
                 bow(),
                 cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,
-                    effect: cardCannot({ cannot: 'ready' })
+                    effect: cardCannot({ cannot: RestrictionType.Ready })
                 })
             ]))
             .chatText((context) => msg`make ${context.event.card} take the long way home. ${context.event.card} is bowed and cannot ready until the end of the phase`);

@@ -1,6 +1,7 @@
 import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
+import type { PlayType } from '../../Constants.js';
 
 class StolenBreath extends DrawCard {
     static id = 'stolen-breath';
@@ -14,7 +15,7 @@ class StolenBreath extends DrawCard {
         });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(this.game.isDuringConflict()) {
             return false;
         }

@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { canOnlyBeDeclaredAsAttackerWithCondition, cardCannot, modifyBothSkills } from '../../../effects.js';
 
@@ -17,7 +17,7 @@ export default class AttentiveGuardsman extends DrawCard {
             condition: (context) => context.game.currentConflict?.attackingPlayer === context.player &&
                 !context.game.currentConflict.attackers.some((card) => card.getType() === CardType.Character && card.isUnique()),
             effect: [
-                cardCannot('moveToConflict')
+                cardCannot(RestrictionType.MoveToConflict)
             ]
         });
 

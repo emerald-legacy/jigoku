@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EffectName, Location, Phase, PlayType, Players, Blocker } from './Constants.js';
+import { EffectName, Location, Phase, PlayType, Players, Blocker, RestrictionType } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
@@ -46,8 +46,8 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             return Blocker.DuplicateUnique;
         }
         if(
-            !context.player.checkRestrictions('playCharacter', context) ||
-            !context.player.checkRestrictions('enterPlay', context)
+            !context.player.checkRestrictions(RestrictionType.PlayCharacter, context) ||
+            !context.player.checkRestrictions(RestrictionType.EnterPlay, context)
         ) {
             return Blocker.CannotPlaceFate;
         }
@@ -57,7 +57,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
     public executeHandler(context: AbilityContext<DrawCard>): void {
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;

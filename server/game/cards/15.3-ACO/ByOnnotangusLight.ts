@@ -1,4 +1,4 @@
-import { Players, Location, CardType } from '../../Constants.js';
+import { Players, Location, CardType, RestrictionType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { cardCannot, setApparentFate } from '../../effects.js';
 
@@ -11,7 +11,7 @@ export default class ByOnnotangusLight extends ProvinceCard {
             targetController: Players.Any,
             targetLocation: Location.PlayArea,
             match: (card) => card.type === CardType.Character,
-            effect: [cardCannot({ cannot: 'removeFate' }), setApparentFate(0)]
+            effect: [cardCannot({ cannot: RestrictionType.RemoveFate }), setApparentFate(0)]
         });
     }
 }

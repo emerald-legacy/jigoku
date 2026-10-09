@@ -30,7 +30,7 @@ export default class Infiltrator extends DrawCard {
             .chatText('look at the top card of an opponent\'s deck and play or discard it');
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!context.player.opponent || context.player.showBid <= context.player.opponent.showBid) {
             return false;
         }

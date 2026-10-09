@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import { LeavesPlayAction } from './LeavesPlayAction.js';
@@ -10,6 +10,7 @@ export type ReturnToHandProperties = CardActionProperties;
 
 export class ReturnToHandAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<ReturnToHandProperties, C> {
     name = 'returnToHand';
+    restriction = RestrictionType.ReturnToHand;
     effect = 'return {0} to their hand';
     cost = 'returning {0} to their hand';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event];

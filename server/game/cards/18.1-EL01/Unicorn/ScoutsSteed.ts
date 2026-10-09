@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { cardCannot, mustBeDeclaredAsAttacker } from '../../../effects.js';
 import { cardLastingEffect, initiateConflict, ready, sequentialContext } from '../../../GameActions/GameActions.js';
-import { CardType, Location } from '../../../Constants.js';
+import { CardType, Location, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ScoutsSteed extends DrawCard {
@@ -30,7 +30,7 @@ export default class ScoutsSteed extends DrawCard {
                         cardLastingEffect({
                             target: province,
                             targetLocation: Location.Provinces,
-                            effect: cardCannot('break')
+                            effect: cardCannot(RestrictionType.Break)
                         }),
                         initiateConflict({
                             target: player,

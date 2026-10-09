@@ -1,5 +1,5 @@
 import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
-import { FavorType, Phase, Stage } from '../../../Constants.js';
+import { FavorType, Phase, Stage, type PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -26,7 +26,7 @@ export default class Funeral extends DrawCard {
             .cannotBeMirrored();
     }
 
-    public canPlay(context: AbilityContext, playType: string) {
+    public canPlay(context: AbilityContext, playType?: PlayType) {
         return (
             context.game.currentPhase !== Phase.Draw &&
             context.game.getFavorSide() === FavorType.Political &&

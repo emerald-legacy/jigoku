@@ -62,7 +62,7 @@ Static attachment bonuses are automatically included in skill calculation.  They
 
 Many cards provide continuous bonuses to other cards you control or detrimental effects to opponents cards in certain situations. These can be defined using the `persistentEffect` method. Cards that enter play while the persistent effect is in play will automatically have the effect applied, and cards that leave play will have the effect removed. If the card providing the effect becomes blank, the effect is automatically removed from all previously applied cards.
 
-For a full list of properties that can be set when declaring an effect, look at `/server/game/Effects/Effect.ts`. To see all the types of effect which you can use (and whether they apply to cards, rings or players), look at `/server/game/effects.ts`. Here are some common scenarios:
+For a full list of properties that can be set when declaring an effect, look at `/server/game/Effects/ActiveEffect.ts`. To see all the types of effect which you can use (and whether they apply to cards, rings or players), look at `/server/game/effects.ts`. Here are some common scenarios:
 
 ### Matching conditions vs matching specific cards
 
@@ -125,7 +125,7 @@ this.persistentEffect({
     condition: () => this.isParticipating(),
     targetController: Players.Any,
     match: card => card.getType() === CardType.Character && card.location === Location.PlayArea,
-    effect: cardCannot('becomeDishonored')
+    effect: cardCannot(RestrictionType.Dishonor)
 });
 ```
 
@@ -208,7 +208,7 @@ Certain cards provide bonuses or restrictions on the player itself instead of on
 this.persistentEffect({
     condition: () => this.isParticipating(),
     targetController: Players.Opponent,
-    effect: playerCannot({ cannot: 'play', restricts: 'events' })
+    effect: playerCannot({ cannot: RestrictionType.Play, restricts: 'events' })
 });
 ```
 
@@ -474,6 +474,35 @@ this.action('Switch the conflict type or ring')
         // ... read context.select
     });
 ```
+
+### Choosing while the ability resolves
+
+The Rules Reference Guide ("Select") distinguishes when a selection is made: "If a selection is required before the effect of the ability resolves (i.e., before the dash), the selection is made during the same timing step in which targets are chosen. If a selection is indicated after the dash of an ability's text, that selection is made during the resolution of the effect." Before the dash, use `select` (above). After the dash, use the game action `chooseAction`: it prompts while the ability resolves, and only offers choices whose action is legal then. `choices` maps each label to a game action, or to `{ action, message }` when the chat should say what was chosen; `player: Players.Opponent` lets the opponent choose.
+
+```typescript
+// Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
+this.reaction('Honor or dishonor a character')
+    .when({
+        afterConflict: (event, context) =>
+            event.conflict.winner === context.source.controller && context.source.isParticipating()
+    })
+    .target({
+        activePromptTitle: 'Choose a character to honor or dishonor',
+        cardType: CardType.Character
+    }, chooseAction({
+        choices: {
+            'Honor this character': {
+                action: honor(),
+                message: (_context, target, player) => msg`${player} chooses to honor ${target}`
+            },
+            'Dishonor this character': {
+                action: dishonor(),
+                message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
+            }
+        }
+    }));
+```
+
 
 ## Ability effects
 
@@ -763,8 +792,8 @@ this.forcedReaction('Can\'t be discarded or remove fate')
     .gameAction(cardLastingEffect({
         duration: Duration.UntilEndOfPhase,
         effect: [
-            cardCannot('removeFate'),
-            cardCannot('discardFromPlay')
+            cardCannot(RestrictionType.RemoveFate),
+            cardCannot(RestrictionType.DiscardFromPlay)
         ]
     }));
 ```

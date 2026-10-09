@@ -1,6 +1,6 @@
 import { msg } from './GameChat.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { Phase, PlayType, Blocker } from './Constants.js';
+import { Phase, PlayType, Blocker, RestrictionType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type DrawCard from './DrawCard.js';
 
@@ -24,7 +24,7 @@ export class DuplicateUniqueAction extends PlayCardSourceAction {
         if(!this.card.anotherUniqueInPlayControlledBy(context.player)) {
             return Blocker.DuplicateUnique;
         }
-        if(!this.card.checkRestrictions('placeFate', context)) {
+        if(!this.card.checkRestrictions(RestrictionType.PlaceFate, context)) {
             return Blocker.CannotPlaceFate;
         }
         return super.meetsRequirements(context, ignoredBlockers);

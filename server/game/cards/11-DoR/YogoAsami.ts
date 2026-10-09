@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, RestrictionType } from '../../Constants.js';
 
 class YogoAsami extends DrawCard {
     static id = 'yogo-asami';
@@ -12,7 +12,7 @@ class YogoAsami extends DrawCard {
             match: (card) => card.name === 'Bayushi Kachiko',
             targetController: Players.Any,
             effect: cardCannot({
-                cannot: 'target',
+                cannot: RestrictionType.Target,
                 restricts: 'abilitiesTriggeredByOpponents'
             })
         });

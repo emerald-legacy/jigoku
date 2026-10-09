@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { initiateConflict } from '../../../GameActions/GameActions.js';
-import { CardType, Phase, Players } from '../../../Constants.js';
+import { CardType, Phase, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredByForce extends DrawCard {
@@ -13,7 +13,7 @@ export default class OutmaneuveredByForce extends DrawCard {
             .phase(Phase.Conflict);
     }
 
-    public canPlay(context: AbilityContext, playType: string): boolean {
+    public canPlay(context: AbilityContext, playType?: PlayType): boolean {
         return (
             !context.game.isDuringConflict() &&
             this.controlsBerserkerOrBigCharacter(context) &&

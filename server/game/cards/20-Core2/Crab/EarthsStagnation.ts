@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, type PlayType } from '../../../Constants.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -32,7 +32,7 @@ export default class EarthsStagnation extends DrawCard {
             .limit(unlimitedPerConflict());
     }
 
-    public canPlay(context: AbilityContext, playType: string) {
+    public canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

@@ -2,6 +2,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 import { charactersCannot } from '../../../effects.js';
 import { conflictLastingEffect } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
+import { RestrictionType } from '../../../Constants.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
@@ -14,12 +15,12 @@ export default class AshenFlamePlateau extends ProvinceCard {
             .gameAction(conflictLastingEffect((context) => ({
                 effect: [
                     charactersCannot({
-                        cannot: 'triggerAbilities',
+                        cannot: RestrictionType.TriggerAbilities,
                         restricts: 'opponentsCharacters',
                         applyingPlayer: context.player
                     }),
                     charactersCannot({
-                        cannot: 'initiateKeywords',
+                        cannot: RestrictionType.InitiateKeywords,
                         restricts: 'opponentsCharacters',
                         applyingPlayer: context.player
                     })

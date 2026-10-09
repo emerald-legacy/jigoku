@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, Phase } from '../../Constants.js';
+import { Players, CardType, Phase, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 
 class DaidojiNetsu extends DrawCard {
@@ -12,7 +12,7 @@ class DaidojiNetsu extends DrawCard {
             match: (card, context) => card.getType() === CardType.Character && card !== context?.source,
             effect: [
                 cardCannot({
-                    cannot: 'leavePlay',
+                    cannot: RestrictionType.LeavePlay,
                     restricts: 'nonKeywordAbilities'})
             ]
         });

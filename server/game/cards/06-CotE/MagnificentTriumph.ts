@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../Constants.js';
 import { cardCannot, modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -19,7 +19,7 @@ export default class MagnificentTriumph extends DrawCard {
                 effect: [
                     modifyBothSkills(2),
                     cardCannot({
-                        cannot: 'target',
+                        cannot: RestrictionType.Target,
                         restricts: 'opponentsEvents',
                         applyingPlayer: context.player
                     })

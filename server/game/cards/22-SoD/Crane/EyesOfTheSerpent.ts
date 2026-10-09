@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, type PlayType } from '../../../Constants.js';
 import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
@@ -31,7 +31,7 @@ export default class EyesOfTheSerpent extends DrawCard {
             .chatText((context) => msg`taint ${context.target}`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

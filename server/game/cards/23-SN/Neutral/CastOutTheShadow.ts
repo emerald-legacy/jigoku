@@ -1,7 +1,7 @@
 import { sacrifice, takeHonor } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, PlayType } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class CastOutTheShadow extends DrawCard {
@@ -25,7 +25,7 @@ export default class CastOutTheShadow extends DrawCard {
             });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!controlsShugenja(context.player)) {
             return false;
         }

@@ -586,7 +586,7 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 | `joint([...actions])` | Execute actions requiring same target |
 | `conditional({ condition, trueGameAction, falseGameAction? })` | Branch on condition; `falseGameAction` defaults to doing nothing. On the ability itself, prefer `.if()`/`.otherwise()` |
 | `ifAble({ ifAbleAction, otherwiseAction })` | Do `ifAbleAction` if it can resolve, else `otherwiseAction` |
-| `chooseAction({ options, activePromptTitle? })` | Prompt player to choose between actions; `options` maps each label to `{ action, message? }`, with `message: (context, target, chooser) => msg\`…\`` (`target` is the action's target) |
+| `chooseAction({ choices, activePromptTitle?, player? })` | A choice made while the ability resolves (a selection after the dash; one before the dash is `select`). `choices` maps each label to a game action, or to `{ action, message }` with `message: (context, target, chooser) => msg\`…\`` (`target` is the action's target) |
 | `menuPrompt({ ... })` | Show a free-form menu prompt |
 | `rearrangeDeck({ amount, deck?, activePromptTitle?, message? })` | The player of the ability puts the top `amount` cards of the target player's `deck` (default: their own conflict deck) back in the order they choose, one prompt per position |
 | `assignRoles({ roles, player?, pick?, activePromptTitle?, message? })` | Two cards, two roles (`{ Honor: honor(), Dishonor: dishonor() }`): the chooser gives each card a role, by role then card, or with `pick` by picking that role's card from card buttons; each role's action resolves on its card, in this action's window. `message(context, assigned, chooser)` returns a `msg` template |
@@ -758,37 +758,34 @@ Match the effect to the card text: *"cannot participate … as an attacker"* →
 ### Restrictions: `cardCannot` / `playerCannot`
 
 ```ts
-cardCannot('dishonor')                                  // shorthand
-cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
-playerCannot({ cannot: 'initiateConflict' })
+cardCannot(RestrictionType.Dishonor)                    // shorthand
+cardCannot({ cannot: RestrictionType.ApplyCovert, restricts: 'opponentsCardEffects' })
+playerCannot({ cannot: RestrictionType.TakeFateFromRings })
 ```
 
-A restriction names an **action token**. It only fires where the engine calls `checkRestrictions('<token>', …)` with that **exact** string (`server/game/Effects/Restriction.ts`). There is **no validation** that the token is meaningful — `cardCannot('declareAsAttakcer')` (typo) or a token the engine never checks compiles and silently does nothing. Two things follow:
+A restriction names a **`RestrictionType`** (`server/game/Constants/RestrictionType.ts`; a `PlayType` restricts playing that way). It only fires where the engine calls `checkRestrictions(RestrictionType.X, …)` (`server/game/Effects/Restriction.ts`). A restriction without a type (`immunity({ restricts: … })`) forbids everything. **A type only blocks the code paths that check it.** If the prohibition you want spans several game-state paths, a type that's only checked on one of them is an incomplete guard. Prefer a dedicated effect when one exists (e.g. `cannotParticipateAsAttacker()`, which covers every path, over the declaration-only `cannotBeDeclaredAsAttacker()` — see [Participation / conflict](#participation--conflict-card)). Where a type is wrapped by a named helper, call the helper.
 
-1. **Spell the token correctly** — there is no compile-time or runtime safety net.
-2. **A token only blocks the code paths that check it.** If the prohibition you want spans several game-state paths, a token that's only checked on one of them is an incomplete guard. Prefer a dedicated effect when one exists (e.g. `cannotParticipateAsAttacker()`, which covers every path, over the declaration-only `cannotBeDeclaredAsAttacker()` — see [Participation / conflict](#participation--conflict-card)). Where a token is wrapped by a named helper, call the helper rather than retyping the string.
+The types fall into two groups:
 
-Valid tokens come from two sources:
+**Game actions** — a `GameAction` that declares a `restriction` (`restriction = RestrictionType.Bow`) checks it in `canAffect`, so a card can be made immune to that action anywhere it would resolve. These are *complete* (they cover every path that runs the action):
 
-**Game-action names** — every `GameAction` calls `target.checkRestrictions(this.name, …)` in `canAffect`, so a card can be made immune to that action anywhere it would resolve. These are *complete* (they cover every path that runs the action):
+`Bow` · `Break` · `Dishonor` · `Honor` · `Discard` · `DiscardFromPlay` · `Sacrifice` · `RemoveFate` · `PlaceFate` · `GainFate` · `SpendFate` (also `loseFate`) · `GainHonor` · `LoseHonor` · `TakeHonor` · `Draw` · `Duel` · `Move` · `MoveToConflict` · `SendHome` · `Ready` · `ReturnToHand` · `ReturnToDeck` · `RemoveFromGame` · `PutIntoPlay` · `RestoreProvince` · `TakeControl` · `TurnFacedown`; `LeavePlay` covers discarding from play, sacrificing, returning to hand or deck and removing from the game. To restrict another game action, add a member and declare it on the action.
 
-`bow` · `break` · `dishonor` · `honor` · `discard` · `discardFromPlay` · `removeFate` · `placeFate` · `gainFate` · `takeFate` · `takeHonor` · `draw` · `move` · `moveToConflict` · `sendHome` · `ready` · `taint` · `sacrifice` · `attach` · `detach` · `returnToHand` · `returnToDeck` · `putIntoPlay` · `putInProvince` · `turnFacedown` · `takeControl` · `receiveHonorToken` · `receiveDishonorToken` · `receiveTaintedToken` · `removeFromGame` … (full set = the `name` fields in `server/game/GameActions/*.ts`)
+**Engine checkpoints** — checked at one or a few specific code sites only. These are *narrow* by nature; know what each guards:
 
-**Engine checkpoint tokens** — checked at one or a few specific code sites only. These are *narrow* by nature; know what each guards:
+| Type | Guarded at | Does **not** cover |
+|------|-----------|--------------------|
+| `DeclareAsAttacker` (helper: `cannotBeDeclaredAsAttacker()`) | `canDeclareAsAttacker` (conflict declaration) | being **moved** into the conflict — use `cannotParticipateAsAttacker()` |
+| `DeclareAsDefender` (helper: `cannotBeDeclaredAsDefender()`) | `canDeclareAsDefender` | being **moved** in — use `cannotParticipateAsDefender()` |
+| `ApplyCovert` | `canBeBypassedByCovert` | — (correct for "cannot be evaded by covert") |
+| `Target` | ability targeting | non-targeting effects |
+| `Play` / `PlayCharacter` / `EnterPlay` / `PutIntoPlay` / `PutIntoConflict` | the matching play/enter step | — |
+| `TriggerAbilities` (helper: `cannotTriggerAbilities()`) | triggered abilities — `isTriggeredAbility()` (Action / Reaction / Interrupt / Forced) | **keyword** abilities (covert, pride, sincerity…) — those go through `InitiateKeywords` |
+| `InitiateKeywords` | keyword abilities — `isKeywordAbility()` | triggered abilities |
+| `ReceiveDishonorToken` · `ReceiveHonorToken` · `ReceiveTaintedToken` (helpers: `cannotReceive*Token()`) | applying that status token, any source | — |
+| `ClaimRings` · `LoseDuels` · `Duel` · `SpendFate` · `TakeFateFromRings` · `HaveImperialFavor` · `HaveAffinity` · `PreventedFromLeavingPlay` · `ApplyEffect` · `ChooseConflictRing` · `ContributeSkillToConflictResolution` · `PlaceFateWhenPlayingCharacter` · `PlaceFateWhenPlayingCharacterFromProvince` | their named checkpoint | — |
 
-| Token | Guarded at | Does **not** cover |
-|-------|-----------|--------------------|
-| `declareAsAttacker` (helper: `cannotBeDeclaredAsAttacker()`) | `canDeclareAsAttacker` (conflict declaration) | being **moved** into the conflict — use `cannotParticipateAsAttacker()` |
-| `declareAsDefender` (helper: `cannotBeDeclaredAsDefender()`) | `canDeclareAsDefender` | being **moved** in — use `cannotParticipateAsDefender()` |
-| `applyCovert` | `canBeBypassedByCovert` | — (correct for "cannot be evaded by covert") |
-| `target` | ability targeting | non-targeting effects |
-| `play` / `playCharacter` / `enterPlay` / `putIntoPlay` / `putIntoConflict` | the matching play/enter step | — |
-| `triggerAbilities` (helper: `cannotTriggerAbilities()`) | triggered abilities — `isTriggeredAbility()` (Action / Reaction / Interrupt / Forced) | **keyword** abilities (covert, pride, sincerity…) — those go through `initiateKeywords` |
-| `initiateKeywords` | keyword abilities — `isKeywordAbility()` | triggered abilities |
-| `receiveDishonorToken` · `receiveHonorToken` · `receiveTaintedToken` (helpers: `cannotReceive*Token()`) | applying that status token, any source | — |
-| `claimRings` · `loseDuels` · `duel` · `spendFate` · `takeFateFromRings` · `haveImperialFavor` · `haveAffinity` · `preventedFromLeavingPlay` | their named checkpoint | — |
-
-`triggerAbilities` and `initiateKeywords` are **disjoint categories, not two paths to one outcome** — unlike the declare/participate pair above. *"Cannot trigger abilities"* (the wording on every card using this token) means triggered abilities only; keywords stay live by design. To also suppress keywords, add `cardCannot('initiateKeywords')`; to remove abilities entirely, use `blank()` / `loseAllNonKeywordAbilities()`.
+`TriggerAbilities` and `InitiateKeywords` are **disjoint categories, not two paths to one outcome** — unlike the declare/participate pair above. *"Cannot trigger abilities"* (the wording on every card using this token) means triggered abilities only; keywords stay live by design. To also suppress keywords, add `cardCannot(RestrictionType.InitiateKeywords)`; to remove abilities entirely, use `blank()` / `loseAllNonKeywordAbilities()`.
 
 `restricts:` narrows *whose* effects the restriction applies to (e.g. `opponentsCardEffects`, `cardEffects`, `abilities`); the full set of source-filters is the keys of `checkRestrictions` in `Restriction.ts`. When the engine *only* blocks one path and you need full coverage, the inverse mistake also exists — see `KuniJuurou.ts`, which deliberately adds `cannotBeDeclaredAsAttacker()` on top of taint because taint blocks participation but "the declaration goes through."
 

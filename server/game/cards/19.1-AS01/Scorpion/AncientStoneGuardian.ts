@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { cannotParticipateAsAttacker, cardCannot } from '../../../effects.js';
 import { dishonor, draw, sequentialContext } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -16,7 +16,7 @@ export default class AncientStoneGuardian extends DrawCard {
         });
 
         this.persistentEffect({
-            effect: cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
+            effect: cardCannot({ cannot: RestrictionType.ApplyCovert, restricts: 'opponentsCardEffects' })
         });
 
         this.forcedInterrupt('Dishonor a character and draw a card')

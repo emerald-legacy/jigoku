@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, RestrictionType } from '../../Constants.js';
 import { cardCannot, increaseLimitOnAbilities } from '../../effects.js';
 
 class HidaEtsuji extends DrawCard {
@@ -15,7 +15,7 @@ class HidaEtsuji extends DrawCard {
 
         this.persistentEffect({
             effect: cardCannot({
-                cannot: 'applyCovert',
+                cannot: RestrictionType.ApplyCovert,
                 restricts: 'opponentsCardEffects'
             })
         });

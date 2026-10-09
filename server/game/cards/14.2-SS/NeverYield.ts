@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
-import { CardType } from '../../Constants.js';
+import { CardType, RestrictionType } from '../../Constants.js';
 
 class NeverYield extends DrawCard {
     static id = 'never-yield';
@@ -15,12 +15,12 @@ class NeverYield extends DrawCard {
                 target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
                     cardCannot({
-                        cannot: 'sendHome',
+                        cannot: RestrictionType.SendHome,
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     }),
                     cardCannot({
-                        cannot: 'bow',
+                        cannot: RestrictionType.Bow,
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })

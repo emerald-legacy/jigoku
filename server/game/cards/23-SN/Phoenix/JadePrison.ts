@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { reduceCost } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class JadePrison extends DrawCard {
@@ -24,7 +24,7 @@ export default class JadePrison extends DrawCard {
             .bow((context) => ({ target: context.event.card }));
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!controlsShugenja(context.player)) {
             return false;
         }

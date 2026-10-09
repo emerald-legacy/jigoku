@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
+import { RestrictionType } from '../../Constants.js';
 
 class SolitaryHero extends DrawCard {
     static id = 'solitary-hero';
@@ -7,7 +8,7 @@ class SolitaryHero extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
-                cannot: 'applyCovert',
+                cannot: RestrictionType.ApplyCovert,
                 restricts: 'opponentsCardEffects'
             })
         });

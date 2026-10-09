@@ -1,4 +1,4 @@
-import { Players, Location, CardType } from '../../Constants.js';
+import { Players, Location, CardType, RestrictionType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { cardCannot } from '../../effects.js';
 
@@ -13,11 +13,11 @@ export default class KuniWasteland extends ProvinceCard {
             match: (card) => card.type === CardType.Character,
             effect: [
                 cardCannot({
-                    cannot: 'triggerAbilities',
+                    cannot: RestrictionType.TriggerAbilities,
                     restricts: 'nonForcedAbilities'
                 }),
                 cardCannot({
-                    cannot: 'initiateKeywords',
+                    cannot: RestrictionType.InitiateKeywords,
                     restricts: 'keywordAbilities'
                 })
             ]

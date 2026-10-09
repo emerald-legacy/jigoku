@@ -1,4 +1,4 @@
-import { CardType, Duration, Phase } from '../../../Constants.js';
+import { CardType, Duration, Phase, RestrictionType } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,7 +20,7 @@ export default class ObstinateWitchHunter extends DrawCard {
             })
             .cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: [cardCannot('removeFate'), cardCannot('discardFromPlay')]
+                effect: [cardCannot(RestrictionType.RemoveFate), cardCannot(RestrictionType.DiscardFromPlay)]
             })
             .chatText('stop him being discarded or losing fate in this phase');
     }

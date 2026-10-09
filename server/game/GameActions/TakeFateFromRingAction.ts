@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -24,7 +24,7 @@ export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> e
     canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
-            context.player.checkRestrictions('takeFateFromRings', context) &&
+            context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context) &&
             ring.fate > 0 &&
             properties.amount > 0 &&
             super.canAffect(ring, context)

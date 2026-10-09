@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
-import { CardType } from '../../Constants.js';
+import { CardType, RestrictionType } from '../../Constants.js';
 
 class ForwardGarrison extends DrawCard {
     static id = 'forward-garrison';
@@ -10,7 +10,7 @@ class ForwardGarrison extends DrawCard {
             condition: (context) => context.game.isTraitInPlay('battlefield'),
             match: (card, context) => card.type === CardType.Character && card.controller === context?.player,
             effect: cardCannot({
-                cannot: 'removeFate',
+                cannot: RestrictionType.RemoveFate,
                 restricts: 'opponentsCardAndRingEffects'
             })
         });

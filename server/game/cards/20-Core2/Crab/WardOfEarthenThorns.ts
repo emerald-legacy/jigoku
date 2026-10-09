@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, type PlayType } from '../../../Constants.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import { removeFate } from '../../../GameActions/GameActions.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -28,7 +28,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             }, removeFate());
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

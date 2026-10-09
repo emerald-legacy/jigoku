@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, PlayType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class Censure extends DrawCard {
@@ -14,7 +14,7 @@ class Censure extends DrawCard {
             .cannotBeMirrored();
     }
 
-    canPlay(context: AbilityContext, playType = 'play'): boolean {
+    canPlay(context: AbilityContext, playType?: PlayType): boolean {
         if(context.player.imperialFavor !== '') {
             return super.canPlay(context, playType);
         }

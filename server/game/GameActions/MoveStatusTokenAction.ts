@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CharacterStatus, EventName, Location } from '../Constants.js';
+import { CharacterStatus, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { StatusToken } from '../StatusToken.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
@@ -30,17 +30,17 @@ export class MoveStatusTokenAction<C extends AbilityContext = AbilityContext> ex
             return false;
         } else if(
             token.grantedStatus === CharacterStatus.Honored &&
-            (recipient.isHonored || !recipient.checkRestrictions('receiveHonorToken', context))
+            (recipient.isHonored || !recipient.checkRestrictions(RestrictionType.ReceiveHonorToken, context))
         ) {
             return false;
         } else if(
             token.grantedStatus === CharacterStatus.Dishonored &&
-            (recipient.isDishonored || !recipient.checkRestrictions('receiveDishonorToken', context))
+            (recipient.isDishonored || !recipient.checkRestrictions(RestrictionType.ReceiveDishonorToken, context))
         ) {
             return false;
         } else if(
             token.grantedStatus === CharacterStatus.Tainted &&
-            (recipient.isTainted || !recipient.checkRestrictions('receiveTaintedToken', context))
+            (recipient.isTainted || !recipient.checkRestrictions(RestrictionType.ReceiveTaintedToken, context))
         ) {
             return false;
         }

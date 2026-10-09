@@ -1,7 +1,7 @@
 import { placeFate } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, type PlayType } from '../../Constants.js';
 
 class GoodOmen extends DrawCard {
     static id = 'good-omen';
@@ -14,7 +14,7 @@ class GoodOmen extends DrawCard {
             }, placeFate());
     }
 
-    canPlay(context: AbilityContext, playType: string): boolean {
+    canPlay(context: AbilityContext, playType?: PlayType): boolean {
         if(context.player.opponent && context.player.showBid < context.player.opponent.showBid) {
             return super.canPlay(context, playType);
         }

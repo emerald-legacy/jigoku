@@ -14,7 +14,7 @@ import { SelectDefendersPrompt } from './SelectDefendersPrompt.js';
 import { InitiateCardAbilityEvent } from '../../Events/InitiateCardAbilityEvent.js';
 import { AttackersMatrix } from './AttackersMatrix.js';
 
-import { Players, CardType, EventName, EffectName, Location, ConflictType } from '../../Constants.js';
+import { Players, CardType, EventName, EffectName, Location, ConflictType, RestrictionType } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
@@ -123,7 +123,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     }
                     if(
                         this.conflict.attackingPlayer.checkRestrictions(
-                            'chooseConflictRing',
+                            RestrictionType.ChooseConflictRing,
                             this.game.getFrameworkContext(this.conflict.attackingPlayer)
                         ) ||
                         !this.conflict.attackingPlayer.opponent
@@ -329,7 +329,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                         this.conflict.ring &&
                         this.conflict.ring.fate > 0 &&
                         this.conflict.attackingPlayer.checkRestrictions(
-                            'takeFateFromRings',
+                            RestrictionType.TakeFateFromRings,
                             this.game.getFrameworkContext(this.conflict.attackingPlayer)
                         )
                     ) {
@@ -405,7 +405,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     (context) =>
                         !!context.target &&
                         context.target.canBeBypassedByCovert(context) &&
-                        context.target.checkRestrictions('target', context)
+                        context.target.checkRestrictions(RestrictionType.Target, context)
                 )
             ) {
                 return;
@@ -414,7 +414,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         for(const context of contexts) {
-            if(context.player.checkRestrictions('initiateKeywords', context)) {
+            if(context.player.checkRestrictions(RestrictionType.InitiateKeywords, context)) {
                 this.game.promptForSelect(this.conflict.attackingPlayer, {
                     activePromptTitle: 'Choose covert target for ' + context.source.name,
                     buttons: [{ text: 'No Target', arg: 'cancel' }],
@@ -422,7 +422,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     controller: Players.Opponent,
                     source: 'Choose Covert',
                     cardCondition: (card: DrawCard) =>
-                        card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context),
+                        card.canBeBypassedByCovert(context) && card.checkRestrictions(RestrictionType.Target, context),
                     onSelect: (_player: Player, card: DrawCard) => {
                         context['target'] = context.targets.target = card;
                         this.covert.push(context);
@@ -461,7 +461,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         for(const context of contexts) {
-            if(!context.player.checkRestrictions('initiateKeywords', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.InitiateKeywords, context)) {
                 return;
             }
         }
@@ -475,13 +475,13 @@ export class ConflictFlow extends BaseStepWithPipeline {
             cardCondition: (card: DrawCard) => {
                 let valid = false;
                 for(const context of contexts) {
-                    valid = valid || (card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context));
+                    valid = valid || (card.canBeBypassedByCovert(context) && card.checkRestrictions(RestrictionType.Target, context));
                 }
                 return valid;
             },
             onSelect: (_player: Player, card: DrawCard) => {
                 for(const context of contexts) {
-                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
+                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions(RestrictionType.Target, context)) {
                         context['target'] = context.targets.target = card;
                         this.covert.push(context);
                     }
@@ -828,7 +828,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         const winner = this.conflict.winner;
         if(
             winner &&
-            winner.checkRestrictions('claimRings', this.game.getFrameworkContext(winner))
+            winner.checkRestrictions(RestrictionType.ClaimRings, this.game.getFrameworkContext(winner))
         ) {
             this.game.raiseEvent(
                 EventName.OnClaimRing,

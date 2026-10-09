@@ -1,4 +1,4 @@
-import { CardType, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType, RestrictionType } from '../../Constants.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -18,7 +18,7 @@ export default class KakitasFinalStance extends DrawCard {
                 effect: doesNotBow()
             })), cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'bow',
+                    cannot: RestrictionType.Bow,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })

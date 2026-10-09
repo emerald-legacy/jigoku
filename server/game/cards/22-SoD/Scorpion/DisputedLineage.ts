@@ -1,4 +1,4 @@
-import { CardType, Duration } from '../../../Constants.js';
+import { CardType, Duration, RestrictionType, type PlayType } from '../../../Constants.js';
 import { loseFaction, playerCannot } from '../../../effects.js';
 import { cardLastingEffect, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -22,7 +22,7 @@ export default class DisputedLineage extends DrawCard {
                     targetController: context.target.controller,
                     condition: () => context.target.isParticipating(),
                     effect: playerCannot({
-                        cannot: 'honor'
+                        cannot: RestrictionType.Honor
                     })
                 }))
             ]))
@@ -32,7 +32,7 @@ export default class DisputedLineage extends DrawCard {
             .message((context) => msg`${context.player} draws a card`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return (
             context.player.cardsInPlay.some(
                 (card) => card.getType() === CardType.Character && card.hasTrait('courtier')

@@ -1,5 +1,5 @@
 import { GameObject } from './GameObject.js';
-import { DuelType, EffectName, EventName, Location } from './Constants.js';
+import { DuelType, EffectName, EventName, Location, RestrictionType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
@@ -181,7 +181,7 @@ export class Duel extends GameObject {
         }
 
         const losers =
-            this.loser?.filter((card) => card.checkRestrictions('loseDuels', card.game.getFrameworkContext(card.controller))) ?? [];
+            this.loser?.filter((card) => card.checkRestrictions(RestrictionType.LoseDuels, card.game.getFrameworkContext(card.controller))) ?? [];
         if(losers.length > 0) {
             this.loser = losers;
         } else {

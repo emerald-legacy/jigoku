@@ -1,7 +1,7 @@
 import { cardCannot } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -37,7 +37,7 @@ export default class PalmStrike extends DrawCard {
                 return !Array.isArray(monk) && !!monk?.hasTrait('tattooed');
             })
             .cardLastingEffect({
-                effect: cardCannot({ cannot: 'ready' })
+                effect: cardCannot({ cannot: RestrictionType.Ready })
             })
             .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
             .onResolve((context) => {

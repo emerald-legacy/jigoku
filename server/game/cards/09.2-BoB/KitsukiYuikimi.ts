@@ -1,6 +1,7 @@
 import { msg } from '../../GameChat.js';
 import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 export default class KitsukiYuikimi extends DrawCard {
     static id = 'kitsuki-yuikimi';
@@ -17,7 +18,7 @@ export default class KitsukiYuikimi extends DrawCard {
             })
             .cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'target',
+                    cannot: RestrictionType.Target,
                     restricts: 'opponentsTriggeredAbilities',
                     applyingPlayer: context.player
                 })

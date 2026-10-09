@@ -4,6 +4,7 @@ import { handler, lookAt, sequential } from '../../GameActions/GameActions.js';
 import { playerCannot } from '../../effects.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import { RestrictionType } from '../../Constants.js';
 
 class BayushisWhisperers extends DrawCard {
     static id = 'bayushi-s-whisperers';
@@ -25,7 +26,7 @@ class BayushisWhisperers extends DrawCard {
         context.source.untilEndOfPhase({
             targetController: context.player.opponent,
             effect: playerCannot({
-                cannot: 'play',
+                cannot: RestrictionType.Play,
                 restricts: 'copiesOfX',
                 params: cardName
             })

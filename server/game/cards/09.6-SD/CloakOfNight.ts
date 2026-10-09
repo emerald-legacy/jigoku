@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType } from '../../Constants.js';
+import { CardType, RestrictionType, PlayType } from '../../Constants.js';
 import { cardCannot, modifyGlory } from '../../effects.js';
 import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 import { controlsShugenja } from '../controlsShugenja.js';
@@ -20,7 +20,7 @@ class CloakOfNight extends DrawCard {
                 })),
                 cardLastingEffect((context) => ({
                     effect: cardCannot({
-                        cannot: 'target',
+                        cannot: RestrictionType.Target,
                         restricts: 'opponentsCardAbilities',
                         applyingPlayer: context.player
                     })
@@ -29,7 +29,7 @@ class CloakOfNight extends DrawCard {
             .chatText((context) => msg`give ${context.chatTarget()} +3 glory and prevent them from being chosen as the target of ${context.player.opponent}'s triggered abilities until the end of the conflict`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!controlsShugenja(context.player)) {
             return false;
         }

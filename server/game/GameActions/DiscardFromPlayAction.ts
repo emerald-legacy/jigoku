@@ -1,7 +1,7 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, Location } from '../Constants.js';
+import { CardType, Location, RestrictionType } from '../Constants.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import { LeavesPlayAction } from './LeavesPlayAction.js';
 
@@ -9,6 +9,7 @@ export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, C> {
     name = 'discardFromPlay';
+    restriction = RestrictionType.DiscardFromPlay;
     cost = 'sacrificing {0}';
     targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
 
@@ -16,6 +17,7 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
         super(propertyFactory);
         if(isSacrifice) {
             this.name = 'sacrifice';
+            this.restriction = RestrictionType.Sacrifice;
         }
     }
 

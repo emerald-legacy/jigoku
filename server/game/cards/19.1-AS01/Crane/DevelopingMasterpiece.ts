@@ -45,7 +45,7 @@ export default class DevelopingMasterpiece extends DrawCard {
         );
     }
 
-    public canPlay(context: AbilityContext, playType: string): boolean {
+    public canPlay(context: AbilityContext, playType?: PlayType): boolean {
         return context.game.currentPhase === Phase.Draw && super.canPlay(context, playType);
     }
 }

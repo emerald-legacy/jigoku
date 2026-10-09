@@ -1,4 +1,4 @@
-import { CardType, Element } from '../../Constants.js';
+import { CardType, Element, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -18,7 +18,7 @@ export default class MantraOfEarth extends DrawCard {
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, cardLastingEffect((context) => ({
                 effect: cardCannot({
-                    cannot: 'target',
+                    cannot: RestrictionType.Target,
                     restricts: 'opponentsCardEffects',
                     applyingPlayer: context.player
                 })

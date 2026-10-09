@@ -3,7 +3,7 @@ import * as costs from '../../costs/index.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, RestrictionType } from '../../Constants.js';
 
 class SpreadingTheDarkness extends DrawCard {
     static id = 'spreading-the-darkness';
@@ -19,7 +19,7 @@ class SpreadingTheDarkness extends DrawCard {
                 effect: [
                     modifyMilitarySkill(4),
                     cardCannot({
-                        cannot: 'target',
+                        cannot: RestrictionType.Target,
                         restricts: 'opponentsCardEffects',
                         applyingPlayer: context.player
                     })

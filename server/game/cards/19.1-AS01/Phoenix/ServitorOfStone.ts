@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { cardCannot, delayedEffect } from '../../../effects.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ServitorOfStone extends DrawCard {
@@ -11,7 +11,7 @@ export default class ServitorOfStone extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.controllerHasShugenjaAtSameLocation(context),
-            effect: cardCannot({ cannot: 'leavePlay' })
+            effect: cardCannot({ cannot: RestrictionType.LeavePlay })
         });
 
         this.persistentEffect({
