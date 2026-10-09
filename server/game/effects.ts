@@ -14,7 +14,7 @@ import { gainAbility } from './Effects/Library/gainAbility.js';
 import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAttacker.js';
 import { reduceCost } from './Effects/Library/reduceCost.js';
 import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachmentSkillModifiers.js';
-import { EffectName, PlayType, CardType, Players, RestrictionType } from './Constants.js';
+import { EffectName, PlayType, CardType, Players, RestrictionType, RestrictionScope } from './Constants.js';
 import type { Location } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type BaseCard from './BaseCard.js';
@@ -334,8 +334,8 @@ export const Effects = {
             EffectName.AbilityRestrictions,
             new Restriction(
                 typeof properties === 'string'
-                    ? { restricts: 'characters', type: properties }
-                    : Object.assign({ restricts: 'characters', type: (properties.cannot ?? properties.type) }, properties)
+                    ? { appliesTo: RestrictionScope.Characters, type: properties }
+                    : Object.assign({ appliesTo: RestrictionScope.Characters, type: (properties.cannot ?? properties.type) }, properties)
             )
         ),
     cannotContribute: (func: (conflict: Conflict, context: AbilityContext) => (card: DrawCard) => boolean) =>

@@ -12,8 +12,8 @@ export default class JakIthith extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                immunity({ restricts: 'maho' }),
-                immunity({ restricts: 'shadowlands' }),
+                immunity({ appliesTo: { trait: 'maho' } }),
+                immunity({ appliesTo: { trait: 'shadowlands' } }),
                 cannotReceiveTaintedToken()
             ]
         });

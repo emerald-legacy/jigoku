@@ -1,4 +1,4 @@
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, RestrictionScope } from '../../../Constants.js';
 import { mustBeChosen, reduceCost } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -22,7 +22,7 @@ export default class Shineko extends DrawCard {
 
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
-            effect: mustBeChosen({ restricts: 'opponentsTriggeredActionAbilities' })
+            effect: mustBeChosen({ appliesTo: RestrictionScope.OpponentsTriggeredActionAbilities })
         });
     }
 }

@@ -1,5 +1,5 @@
 import { addTrait, cardCannot } from '../../../effects.js';
-import { Phase, RestrictionType } from '../../../Constants.js';
+import { Phase, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MountainTattoo extends DrawCard {
@@ -13,7 +13,7 @@ export default class MountainTattoo extends DrawCard {
         this.whileAttached({
             effect: cardCannot({
                 cannot: RestrictionType.Target,
-                restricts: 'opponentsEvents',
+                appliesTo: RestrictionScope.OpponentsEvents,
                 source: this
             })
         });

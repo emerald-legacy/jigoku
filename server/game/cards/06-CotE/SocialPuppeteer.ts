@@ -2,13 +2,14 @@ import { msg } from '../../GameChat.js';
 import { mustBeChosen } from '../../effects.js';
 import { setHonorDial } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionScope } from '../../Constants.js';
 
 class SocialPuppeteer extends DrawCard {
     static id = 'social-puppeteer';
 
     setupCardAbilities() {
         this.composure({
-            effect: mustBeChosen({ restricts: 'opponentsEvents' })
+            effect: mustBeChosen({ appliesTo: RestrictionScope.OpponentsEvents })
         });
 
         this.action('Switch honor dials with opponent')

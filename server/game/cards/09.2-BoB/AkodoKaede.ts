@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { immunity } from '../../effects.js';
 import { removeFate } from '../../GameActions/GameActions.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, RestrictionScope } from '../../Constants.js';
 
 class AkodoKaede extends DrawCard {
     static id = 'akodo-kaede';
@@ -10,7 +10,7 @@ class AkodoKaede extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: immunity({
-                restricts: 'opponentsRingEffects'
+                appliesTo: RestrictionScope.OpponentsRingEffects
             })
         });
 

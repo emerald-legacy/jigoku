@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, RestrictionType, PlayType } from '../../Constants.js';
+import { CardType, RestrictionType, PlayType, RestrictionScope } from '../../Constants.js';
 import { cardCannot, modifyGlory } from '../../effects.js';
 import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 import { controlsShugenja } from '../controlsShugenja.js';
@@ -21,7 +21,7 @@ class CloakOfNight extends DrawCard {
                 cardLastingEffect((context) => ({
                     effect: cardCannot({
                         cannot: RestrictionType.Target,
-                        restricts: 'opponentsCardAbilities',
+                        appliesTo: RestrictionScope.OpponentsCardAbilities,
                         applyingPlayer: context.player
                     })
                 }))

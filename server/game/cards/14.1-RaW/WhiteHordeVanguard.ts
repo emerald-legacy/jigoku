@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
-import { RestrictionType } from '../../Constants.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class WhiteHordeVanguard extends DrawCard {
     static id = 'white-horde-vanguard';
@@ -11,15 +11,15 @@ class WhiteHordeVanguard extends DrawCard {
             effect: [
                 cardCannot({
                     cannot: RestrictionType.SendHome,
-                    restricts: 'opponentsCardEffects'
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 }),
                 cardCannot({
                     cannot: RestrictionType.MoveToConflict,
-                    restricts: 'opponentsCardEffects'
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 }),
                 cardCannot({
                     cannot: RestrictionType.Bow,
-                    restricts: 'opponentsCardEffects'
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 })
             ]
         });

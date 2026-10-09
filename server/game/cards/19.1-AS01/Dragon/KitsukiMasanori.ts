@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, DeckType, Duration, RestrictionType } from '../../../Constants.js';
+import { CardType, DeckType, Duration, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import {
     attach,
@@ -29,7 +29,7 @@ export default class KitsukiMasanori extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: cardCannot({ cannot: RestrictionType.ApplyCovert, restricts: 'opponentsCardEffects' })
+            effect: cardCannot({ cannot: RestrictionType.ApplyCovert, appliesTo: RestrictionScope.OpponentsCardEffects })
         });
 
         this.reaction('Search for a Title or Technique')
@@ -75,7 +75,7 @@ export default class KitsukiMasanori extends DrawCard {
                         duration: Duration.Custom,
                         effect: cardCannot({
                             cannot: RestrictionType.Target,
-                            restricts: 'opponentsCardAbilities',
+                            appliesTo: RestrictionScope.OpponentsCardAbilities,
                             applyingPlayer: context.player
                         })
                     };

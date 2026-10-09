@@ -531,9 +531,9 @@ resolveAbility((context) => ({
 
 ```typescript
 doesNotBow()
-cardCannot({ cannot: RestrictionType.Ready, restricts: 'cardEffects' })
-cardCannot({ cannot: RestrictionType.Target, restricts: 'opponentsCardEffects' })
-cardCannot({ cannot: RestrictionType.ApplyCovert, restricts: 'opponentsCardEffects' })
+cardCannot({ cannot: RestrictionType.Ready, appliesTo: RestrictionScope.CardEffects })
+cardCannot({ cannot: RestrictionType.Target, appliesTo: RestrictionScope.OpponentsCardEffects })
+cardCannot({ cannot: RestrictionType.ApplyCovert, appliesTo: RestrictionScope.OpponentsCardEffects })
 modifyMilitarySkill(2)
 modifyPoliticalSkill(2)
 modifyBothSkills(1)
@@ -542,7 +542,7 @@ gainAbility.action('Title', (ability) => ability...)   // a granted ability is w
 switchBaseSkills()
 cannotContribute(() => (card) => condition)
 changeConflictSkillFunction((card) => card.getGlory())
-playerCannot({ cannot: RestrictionType.LoseHonor, restricts: 'loseHonorAsCost' })
+playerCannot({ cannot: RestrictionType.LoseHonor, appliesTo: RestrictionScope.LoseHonorAsCost })
 playerCannot(RestrictionType.TakeFateFromRings)                                     // short form
 suppressEffects((effect) => condition)
 gainPlayAction(SomePlayClass)

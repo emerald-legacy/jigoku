@@ -2,7 +2,7 @@ import type BaseCard from '../../BaseCard.js';
 import { EffectName, type PlayType, type RestrictionType } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
-import { Restriction } from '../Restriction.js';
+import { Restriction, type RestrictionAppliesTo } from '../Restriction.js';
 
 type Props =
     | RestrictionType
@@ -10,7 +10,7 @@ type Props =
     | {
           cannot: RestrictionType | PlayType;
           applyingPlayer?: Player;
-          restricts?: string;
+          appliesTo?: RestrictionAppliesTo;
           source?: BaseCard;
       };
 

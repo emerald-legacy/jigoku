@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Players, RestrictionType } from '../../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 class YogoTadashi extends DrawCard {
     static id = 'yogo-tadashi';
@@ -20,7 +20,7 @@ class YogoTadashi extends DrawCard {
             }, cardLastingEffect({
                 effect: cardCannot({
                     cannot: RestrictionType.Target,
-                    restricts: 'opponentsEvents'
+                    appliesTo: RestrictionScope.OpponentsEvents
                 })
             }))
             .chatText((context) => msg`prevent ${context.chatTarget()} from being targeted by events played by ${context.player.opponent}`);

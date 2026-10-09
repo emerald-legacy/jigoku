@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
+import { Element, RestrictionScope } from '../../Constants.js';
 import { addKeyword, immunity } from '../../effects.js';
 
 const elementKey = 'reclusive-zokujin-earth';
@@ -13,7 +13,7 @@ class ReclusiveZokujin extends DrawCard {
             effect: [
                 addKeyword('covert'),
                 immunity({
-                    restricts: 'opponentsCardEffects'
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 })
             ]
         });

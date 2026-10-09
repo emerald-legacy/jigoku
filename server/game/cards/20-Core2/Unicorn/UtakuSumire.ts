@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, PlayType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, PlayType, Players, TargetMode, RestrictionScope } from '../../../Constants.js';
 import { delayedEffect, playerCannot } from '../../../effects.js';
 import { multiple, placeFate, playerLastingEffect, selectCards } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class UtakuSumire extends DrawCard {
                     targetController: Players.Self,
                     effect: playerCannot({
                         cannot: PlayType.PlayFromHand,
-                        restricts: 'actionEvents'
+                        appliesTo: RestrictionScope.ActionEvents
                     })
                 }),
                 playerLastingEffect({

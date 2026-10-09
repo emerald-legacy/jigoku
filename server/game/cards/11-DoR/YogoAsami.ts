@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { Players, CardType, RestrictionType } from '../../Constants.js';
+import { Players, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class YogoAsami extends DrawCard {
     static id = 'yogo-asami';
@@ -13,7 +13,7 @@ class YogoAsami extends DrawCard {
             targetController: Players.Any,
             effect: cardCannot({
                 cannot: RestrictionType.Target,
-                restricts: 'abilitiesTriggeredByOpponents'
+                appliesTo: RestrictionScope.AbilitiesTriggeredByOpponents
             })
         });
         this.action('Give a character -2/-0')

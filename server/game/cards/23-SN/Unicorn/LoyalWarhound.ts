@@ -1,4 +1,4 @@
-import { AbilityType, CardType, Duration, EffectName, Players, RestrictionType } from '../../../Constants.js';
+import { AbilityType, CardType, Duration, EffectName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { addFlag, blank, cardCannot, changeType, gainAbility } from '../../../effects.js';
 import { attach, cardLastingEffect, detach, handler, sequentialContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -54,7 +54,7 @@ export default class LoyalWarhound extends DrawCard {
                                 card === context?.source.parentCharacter && card.hasTrait('scout'),
                             effect: cardCannot({
                                 cannot: RestrictionType.Target,
-                                restricts: 'opponentsProvinceEffects'
+                                appliesTo: RestrictionScope.OpponentsProvinceEffects
                             })
                         })
                     ]

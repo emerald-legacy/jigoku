@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, Phase, RestrictionType } from '../../Constants.js';
+import { Duration, Players, Phase, RestrictionType, RestrictionScope } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
 import { ringLastingEffect } from '../../GameActions/GameActions.js';
@@ -24,7 +24,7 @@ class ExpertInterpreter extends DrawCard {
                 condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
                 effect: playerCannot({
                     cannot: RestrictionType.EnterPlay,
-                    restricts: 'characters'
+                    appliesTo: RestrictionScope.Characters
                 })
             })))
             .ringTarget({
@@ -39,7 +39,7 @@ class ExpertInterpreter extends DrawCard {
                 condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
                 effect: playerCannot({
                     cannot: RestrictionType.EnterPlay,
-                    restricts: 'characters'
+                    appliesTo: RestrictionScope.Characters
                 })
             })))
             .chatText((context) => msg`prevent characters from entering play while the ${context.rings.myRing} is contested${honorTransferMessage(context, context.rings.oppRing, (name) => 'also apply this effect to the ' + name)}`);

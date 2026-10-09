@@ -208,7 +208,7 @@ Certain cards provide bonuses or restrictions on the player itself instead of on
 this.persistentEffect({
     condition: () => this.isParticipating(),
     targetController: Players.Opponent,
-    effect: playerCannot({ cannot: RestrictionType.Play, restricts: 'events' })
+    effect: playerCannot({ cannot: RestrictionType.Play, appliesTo: RestrictionScope.Events })
 });
 ```
 

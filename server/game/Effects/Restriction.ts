@@ -1,5 +1,5 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Location, Phase, type PlayType, RestrictionType, Stage } from '../Constants.js';
+import { AbilityType, CardType, Location, Phase, type PlayType, RestrictionScope, RestrictionType, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -10,31 +10,29 @@ import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 
 type RestrictionCheck = (context: AbilityContext, effect: Restriction, card?: BaseCard) => boolean;
-type RestrictionCondition = string | RestrictionCheck | (string | RestrictionCheck)[];
+/** A scope, or a trait the attempt's source has. */
+type ScopeEntry = RestrictionScope | { trait: string };
+export type RestrictionAppliesTo = ScopeEntry | ScopeEntry[];
 
-const checkRestrictions: Record<string, RestrictionCheck> = {
-    abilitiesTriggeredByOpponents: (context, effect) =>
+const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
+    [RestrictionScope.AbilitiesTriggeredByOpponents]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         context.ability.isTriggeredAbility() &&
         context.ability.abilityType !== AbilityType.ForcedReaction &&
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
-    adjacentCharacters: (context, effect) =>
+    [RestrictionScope.AdjacentCharacters]: (context, effect) =>
         context.source.type === CardType.Character &&
         context.player.areLocationsAdjacent(context.source.location, effect.requireContext().source.location),
-    attachmentsWithSameClan: (context, _effect, card) =>
+    [RestrictionScope.AttachmentsWithSameClan]: (context, _effect, card) =>
         context.source.type === CardType.Attachment &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
-    attackedProvince: (context) =>
-        !!context.game.currentConflict?.getConflictProvinces().some((province) => province === context.source),
-    attackedProvinceNonForced: (context) =>
+    [RestrictionScope.AttackedProvinceNonForced]: (context) =>
         !!context.game.currentConflict?.getConflictProvinces().some((province) => province === context.source) &&
         context.ability.isTriggeredAbility() &&
         context.ability.abilityType !== AbilityType.ForcedReaction &&
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
-    attackingCharacters: (context) =>
-        !!context.game.currentConflict && context.source.type === CardType.Character && context.source.isDrawCard() && context.source.isAttacking(),
-    cardEffects: (context) =>
+    [RestrictionScope.CardEffects]: (context) =>
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
         context.stage !== Stage.Cost &&
         [
@@ -46,27 +44,26 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
             CardType.Province,
             CardType.Role
         ].includes(context.source.type),
-    ringEffects: (context) => context.source.isRing(),
-    cardAndRingEffects: (context, effect) => checkRestrictions.cardEffects(context, effect) || checkRestrictions.ringEffects(context, effect),
-    characters: (context) => context.source.type === CardType.Character,
-    charactersWithNoFate: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
-    copiesOfDiscardEvents: (context) =>
+    [RestrictionScope.RingEffects]: (context) => context.source.isRing(),
+    [RestrictionScope.CardAndRingEffects]: (context, effect) => checkRestrictions[RestrictionScope.CardEffects](context, effect) || checkRestrictions[RestrictionScope.RingEffects](context, effect),
+    [RestrictionScope.Characters]: (context) => context.source.type === CardType.Character,
+    [RestrictionScope.CharactersWithNoFate]: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
+    [RestrictionScope.CopiesOfDiscardEvents]: (context) =>
         context.source.type === CardType.Event &&
         context.player.conflictDiscardPile.some((card: DrawCard) => card.name === context.source.name),
-    copiesOfX: (context, effect) => context.source.name === effect.params,
-    events: (context) => context.source.type === CardType.Event,
-    eventsWithSameClan: (context, _effect, card) =>
+    [RestrictionScope.CopiesOfX]: (context, effect) => context.source.name === effect.params,
+    [RestrictionScope.Events]: (context) => context.source.type === CardType.Event,
+    [RestrictionScope.EventsWithSameClan]: (context, _effect, card) =>
         context.source.type === CardType.Event &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
-    nonMonstrousEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('monstrous'),
-    nonDynastyPhase: (context) => context.game.currentPhase !== Phase.Dynasty,
-    nonSpellEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('spell'),
-    opponentsAttachments: (context, effect) =>
+    [RestrictionScope.NonDynastyPhase]: (context) => context.game.currentPhase !== Phase.Dynasty,
+    [RestrictionScope.NonSpellEvents]: (context) => context.source.type === CardType.Event && !context.source.hasTrait('spell'),
+    [RestrictionScope.OpponentsAttachments]: (context, effect) =>
         context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
         context.source.type === CardType.Attachment,
-    opponentsCardEffects: (context, effect) =>
+    [RestrictionScope.OpponentsCardEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
         [
@@ -78,57 +75,56 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
             CardType.Province,
             CardType.Role
         ].includes(context.source.type),
-    opponentsProvinceEffects: (context, effect) =>
+    [RestrictionScope.OpponentsProvinceEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
         [CardType.Province].includes(context.source.type),
-    opponentsEvents: (context, effect) =>
+    [RestrictionScope.OpponentsEvents]: (context, effect) =>
         context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
         context.source.type === CardType.Event,
-    opponentsRingEffects: (context, effect) =>
+    [RestrictionScope.OpponentsRingEffects]: (context, effect) =>
         context.player && context.player === getApplyingPlayer(effect).opponent && context.source.isRing(),
-    opponentsCardAndRingEffects: (context, effect) =>
-        checkRestrictions.opponentsCardEffects(context, effect) ||
-        checkRestrictions.opponentsRingEffects(context, effect),
-    opponentsTriggeredAbilities: (context, effect) =>
+    [RestrictionScope.OpponentsCardAndRingEffects]: (context, effect) =>
+        checkRestrictions[RestrictionScope.OpponentsCardEffects](context, effect) ||
+        checkRestrictions[RestrictionScope.OpponentsRingEffects](context, effect),
+    [RestrictionScope.OpponentsTriggeredAbilities]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isTriggeredAbility(),
-    opponentsTriggeredActionAbilities: (context, effect) =>
+    [RestrictionScope.OpponentsTriggeredActionAbilities]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isTriggeredAbility() &&
         context.ability.abilityType === AbilityType.Action,
-    opponentsCardAbilities: (context, effect) =>
+    [RestrictionScope.OpponentsCardAbilities]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isCardAbility(),
-    opponentsCharacters: (context, effect) =>
+    [RestrictionScope.OpponentsCharacters]: (context, effect) =>
         context.source.type === CardType.Character && context.source.controller === getApplyingPlayer(effect).opponent,
-    opponentsCharacterAbilitiesWithLowerGlory: (context, effect) => {
+    [RestrictionScope.OpponentsCharacterAbilitiesWithLowerGlory]: (context, effect) => {
         const parent = effect.requireContext().source.parentCharacter;
         return context.source.type === CardType.Character &&
             context.source.controller === getApplyingPlayer(effect).opponent &&
             !!parent && context.source.isDrawCard() && context.source.glory < parent.glory;
     },
-    provinces: (context) => context.source.type === CardType.Province,
-    reactions: (context) => context.ability.abilityType === AbilityType.Reaction,
-    actionEvents: (context) =>
+    [RestrictionScope.Reactions]: (context) => context.ability.abilityType === AbilityType.Reaction,
+    [RestrictionScope.ActionEvents]: (context) =>
         context.ability instanceof BaseCardAbility &&
         context.ability.card.type === CardType.Event && context.ability.abilityType === AbilityType.Action,
-    source: (context, effect) => context.source === effect.context?.source,
-    keywordAbilities: (context) => context.ability.isKeywordAbility(),
-    nonKeywordAbilities: (context) => !context.ability.isKeywordAbility(),
-    nonForcedAbilities: (context) =>
+    [RestrictionScope.Source]: (context, effect) => context.source === effect.context?.source,
+    [RestrictionScope.KeywordAbilities]: (context) => context.ability.isKeywordAbility(),
+    [RestrictionScope.NonKeywordAbilities]: (context) => !context.ability.isKeywordAbility(),
+    [RestrictionScope.NonForcedAbilities]: (context) =>
         context.ability.isTriggeredAbility() &&
         context.ability.abilityType !== AbilityType.ForcedReaction &&
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
-    equalOrMoreExpensiveCharacterTriggeredAbilities: (context, _effect, card) =>
+    [RestrictionScope.EqualOrMoreExpensiveCharacterTriggeredAbilities]: (context, _effect, card) =>
         context.source.type === CardType.Character &&
         !context.ability.isKeywordAbility() &&
         !!card && printedCostOf(context.source) >= printedCostOf(card),
-    equalOrMoreExpensiveCharacterKeywords: (context, _effect, card) =>
+    [RestrictionScope.EqualOrMoreExpensiveCharacterKeywords]: (context, _effect, card) =>
         context.source.type === CardType.Character &&
         context.ability.isKeywordAbility() &&
         !!card && printedCostOf(context.source) >= printedCostOf(card),
-    eventPlayedByHigherBidPlayer: (context, _effect, card) =>
+    [RestrictionScope.EventPlayedByHigherBidPlayer]: (context, _effect, card) =>
         context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
-    toHand: (context) => {
+    [RestrictionScope.ToHand]: (context) => {
         if(!(context.ability instanceof ThenAbility)) {
             return false;
         }
@@ -144,9 +140,8 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
 
         return targetActions.some(isMoveToHandAction) || nestedActions.some(isMoveToHandAction);
     },
-    loseHonorAsCost: (context) => context.stage === Stage.Cost,
-    unopposedHonorLoss: (context) => context.source.name === 'Framework effect',
-    unlessMeishodo: (context) =>
+    [RestrictionScope.LoseHonorAsCost]: (context) => context.stage === Stage.Cost,
+    [RestrictionScope.UnlessMeishodo]: (context) =>
         !!context.source && context.source.hasTrait('spell') && !context.source.hasTrait('meishodo')
 };
 
@@ -170,7 +165,7 @@ const leavePlayTypes = new Set<RestrictionType | PlayType | undefined>([
 
 export interface RestrictionProperties {
     type?: RestrictionType | PlayType;
-    restricts?: RestrictionCondition;
+    appliesTo?: RestrictionAppliesTo;
     applyingPlayer?: Player;
     params?: unknown;
     cannot?: RestrictionType | PlayType;
@@ -178,7 +173,8 @@ export interface RestrictionProperties {
 
 export class Restriction extends EffectValueBase<Restriction> {
     type?: RestrictionType | PlayType;
-    restriction?: RestrictionCondition;
+    /** Which attempts it applies to; all of them without one. */
+    appliesTo?: RestrictionAppliesTo;
     applyingPlayer?: Player;
     params: unknown;
 
@@ -188,7 +184,7 @@ export class Restriction extends EffectValueBase<Restriction> {
             this.type = properties;
         } else {
             this.type = properties.type;
-            this.restriction = properties.restricts;
+            this.appliesTo = properties.appliesTo;
             this.applyingPlayer = properties.applyingPlayer;
             this.params = properties.params;
         }
@@ -208,26 +204,17 @@ export class Restriction extends EffectValueBase<Restriction> {
     }
 
     checkCondition(context: AbilityContext, card?: BaseCard): boolean {
-        const restriction = this.restriction;
-        if(Array.isArray(restriction)) {
-            const vals = restriction.map((a) => this.checkRestriction(a, context, card));
-            return vals.every((a: boolean) => a);
+        if(!this.appliesTo) {
+            return true;
         }
-
-        return this.checkRestriction(restriction, context, card);
+        if(!context) {
+            throw new Error('checkCondition called without a context');
+        }
+        return [this.appliesTo].flat().every((entry) => this.applies(entry, context, card));
     }
 
-    checkRestriction(restriction: string | RestrictionCheck | undefined, context: AbilityContext, card?: BaseCard): boolean {
-        if(!restriction) {
-            return true;
-        } else if(!context) {
-            throw new Error('checkCondition called without a context');
-        } else if(typeof restriction === 'function') {
-            return restriction(context, this, card);
-        } else if(!checkRestrictions[restriction]) {
-            return context.source.hasTrait(restriction);
-        }
-        return checkRestrictions[restriction](context, this, card);
+    private applies(entry: ScopeEntry, context: AbilityContext, card?: BaseCard): boolean {
+        return typeof entry === 'object' ? context.source.hasTrait(entry.trait) : checkRestrictions[entry](context, this, card);
     }
 }
 

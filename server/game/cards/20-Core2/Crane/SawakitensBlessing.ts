@@ -1,4 +1,4 @@
-import { CardType, Players, ConflictType, RestrictionType } from '../../../Constants.js';
+import { CardType, Players, ConflictType, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { cardCannot, doesNotBow } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -18,7 +18,7 @@ export default class SawakitensBlessing extends DrawCard {
             }), cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: RestrictionType.Bow,
-                    restricts: 'opponentsCardEffects',
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })))

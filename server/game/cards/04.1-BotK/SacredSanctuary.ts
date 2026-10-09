@@ -1,4 +1,4 @@
-import { CardType, Players, RestrictionType } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
 import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
@@ -21,7 +21,7 @@ export default class SacredSanctuary extends ProvinceCard {
             }), cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: RestrictionType.Bow,
-                    restricts: 'opponentsCardEffects',
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })))

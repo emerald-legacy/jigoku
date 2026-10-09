@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, RestrictionScope } from '../../Constants.js';
 import { immunity } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,7 +14,7 @@ export default class NorthernWallSensei extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
             }, cardLastingEffect({
-                effect: immunity({ restricts: 'events' })
+                effect: immunity({ appliesTo: RestrictionScope.Events })
             }))
             .chatText('grant immunity to events to {0}');
     }

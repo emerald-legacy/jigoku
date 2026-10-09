@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
+import { Element, RestrictionScope } from '../../Constants.js';
 import { addElementAsAttacker, immunity, modifyConflictElementsToResolve } from '../../effects.js';
 
 const elementKey = 'isawa-kaede-void';
@@ -10,7 +10,7 @@ class IsawaKaede extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: immunity({
-                restricts: 'opponentsRingEffects'
+                appliesTo: RestrictionScope.OpponentsRingEffects
             })
         });
         this.persistentEffect({

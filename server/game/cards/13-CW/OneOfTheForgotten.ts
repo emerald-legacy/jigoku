@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, RestrictionType } from '../../Constants.js';
+import { Location, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class OneOfTheForgotten extends DrawCard {
@@ -10,7 +10,7 @@ class OneOfTheForgotten extends DrawCard {
             location: Location.Any,
             effect: playerCannot({
                 cannot: RestrictionType.PlaceFateWhenPlayingCharacterFromProvince,
-                restricts: 'source'
+                appliesTo: RestrictionScope.Source
             })
         });
 

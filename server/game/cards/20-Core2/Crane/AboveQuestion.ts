@@ -1,6 +1,6 @@
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-import { RestrictionType } from '../../../Constants.js';
+import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class AboveQuestion extends DrawCard {
     static id = 'above-question';
@@ -9,7 +9,7 @@ export default class AboveQuestion extends DrawCard {
         this.whileAttached({
             effect: cardCannot({
                 cannot: RestrictionType.Target,
-                restricts: 'opponentsEvents',
+                appliesTo: RestrictionScope.OpponentsEvents,
                 source: this
             })
         });

@@ -1,7 +1,7 @@
 import { cardCannot, gainAbility } from '../../effects.js';
 import { resolveRingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { RestrictionType } from '../../Constants.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 export default class SelfUnderstanding extends DrawCard {
     static id = 'self-understanding';
@@ -10,7 +10,7 @@ export default class SelfUnderstanding extends DrawCard {
         this.persistentEffect({
             effect: cardCannot({
                 cannot: RestrictionType.Target,
-                restricts: 'opponentsEvents',
+                appliesTo: RestrictionScope.OpponentsEvents,
                 source: this
             })
         });

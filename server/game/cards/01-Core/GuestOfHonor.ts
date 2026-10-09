@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, RestrictionType } from '../../Constants.js';
+import { Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class GuestOfHonor extends DrawCard {
@@ -11,7 +11,7 @@ class GuestOfHonor extends DrawCard {
             targetController: Players.Opponent,
             effect: playerCannot({
                 cannot: RestrictionType.Play,
-                restricts: 'events'
+                appliesTo: RestrictionScope.Events
             })
         });
     }

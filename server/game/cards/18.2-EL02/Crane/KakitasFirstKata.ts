@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, EventName, Players, RestrictionType } from '../../../Constants.js';
+import { CardType, EventName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
@@ -28,19 +28,19 @@ export default class KakitasFirstKata extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: RestrictionType.SendHome,
-                    restricts: 'opponentsCardEffects',
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })), cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: RestrictionType.MoveToConflict,
-                    restricts: 'opponentsCardEffects',
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })), cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: RestrictionType.Bow,
-                    restricts: 'opponentsCardEffects',
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })))

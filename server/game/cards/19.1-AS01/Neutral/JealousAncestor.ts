@@ -1,4 +1,4 @@
-import { Element, Players, RestrictionType } from '../../../Constants.js';
+import { Element, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
 import { addTrait, immunity, playerCannot } from '../../../effects.js';
@@ -16,13 +16,13 @@ export default class JealousAncestor extends DrawCard {
         this.whileAttached({ effect: addTrait('shadowlands') });
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter,
-            effect: immunity({ restricts: 'events' })
+            effect: immunity({ appliesTo: RestrictionScope.Events })
         });
 
         this.addAttachedEffectOnOpponent(
-            playerCannot({ cannot: RestrictionType.Draw, restricts: 'opponentsCardEffects' })
+            playerCannot({ cannot: RestrictionType.Draw, appliesTo: RestrictionScope.OpponentsCardEffects })
         );
-        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.Move, restricts: 'toHand' }));
+        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.Move, appliesTo: RestrictionScope.ToHand }));
         this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.ReturnToHand }));
     }
 

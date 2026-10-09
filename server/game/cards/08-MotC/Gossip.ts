@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
-import { Duration, PlayType, Players } from '../../Constants.js';
+import { Duration, PlayType, Players, RestrictionScope } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';
@@ -15,7 +15,7 @@ class Gossip extends DrawCard {
                 targetController: Players.Opponent,
                 effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
-                    restricts: 'copiesOfX',
+                    appliesTo: RestrictionScope.CopiesOfX,
                     params: context.costs.namedCard
                 })
             }))

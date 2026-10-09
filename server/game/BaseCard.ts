@@ -13,7 +13,7 @@ import Game from './Game.js';
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, type PlayType, Blocker, RestrictionType } from './Constants.js';
+import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, type PlayType, Blocker, RestrictionType, RestrictionScope } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import {
     ActionProps,
@@ -476,11 +476,11 @@ export class BaseCard extends EffectSource {
             effect: [
                 playerCannot({
                     cannot: RestrictionType.PlaceFateWhenPlayingCharacterFromProvince,
-                    restricts: 'source'
+                    appliesTo: RestrictionScope.Source
                 }),
                 cardCannot({
                     cannot: RestrictionType.PutIntoPlay,
-                    restricts: 'cardEffects'
+                    appliesTo: RestrictionScope.CardEffects
                 }),
                 cardCannot({
                     cannot: RestrictionType.PlaceFate
@@ -490,7 +490,7 @@ export class BaseCard extends EffectSource {
                 }),
                 cardCannot({
                     cannot: RestrictionType.EnterPlay,
-                    restricts: 'nonDynastyPhase'
+                    appliesTo: RestrictionScope.NonDynastyPhase
                 }),
                 legendaryFate(fate)
             ]

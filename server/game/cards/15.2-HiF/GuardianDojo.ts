@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { entersPlayWithStatus, playerCannot } from '../../effects.js';
-import { Location, CharacterStatus, CardType, RestrictionType } from '../../Constants.js';
+import { Location, CharacterStatus, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';
@@ -20,7 +20,7 @@ class GuardianDojo extends DrawCard {
             targetLocation: Location.Any,
             effect: playerCannot({
                 cannot: RestrictionType.PlaceFateWhenPlayingCharacterFromProvince,
-                restricts: 'adjacentCharacters'
+                appliesTo: RestrictionScope.AdjacentCharacters
             })
         });
     }

@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { immunity } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { CardType } from '../../Constants.js';
+import { CardType, RestrictionScope } from '../../Constants.js';
 
 class ScholarOfOldRempet extends DrawCard {
     static id = 'scholar-of-old-rempet';
@@ -15,7 +15,7 @@ class ScholarOfOldRempet extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique()
             }, cardLastingEffect({
-                effect: immunity({ restricts: 'events' })
+                effect: immunity({ appliesTo: RestrictionScope.Events })
             }))
             .chatText('make {0} immune to events');
     }

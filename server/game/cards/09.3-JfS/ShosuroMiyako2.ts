@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Players, RestrictionType } from '../../Constants.js';
+import { CardType, Location, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -12,7 +12,7 @@ class ShosuroMiyako2 extends DrawCard {
             location: Location.Any,
             effect: playerCannot({
                 cannot: RestrictionType.PlayCharacter,
-                restricts: 'source'
+                appliesTo: RestrictionScope.Source
             })
         });
 

@@ -12,10 +12,10 @@ export default class NezumiInfiltrator extends DrawCard {
         this.persistentEffect({
             effect: [
                 immunity({
-                    restricts: 'maho'
+                    appliesTo: { trait: 'maho' }
                 }),
                 immunity({
-                    restricts: 'shadowlands'
+                    appliesTo: { trait: 'shadowlands' }
                 })
             ]
         });

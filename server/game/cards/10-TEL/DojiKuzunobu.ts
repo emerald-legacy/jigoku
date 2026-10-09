@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
-import { Players, RestrictionType } from '../../Constants.js';
+import { Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class DojiKuzuNobu extends DrawCard {
     static id = 'doji-kuzunobu';
@@ -11,7 +11,7 @@ class DojiKuzuNobu extends DrawCard {
             targetController: Players.Any,
             effect: playerCannot({
                 cannot: RestrictionType.TriggerAbilities,
-                restricts: 'reactions'
+                appliesTo: RestrictionScope.Reactions
             })
         });
     }

@@ -745,8 +745,8 @@ Match the effect to the card text: *"cannot participate … as an attacker"* →
 
 | Effect | Description |
 |--------|-------------|
-| `cardCannot({ cannot, restricts? })` | Prevent specific actions on a card |
-| `immunity({ restricts, playerRestrictions? })` | Make card immune to certain effects |
+| `cardCannot({ cannot, appliesTo? })` | Prevent specific actions on a card |
+| `immunity({ appliesTo })` | Make card immune to certain effects |
 | `increaseLimitOnAbilities(abilities)` | Increase limit max for specified abilities |
 | `fateCostToAttack(n)` | Cost N fate to declare card as attacker |
 | `honorCostToDeclare(n)` | Cost N honor to declare card |
@@ -759,7 +759,7 @@ Match the effect to the card text: *"cannot participate … as an attacker"* →
 
 ```ts
 cardCannot(RestrictionType.Dishonor)                    // shorthand
-cardCannot({ cannot: RestrictionType.ApplyCovert, restricts: 'opponentsCardEffects' })
+cardCannot({ cannot: RestrictionType.ApplyCovert, appliesTo: RestrictionScope.OpponentsCardEffects })
 playerCannot({ cannot: RestrictionType.TakeFateFromRings })
 ```
 
@@ -787,7 +787,7 @@ The types fall into two groups:
 
 `TriggerAbilities` and `InitiateKeywords` are **disjoint categories, not two paths to one outcome** — unlike the declare/participate pair above. *"Cannot trigger abilities"* (the wording on every card using this token) means triggered abilities only; keywords stay live by design. To also suppress keywords, add `cardCannot(RestrictionType.InitiateKeywords)`; to remove abilities entirely, use `blank()` / `loseAllNonKeywordAbilities()`.
 
-`restricts:` narrows *whose* effects the restriction applies to (e.g. `opponentsCardEffects`, `cardEffects`, `abilities`); the full set of source-filters is the keys of `checkRestrictions` in `Restriction.ts`. When the engine *only* blocks one path and you need full coverage, the inverse mistake also exists — see `KuniJuurou.ts`, which deliberately adds `cannotBeDeclaredAsAttacker()` on top of taint because taint blocks participation but "the declaration goes through."
+`appliesTo:` narrows which attempts the restriction applies to: whose effect or ability (`RestrictionScope.OpponentsCardEffects`, `CardEffects`, `Source`), what kind of card or ability (`Events`, `Reactions`, `KeywordAbilities`), or a circumstance (`LoseHonorAsCost`, `NonDynastyPhase`); the full set is `RestrictionScope` (`server/game/Constants/RestrictionScope.ts`). A trait is written `{ trait: 'maho' }`, and a list applies when all of its entries do. Without `appliesTo`, the restriction applies to every attempt. When the engine *only* blocks one path and you need full coverage, the inverse mistake also exists — see `KuniJuurou.ts`, which deliberately adds `cannotBeDeclaredAsAttacker()` on top of taint because taint blocks participation but "the declaration goes through."
 
 ### Player effects
 
@@ -799,7 +799,7 @@ The types fall into two groups:
 | `additionalAction(n)` | Grant N extra actions this window |
 | `additionalConflict(type)` | Grant extra conflict opportunity |
 | `additionalCharactersInConflict(n)` | Allow N extra characters in conflict |
-| `playerCannot({ cannot, restricts? })` | Prevent player from taking an action |
+| `playerCannot({ cannot, appliesTo? })` | Prevent player from taking an action |
 | `cannotDeclareConflictsOfType(type)` | Block conflict type |
 | `changePlayerSkillModifier(n)` | Modify player's total conflict skill |
 | `modifyHonorTransferGiven(n)` | Modify honor transfers given |

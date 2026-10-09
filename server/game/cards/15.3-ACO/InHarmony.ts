@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { cardCannot } from '../../effects.js';
-import { RestrictionType, PlayType } from '../../Constants.js';
+import { RestrictionType, PlayType, RestrictionScope } from '../../Constants.js';
 
 class InHarmony extends DrawCard {
     static id = 'in-harmony';
@@ -10,7 +10,7 @@ class InHarmony extends DrawCard {
         this.whileAttached({
             effect: cardCannot({
                 cannot: RestrictionType.RemoveFate,
-                restricts: 'cardAndRingEffects'
+                appliesTo: RestrictionScope.CardAndRingEffects
             })
         });
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Phase, Players, RestrictionType } from '../../Constants.js';
+import { Duration, Phase, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { playerCannot } from '../../effects.js';
 
 class MasterOfGiseiToshi extends DrawCard {
@@ -19,7 +19,7 @@ class MasterOfGiseiToshi extends DrawCard {
                 condition: () => this.game.currentConflict?.ring === context.ring,
                 effect: playerCannot({
                     cannot: RestrictionType.Play,
-                    restricts: 'nonSpellEvents'
+                    appliesTo: RestrictionScope.NonSpellEvents
                 })
             }))
             .chatText('prevent non-spell events from being played while {0} is contested');

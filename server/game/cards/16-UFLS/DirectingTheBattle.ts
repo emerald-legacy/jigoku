@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect, sendHome } from '../../GameActions/GameActions.js';
-import { CardType, Players, RestrictionType } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class DirectingTheBattle extends DrawCard {
     static id = 'directing-the-battle';
@@ -29,7 +29,7 @@ class DirectingTheBattle extends DrawCard {
                 'Prevent bowing during conflict': cardLastingEffect((context) => ({
                     effect: cardCannot({
                         cannot: RestrictionType.Bow,
-                        restricts: 'opponentsCardEffects',
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     }),
                     target: context.targets.character

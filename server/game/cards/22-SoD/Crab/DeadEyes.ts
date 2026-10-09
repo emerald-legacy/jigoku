@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { cardCannot, delayedEffect, modifyMilitarySkill, setGlory } from '../../../effects.js';
 import { sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType, RestrictionType } from '../../../Constants.js';
+import { ConflictType, RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
@@ -21,7 +21,7 @@ export default class DeadEyes extends DrawCard {
                     modifyMilitarySkill(2),
                     cardCannot({
                         cannot: RestrictionType.SendHome,
-                        restricts: 'opponentsCardEffects',
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     }),
                     delayedEffect({

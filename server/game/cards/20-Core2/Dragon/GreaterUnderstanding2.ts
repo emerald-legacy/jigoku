@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { immunity } from '../../../effects.js';
 import { attachToRing, resolveRingEffect, selectRing } from '../../../GameActions/GameActions.js';
-import { Location, Players } from '../../../Constants.js';
+import { Location, Players, RestrictionScope } from '../../../Constants.js';
 import Ring from '../../../Ring.js';
 import { RingAttachment } from '../../RingAttachment.js';
 
@@ -12,7 +12,7 @@ export default class GreaterUnderstanding2 extends RingAttachment {
         this.persistentEffect({
             targetLocation: Location.Any,
             effect: immunity({
-                restricts: 'opponentsCardEffects'
+                appliesTo: RestrictionScope.OpponentsCardEffects
             })
         });
 

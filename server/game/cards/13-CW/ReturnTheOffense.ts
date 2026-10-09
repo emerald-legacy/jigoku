@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
 import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
-import { DuelType, RestrictionType } from '../../Constants.js';
+import { DuelType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class ReturnTheOffense extends DrawCard {
     static id = 'return-the-offense';
@@ -21,7 +21,7 @@ class ReturnTheOffense extends DrawCard {
                         target: duel.loser,
                         effect: cardCannot({
                             cannot: RestrictionType.Ready,
-                            restricts: 'cardEffects'
+                            appliesTo: RestrictionScope.CardEffects
                         })
                     })
                 ])

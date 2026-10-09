@@ -11,7 +11,7 @@ export default class OtterFisherman extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: [immunity({ restricts: 'creature' })]
+            effect: [immunity({ appliesTo: { trait: 'creature' } })]
         });
 
         this.reaction('Gain resource after claiming water')

@@ -1,4 +1,4 @@
-import { Location, Players, PlayType, RestrictionType } from '../../Constants.js';
+import { Location, Players, PlayType, RestrictionType, RestrictionScope } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot, playerCannot, reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
@@ -30,7 +30,7 @@ export default class GraspOfEarth extends DrawCard {
                 targetController: context.player.opponent,
                 effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
-                    restricts: 'characters'
+                    appliesTo: RestrictionScope.Characters
                 })
             }))
             .chatText('prevent the opponent from bringing characters to the conflict');
