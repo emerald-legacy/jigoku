@@ -1,5 +1,4 @@
 import { gainAbility } from '../../../effects.js';
-import { gainFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CollectorOfFavors extends DrawCard {
@@ -12,7 +11,7 @@ export default class CollectorOfFavors extends DrawCard {
             effect: gainAbility.reaction('Gain 1 fate', {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            }, (ability) => ability.gameAction(gainFate()))
+            }, (ability) => ability.gainFate())
         });
     }
 }

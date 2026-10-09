@@ -2,11 +2,6 @@ import { msg } from '../../../GameChat.js';
 import { EventName, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import * as costs from '../../../costs/index.js';
-import {
-    draw,
-    gainFate,
-    gainHonor
-} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class PlantedFields extends DrawCard {
@@ -27,9 +22,10 @@ export default class PlantedFields extends DrawCard {
             })
             .cost(costs.sacrificeSelf())
             .if((context) => this.hasAnyCopyTriggered(context.player.name))
-            .gameAction(gainHonor((context) => ({ target: context.player, amount: 2 })))
+            .gainHonor((context) => ({ target: context.player, amount: 2 }))
             .otherwise()
-            .gameAction(gainFate((context) => ({ target: context.player, amount: 2 })), draw((context) => ({ target: context.player, amount: 2 })))
+            .gainFate((context) => ({ target: context.player, amount: 2 }))
+            .draw((context) => ({ target: context.player, amount: 2 }))
             .chatText((context) => msg`${this.hasAnyCopyTriggered(context.player.name) ? 'gain 2 honor' : 'gain 2 fate and draw 2 cards'}`)
             .afterwards()
             .handler((context) => {

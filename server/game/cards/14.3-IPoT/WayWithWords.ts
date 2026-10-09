@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
-import { takeHonor } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class WayWithWords extends DrawCard {
@@ -14,7 +13,7 @@ class WayWithWords extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent &&
                     event.conflict.conflictType === ConflictType.Political
-            }, (ability) => ability.gameAction(takeHonor()))
+            }, (ability) => ability.takeHonor())
         });
     }
 }

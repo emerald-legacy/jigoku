@@ -1,9 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { addTrait, gainAbility, modifyMilitarySkill } from '../../../effects.js';
 import {
-    cardLastingEffect,
-    moveToConflict,
-    sendHome
+    cardLastingEffect
 } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -30,9 +28,9 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                         effect: modifyMilitarySkill(2)
                     }))
                     .if((context) => context.source.isDrawCard() && context.source.isParticipating())
-                    .gameAction(moveToConflict())
+                    .moveToConflict()
                     .otherwise()
-                    .gameAction(sendHome())
+                    .sendHome()
                     .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}${context.source.isParticipating() === (!!context.target?.isDrawCard() && context.target.isParticipating()) ? '' : context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home'}`))
             ]
         });

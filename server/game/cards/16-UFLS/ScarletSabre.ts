@@ -1,5 +1,4 @@
 import { gainAbility } from '../../effects.js';
-import { loseFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ScarletSabre extends DrawCard {
@@ -13,7 +12,7 @@ export default class ScarletSabre extends DrawCard {
                     context.player.opponent &&
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller
-            }, (ability) => ability.gameAction(loseFate((context) => ({ target: context.player.opponent }))))
+            }, (ability) => ability.loseFate((context) => ({ target: context.player.opponent })))
         });
     }
 }

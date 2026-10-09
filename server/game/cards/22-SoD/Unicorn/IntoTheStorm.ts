@@ -1,6 +1,5 @@
 import { msg } from '../../../GameChat.js';
 import { increaseCost } from '../../../effects.js';
-import { gainFate, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +8,7 @@ export default class IntoTheStorm extends DrawCard {
 
     public setupCardAbilities() {
         this.conflictAction('Increase the cost to play events')
-            .gameAction(playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: Players.Any,
                 effect: increaseCost({
                     amount: 1,
@@ -21,9 +20,9 @@ export default class IntoTheStorm extends DrawCard {
                     onConflictFinished: () => true
                 },
                 endingMessage: 'The storm abates, events no longer cost 1 more'
-            })))
+            }))
             .if((context) => context.player.isCharacterTraitInPlay('scout'))
-            .gameAction(gainFate((context) => ({ target: context.player })))
+            .gainFate((context) => ({ target: context.player }))
             .chatText((context) => msg`increase the cost of events this conflict by 1${context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''}`);
     }
 }

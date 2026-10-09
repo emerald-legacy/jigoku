@@ -1,5 +1,4 @@
 import { gainAbility } from '../../../effects.js';
-import { draw } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Spyglass2 extends DrawCard {
@@ -11,7 +10,7 @@ export default class Spyglass2 extends DrawCard {
                 onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source),
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onMoveToConflict: (event, context) => event.card === context.source
-            }, (ability) => ability.gameAction(draw()))
+            }, (ability) => ability.draw())
         });
     }
 }

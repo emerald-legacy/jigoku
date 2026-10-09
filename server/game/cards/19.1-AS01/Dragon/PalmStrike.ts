@@ -1,5 +1,5 @@
 import { cardCannot } from '../../../effects.js';
-import { bow, cardLastingEffect } from '../../../GameActions/GameActions.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -36,9 +36,9 @@ export default class PalmStrike extends DrawCard {
                 const monk = context.targets[TARGET_MONK];
                 return !Array.isArray(monk) && !!monk?.hasTrait('tattooed');
             })
-            .gameAction(cardLastingEffect({
+            .cardLastingEffect({
                 effect: cardCannot({ cannot: 'ready' })
-            }))
+            })
             .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
             .onResolve((context) => {
                 if(context.targets[TARGET_MONK].hasTrait('tattooed')) {

@@ -17,7 +17,7 @@ class MagistratesIntervention extends DrawCard {
             .afterwardsIf((context) => !!(
                 context.player.opponent && context.target?.controller === context.player.opponent &&
                     context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1))
-            .gameAction(dishonor((context) => ({ target: context.target })));
+            .dishonor((context) => ({ target: context.target }));
     }
 
     canPlay(context: AbilityContext, playType: string) {

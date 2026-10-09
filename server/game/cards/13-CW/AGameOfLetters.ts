@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { dishonor, honor } from '../../GameActions/GameActions.js';
 import { CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
@@ -21,9 +20,9 @@ class AGameOfLetters extends DrawCard {
                 cardCondition: (card, context) => card.controller !== context.tokens.token[0].card?.controller && card.isParticipating()
             })
             .if((context) => context.tokens.token[0].grantedStatus === CharacterStatus.Honored)
-            .gameAction(honor())
+            .honor()
             .otherwise()
-            .gameAction(dishonor());
+            .dishonor();
     }
 }
 

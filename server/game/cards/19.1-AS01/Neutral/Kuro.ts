@@ -1,10 +1,8 @@
 import { msg } from '../../../GameChat.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import {
-    moveToConflict,
     playCard,
     playerLastingEffect,
-    sendHome,
     sequential
 } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
@@ -46,8 +44,8 @@ export default class Kuro extends DrawCard {
             .chatText((context) => msg`seek the lost treasure '${context.target}'. ${context.source.isParticipating() ? 'Kuro returns home with their treasure' : 'Kuro swoops into the conflict'}`)
             .afterwards()
             .if((context) => context.source.isDrawCard() && context.source.isParticipating())
-            .gameAction(sendHome((context) => ({ target: context.source })))
+            .sendHome((context) => ({ target: context.source }))
             .otherwise()
-            .gameAction(moveToConflict((context) => ({ target: context.source })));
+            .moveToConflict((context) => ({ target: context.source }));
     }
 }

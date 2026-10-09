@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { cardCannot } from '../../effects.js';
-import { cardLastingEffect, draw } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class IronFoundationsStance extends DrawCard {
@@ -27,7 +27,7 @@ class IronFoundationsStance extends DrawCard {
                 })
             })))
             .if((context) => context.player.isKihoPlayedThisConflict(context, this))
-            .gameAction(draw((context) => ({ target: context.player })))
+            .draw((context) => ({ target: context.player }))
             .chatText((context) => msg`prevent opponents' actions from bowing or moving home ${context.chatTarget()}${(context.player.isKihoPlayedThisConflict(context, this) ? ' and draw 1 card' : '')}`);
     }
 }

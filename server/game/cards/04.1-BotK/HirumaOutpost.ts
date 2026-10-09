@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
-import { loseHonor } from '../../GameActions/GameActions.js';
 
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
@@ -23,7 +22,7 @@ class HirumaOutpost extends DrawCard {
                     const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
                     return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding);
                 }
-            }, (ability) => ability.gameAction(loseHonor((context) => ({ target: context.player.opponent }))))
+            }, (ability) => ability.loseHonor((context) => ({ target: context.player.opponent })))
         });
     }
 }

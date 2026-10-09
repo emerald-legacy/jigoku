@@ -1,5 +1,5 @@
 import { CardType } from '../../Constants.js';
-import { bow, dishonor } from '../../GameActions/GameActions.js';
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsakoMaezawa2 extends DrawCard {
@@ -18,7 +18,7 @@ export default class AsakoMaezawa2 extends DrawCard {
                 cardCondition: (card) => card.getFate() === 0
             }, bow())
             .if((context) => !!context.target?.isFaction('phoenix'))
-            .gameAction(dishonor())
+            .dishonor()
             .chatText('bow {0}');
     }
 }

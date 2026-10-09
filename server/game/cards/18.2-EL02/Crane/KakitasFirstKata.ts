@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { CardType, EventName, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { cardCannot } from '../../../effects.js';
-import { cardLastingEffect, ready } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -42,7 +42,7 @@ export default class KakitasFirstKata extends DrawCard {
                 })
             })))
             .if((context) => context.target !== undefined && this.bowedCharactersThisConflict.has(context.target))
-            .gameAction(ready((context) => ({ target: context.target })))
+            .ready((context) => ({ target: context.target }))
             .chatText((context) => msg`${(context.target && this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : '')}prevent opponents' actions from bowing or moving ${context.chatTarget()}`);
     }
 

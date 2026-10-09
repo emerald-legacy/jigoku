@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { honorStatusDoesNotModifySkill } from '../../effects.js';
-import { honor, ready } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class UtakuKamoko extends DrawCard {
@@ -20,7 +19,8 @@ class UtakuKamoko extends DrawCard {
                 location: Location.Hand,
                 targets: true
             }))
-            .gameAction(ready(), honor())
+            .ready()
+            .honor()
             .chatText('ready and honor {0}');
     }
 }

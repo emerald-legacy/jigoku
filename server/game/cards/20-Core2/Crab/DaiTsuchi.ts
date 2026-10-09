@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import { gainAbility, playerCannot } from '../../../effects.js';
-import { playerLastingEffect, returnToHand } from '../../../GameActions/GameActions.js';
+import { returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaiTsuchi extends DrawCard {
@@ -21,14 +21,14 @@ export default class DaiTsuchi extends DrawCard {
                         !!context.player.opponent &&
                         !!card.parentCharacter?.isParticipatingFor(context.player.opponent)
                 }, returnToHand())
-                .gameAction(playerLastingEffect((context) => ({
+                .playerLastingEffect((context) => ({
                     targetController: context.target?.owner,
                     effect: playerCannot({
                         cannot: 'play',
                         restricts: 'copiesOfX',
                         params: context.target?.name
                     })
-                })))
+                }))
                 .chatText((context) => msg`return ${context.chatTarget()} to ${context.target?.owner ?? ''}'s hand and prevent them from playing copies this conflict`))
         });
     }

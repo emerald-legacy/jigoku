@@ -1,5 +1,4 @@
 import { addTrait, reduceCost } from '../../../effects.js';
-import { dishonor, ready } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -32,9 +31,9 @@ export default class BambooTattoo extends DrawCard {
                     !(event.context?.source instanceof Ring) &&
                     event.context?.source.name !== 'Framework effect'
             })
-            .gameAction(ready((context) => ({ target: context.source.parentCharacter ?? [] })))
+            .ready((context) => ({ target: context.source.parentCharacter ?? [] }))
             .if((context) => this.isSelfTrigger(context))
-            .gameAction(dishonor((context) => ({ target: context.source.parentCharacter ?? [] })))
+            .dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
             .chatText((context) => msg`ready${this.isSelfTrigger(context) ? ' and dishonor' : ''} ${context.source.parentCharacter}`);
     }
 

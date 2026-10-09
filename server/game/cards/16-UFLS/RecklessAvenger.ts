@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { honor, ready } from '../../GameActions/GameActions.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class RecklessAvenger extends DrawCard {
     static id = 'reckless-avenger';
@@ -29,9 +29,9 @@ class RecklessAvenger extends DrawCard {
                 player: (context) => context.player.firstPlayer ? Players.Opponent : Players.Self
             })
             .if((context) => this.isTargetValid(context.targets.firstCharacter))
-            .gameAction(honor())
+            .honor()
             .otherwise()
-            .gameAction(ready())
+            .ready()
             .chatText((context) => msg`ready ${this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter}${this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : ''}${this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''}`);
     }
 
