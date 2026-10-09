@@ -3,6 +3,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { Players, type EventName } from '../Constants.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
@@ -44,11 +45,8 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const choices = properties.choices;
-        if(choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {
-            return;
-        }
-        const player = properties.player === Players.Opponent ? context.player.opponent : context.player;
-        if(!player) {
+        const player = resolveChoosingPlayer(context, properties.player);
+        if(choices.length === 0 || !player) {
             return;
         }
         const choiceHandler = (choice: string) => {

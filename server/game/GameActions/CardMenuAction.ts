@@ -2,6 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { Players, type EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
@@ -80,15 +81,13 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
             ) && properties.cardCondition(card, context);
         if(
             !this.hasLegalTarget(context, additionalProperties) ||
-            (properties.cards.length === 0 && (properties.options ?? []).length === 0) ||
-            (properties.player === Players.Opponent && !context.player.opponent)
+            properties.cards.length === 0 && (properties.options ?? []).length === 0
         ) {
             return;
         }
-        const opponent = context.player.opponent;
-        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
-        if(properties.targets && context.choosingPlayerOverride) {
-            player = context.choosingPlayerOverride;
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        if(!player) {
+            return;
         }
         context.game.promptWithHandlerMenu(player, {
             context,

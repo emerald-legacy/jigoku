@@ -42,14 +42,14 @@ describe('ChooseGameAction', function() {
             expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(this.opponent);
         });
 
-        it('should fall back to current player when player is Opponent but no opponent exists', function() {
+        it('should not prompt anyone when player is Opponent but no opponent exists', function() {
             this.player.opponent = undefined;
             const action = new ChooseGameAction({
                 player: Players.Opponent,
                 options: { A: { action: this.actionA } }
             });
             action.addEventsToArray([], this.context);
-            expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(this.player);
+            expect(this.game.promptWithHandlerMenu).not.toHaveBeenCalled();
         });
 
         it('should default to the current player when player is unspecified', function() {

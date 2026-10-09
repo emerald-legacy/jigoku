@@ -2,6 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { Players, type EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
@@ -64,7 +65,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         if(!properties) {
             return false;
         }
-        if(properties.player === Players.Opponent && !context.player.opponent) {
+        if(!resolveChoosingPlayer(context, properties.player, properties.targets)) {
             return false;
         }
         return (
@@ -90,17 +91,13 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         if(!properties) {
             return;
         }
-        if(properties.player === Players.Opponent && !context.player.opponent) {
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        if(!player) {
             return;
         } else if(!properties.card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
-        }
-        const opponent = context.player.opponent;
-        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
-        if(properties.targets && context.choosingPlayerOverride) {
-            player = context.choosingPlayerOverride;
         }
         const validTokens = properties.card.statusTokens.filter((token) =>
             properties.gameAction.canAffect(token, context)

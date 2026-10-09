@@ -4,6 +4,7 @@ import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { Players, type EventName } from '../Constants.js';
 import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 
@@ -46,8 +47,10 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
         }
 
         const { activePromptTitle, waitingPromptTitle, target } = properties;
-        const opponent = context.player.opponent;
-        const player = properties.player === Players.Opponent && opponent ? opponent : context.player;
+        const player = resolveChoosingPlayer(context, properties.player);
+        if(!player) {
+            return;
+        }
         const choiceLabels = legalChoices.map(([label, _]) => label);
         const choiceHandler = (choiceLabel: string): void => {
             const choice = legalChoices.find(([label, _]) => label === choiceLabel)?.[1];

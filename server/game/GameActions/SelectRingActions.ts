@@ -2,6 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Event } from '../Events/Event.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { Players, type EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -34,7 +35,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
 
     canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(properties.player === Players.Opponent && !context.player.opponent) {
+        if(!resolveChoosingPlayer(context, properties.player, properties.targets)) {
             return false;
         }
         return (
@@ -55,7 +56,8 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        if(properties.player === Players.Opponent && !context.player.opponent) {
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        if(!player) {
             return;
         } else if(
             !Object.values(context.game.rings).some((ring) => properties.ringCondition(ring, context))
@@ -63,11 +65,6 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
-        }
-        const opponent = context.player.opponent;
-        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
-        if(properties.targets && context.choosingPlayerOverride) {
-            player = context.choosingPlayerOverride;
         }
         context.game.promptForRingSelect(player, {
             context,

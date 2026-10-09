@@ -2,6 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { CardSelector, type SingleCardMode } from '../CardSelector.js';
 import type { BaseCardSelector } from '../CardSelectors/BaseCardSelector.js';
 import { CardType, EffectName, Location, Players, TargetMode, type EventName } from '../Constants.js';
@@ -157,32 +158,24 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
 
     canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        const player =
-            (properties.targets && context.choosingPlayerOverride) ||
-            (properties.player === Players.Opponent && context.player.opponent) ||
-            context.player;
-        return properties.selector.canTarget(card, context, player);
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        return !!player && properties.selector.canTarget(card, context, player);
     }
 
     hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        const player =
-            (properties.targets && context.choosingPlayerOverride) ||
-            (properties.player === Players.Opponent && context.player.opponent) ||
-            context.player;
-        return properties.selector.hasEnoughTargets(context, player);
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        return !!player && properties.selector.hasEnoughTargets(context, player);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        if(properties.player === Players.Opponent && !context.player.opponent) {
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        if(!player) {
             return;
         }
-        const opponent = context.player.opponent;
-        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         let mustSelect: BaseCard[] = [];
         if(properties.targets) {
-            player = context.choosingPlayerOverride || player;
             mustSelect = properties.selector
                 .getAllLegalTargets(context, player)
                 .filter((card: BaseCard) =>

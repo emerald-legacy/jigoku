@@ -1,6 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import BaseCard from '../BaseCard.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { EventName, Players } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
@@ -40,7 +41,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
     }
 
     #chooser(context: C, additionalProperties: ActionOverrides = {}): Player | undefined {
-        return this.getProperties(context, additionalProperties).player === Players.Opponent ? context.player.opponent : context.player;
+        return resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
