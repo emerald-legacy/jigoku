@@ -273,7 +273,7 @@ this.action('Human-readable title')
     }, bow())
 
     // Chat message — see "Effect Formatting" section
-    .effect('bow {0}')
+    .chatText('bow {0}')
 
     // Usage limits
     .limit(perConflict(1))
@@ -342,22 +342,22 @@ Chat messages use numbered placeholders `{0}`, `{1}`, etc. The game engine appli
 
 1. **Never interpolate game objects** (cards, players) into the effect string using template literals or string concatenation.
 2. **Never interpolate the words `military` or `political`** — the engine formats these specially.
-3. Pass game objects as separate entries in the arguments of `.effect(message, args)` and reference them via `{N}`.
+3. Pass game objects as separate entries in the arguments of `.chatText(message, args)` and reference them via `{N}`.
 
 `{0}` is the implicit primary target. `{1}`, `{2}`, ... come from the arguments.
 
 ```typescript
 // WRONG — interpolates player name
-.effect(`place it on top of ${context.event.card.owner.name}'s conflict deck`)
+.chatText(`place it on top of ${context.event.card.owner.name}'s conflict deck`)
 
 // WRONG — interpolates game object
-.effect('{1}', (context) => [`moved ${context.target.name} home`])
+.chatText('{1}', (context) => [`moved ${context.target.name} home`])
 
 // CORRECT — game objects as separate args
-.effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller])
+.chatText('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller])
 
 // CORRECT — conditional plain text (no game objects involved)
-.effect('cancel the effects of {1} and {2}', (context) => [
+.chatText('cancel the effects of {1} and {2}', (context) => [
     context.event.card,
     context.event.card.isConflict
         ? 'return it to the top of its owner\'s conflict deck'
@@ -387,8 +387,7 @@ this.action('Initiate a military duel')
 |--------|---------|-------------|
 | `type` | required | `DuelType.Military` or `DuelType.Political` |
 | `gameAction` | none | `(duel) => GameAction` — effect on resolution |
-| `message` | default | Chat message template |
-| `messageArgs` | none | `(duel) => [...]` — args for message |
+| `chatText` | game action's text | `(context, duel) => msg\`…\`` — chat text after "Duel Effect: " |
 | `requiresConflict` | `true` | Whether challenger and target must be participating |
 | `challengerCondition` | `isParticipating()` | Extra condition on challenger |
 | `targetCondition` | `isParticipating()` | Extra condition on duelTarget |
@@ -396,7 +395,7 @@ this.action('Initiate a military duel')
 | `opponentChoosesChallenger` | `false` | Opponent selects the challenger |
 | `targetCondition` | `isParticipating()` | Extra condition on duelTarget (overrides default participation check) |
 | `refuseGameAction` | none | Effect if opponent refuses duel |
-| `refusalMessage` / `refusalMessageArgs` | none | Chat output when refused |
+| `refusalMessage` | refuseGameAction's text | `(context, refuser) => msg\`…\`` — the chat line when refused |
 | `costHandler` | none | Custom focus-cost handler |
 | `challengerEffect` / `targetEffect` | none | Pre-resolution per-side effects |
 | `statistic` | none | `(card, rules) => number` — override skill statistic used |
@@ -441,13 +440,9 @@ this.action('Initiate a duel')
 Both are **arrays** (can be empty on a tie). Use `.length` checks in conditionals:
 
 ```typescript
-messageArgs: (duel) => [
-    duel.winner,
-    duel.winner?.length ? ' does not bow as a result of conflict resolution' : '',
-    duel.loser?.length ? ' and ' : '',
-    duel.loser,
-    duel.loser?.length ? ' cannot be readied' : ''
-],
+chatText: (context, duel) => duel.loser?.length
+    ? msg`${duel.winner} does not bow as a result of conflict resolution and ${duel.loser} cannot be readied`
+    : msg`${duel.winner} does not bow as a result of conflict resolution`,
 ```
 
 ### When NOT to use `initiateDuel`
@@ -541,7 +536,7 @@ modifyMilitarySkill(2)
 modifyPoliticalSkill(2)
 modifyBothSkills(1)
 increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
-gainAbility(AbilityType.Action, { ... })   // a granted ability is still a properties object
+gainAbility.action('Title', (ability) => ability...)   // a granted ability is written with the builder
 switchBaseSkills()
 cannotContribute(() => (card) => condition)
 changeConflictSkillFunction((card) => card.getGlory())
@@ -684,7 +679,7 @@ this.wouldInterrupt('Cancel an event')
             }))
         })
     )
-    .effect('cancel the effects of {1} and {2}', (context) => [
+    .chatText('cancel the effects of {1} and {2}', (context) => [
         context.event.card,
         context.event.card.isConflict
             ? 'return it to the top of its owner\'s conflict deck'
@@ -764,7 +759,6 @@ TargetMode.Single / UpTo / UpToVariable / Exactly / ExactlyVariable / MaxStat / 
 AbilityType.Action / Reaction / ForcedReaction / Interrupt / ForcedInterrupt / WouldInterrupt /
              KeywordInterrupt / KeywordReaction / DuelReaction / Persistent / OtherEffects
 
-// AbilityType.WouldInterrupt has the string value 'cancelinterrupt' (historical name).
 
 Duration.UntilEndOfConflict / UntilEndOfPhase / UntilEndOfRound / UntilEndOfDuel /
           UntilPassPriority / UntilOpponentPassPriority / UntilSelfPassPriority / UntilNextPassPriority /
@@ -831,8 +825,7 @@ this.action('Initiate a military duel')
         type: DuelType.Military,
         targetCondition: (card) => card.isParticipating() && !card.bowed,
         gameAction: (duel) => discardFromPlay({ target: duel.loser }),
-        message: 'discard {0}',
-        messageArgs: (duel) => [duel.loser]
+        chatText: (context, duel) => msg`discard ${duel.loser}`
     }));
 ```
 
