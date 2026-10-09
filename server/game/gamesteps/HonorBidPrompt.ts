@@ -41,7 +41,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         if(completed) {
             const isHonorBid = typeof this.costHandler !== 'function';
             const revealDials = () => {
-                for(const player of this.game.getPlayers()) {
+                for(const player of this.game.getPlayersInFirstPlayerOrder()) {
                     player.honorBidModifier = 0;
                     this.game.actions
                         .setHonorDial({ value: this.bid[player.uuid] })

@@ -331,7 +331,7 @@ export class Game {
      * Get all players (not spectators) with the first player at index 0
      */
     getPlayersInFirstPlayerOrder(): Player[] {
-        return this.getPlayers().sort((a) => (a.firstPlayer ? -1 : 1));
+        return [...this.getPlayers()].sort((a, b) => Number(!!b.firstPlayer) - Number(!!a.firstPlayer));
     }
 
     /**
