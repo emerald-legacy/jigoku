@@ -54,8 +54,10 @@ export class Duel extends GameObject {
         super(game, 'Duel');
         this.#initializeDuelModifiers(challenger.controller);
 
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnCardAbilityTriggered]);
+        this.eventRegistrar = new EventRegistrar(this.game);
+        this.eventRegistrar.register({
+            [EventName.OnCardAbilityTriggered]: (event) => this.onCardAbilityTriggered(event)
+        });
     }
 
     get winnerController(): undefined | Player {

@@ -44,7 +44,7 @@ type StatSummary = { stat?: string; modifiers?: StatModifierSummary[] };
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
 type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
 
-const EPHEMERAL_TRIGGER: Partial<Record<string, EventName>> = {
+const EPHEMERAL_TRIGGER: Partial<Record<string, EventName.OnCardPlayed | EventName.OnCardLeavesPlay>> = {
     [CardType.Event]: EventName.OnCardPlayed,
     [CardType.Attachment]: EventName.OnCardLeavesPlay,
     [CardType.Character]: EventName.OnCardLeavesPlay
@@ -190,8 +190,8 @@ export class DrawCard extends BaseCard {
         }
         const ephemeralTrigger = EPHEMERAL_TRIGGER[cardData.type];
         if(ephemeralTrigger && this.hasEphemeral()) {
-            this.eventRegistrarForEphemeral = new EventRegistrar(this.game, this);
-            this.eventRegistrarForEphemeral.register([{ [ephemeralTrigger]: 'handleEphemeral' }]);
+            this.eventRegistrarForEphemeral = new EventRegistrar(this.game);
+            this.eventRegistrarForEphemeral.register({ [ephemeralTrigger]: (event: GameEvent<typeof ephemeralTrigger>) => this.handleEphemeral(event) });
         }
         if(this.isDynasty) {
             this.abilities.reactions.push(new RallyAbility(this), new ThrivingAbility(this));

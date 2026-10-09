@@ -50,7 +50,9 @@ export default class Objection extends DrawCard {
     static id = 'objection-';
 
     setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnPhaseStarted]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnPhaseStarted]: () => this.onPhaseStarted()
+        });
 
         this.wouldInterrupt('Cancel an event')
             .when({

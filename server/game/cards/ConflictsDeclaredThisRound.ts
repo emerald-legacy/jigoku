@@ -10,11 +10,11 @@ export class ConflictsDeclaredThisRound {
     private declarations: string[] = [];
 
     constructor(game: Game) {
-        const eventRegistrar = new EventRegistrar(game, this);
-        eventRegistrar.register([{
-            [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
-        }]);
-        eventRegistrar.register([EventName.OnRoundEnded]);
+        const eventRegistrar = new EventRegistrar(game);
+        eventRegistrar.registerTriggerWindow(EventName.OnConflictDeclared, AbilityType.Reaction, (event) => this.onConflictDeclaredReaction(event));
+        eventRegistrar.register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded()
+        });
     }
 
     public onRoundEnded() {

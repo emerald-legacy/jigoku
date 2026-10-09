@@ -8,7 +8,7 @@ export default class HenshinMysteries extends ProvinceCard {
     static id = 'henshin-mysteries';
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([{ [EventName.OnClaimRing + ':' + AbilityType.OtherEffects]: 'cancelRingClaim' }]);
+        new EventRegistrar(this.game).registerTriggerWindow(EventName.OnClaimRing, AbilityType.OtherEffects, (event) => this.cancelRingClaim(event));
     }
 
     public cancelRingClaim(event: GameEvent<EventName.OnClaimRing>) {

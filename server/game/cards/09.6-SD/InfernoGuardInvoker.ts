@@ -12,8 +12,11 @@ export default class InfernoGuardInvoker extends DrawCard {
     private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictDeclared]);
+        this.eventRegistrar = new EventRegistrar(this.game);
+        this.eventRegistrar.register({
+            [EventName.OnBreakProvince]: () => this.onBreakProvince(),
+            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
+        });
 
         this.action('honor this character')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))

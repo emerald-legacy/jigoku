@@ -46,9 +46,9 @@ import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectName, EventName, Location, ConflictType, Element, Players, Phase } from './Constants.js';
+import { AbilityType, EffectName, EventName, Location, ConflictType, Element, Players, Phase } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
-import { type EventHandler } from './GameEventBus.js';
+import type { ChoiceWindow } from './TriggeredAbility.js';
 import { rulesFor, type GameRules } from './GameRules.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
 import { isEnumValue, isOwnKey } from './utils/helpers.js';
@@ -804,20 +804,51 @@ export class Game {
         this.events.emitEvent(eventName, params);
     }
 
-    emit(eventName: string, ...args: unknown[]): void {
-        this.events.emit(eventName, ...args);
+    /** Tells the listeners to a game event that it happened. */
+    emit(event: Event): void {
+        this.events.emit(event);
     }
 
-    on(eventName: string, handler: EventHandler): void {
+    on<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
         this.events.on(eventName, handler);
     }
 
-    once(eventName: string, handler: EventHandler): void {
+    once<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
         this.events.once(eventName, handler);
     }
 
-    removeListener(eventName: string, handler: EventHandler): void {
-        this.events.removeListener(eventName, handler);
+    off<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
+        this.events.off(eventName, handler);
+    }
+
+    /** Called for each event of an `abilityType` trigger window, with the window to offer abilities to (none for other effects). */
+    onTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+        this.events.onTriggerWindow(eventName, abilityType, handler);
+    }
+
+    onceTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+        this.events.onceTriggerWindow(eventName, abilityType, handler);
+    }
+
+    offTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+        this.events.offTriggerWindow(eventName, abilityType, handler);
+    }
+
+    emitTriggerWindow(event: Event, abilityType: AbilityType, window?: ChoiceWindow): void {
+        this.events.emitTriggerWindow(event, abilityType, window);
+    }
+
+    /** Called once per `abilityType` trigger window, with all of its events. */
+    onAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.events.onAggregateWindow(abilityType, handler);
+    }
+
+    offAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.events.offAggregateWindow(abilityType, handler);
+    }
+
+    emitAggregateWindow(events: Event[], abilityType: AbilityType, window: ChoiceWindow): void {
+        this.events.emitAggregateWindow(events, abilityType, window);
     }
 
     /**

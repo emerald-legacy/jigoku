@@ -6,7 +6,9 @@ import DrawCard from '../../DrawCard.js';
 
 export class BaseOni extends DrawCard {
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
     }
 
     public onCardLeavesPlay(event: GameEvent<EventName.OnCardLeavesPlay>) {

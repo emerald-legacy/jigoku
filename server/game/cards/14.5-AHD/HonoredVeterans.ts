@@ -13,7 +13,10 @@ export default class HonoredVeterans extends DrawCard {
     private charactersPlayedThisPhase = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),
+            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event)
+        });
 
         this.action('Honor characters')
             .condition(() => this.canBePlayed())

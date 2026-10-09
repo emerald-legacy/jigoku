@@ -12,7 +12,10 @@ export default class CraneIndustry extends DrawCard {
     private eventsPlayedThisConflictByThisPlayer = new Set<string>();
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.OnCardPlayed]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished(),
+            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event)
+        });
         this.reaction('Reduce the cost to play events')
             .when({
                 onConflictStarted: () => true

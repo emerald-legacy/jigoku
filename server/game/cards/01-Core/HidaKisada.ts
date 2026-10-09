@@ -11,20 +11,12 @@ export default class HidaKisada extends DrawCard {
     private firstActionEvent = new Map<string, Event>();
 
     public setupCardAbilities() {
-        const abilityRegistrar = new EventRegistrar(this.game, this);
-        abilityRegistrar.register([
-            {
-                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.WouldInterrupt]:
-                    'onInitiateAbilityEffectsWouldInterrupt'
-            }
-        ]);
-        abilityRegistrar.register([
-            {
-                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.OtherEffects]:
-                    'onInitiateAbilityEffectsOtherEffects'
-            }
-        ]);
-        abilityRegistrar.register([EventName.OnConflictDeclared]);
+        const abilityRegistrar = new EventRegistrar(this.game);
+        abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) => this.onInitiateAbilityEffectsWouldInterrupt(event));
+        abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) => this.onInitiateAbilityEffectsOtherEffects(event));
+        abilityRegistrar.register({
+            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
+        });
     }
 
     public onInitiateAbilityEffectsWouldInterrupt(event: GameEvent<EventName.OnInitiateAbilityEffects>) {

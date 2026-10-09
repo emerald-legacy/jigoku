@@ -12,7 +12,9 @@ export default class PerfectGuest extends DrawCard {
     private barredThisRound?: Player;
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded()
+        });
 
         this.action('Give control of this character')
             .condition((context) => context.player.opponent !== undefined && context.player !== this.barredThisRound)

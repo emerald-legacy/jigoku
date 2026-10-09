@@ -8,6 +8,9 @@ describe('Player - moveCard', function () {
             this.gameSpy = jasmine.createSpyObj('game', [
                 'emitEvent',
                 'on',
+                'off',
+                'onTriggerWindow',
+                'offTriggerWindow',
                 'raiseEvent',
                 'getOtherPlayer',
                 'playerDecked',

@@ -10,9 +10,7 @@ export default class StormFromSakkaku extends DrawCard {
     static id = 'storm-from-sakkaku';
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([
-            { [`${EventName.OnResolveRingElement}:${AbilityType.WouldInterrupt}`]: 'cancelRingEffect' }
-        ]);
+        new EventRegistrar(this.game).registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
 
         moveHoldingAction(this)
             .then()

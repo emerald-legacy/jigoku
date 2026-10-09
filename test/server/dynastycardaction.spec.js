@@ -2,7 +2,7 @@ import { DynastyCardAction } from '../../build/server/game/DynastyCardAction.js'
 
 describe('DynastyCardAction', function () {
     beforeEach(function() {
-        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'on', 'removeListener', 'getEvent', 'openEventWindow']);
+        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'getEvent', 'openEventWindow']);
         this.playerSpy = jasmine.createSpyObj('player', ['isCardInPlayableLocation', 'replaceDynastyCard', 'getMinimumCost']);
         this.cardSpy = jasmine.createSpyObj('card', ['getType', 'canPlay', 'isLimited', 'anotherUniqueInPlay', 'sumEffects', 'getEffects', 'isFacedown', 'isTemptationsMaho', 'checkRestrictions', 'isDrawCard']);
         this.cardSpy.isDrawCard.and.returnValue(true);

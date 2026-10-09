@@ -34,7 +34,10 @@ export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
         private readonly card: T,
         private readonly options: LimitedPlaysOptions<T>
     ) {
-        new EventRegistrar(card.game, this).register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
+        new EventRegistrar(card.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
+        });
         card.persistentEffect({
             effect: delayedEffect<T>({
                 when: {

@@ -76,6 +76,6 @@ export class InitiateAbilityEventWindow extends EventWindow {
 
     emitEvents() {
         this.eventsToExecute = this.eventsToExecute.filter((event) => !event.cancelled);
-        this.eventsToExecute.forEach((event) => this.game.emit(event.name, event));
+        this.eventsToExecute.forEach((event) => this.game.emit(event));
     }
 }

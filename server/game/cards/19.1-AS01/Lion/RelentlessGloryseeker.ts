@@ -13,7 +13,10 @@ export default class RelentlessGloryseeker extends DrawCard {
     private ressurrectionsThisRound = 0;
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         this.reaction('Put this character into play')
             .when({

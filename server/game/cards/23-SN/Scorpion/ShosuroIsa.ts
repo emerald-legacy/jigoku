@@ -13,7 +13,9 @@ export default class ShosuroIsa extends DrawCard {
     private shadows: BaseCard[] = [];
 
     setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         this.action('Manifest a shadow')
             .target({

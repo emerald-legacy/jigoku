@@ -4,7 +4,7 @@ describe('All Cards:', function () {
     beforeEach(function () {
         this.gameSpy = jasmine.createSpyObj('game', [
             'on',
-            'removeListener',
+            'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow',
             'addPower',
             'addMessage',
             'addEffect',

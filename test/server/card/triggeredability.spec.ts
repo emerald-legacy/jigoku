@@ -19,7 +19,7 @@ interface TriggeredAbilityTestContext {
 
 describe('TriggeredAbility', function () {
     beforeEach(function (this: TriggeredAbilityTestContext) {
-        this.gameSpy = jasmine.createSpyObj('game', ['on', 'removeListener', 'registerAbility', 'getPlayers']);
+        this.gameSpy = jasmine.createSpyObj('game', ['on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'registerAbility', 'getPlayers']);
         this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect', 'isCard']);
         this.cardSpy.isCard.and.returnValue(true);
         this.cardSpy.game = this.gameSpy;
@@ -87,8 +87,8 @@ describe('TriggeredAbility', function () {
         beforeEach(function(this: TriggeredAbilityTestContext) {
             this.properties = {
                 when: {
-                    onFoo: () => true,
-                    onBar: () => true
+                    onCardBowed: () => true,
+                    onCardHonored: () => true
                 },
                 handler: () => true
             };
@@ -97,14 +97,14 @@ describe('TriggeredAbility', function () {
         });
 
         it('should register all when event handlers with the proper event type suffix', function(this: TriggeredAbilityTestContext) {
-            expect(this.gameSpy.on).toHaveBeenCalledWith('onFoo:reaction', jasmine.any(Function));
-            expect(this.gameSpy.on).toHaveBeenCalledWith('onBar:reaction', jasmine.any(Function));
+            expect(this.gameSpy.onTriggerWindow).toHaveBeenCalledWith('onCardBowed', 'reaction', jasmine.any(Function));
+            expect(this.gameSpy.onTriggerWindow).toHaveBeenCalledWith('onCardHonored', 'reaction', jasmine.any(Function));
         });
 
         it('should not reregister events already registered', function(this: TriggeredAbilityTestContext) {
-            expect(this.gameSpy.on.calls.count()).toBe(4);
+            expect(this.gameSpy.onTriggerWindow.calls.count()).toBe(2);
             this.reaction.registerEvents();
-            expect(this.gameSpy.on.calls.count()).toBe(4);
+            expect(this.gameSpy.onTriggerWindow.calls.count()).toBe(2);
         });
     });
 
@@ -112,8 +112,8 @@ describe('TriggeredAbility', function () {
         beforeEach(function(this: TriggeredAbilityTestContext) {
             this.properties = {
                 when: {
-                    onFoo: () => true,
-                    onBar: () => true
+                    onCardBowed: () => true,
+                    onCardHonored: () => true
                 },
                 handler: () => true
             };
@@ -123,21 +123,21 @@ describe('TriggeredAbility', function () {
         it('should unregister all previously registered when event handlers', function(this: TriggeredAbilityTestContext) {
             this.reaction.registerEvents();
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener).toHaveBeenCalledWith('onFoo:reaction', jasmine.any(Function));
-            expect(this.gameSpy.removeListener).toHaveBeenCalledWith('onBar:reaction', jasmine.any(Function));
+            expect(this.gameSpy.offTriggerWindow).toHaveBeenCalledWith('onCardBowed', 'reaction', jasmine.any(Function));
+            expect(this.gameSpy.offTriggerWindow).toHaveBeenCalledWith('onCardHonored', 'reaction', jasmine.any(Function));
         });
 
         it('should not remove listeners when they have not been registered', function(this: TriggeredAbilityTestContext) {
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener).not.toHaveBeenCalled();
+            expect(this.gameSpy.offTriggerWindow).not.toHaveBeenCalled();
         });
 
         it('should not unregister events already unregistered', function(this: TriggeredAbilityTestContext) {
             this.reaction.registerEvents();
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener.calls.count()).toBe(2);
+            expect(this.gameSpy.offTriggerWindow.calls.count()).toBe(2);
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener.calls.count()).toBe(2);
+            expect(this.gameSpy.offTriggerWindow.calls.count()).toBe(2);
         });
     });
 });

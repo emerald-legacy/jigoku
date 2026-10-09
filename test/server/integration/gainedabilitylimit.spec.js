@@ -11,7 +11,7 @@ describe('a gained ability applied again', function() {
                 }
             });
             this.whisperer = this.player1.findCardByName('doji-whisperer');
-            this.roundEndListeners = () => this.game.events.bus.handlers.get('onRoundEnded')?.size ?? 0;
+            this.roundEndListeners = () => this.game.events.gameEvents.handlers.get('onRoundEnded')?.size ?? 0;
         });
 
         it('keeps one limit listening, not one per application', function() {

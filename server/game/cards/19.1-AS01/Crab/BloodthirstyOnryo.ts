@@ -10,7 +10,9 @@ export default class BloodthirstyOnryo extends DrawCard {
     static id = 'bloodthirsty-onryo';
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         this.action('Put this into play')
             .cost(costs.sacrifice({ cardType: CardType.Character }))

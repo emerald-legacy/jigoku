@@ -7,7 +7,7 @@ import type Player from '../../server/game/Player.js';
 import type { CardClass } from '../../server/game/types/CardClass.js';
 
 function makePlayer(cardLibrary: Map<string, CardClass>): Player {
-    const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'on', 'removeListener']);
+    const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow']);
     game.getFrameworkContext.and.returnValue(null);
     game.cardLibrary = cardLibrary;
     game.gameMode = 'stronghold';

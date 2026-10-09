@@ -1,3 +1,4 @@
+import { EventName } from '../Constants.js';
 export type Derivable<T, C> = T | ((context: C) => T);
 
 /** Values that can't be mistaken for their own factory. */
@@ -14,4 +15,9 @@ export function isOwnKey<T extends object>(object: T, key: PropertyKey): key is 
 
 export function isEnumValue<E extends Record<string, string>>(enumObject: E, value: string): value is E[keyof E] {
     return Object.values(enumObject).includes(value);
+}
+
+/** The game event names `record` has keys for (a `when` or `until`), typed. */
+export function eventNamesIn(record: object): EventName[] {
+    return Object.values(EventName).filter((name) => name in record);
 }

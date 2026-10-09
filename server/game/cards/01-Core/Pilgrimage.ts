@@ -8,12 +8,8 @@ export default class Pilgrimage extends ProvinceCard {
     static id = 'pilgrimage';
 
     public setupCardAbilities() {
-        const eventRegistrar = new EventRegistrar(this.game, this);
-        eventRegistrar.register([
-            {
-                [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
-            }
-        ]);
+        const eventRegistrar = new EventRegistrar(this.game);
+        eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
     }
 
     public cancelRingEffect(event: GameEvent<EventName.OnResolveRingElement>) {

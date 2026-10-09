@@ -10,7 +10,10 @@ export default class IkomaAnakazu extends DrawCard {
     private brokenProvincesThisPhase = new Map<string, number>();
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnBreakProvince]: (event) => this.onBreakProvince(event),
+            [EventName.OnPhaseEnded]: () => this.onPhaseEnded()
+        });
 
         this.persistentEffect({
             condition: (context) =>

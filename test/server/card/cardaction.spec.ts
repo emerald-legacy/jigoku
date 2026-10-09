@@ -15,7 +15,7 @@ interface CardActionTestContext {
 
 describe('CardAction', function () {
     beforeEach(function (this: CardActionTestContext) {
-        this.gameSpy = jasmine.createSpyObj('game', ['on', 'removeListener', 'raiseEvent', 'queueSimpleStep']);
+        this.gameSpy = jasmine.createSpyObj('game', ['on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'raiseEvent', 'queueSimpleStep']);
         this.gameSpy.currentPhase = 'dynasty';
 
         this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities']);

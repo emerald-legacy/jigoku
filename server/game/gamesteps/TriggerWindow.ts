@@ -249,9 +249,9 @@ export class TriggerWindow extends BaseStep {
         this.choices = [];
         this.events = this.eventWindow.events.filter((e) => !this.eventsToExclude.includes(e));
         this.events.forEach((event) => {
-            this.game.emit(event.name + ':' + this.abilityType, event, this);
+            this.game.emitTriggerWindow(event, this.abilityType, this);
         });
-        this.game.emit('aggregateEvent:' + this.abilityType, this.events, this);
+        this.game.emitAggregateWindow(this.events, this.abilityType, this);
     }
 }
 

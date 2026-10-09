@@ -103,7 +103,7 @@ export class EventWindow extends BaseStepWithPipeline {
 
     // This catches any persistent/delayed effect cancels
     checkForOtherEffects() {
-        this.events.forEach((event) => this.game.emit(event.name + ':' + AbilityType.OtherEffects, event));
+        this.events.forEach((event) => this.game.emitTriggerWindow(event, AbilityType.OtherEffects));
     }
 
     preResolutionEffects() {
@@ -111,7 +111,7 @@ export class EventWindow extends BaseStepWithPipeline {
     }
 
     executeHandler() {
-        this.executeEvents((event) => this.game.emit(event.name, event));
+        this.executeEvents((event) => this.game.emit(event));
     }
 
     /** Runs the events' handlers in order; `afterEach` follows each one that ran. */

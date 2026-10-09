@@ -4,7 +4,7 @@ import type { EffectUntil } from './Effects/ActiveEffect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { DelayedEffectValue, DelayedEffectWhen } from './Effects/EffectValueMap.js';
 import type { AbilityContext } from './AbilityContext.js';
-import { isEnumValue } from './utils/helpers.js';
+import { eventNamesIn, isEnumValue } from './utils/helpers.js';
 import type { EffectSource } from './EffectSource.js';
 import { Event } from './Events/Event.js';
 import type { GameEvent } from './Events/EventPayloads.js';
@@ -22,8 +22,8 @@ function untilEnds<N extends EventName>(until: EffectUntil, name: N, event: Even
 }
 
 interface CustomDurationEvent {
-    name: string;
-    handler: (...args: unknown[]) => void;
+    name: EventName;
+    handler: (event: Event) => void;
     effect: ActiveEffect;
 }
 
@@ -34,14 +34,14 @@ export class EffectEngine {
     newEffect = false;
 
     constructor(private game: Game) {
-        this.events = new EventRegistrar(game, this);
-        this.events.register([
-            EventName.OnConflictFinished,
-            EventName.OnPhaseEnded,
-            EventName.OnRoundEnded,
-            EventName.OnDuelFinished,
-            EventName.OnPassActionPhasePriority
-        ]);
+        this.events = new EventRegistrar(game);
+        this.events.register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished(),
+            [EventName.OnPhaseEnded]: () => this.onPhaseEnded(),
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnDuelFinished]: () => this.onDuelFinished(),
+            [EventName.OnPassActionPhasePriority]: (event) => this.onPassActionPhasePriority(event)
+        });
     }
 
     add(effect: ActiveEffect) {
@@ -186,7 +186,7 @@ export class EffectEngine {
         }
 
         const handler = this.createCustomDurationHandler(effect);
-        for(const eventName of Object.keys(effect.until)) {
+        for(const eventName of eventNamesIn(effect.until)) {
             this.customDurationEvents.push({
                 name: eventName,
                 handler: handler,
@@ -200,7 +200,7 @@ export class EffectEngine {
         const remainingEvents: CustomDurationEvent[] = [];
         for(const event of this.customDurationEvents) {
             if(event.effect === effect) {
-                this.game.removeListener(event.name, event.handler);
+                this.game.off(event.name, event.handler);
             } else {
                 remainingEvents.push(event);
             }
@@ -209,10 +209,8 @@ export class EffectEngine {
     }
 
     createCustomDurationHandler(customDurationEffect: ActiveEffect) {
-        // the custom duration events are emitted with the event alone
-        return (...args: unknown[]) => {
-            const event = args[0];
-            if(event instanceof Event && isEnumValue(EventName, event.name) && untilEnds(customDurationEffect.until, event.name, event)) {
+        return (event: Event) => {
+            if(untilEnds(customDurationEffect.until, event.name, event)) {
                 customDurationEffect.cancel();
                 this.unregisterCustomDurationEvents(customDurationEffect);
                 this.effects = this.effects.filter((effect) => effect !== customDurationEffect);

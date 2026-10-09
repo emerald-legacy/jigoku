@@ -8,7 +8,10 @@ export default class UtakuTomoe extends DrawCard {
     private defendingAtConflictResolution = false;
 
     setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.AfterConflict, EventName.OnConflictDeclared]);
+        new EventRegistrar(this.game).register({
+            [EventName.AfterConflict]: () => this.afterConflict(),
+            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
+        });
 
         // "After the resolution of a conflict" is onConflictFinished, not onReturnHome:
         // until-end-of-conflict effects (e.g. Palm Strike's cannot-ready) expire only

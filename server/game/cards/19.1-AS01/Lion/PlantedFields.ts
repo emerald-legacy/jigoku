@@ -11,8 +11,10 @@ export default class PlantedFields extends DrawCard {
     private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded]);
+        this.eventRegistrar = new EventRegistrar(this.game);
+        this.eventRegistrar.register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded()
+        });
 
         this.interrupt('Sacrifice Planted Fields')
             .when({

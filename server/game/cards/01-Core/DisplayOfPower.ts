@@ -3,7 +3,6 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import { EventName, AbilityType } from '../../Constants.js';
-import { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 
 class DisplayOfPower extends DrawCard {
@@ -15,10 +14,8 @@ class DisplayOfPower extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
             })
             .handler((context) => {
-                this.game.once(EventName.OnResolveConflictRing + ':' + AbilityType.WouldInterrupt, (event: unknown) => {
-                    if(event instanceof Event && event.is(EventName.OnResolveConflictRing)) {
-                        this.onResolveConflictRing(event, context);
-                    }
+                this.game.onceTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, (event) => {
+                    this.onResolveConflictRing(event, context);
                 });
             })
             .chatText('resolve and claim the ring when the ring effect resolves')

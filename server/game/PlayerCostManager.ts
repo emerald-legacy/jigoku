@@ -130,18 +130,14 @@ export class PlayerCostManager {
         const fakeWindow = { addChoice: () => triggeredCostReducers++ };
         if(card.isDrawCard()) {
             const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
-            this.game.emit(EventName.OnCardPlayed + ':' + AbilityType.Interrupt, fakeEvent, fakeWindow);
+            this.game.emitTriggerWindow(fakeEvent, AbilityType.Interrupt, fakeWindow);
         }
         const fakeResolverEvent = this.game.getEvent(EventName.OnAbilityResolverInitiated, {
             card: card,
             player: this.player,
             context: context
         });
-        this.game.emit(
-            EventName.OnAbilityResolverInitiated + ':' + AbilityType.Interrupt,
-            fakeResolverEvent,
-            fakeWindow
-        );
+        this.game.emitTriggerWindow(fakeResolverEvent, AbilityType.Interrupt, fakeWindow);
         return Math.max(reducedCost - triggeredCostReducers - alternateFate, 0);
     }
 

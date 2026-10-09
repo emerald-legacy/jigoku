@@ -1,11 +1,9 @@
 import { EventName } from './Constants.js';
 import type Player from './Player.js';
 import type { CardAbility } from './CardAbility.js';
-import type { EventHandler } from './GameEventBus.js';
-
 interface EventBusLike {
-    on(eventName: string, handler: EventHandler): void;
-    removeListener(eventName: string, handler: EventHandler): void;
+    on(eventName: EventName, handler: () => void): void;
+    off(eventName: EventName, handler: () => void): void;
 }
 
 export interface AbilityLimit {
@@ -138,7 +136,7 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
 
     public unregisterEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
-            eventEmitter.removeListener(eventN, this.onReset);
+            eventEmitter.off(eventN, this.onReset);
         }
     }
 }

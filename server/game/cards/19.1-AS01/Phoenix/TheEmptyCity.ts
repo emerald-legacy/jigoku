@@ -15,7 +15,10 @@ export default class TheEmptyCity extends ProvinceCard {
     private invokedSpirit?: BaseCard;
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         const sharedLimit = perRound(1);
 

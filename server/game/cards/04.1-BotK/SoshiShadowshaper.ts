@@ -12,8 +12,11 @@ export default class SoshiShadowshaper extends DrawCard {
     private charactersPlayedThisPhase = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        const eventRegistrar = new EventRegistrar(this.game, this);
-        eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCharacterEntersPlay]);
+        const eventRegistrar = new EventRegistrar(this.game);
+        eventRegistrar.register({
+            [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
+        });
 
         this.action('Return a character to owner\'s hand')
             .cost(costs.payHonor(1))

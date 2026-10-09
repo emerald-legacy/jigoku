@@ -72,7 +72,10 @@ export default class IsawaHifumi extends DrawCard {
     setupCardAbilities() {
         const hifumiCost = new HifumiCost(false);
         this.hifumiCost = hifumiCost;
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         this.action('Play an event from discard')
             .cost(hifumiCost)

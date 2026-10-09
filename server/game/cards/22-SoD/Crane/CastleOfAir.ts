@@ -18,13 +18,11 @@ export default class CastleOfAir extends DrawCard {
     private playersTriggered = new Set<string>();
 
     setupCardAbilities() {
-        const eventRegistrar = new EventRegistrar(this.game, this);
-        eventRegistrar.register([
-            {
-                [EventName.OnModifyHonor + ':' + AbilityType.WouldInterrupt]: 'onHonorLoss'
-            }
-        ]);
-        eventRegistrar.register([EventName.OnConflictFinished]);
+        const eventRegistrar = new EventRegistrar(this.game);
+        eventRegistrar.registerTriggerWindow(EventName.OnModifyHonor, AbilityType.WouldInterrupt, (event) => this.onHonorLoss(event));
+        eventRegistrar.register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished()
+        });
 
         this.action('Add Province Strength')
             .cost(costs.bow({

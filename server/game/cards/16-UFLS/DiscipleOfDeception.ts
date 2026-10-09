@@ -11,7 +11,9 @@ export default class DiscipleOfDeception extends DrawCard {
     private tokensChanged: StatusToken[] = [];
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished()
+        });
 
         this.action('Treat a status token as a different token')
             .condition((context) => context.game.isDuringConflict())
