@@ -1,17 +1,28 @@
-import EventEmitter from 'events';
 import WebSocket from 'ws';
 import * as env from '../env.js';
 import { logger } from '../logger.js';
 import {
     InboundMessageSchema,
     PROTOCOL_VERSION,
-    type GameClosedPayload,
-    type GameErrorPayload,
     type GameSummary,
-    type GameWinPayload,
-    type HelloPayload,
-    type PlayerLeftPayload
+    type OutboundMessage,
+    type PendingGameDTO,
+    type UserIdentity
 } from './LobbyProtocol.js';
+
+/** What the lobby asks of the game node, one method per inbound command. */
+export interface LobbyHandlers {
+    onStartGame(pendingGame: PendingGameDTO): void;
+    onSpectator(pendingGame: { id: string }, user: UserIdentity): void;
+    /** Asks for the running games; `reply` sends them to the lobby with HELLO. */
+    onGameSync(reply: (games: GameSummary[]) => void): void;
+    onFailedConnect(gameId: string, username: string): void;
+    onCloseGame(gameId: string): void;
+    onCardData(cardData: { titleCardData: unknown; shortCardData: unknown[] }): void;
+}
+
+/** A command's payload, or nothing for a command without one. */
+type OutboundArg<C extends OutboundMessage['command']> = Extract<OutboundMessage, { command: C }> extends { arg: infer A } ? [arg: A] : [];
 
 const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;
@@ -40,7 +51,7 @@ export function stringifyWithoutCycles(value: unknown): string {
     });
 }
 
-export class WsSocket extends EventEmitter {
+export class WsSocket {
     private ws: WebSocket | null = null;
     private running = false;
     private registered = false;
@@ -48,9 +59,7 @@ export class WsSocket extends EventEmitter {
     private reconnectDelay = ONE_SECOND;
     private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
-    constructor(private listenAddress: string, private protocol: string) {
-        super();
-
+    constructor(private listenAddress: string, private protocol: string, private handlers: LobbyHandlers) {
         this.running = true;
         process.nextTick(() => this.connect());
 
@@ -60,7 +69,7 @@ export class WsSocket extends EventEmitter {
                 this.send('HEARTBEAT');
             } else {
                 logger.info(`${env.gameNodeName} not registered, re-sending HELLO`);
-                this.emit('onGameSync', this.onGameSync.bind(this));
+                this.handlers.onGameSync((games) => this.onGameSync(games));
             }
         }, TEN_SECONDS);
     }
@@ -75,7 +84,7 @@ export class WsSocket extends EventEmitter {
         this.ws.on('open', () => {
             logger.info(`${env.gameNodeName} connected to lobby`);
             this.reconnectDelay = ONE_SECOND;
-            this.emit('onGameSync', this.onGameSync.bind(this));
+            this.handlers.onGameSync((games) => this.onGameSync(games));
         });
 
         this.ws.on('message', (data: WebSocket.RawData) => {
@@ -108,13 +117,7 @@ export class WsSocket extends EventEmitter {
         this.reconnectDelay = Math.min(this.reconnectDelay * 2, MAX_RECONNECT_DELAY);
     }
 
-    public send(command: 'HEARTBEAT' | 'PONG'): void;
-    public send(command: 'HELLO', arg: HelloPayload): void;
-    public send(command: 'GAMEERROR', arg: GameErrorPayload): void;
-    public send(command: 'GAMECLOSED', arg: GameClosedPayload): void;
-    public send(command: 'GAMEWIN', arg: GameWinPayload): void;
-    public send(command: 'PLAYERLEFT', arg: PlayerLeftPayload): void;
-    public send(command: string, arg?: unknown): void {
+    public send<C extends OutboundMessage['command']>(command: C, ...[arg]: OutboundArg<C>): void {
         if(!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             logger.debug(`Cannot send ${command}, WebSocket not open`);
             return;
@@ -172,22 +175,22 @@ export class WsSocket extends EventEmitter {
             case 'REGISTER':
                 logger.info('Lobby requested re-registration');
                 this.registered = false;
-                this.emit('onGameSync', this.onGameSync.bind(this));
+                this.handlers.onGameSync((games) => this.onGameSync(games));
                 break;
             case 'STARTGAME':
-                this.emit('onStartGame', message.arg);
+                this.handlers.onStartGame(message.arg);
                 break;
             case 'SPECTATOR':
-                this.emit('onSpectator', message.arg.game, message.arg.user);
+                this.handlers.onSpectator(message.arg.game, message.arg.user);
                 break;
             case 'CONNECTFAILED':
-                this.emit('onFailedConnect', message.arg.gameId, message.arg.username);
+                this.handlers.onFailedConnect(message.arg.gameId, message.arg.username);
                 break;
             case 'CLOSEGAME':
-                this.emit('onCloseGame', message.arg.gameId);
+                this.handlers.onCloseGame(message.arg.gameId);
                 break;
             case 'CARDDATA':
-                this.emit('onCardData', message.arg);
+                this.handlers.onCardData(message.arg);
                 break;
         }
     }

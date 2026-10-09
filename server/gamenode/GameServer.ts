@@ -15,7 +15,7 @@ import { logger } from '../logger.js';
 import { Socket, SocketUserSchema } from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { isOwnKey } from '../game/utils/helpers.js';
-import { stringifyWithoutCycles, WsSocket } from './WsSocket.js';
+import { stringifyWithoutCycles, WsSocket, type LobbyHandlers } from './WsSocket.js';
 import { DeckSchema, ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortCardData, type UserIdentity } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
@@ -43,7 +43,7 @@ const MenuItemSchema = z.looseObject({
 const MenuArgSchema = z.union([z.string(), z.number()]).nullable();
 const toggle = z.unknown().transform(Boolean);
 
-export class GameServer implements GameRouter {
+export class GameServer implements GameRouter, LobbyHandlers {
     private games = new Map<string, Game>();
     private userGameMap = new Map<string, Game>();
     private abandonTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -69,13 +69,7 @@ export class GameServer implements GameRouter {
             this.protocol = env.https ? 'https' : 'http';
         }
 
-        this.wsSocket = new WsSocket(this.host, this.protocol);
-        this.wsSocket.on('onStartGame', this.onStartGame.bind(this));
-        this.wsSocket.on('onSpectator', this.onSpectator.bind(this));
-        this.wsSocket.on('onGameSync', this.onGameSync.bind(this));
-        this.wsSocket.on('onFailedConnect', this.onFailedConnect.bind(this));
-        this.wsSocket.on('onCloseGame', this.onCloseGame.bind(this));
-        this.wsSocket.on('onCardData', this.onCardData.bind(this));
+        this.wsSocket = new WsSocket(this.host, this.protocol, this);
 
         const requestHandler = this.onHttpRequest.bind(this);
 
@@ -260,6 +254,12 @@ export class GameServer implements GameRouter {
                 player.socket.leaveChannel(game.id);
             }
         }
+        this.closeGame(game);
+    }
+
+    /** Forgets the game and tells the lobby it is closed. */
+    private closeGame(game: Game): void {
+        this.cancelAbandonTimer(game.id);
         this.clearMessageCountsForGame(game);
         this.unregisterUsersForGame(game);
         this.games.delete(game.id);
@@ -389,11 +389,7 @@ export class GameServer implements GameRouter {
         this.userGameMap.delete(username);
 
         if(game.isEmpty()) {
-            this.cancelAbandonTimer(game.id);
-            this.clearMessageCountsForGame(game);
-            this.unregisterUsersForGame(game);
-            this.games.delete(game.id);
-            this.wsSocket.send('GAMECLOSED', { game: game.id });
+            this.closeGame(game);
         } else if(game.allPlayersGone()) {
             this.startAbandonTimer(game);
         }
@@ -496,12 +492,7 @@ export class GameServer implements GameRouter {
         game.disconnect(socket.user.username);
 
         if(game.isEmpty()) {
-            this.cancelAbandonTimer(game.id);
-            this.clearMessageCountsForGame(game);
-            this.unregisterUsersForGame(game);
-            this.games.delete(game.id);
-
-            this.wsSocket.send('GAMECLOSED', { game: game.id });
+            this.closeGame(game);
         } else if(!isSpectator && game.allPlayersGone()) {
             this.startAbandonTimer(game);
         } else if(isSpectator) {
@@ -543,12 +534,7 @@ export class GameServer implements GameRouter {
         socket.leaveChannel(game.id);
 
         if(game.isEmpty()) {
-            this.cancelAbandonTimer(game.id);
-            this.clearMessageCountsForGame(game);
-            this.unregisterUsersForGame(game);
-            this.games.delete(game.id);
-
-            this.wsSocket.send('GAMECLOSED', { game: game.id });
+            this.closeGame(game);
         } else if(!isSpectator && game.allPlayersGone()) {
             this.startAbandonTimer(game);
         }
