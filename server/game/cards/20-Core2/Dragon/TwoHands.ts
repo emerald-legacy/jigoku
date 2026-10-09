@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { setMilitarySkill, setPoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect, duelAddParticipant } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -10,7 +12,7 @@ export default class TwoHands extends DrawCard {
         this.duelChallenge('Add a character to the duel', (duel, context) => duel.challengingPlayer === context.player)
             .target({
                 controller: Players.Opponent
-            }, AbilityDsl.actions.duelAddParticipant((context) => ({
+            }, duelAddParticipant((context) => ({
                 duel: context.event.duel
             })));
 
@@ -31,19 +33,19 @@ export default class TwoHands extends DrawCard {
                 controller: Players.Opponent,
                 player: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => {
+            }, cardLastingEffect((context) => {
                 const twoHands = calcTwoHandsEffect(context, context.targets.target);
                 return {
                     target: twoHands.targets,
                     effect:
                             twoHands.type === 'military'
-                                ? AbilityDsl.effects.setMilitarySkill(twoHands.value)
-                                : AbilityDsl.effects.setPoliticalSkill(twoHands.value)
+                                ? setMilitarySkill(twoHands.value)
+                                : setPoliticalSkill(twoHands.value)
                 };
             }))
-            .effect('set {1} {2} skills equal to {3}', (context) => {
+            .chatText((context) => {
                 const twoHands = calcTwoHandsEffect(context, context.targets.target);
-                return [twoHands.targets, twoHands.type, twoHands.value];
+                return msg`set ${twoHands.targets} ${twoHands.type} skills equal to ${twoHands.value}`;
             });
     }
 }
@@ -54,13 +56,13 @@ function calcTwoHandsEffect(context: AbilityContext, chosen: DrawCard | DrawCard
         return {
             targets,
             type: 'military',
-            value: Math.min(...targets.map((card) => card.getMilitarySkill()))
+            value: Math.min(...targets.map((card) => card.militarySkill))
         };
     }
 
     return {
         targets,
         type: 'political',
-        value: Math.min(...targets.map((card) => card.getPoliticalSkill()))
+        value: Math.min(...targets.map((card) => card.politicalSkill))
     };
 }

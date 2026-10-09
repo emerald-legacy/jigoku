@@ -1,6 +1,8 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { cannotParticipateAsAttacker, cardCannot } from '../../../effects.js';
+import { dishonor, draw, sequentialContext } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -10,11 +12,11 @@ export default class AncientStoneGuardian extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
+            effect: cannotParticipateAsAttacker()
         });
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
+            effect: cardCannot({ cannot: RestrictionType.ApplyCovert, appliesTo: RestrictionScope.OpponentsCardEffects })
         });
 
         this.forcedInterrupt('Dishonor a character and draw a card')
@@ -30,7 +32,7 @@ export default class AncientStoneGuardian extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context)
-            }, AbilityDsl.actions.sequentialContext((context) =>
+            }, sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.firstCharacter)
             ))
             .target({
@@ -42,34 +44,31 @@ export default class AncientStoneGuardian extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context)
-            }, AbilityDsl.actions.sequentialContext((context) =>
+            }, sequentialContext((context) =>
                 this.dishonorAndDraw(context.targets.secondCharacter)
             ))
-            .effect('present an opportunity to sneak around {0} and find some secrets{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}', (context) =>
-                this.effectsForCard(context.targets.firstCharacter).concat(
-                    this.effectsForCard(context.targets.secondCharacter)
-                ));
+            .chatText((context) => msg`present an opportunity to sneak around ${context.chatTarget()} and find some secrets${this.effectsForCard(context, context.targets.firstCharacter)}${this.effectsForCard(context, context.targets.secondCharacter)}`);
     }
 
     private cardCanBeChosenForDishonor(card: BaseCard, context: TriggeredAbilityContext): boolean {
-        return card !== context.source && AbilityDsl.actions.dishonor({ target: card }).canAffect(card, context);
+        return card !== context.source && dishonor({ target: card }).canAffect(card, context);
     }
 
     private dishonorAndDraw(target?: BaseCard | []): SequentialContextProperties {
         return {
             gameActions: target instanceof DrawCard
                 ? [
-                    AbilityDsl.actions.dishonor({ target: target }),
-                    AbilityDsl.actions.draw({ target: target.controller })
+                    dishonor({ target: target }),
+                    draw({ target: target.controller })
                 ]
                 : []
         };
     }
 
-    private effectsForCard(target?: BaseCard | []) {
+    private effectsForCard(context: TriggeredAbilityContext, target?: BaseCard | []) {
         if(target instanceof DrawCard) {
-            return ['. ', target.controller, ' dishonors ', target, ' to draw a card'];
+            return context.game.gameChat.nested(msg`. ${target.controller} dishonors ${target}${' to draw a card'}`);
         }
-        return ['', '', '', '', ''];
+        return '';
     }
 }

@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { doesNotBow } from '../../effects.js';
 import { CardType } from '../../Constants.js';
 
 class MasashigisSacrifice extends DrawCard {
@@ -7,16 +8,16 @@ class MasashigisSacrifice extends DrawCard {
 
     setupCardAbilities() {
         this.action('Defending characters do not bow as a result of conflict resolution')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasStatusTokens
+                cardCondition: (card) => card.hasStatusTokens
             }))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getDefenders(),
-                effect: AbilityDsl.effects.doesNotBow()
-            })))
-            .effect('prevent defending characters from bowing at the end of the conflict');
+                effect: doesNotBow()
+            }))
+            .chatText('prevent defending characters from bowing at the end of the conflict');
     }
 }
 

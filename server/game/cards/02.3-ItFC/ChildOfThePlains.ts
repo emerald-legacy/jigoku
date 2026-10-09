@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainActionPhasePriority } from '../../effects.js';
 
 class ChildOfThePlains extends DrawCard {
     static id = 'child-of-the-plains';
@@ -10,11 +10,11 @@ class ChildOfThePlains extends DrawCard {
                 onCardRevealed: (event, context) =>
                     context.source.isAttacking() && event.card.isConflictProvince() && event.onDeclaration
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.gainActionPhasePriority()
-            })))
-            .effect('get the first action in this conflict');
+                effect: gainActionPhasePriority()
+            }))
+            .chatText('get the first action in this conflict');
     }
 }
 

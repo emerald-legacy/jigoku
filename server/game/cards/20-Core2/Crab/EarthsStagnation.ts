@@ -1,5 +1,7 @@
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, type PlayType } from '../../../Constants.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -19,18 +21,18 @@ export default class EarthsStagnation extends DrawCard {
                     event.card.type === CardType.Event &&
                     context.source.parentCharacter.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyBothSkills(penaltyAmount(context))
-            })))
-            .effect('give {1}{2} and {3}{4} to {5}', (context) => {
+                effect: modifyBothSkills(penaltyAmount(context))
+            }))
+            .chatText((context) => {
                 const penalty = penaltyAmount(context);
-                return [penalty, 'military', penalty, 'political', context.source.parentCharacter];
+                return msg`give ${penalty}${'military'} and ${penalty}${'political'} to ${context.source.parentCharacter}`;
             })
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
     }
 
-    public canPlay(context: AbilityContext, playType: string) {
+    public canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

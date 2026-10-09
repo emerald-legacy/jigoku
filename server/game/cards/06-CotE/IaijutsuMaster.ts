@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBid } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Direction } from '../../GameActions/ModifyBidAction.js';
 
@@ -15,7 +15,7 @@ class IaijutsuMaster extends DrawCard {
                 onHonorDialsRevealed: (_event, context) =>
                     !!context.source.parentCharacter && !!this.game.currentDuel?.isInvolved(context.source.parentCharacter)
             })
-            .gameAction(AbilityDsl.actions.modifyBid({ direction: Direction.Prompt }));
+            .gameAction(modifyBid({ direction: Direction.Prompt }));
     }
 }
 

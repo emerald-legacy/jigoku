@@ -1,22 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { resolveConflictEarly } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class MomentOfPerfectBeauty extends DrawCard {
     static id = 'moment-of-perfect-beauty';
 
     setupCardAbilities() {
         this.action('One more action and then end the conflict')
-            .condition(context => {
+            .condition((context) => {
                 const conflict = this.game.currentConflict;
                 return !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.resolveConflictEarly()
-            })))
-            .effect('resolve the conflict after {1}\'s next action', context => [context.player.opponent]);
+                effect: resolveConflictEarly()
+            }))
+            .chatText((context) => msg`resolve the conflict after ${context.player.opponent}'s next action`);
     }
 }
 

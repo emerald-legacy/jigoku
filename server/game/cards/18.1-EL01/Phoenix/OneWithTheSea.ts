@@ -1,4 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import { CardType, Players, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,16 +12,16 @@ export default class OneWithTheSea extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
 
         this.action('Move any character to the conflict')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .condition((context) =>
                 context.game.isDuringConflict() && context.game.rings[Element.Water].isConsideredClaimed(context.player))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.moveToConflict())
-            .max(AbilityDsl.limit.perRound(1));
+            }, moveToConflict())
+            .max(perRound(1));
     }
 }

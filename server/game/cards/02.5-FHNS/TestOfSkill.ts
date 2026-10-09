@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import DrawCard from '../../DrawCard.js';
 import { nameCardType, revealCount, takeUpToTwoOfNamedType } from '../nameCardTypeAndTake.js';
 
@@ -7,11 +7,11 @@ class TestOfSkill extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(AbilityDsl.costs.reveal((context) => context.player.conflictDeck.slice(0, revealCount(context, 'duelist'))))
+            .cost(costs.revealCardsOf((context) => context.player.conflictDeck.slice(0, revealCount(context, 'duelist'))))
             .cost(nameCardType())
             .condition((context) => context.player.conflictDeck.length >= revealCount(context, 'duelist'))
             .handler((context) => takeUpToTwoOfNamedType(context, context.costs.reveal ?? [], context.costs.namedCardType))
-            .effect('take cards into their hand')
+            .chatText('take cards into their hand')
             .cannotBeMirrored();
     }
 }

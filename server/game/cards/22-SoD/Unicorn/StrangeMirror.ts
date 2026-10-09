@@ -1,7 +1,16 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, PlayType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, PlayType, Players, Blocker } from '../../../Constants.js';
+import {
+    chooseAction,
+    injure,
+    placeCardUnderneath,
+    playCard,
+    sacrifice,
+    selectCard,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';
@@ -16,54 +25,56 @@ export default class StrangeMirror extends DrawCard {
                     // the event is only movable once it has finished resolving
                     event.card.location === Location.ConflictDiscardPile
             })
-            .gameAction(AbilityDsl.actions.placeCardUnderneath((context) => ({
+            .gameAction(placeCardUnderneath((context) => ({
                 target: context.event.card,
                 destination: context.source.parentCharacter ?? undefined
             })))
-            .effect('put {1} facedown underneath {2}', (context) => [context.event.card, context.source.parentCharacter]);
+            .chatText((context) => msg`put ${context.event.card} facedown underneath ${context.source.parentCharacter}`);
 
+        const chooseEvent = selectCard((context: AbilityContext<this>) => ({
+            activePromptTitle: 'Choose an event to play',
+            cardType: CardType.Event,
+            location: Location.Any,
+            controller: Players.Any,
+            cardCondition: (card) => card.isDrawCard() && this.eventsUnderneath(context).includes(card),
+            message: (context, card) => msg`${context.player} plays ${card} from underneath ${context.source.parentCharacter}`,
+            // the selected card becomes this action's target
+            gameAction: playCard({
+                source: this,
+                playType: PlayType.PlayFromHand,
+                // the event sits underneath a card, which is not a playable location
+                ignoredBlockers: [Blocker.WrongLocation],
+                destination: Location.ConflictDiscardPile,
+                // a played event returns to its owner's discard pile, not the pile of
+                // whoever played it out from underneath
+                postHandler: (playedContext) =>
+                    playedContext.source.owner.moveCard(
+                        playedContext.source,
+                        Location.ConflictDiscardPile
+                    )
+            })
+        }));
+
+        // only while an event underneath can be played: otherwise the cost would be paid for nothing
         this.action('Play an event from underneath attached character')
-            .condition((context) => this.eventsUnderneath(context).length > 0)
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.selectCard((context) => ({
-                    activePromptTitle: 'Choose an event to play',
-                    cardType: CardType.Event,
-                    location: Location.Any,
-                    controller: Players.Any,
-                    cardCondition: (card) => card.isDrawCard() && this.eventsUnderneath(context).includes(card),
-                    message: '{0} plays {1} from underneath {2}',
-                    messageArgs: (card) => [context.player, card, context.source.parentCharacter],
-                    // the selected card becomes this action's target
-                    gameAction: AbilityDsl.actions.playCard({
-                        source: this,
-                        playType: PlayType.PlayFromHand,
-                        // the event sits underneath a card, which is not a playable location
-                        ignoredRequirements: ['location'],
-                        destination: Location.ConflictDiscardPile,
-                        // a played event returns to its owner's discard pile, not the pile of
-                        // whoever played it out from underneath
-                        postHandler: (playedContext) =>
-                            playedContext.source.owner.moveCard(
-                                playedContext.source,
-                                Location.ConflictDiscardPile
-                            )
-                    })
-                })),
-                AbilityDsl.actions.chooseAction((context) => ({
+            .condition((context) => chooseEvent.hasLegalTarget(context))
+            .gameAction(sequential([
+                chooseEvent,
+                chooseAction((context) => ({
                     activePromptTitle: 'Choose a cost for Strange Mirror',
-                    options: {
+                    choices: {
                         'Sacrifice Strange Mirror': {
-                            action: AbilityDsl.actions.sacrifice({ target: context.source }),
-                            message: '{0} sacrifices {2}'
+                            action: sacrifice({ target: context.source }),
+                            message: (context, _target, player) => msg`${player} sacrifices ${context.source}`
                         },
                         'Injure attached character': {
-                            action: AbilityDsl.actions.injure({ target: context.source.parentCharacter ?? [] }),
-                            message: '{0} injures {3}'
+                            action: injure({ target: context.source.parentCharacter ?? [] }),
+                            message: (context, _target, player) => msg`${player} injures ${context.source.parentCharacter}`
                         }
-                    },
-                    messageArgs: [context.source, context.source.parentCharacter]
+                    }
                 }))
-            ]));
+            ]))
+            .chatText((context) => msg`play an event from underneath ${context.source.parentCharacter}`);
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {

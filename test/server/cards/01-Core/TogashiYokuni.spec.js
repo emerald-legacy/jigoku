@@ -335,23 +335,23 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Give a solitary character +3/+0');
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(9);
+                expect(this.togashiYokuni.militarySkill).toBe(9);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Give a solitary character +3/+0');
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(12);
+                expect(this.togashiYokuni.militarySkill).toBe(12);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.legionOfOne);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(15);
+                expect(this.togashiYokuni.militarySkill).toBe(15);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(18);
+                expect(this.togashiYokuni.militarySkill).toBe(18);
             });
 
             it('should allow Yokuni to copy Plagiarist and play Banzai from hand and from Yokuni, but not from Yokuni twice', function() {
@@ -373,24 +373,24 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickCard('banzai');
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Done');
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(8);
+                expect(this.togashiYokuni.militarySkill).toBe(8);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Increase a character\'s military skill');
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Done');
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(10);
+                expect(this.togashiYokuni.militarySkill).toBe(10);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.legionOfOne);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(13);
+                expect(this.togashiYokuni.militarySkill).toBe(13);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(16);
+                expect(this.togashiYokuni.militarySkill).toBe(16);
             });
         });
 
@@ -458,7 +458,7 @@ describe('Togashi Yokuni', function() {
             it('should correctly copy Toshiro\'s ability', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(10);
+                expect(this.togashiYokuni.militarySkill).toBe(10);
                 this.noMoreActions();
                 expect(this.player1).toHavePrompt('Air Ring');
                 this.player1.clickPrompt('Gain 2 honor');

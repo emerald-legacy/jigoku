@@ -1,5 +1,7 @@
-import { AbilityType, CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location, Players } from '../../../Constants.js';
+import { gainAbility, reduceCost } from '../../../effects.js';
+import { cancel } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GraspOfEarth2 extends DrawCard {
@@ -11,7 +13,7 @@ export default class GraspOfEarth2 extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 1,
                 targetCondition: (target, _, context) => target.controller.hasAffinity('earth', context),
                 match: (card, source) => card === source
@@ -19,16 +21,12 @@ export default class GraspOfEarth2 extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
-                title: 'Block a character\'s movement to the conflict',
-                when: {
-                    onMoveToConflict: (event, context) =>
-                        event.card.type === CardType.Character && context.source.isParticipating()
-                },
-                effect: 'deny {1}\'s movement',
-                effectArgs: (context) => [context.event.card],
-                gameAction: AbilityDsl.actions.cancel()
-            })
+            effect: gainAbility.wouldInterrupt('Block a character\'s movement to the conflict', {
+                onMoveToConflict: (event, context) =>
+                    event.card.type === CardType.Character && context.source.isParticipating()
+            }, (ability) => ability
+                .gameAction(cancel())
+                .chatText((context) => msg`deny ${context.event.card}'s movement`))
         });
     }
 }

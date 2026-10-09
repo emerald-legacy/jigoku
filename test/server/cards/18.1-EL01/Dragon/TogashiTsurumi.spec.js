@@ -28,8 +28,8 @@ describe('Togashi Tsurumi', function () {
             this.player2.pass();
 
             const fate = this.player1.fate;
-            const mil = this.tsurumi.getMilitarySkill();
-            const pol = this.tsurumi.getPoliticalSkill();
+            const mil = this.tsurumi.militarySkill;
+            const pol = this.tsurumi.politicalSkill;
             const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.tsurumi);
@@ -44,14 +44,14 @@ describe('Togashi Tsurumi', function () {
             );
 
             expect(this.player1.fate).toBe(fate);
-            expect(this.tsurumi.getMilitarySkill()).toBe(mil + 1);
-            expect(this.tsurumi.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.tsurumi.militarySkill).toBe(mil + 1);
+            expect(this.tsurumi.politicalSkill).toBe(pol + 1);
             expect(this.player1.hand.length).toBe(hand);
         });
 
         it('kihos cards underneath self should be playable', function () {
-            const initialMIL = this.tsurumi.getMilitarySkill();
-            const initialPOL = this.tsurumi.getPoliticalSkill();
+            const initialMIL = this.tsurumi.militarySkill;
+            const initialPOL = this.tsurumi.politicalSkill;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.tsurumi],
@@ -60,14 +60,14 @@ describe('Togashi Tsurumi', function () {
             });
             this.player2.pass();
 
-            expect(this.tsurumi.getMilitarySkill()).toBe(initialMIL);
-            expect(this.tsurumi.getPoliticalSkill()).toBe(initialPOL);
+            expect(this.tsurumi.militarySkill).toBe(initialMIL);
+            expect(this.tsurumi.politicalSkill).toBe(initialPOL);
 
             this.player1.clickCard(this.tsurumi);
             this.player1.clickCard(this.stance);
 
-            expect(this.tsurumi.getMilitarySkill()).toBe(initialMIL + 1);
-            expect(this.tsurumi.getPoliticalSkill()).toBe(initialPOL + 1);
+            expect(this.tsurumi.militarySkill).toBe(initialMIL + 1);
+            expect(this.tsurumi.politicalSkill).toBe(initialPOL + 1);
 
             this.player2.pass();
             this.player1.clickCard(this.stance);
@@ -79,8 +79,8 @@ describe('Togashi Tsurumi', function () {
             );
 
             expect(this.stance.location).toBe('conflict discard pile');
-            expect(this.tsurumi.getMilitarySkill()).toBe(initialMIL);
-            expect(this.tsurumi.getPoliticalSkill()).toBe(initialPOL);
+            expect(this.tsurumi.militarySkill).toBe(initialMIL);
+            expect(this.tsurumi.politicalSkill).toBe(initialPOL);
         });
 
         it('non kihos cards underneath self should not be playable', function () {

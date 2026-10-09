@@ -1,10 +1,11 @@
-import AbilityTargetAbility from './AbilityTargets/AbilityTargetAbility.js';
-import AbilityTargetCard from './AbilityTargets/AbilityTargetCard.js';
-import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
-import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
-import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
-import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType, Players, EventName } from './Constants.js';
+import type { ActionOverrides, HeldAction } from './GameActions/GameAction.js';
+import { AbilityTargetAbility } from './AbilityTargets/AbilityTargetAbility.js';
+import { AbilityTargetCard } from './AbilityTargets/AbilityTargetCard.js';
+import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
+import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
+import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
+import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
+import { Stage, TargetMode, AbilityType, Players, EventName, Blocker } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
@@ -12,7 +13,7 @@ import type { Cost } from './costs/Cost.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
-import type CardAbility from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 
 interface AbilityTargetProperties {
     dependsOn?: string;
@@ -39,7 +40,7 @@ interface AbilityTarget extends DependentTarget {
     resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
-    getGameAction(context: AbilityContext): GameAction[];
+    getGameAction(context: AbilityContext): HeldAction[];
 }
 
 /**
@@ -47,7 +48,7 @@ interface AbilityTarget extends DependentTarget {
  * property factories get that context. The ability checks that it is a `GameAction` when stored.
  */
 export interface DeclaredGameAction<C = never> {
-    hasLegalTarget(context: C, additionalProperties?: object): boolean;
+    hasLegalTarget(context: C, additionalProperties?: ActionOverrides): boolean;
 }
 
 export function toGameAction(action: object, message = 'An ability\'s gameAction must be a game action'): GameAction {
@@ -84,7 +85,7 @@ export interface TargetResults {
  * `player` that is executing the action, and the `source` card object that the
  * ability is generated from.
  */
-class BaseAbility {
+export class BaseAbility {
     abilityType: AbilityType = AbilityType.Action;
     gameAction: GameAction[];
     targets: AbilityTarget[];
@@ -168,20 +169,20 @@ class BaseAbility {
         return new AbilityTargetCard(name, normalized, this);
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         // check legal targets exist
         // check costs can be paid
         // check for potential to change game state
-        if(!this.canPayCosts(context) && !ignoredRequirements.includes('cost')) {
-            return 'cost';
+        if(!this.canPayCosts(context) && !ignoredBlockers.includes(Blocker.CannotPayCost)) {
+            return Blocker.CannotPayCost;
         }
         if(this.targets.length === 0) {
             if(this.gameAction.length > 0 && !this.checkGameActionsForPotential(context)) {
-                return 'condition';
+                return Blocker.ConditionNotMet;
             }
-            return '';
+            return Blocker.None;
         }
-        return this.canResolveTargets(context) ? '' : 'target';
+        return this.canResolveTargets(context) ? Blocker.None : Blocker.NoLegalTarget;
     }
 
     checkGameActionsForPotential(context: AbilityContext): boolean {
@@ -206,9 +207,6 @@ class BaseAbility {
             costs = costs.filter((cost) => !cost.isPlayCost);
         }
 
-        if(context.payFateCostToOpponent) {
-            costs.forEach(cost => cost.payFateCostToOpponent = true);
-        }
         return costs;
     }
 
@@ -336,4 +334,3 @@ class BaseAbility {
     }
 }
 
-export default BaseAbility;

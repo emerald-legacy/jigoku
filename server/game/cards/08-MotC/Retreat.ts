@@ -1,17 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class Retreat extends DrawCard {
     static id = 'retreat';
 
     setupCardAbilities() {
-        this.action('Move a character home')
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Move a character home', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

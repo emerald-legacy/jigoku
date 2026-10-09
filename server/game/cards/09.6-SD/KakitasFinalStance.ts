@@ -1,5 +1,6 @@
-import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, ConflictType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
@@ -8,21 +9,20 @@ export default class KakitasFinalStance extends DrawCard {
 
     public setupCardAbilities() {
         const duelParticipants = DuelsThisConflict.participants(this.game);
-        this.action('Character cannot be bowed and doesn\'t bow during resolution')
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Character cannot be bowed and doesn\'t bow during resolution', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 condition: () => duelParticipants.has(context.target),
-                effect: AbilityDsl.effects.doesNotBow()
-            })), AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
-                    cannot: 'bow',
-                    restricts: 'opponentsCardEffects',
+                effect: doesNotBow()
+            })), cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: RestrictionType.Bow,
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })))
-            .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict if it is involved in a duel');
+            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict if it is involved in a duel');
     }
 }

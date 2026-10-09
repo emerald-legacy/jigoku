@@ -1,5 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { delayedEffect, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, discardFromPlay } from '../../GameActions/GameActions.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 
 class BayushiAramoro extends DrawCard {
@@ -7,24 +10,23 @@ class BayushiAramoro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character -2/-0')
-            .cost(AbilityDsl.costs.dishonorSelf())
+            .cost(costs.dishonorSelf())
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(-2),
-                    AbilityDsl.effects.delayedEffect({
-                        condition: () => context.target.getMilitarySkill() < 1,
-                        message: '{0} is discarded due to {1}\'s lasting effect',
-                        messageArgs: [context.target, context.source],
-                        gameAction: AbilityDsl.actions.discardFromPlay()
+                    modifyMilitarySkill(-2),
+                    delayedEffect({
+                        condition: () => context.target.militarySkill < 1,
+                        message: () => msg`${context.target} is discarded due to ${context.source}'s lasting effect`,
+                        gameAction: discardFromPlay()
                     })
                 ]
             })))
-            .effect('reduce {0}\'s military skill by 2 - they will die if they reach 0');
+            .chatText('reduce {0}\'s military skill by 2 - they will die if they reach 0');
     }
 }
 

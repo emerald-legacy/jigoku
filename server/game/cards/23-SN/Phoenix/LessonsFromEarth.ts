@@ -1,4 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { chosenDiscard, draw, handler, multipleContext } from '../../../GameActions/GameActions.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 
@@ -12,7 +14,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                     return event.conflict.winner && event.conflict.loser && context.source.parentProvince?.isConflictProvince();
                 }
             })
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const gameActions: GameAction[] = [];
 
                 const winner = context.event.conflict?.winner;
@@ -21,25 +23,25 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                     return { gameActions };
                 }
 
-                gameActions.push(AbilityDsl.actions.draw({
+                gameActions.push(draw({
                     target: winner
                 }));
 
                 const hasAffinity = loser.hasAffinity('earth', context);
                 if(!hasAffinity) {
-                    gameActions.push(AbilityDsl.actions.chosenDiscard({
+                    gameActions.push(chosenDiscard({
                         target: loser
                     }));
                 } else {
-                    gameActions.push(AbilityDsl.actions.handler({
+                    gameActions.push(handler({
                         handler: () => {
-                            context.game.addMessage('{0}\'s affinity to Earth prevents them from discarding a card', loser);
+                            context.game.addMessage(msg`${loser}'s affinity to Earth prevents them from discarding a card`);
                         }
                     }));
                 }
                 return { gameActions };
             }))
-            .effect('cause {1} to draw a card and {2} to discard a card', context => [context.event.conflict?.winner, context.event.conflict?.loser])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .chatText((context) => msg`cause ${context.event.conflict?.winner} to draw a card and ${context.event.conflict?.loser} to discard a card`)
+            .limit(unlimitedPerConflict());
     }
 }

@@ -1,5 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LetHimGoBy extends DrawCard {
@@ -15,28 +18,23 @@ export default class LetHimGoBy extends DrawCard {
                     event.card.controller === context.player.opponent &&
                     event.card.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.bow((context) => ({
+            .bow((context) => ({
                 target: context.event.card
-            })));
+            }));
 
         this.action('Challenge a character anywhere to a duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 targetCondition: () => true,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.cardLastingEffect({
+                    cardLastingEffect({
                         target: duel.winner,
-                        effect: AbilityDsl.effects.modifyMilitarySkill(
-                            (duel.loser ?? []).reduce((total, card) => total + card.getMilitarySkill(), 0)
+                        effect: modifyMilitarySkill(
+                            (duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)
                         )
                     }),
-                message: '{0} gets +{1}{2} skill',
-                messageArgs: (duel) => [
-                    duel.winner,
-                    (duel.loser ?? []).reduce((total, card) => total + card.getMilitarySkill(), 0),
-                    'military'
-                ]
+                chatText: (_context, duel) => msg`${duel.winner} gets +${(duel.loser ?? []).reduce((total, card) => total + card.militarySkill, 0)}${'military'} skill`
             }))
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

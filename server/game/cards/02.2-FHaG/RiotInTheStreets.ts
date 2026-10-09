@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class RiotInTheStreets extends ProvinceCard {
     static id = 'riot-in-the-streets';
@@ -12,6 +12,6 @@ export default class RiotInTheStreets extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

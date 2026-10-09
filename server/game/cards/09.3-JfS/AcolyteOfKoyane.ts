@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, loseKeyword } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 
 class AcolyteOfKoyane extends DrawCard {
@@ -7,27 +9,27 @@ class AcolyteOfKoyane extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain or lose pride')
-            .condition(context => context.game.isDuringConflict(ConflictType.Political))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .target({
                 name: 'character',
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .select({
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Gain Pride': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.addKeyword('pride'),
+                'Gain Pride': cardLastingEffect((context) => ({
+                    effect: addKeyword('pride'),
                     target: context.targets.character
                 })),
-                'Lose Pride': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.loseKeyword('pride'),
+                'Lose Pride': cardLastingEffect((context) => ({
+                    effect: loseKeyword('pride'),
                     target: context.targets.character
                 }))
             })
-            .effect('{1} until the end of the conflict', context => [[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]]);
+            .chatText((context) => msg`${[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]} until the end of the conflict`);
     }
 }
 

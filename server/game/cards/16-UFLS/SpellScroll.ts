@@ -1,6 +1,8 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import { moveCard, multiple, sacrifice } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class SpellScroll extends DrawCard {
     static id = 'spell-scroll';
@@ -12,7 +14,7 @@ export default class SpellScroll extends DrawCard {
                 context.game.requireConflict().elements.some((element) =>
                     context.source.parentCharacter?.hasTrait(element)
                 )),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(3)
+            effect: modifyPoliticalSkill(3)
         });
 
         this.action('Put a card into your hand')
@@ -23,13 +25,13 @@ export default class SpellScroll extends DrawCard {
                 cardCondition: (card, context) =>
                     card.type !== CardType.Character &&
                     !!context.source.parentCharacter?.hasSomeTrait(card.getTraits())
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.moveCard((context) => ({
+            }, multiple([
+                moveCard((context) => ({
                     target: context.target,
                     destination: Location.Hand
                 })),
-                AbilityDsl.actions.sacrifice((context) => ({ target: context.source }))
+                sacrifice((context) => ({ target: context.source }))
             ]))
-            .effect('move {1} to their hand and sacrifice {2}', (context) => [context.target, context.source]);
+            .chatText((context) => msg`move ${context.target} to their hand and sacrifice ${context.source}`);
     }
 }

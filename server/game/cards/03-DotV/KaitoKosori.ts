@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { contributeToConflict } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'kaito-kosori-air';
@@ -15,7 +15,7 @@ class KaitoKosori extends DrawCard {
                     this.game.isDuringConflict(symbol) &&
                     !context.source.isParticipating() && !context.source.bowed;
             },
-            effect: AbilityDsl.effects.contributeToConflict((_card, context) => context.player)
+            effect: contributeToConflict((_card, context) => context.player)
         });
     }
 

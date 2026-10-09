@@ -14,7 +14,7 @@ export interface StatModifierSummary {
     overrides: boolean;
 }
 
-class StatModifier {
+export class StatModifier {
     amount: number;
     name: string;
     countsAsBase: boolean = false;
@@ -74,4 +74,3 @@ class StatModifier {
 
 }
 
-export default StatModifier;

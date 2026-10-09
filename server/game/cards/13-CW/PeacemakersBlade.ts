@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 import { CardType } from '../../Constants.js';
 
 class PeacemakersBlade extends DrawCard {
@@ -9,7 +9,7 @@ class PeacemakersBlade extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
+            effect: cannotBeDeclaredAsAttacker()
         });
     }
 

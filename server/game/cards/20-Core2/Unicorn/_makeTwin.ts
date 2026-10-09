@@ -1,22 +1,35 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { Decks, Duration } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { blank } from '../../../effects.js';
+import {
+    attach,
+    cardLastingEffect,
+    discardFromPlay,
+    ifAble,
+    moveStatusToken,
+    placeFate,
+    putIntoConflict,
+    putIntoPlay,
+    returnToDeck,
+    sequential
+} from '../../../GameActions/GameActions.js';
+import { DeckType, Duration, RemainingCards } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
-export function makeTwin(id: string, opt: { siblingName: string; title: string; effect: string }) {
+export function makeTwin(id: string, opt: { siblingName: string; title: string; chatText: string }) {
     return class Twin extends DrawCard {
         static id = id;
 
         setupCardAbilities() {
             this.action(opt.title)
-                .gameAction(AbilityDsl.actions.deckSearch({
+                .deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,
-                    deck: Decks.DynastyDeck,
-                    shuffle: false,
+                    deck: DeckType.Dynasty,
+                    remainingCards: RemainingCards.Top,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {
                         if(cards.length === 0) {
-                            context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, event.player);
+                            context.game.addMessage(msg`${event.player} finds no copies of ${opt.siblingName}`);
                             return;
                         }
 
@@ -26,18 +39,18 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                             return;
                         }
                         const intoPlayAction = replacedCharacter.isParticipating()
-                            ? AbilityDsl.actions.putIntoConflict({ target: newCharacter })
-                            : AbilityDsl.actions.putIntoPlay({ target: newCharacter });
+                            ? putIntoConflict({ target: newCharacter })
+                            : putIntoPlay({ target: newCharacter });
                         intoPlayAction.resolve(newCharacter, context);
 
                         const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
-                            AbilityDsl.actions.ifAble({
-                                ifAbleAction: AbilityDsl.actions.attach({ attachment, target: newCharacter }),
-                                otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: attachment })
+                            ifAble({
+                                ifAbleAction: attach({ attachment, target: newCharacter }),
+                                otherwiseAction: discardFromPlay({ target: attachment })
                             })
                         );
                         sequence.push(
-                            AbilityDsl.actions.placeFate({
+                            placeFate({
                                 target: newCharacter,
                                 origin: replacedCharacter,
                                 amount: replacedCharacter.fate
@@ -45,32 +58,25 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                         );
                         for(const token of replacedCharacter.statusTokens) {
                             sequence.push(
-                                AbilityDsl.actions.moveStatusToken({ target: token, recipient: newCharacter })
+                                moveStatusToken({ target: token, recipient: newCharacter })
                             );
                         }
-                        AbilityDsl.actions.sequential(sequence).resolve(newCharacter, context);
+                        sequential(sequence).resolve(newCharacter, context);
 
-                        AbilityDsl.actions
-                            .cardLastingEffect({
-                                effect: AbilityDsl.effects.blank(),
-                                duration: Duration.UntilEndOfRound,
-                                target: newCharacter
-                            })
+                        cardLastingEffect({
+                            effect: blank(),
+                            duration: Duration.UntilEndOfRound,
+                            target: newCharacter
+                        })
                             .resolve(newCharacter, context);
 
-                        AbilityDsl.actions
-                            .returnToDeck({ target: replacedCharacter, shuffle: true })
+                        returnToDeck({ target: replacedCharacter, shuffle: true })
                             .resolve(replacedCharacter, context);
 
-                        context.game.addMessage(
-                            '{0} replaces {1} with {2}',
-                            event.player,
-                            replacedCharacter,
-                            newCharacter
-                        );
+                        context.game.addMessage(msg`${event.player} replaces ${replacedCharacter} with ${newCharacter}`);
                     }
-                }))
-                .effect(opt.effect);
+                })
+                .chatText(opt.chatText);
         }
     };
 }

@@ -197,7 +197,7 @@ describe('SoD - Crane', function () {
 
                 expect(this.kuwanan.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Eyes of the Serpent, paying 1 fate to taint Doji Kuwanan'
+                    'player1 plays Eyes of the Serpent, spending 1 fate to taint Doji Kuwanan'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 channels their air affinity to gain 1 honor'
@@ -226,7 +226,7 @@ describe('SoD - Crane', function () {
                 this.player1.clickPrompt('Spend 1 honor');
                 expect(this.kuwanan.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Eyes of the Serpent, paying 1 honor to taint Doji Kuwanan'
+                    'player1 plays Eyes of the Serpent, losing 1 honor to taint Doji Kuwanan'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 channels their air affinity to gain 1 honor'
@@ -366,10 +366,10 @@ describe('SoD - Crane', function () {
                 });
 
                 const honor = this.player1.honor;
-                const mil = this.kuwanan.getMilitarySkill();
+                const mil = this.kuwanan.militarySkill;
                 this.player1.clickCard(this.virtue);
                 this.player1.clickCard(this.kuwanan);
-                expect(this.kuwanan.getMilitarySkill()).toBe(mil + 2);
+                expect(this.kuwanan.militarySkill).toBe(mil + 2);
                 expect(this.getChatLogs(5)).toContain('player1 plays Two-Folded Virtue to grant +2military to Doji Kuwanan and, if they lose the current conflict, gain 1 honor');
 
                 this.noMoreActions();

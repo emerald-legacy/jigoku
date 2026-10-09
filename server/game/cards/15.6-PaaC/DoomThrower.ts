@@ -1,28 +1,30 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class DoomThrower extends DrawCard {
     static id = 'doom-thrower';
 
     setupCardAbilities() {
         this.action('Reduce Province Strength')
-            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
-            .condition(context => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.selectCard(context => ({
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .condition((context) => context.game.isDuringConflict())
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
-                message: '{0} reduces the strength of {1}',
-                messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                cardCondition: (card) => card.isConflictProvince(),
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards}`,
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)
+                    effect: modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)
                 })
-            })))
-            .effect('reduce an attacked province\'s strength by {1}', context => (context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2);
+            }))
+            .chatText((context) => msg`reduce an attacked province's strength by ${(context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2}`);
     }
 }
 

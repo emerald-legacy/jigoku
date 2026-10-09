@@ -1,3 +1,4 @@
+import { msg } from '../game/GameChat.js';
 import axios from 'axios';
 import fs from 'fs';
 import http from 'http';
@@ -11,10 +12,10 @@ import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/Player.js';
 import { logger } from '../logger.js';
-import Socket, { SocketUserSchema } from '../Socket.js';
+import { Socket, SocketUserSchema } from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { isOwnKey } from '../game/utils/helpers.js';
-import { stringifyWithoutCycles, WsSocket } from './WsSocket.js';
+import { stringifyWithoutCycles, WsSocket, type LobbyHandlers } from './WsSocket.js';
 import { DeckSchema, ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortCardData, type UserIdentity } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
@@ -42,7 +43,7 @@ const MenuItemSchema = z.looseObject({
 const MenuArgSchema = z.union([z.string(), z.number()]).nullable();
 const toggle = z.unknown().transform(Boolean);
 
-export class GameServer implements GameRouter {
+export class GameServer implements GameRouter, LobbyHandlers {
     private games = new Map<string, Game>();
     private userGameMap = new Map<string, Game>();
     private abandonTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -65,28 +66,12 @@ export class GameServer implements GameRouter {
         } catch{
             // No local certs — if HTTPS is enabled (e.g. via nginx proxy), still
             // advertise https to clients so they connect over the proxy.
-            this.protocol = env.https === 'true' ? 'https' : 'http';
+            this.protocol = env.https ? 'https' : 'http';
         }
 
-        this.wsSocket = new WsSocket(this.host, this.protocol);
-        this.wsSocket.on('onStartGame', this.onStartGame.bind(this));
-        this.wsSocket.on('onSpectator', this.onSpectator.bind(this));
-        this.wsSocket.on('onGameSync', this.onGameSync.bind(this));
-        this.wsSocket.on('onFailedConnect', this.onFailedConnect.bind(this));
-        this.wsSocket.on('onCloseGame', this.onCloseGame.bind(this));
-        this.wsSocket.on('onCardData', this.onCardData.bind(this));
+        this.wsSocket = new WsSocket(this.host, this.protocol, this);
 
-        // HTTP request handler for health checks
-        const requestHandler = (req: http.IncomingMessage, res: http.ServerResponse) => {
-            if(req.url === '/health') {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    status: 'ok',
-                    timestamp: Date.now(),
-                    games: this.games.size
-                }));
-            }
-        };
+        const requestHandler = this.onHttpRequest.bind(this);
 
         const server =
             !privateKey || !certificate
@@ -116,16 +101,36 @@ export class GameServer implements GameRouter {
         this.io.on('connection', this.onConnection.bind(this));
     }
 
+    // socket.io answers its own path before this handler is called
+    onHttpRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
+        if(req.url === '/health') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                status: 'ok',
+                timestamp: Date.now(),
+                games: this.games.size
+            }));
+            return;
+        }
+        res.writeHead(404);
+        res.end();
+    }
+
     handleError(game: Game, e: Error) {
         logger.error(`Game error: ${e.message}\n${e.stack}`);
 
-        const debugData: Record<string, unknown> = {};
+        let debugData: Record<string, unknown> = {};
 
-        if(e.message.includes('Maximum call stack')) {
-            debugData.badSerializaton = detectBinary(game.getState());
-        } else {
-            debugData.pipeline = game.pipeline.getDebugInfo();
-            debugData.effectEngine = game.effectEngine.getDebugInfo();
+        // collecting can hit the same broken state that caused the error; the report must still go out
+        try {
+            if(e.message.includes('Maximum call stack')) {
+                debugData.badSerializaton = detectBinary(game.getState());
+            } else {
+                debugData.pipeline = game.pipeline.getDebugInfo();
+                debugData.effectEngine = game.effectEngine.getDebugInfo();
+            }
+        } catch(err) {
+            debugData = { omitted: `could not be collected: ${err}` };
         }
 
         const playerNames = game.getPlayers().map((p) => p.name);
@@ -249,6 +254,12 @@ export class GameServer implements GameRouter {
                 player.socket.leaveChannel(game.id);
             }
         }
+        this.closeGame(game);
+    }
+
+    /** Forgets the game and tells the lobby it is closed. */
+    private closeGame(game: Game): void {
+        this.cancelAbandonTimer(game.id);
         this.clearMessageCountsForGame(game);
         this.unregisterUsersForGame(game);
         this.games.delete(game.id);
@@ -309,12 +320,11 @@ export class GameServer implements GameRouter {
         const saveState = game.getSaveState();
         this.wsSocket.send('GAMEWIN', { game: saveState, winner: winner.name, reason: reason });
 
-        void axios
-            .post(
-                `https://l5r-analytics-engine-production.up.railway.app/api/game-report/${env.environment}`,
-                saveState
-            )
-            .catch(() => {});
+        if(env.analyticsUrl) {
+            void axios
+                .post(`${env.analyticsUrl}/${env.environment}`, saveState)
+                .catch((err: unknown) => logger.warn(`Game report failed: ${err instanceof Error ? err.message : String(err)}`));
+        }
 
         // Send hidden info log (hands + provinces) to both players for replay enrichment
         const hiddenInfoLog = game.hiddenInfoLog;
@@ -379,11 +389,7 @@ export class GameServer implements GameRouter {
         this.userGameMap.delete(username);
 
         if(game.isEmpty()) {
-            this.cancelAbandonTimer(game.id);
-            this.clearMessageCountsForGame(game);
-            this.unregisterUsersForGame(game);
-            this.games.delete(game.id);
-            this.wsSocket.send('GAMECLOSED', { game: game.id });
+            this.closeGame(game);
         } else if(game.allPlayersGone()) {
             this.startAbandonTimer(game);
         }
@@ -459,7 +465,7 @@ export class GameServer implements GameRouter {
         player.socket = socket;
 
         if(!game.isSpectator(player)) {
-            game.addMessage('{0} has connected to the game server', player);
+            game.addMessage(msg`${player} has connected to the game server`);
         }
 
         this.sendGameState(game);
@@ -486,12 +492,7 @@ export class GameServer implements GameRouter {
         game.disconnect(socket.user.username);
 
         if(game.isEmpty()) {
-            this.cancelAbandonTimer(game.id);
-            this.clearMessageCountsForGame(game);
-            this.unregisterUsersForGame(game);
-            this.games.delete(game.id);
-
-            this.wsSocket.send('GAMECLOSED', { game: game.id });
+            this.closeGame(game);
         } else if(!isSpectator && game.allPlayersGone()) {
             this.startAbandonTimer(game);
         } else if(isSpectator) {
@@ -533,12 +534,7 @@ export class GameServer implements GameRouter {
         socket.leaveChannel(game.id);
 
         if(game.isEmpty()) {
-            this.cancelAbandonTimer(game.id);
-            this.clearMessageCountsForGame(game);
-            this.unregisterUsersForGame(game);
-            this.games.delete(game.id);
-
-            this.wsSocket.send('GAMECLOSED', { game: game.id });
+            this.closeGame(game);
         } else if(!isSpectator && game.allPlayersGone()) {
             this.startAbandonTimer(game);
         }

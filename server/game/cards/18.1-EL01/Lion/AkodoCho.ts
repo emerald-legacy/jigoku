@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { bow, discardFromPlay, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,16 +10,15 @@ export default class AkodoCho extends DrawCard {
     static id = 'akodo-cho';
 
     setupCardAbilities() {
-        this.action('Bow a character')
+        this.conflictAction('Bow a character')
             .condition((context) =>
-                context.source.isParticipating() &&
                 context.source.attachments.some((attachment) => attachment.hasTrait('follower')))
             .target({
                 name: CHARACTER,
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && context.game.actions.bow().canAffect(card, context)
+                    card.isParticipating() && bow().canAffect(card, context)
             })
             .select({
                 name: SELECT,
@@ -26,21 +26,20 @@ export default class AkodoCho extends DrawCard {
                 player: (context) =>
                     context.targets[CHARACTER].controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Discard an attachment from this character': AbilityDsl.actions.selectCard((context) => ({
+                'Discard an attachment from this character': selectCard((context) => ({
                     cardType: CardType.Attachment,
-                    effect: 'discard an attachment on {0}',
-                    effectArgs: () => [context.targets[CHARACTER]],
+                    chatText: 'discard an attachment on {0}',
+                    chatTextArgs: () => [context.targets[CHARACTER]],
                     player:
                                 context.targets[CHARACTER].controller === context.player
                                     ? Players.Self
                                     : Players.Opponent,
                     activePromptTitle: 'Choose an attachment to discard',
                     cardCondition: (card) => card.parentCharacter === context.targets[CHARACTER],
-                    message: '{0} discards {1}',
-                    messageArgs: (card) => [context.targets[CHARACTER].controller, card],
-                    gameAction: AbilityDsl.actions.discardFromPlay()
+                    message: (context, card) => msg`${context.targets[CHARACTER].controller} discards ${card}`,
+                    gameAction: discardFromPlay()
                 })),
-                'Bow this character': AbilityDsl.actions.bow((context) => ({
+                'Bow this character': bow((context) => ({
                     target: context.targets[CHARACTER]
                 }))
             })

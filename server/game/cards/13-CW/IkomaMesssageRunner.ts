@@ -1,7 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Location, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { flipDynasty } from '../../GameActions/GameActions.js';
 
 class IkomaMessageRunner extends DrawCard {
     static id = 'ikoma-message-runner';
@@ -16,8 +17,8 @@ class IkomaMessageRunner extends DrawCard {
                 numCards: 1,
                 optional: true,
                 controller: Players.Self,
-                cardCondition: card => card.isDynasty && card.isFacedown()
-            }, AbilityDsl.actions.flipDynasty())
+                cardCondition: (card) => card.isDynasty && card.isFacedown()
+            }, flipDynasty())
             .targetCards({
                 name: 'opponentsCard',
                 activePromptTitle: 'Choose a facedown card in opponents provinces',
@@ -26,9 +27,9 @@ class IkomaMessageRunner extends DrawCard {
                 mode: TargetMode.UpTo,
                 numCards: 1,
                 optional: true,
-                cardCondition: card => card.isDynasty && card.isFacedown()
-            }, AbilityDsl.actions.flipDynasty())
-            .effect('reveal up to 1 facedown card in each player\'s provinces{1}', context => [this.buildString(context.targets.myCard, context.targets.opponentsCard)]);
+                cardCondition: (card) => card.isDynasty && card.isFacedown()
+            }, flipDynasty())
+            .chatText((context) => msg`reveal up to 1 facedown card in each player's provinces${this.buildString(context.targets.myCard, context.targets.opponentsCard)}`);
     }
 
     buildString(myCards: BaseCard[] | undefined, opponentsCards: BaseCard[] | undefined) {

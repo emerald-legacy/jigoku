@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, Location, Decks } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players, Location, DeckType, RemainingCards } from '../../Constants.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
@@ -11,25 +12,24 @@ class UnyieldingSensei extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
+                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some((c) => c.getType() === CardType.Holding && c.isFaceup())
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .deckSearch({
                 activePromptTitle: 'Choose a character',
-                amount: 2,
-                deck: Decks.DynastyDeck,
-                cardCondition: card => card.type === CardType.Character,
-                shuffle: false,
-                message: '{0} puts {1} into {2}',
-                messageArgs: (context, cards) => {
+                cardsToLookAt: 2,
+                deck: DeckType.Dynasty,
+                cardCondition: (card) => card.type === CardType.Character,
+                remainingCards: RemainingCards.Top,
+                message: (context, cards) => {
                     const province = context.target;
-                    return [context.player, cards, province?.isFacedown() ? 'a facedown province' : province?.name];
+                    return msg`${context.player} puts ${cards} into ${province?.isFacedown() ? 'a facedown province' : province?.name}`;
                 },
-                gameAction: AbilityDsl.actions.moveCard(context => ({
+                gameAction: moveCard((context) => ({
                     destination: context.target?.location,
                     faceup: true
                 }))
-            }))
-            .effect('look at the top two cards of their dynasty deck');
+            })
+            .chatText('look at the top two cards of their dynasty deck');
     }
 }
 

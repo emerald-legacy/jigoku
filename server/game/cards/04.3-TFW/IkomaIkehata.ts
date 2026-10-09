@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType } from '../../Constants.js';
 
@@ -14,8 +14,8 @@ class IkomaIkehata extends DrawCard {
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.honor())
-            .gameAction(AbilityDsl.actions.draw());
+            }, honor())
+            .draw();
     }
 }
 

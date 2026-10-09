@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class TatteredMissive extends DrawCard {
     static id = 'tattered-missive';
@@ -12,15 +13,15 @@ class TatteredMissive extends DrawCard {
         });
 
         this.action('Search top 5 cards')
-            .cost(AbilityDsl.costs.bowParent())
-            .condition(context => context.player.conflictDeck.length > 0)
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: 5,
-                gameAction: AbilityDsl.actions.moveCard({
+            .cost(costs.bowParent())
+            .condition((context) => context.player.conflictDeck.length > 0)
+            .deckSearch({
+                cardsToLookAt: 5,
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
-            .effect('look at the top 5 cards of their conflict deck');
+            })
+            .chatText('look at the top 5 cards of their conflict deck');
     }
 }
 

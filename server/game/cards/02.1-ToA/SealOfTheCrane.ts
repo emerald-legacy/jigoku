@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addFaction, addTrait } from '../../effects.js';
 
 class SealOfTheCrane extends DrawCard {
     static id = 'seal-of-the-crane';
@@ -7,8 +7,8 @@ class SealOfTheCrane extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addFaction('crane'),
-                AbilityDsl.effects.addTrait('duelist')
+                addFaction('crane'),
+                addTrait('duelist')
             ]
         });
     }

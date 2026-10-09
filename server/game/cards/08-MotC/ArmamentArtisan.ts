@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class ArmamentArtisan extends DrawCard {
     static id = 'armament-artisan';
@@ -9,7 +8,7 @@ class ArmamentArtisan extends DrawCard {
             .when({
                 onCardHonored: (event, context) => event.card.controller === context.player && event.card !== context.source
             })
-            .gameAction(AbilityDsl.actions.honor());
+            .honor();
     }
 }
 

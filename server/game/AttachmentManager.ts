@@ -1,5 +1,5 @@
+import { msg } from './GameChat.js';
 import { CardType, EffectName } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -44,8 +44,7 @@ export class AttachmentManager {
             }
         }
 
-        const frameworkLimitsAttachmentsWithRepeatedNames =
-            game.gameMode === GameModes.Emerald || game.gameMode === GameModes.Obsidian || game.gameMode === GameModes.Sanctuary;
+        const frameworkLimitsAttachmentsWithRepeatedNames = game.rules.attachmentsMaxOneCopyPerName;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             for(const card of this.attachments) {
                 const matchingAttachments = this.attachments.filter(
@@ -79,21 +78,11 @@ export class AttachmentManager {
                 cardType: CardType.Attachment,
                 cardCondition: (card) => card.parent?.uuid === host.uuid && card.isRestricted(),
                 onSelect: (player: Player, card) => {
-                    game.addMessage(
-                        '{0} discards {1} from {2} due to too many Restricted attachments',
-                        player,
-                        card,
-                        card.parent
-                    );
+                    game.addMessage(msg`${player} discards ${card} from ${card.parent} due to too many Restricted attachments`);
 
                     if(illegalAttachments.size > 0) {
-                        game.addMessage(
-                            '{0} {1} discarded from {3} as {2} {1} no longer legally attached',
-                            Array.from(illegalAttachments),
-                            illegalAttachments.size > 1 ? 'are' : 'is',
-                            illegalAttachments.size > 1 ? 'they' : 'it',
-                            host
-                        );
+                        const plural = illegalAttachments.size > 1;
+                        game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
                     }
 
                     illegalAttachments.add(card);
@@ -104,13 +93,8 @@ export class AttachmentManager {
             });
             return true;
         } else if(illegalAttachments.size > 0) {
-            game.addMessage(
-                '{0} {1} discarded from {3} as {2} {1} no longer legally attached',
-                Array.from(illegalAttachments),
-                illegalAttachments.size > 1 ? 'are' : 'is',
-                illegalAttachments.size > 1 ? 'they' : 'it',
-                host
-            );
+            const plural = illegalAttachments.size > 1;
+            game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
             game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
             return true;
         }

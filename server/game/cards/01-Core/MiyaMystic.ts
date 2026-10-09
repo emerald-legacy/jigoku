@@ -1,17 +1,18 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class MiyaMystic extends DrawCard {
     static id = 'miya-mystic';
 
     setupCardAbilities() {
         this.action('Sacrifice to discard an attachment')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.discardFromPlay())
-            .phase(Phases.Conflict);
+            }, discardFromPlay())
+            .phase(Phase.Conflict);
     }
 }
 

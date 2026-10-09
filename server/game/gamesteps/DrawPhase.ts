@@ -1,10 +1,11 @@
-import { EffectName, Phases } from '../Constants.js';
+import { msg } from '../GameChat.js';
+import { EffectName, Phase } from '../Constants.js';
 import { draw } from '../GameActions/GameActions.js';
 import type Game from '../Game.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
-import ActionWindow from './ActionWindow.js';
-import HonorBidPrompt from './HonorBidPrompt.js';
+import { ActionWindow } from './ActionWindow.js';
+import { HonorBidPrompt } from './HonorBidPrompt.js';
 
 /**
  * II Draw Phase
@@ -16,9 +17,9 @@ import HonorBidPrompt from './HonorBidPrompt.js';
  *     ACTION WINDOW
  * 2.6 Draw phase ends.
  */
-export class DrawPhase extends Phase {
+export class DrawPhase extends PhaseStep {
     constructor(game: Game) {
-        super(game, Phases.Draw);
+        super(game, Phase.Draw);
         this.initialise([
             new SimpleStep(game, () => this.displayHonorBidPrompt()),
             new SimpleStep(game, () => this.drawConflictCards()),
@@ -31,11 +32,11 @@ export class DrawPhase extends Phase {
     }
 
     drawConflictCards() {
-        for(const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             const min = player.honorBid === 0 ? 0 : 1;
             const amount = Math.max(player.honorBid + player.sumEffects(EffectName.ModifyCardsDrawnInDrawPhase), min);
-            this.game.addMessage('{0} draws {1} cards for the draw phase', player, amount);
-            draw({ amount }).resolve(player, this.game.getFrameworkContext());
+            this.game.addMessage(msg`${player} draws ${amount} cards for the draw phase`);
+            draw({ amount }).resolve(player, this.game.getFrameworkContext(player));
         }
     }
 }

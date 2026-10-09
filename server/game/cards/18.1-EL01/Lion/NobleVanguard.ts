@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { handler } from '../../../GameActions/GameActions.js';
 import { attachTopConflictCardAsSoldier, soldierAttachCheck } from '../../attachTopConflictCardAsSoldier.js';
 
 class NobleVanguard extends DrawCard {
@@ -17,12 +17,12 @@ class NobleVanguard extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
+                controller: Players.Any,
                 cardCondition: (card, context) => canAttachSoldier(card, context)
-            }, AbilityDsl.actions.handler({
+            }, handler({
                 handler: (context) => attachTopConflictCardAsSoldier(context, context.target)
             }))
-            .effect('attach the top card of their conflict deck to {0} as a +1/+1 attachment');
+            .chatText('attach the top card of their conflict deck to {0} as a +1/+1 attachment');
     }
 }
 

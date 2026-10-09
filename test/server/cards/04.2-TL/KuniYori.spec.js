@@ -21,28 +21,28 @@ describe('Kuni Yori', function() {
 
             describe('Kuni Yori\'s constant ability', function() {
                 it('should have no effect outside of earth conflicts', function() {
-                    expect(this.kuniYori.getMilitarySkill()).toBe(4);
-                    expect(this.kuniYori.getPoliticalSkill()).toBe(4);
-                    expect(this.borderlandsDefender.getMilitarySkill()).toBe(3);
-                    expect(this.borderlandsDefender.getPoliticalSkill()).toBe(3);
-                    expect(this.vanguardWarrior.getMilitarySkill()).toBe(2);
-                    expect(this.vanguardWarrior.getPoliticalSkill()).toBe(1);
-                    expect(this.dojiWhisperer.getMilitarySkill()).toBe(0);
-                    expect(this.dojiWhisperer.getPoliticalSkill()).toBe(3);
+                    expect(this.kuniYori.militarySkill).toBe(4);
+                    expect(this.kuniYori.politicalSkill).toBe(4);
+                    expect(this.borderlandsDefender.militarySkill).toBe(3);
+                    expect(this.borderlandsDefender.politicalSkill).toBe(3);
+                    expect(this.vanguardWarrior.militarySkill).toBe(2);
+                    expect(this.vanguardWarrior.politicalSkill).toBe(1);
+                    expect(this.dojiWhisperer.militarySkill).toBe(0);
+                    expect(this.dojiWhisperer.politicalSkill).toBe(3);
                     this.noMoreActions();
                     this.initiateConflict({
                         attackers: [this.kuniYori, this.borderlandsDefender],
                         defenders: [],
                         ring: 'air'
                     });
-                    expect(this.kuniYori.getMilitarySkill()).toBe(4);
-                    expect(this.kuniYori.getPoliticalSkill()).toBe(4);
-                    expect(this.borderlandsDefender.getMilitarySkill()).toBe(3);
-                    expect(this.borderlandsDefender.getPoliticalSkill()).toBe(3);
-                    expect(this.vanguardWarrior.getMilitarySkill()).toBe(2);
-                    expect(this.vanguardWarrior.getPoliticalSkill()).toBe(1);
-                    expect(this.dojiWhisperer.getMilitarySkill()).toBe(0);
-                    expect(this.dojiWhisperer.getPoliticalSkill()).toBe(3);
+                    expect(this.kuniYori.militarySkill).toBe(4);
+                    expect(this.kuniYori.politicalSkill).toBe(4);
+                    expect(this.borderlandsDefender.militarySkill).toBe(3);
+                    expect(this.borderlandsDefender.politicalSkill).toBe(3);
+                    expect(this.vanguardWarrior.militarySkill).toBe(2);
+                    expect(this.vanguardWarrior.politicalSkill).toBe(1);
+                    expect(this.dojiWhisperer.militarySkill).toBe(0);
+                    expect(this.dojiWhisperer.politicalSkill).toBe(3);
                 });
 
                 it('should give +1/+1 to all characters you control', function() {
@@ -52,14 +52,14 @@ describe('Kuni Yori', function() {
                         defenders: [],
                         ring: 'earth'
                     });
-                    expect(this.kuniYori.getMilitarySkill()).toBe(5);
-                    expect(this.kuniYori.getPoliticalSkill()).toBe(5);
-                    expect(this.borderlandsDefender.getMilitarySkill()).toBe(4);
-                    expect(this.borderlandsDefender.getPoliticalSkill()).toBe(4);
-                    expect(this.vanguardWarrior.getMilitarySkill()).toBe(3);
-                    expect(this.vanguardWarrior.getPoliticalSkill()).toBe(2);
-                    expect(this.dojiWhisperer.getMilitarySkill()).toBe(0);
-                    expect(this.dojiWhisperer.getPoliticalSkill()).toBe(3);
+                    expect(this.kuniYori.militarySkill).toBe(5);
+                    expect(this.kuniYori.politicalSkill).toBe(5);
+                    expect(this.borderlandsDefender.militarySkill).toBe(4);
+                    expect(this.borderlandsDefender.politicalSkill).toBe(4);
+                    expect(this.vanguardWarrior.militarySkill).toBe(3);
+                    expect(this.vanguardWarrior.politicalSkill).toBe(2);
+                    expect(this.dojiWhisperer.militarySkill).toBe(0);
+                    expect(this.dojiWhisperer.politicalSkill).toBe(3);
                 });
             });
 

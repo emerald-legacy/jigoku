@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAction from './BaseAction.js';
+import { BaseAction } from './BaseAction.js';
 import { Stage } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';

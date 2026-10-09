@@ -1,6 +1,7 @@
-import { EventName, Location, Phases } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { EventName, Location, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -12,21 +13,24 @@ export default class RelentlessGloryseeker extends DrawCard {
     private ressurrectionsThisRound = 0;
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         this.reaction('Put this character into play')
             .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source &&
-                    context.game.currentPhase === Phases.Conflict &&
+                    context.game.currentPhase === Phase.Conflict &&
                     this.ressurrectionsThisRound < MAXIMUM_RESSURRECTIONS
             })
-            .gameAction(AbilityDsl.actions.putIntoPlay())
-            .effect('return to play - {0} is ready for more')
-            .then(() => {
+            .gameAction(putIntoPlay())
+            .chatText('return to play - {0} is ready for more')
+            .location(Location.DynastyDiscardPile)
+            .onResolve(() => {
                 this.ressurrectionsThisRound++;
-            })
-            .location(Location.DynastyDiscardPile);
+            });
     }
 
     public onRoundEnded() {
@@ -39,10 +43,7 @@ export default class RelentlessGloryseeker extends DrawCard {
             this.location !== Location.RemovedFromGame &&
             this.ressurrectionsThisRound >= MAXIMUM_RESSURRECTIONS
         ) {
-            this.game.addMessage(
-                '{0} is removed from the game due to leaving play - may their tales lead them to Yomi',
-                this
-            );
+            this.game.addMessage(msg`${this} is removed from the game due to leaving play - may their tales lead them to Yomi`);
             this.owner.moveCard(this, Location.RemovedFromGame);
         }
     }

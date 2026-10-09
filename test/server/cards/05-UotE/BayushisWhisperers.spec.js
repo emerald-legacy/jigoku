@@ -56,12 +56,11 @@ describe('Bayushi\'s Whisperers', function() {
                         defenders: []
                     });
                     this.player2.pass();
-                    this.spy = spyOn(this.game, 'addMessage');
                     this.player1.clickCard(this.bayushisWhisperers);
                 });
 
                 it('should reveal the hand', function () {
-                    expect(this.spy).toHaveBeenCalledWith('{0} sees {1}', this.bayushisWhisperers, [this.assassination, this.fineKatana, this.kamiUnleashed]);
+                    expect(this.getChatLogs(5)).toContain('Bayushi\'s Whisperers sees Assassination, Fine Katana and Kami Unleashed');
                 });
 
                 it('should prompt to name a card', function () {

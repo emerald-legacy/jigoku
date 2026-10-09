@@ -1,6 +1,8 @@
+import type { ActionOverrides } from './GameAction.js';
+import type { EntersPlayStatus } from '../Constants.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location, Players } from '../Constants.js';
+import { CardType, EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -8,7 +10,7 @@ import type { ActionEvent, Defaults } from './GameAction.js';
 
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
-    status?: 'honored' | 'ordinary' | 'dishonored';
+    status?: EntersPlayStatus;
     controller?: Players;
     side?: Player;
     overrideLocation?: Location;
@@ -23,6 +25,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
     PutIntoPlayDefaults
 > {
     name = 'putIntoPlay';
+    restriction = RestrictionType.PutIntoPlay;
     eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';
     targetType = [CardType.Character];
@@ -52,8 +55,8 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
-    canAffect(card: DrawCard, context: C): boolean {
-        const properties = this.getProperties(context);
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         const contextCopy = context.copy({ source: card });
         const player = this.getPutIntoPlayPlayer(contextCopy);
         const targetSide = properties.side || this.getDefaultSide(contextCopy);
@@ -64,9 +67,9 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
             return false;
         } else if(card.location === Location.PlayArea || card.isFacedown()) {
             return false;
-        } else if(!card.checkRestrictions('putIntoPlay', context)) {
+        } else if(!card.checkRestrictions(RestrictionType.PutIntoPlay, context)) {
             return false;
-        } else if(!player.checkRestrictions('enterPlay', contextCopy)) {
+        } else if(!player.checkRestrictions(RestrictionType.EnterPlay, contextCopy)) {
             return false;
         } else if(this.intoConflict) {
             // There is no current conflict, or no context (cards must be put into play by a player, not a framework event)
@@ -77,7 +80,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
             if(card.hasDash(context.game.currentConflict.conflictType)) {
                 return false;
             }
-            if(!card.checkRestrictions('putIntoConflict', context)) {
+            if(!card.checkRestrictions(RestrictionType.PutIntoConflict, context)) {
                 return false;
             }
 
@@ -92,7 +95,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return true;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -106,7 +109,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const player = this.getPutIntoPlayPlayer(context);
         const card = event.card;

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
@@ -7,16 +7,16 @@ class ShiotomeEncampment extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a Cavalry character')
-            .condition(context =>
+            .condition((context) =>
                 Object.values(this.game.rings).some(
-                    ring =>
+                    (ring) =>
                         ring.isConsideredClaimed(context.player) &&
                         ring.isConflictType(ConflictType.Military)
                 ))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('cavalry')
-            }, AbilityDsl.actions.ready());
+                cardCondition: (card) => card.hasTrait('cavalry')
+            }, ready());
     }
 }
 

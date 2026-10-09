@@ -87,6 +87,26 @@ function makeCtx(overrides: Partial<ServerCtx> = {}): ServerCtx {
     return ctx;
 }
 
+describe('GameServer.onHttpRequest', () => {
+    function request(url: string) {
+        const res = jasmine.createSpyObj<{ writeHead: (status: number, headers?: unknown) => void; end: (body?: string) => void }>('res', ['writeHead', 'end']);
+        call('onHttpRequest', makeCtx(), { url }, res);
+        return res;
+    }
+
+    it('answers the health check', () => {
+        const res = request('/health');
+        expect(res.writeHead).toHaveBeenCalledWith(200, { 'Content-Type': 'application/json' });
+        expect(JSON.parse(res.end.calls.mostRecent().args[0] ?? '')).toEqual(jasmine.objectContaining({ status: 'ok', games: 0 }));
+    });
+
+    it('answers any other request with 404 instead of leaving it open', () => {
+        const res = request('/favicon.ico');
+        expect(res.writeHead).toHaveBeenCalledWith(404);
+        expect(res.end).toHaveBeenCalled();
+    });
+});
+
 describe('GameServer.handshake', () => {
     const TEST_SECRET = 'testsecret';
 
@@ -344,6 +364,24 @@ describe('GameServer.handleError', () => {
             errorMessage: 'boom',
             debugData: jasmine.objectContaining({ omitted: jasmine.stringContaining('could not be serialized') })
         }));
+    });
+
+    it('still reports the error when collecting the debug data throws', () => {
+        const ctx = makeCtx();
+        const game = makeErroringGame({ step: 'ConflictFlow' });
+        game.effectEngine = { getDebugInfo: () => {
+            throw new Error('broken again');
+        } };
+
+        expect(() => call('handleError', ctx, game, new Error('boom'))).not.toThrow();
+
+        const { command, arg } = sentPayload(ctx);
+        expect(command).toBe('GAMEERROR');
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: { omitted: 'could not be collected: Error: broken again' }
+        }));
+        expect(game.addMessage).toHaveBeenCalled();
     });
 });
 

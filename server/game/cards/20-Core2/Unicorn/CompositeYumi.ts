@@ -1,7 +1,9 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { ConflictType } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
 
 export default class CompositeYumi extends DrawCard {
     static id = 'composite-yumi';
@@ -13,12 +15,12 @@ export default class CompositeYumi extends DrawCard {
                 onCharacterEntersPlay: (_, context) => this.matchCondition(context),
                 onCreateTokenCharacter: (_, context) => this.matchCondition(context)
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyMilitarySkill(1)
-            })))
-            .effect('give +1{1} to {2}', (context) => ['military', context.source.parentCharacter])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+                effect: modifyMilitarySkill(1)
+            }))
+            .chatText((context) => msg`give +1${'military'} to ${context.source.parentCharacter}`)
+            .limit(unlimitedPerConflict());
     }
 
     private matchCondition(context: TriggeredAbilityContext<this>) {

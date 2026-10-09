@@ -1,5 +1,6 @@
-import { CardType, DuelType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { CardType, DuelType, Location, Players, Blocker } from '../../Constants.js';
+import { menuPrompt, selectCard, triggerAbility } from '../../GameActions/GameActions.js';
 import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,24 +15,18 @@ export default class CunningNegotiator extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: 'resolve the action ability of an attacked province',
+                chatText: () => msg`resolve the action ability of an attacked province`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.menuPrompt((context) => ({
+                    menuPrompt((context) => ({
                         activePromptTitle: 'Do you want to trigger a province ability?',
                         choices: duel.winner ? ['Yes', 'No'] : [],
                         player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {
                                 if(choice === 'Yes') {
-                                    context.game.addMessage(
-                                        '{0} chooses to trigger a province ability',
-                                        context.player
-                                    );
+                                    context.game.addMessage(msg`${context.player} chooses to trigger a province ability`);
                                 } else {
-                                    context.game.addMessage(
-                                        '{0} chooses not to trigger a province ability',
-                                        context.player
-                                    );
+                                    context.game.addMessage(msg`${context.player} chooses not to trigger a province ability`);
                                 }
                             }
                             return {
@@ -39,7 +34,7 @@ export default class CunningNegotiator extends DrawCard {
                                     choice === 'Yes' ? card.isConflictProvince() : false
                             };
                         },
-                        gameAction: AbilityDsl.actions.selectCard((context) => ({
+                        gameAction: selectCard((context) => ({
                             activePromptTitle: 'Choose an attacked province',
                             hidePromptIfSingleCard: true,
                             cardType: CardType.Province,
@@ -48,10 +43,10 @@ export default class CunningNegotiator extends DrawCard {
                                 context.target = card;
                                 return { target: card };
                             },
-                            gameAction: AbilityDsl.actions.triggerAbility((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
+                            gameAction: triggerAbility((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                                 player: duel.winnerController ?? context.source.controller,
                                 ability: context.target.abilities.actions[0],
-                                ignoredRequirements: ['limit']
+                                ignoredBlockers: [Blocker.LimitReached]
                             }))
                         }))
                     }))

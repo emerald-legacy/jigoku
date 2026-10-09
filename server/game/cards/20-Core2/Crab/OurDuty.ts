@@ -1,5 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perGame } from '../../../AbilityLimit.js';
+import { sacrifice, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OurDuty extends DrawCard {
@@ -7,25 +10,24 @@ export default class OurDuty extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Make your opponent sacrifice a character')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('crab')
             }))
             .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                message: '{0} sacrifices {1} to {2}',
-                messageArgs: (card) => [context.player.opponent, card, context.source],
-                gameAction: AbilityDsl.actions.sacrifice()
-            })))
-            .effect('force {1} to sacrifice a character', (context) => context.player.opponent)
-            .max(AbilityDsl.limit.perGame(1));
+                message: (context, card) => msg`${context.player.opponent} sacrifices ${card} to ${context.source}`,
+                gameAction: sacrifice()
+            })
+            .chatText((context) => msg`force ${context.player.opponent} to sacrifice a character`)
+            .max(perGame(1));
 
         this.action('Move an attacker home')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }))
@@ -33,6 +35,6 @@ export default class OurDuty extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }

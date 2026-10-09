@@ -1,13 +1,13 @@
 import { AbilityContext } from './AbilityContext.js';
-import { AbilityType } from './Constants.js';
-import BaseCardAbility from './BaseCardAbility.js';
+import { AbilityType, Blocker } from './Constants.js';
+import { BaseCardAbility } from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { Cost } from './costs/Cost.js';
 import type { BaseAbilityProperties } from './BaseAbility.js';
 
 type TargetProperties = NonNullable<BaseAbilityProperties['target']>;
 
-class BaseAction extends BaseCardAbility {
+export class BaseAction extends BaseCardAbility {
     abilityType = AbilityType.Action;
     cannotBeCancelled = true;
     declare cost: Cost[];
@@ -20,21 +20,16 @@ class BaseAction extends BaseCardAbility {
         super(card, properties);
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
-        if(this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
-            return 'limited';
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
+        if(this.breaksLimitedRule(context)) {
+            return Blocker.LimitedAlreadyPlayed;
         }
 
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     getReducedCost(context: AbilityContext): number {
-        for(const cost of this.cost) {
-            if(cost.getReducedCost) {
-                return cost.getReducedCost(context);
-            }
-        }
-        return 0;
+        return this.reducedFateCost(context);
     }
 
     isAction(): boolean {
@@ -42,4 +37,3 @@ class BaseAction extends BaseCardAbility {
     }
 }
 
-export default BaseAction;

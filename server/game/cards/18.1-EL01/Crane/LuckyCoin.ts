@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { handler } from '../../../GameActions/GameActions.js';
+import { Location, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { parseGameMode } from '../../../GameMode.js';
 
 const ACTIVE_LOCATIONS = [Location.Hand, Location.PlayArea];
 
@@ -15,14 +15,15 @@ export default class LuckyCoin extends DrawCard {
                     const totalCost = context.player
                         .getDynastyCardsInProvince(Location.Provinces)
                         .reduce((totalCost, card) => {
-                            const cost = !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
+                            const isCharacter = card.type === CardType.Character;
+                            const cost = isCharacter && !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
                             return totalCost + cost;
                         }, 0);
                     return totalCost < 6 || totalCost > 12;
                 }
             })
-            .cost(AbilityDsl.costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
-            .gameAction(AbilityDsl.actions.handler({
+            .cost(costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
+            .gameAction(handler({
                 handler: ({ player, game }) => {
                     const cardsToMulligan = player.getDynastyCardsInProvince(Location.Provinces);
 
@@ -30,14 +31,14 @@ export default class LuckyCoin extends DrawCard {
                         player.moveCard(card, Location.DynastyDeck, { bottom: true });
                     }
 
-                    for(const location of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
+                    for(const location of game.rules.setupNonStrongholdProvinces) {
                         player.putTopDynastyCardInProvince(location, false);
                     }
 
                     player.shuffleDynastyDeck();
                 }
             }))
-            .effect('to replace all cards in their provinces')
+            .chatText('to replace all cards in their provinces')
             .location(ACTIVE_LOCATIONS);
     }
 }

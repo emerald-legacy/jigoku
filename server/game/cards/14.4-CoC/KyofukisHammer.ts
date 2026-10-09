@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
 
 class KyofukisHammer extends DrawCard {
@@ -14,8 +15,8 @@ class KyofukisHammer extends DrawCard {
             .target({
                 location: Location.Provinces,
                 cardType: [CardType.Character, CardType.Holding, CardType.Event]
-            }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile }))
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            }, moveCard({ destination: Location.DynastyDiscardPile }))
+            .limit(unlimitedPerConflict());
     }
 }
 

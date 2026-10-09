@@ -1,7 +1,7 @@
-import { Element, Players } from '../../../Constants.js';
+import { Element, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, immunity, playerCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
 
@@ -13,17 +13,17 @@ export default class JealousAncestor extends DrawCard {
     public setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
-        this.whileAttached({ effect: AbilityDsl.effects.addTrait('shadowlands') });
+        this.whileAttached({ effect: addTrait('shadowlands') });
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter,
-            effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+            effect: immunity({ appliesTo: RestrictionScope.Events })
         });
 
         this.addAttachedEffectOnOpponent(
-            AbilityDsl.effects.playerCannot({ cannot: 'draw', restricts: 'opponentsCardEffects' })
+            playerCannot({ cannot: RestrictionType.Draw, appliesTo: RestrictionScope.OpponentsCardEffects })
         );
-        this.addAttachedEffectOnOpponent(AbilityDsl.effects.playerCannot({ cannot: 'move', restricts: 'toHand' }));
-        this.addAttachedEffectOnOpponent(AbilityDsl.effects.playerCannot({ cannot: 'returnToHand' }));
+        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.Move, appliesTo: RestrictionScope.ToHand }));
+        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.ReturnToHand }));
     }
 
     public getPrintedElementSymbols() {

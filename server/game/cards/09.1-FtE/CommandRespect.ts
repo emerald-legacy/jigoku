@@ -1,22 +1,25 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { additionalPlayCost } from '../../effects.js';
 
 class CommandRespect extends DrawCard {
     static id = 'command-respect';
 
     setupCardAbilities() {
         this.action('Take honor from opponent when they play an event')
-            .condition(context => !!(context.game.isDuringConflict() && context.player.opponent &&
+            .condition((context) => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.additionalPlayCost((sourceContext) =>
-                    sourceContext.source.type === CardType.Event ? [AbilityDsl.costs.giveHonorToOpponent(1)] : []
+                effect: additionalPlayCost((sourceContext) =>
+                    sourceContext.source.type === CardType.Event ? [costs.giveHonorToOpponent(1)] : []
                 )
-            })))
-            .effect('force {1} to give them an honor as an additional cost to play an event until the end of the conflict', context => [context.player.opponent])
-            .max(AbilityDsl.limit.perConflict(1));
+            }))
+            .chatText((context) => msg`force ${context.player.opponent} to give them an honor as an additional cost to play an event until the end of the conflict`)
+            .max(perConflict(1));
     }
 }
 

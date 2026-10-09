@@ -1,5 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { FavorType, Phases, Stage } from '../../../Constants.js';
+import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
+import { FavorType, Phase, Stage, type PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -18,17 +18,17 @@ export default class Funeral extends DrawCard {
                     event.amount >= context.player.honor &&
                     event.context?.stage === Stage.Effect
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.gainHonor((context) => ({ target: context.player }))
+            .gameAction(sequential([
+                cancel(),
+                gainHonor((context) => ({ target: context.player }))
             ]))
-            .effect('cancel their honor loss, then gain 1 honor')
+            .chatText('cancel their honor loss, then gain 1 honor')
             .cannotBeMirrored();
     }
 
-    public canPlay(context: AbilityContext, playType: string) {
+    public canPlay(context: AbilityContext, playType?: PlayType) {
         return (
-            context.game.currentPhase !== Phases.Draw &&
+            context.game.currentPhase !== Phase.Draw &&
             context.game.getFavorSide() === FavorType.Political &&
             super.canPlay(context, playType)
         );

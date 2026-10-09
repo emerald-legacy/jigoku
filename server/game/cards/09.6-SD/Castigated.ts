@@ -1,20 +1,21 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, ConflictType, type PlayType } from '../../Constants.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class Castigated extends DrawCard {
     static id = 'castigated';
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.delayedEffect({
-                condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.getPoliticalSkill() < 1,
-                message: '{0} is discarded by {1}',
-                messageArgs: (context) => [context.source.parentCharacter, context.source],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+            effect: delayedEffect({
+                condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.politicalSkill < 1,
+                message: (context) => msg`${context.source.parentCharacter} is discarded by ${context.source}`,
+                gameAction: discardFromPlay()
             })
         });
     }
@@ -23,7 +24,7 @@ class Castigated extends DrawCard {
         return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!context.game.isDuringConflict(ConflictType.Political) || !context.player.cardsInPlay.some((card) => card.getType() === CardType.Character && card.hasTrait('imperial'))) {
             return false;
         }

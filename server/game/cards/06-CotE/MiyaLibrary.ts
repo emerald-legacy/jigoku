@@ -1,7 +1,7 @@
 
-import { CardType, Location } from '../../Constants.js';
+import { CardType, DeckType, Location, RemainingCards } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import { arrangeTopOfDeck } from '../arrangeTopOfDeck.js';
+import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
@@ -9,28 +9,28 @@ class MiyaLibrary extends DrawCard {
     setupCardAbilities() {
         this.action('Replace Miya Library for a faceup imperial character')
             .condition((context) => context.player.dynastyDeck.length > 0)
-            .handler((context) => {
-                const arrange = () => arrangeTopOfDeck(
-                    context,
-                    context.player.dynastyDeck.slice(0, 4),
-                    'Select the card you would like to place on top of your dynasty deck',
-                    (ordered) => context.player.dynastyDeck.splice(0, ordered.length, ...ordered)
-                );
-                this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'select an imperial character to replace miya library',
-                    context: context,
-                    cardCondition: (card) => card.hasTrait('imperial') && card.getType() === CardType.Character,
-                    cards: context.player.dynastyDeck.slice(0, 4),
-                    options: [{ text: 'Do not replace Miya Library', handler: arrange }],
-                    cardHandler: (card) => {
+            .deckSearch({
+                activePromptTitle: 'select an imperial character to replace miya library',
+                cardsToLookAt: 4,
+                deck: DeckType.Dynasty,
+                cardCondition: (card) => card.hasTrait('imperial') && card.getType() === CardType.Character,
+                doneButtonText: 'Do not replace Miya Library',
+                remainingCards: RemainingCards.TopAnyOrder,
+                selectedCardsHandler: (context, _event, [card]) => {
+                    if(card) {
                         context.player.moveCard(card, context.source.location);
                         card.facedown = false;
                         context.player.moveCard(context.source, Location.DynastyDeck);
-                        arrange();
                     }
-                });
+                },
+                // like RemainingCards.TopAnyOrder, with Miya Library among the cards once it is switched into the deck
+                remainingCardsHandler: (context, _event, cards) => rearrangeDeck({
+                    cards: this.location === Location.DynastyDeck ? [this, ...cards] : cards,
+                    deck: DeckType.Dynasty,
+                    activePromptTitle: 'Select the card you would like to place on top of your dynasty deck'
+                }).resolve(context.player, context)
             })
-            .effect('search the top four cards of their dynasty deck for an Imperial character');
+            .chatText('search the top four cards of their dynasty deck for an Imperial character');
     }
 }
 

@@ -1,19 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardType, Phase, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { cardCannot } from '../../effects.js';
 
 class DaidojiNetsu extends DrawCard {
     static id = 'daidoji-netsu';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.currentPhase === Phases.Conflict,
+            condition: () => this.game.currentPhase === Phase.Conflict,
             targetController: Players.Any,
             match: (card, context) => card.getType() === CardType.Character && card !== context?.source,
             effect: [
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'leavePlay',
-                    restricts: 'nonKeywordAbilities'})
+                cardCannot({
+                    cannot: RestrictionType.LeavePlay,
+                    appliesTo: RestrictionScope.NonKeywordAbilities})
             ]
         });
     }

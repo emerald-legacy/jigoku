@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { flipDynasty, turnFacedown } from '../../../GameActions/GameActions.js';
 
 export default class ManipulativeScout extends DrawCard {
     static id = 'manipulative-scout';
@@ -10,7 +10,7 @@ export default class ManipulativeScout extends DrawCard {
             .target({
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: card => card.isDynasty
-            }, AbilityDsl.actions.flipDynasty(), AbilityDsl.actions.turnFacedown());
+                cardCondition: (card) => card.isDynasty
+            }, flipDynasty(), turnFacedown());
     }
 }

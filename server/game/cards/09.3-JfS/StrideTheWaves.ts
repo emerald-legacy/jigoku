@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -14,25 +15,18 @@ class StrideTheWaves extends DrawCard {
         });
 
         this.action('Move attached character in or out of the conflict')
-            .condition(context => context.game.isDuringConflict() && hasClaimedRing(this, elementSymbol.key, context.player))
-            .gameAction(AbilityDsl.actions.conditional({
-                condition: context => !!context.source.parentCharacter?.inConflict,
-                trueGameAction: AbilityDsl.actions.sendHome(context => ({
-                    target: context.source.parentCharacter ?? []
-                })),
-                falseGameAction: AbilityDsl.actions.moveToConflict(context => ({
-                    target: context.source.parentCharacter ?? []
-                }))
-            }))
-            .effect('{3} {1} {2}', context => {
+            .condition((context) => context.game.isDuringConflict() && hasClaimedRing(this, elementSymbol.key, context.player))
+            .if((context) => !!context.source.parentCharacter?.inConflict)
+                .sendHome((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .otherwise()
+                .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .chatText((context) => {
                 const parent = context.source.parentCharacter;
-                return [
-                    parent ?? '',
-                    parent && parent.inConflict ? 'home' : 'into the conflict',
-                    parent && parent.inConflict ? 'send' : 'move'
-                ];
+                return parent && parent.inConflict
+                    ? msg`send ${parent} home`
+                    : msg`move ${parent} into the conflict`;
             })
-            .limit(AbilityDsl.limit.perRound(2));
+            .limit(perRound(2));
     }
 
     getPrintedElementSymbols() {

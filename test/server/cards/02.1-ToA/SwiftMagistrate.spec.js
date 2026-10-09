@@ -44,7 +44,7 @@ describe('Swift Magistrate', function() {
                 this.spy = spyOn(this.game, 'addMessage');
                 this.player2.clickCard('vanguard-warrior');
                 this.borderlandsDefender = this.player2.clickCard('borderlands-defender');
-                expect(this.spy).toHaveBeenCalledWith('{0} - Attacker: {1} Defender: {2}', 'Military Air conflict', 2, 0);
+                expect(this.spy).toHaveBeenCalledWith(['{0} - Attacker: {1} Defender: {2}', ['Military Air conflict', 2, 0]]);
             });
 
             it('should affect other magistrates of the same type', function() {
@@ -62,7 +62,7 @@ describe('Swift Magistrate', function() {
                 this.player2.pass();
                 this.player1.clickCard('charge');
                 this.player1.clickCard(this.swiftMagistrate2);
-                expect(this.spy).toHaveBeenCalledWith('{0} - Attacker: {1} Defender: {2}', 'Military Air conflict', 2, 3);
+                expect(this.spy).toHaveBeenCalledWith(['{0} - Attacker: {1} Defender: {2}', ['Military Air conflict', 2, 3]]);
             });
         });
     });

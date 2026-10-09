@@ -200,9 +200,9 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                const mil = this.skirmisher.getMilitarySkill();
+                const mil = this.skirmisher.militarySkill;
                 this.player1.clickCard(this.deadeyes);
-                expect(this.skirmisher.getMilitarySkill()).toBe(mil + 2);
+                expect(this.skirmisher.militarySkill).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Dead Eyes to grant +2military to Silent Skirmisher, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill');
 
@@ -216,6 +216,24 @@ describe('SoD - Crab', function () {
 
                 expect(this.skirmisher.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(5)).toContain('Silent Skirmisher is sacrificed due to the delayed effect of Dead Eyes');
+            });
+
+            it('cannot be used when the attached character is not participating', function () {
+                this.player1.clickCard(this.deadeyes);
+                this.player1.clickCard(this.skirmisher);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                const mil = this.skirmisher.militarySkill;
+                this.player1.clickCard(this.deadeyes);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.skirmisher.militarySkill).toBe(mil);
             });
         });
 

@@ -1,14 +1,15 @@
-import BaseAction from './BaseAction.js';
+import { msg } from './GameChat.js';
+import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { EffectName, Phases, PlayType, EventName } from './Constants.js';
+import { EffectName, Phase, PlayType, EventName, Blocker, RestrictionType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf } from './Effects/types.js';
 
-class DynastyCardAction extends BaseAction {
+export class DynastyCardAction extends BaseAction {
     title = 'Play this character';
     declare card: DrawCard;
 
@@ -16,45 +17,35 @@ class DynastyCardAction extends BaseAction {
         super(card, [chooseFate(PlayType.PlayFromProvince), payReduceableFateCost()]);
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
-            return 'facedown';
-        } else if(!ignoredRequirements.includes('player') && context.player !== this.card.controller) {
-            return 'player';
-        } else if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Dynasty) {
-            return 'phase';
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.Facedown) && this.card.isFacedown()) {
+            return Blocker.Facedown;
+        } else if(!ignoredBlockers.includes(Blocker.WrongPlayer) && context.player !== this.card.controller) {
+            return Blocker.WrongPlayer;
+        } else if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Dynasty) {
+            return Blocker.WrongPhase;
         } else if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(this.card, PlayType.PlayFromProvince)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         } else if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !this.card.canPlay(context, PlayType.PlayFromProvince)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         } else if(this.card.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     displayMessage(context: AbilityContext): void {
-        context.game.addMessage(
-            '{0} plays {1} with {2} additional fate',
-            context.player,
-            context.source,
-            context.chooseFate
-        );
-        if(context.source.checkRestrictions('placeFate', context)) {
+        context.game.addMessage(msg`${context.player} plays ${context.source} with ${context.chooseFate} additional fate`);
+        if(context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             for(const effect of context.source.getRawEffects()) {
                 if(isEffectOf(effect, EffectName.GainExtraFateWhenPlayed)) {
-                    context.game.addMessage(
-                        '{0} enters play with {1} additional fate due to {2}',
-                        context.source,
-                        effect.getValue(context.source),
-                        effect.context.source
-                    );
+                    context.game.addMessage(msg`${context.source} enters play with ${effect.getValue(context.source)} additional fate due to ${effect.context.source}`);
                 }
             }
         }
@@ -63,7 +54,7 @@ class DynastyCardAction extends BaseAction {
     executeHandler(context: AbilityContext): void {
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        if(!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
@@ -87,4 +78,3 @@ class DynastyCardAction extends BaseAction {
     }
 }
 
-export default DynastyCardAction;

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../build/server/game/abilitydsl.js';
+import { gainFate, gainHonor, honor } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('Emerald Core Duels', function() {
     integration(function() {
@@ -25,13 +25,13 @@ describe('Emerald Core Duels', function() {
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
-                        }, AbilityDsl.actions.honor());
+                        }, honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.declareAbilities(() => {
                     this.duelEffect2.duelChallenge('Gain a fate')
-                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
+                        .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -114,13 +114,13 @@ describe('Emerald Core Duels', function() {
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
-                        }, AbilityDsl.actions.honor());
+                        }, honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.declareAbilities(() => {
                     this.duelEffect2.duelFocus('Gain a fate')
-                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
+                        .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -245,13 +245,13 @@ describe('Emerald Core Duels', function() {
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
-                        }, AbilityDsl.actions.honor());
+                        }, honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.declareAbilities(() => {
                     this.duelEffect2.duelStrike('Gain a fate')
-                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
+                        .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {
@@ -344,19 +344,19 @@ describe('Emerald Core Duels', function() {
                             cardType: 'character',
                             controller: 'self',
                             cardCondition: (card, context) => context.event.duel.isInvolved(card)
-                        }, AbilityDsl.actions.honor());
+                        }, honor());
                 });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.declareAbilities(() => {
                     this.duelEffect2.duelFocus('Gain a fate')
-                        .gameAction(AbilityDsl.actions.gainFate(context => ({ target: context.player })));
+                        .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
                 this.duelEffect3 = this.player1.findCardByName('let-go');
                 this.duelEffect3.declareAbilities(() => {
                     this.duelEffect3.duelStrike('Gain an honor')
-                        .gameAction(AbilityDsl.actions.gainHonor(context => ({ target: context.player })));
+                        .gameAction(gainHonor(context => ({ target: context.player })));
                 });
 
                 for(const reaction of this.duelEffect.reactions) {

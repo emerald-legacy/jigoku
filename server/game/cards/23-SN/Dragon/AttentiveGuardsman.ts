@@ -1,29 +1,29 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { canOnlyBeDeclaredAsAttackerWithCondition, cardCannot, modifyBothSkills } from '../../../effects.js';
 
 export default class AttentiveGuardsman extends DrawCard {
     static id = 'attentive-guardsman';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.canOnlyBeDeclaredAsAttackerWithCondition((props) => {
+            effect: canOnlyBeDeclaredAsAttackerWithCondition((props) => {
                 const { incomingAttackers } = props;
                 return !!incomingAttackers?.some((card) => (card.getType() === CardType.Character && card.isUnique()));
             })
         });
 
         this.persistentEffect({
-            condition: context => context.game.currentConflict?.attackingPlayer === context.player &&
-                !context.game.currentConflict.attackers.some(card => card.getType() === CardType.Character && card.isUnique()),
+            condition: (context) => context.game.currentConflict?.attackingPlayer === context.player &&
+                !context.game.currentConflict.attackers.some((card) => card.getType() === CardType.Character && card.isUnique()),
             effect: [
-                AbilityDsl.effects.cardCannot('moveToConflict')
+                cardCannot(RestrictionType.MoveToConflict)
             ]
         });
 
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
     }
 }

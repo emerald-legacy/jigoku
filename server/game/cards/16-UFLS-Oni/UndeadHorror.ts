@@ -1,6 +1,9 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { blank, changeType, gainAbility, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
+import { attach, cardLastingEffect, handler, sequentialContext } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
+import { randomItem } from '../../utils/random.js';
 
 export default class UndeadHorror extends BaseOni {
     static id = 'undead-horror';
@@ -17,32 +20,32 @@ export default class UndeadHorror extends BaseOni {
                         (card) => card.type === CardType.Character
                     ).length > 0
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const potentialTargets = (context.player.opponent?.dynastyDiscardPile ?? []).filter(
                     (card) => card.type === CardType.Character
                 );
-                const targetCard = potentialTargets[Math.floor(Math.random() * potentialTargets.length)];
+                const targetCard = randomItem(potentialTargets);
                 return {
                     gameActions: [
-                        AbilityDsl.actions.cardLastingEffect({
+                        cardLastingEffect({
                             target: targetCard,
                             canChangeZoneOnce: true,
                             duration: Duration.Custom,
                             effect: [
-                                AbilityDsl.effects.blank(true),
-                                AbilityDsl.effects.changeType(CardType.Attachment),
-                                AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+                                blank(true),
+                                changeType(CardType.Attachment),
+                                gainAbility(AbilityType.Persistent, {
                                     match: (card, context) => {
                                         const parent = context && context.source.parentCharacter;
                                         return card === parent;
                                     },
                                     targetController: Players.Opponent,
                                     effect: [
-                                        AbilityDsl.effects.modifyMilitarySkill(
+                                        modifyMilitarySkill(
                                             (_card, context) =>
                                                 (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0
                                         ),
-                                        AbilityDsl.effects.modifyPoliticalSkill(
+                                        modifyPoliticalSkill(
                                             (_card, context) =>
                                                 (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0
                                         )
@@ -50,18 +53,18 @@ export default class UndeadHorror extends BaseOni {
                                 })
                             ]
                         }),
-                        AbilityDsl.actions.attach({
+                        attach({
                             target: context.source,
                             attachment: targetCard
                         }),
-                        AbilityDsl.actions.handler({
+                        handler({
                             handler: (context) => {
-                                context.game.addMessage('{0} is attached to {1}', targetCard, context.source);
+                                context.game.addMessage(msg`${targetCard} is attached to ${context.source}`);
                             }
                         })
                     ]
                 };
             }))
-            .effect('attach a random character from {1}\'s dynasty discard pile to {2}', (context) => [context.player.opponent, context.source]);
+            .chatText((context) => msg`attach a random character from ${context.player.opponent}'s dynasty discard pile to ${context.source}`);
     }
 }

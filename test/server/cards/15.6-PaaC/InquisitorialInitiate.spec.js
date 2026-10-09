@@ -90,6 +90,7 @@ describe('Inquisitorial Initiate', function() {
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.getChatLogs(3)).toContain('player1 chooses Ornate Fan to be discarded');
             expect(this.getChatLogs(3)).toContain('Inquisitorial Initiate sees Ornate Fan and Banzai!');
+            expect(this.getChatLogs(10)).toContain('player1 uses Inquisitorial Initiate to make player2 reveal 2 cards and discard one of them');
         });
 
         it('should prompt your opponent to choose cards in their hand equal to the number of characters they control with no fate (one character has fate)', function() {
@@ -115,6 +116,7 @@ describe('Inquisitorial Initiate', function() {
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.getChatLogs(3)).toContain('player1 chooses Ornate Fan to be discarded');
             expect(this.getChatLogs(3)).toContain('Inquisitorial Initiate sees Ornate Fan');
+            expect(this.getChatLogs(10)).toContain('player1 uses Inquisitorial Initiate to make player2 reveal 1 card and discard it');
         });
     });
 });

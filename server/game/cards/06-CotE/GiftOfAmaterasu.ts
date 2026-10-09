@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class GiftofAmaterasu extends DrawCard {
@@ -14,7 +14,7 @@ class GiftofAmaterasu extends DrawCard {
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self
-            }, AbilityDsl.actions.honor())
+            }, honor())
             .cannotBeMirrored();
     }
 }

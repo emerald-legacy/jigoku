@@ -1,7 +1,9 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
-import { arrangeTopOfDeck } from '../arrangeTopOfDeck.js';
+import { DeckType } from '../../Constants.js';
+import { rearrangeDeck } from '../../GameActions/GameActions.js';
 import { deckChoiceName } from '../deckChoiceName.js';
 
 class Truthseeker extends DrawCard {
@@ -12,24 +14,19 @@ class Truthseeker extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .selectIf({
+            .select({
                 targets: true,
                 activePromptTitle: 'Choose which deck to look at:'
             }, {
-                [deckChoiceName(this.owner, 'OppDynasty')]: () => !!this.owner.opponent && this.owner.opponent.dynastyDeck.length > 0,
-                [deckChoiceName(this.owner, 'OppConflict')]: () => !!this.owner.opponent && this.owner.opponent.conflictDeck.length > 0,
-                [deckChoiceName(this.owner, 'MyDynasty')]: () => this.owner.dynastyDeck.length > 0,
-                [deckChoiceName(this.owner, 'MyConflict')]: () => this.owner.conflictDeck.length > 0
+                [deckChoiceName(this.owner, 'OppDynasty')]: this.rearrange(() => this.owner.opponent, DeckType.Dynasty),
+                [deckChoiceName(this.owner, 'OppConflict')]: this.rearrange(() => this.owner.opponent, DeckType.Conflict),
+                [deckChoiceName(this.owner, 'MyDynasty')]: this.rearrange(() => this.owner, DeckType.Dynasty),
+                [deckChoiceName(this.owner, 'MyConflict')]: this.rearrange(() => this.owner, DeckType.Conflict)
             })
-            .handler((context) => arrangeTopOfDeck(
-                context,
-                this.mapChoiceToDeck(context).slice(0, 3),
-                'Select the card you would like to place on top of the deck',
-                (ordered) => {
-                    this.mapChoiceToDeck(context).splice(0, 3, ...ordered);
-                }
-            ))
-            .effect('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
+            .chatText((context) => {
+                const [player, deck] = this.mapChoiceToEffectArgs(context);
+                return msg`look at the top 3 cards of ${player}'s ${deck}`;
+            });
     }
 
     private mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {
@@ -48,20 +45,13 @@ class Truthseeker extends DrawCard {
         }
     }
 
-    private mapChoiceToDeck(context: AbilityContext): DrawCard[] {
-        const opponent = this.owner.opponent;
-        switch(context.select) {
-            case deckChoiceName(this.owner, 'OppDynasty'):
-                return opponent?.dynastyDeck ?? [];
-            case deckChoiceName(this.owner, 'OppConflict'):
-                return opponent?.conflictDeck ?? [];
-            case deckChoiceName(this.owner, 'MyDynasty'):
-                return this.owner.dynastyDeck;
-            case deckChoiceName(this.owner, 'MyConflict'):
-                return this.owner.conflictDeck;
-            default:
-                return [];
-        }
+    private rearrange(player: () => Player | undefined, deck: DeckType) {
+        return rearrangeDeck(() => ({
+            target: player() ?? [],
+            deck,
+            amount: 3,
+            activePromptTitle: 'Select the card you would like to place on top of the deck'
+        }));
     }
 }
 

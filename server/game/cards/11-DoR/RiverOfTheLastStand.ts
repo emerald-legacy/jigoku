@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardAtRandom, draw, sequential } from '../../GameActions/GameActions.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
 
 class RiverOfTheLastStand extends DrawCard {
@@ -7,13 +7,13 @@ class RiverOfTheLastStand extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make opponent discard two cards and draw a card')
-            .condition(context => defendingAtKaiuWall(context.player, context.game.currentConflict))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardAtRandom(context => ({
+            .condition((context) => defendingAtKaiuWall(context.player, context.game.currentConflict))
+            .gameAction(sequential([
+                discardAtRandom((context) => ({
                     target: context.player.opponent,
                     amount: 2
                 })),
-                AbilityDsl.actions.draw(context => ({
+                draw((context) => ({
                     target: context.player.opponent
                 }))
             ]));

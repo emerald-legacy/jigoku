@@ -1,21 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { immunity } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { CardType, RestrictionScope } from '../../Constants.js';
 
 class ScholarOfOldRempet extends DrawCard {
     static id = 'scholar-of-old-rempet';
 
     setupCardAbilities() {
         this.action('Make character immune to events')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.isUnique()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+                cardCondition: (card) => !card.isUnique()
+            }, cardLastingEffect({
+                effect: immunity({ appliesTo: RestrictionScope.Events })
             }))
-            .effect('make {0} immune to events');
+            .chatText('make {0} immune to events');
     }
 }
 

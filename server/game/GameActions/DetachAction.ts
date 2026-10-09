@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -5,19 +6,19 @@ import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
-export type DetachActionProperties = CardActionProperties;
+export type DetachProperties = CardActionProperties;
 
-export class DetachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DetachActionProperties, EventName.OnCardDetached, C> {
+export class DetachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DetachProperties, EventName.OnCardDetached, C> {
     name = 'detach';
     eventName = EventName.OnCardDetached;
     targetType = [CardType.Attachment];
 
-    protected effectMessage(context: C): MessageArgs {
-        const [target] = targetList(this.getProperties(context).target);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const [target] = targetList(this.getProperties(context, additionalProperties).target);
         return ['detach {1} from {0}', [target.parent]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return !!(
             card.location === Location.PlayArea &&
             card.parent &&

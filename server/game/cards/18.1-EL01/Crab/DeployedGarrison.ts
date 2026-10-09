@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Conflict } from '../../../Conflict.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DeployedGarrison extends DrawCard {
@@ -10,9 +10,9 @@ export default class DeployedGarrison extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'applyCovert',
-                restricts: 'opponentsCardEffects'
+            effect: cardCannot({
+                cannot: RestrictionType.ApplyCovert,
+                appliesTo: RestrictionScope.OpponentsCardEffects
             })
         });
 
@@ -24,10 +24,10 @@ export default class DeployedGarrison extends DrawCard {
                     context.source.isParticipating() &&
                     this.conflictNearHolding(context, event.conflict)
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.doesNotBow()
-            }))
-            .effect('not bow during the conflict resolution');
+            .cardLastingEffect({
+                effect: doesNotBow()
+            })
+            .chatText('not bow during the conflict resolution');
     }
 
     private conflictNearHolding(context: AbilityContext, conflict: Conflict) {

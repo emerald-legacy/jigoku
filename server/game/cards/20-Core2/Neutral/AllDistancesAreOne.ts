@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveConflict, onAffinity, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
 
@@ -16,25 +17,20 @@ export default class AllDistancesAreOne extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 )))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                gameAction: AbilityDsl.actions.moveConflict(),
-                message: '{0} moves the conflict to {1}',
-                messageArgs: (card) => [context.player, card]
-            })))
-            .effect('move the conflict to another eligible province')
-            .then((context) => ({
-                thenCondition: () => !context.costs.originalProvince?.isBroken,
-                gameAction: AbilityDsl.actions.onAffinity({
-                    trait: 'water',
-                    promptTitleForConfirmingAffinity: 'Flip the original province facedown?',
-                    effect: 'flip {0} facedown',
-                    effectArgs: () => [context.costs.originalProvince],
-                    gameAction: AbilityDsl.actions.turnFacedown({
-                        target: context.costs.originalProvince
-                    })
-                })
-            }));
+                gameAction: moveConflict(),
+                message: (context, card) => msg`${context.player} moves the conflict to ${card}`
+            })
+            .chatText('move the conflict to another eligible province')
+            .thenIf((context) => !context.costs.originalProvince?.isBroken)
+            .gameAction(onAffinity((context) => ({
+                trait: 'water',
+                prompt: 'Flip the original province facedown?',
+                chatText: 'flip {0} facedown',
+                chatTextArgs: () => [context.costs.originalProvince],
+                gameAction: turnFacedown({ target: context.costs.originalProvince })
+            })));
     }
 }

@@ -1,11 +1,11 @@
 import { Duration, EffectName, EventName } from './Constants.js';
-import type Effect from './Effects/Effect.js';
-import type { EffectUntil } from './Effects/Effect.js';
+import type { ActiveEffect } from './Effects/ActiveEffect.js';
+import type { EffectUntil } from './Effects/ActiveEffect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { DelayedEffectValue, DelayedEffectWhen } from './Effects/EffectValueMap.js';
 import type { AbilityContext } from './AbilityContext.js';
-import { isEnumValue } from './utils/helpers.js';
-import type EffectSource from './EffectSource.js';
+import { eventNamesIn, isEnumValue } from './utils/helpers.js';
+import type { EffectSource } from './EffectSource.js';
 import { Event } from './Events/Event.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
@@ -22,29 +22,29 @@ function untilEnds<N extends EventName>(until: EffectUntil, name: N, event: Even
 }
 
 interface CustomDurationEvent {
-    name: string;
-    handler: (...args: unknown[]) => void;
-    effect: Effect;
+    name: EventName;
+    handler: (event: Event) => void;
+    effect: ActiveEffect;
 }
 
 export class EffectEngine {
     events: EventRegistrar;
-    effects: Array<Effect> = [];
+    effects: Array<ActiveEffect> = [];
     customDurationEvents: CustomDurationEvent[] = [];
     newEffect = false;
 
     constructor(private game: Game) {
-        this.events = new EventRegistrar(game, this);
-        this.events.register([
-            EventName.OnConflictFinished,
-            EventName.OnPhaseEnded,
-            EventName.OnRoundEnded,
-            EventName.OnDuelFinished,
-            EventName.OnPassActionPhasePriority
-        ]);
+        this.events = new EventRegistrar(game);
+        this.events.register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished(),
+            [EventName.OnPhaseEnded]: () => this.onPhaseEnded(),
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnDuelFinished]: () => this.onDuelFinished(),
+            [EventName.OnPassActionPhasePriority]: (event) => this.onPassActionPhasePriority(event)
+        });
     }
 
-    add(effect: Effect) {
+    add(effect: ActiveEffect) {
         this.effects.push(effect);
         if(effect.duration === Duration.Custom) {
             this.registerCustomDurationEvents(effect);
@@ -54,8 +54,8 @@ export class EffectEngine {
     }
 
     checkDelayedEffects(events: Event[]) {
-        const effectsToTrigger: { effect: Effect; properties: DelayedEffectValue }[] = [];
-        const effectsToRemove: Effect[] = [];
+        const effectsToTrigger: { effect: ActiveEffect; properties: DelayedEffectValue }[] = [];
+        const effectsToRemove: ActiveEffect[] = [];
         for(const effect of this.effects.filter((effect) => effect.isEffectActive())) {
             const delayedEffect = effect.effect;
             // a delayed effect is static, so it has a value without a target
@@ -88,16 +88,11 @@ export class EffectEngine {
             return {
                 title: context.source.name + '\'s effect' + (targets.length === 1 ? ' on ' + targets[0].name : ''),
                 handler: () => {
-                    properties.gameAction.setDefaultTarget(() => targets);
-                    if(properties.message && properties.gameAction.hasLegalTarget(context)) {
-                        let messageArgs = properties.messageArgs || [];
-                        if(typeof messageArgs === 'function') {
-                            messageArgs = messageArgs(context, targets);
-                        }
-                        this.game.addMessage(properties.message, ...messageArgs);
+                    if(properties.message && properties.gameAction.hasLegalTarget(context, { target: targets })) {
+                        this.game.addMessage(properties.message(context, targets));
                     }
                     const actionEvents: Event[] = [];
-                    properties.gameAction.addEventsToArray(actionEvents, context);
+                    properties.gameAction.addEventsToArray(actionEvents, context, { target: targets });
                     this.game.queueSimpleStep(() => this.game.openThenEventWindow(actionEvents));
                     this.game.queueSimpleStep(() => context.refill());
                 }
@@ -146,19 +141,19 @@ export class EffectEngine {
     }
 
     onConflictFinished() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfConflict);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfConflict) || this.newEffect;
     }
 
     onDuelFinished() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfDuel);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfDuel) || this.newEffect;
     }
 
     onPhaseEnded() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfPhase);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfPhase) || this.newEffect;
     }
 
     onRoundEnded() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfRound);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfRound) || this.newEffect;
     }
 
     onPassActionPhasePriority(event: GameEvent<EventName.OnPassActionPhasePriority>) {
@@ -171,7 +166,7 @@ export class EffectEngine {
             }
         }
 
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilPassPriority);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilPassPriority) || this.newEffect;
         for(const effect of this.effects) {
             if(
                 effect.duration === Duration.UntilOpponentPassPriority ||
@@ -184,13 +179,13 @@ export class EffectEngine {
         }
     }
 
-    registerCustomDurationEvents(effect: Effect) {
+    registerCustomDurationEvents(effect: ActiveEffect) {
         if(!effect.until) {
             return;
         }
 
         const handler = this.createCustomDurationHandler(effect);
-        for(const eventName of Object.keys(effect.until)) {
+        for(const eventName of eventNamesIn(effect.until)) {
             this.customDurationEvents.push({
                 name: eventName,
                 handler: handler,
@@ -200,11 +195,11 @@ export class EffectEngine {
         }
     }
 
-    unregisterCustomDurationEvents(effect: Effect) {
+    unregisterCustomDurationEvents(effect: ActiveEffect) {
         const remainingEvents: CustomDurationEvent[] = [];
         for(const event of this.customDurationEvents) {
             if(event.effect === effect) {
-                this.game.removeListener(event.name, event.handler);
+                this.game.off(event.name, event.handler);
             } else {
                 remainingEvents.push(event);
             }
@@ -212,11 +207,9 @@ export class EffectEngine {
         this.customDurationEvents = remainingEvents;
     }
 
-    createCustomDurationHandler(customDurationEffect: Effect) {
-        // the custom duration events are emitted with the event alone
-        return (...args: unknown[]) => {
-            const event = args[0];
-            if(event instanceof Event && isEnumValue(EventName, event.name) && untilEnds(customDurationEffect.until, event.name, event)) {
+    createCustomDurationHandler(customDurationEffect: ActiveEffect) {
+        return (event: Event) => {
+            if(untilEnds(customDurationEffect.until, event.name, event)) {
                 customDurationEffect.cancel();
                 this.unregisterCustomDurationEvents(customDurationEffect);
                 this.effects = this.effects.filter((effect) => effect !== customDurationEffect);
@@ -227,8 +220,8 @@ export class EffectEngine {
         };
     }
 
-    unapplyAndRemove(match: (effect: Effect) => boolean) {
-        const toRemove: Effect[] = [];
+    unapplyAndRemove(match: (effect: ActiveEffect) => boolean) {
+        const toRemove: ActiveEffect[] = [];
         for(const effect of this.effects) {
             if(match(effect)) {
                 toRemove.push(effect);

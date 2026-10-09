@@ -1,5 +1,6 @@
-import { PlayType, Decks, CardType, EventName, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { PlayType, DeckType, CardType, EventName, Location, RemainingCards } from '../../Constants.js';
+import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
@@ -16,25 +17,25 @@ export default class ShinjoGunso extends DrawCard {
                     !!event.originalLocation &&
                     context.game.getProvinceArray().some((location) => location === event.originalLocation)
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
-                        AbilityDsl.actions.deckSearch(() => ({
+                        deckSearch(() => ({
                             activePromptTitle: 'Choose a character to put into play',
-                            amount: 5,
-                            deck: Decks.DynastyDeck,
+                            cardsToLookAt: 5,
+                            deck: DeckType.Dynasty,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
-                            message: '{0} puts {1} into play{2}{3}',
-                            shuffle: false,
-                            messageArgs: (context, cards) => {
+                            remainingCards: RemainingCards.Top,
+                            message: (context, cards) => {
                                 const discards = topFive.filter((a) => !cards.includes(a));
-                                const card = cards.length > 0 ? cards : 'nothing';
-                                return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
+                                return discards.length > 0
+                                    ? msg`${context.player} puts ${cards} into play and discards ${discards}`
+                                    : msg`${context.player} puts ${cards} into play`;
                             },
-                            gameAction: AbilityDsl.actions.putIntoPlay()
+                            gameAction: putIntoPlay()
                         })),
-                        AbilityDsl.actions.moveCard((context2) => ({
+                        moveCard((context2) => ({
                             target: topFive.filter((a) => {
                                 const events = context2.events.filter((a: Event): a is GameEvent<EventName.OnDeckSearch> => a.name === EventName.OnDeckSearch && !a.cancelled);
                                 if(events.length > 0 && events[0].selectedCards) {
@@ -48,6 +49,6 @@ export default class ShinjoGunso extends DrawCard {
                     ]
                 };
             }))
-            .effect('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
+            .chatText('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
     }
 }

@@ -1,9 +1,12 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { gainPlayAction } from '../../../effects.js';
+import { cardLastingEffect, discardCard, playCard, selectCard, sequential } from '../../../GameActions/GameActions.js';
+import { CardType, Location, Players, TargetMode, Blocker } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import { msg } from '../../../GameChat.js';
 
 export default class ToConnectThePeople extends DrawCard {
     static id = 'to-connect-the-people';
@@ -15,30 +18,30 @@ export default class ToConnectThePeople extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.getType() === CardType.Character && card.hasTrait('merchant')
                 ))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard((context) => ({
+            .gameAction(sequential([
+                discardCard((context) => ({
                     target: this.topThreeCards(context)
                 })),
-                AbilityDsl.actions.selectCard({
+                selectCard({
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                     targets: true,
                     cardCondition: (card, context) => !card.isUnique() && card.glory <= this.maxMerchantGlory(context),
                     mode: TargetMode.Single,
-                    gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.cardLastingEffect({
+                    gameAction: sequential([
+                        cardLastingEffect({
                             effect: [
-                                AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand),
-                                AbilityDsl.effects.gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
+                                gainPlayAction(PlayCharacterAsIfFromHand),
+                                gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
                             ]
                         }),
-                        AbilityDsl.actions.playCard({ ignoredRequirements: ['location'] })
+                        playCard({ ignoredBlockers: [Blocker.WrongLocation] })
                     ])
                 })
             ]))
-            .effect('discard {1} from the top of {2}\'s dynasty deck', (context) => [this.topThreeCards(context), context.player.opponent])
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
+            .max(perRound(1));
     }
 
     private topThreeCards(context: AbilityContext) {

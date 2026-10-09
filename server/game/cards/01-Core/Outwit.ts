@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class Outwit extends DrawCard {
     static id = 'outwit';
@@ -14,7 +14,7 @@ class Outwit extends DrawCard {
                     myCard.hasTrait('courtier') && myCard.isParticipating() &&
                     myCard.politicalSkill > card.politicalSkill
                 ))
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

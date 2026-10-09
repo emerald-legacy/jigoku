@@ -1,6 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { Event } from '../Events/Event.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import { resolvePromptSource } from './PromptSource.js';
 import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
@@ -51,7 +51,7 @@ type ResolvedHandlerMenuPromptProperties<T extends BaseCard, C extends Choice> =
  * cardCondition      - disables the prompt buttons for any cards which return false
  * cardHandler        - handler which is called when a card button is clicked
  */
-class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice> extends UiPrompt {
+export class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice> extends UiPrompt {
     player: Player;
     properties: ResolvedHandlerMenuPromptProperties<T, C>;
     cardCondition: (card: T, context: AbilityContext) => boolean;
@@ -178,4 +178,3 @@ class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice
     }
 }
 
-export default HandlerMenuPrompt;

@@ -1,14 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class IchigenkinSoloist extends DrawCard {
     static id = 'ichigenkin-soloist';
 
     setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'target',
-                restricts: 'opponentsTriggeredAbilities'
+            effect: cardCannot({
+                cannot: RestrictionType.Target,
+                appliesTo: RestrictionScope.OpponentsTriggeredAbilities
             })
         });
     }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
@@ -17,7 +17,7 @@ export default class DisloyalOathkeeper extends DrawCard {
                     !event.card.hasEphemeral() &&
                     context.source.controller.getSourceList(this.uuid).length === 0
             })
-            .gameAction(AbilityDsl.actions.placeCardUnderneath((context) => ({
+            .gameAction(placeCardUnderneath((context) => ({
                 target: context.event.card,
                 hideWhenFaceup: true,
                 destination: this

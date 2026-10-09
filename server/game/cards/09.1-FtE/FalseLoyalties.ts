@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class FalseLoyalties extends DrawCard {
     static id = 'false-loyalties';
@@ -18,7 +19,7 @@ class FalseLoyalties extends DrawCard {
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .target({
                 name: 'characterAtHome',
@@ -26,11 +27,11 @@ class FalseLoyalties extends DrawCard {
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
-                AbilityDsl.actions.moveToConflict()
+            }, joint([
+                sendHome((context) => ({ target: context.targets.characterInConflict })),
+                moveToConflict()
             ]))
-            .effect('switch {1} and {2}', context => [context.targets.characterInConflict, context.targets.characterAtHome]);
+            .chatText((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);
     }
 }
 

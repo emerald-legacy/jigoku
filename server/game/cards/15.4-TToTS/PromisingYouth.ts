@@ -1,6 +1,7 @@
 import { CardType, Duration } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changeType, modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect, detach, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class PromisingYouth extends DrawCard {
@@ -9,19 +10,19 @@ export default class PromisingYouth extends DrawCard {
     setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.whileAttached({
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
         this.wouldInterrupt('when attached char leaves play, turn into character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+            .gameAction(multiple([
+                cardLastingEffect((context) => ({
                     target: context.source,
                     duration: Duration.Custom,
-                    effect: AbilityDsl.effects.changeType(CardType.Character)
+                    effect: changeType(CardType.Character)
                 })),
-                AbilityDsl.actions.detach((context) => ({ target: context.source }))
+                detach((context) => ({ target: context.source }))
             ]));
     }
 }

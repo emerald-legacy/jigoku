@@ -1,7 +1,9 @@
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost, modifyMilitarySkill } from '../../../effects.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 export default class MirumotoRikitaro extends DrawCard {
     static id = 'mirumoto-rikitaro';
@@ -17,7 +19,7 @@ export default class MirumotoRikitaro extends DrawCard {
                     const isAttachment =
                         ec.source.type === CardType.Attachment ||
                         ec.ability instanceof PlayAttachmentAction;
-                    const sourceHasNoAttachment = context.source.attachments.filter(a => a.controller === context.player).length === 0;
+                    const sourceHasNoAttachment = context.source.attachments.filter((a) => a.controller === context.player).length === 0;
                     return (
                         isAttachment &&
                         sourceHasNoAttachment &&
@@ -27,28 +29,22 @@ export default class MirumotoRikitaro extends DrawCard {
                     );
                 }
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.context?.source
                 )
-            })))
-            .effect('reduce the cost of their next attachment by 1');
+            }))
+            .chatText('reduce the cost of their next attachment by 1');
 
         this.conflictAction('Discard an attachment')
             .target({
                 cardCondition: (card, context) => !!(card.hasSomeTrait('item', 'weapon', 'armor') && card.parentCharacter && context.player.opponent && card.parentCharacter.isParticipatingFor(context.player.opponent)),
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.discardFromPlay())
-            .then((context) => ({
-                message: '{3} gains +2{4} due to discarding a weapon',
-                messageArgs: () => [context.source, 'military'],
-                thenCondition: () => context.target.hasTrait('weapon'),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.source,
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                })
-            }));
+            }, discardFromPlay())
+            .afterwardsIf((context) => context.target.hasTrait('weapon'))
+            .cardLastingEffect({ effect: modifyMilitarySkill(2) })
+            .message((context) => msg`${context.source} gains +2${'military'} due to discarding a weapon`);
     }
 }

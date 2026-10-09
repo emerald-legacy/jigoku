@@ -1,6 +1,17 @@
-import { CardType, Decks, Duration, Location, Players } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { CardType, DeckType, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { delayedEffect } from '../../effects.js';
+import {
+    cardLastingEffect,
+    handler,
+    multiple,
+    putIntoPlay,
+    returnToDeck,
+    selectCard,
+    sequential
+} from '../../GameActions/GameActions.js';
 
 export default class SpectralVisitation extends ProvinceCard {
     static id = 'spectral-visitation';
@@ -10,37 +21,34 @@ export default class SpectralVisitation extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => context.source === event.card
             })
-            .cost(AbilityDsl.costs.discardTopCardsFromDeck({ amount: 4, deck: Decks.DynastyDeck }))
-            .gameAction(AbilityDsl.actions.sequential([
+            .cost(costs.discardTopCardsFromDeck({ amount: 4, deck: DeckType.Dynasty }))
+            .gameAction(sequential([
                 // always legal, so this can trigger when only the cards the cost discards give it a choice
-                AbilityDsl.actions.handler({
+                handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context) => ({
+                selectCard({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.putIntoPlay(),
-                        AbilityDsl.actions.cardLastingEffect((context) => ({
+                    gameAction: multiple([
+                        putIntoPlay(),
+                        cardLastingEffect((context) => ({
                             duration: Duration.UntilEndOfRound,
-                            effect: AbilityDsl.effects.delayedEffect({
+                            effect: delayedEffect({
                                 when: {
                                     onPhaseEnded: () => true
                                 },
-                                message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                                messageArgs: (_effectContext, effectTargets) => [effectTargets, context.source],
-                                gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
+                                message: (_effectContext, effectTargets) => msg`${effectTargets} returns to the bottom of the deck due to ${context.source}'s effect`,
+                                gameAction: returnToDeck({ bottom: true })
                             })
                         }))
                     ]),
-                    message:
-                        '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the phase',
-                    messageArgs: (card) => [context.player, card, context.source]
-                }))
+                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the phase`
+                })
             ]))
-            .effect('put a dynasty character into play')
+            .chatText('put a dynasty character into play')
             .cannotTargetFirst();
     }
 }

@@ -34,7 +34,7 @@ describe('Hida Kisada', function() {
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.akodoToturi);
                 expect(this.getChatLogs(3)).toContain('player2 attempts to initiate Banzai!, but Hida Kisada cancels it');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(6);
+                expect(this.akodoToturi.militarySkill).toBe(6);
             });
 
             it('should not cancel the second action ability triggered by your opponent', function() {
@@ -52,7 +52,7 @@ describe('Hida Kisada', function() {
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.akodoToturi);
                 this.player2.clickPrompt('Done');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(8);
+                expect(this.akodoToturi.militarySkill).toBe(8);
             });
 
             it('should not cancel reactions triggered by your opponent', function() {
@@ -95,7 +95,7 @@ describe('Hida Kisada', function() {
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.akodoToturi);
                 this.player2.clickPrompt('Done');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(8);
+                expect(this.akodoToturi.militarySkill).toBe(8);
             });
 
             it('should not cancel the second action if the first is cancelled', function() {
@@ -115,7 +115,7 @@ describe('Hida Kisada', function() {
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
                 expect(this.getChatLogs(3)).toContain('Duel Effect: cancel the effects of Banzai!');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(6);
+                expect(this.akodoToturi.militarySkill).toBe(6);
                 this.player1.pass();
                 this.player2.clickCard(this.shamefulDisplay);
                 this.player2.clickCard(this.akodoToturi);

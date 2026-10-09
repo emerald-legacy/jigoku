@@ -1,4 +1,5 @@
-import { Location, Players, PlayType, TargetMode } from '../Constants.js';
+import { msg } from '../GameChat.js';
+import { EventName, Location, Players, PlayType, TargetMode, RestrictionType } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
@@ -9,7 +10,7 @@ import Ring from '../Ring.js';
 import type { Cost, Result } from './Cost.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
-export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: AbilityContext) => true): Cost<{ returnRing: Ring[] }> {
+export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: AbilityContext) => true): Cost<{ returnedRings: Ring[] }> {
     return {
         promptsPlayer: true,
         canPay(context) {
@@ -21,10 +22,10 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
             return false;
         },
         getActionName(_context) {
-            return 'returnRing';
+            return 'returnedRings';
         },
         getCostMessage(context) {
-            return ['returning the {1}', [context.costs.returnRing]];
+            return ['returning the {1}', [context.costs.returnedRings]];
         },
         resolve(context, result) {
             const chosenRings: Ring[] = [];
@@ -56,19 +57,19 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
                         ) {
                             promptPlayer();
                         } else {
-                            context.costs.returnRing = chosenRings;
+                            context.costs.returnedRings = chosenRings;
                         }
                         return true;
                     },
                     onMenuCommand: (_player: Player, arg: string): boolean | undefined => {
                         if(arg === 'done') {
-                            context.costs.returnRing = chosenRings;
+                            context.costs.returnedRings = chosenRings;
                             return true;
                         }
                         return undefined;
                     },
                     onCancel: () => {
-                        context.costs.returnRing = [];
+                        context.costs.returnedRings = [];
                         result.cancelled = true;
                     }
                 });
@@ -76,7 +77,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
             promptPlayer();
         },
         payEvent(context) {
-            return context.game.actions.returnRing({ target: context.costs.returnRing }).getEventArray(context);
+            return context.game.actions.returnRing({ target: context.costs.returnedRings }).getEventArray(context);
         }
     };
 }
@@ -90,16 +91,16 @@ export function chooseFate(type: PlayType): Cost {
             context.chooseFate = 0;
 
             let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
-            if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.PlaceFateWhenPlayingCharacter, context)) {
                 extrafate = 0;
             }
             if(
-                !context.player.checkRestrictions('placeFateWhenPlayingCharacterFromProvince', context) &&
+                !context.player.checkRestrictions(RestrictionType.PlaceFateWhenPlayingCharacterFromProvince, context) &&
                 type === PlayType.PlayFromProvince
             ) {
                 extrafate = 0;
             }
-            if(!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
                 extrafate = 0;
             }
 
@@ -281,7 +282,54 @@ export function optional(cost: Cost): Cost {
     };
 }
 
-export function optionalFateCost(amount: number, forcePayment: (context: AbilityContext) => boolean = () => false): Cost<{ optionalFateCost: number }> {
+/** "Pay X or Y": the player picks one of the payable costs, without a question when only one can be paid. */
+export function chooseOne(options: Record<string, Cost>): Cost<{ chosenCostLabel: string }> {
+    const chosen = (context: AbilityContext) => {
+        const label = context.costs.chosenCostLabel;
+        return typeof label === 'string' ? options[label] : undefined;
+    };
+    return {
+        promptsPlayer: true,
+        canPay: (context) => Object.values(options).some((cost) => cost.canPay(context)),
+        getActionName: (context) => chosen(context)?.getActionName?.(context) ?? 'chosenCostLabel',
+        getCostMessage: (context) => chosen(context)?.getCostMessage?.(context) ?? [],
+        addEventsToArray(events, context, result = {}) {
+            const pay = (label: string) => {
+                context.costs.chosenCostLabel = label;
+                const cost = options[label];
+                if(cost.addEventsToArray) {
+                    cost.addEventsToArray(events, context, result);
+                    return;
+                }
+                cost.resolve?.(context, result);
+                context.game.queueSimpleStep(() => {
+                    if(!result.cancelled) {
+                        const paid = cost.payEvent ? cost.payEvent(context) : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
+                        events.push(...(Array.isArray(paid) ? paid : [paid]));
+                    }
+                });
+            };
+            const payable = Object.keys(options).filter((label) => options[label].canPay(context));
+            if(payable.length === 1) {
+                pay(payable[0]);
+                return;
+            }
+            const menu: HandlerMenuOption[] = payable.map((label) => ({ text: label, handler: () => pay(label) }));
+            if(result.canCancel) {
+                menu.push({ text: 'Cancel', handler: () => {
+                    result.cancelled = true;
+                } });
+            }
+            context.game.promptWithHandlerMenu(context.player, {
+                activePromptTitle: 'Choose a cost to pay',
+                source: context.source,
+                options: menu
+            });
+        }
+    };
+}
+
+export function payOptionalFate(amount: number, forcePayment: (context: AbilityContext) => boolean = () => false): Cost<{ optionalFatePaid: number }> {
     return {
         promptsPlayer: true,
         canPay(context) {
@@ -290,7 +338,7 @@ export function optionalFateCost(amount: number, forcePayment: (context: Ability
                 if(context.player.fate < amount) {
                     fateAvailable = false;
                 }
-                if(!context.player.checkRestrictions('spendFate', context)) {
+                if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
                     fateAvailable = false;
                 }
                 return fateAvailable;
@@ -298,10 +346,10 @@ export function optionalFateCost(amount: number, forcePayment: (context: Ability
             return true;
         },
         getActionName(_context) {
-            return 'optionalFateCost';
+            return 'optionalFatePaid';
         },
         getCostMessage: (context) => {
-            if(context.costs.optionalFateCost === 0) {
+            if(context.costs.optionalFatePaid === 0) {
                 return [];
             }
             return ['paying {1} fate', [amount]];
@@ -311,22 +359,22 @@ export function optionalFateCost(amount: number, forcePayment: (context: Ability
             if(context.player.fate < amount) {
                 fateAvailable = false;
             }
-            if(!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
                 fateAvailable = false;
             }
 
             if(forcePayment(context) && fateAvailable) {
-                context.costs.optionalFateCost = amount;
+                context.costs.optionalFatePaid = amount;
                 return;
             }
 
             const options: HandlerMenuOption[] = [];
-            context.costs.optionalFateCost = 0;
+            context.costs.optionalFatePaid = 0;
 
             if(fateAvailable) {
                 options.push(
-                    { text: 'Yes', handler: () => (context.costs.optionalFateCost = amount) },
-                    { text: 'No', handler: () => (context.costs.optionalFateCost = 0) }
+                    { text: 'Yes', handler: () => (context.costs.optionalFatePaid = amount) },
+                    { text: 'No', handler: () => (context.costs.optionalFatePaid = 0) }
                 );
             }
             if(fateAvailable && result.canCancel) {
@@ -347,7 +395,7 @@ export function optionalFateCost(amount: number, forcePayment: (context: Ability
             }
         },
         pay(context) {
-            context.player.fate -= context.costs.optionalFateCost ?? 0;
+            context.player.fate -= context.costs.optionalFatePaid ?? 0;
         }
     };
 }
@@ -378,7 +426,7 @@ export function optionalOpponentLoseHonor(
         },
         payEvent: (context) => {
             if(context.costs[NAME]) {
-                context.game.addMessage('{0} chooses to lose 1 honor', context.player.opponent, context.player);
+                context.game.addMessage(msg`${context.player.opponent} chooses to lose 1 honor`);
                 return [
                     context.game.actions
                         .loseHonor({ target: context.player.opponent })
@@ -391,14 +439,14 @@ export function optionalOpponentLoseHonor(
     };
 }
 
-export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: AbilityContext) => true): Cost<{ optionalHonorTransferFromOpponentCostPaid: boolean }> {
+export function optionalTakeHonorFromOpponent(canPayFunc = (_context: AbilityContext) => true): Cost<{ honorTakenFromOpponent: boolean }> {
     return {
         promptsPlayer: true,
         canPay() {
             return true;
         },
         resolve(context, _result) {
-            context.costs.optionalHonorTransferFromOpponentCostPaid = false;
+            context.costs.honorTakenFromOpponent = false;
 
             if(!canPayFunc(context)) {
                 return;
@@ -421,17 +469,17 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: Ab
                     activePromptTitle: 'Give an honor to your opponent?',
                     source: context.source,
                     options: [
-                        { text: 'Yes', handler: () => (context.costs.optionalHonorTransferFromOpponentCostPaid = true) },
-                        { text: 'No', handler: () => (context.costs.optionalHonorTransferFromOpponentCostPaid = false) }
+                        { text: 'Yes', handler: () => (context.costs.honorTakenFromOpponent = true) },
+                        { text: 'No', handler: () => (context.costs.honorTakenFromOpponent = false) }
                     ]
                 });
             }
         },
         payEvent(context) {
-            if(context.costs.optionalHonorTransferFromOpponentCostPaid) {
+            if(context.costs.honorTakenFromOpponent) {
                 const events = [];
 
-                context.game.addMessage('{0} chooses to give {1} 1 honor', context.player.opponent, context.player);
+                context.game.addMessage(msg`${context.player.opponent} chooses to give ${context.player} 1 honor`);
                 const honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
 
@@ -444,33 +492,20 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (_context: Ab
     };
 }
 
-export function nameCard(): Cost<{ nameCardCost: string }> {
+export function nameCard(): Cost<{ namedCard: string }> {
     return {
         getActionName(_context) {
             return 'nameCard';
         },
         getCostMessage(context) {
-            return ['naming {1}', [context.costs.nameCardCost]];
+            return ['naming {1}', [context.costs.namedCard]];
         },
         canPay() {
             return true;
         },
         resolve(context) {
-            const dummyObject = {
-                selectCardName: (_player: Player, cardName: string, context: AbilityContext) => {
-                    context.costs.nameCardCost = cardName;
-                    return true;
-                }
-            };
-
-            context.game.promptWithMenu(context.player, dummyObject, {
-                context: context,
-                activePrompt: {
-                    menuTitle: 'Name a card',
-                    controls: [
-                        { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                    ]
-                }
+            context.game.promptForCardName(context.player, (_player, cardName) => {
+                context.costs.namedCard = cardName;
             });
         },
         pay() { }

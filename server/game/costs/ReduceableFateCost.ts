@@ -1,5 +1,6 @@
+import { msg } from '../GameChat.js';
 import { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location, Players } from '../Constants.js';
+import { EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type { Cost, CostContext, Result } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
@@ -27,7 +28,6 @@ type Props = {
 export class ReduceableFateCost implements Cost {
     public isPlayCost = true;
     public isPrintedFateCost = true;
-    public payFateCostToOpponent = false;
     constructor(public ignoreType: boolean) { }
 
     public canPay(context: AbilityContext<DrawCard>): boolean {
@@ -44,7 +44,7 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        return context.player.fate >= minCost && context.player.checkRestrictions('spendFate', context);
+        return context.player.fate >= minCost && context.player.checkRestrictions(RestrictionType.SpendFate, context);
     }
 
     protected getAlternateFatePools(context: AbilityContext<DrawCard>): Set<BaseCard | Ring> {
@@ -156,13 +156,7 @@ export class ReduceableFateCost implements Cost {
         for(const alternatePool of this.getAlternateFatePools(context)) {
             const amount = context.costs.alternateFate.get(alternatePool);
             if(amount) {
-                context.game.addMessage(
-                    '{0} takes {1} fate from {2} to pay the cost of {3}',
-                    context.player,
-                    amount,
-                    alternatePool,
-                    context.source
-                );
+                context.game.addMessage(msg`${context.player} takes ${amount} fate from ${alternatePool} to pay the cost of ${context.source}`);
                 removeFate({ amount }).resolve(alternatePool, context);
                 totalAlternateFate += amount;
             }
@@ -271,7 +265,7 @@ export class ReduceableFateCost implements Cost {
         if(context.source.isTemptationsMaho()) {
             return 0;
         }
-        if(context.player.checkRestrictions('spendFate', context)) {
+        if(context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
             return context.player.fate;
         }
         return 0;

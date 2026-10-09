@@ -1,7 +1,11 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Duration, EventName, Location, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { cannotTriggerAbilities } from '../../../effects.js';
+import { cardLastingEffect, claimRing, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -11,23 +15,26 @@ export default class TheEmptyCity extends ProvinceCard {
     private invokedSpirit?: BaseCard;
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
-        const sharedLimit = AbilityDsl.limit.perRound(1);
+        const sharedLimit = perRound(1);
 
         this.action('Claim a ring')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('spirit')
             }))
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: (ring) => ring.isUnclaimed()
-            }, AbilityDsl.actions.claimRing({
+            }, claimRing({
                 takeFate: false,
                 type: ConflictType.Political
             }))
-            .effect('claim {0} as a political ring')
+            .chatText('claim {0} as a political ring')
             .limit(sharedLimit)
             .canTriggerOutsideConflict();
 
@@ -37,16 +44,16 @@ export default class TheEmptyCity extends ProvinceCard {
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 cardCondition: (card) => card.hasTrait('spirit') && (card.getCost() ?? 0) <= 3
-            }, AbilityDsl.actions.joint([
-                AbilityDsl.actions.putIntoPlay(),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, joint([
+                putIntoPlay(),
+                cardLastingEffect((context) => ({
                     target: context.source,
-                    effect: AbilityDsl.effects.cannotTriggerAbilities(),
+                    effect: cannotTriggerAbilities(),
                     duration: Duration.UntilEndOfRound
                 }))
             ]))
-            .effect('put {0} into play')
-            .then((context) => {
+            .chatText('put {0} into play')
+            .onResolve((context) => {
                 this.invokedSpirit = context.target;
             })
             .limit(sharedLimit)
@@ -59,11 +66,7 @@ export default class TheEmptyCity extends ProvinceCard {
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Location.RemovedFromGame) {
-            this.game.addMessage(
-                '{1} is removed from the game, as it was invoked by the {0} this round',
-                this,
-                event.card
-            );
+            this.game.addMessage(msg`${event.card} is removed from the game, as it was invoked by the ${this} this round`);
             this.owner.moveCard(event.card, Location.RemovedFromGame);
         }
     }

@@ -1,6 +1,8 @@
-import { Players, CardType } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { Players, CardType, RestrictionType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { injure, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const MAX_FATE = 3;
@@ -10,7 +12,7 @@ export default class AppeasingTheRestless extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place fates on spirits')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))
@@ -19,16 +21,18 @@ export default class AppeasingTheRestless extends DrawCard {
                 this.moveFate(context, MAX_FATE);
                 context.game.queueSimpleStep(() => this.injure(context, context.costs.bow));
             })
-            .effect('move up to 3 fate onto Spirit characters{1}{2}', (context) => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow])
+            .chatText((context) => context.player.hasAffinity('void', context)
+                ? msg`move up to 3 fate onto Spirit characters`
+                : msg`move up to 3 fate onto Spirit characters and injure ${context.costs.bow}`)
             .cannotTargetFirst();
     }
 
     private canMoveFate(context: AbilityContext) {
-        return context.player.fate > 0 && context.player.checkRestrictions('spendFate', context);
+        return context.player.fate > 0 && context.player.checkRestrictions(RestrictionType.SpendFate, context);
     }
 
     private canReceiveFate(card: DrawCard, context: AbilityContext) {
-        return card.hasTrait('spirit') && AbilityDsl.actions.placeFate({ origin: context.player }).canAffect(card, context);
+        return card.hasTrait('spirit') && placeFate({ origin: context.player }).canAffect(card, context);
     }
 
     // One fate per pick, so a spirit may be picked more than once
@@ -45,8 +49,8 @@ export default class AppeasingTheRestless extends DrawCard {
             cardCondition: (card) => this.canReceiveFate(card, context),
             buttons: [{ text: 'Done', arg: 'done' }],
             onSelect: (player, card) => {
-                context.game.addMessage('{0} moves 1 fate from their pool onto {1}', player, card);
-                AbilityDsl.actions.placeFate({ origin: player }).resolve(card, context);
+                context.game.addMessage(msg`${player} moves 1 fate from their pool onto ${card}`);
+                placeFate({ origin: player }).resolve(card, context);
                 context.game.queueSimpleStep(() => this.moveFate(context, remaining - 1));
                 return true;
             }
@@ -57,6 +61,6 @@ export default class AppeasingTheRestless extends DrawCard {
         if(!bowed || context.player.hasAffinity('void', context)) {
             return;
         }
-        AbilityDsl.actions.injure().resolve(bowed, context);
+        injure().resolve(bowed, context);
     }
 }

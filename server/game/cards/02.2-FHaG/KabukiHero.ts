@@ -1,17 +1,19 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { modifyMilitarySkill } from '../../effects.js';
 
 class KabukiHero extends DrawCard {
     static id = 'kabuki-hero';
 
     setupCardAbilities() {
         this.action('Gain military bonus')
-            .cost(AbilityDsl.costs.payFate(1))
+            .cost(costs.payFate(1))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyMilitarySkill(context.source.politicalSkill)
-            })))
-            .effect('give itself +{1}{2}/+0{3} until the end of the conflict', context => [context.source.politicalSkill, 'military', 'political']);
+            .cardLastingEffect((context) => ({
+                effect: modifyMilitarySkill(context.source.politicalSkill)
+            }))
+            .chatText((context) => msg`give itself +${context.source.politicalSkill}${'military'}/+0${'political'} until the end of the conflict`);
     }
 }
 

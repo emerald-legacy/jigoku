@@ -1,26 +1,35 @@
+import type { ActionOverrides, WithDefaults } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { EventName } from '../Constants.js';
+import { noAction } from './HandlerAction.js';
 
-export interface ConditionalActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
-    condition: ((context: C, properties: ConditionalActionProperties<C>) => boolean) | boolean;
+export interface ConditionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+    condition: ((context: C, properties: ConditionalProperties<C>) => boolean) | boolean;
     trueGameAction: GameAction;
-    falseGameAction: GameAction;
+    /** Defaults to doing nothing. */
+    falseGameAction?: GameAction;
 }
 
-export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalActionProperties<C>, EventName, C> {
-    getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        properties.trueGameAction.setDefaultTarget(() => properties.target);
-        properties.falseGameAction.setDefaultTarget(() => properties.target);
-        return properties;
+export class ConditionalAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<ConditionalProperties<C>, C, 'falseGameAction'> {
+    defaultProperties = { falseGameAction: noAction() };
+
+    protected children(properties: ConditionalProperties<C>) {
+        return [properties.trueGameAction, properties.falseGameAction];
     }
 
-    getGameAction(context: C, additionalProperties = {}): GameAction {
-        const properties = this.getProperties(context, additionalProperties);
+    /** Only the branch the condition picks. */
+    protected resolving(context: C, properties: WithDefaults<ConditionalProperties<C>, 'falseGameAction'>): GameAction[] {
+        return [this.#pick(context, properties)];
+    }
+
+    getGameAction(context: C, additionalProperties: ActionOverrides = {}): GameAction {
+        return this.#pick(context, this.getProperties(context, additionalProperties));
+    }
+
+    #pick(context: C, properties: WithDefaults<ConditionalProperties<C>, 'falseGameAction'>): GameAction {
         let condition = properties.condition;
         if(typeof condition === 'function') {
             condition = condition(context, properties);
@@ -28,26 +37,13 @@ export class ConditionalAction<C extends AbilityContext = AbilityContext> extend
         return condition ? properties.trueGameAction : properties.falseGameAction;
     }
 
-    getEffectMessage(context: C): MessageArgs {
-        return this.getGameAction(context).getEffectMessage(context);
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return this.#pick(context, properties).getEffectMessage(context, overrides);
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
-        return this.getGameAction(context, additionalProperties).canAffect(target, context, additionalProperties);
-    }
-
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        return this.getGameAction(context, additionalProperties).hasLegalTarget(context, additionalProperties);
-    }
-
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        this.getGameAction(context, additionalProperties).addEventsToArray(events, context, additionalProperties);
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
-        return this.getGameAction(context, additionalProperties).hasTargetsChosenByInitiatingPlayer(
-            context,
-            additionalProperties
-        );
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        this.#pick(context, properties).addEventsToArray(events, context, overrides);
     }
 }

@@ -1,7 +1,8 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { dishonor, ready } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import ThenAbility from '../../ThenAbility.js';
+import { ThenAbility } from '../../ThenAbility.js';
 
 export default class KitsukiShomon extends DrawCard {
     static id = 'kitsuki-shomon';
@@ -20,16 +21,16 @@ export default class KitsukiShomon extends DrawCard {
                 if(!window) {
                     return;
                 }
-                const newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
+                const newEvent = dishonor().getEvent(context.source, context);
                 context.event.replacementEvent = newEvent;
                 const thenAbility = new ThenAbility(context.source, {
-                    gameAction: AbilityDsl.actions.ready()
+                    gameAction: ready()
                 });
                 context.events = [newEvent];
                 window.addEvent(newEvent);
                 window.addThenAbility(thenAbility, context);
                 context.cancel();
             })
-            .effect('dishonor {0} instead of {1}', (context) => context.event.card);
+            .chatText((context) => msg`dishonor ${context.chatTarget()} instead of ${context.event.card}`);
     }
 }

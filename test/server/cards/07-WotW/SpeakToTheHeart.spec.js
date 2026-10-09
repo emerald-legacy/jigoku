@@ -33,21 +33,21 @@ describe('Speak to the Heart', function() {
 
             it('should give the chosen character +1 political skill for each faceup non-stronghold province your opponent controls', function() {
                 this.player2.pass();
-                const politicalSkill = this.borderRider.getPoliticalSkill();
+                const politicalSkill = this.borderRider.politicalSkill;
                 this.player1.clickCard(this.speakToTheHeart);
                 this.player1.clickCard(this.borderRider);
-                expect(this.borderRider.getPoliticalSkill()).toBe(politicalSkill + 3);
+                expect(this.borderRider.politicalSkill).toBe(politicalSkill + 3);
             });
 
             it('should last until the end of the conflict', function() {
                 this.player2.pass();
-                const politicalSkill = this.borderRider.getPoliticalSkill();
+                const politicalSkill = this.borderRider.politicalSkill;
                 this.player1.clickCard(this.speakToTheHeart);
                 this.player1.clickCard(this.borderRider);
                 this.player2.pass();
                 this.player1.pass();
                 this.player1.clickPrompt('Don\'t Resolve');
-                expect(this.borderRider.getPoliticalSkill()).toBe(politicalSkill);
+                expect(this.borderRider.politicalSkill).toBe(politicalSkill);
             });
 
             it('shouldn\'t be usable twice in a single conflict', function() {

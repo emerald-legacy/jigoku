@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class RideOn extends DrawCard {
@@ -11,14 +11,14 @@ class RideOn extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait('cavalry')
             })
             .select({
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Move to conflict': AbilityDsl.actions.moveToConflict(context => ({ target: context.targets.character })),
-                'Move home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character }))
+                'Move to conflict': moveToConflict((context) => ({ target: context.targets.character })),
+                'Move home': sendHome((context) => ({ target: context.targets.character }))
             });
     }
 }

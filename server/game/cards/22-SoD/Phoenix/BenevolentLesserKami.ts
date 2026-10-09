@@ -1,6 +1,8 @@
 import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, returnToDeck } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class BenevolentLesserKami extends DrawCard {
     static id = 'benevolent-lesser-kami';
@@ -11,37 +13,36 @@ export default class BenevolentLesserKami extends DrawCard {
                 (context.game.currentConflict?.getConflictProvinces() ?? []).some(
                     (province) => province.element.some((element) => context.source.hasTrait(element))
                 ),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
 
-        this.action('Gain an elemental trait')
-            .condition(context => context.source.isParticipating())
+        this.conflictAction('Gain an elemental trait')
             .select({ name: 'select' }, {
-                'Air': AbilityDsl.actions.cardLastingEffect({
+                'Air': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.addTrait('air')
+                    effect: addTrait('air')
                 }),
-                'Earth': AbilityDsl.actions.cardLastingEffect({
+                'Earth': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.addTrait('earth')
+                    effect: addTrait('earth')
                 }),
-                'Fire': AbilityDsl.actions.cardLastingEffect({
+                'Fire': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.addTrait('fire')
+                    effect: addTrait('fire')
                 }),
-                'Water': AbilityDsl.actions.cardLastingEffect({
+                'Water': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.addTrait('water')
+                    effect: addTrait('water')
                 }),
-                'Void': AbilityDsl.actions.cardLastingEffect({
+                'Void': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.addTrait('void')
+                    effect: addTrait('void')
                 })
             })
-            .effect('gain the {1} trait', context => [context.selects.select.choice]);
+            .chatText((context) => msg`gain the ${context.selects.select.choice} trait`);
 
         this.action('Shuffle into deck')
-            .gameAction(AbilityDsl.actions.returnToDeck({
+            .gameAction(returnToDeck({
                 shuffle: true
             }));
     }

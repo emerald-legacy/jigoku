@@ -1,26 +1,23 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class JadeInfusedArrows extends DrawCard {
     static id = 'jade-infused-arrows';
 
     setupCardAbilities() {
-        this.action('Give attached character a skill bonus')
-            .cost(AbilityDsl.costs.payFate(1))
-            .condition((context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false)
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+        this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
+            .cost(costs.payFate(1))
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyMilitarySkill(this.bonusAmount(context))
-            })))
-            .effect('give +{1}{2} to {3}{4}', (context) => [
-                this.bonusAmount(context),
-                'military',
-                context.source.parentCharacter ?? '',
-                this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku' : ''
-            ])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+                effect: modifyMilitarySkill(this.bonusAmount(context))
+            }))
+            .chatText((context) => msg`give +${this.bonusAmount(context)}${'military'} to ${context.source.parentCharacter ?? ''}${this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku' : ''}`)
+            .limit(unlimitedPerConflict());
     }
 
     private isAgainstEvil(context: AbilityContext): boolean {

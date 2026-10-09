@@ -1,8 +1,11 @@
+import { msg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import { GameAction, type GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
 import { LoseFateAction } from './LoseFateAction.js';
+import { payAdditionalCost } from '../costs/additionalCost.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 import { Event } from '../Events/Event.js';
 
@@ -33,11 +36,11 @@ export class CardGameAction<
         return [context.source];
     }
 
-    checkEventCondition(event: ActionEvent<N, C>, additionalProperties = {}): boolean {
+    checkEventCondition(event: ActionEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return !!event.card && this.canAffect(event.card, event.context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         for(const card of targetList(target)) {
             let allCostsPaid = true;
@@ -64,20 +67,10 @@ export class CardGameAction<
                         const properties = { amount: targetingCosts, target: context.player };
                         const cost = new LoseFateAction(properties);
                         if(cost.canAffect(context.player, context)) {
-                            context.game.addMessage(
-                                '{0} pays {1} fate in order to target {2}',
-                                context.player,
-                                targetingCosts,
-                                costTarget.name
-                            );
+                            context.game.addMessage(msg`${context.player} pays ${targetingCosts} fate in order to target ${costTarget.name}`);
                             cost.resolve(context.player, context);
                         } else {
-                            context.game.addMessage(
-                                '{0} cannot pay {1} fate in order to target {2}',
-                                context.player,
-                                targetingCosts,
-                                costTarget.name
-                            );
+                            context.game.addMessage(msg`${context.player} cannot pay ${targetingCosts} fate in order to target ${costTarget.name}`);
                             allCostsPaid = false;
                         }
                     }
@@ -87,25 +80,10 @@ export class CardGameAction<
             if(additionalCosts.length > 0) {
                 for(const properties of additionalCosts) {
                     context.game.queueSimpleStep(() => {
-                        let cost = properties.cost;
-                        if(typeof cost === 'function') {
-                            cost = cost(card);
-                        }
-                        if(cost.hasLegalTarget(context)) {
-                            cost.resolve(card, context);
-                            context.game.addMessage(
-                                '{0} {1} in order to {2}',
-                                card.controller,
-                                context.game.gameChat.nested(cost.getEffectMessage(context)),
-                                context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties))
-                            );
-                        } else {
+                        const cost = typeof properties.cost === 'function' ? properties.cost(card) : properties.cost;
+                        const purpose = context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties));
+                        if(!payAdditionalCost(context, card.controller, cost, card, purpose)) {
                             allCostsPaid = false;
-                            context.game.addMessage(
-                                '{0} cannot pay the additional cost required to {1}',
-                                card.controller,
-                                context.game.gameChat.nested(this.getEffectMessage(context, additionalProperties))
-                            );
                         }
                     });
                 }
@@ -122,7 +100,7 @@ export class CardGameAction<
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
@@ -131,7 +109,7 @@ export class CardGameAction<
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    checkForRefillProvince(card: BaseCard, event: { context: C }, additionalProperties: Record<string, unknown> = {}): void {
+    checkForRefillProvince(card: BaseCard, event: { context: C }, additionalProperties: ActionOverrides = {}): void {
         if(!card.isInProvince() || card.location === Location.StrongholdProvince) {
             return;
         }

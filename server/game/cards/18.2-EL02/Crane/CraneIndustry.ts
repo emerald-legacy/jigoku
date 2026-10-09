@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { reduceCost } from '../../../effects.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,20 +12,23 @@ export default class CraneIndustry extends DrawCard {
     private eventsPlayedThisConflictByThisPlayer = new Set<string>();
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished, EventName.OnCardPlayed]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished(),
+            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event)
+        });
         this.reaction('Reduce the cost to play events')
             .when({
                 onConflictStarted: () => true
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceCost({
+                effect: reduceCost({
                     amount: 1,
                     match: (card) => !this.hasEventBeenPlayedByThisPlayer(card)
                 })
-            })))
-            .effect('reduce the cost of the first copy of each event they play this conflict by 1')
-            .max(AbilityDsl.limit.perConflict(1));
+            }))
+            .chatText('reduce the cost of the first copy of each event they play this conflict by 1')
+            .max(perConflict(1));
     }
 
     public onConflictFinished() {

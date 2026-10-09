@@ -1,6 +1,7 @@
-import { CardType, Decks, Location, EventName } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, DeckType, Location, EventName, RemainingCards } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../../GameActions/GameActions.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
@@ -10,31 +11,31 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
-                        AbilityDsl.actions.deckSearch({
+                        deckSearch({
                             activePromptTitle: 'Choose a character to put into play',
-                            amount: 5,
-                            deck: Decks.DynastyDeck,
+                            cardsToLookAt: 5,
+                            deck: DeckType.Dynasty,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
-                            message: '{0} puts {1} into play{2}{3}',
-                            shuffle: false,
-                            messageArgs: (context, cards) => {
+                            remainingCards: RemainingCards.Top,
+                            message: (context, cards) => {
                                 const discards = topFive.filter((a) => !cards.includes(a));
-                                const card = cards.length > 0 ? cards : 'nothing';
-                                return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
+                                return discards.length > 0
+                                    ? msg`${context.player} puts ${cards} into play and discards ${discards}`
+                                    : msg`${context.player} puts ${cards} into play`;
                             },
-                            gameAction: AbilityDsl.actions.putIntoPlay()
+                            gameAction: putIntoPlay()
                         }),
-                        AbilityDsl.actions.moveCard((context2) => ({
+                        moveCard((context2) => ({
                             target: topFive.filter((a) => {
-                                const deckSearch = context2.events
+                                const searchEvent = context2.events
                                     .filter((event) => !event.cancelled)
                                     .find((event) => event.is(EventName.OnDeckSearch));
-                                if(deckSearch && deckSearch.selectedCards) {
-                                    return !deckSearch.selectedCards.includes(a);
+                                if(searchEvent && searchEvent.selectedCards) {
+                                    return !searchEvent.selectedCards.includes(a);
                                 }
                                 return true;
                             }),
@@ -44,6 +45,6 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                     ]
                 };
             }))
-            .effect('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
+            .chatText('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
     }
 }

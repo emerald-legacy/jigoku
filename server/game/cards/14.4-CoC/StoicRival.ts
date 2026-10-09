@@ -1,5 +1,5 @@
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class StoicRival extends DrawCard {
@@ -12,6 +12,6 @@ export default class StoicRival extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.attachments.length < context.source.attachments.length
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }

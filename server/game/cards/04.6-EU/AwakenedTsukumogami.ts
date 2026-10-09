@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { alternateFatePool } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class AwakenedTsukumogami extends DrawCard {
@@ -6,8 +6,8 @@ class AwakenedTsukumogami extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: Object.values(this.game.rings).map(ring =>
-                AbilityDsl.effects.alternateFatePool((card) => card.isConflict && ring.getElements().some((element) => card.hasTrait(element)) && ring)
+            effect: Object.values(this.game.rings).map((ring) =>
+                alternateFatePool((card) => card.isConflict && ring.getElements().some((element) => card.hasTrait(element)) && ring)
             )
         });
     }

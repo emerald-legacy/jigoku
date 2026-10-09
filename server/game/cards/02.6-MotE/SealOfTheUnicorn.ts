@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addFaction, addTrait } from '../../effects.js';
 
 class SealOfTheUnicorn extends DrawCard {
     static id = 'seal-of-the-unicorn';
@@ -7,8 +7,8 @@ class SealOfTheUnicorn extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addFaction('unicorn'),
-                AbilityDsl.effects.addTrait('cavalry')
+                addFaction('unicorn'),
+                addTrait('cavalry')
             ]
         });
     }

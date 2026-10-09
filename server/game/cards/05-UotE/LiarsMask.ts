@@ -1,6 +1,8 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken, selectToken } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import type { PlayType } from '../../Constants.js';
 
 class LiarsMask extends DrawCard {
     static id = 'liar-s-mask';
@@ -8,17 +10,16 @@ class LiarsMask extends DrawCard {
     setupCardAbilities() {
         this.action('Discard status token from attached character')
             .condition((context) => !!context.source.parentCharacter)
-            .gameAction(AbilityDsl.actions.selectToken((context) => ({
+            .gameAction(selectToken((context) => ({
                 card: context.source.parentCharacter ?? undefined,
                 activePromptTitle: 'Which token do you wish to discard?',
-                message: '{0} discards {1}',
-                messageArgs: (token, player) => [player, token],
-                gameAction: AbilityDsl.actions.discardStatusToken()
+                message: (_context, token, player) => msg`${player} discards ${token}`,
+                gameAction: discardStatusToken()
             })))
-            .effect('discard a status token from {1}', (context) => [context.source.parentCharacter]);
+            .chatText((context) => msg`discard a status token from ${context.source.parentCharacter}`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(context.player.honor > 6) {
             return false;
         }

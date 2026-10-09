@@ -6,7 +6,7 @@
     "main": "build/server/gamenode/index.js",
     "scripts": {
         "test": "npm run jasmine -- --parallel=auto",
-        "jasmine": "tsc -p tsconfig.test.json && cross-env JASMINE_CONFIG_PATH=./jasmine.json DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
+        "jasmine": "tsc -p tsconfig.test.json --noCheck && cross-env JASMINE_CONFIG_PATH=./jasmine.json DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
         "lint": "eslint server/ test/",
         "typecheck": "tsc --noEmit"
     },
@@ -34,11 +34,8 @@
     },
     "dependencies": {
         "axios": "1.20.0",
-        "bcrypt": "6.0.0",
-        "cross-env": "10.1.0",
         "jsonwebtoken": "9.0.3",
         "socket.io": "4.8.3",
-        "uuid": "14.0.2",
         "winston": "3.19.0",
         "winston-daily-rotate-file": "5.0.0",
         "ws": "8.21.3",
@@ -46,13 +43,13 @@
     },
     "devDependencies": {
         "@eslint/js": "10.0.1",
-        "@types/bcrypt": "6.0.0",
         "@types/jasmine": "6.0.0",
         "@types/jsonwebtoken": "9.0.10",
         "@types/node": "26.6.1",
         "@types/ws": "8.18.1",
         "@typescript-eslint/eslint-plugin": "8.70.0",
         "@typescript-eslint/parser": "8.70.0",
+        "cross-env": "10.1.0",
         "eslint": "10.10.0",
         "eslint-plugin-jasmine": "4.2.2",
         "globals": "17.12.0",

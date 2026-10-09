@@ -45,16 +45,16 @@ describe('Furtive Sympathizer', function() {
             this.player2.pass();
             this.player1.clickCard(this.furtive);
 
-            expect(this.borderRider.getMilitarySkill()).toBe(1);
-            expect(this.borderRider.getPoliticalSkill()).toBe(2);
+            expect(this.borderRider.militarySkill).toBe(1);
+            expect(this.borderRider.politicalSkill).toBe(2);
 
             // cannot modify dash skills
-            expect(this.motoHorde.getPoliticalSkill()).toBe(0);
-            expect(this.motoHorde.getMilitarySkill()).toBe(6);
+            expect(this.motoHorde.politicalSkill).toBe(0);
+            expect(this.motoHorde.militarySkill).toBe(6);
 
             // should not hit people at home
-            expect(this.toshimoko.getPoliticalSkill()).toBe(3);
-            expect(this.toshimoko.getMilitarySkill()).toBe(4);
+            expect(this.toshimoko.politicalSkill).toBe(3);
+            expect(this.toshimoko.militarySkill).toBe(4);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Furtive Sympathizer to switch all participating character\'s base military and political skill');
         });

@@ -1,8 +1,17 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
+import {
+    cardMenu,
+    conditional,
+    draw,
+    lookAt,
+    moveCard,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { shuffle } from '../../../utils/random.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
+import { msg } from '../../../GameChat.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
@@ -10,34 +19,32 @@ export default class DrawingTheVoid extends DrawCard {
     setupCardAbilities() {
         this.action('Gaze into the void')
             .condition((context) => controlsShugenja(context.player))
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const revealedCards = shuffle(context.player.opponent?.hand ?? [])
                     .slice(0, 2)
                     .sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt((context) => ({
+                        lookAt({
                             target: revealedCards,
-                            message: '{0} reveals {1} from their hand - the void reveals...',
-                            messageArgs: (cards) => [context.player.opponent, cards]
-                        })),
-                        AbilityDsl.actions.cardMenu((_context) => ({
+                            message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand - the void reveals...`
+                        }),
+                        cardMenu((_context) => ({
                             activePromptTitle: 'Choose a card to remove from the game',
                             cards: revealedCards,
                             targets: true,
                             player: Players.Self,
-                            message: '{0} removes {1} from the game - the void consumes',
-                            messageArgs: (card, player) => [player, card],
-                            gameAction: AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame })
+                            message: (_context, card, player) => msg`${player} removes ${card} from the game - the void consumes`,
+                            gameAction: moveCard({ destination: Location.RemovedFromGame })
                         })),
-                        AbilityDsl.actions.conditional((context) => ({
+                        conditional((context) => ({
                             condition: context.player.hasAffinity('void', context),
-                            trueGameAction: AbilityDsl.actions.draw(),
-                            falseGameAction: AbilityDsl.actions.noAction()
+                            trueGameAction: draw()
                         }))
                     ]
                 };
             }))
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
+            .max(perRound(1));
     }
 }

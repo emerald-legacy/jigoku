@@ -1,26 +1,24 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyBothSkills } from '../../../effects.js';
 
 export default class AdvanceFortification extends DrawCard {
     static id = 'advance-fortification';
 
     setupCardAbilities() {
         this.action('Take an honor from your opponent or give skill bonus')
-            .condition(context => !!context.game.currentConflict && context.game.currentConflict.defendingPlayer === context.player && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken)
-            .gameAction(AbilityDsl.actions.conditional({
-                condition: context => {
-                    return !!context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince();
-                },
-                trueGameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+            .condition((context) => !!context.game.currentConflict && context.game.currentConflict.defendingPlayer === context.player && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken)
+            .if((context) => !!context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince())
+                .cardLastingEffect((context) => ({
                     target: context.game.currentConflict?.getCharacters(context.player) ?? [],
-                    effect: AbilityDsl.effects.modifyBothSkills(1)
-                })),
-                falseGameAction: AbilityDsl.actions.loseHonor(context => ({
-                    target: context.player.opponent
+                    effect: modifyBothSkills(1)
                 }))
-            }))
-            .effect('{1}{2}{3}', context => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince() ?
-                ['give defending characters +1/+1', ''] : ['make ', context.player.opponent, ' lose 1 honor'])
-            .max(AbilityDsl.limit.perConflict(1));
+            .otherwise()
+                .loseHonor((context) => ({ target: context.player.opponent }))
+            .chatText((context) => context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince()
+                ? msg`give defending characters +1/+1`
+                : msg`make ${context.player.opponent}${' lose 1 honor'}`)
+            .max(perConflict(1));
     }
 }

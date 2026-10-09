@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { reveal, selectCards } from '../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class Aranat extends DrawCard {
     static id = 'aranat';
@@ -10,7 +11,7 @@ class Aranat extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => context.player.opponent && event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.selectCards({
+            .gameAction(selectCards({
                 cardType: CardType.Province,
                 location: this.game.getProvinceArray(false),
                 controller: Players.Opponent,
@@ -18,19 +19,16 @@ class Aranat extends DrawCard {
                 optional: true,
                 mode: TargetMode.Unlimited,
                 cardCondition: (card) => card.isFacedown(),
-                message: '{0} chooses to reveal {1}',
-                messageArgs: (card, player) => [player, card],
-                gameAction: AbilityDsl.actions.reveal()
+                message: (_context, card, player) => msg`${player} chooses to reveal ${card}`,
+                gameAction: reveal()
             }))
-            .effect('give {1} the opportunity to reveal provinces', (context) => context.player.opponent ?? '')
-            .then(() => ({
-                message: '{3} has {4} facedown provinces so {4} fate is placed on {1}',
-                messageArgs: (context) => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
-                thenCondition: () => true,
-                gameAction: AbilityDsl.actions.placeFate((context) => ({
-                    amount: context.player.getNumberOfOpponentsFacedownProvinces()
-                }))
-            }));
+            .chatText((context) => msg`give ${context.player.opponent ?? ''} the opportunity to reveal provinces`)
+            .afterwards()
+            .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))
+            .message((context) => {
+                const facedown = context.player.getNumberOfOpponentsFacedownProvinces();
+                return msg`${context.player.opponent} has ${facedown} facedown provinces so ${facedown} fate is placed on ${context.source}`;
+            });
     }
 }
 

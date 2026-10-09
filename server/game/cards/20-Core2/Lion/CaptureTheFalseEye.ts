@@ -1,13 +1,14 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { increaseCost } from '../../../effects.js';
+import { bow, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CaptureTheFalseEye extends DrawCard {
     static id = 'capture-the-false-eye';
 
     setupCardAbilities() {
-        this.action('Bow a character')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Bow a character')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
@@ -17,13 +18,13 @@ export default class CaptureTheFalseEye extends DrawCard {
                         .some(
                             (myCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
                         ) ?? false)
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.playerLastingEffect((context) => ({
+            }, bow(), playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.increaseCost({
+                effect: increaseCost({
                     amount: 1,
                     match: (card) => card.type === CardType.Event
                 })
             })))
-            .effect('bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?', (context) => [context.player]);
+            .chatText((context) => msg`bow ${context.chatTarget()}. For this conflict, ${context.player}'s events cost 1 more fate - did ${context.player} walk into a trap?`);
     }
 }

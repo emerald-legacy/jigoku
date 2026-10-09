@@ -1,11 +1,12 @@
+import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
+import { Phase, PlayType, TargetMode, Blocker } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
-import { parseGameMode } from './GameMode.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 
 export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     title = 'Play this attachment';
@@ -18,31 +19,31 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         });
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
         if(
-            !ignoredRequirements.includes('phase') &&
-            context.game.currentPhase === Phases.Dynasty &&
-            !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayAttachments
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
+            context.game.currentPhase === Phase.Dynasty &&
+            !context.game.rules.dynastyPhaseCanPlayAttachments
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
         if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         }
         if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
 
         if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+            return Blocker.DuplicateUnique;
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     canResolveTargets() {
@@ -50,21 +51,11 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     }
 
     displayMessage(context: AbilityContext) {
-        context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, context.ring);
+        context.game.addMessage(msg`${context.player} plays ${context.source}, attaching it to ${context.ring}`);
     }
 
     executeHandler(context: AbilityContext<DrawCard>) {
-        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            context: context,
-            originalLocation: context.source.location,
-            originallyOnTopOfConflictDeck:
-                context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
-            onPlayCardSource: context.onPlayCardSource,
-            playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
-            playType: PlayType.PlayFromHand
-        });
+        const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         context.game.openEventWindow([
             context.game.actions.attachToRing({ attachment: context.source }).getEvent(context.ring, context),
             cardPlayedEvent

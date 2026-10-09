@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, CharacterStatus, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay, removeFromGame } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
     static id = 'shadow-step';
@@ -9,26 +9,17 @@ class ShadowStep extends DrawCard {
         this.action('Remove a character from the game and put it into play')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasTrait('mythic'),
+                cardCondition: (card) => !card.hasTrait('mythic'),
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.removeFromGame(context => ({
-                    target: context.target
-                })),
-                AbilityDsl.actions.conditional({
-                    condition: context => {
-                        return !!context.target?.hasTrait('shadow');
-                    },
-                    trueGameAction: AbilityDsl.actions.putIntoPlay(context => ({
-                        target: context.target
-                    })),
-                    falseGameAction: AbilityDsl.actions.putIntoPlay(context => ({
-                        target: context.target,
-                        status: CharacterStatus.Dishonored
-                    }))
-                })
-            ]))
-            .effect('remove {0} from the game, then put it back into play');
+            }, removeFromGame((context) => ({
+                target: context.target
+            })))
+            .chatText('remove {0} from the game, then put it back into play')
+            .afterwards()
+            .if((context) => !!context.target?.hasTrait('shadow'))
+            .gameAction(putIntoPlay((context) => ({ target: context.target })))
+            .otherwise()
+            .gameAction(putIntoPlay((context) => ({ target: context.target, status: CharacterStatus.Dishonored })));
     }
 }
 

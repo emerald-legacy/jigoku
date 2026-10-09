@@ -1,25 +1,26 @@
-import { Phases, Players } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { Phase, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerDelayedEffect, refillProvinceTo } from '../../effects.js';
+import { fillProvince } from '../../GameActions/GameActions.js';
 
 export default class CityOfTheRichFrog extends ProvinceCard {
     static id = 'city-of-the-rich-frog';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.currentPhase !== Phases.Setup,
-            effect: AbilityDsl.effects.refillProvinceTo(3)
+            condition: () => this.game.currentPhase !== Phase.Setup,
+            effect: refillProvinceTo(3)
         });
 
         this.persistentEffect({
             targetController: Players.Self,
-            effect: AbilityDsl.effects.playerDelayedEffect({
+            effect: playerDelayedEffect({
                 when: {
-                    onPhaseEnded: (event) => event.phase === Phases.Setup
+                    onPhaseEnded: (event) => event.phase === Phase.Setup
                 },
-                message: '{0} fills to 3 cards',
-                messageArgs: (effectContext) => [effectContext.source],
-                gameAction: AbilityDsl.actions.fillProvince((context) => ({
+                message: (effectContext) => msg`${effectContext.source} fills to 3 cards`,
+                gameAction: fillProvince((context) => ({
                     location: context.source.location,
                     fillTo: 3
                 }))

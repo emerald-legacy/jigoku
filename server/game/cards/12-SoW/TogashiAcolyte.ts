@@ -1,7 +1,9 @@
 import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class TogashiAcolyte extends DrawCard {
     static id = 'togashi-acolyte';
@@ -16,11 +18,11 @@ export default class TogashiAcolyte extends DrawCard {
                     context.source.type === CardType.Attachment &&
                     context.source.parentCharacter.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyBothSkills(1)
-            })))
-            .effect('give +1{1} and +1{2} to {3}', (context) => ['political', 'military', context.source.parentCharacter])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+                effect: modifyBothSkills(1)
+            }))
+            .chatText((context) => msg`give +1${'political'} and +1${'military'} to ${context.source.parentCharacter}`)
+            .limit(unlimitedPerConflict());
     }
 }

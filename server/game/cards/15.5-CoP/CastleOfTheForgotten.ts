@@ -1,6 +1,8 @@
 import { Players, ConflictType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { setConflictDeclarationType } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 export default class CastleOfTheForgotten extends StrongholdCard {
     static id = 'castle-of-the-forgotten';
@@ -10,12 +12,12 @@ export default class CastleOfTheForgotten extends StrongholdCard {
             .when({
                 onBreakProvince: (event, context) => event.card.owner !== context.player
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
+            .cost(costs.bowSelf())
+            .playerLastingEffect({
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.setConflictDeclarationType(ConflictType.Military),
+                effect: setConflictDeclarationType(ConflictType.Military),
                 duration: Duration.UntilEndOfPhase
-            }))
-            .effect('make all future conflicts {1} for this phase', () => (['military']));
+            })
+            .chatText(() => msg`make all future conflicts ${'military'} for this phase`);
     }
 }

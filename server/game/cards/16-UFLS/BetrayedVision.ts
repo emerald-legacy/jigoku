@@ -1,8 +1,10 @@
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
+import { copyCard } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { CardType, Players, type PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { controlsShugenja } from '../controlsShugenja.js';
+import { msg } from '../../GameChat.js';
 
 export default class BetrayedVision extends DrawCard {
     static id = 'betrayed-vision';
@@ -23,13 +25,13 @@ export default class BetrayedVision extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy)
+            }, cardLastingEffect((context) => ({
+                effect: copyCard(context.targets.cardToCopy)
             })))
-            .effect('make {1} into a copy of {2}', (context) => [context.targets.myCharacter, context.targets.cardToCopy]);
+            .chatText((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

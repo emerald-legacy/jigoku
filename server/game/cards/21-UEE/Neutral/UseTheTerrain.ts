@@ -1,19 +1,19 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import { ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class UseTheTerrain extends DrawCard {
     static id = 'use-the-terrain';
 
     setupCardAbilities() {
-        this.action('Give each character a military bonus')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+        this.conflictAction('Give each character a military bonus', { conflictType: ConflictType.Military })
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),
-                effect: AbilityDsl.effects.modifyMilitarySkill(this.hasKicker(context) ? 2 : 1)
-            })))
-            .effect('give all characters they control +{1}{2}', (context) => [this.hasKicker(context) ? 2 : 1, 'military']);
+                effect: modifyMilitarySkill(this.hasKicker(context) ? 2 : 1)
+            }))
+            .chatText((context) => msg`give all characters they control +${this.hasKicker(context) ? 2 : 1}${'military'}`);
     }
 
     private hasKicker(context: AbilityContext<this>) {

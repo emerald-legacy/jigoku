@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import { ConflictType } from '../../Constants.js';
 
 class MotoYouth extends DrawCard {
@@ -7,10 +7,10 @@ class MotoYouth extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.isDuringConflict(ConflictType.Military) && this.game.conflictRecord.every(conflict => (
+            condition: () => this.game.isDuringConflict(ConflictType.Military) && this.game.conflictRecord.every((conflict) => (
                 conflict.declaredType !== ConflictType.Military && !conflict.typeSwitched || !conflict.completed || conflict.uuid === this.game.currentConflict?.uuid
             )),
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            effect: modifyMilitarySkill(1)
         });
     }
 }

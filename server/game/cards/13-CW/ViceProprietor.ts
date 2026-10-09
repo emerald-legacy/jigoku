@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ViceProprietor extends DrawCard {
@@ -7,13 +8,13 @@ export default class ViceProprietor extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Bow a character')
-            .cost(AbilityDsl.costs.dishonorSelf())
+            .cost(costs.dishonorSelf())
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow());
+            }, bow());
     }
 }

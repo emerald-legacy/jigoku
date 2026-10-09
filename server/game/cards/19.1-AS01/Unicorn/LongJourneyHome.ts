@@ -1,5 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration, EventName } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { cardCannot } from '../../../effects.js';
+import { bow, cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
+import { CardType, Duration, EventName, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -20,14 +22,14 @@ export default class LongJourneyHome extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card === context.event.card
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.bow(),
-                AbilityDsl.actions.cardLastingEffect({
+            }, multiple([
+                bow(),
+                cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' })
+                    effect: cardCannot({ cannot: RestrictionType.Ready })
                 })
             ]))
-            .effect('make {1} take the long way home. {1} is bowed and cannot ready until the end of the phase', (context) => [context.event.card]);
+            .chatText((context) => msg`make ${context.event.card} take the long way home. ${context.event.card} is bowed and cannot ready until the end of the phase`);
     }
 
     private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<this>) {

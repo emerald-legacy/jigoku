@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { CardType } from '../../Constants.js';
 
 class ForgedEdict extends DrawCard {
@@ -8,10 +8,10 @@ class ForgedEdict extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Event
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
-            .cost(AbilityDsl.costs.dishonor({ cardCondition: card => card.hasTrait('courtier') }))
-            .gameAction(AbilityDsl.actions.cancel())
+            .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }))
+            .cancel()
             .cannotBeMirrored();
     }
 }

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, targetList, type GameActionProperties, type GameActionTarget, type ActionEvent } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
@@ -24,16 +25,23 @@ export class HandlerAction<C extends AbilityContext = AbilityContext> extends Ga
         return true;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         properties.handler(event.context, targetList(properties.target));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.getProperties(context, additionalProperties).hasTargetsChosenByInitiatingPlayer;
     }
+}
+
+/** An action that does nothing, such as the branch of a choice that resolves no effect. */
+export function noAction(): GameAction {
+    const action = new HandlerAction({});
+    action.isNoAction = true;
+    return action;
 }

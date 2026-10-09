@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { resolveConflictRing } from '../../../GameActions/GameActions.js';
 
 export default class SilentSuburb extends ProvinceCard {
     static id = 'silent-suburb';
@@ -11,6 +11,6 @@ export default class SilentSuburb extends ProvinceCard {
                     event.conflict.winner === context.player &&
                     event.conflict.getConflictProvinces().some((p) => p === context.source)
             })
-            .gameAction(AbilityDsl.actions.resolveConflictRing());
+            .gameAction(resolveConflictRing());
     }
 }

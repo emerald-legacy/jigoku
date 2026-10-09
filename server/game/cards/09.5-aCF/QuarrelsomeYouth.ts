@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardAtRandom } from '../../GameActions/GameActions.js';
 
 class QuarrelsomeYouth extends DrawCard {
     static id = 'quarrelsome-youth';
@@ -13,7 +13,7 @@ class QuarrelsomeYouth extends DrawCard {
                     context.player.opponent &&
                     context.player.hand.length < context.player.opponent.hand.length
             })
-            .gameAction(AbilityDsl.actions.discardAtRandom());
+            .gameAction(discardAtRandom());
     }
 }
 

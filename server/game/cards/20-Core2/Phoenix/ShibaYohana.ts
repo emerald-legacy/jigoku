@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait } from '../../../effects.js';
+import { moveToConflict, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaYohana extends DrawCard {
@@ -11,27 +13,25 @@ export default class ShibaYohana extends DrawCard {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && event.card.location === Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
+            .cancel((context) => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.taint()
-            })))
-            .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card)
-            .then((context) => ({
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.source,
-                    duration: Duration.Custom,
-                    until: {
-                        onCardLeavesPlay: (event) => event.card === context.source
-                    },
-                    effect: AbilityDsl.effects.addTrait('spirit')
-                })
+                replacementGameAction: taint()
+            }))
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play - vengeance and destruction sustains her in a damned existence`)
+            .then()
+            .cardLastingEffect((context) => ({
+                target: context.source,
+                duration: Duration.Custom,
+                until: {
+                    onCardLeavesPlay: (event) => event.card === context.source
+                },
+                effect: addTrait('spirit')
             }));
 
-        this.action('Move a character into the conflict')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Move a character into the conflict')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored || card.isDishonored
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }

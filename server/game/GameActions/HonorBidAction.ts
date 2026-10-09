@@ -1,7 +1,8 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Players } from '../Constants.js';
-import HonorBidPrompt from '../gamesteps/HonorBidPrompt.js';
+import { HonorBidPrompt } from '../gamesteps/HonorBidPrompt.js';
 import type Player from '../Player.js';
 import type { GameAction, ActionEvent } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
@@ -12,8 +13,8 @@ export interface HonorBidProperties extends PlayerActionProperties {
     prohibitedBids?: Array<number>;
     players?: Players;
     postBidAction?: GameAction;
-    message?: string;
-    messageArgs?: (context: AbilityContext) => MsgArg[];
+    /** The chat line after the bids; without it, the post-bid action's own text. */
+    message?: (context: AbilityContext) => MessageArgs;
 }
 
 /** An honor bid event this action created: `addPropertiesToEvent` always sets its prohibited bids. */
@@ -32,15 +33,15 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         return [context.player];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        return this.getProperties(context).giveHonor
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return this.getProperties(context, additionalProperties).giveHonor
             ? ['bid honor', []]
             : ['have {0} select a value on their honor dial', []];
     }
 
     /** The bidding players; none when giving honor, whose message names nobody. */
-    protected effectMessageTarget(context: C): MsgArg {
-        const properties = this.getProperties(context);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.giveHonor) {
             return undefined;
         }
@@ -61,8 +62,8 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         return players;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
-        const { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
+    addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+        const { giveHonor, prohibitedBids, players, postBidAction, message } = this.getProperties(
             context,
             additionalProperties
         );
@@ -72,7 +73,6 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         event.players = players;
         event.postBidAction = postBidAction;
         event.message = message;
-        event.messageArgs = messageArgs;
     }
 
     eventHandler(event: HonorBidEvent<C>): void {

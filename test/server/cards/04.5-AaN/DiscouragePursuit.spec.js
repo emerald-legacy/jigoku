@@ -29,7 +29,7 @@ describe('Discourage Pursuit', function() {
                 this.player1.clickCard(this.toturi);
                 expect(this.player1).toBeAbleToSelect('shosuro-miyako');
                 this.player1.clickCard('shosuro-miyako');
-                expect(this.toturi.getMilitarySkill()).toBe(2);
+                expect(this.toturi.militarySkill).toBe(2);
             });
 
             it('should not trigger without a shinobi in play', function() {

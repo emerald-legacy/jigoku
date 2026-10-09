@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Element, type PlayType } from '../../Constants.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -12,11 +12,11 @@ class KatanaOfFire extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.modifyMilitarySkill(() => this.totalKatanaModifier())
+            effect: modifyMilitarySkill(() => this.totalKatanaModifier())
         });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!controlsShugenja(context.player)) {
             return false;
         }

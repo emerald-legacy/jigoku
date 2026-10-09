@@ -1,4 +1,4 @@
-import { v1 as uuid } from 'uuid';
+import { randomUUID } from 'crypto';
 import type Player from '../Player.js';
 import { BaseStep } from './BaseStep.js';
 import type { MenuArg } from './Step.js';
@@ -17,7 +17,7 @@ export type ActivePrompt = {
 
 export class UiPrompt extends BaseStep {
     public completed = false;
-    public uuid = uuid();
+    public uuid: string = randomUUID();
 
     isComplete(): boolean {
         return this.completed;

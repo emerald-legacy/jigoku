@@ -1,5 +1,6 @@
-import { CardType, Players, Location, TargetMode, Decks } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players, Location, TargetMode, DeckType } from '../../../Constants.js';
+import { deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TennyosBlessing extends DrawCard {
@@ -12,22 +13,15 @@ export default class TennyosBlessing extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.deckSearch({
-                targetMode: TargetMode.UpTo,
+            }, deckSearch({
+                mode: TargetMode.UpTo,
                 numCards: 2,
-                amount: 4,
-                shuffle: true,
-                deck: Decks.DynastyDeck,
+                cardsToLookAt: 4,
+                deck: DeckType.Dynasty,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {
                         const target = context.target;
-                        context.game.addMessage(
-                            '{0} selects {1} and puts {2} into {3}',
-                            event.player,
-                            cards,
-                            cards.length > 1 ? 'them' : 'it',
-                            target?.facedown ? target.location : (target ?? '')
-                        );
+                        context.game.addMessage(msg`${event.player} selects ${cards} and puts ${cards.length > 1 ? 'them' : 'it'} into ${target?.facedown ? target.location : (target ?? '')}`);
                         cards.forEach((card) => {
                             if(target) {
                                 event.player.moveCard(card, target.location);
@@ -35,7 +29,7 @@ export default class TennyosBlessing extends DrawCard {
                             card.facedown = false;
                         });
                     } else {
-                        context.game.addMessage('{0} selects no cards', event.player);
+                        context.game.addMessage(msg`${event.player} selects no cards`);
                     }
                 }
             }))

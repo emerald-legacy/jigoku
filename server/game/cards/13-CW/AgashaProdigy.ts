@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { attach, discardCard, discardFromPlay, ifAble, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType, EventName } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
@@ -9,20 +11,20 @@ class AgashaProdigys extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a card to try and attach it to a character')
-            .cost(AbilityDsl.costs.optionalHonorTransferFromOpponentCost((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
+            .cost(costs.optionalTakeHonorFromOpponent((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard(context => ({
+            }, sequential([
+                discardCard((context) => ({
                     target: context.player.conflictDeck[0]
                 })),
-                AbilityDsl.actions.ifAble(context => ({
-                    ifAbleAction: AbilityDsl.actions.attach({
+                ifAble((context) => ({
+                    ifAbleAction: attach({
                         target: context.targets.myCharacter,
                         attachment: this.getDiscardedCards(context)[0]
                     }),
-                    otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: [] })
+                    otherwiseAction: discardFromPlay({ target: [] })
                 }))
             ]))
             .target({
@@ -31,23 +33,20 @@ class AgashaProdigys extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (_card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid)
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard(context => ({
+                cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
+            }, sequential([
+                discardCard((context) => ({
                     target: this.oppCharacterChosen(context) ? context.player.opponent?.conflictDeck[0] : []
                 })),
-                AbilityDsl.actions.ifAble(context => ({
-                    ifAbleAction: AbilityDsl.actions.attach({
+                ifAble((context) => ({
+                    ifAbleAction: attach({
                         target: context.targets.oppCharacter,
                         attachment: this.getDiscardedCards(context)[1]
                     }),
-                    otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: [] })
+                    otherwiseAction: discardFromPlay({ target: [] })
                 }))
             ]))
-            .effect('discard the top card of their deck and attempt to attach it to {1}{2}', (context) => [
-                context.targets.myCharacter,
-                honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)
-            ]);
+            .chatText((context) => msg`discard the top card of their deck and attempt to attach it to ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)}`);
     }
 
     private oppCharacterChosen(context: AbilityContext): boolean {

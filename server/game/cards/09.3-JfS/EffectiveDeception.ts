@@ -1,5 +1,5 @@
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 export default class EffectiveDeception extends ProvinceCard {
     static id = 'effective-deception';
@@ -10,7 +10,7 @@ export default class EffectiveDeception extends ProvinceCard {
                 onInitiateAbilityEffects: (event, context) =>
                     context.source.isConflictProvince() && event.context.ability.isTriggeredAbility()
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', (context) => context.event?.card ?? '');
+            .cancel()
+            .chatText((context) => msg`cancel the effects of ${context.event?.card ?? ''}'s ability`);
     }
 }

@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { menuPrompt, placeFate, removeFate } from '../../GameActions/GameActions.js';
 
 class TheFiresOfJustice extends DrawCard {
     static id = 'the-fires-of-justice';
@@ -15,26 +16,26 @@ class TheFiresOfJustice extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             })
             .select({
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Remove all fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character, amount: context.targets.character.getFate() })),
-                'Move fate to character': AbilityDsl.actions.menuPrompt(context => ({
+                'Remove all fate': removeFate((context) => ({ target: context.targets.character, amount: context.targets.character.getFate() })),
+                'Move fate to character': menuPrompt((context) => ({
                     activePromptTitle: 'Select fate amount:',
                     choices: Array.from(Array(context.player.opponent?.fate), (_x, i) => (i + 1).toString()),
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage) {
-                            this.game.addMessage('{0} chooses to move {1} fate from {2}\'s pool to {3}', context.player, choice, context.player.opponent, context.targets.character);
+                            this.game.addMessage(msg`${context.player} chooses to move ${choice} fate from ${context.player.opponent}'s pool to ${context.targets.character}`);
                         }
                         return { target: context.targets.character, amount: parseInt(choice) };
                     },
-                    gameAction: AbilityDsl.actions.placeFate({ origin: context.player.opponent })
+                    gameAction: placeFate({ origin: context.player.opponent })
                 }))
             })
-            .effect('{1} {2}', context => [context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on', context.targets.character]);
+            .chatText((context) => msg`${context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on'} ${context.targets.character}`);
     }
 }
 

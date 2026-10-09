@@ -1,0 +1,96 @@
+import type { ActionOverrides } from './GameAction.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import { DeckType, EventName } from '../Constants.js';
+import type DrawCard from '../DrawCard.js';
+import type { Event } from '../Events/Event.js';
+import type { MessageArgs } from '../GameChat.js';
+import type Player from '../Player.js';
+import { derive, type Derivable } from '../utils/helpers.js';
+import { targetList } from './GameAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
+
+const ORDINALS = ['first', 'second', 'third'];
+
+export interface RearrangeDeckProperties extends PlayerActionProperties {
+    /** How many cards from the top of the deck. */
+    amount?: Derivable<number, AbilityContext>;
+    /** Instead of the top `amount`: these cards of the deck, which then go on top in the chosen order. */
+    cards?: DrawCard[];
+    deck?: DeckType;
+    /** The title of the first prompt; the later ones ask for the second, third… card. */
+    activePromptTitle?: string;
+    /** Printed once the cards are back, with the cards top card first. Method syntax, so a narrower context fits. */
+    message?(context: AbilityContext, cards: DrawCard[]): MessageArgs;
+}
+
+/** The player of the ability puts the top cards of the target player's deck back in the order they choose. */
+export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RearrangeDeckProperties, EventName.Unnamed, C, 'deck' | 'activePromptTitle'> {
+    name = 'rearrangeDeck';
+    defaultProperties = {
+        deck: DeckType.Conflict,
+        activePromptTitle: 'Which card do you want to be on top?'
+    };
+
+    defaultTargets(context: C): Player[] {
+        return [context.player];
+    }
+
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount, cards, deck } = this.getProperties(context, additionalProperties);
+        return ['rearrange the top {1} cards of {0}\'s {2}', [cards?.length ?? derive(amount ?? 0, context), deck]];
+    }
+
+    #deck(player: Player, deck: DeckType): DrawCard[] {
+        return deck === DeckType.Dynasty ? player.dynastyDeck : player.conflictDeck;
+    }
+
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const { deck } = this.getProperties(context, additionalProperties);
+        return this.#deck(player, deck).length > 0 && super.canAffect(player, context);
+    }
+
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
+        for(const player of targetList(properties.target)) {
+            if(!this.canAffect(player, context, additionalProperties)) {
+                continue;
+            }
+            const cards = properties.cards ?? this.#deck(player, properties.deck).slice(0, derive(properties.amount ?? 0, context));
+            this.#chooseNext(context, cards, [], properties.activePromptTitle, (ordered) => {
+                const event = Object.assign(this.getEvent(player, context, additionalProperties), { player });
+                event.replaceHandler(() => this.#putBack(event, ordered, additionalProperties));
+                events.push(event);
+            });
+        }
+    }
+
+    #chooseNext(context: C, remaining: DrawCard[], ordered: DrawCard[], title: string, done: (ordered: DrawCard[]) => void): void {
+        context.game.promptWithHandlerMenu(context.player, {
+            activePromptTitle: title,
+            context,
+            cards: remaining,
+            cardHandler: (card) => {
+                const chosen = [...ordered, card];
+                const rest = remaining.filter((other) => other !== card);
+                if(rest.length > 1) {
+                    this.#chooseNext(context, rest, chosen, `Which card do you want to be the ${ORDINALS[chosen.length]} card?`, done);
+                    return;
+                }
+                done([...chosen, ...rest]);
+            }
+        });
+    }
+
+    #putBack(event: PlayerEvent<EventName.Unnamed, C>, ordered: DrawCard[], additionalProperties: ActionOverrides = {}): void {
+        const { deck, message } = this.getProperties(event.context, additionalProperties);
+        const cards = this.#deck(event.player, deck);
+        const stillInDeck = ordered.filter((card) => cards.includes(card));
+        for(const card of stillInDeck) {
+            cards.splice(cards.indexOf(card), 1);
+        }
+        cards.unshift(...stillInDeck);
+        if(message) {
+            event.context.game.addMessage(message(event.context, ordered));
+        }
+    }
+}

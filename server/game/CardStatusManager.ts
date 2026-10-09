@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import type BaseCard from './BaseCard.js';
 import { StatusToken } from './StatusToken.js';
 import { CharacterStatus } from './Constants.js';
@@ -41,10 +42,7 @@ export class CardStatusManager {
             if(this.isHonored && this.isDishonored) {
                 this.removeStatusToken(CharacterStatus.Honored);
                 this.removeStatusToken(CharacterStatus.Dishonored);
-                this.card.game.addMessage(
-                    'Honored and Dishonored status tokens nullify each other and are both discarded from {0}',
-                    this.card
-                );
+                this.card.game.addMessage(msg`Honored and Dishonored status tokens nullify each other and are both discarded from ${this.card}`);
             }
             this.statusTokens.forEach((token) => {
                 token.setCard(this.card);

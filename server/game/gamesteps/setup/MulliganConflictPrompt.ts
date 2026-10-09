@@ -1,9 +1,10 @@
-import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
+import { msg } from '../../GameChat.js';
+import { MulliganDynastyPrompt } from './MulliganDynastyPrompt.js';
 import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 
-class MulliganConflictPrompt extends MulliganDynastyPrompt {
+export class MulliganConflictPrompt extends MulliganDynastyPrompt {
     readyToStart?: boolean;
 
     completionCondition(player: Player): boolean {
@@ -42,9 +43,9 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
                 }
                 player.drawCardsToHand(this.selectedCards[player.name].length);
                 player.shuffleConflictDeck();
-                this.game.addMessage('{0} has mulliganed {1} cards from the conflict deck', player, this.selectedCards[player.name].length);
+                this.game.addMessage(msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the conflict deck`);
             } else {
-                this.game.addMessage('{0} has kept all conflict cards', player);
+                this.game.addMessage(msg`${player} has kept all conflict cards`);
             }
             this.game.getProvinceArray(false).forEach((location: Location) => {
                 const cards = player.getDynastyCardsInProvince(location);
@@ -62,4 +63,3 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     }
 }
 
-export default MulliganConflictPrompt;

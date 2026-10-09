@@ -73,7 +73,7 @@ describe('Betrayed Vision', function() {
             expect(this.ikomaUjiaki.name).toBe(this.kitsuSpiritcaller.name);
             expect(this.ikomaUjiaki.getCost()).toBe(this.kitsuSpiritcaller.getCost());
             expect(this.ikomaUjiaki.getBaseMilitarySkill()).toBe(this.kitsuSpiritcaller.printedMilitarySkill);
-            expect(this.ikomaUjiaki.getPoliticalSkill()).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
+            expect(this.ikomaUjiaki.politicalSkill).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
             expect(this.ikomaUjiaki.getTraits()).toContain('shugenja');
             expect(this.ikomaUjiaki.getTraits()).toContain('water');
             expect(this.ikomaUjiaki.isUnique()).toBe(true);
@@ -99,7 +99,7 @@ describe('Betrayed Vision', function() {
             expect(this.ikomaUjiaki.name).toBe(this.ikomaUjiaki.printedName);
             expect(this.ikomaUjiaki.getCost()).toBe(this.ikomaUjiaki.printedCost);
             expect(this.ikomaUjiaki.getBaseMilitarySkill()).toBe(this.ikomaUjiaki.printedMilitarySkill);
-            expect(this.ikomaUjiaki.getPoliticalSkill()).toBe(this.ikomaUjiaki.printedPoliticalSkill);
+            expect(this.ikomaUjiaki.politicalSkill).toBe(this.ikomaUjiaki.printedPoliticalSkill);
             expect(this.ikomaUjiaki.getTraits()).toContain('courtier');
             expect(this.ikomaUjiaki.getTraits()).not.toContain('shugenja');
             expect(this.ikomaUjiaki.isUnique()).toBe(true);

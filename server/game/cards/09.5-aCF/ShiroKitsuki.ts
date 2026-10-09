@@ -1,6 +1,10 @@
 import { ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { delayedEffect } from '../../effects.js';
+import { claimRing, selectRing } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
@@ -10,26 +14,25 @@ export default class ShiroKitsuki extends StrongholdCard {
             .when({
                 onConflictDeclared: () => true
             })
-            .cost(AbilityDsl.costs.nameCard())
-            .gameAction(AbilityDsl.actions.playerLastingEffect((playerLastingEffectContext) => ({
+            .cost(costs.nameCard())
+            .playerLastingEffect((playerLastingEffectContext) => ({
                 targetController: playerLastingEffectContext.player,
-                effect: AbilityDsl.effects.delayedEffect({
+                effect: delayedEffect({
                     when: {
                         onCardPlayed: (event, context) =>
                             event.player === context.player.opponent &&
-                            event.card.name === playerLastingEffectContext.costs.nameCardCost
+                            event.card.name === playerLastingEffectContext.costs.namedCard
                     },
                     multipleTrigger: true,
-                    gameAction: AbilityDsl.actions.selectRing((context) => ({
+                    gameAction: selectRing({
                         activePromptTitle: 'Choose a ring to claim',
                         ringCondition: (ring) => ring.isUnclaimed(),
-                        message: '{0} claims the {1}',
-                        messageArgs: (ring) => [context.player, ring],
-                        gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: ConflictType.Political })
-                    }))
+                        message: (context, ring) => msg`${context.player} claims the ${ring}`,
+                        gameAction: claimRing({ takeFate: true, type: ConflictType.Political })
+                    })
                 })
-            })))
-            .effect('claim a ring whenever {1} plays a card named {2}', (context) => [context.player.opponent, context.costs.nameCardCost])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            }))
+            .chatText((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.namedCard}`)
+            .limit(unlimitedPerConflict());
     }
 }

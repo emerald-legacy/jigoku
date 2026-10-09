@@ -1,9 +1,19 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { handler, putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Event } from '../../../Events/Event.js';
+
+/** The token as the chat shows it: a card fragment, so its name can be hovered. */
+const recruitInChat = {
+    id: 'ashigaru-recruit',
+    label: 'Ashigaru Recruit',
+    name: 'Ashigaru Recruit',
+    facedown: false,
+    type: CardType.Character
+};
 
 function putAshigaruTokenIntoPlay(context: AbilityContext) {
     const card = context.player.dynastyDeck[0];
@@ -11,7 +21,7 @@ function putAshigaruTokenIntoPlay(context: AbilityContext) {
     card.owner.removeCardFromPile(card);
     card.moveTo(Location.RemovedFromGame);
     const moveEvents: Event[] = [];
-    context.game.actions.putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
+    putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
     context.game.openThenEventWindow(moveEvents);
     return true;
 }
@@ -21,13 +31,8 @@ export default class AshigaruEncampment extends DrawCard {
 
     setupCardAbilities() {
         this.action('Recruit a fresh Ashigaru')
-            .gameAction(AbilityDsl.actions.handler({ handler: putAshigaruTokenIntoPlay }))
-            .effect('recruit {1}', () => ({
-                id: 'ashigaru-recruit',
-                label: 'Ashigaru Recruit',
-                name: 'Ashigaru Recruit',
-                facedown: false,
-                type: CardType.Character
-            }));
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .gameAction(handler({ handler: putAshigaruTokenIntoPlay }))
+            .chatText(() => msg`recruit ${recruitInChat}`);
     }
 }

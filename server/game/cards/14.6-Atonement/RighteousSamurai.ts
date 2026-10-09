@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 
@@ -16,7 +16,7 @@ class RighteousSamurai extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

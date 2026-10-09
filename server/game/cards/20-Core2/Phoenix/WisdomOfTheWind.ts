@@ -1,5 +1,14 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    chooseAction,
+    dishonor,
+    honor,
+    onAffinity,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -12,29 +21,29 @@ export default class WisdomOfTheWind extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.chooseAction({
-                    options: {
+            }, sequential([
+                chooseAction({
+                    choices: {
                         'Honor this character': {
-                            action: AbilityDsl.actions.honor(),
-                            message: '{0} chooses to honor {1}'
+                            action: honor(),
+                            message: (_context, target, player) => msg`${player} chooses to honor ${target}`
                         },
                         'Dishonor this character': {
-                            action: AbilityDsl.actions.dishonor(),
-                            message: '{0} chooses to dishonor {1}'
+                            action: dishonor(),
+                            message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                         }
                     }
                 }),
-                AbilityDsl.actions.onAffinity(context => ({
+                onAffinity((context) => ({
                     trait: 'air',
-                    gameAction: AbilityDsl.actions.cardLastingEffect({
+                    gameAction: cardLastingEffect({
                         target: context.target,
-                        effect: AbilityDsl.effects.modifyGlory(2)
+                        effect: modifyGlory(2)
                     }),
-                    effect: 'give {0} +2 glory',
-                    effectArgs: () => [context.target]
+                    chatText: 'give {0} +2 glory',
+                    chatTextArgs: () => [context.target]
                 }))
             ]))
-            .effect('honor or dishonor {0}');
+            .chatText('honor or dishonor {0}');
     }
 }

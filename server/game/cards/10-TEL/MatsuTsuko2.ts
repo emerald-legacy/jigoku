@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { breakProvince } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MatsuTsuko2 extends DrawCard {
@@ -12,18 +13,17 @@ export default class MatsuTsuko2 extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking() &&
                     context.player.isMoreHonorable() &&
-                    event.conflict.getConflictProvinces().some(p => p.location !== Location.StrongholdProvince)
+                    event.conflict.getConflictProvinces().some((p) => p.location !== Location.StrongholdProvince)
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
-                message: '{0} breaks {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.breakProvince()
-            })))
-            .effect('break an attacked province');
+                message: (context, cards) => msg`${context.player} breaks ${cards}`,
+                gameAction: breakProvince()
+            })
+            .chatText('break an attacked province');
     }
 }

@@ -1,24 +1,21 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardAtRandom } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroHiroyuki extends DrawCard {
     static id = 'shosuro-hiroyuki';
 
     setupCardAbilities() {
-        this.action('Force opponent to discard card or dishonor a character')
-            .condition((context) => context.source.isParticipating(ConflictType.Political))
+        this.conflictAction('Force opponent to discard card or dishonor a character', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.politicalSkill < context.source.politicalSkill
-            }, AbilityDsl.actions.conditional(({ target }) => ({
-                condition: () => target.isDishonored,
-                trueGameAction: AbilityDsl.actions.discardAtRandom({
-                    target: target.controller
-                }),
-                falseGameAction: AbilityDsl.actions.dishonor({ target })
-            })));
+            })
+            .if((context) => context.target.isDishonored)
+                .gameAction(discardAtRandom((context) => ({ target: context.target.controller })))
+            .otherwise()
+                .dishonor();
     }
 }

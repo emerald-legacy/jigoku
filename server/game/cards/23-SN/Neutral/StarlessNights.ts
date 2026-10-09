@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Phases } from '../../../Constants.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { placeFateOnRing } from '../../../GameActions/GameActions.js';
+import { Phase } from '../../../Constants.js';
 
 export default class StarlessNights extends DrawCard {
     static id = 'starless-nights';
@@ -8,11 +9,11 @@ export default class StarlessNights extends DrawCard {
     setupCardAbilities() {
         this.reaction('Place 1 fate on each unclaimed ring')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(AbilityDsl.actions.placeFateOnRing((context) => ({
-                target: Object.values(context.game.rings).filter(ring => ring.isUnclaimed())
+            .gameAction(placeFateOnRing((context) => ({
+                target: Object.values(context.game.rings).filter((ring) => ring.isUnclaimed())
             })))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

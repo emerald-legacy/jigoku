@@ -66,7 +66,7 @@ describe('Invoke the Divine', function() {
                 this.player1.clickCard(this.adept);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.adept.bowed).toBe(true);
-                expect(this.adept.getMilitarySkill()).toBe(5);
+                expect(this.adept.militarySkill).toBe(5);
                 expect(this.adept.isHonored).toBe(true);
             });
 

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { cannotTriggerAbilities } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class Tranquility extends DrawCard {
@@ -7,10 +8,10 @@ export default class Tranquility extends DrawCard {
     public setupCardAbilities() {
         this.action('Opponent\'s characters at home can\'t use abilities')
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: (context.player.opponent?.cardsInPlay ?? []).filter((card) => !card.isParticipating()),
-                effect: AbilityDsl.effects.cannotTriggerAbilities()
-            })))
-            .effect('stop characters at {1}\'s home from triggering abilities until the end of the conflict', (context) => context.player.opponent ?? '');
+                effect: cannotTriggerAbilities()
+            }))
+            .chatText((context) => msg`stop characters at ${context.player.opponent ?? ''}'s home from triggering abilities until the end of the conflict`);
     }
 }

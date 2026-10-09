@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { changePlayerGloryModifier } from '../../../effects.js';
+import { claimImperialFavor, multiple, putIntoPlay } from '../../../GameActions/GameActions.js';
 import { CardType, FavorType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -9,7 +10,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: AbilityDsl.effects.changePlayerGloryModifier((player) => this.highestMilitaryForPlayer(player))
+            effect: changePlayerGloryModifier((player) => this.highestMilitaryForPlayer(player))
         });
 
         this.reaction('Put into play')
@@ -19,14 +20,14 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                     event.cardStateWhenLeftPlay?.location === Location.PlayArea &&
                     context.game.isDuringConflict()
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.putIntoPlay((context) => ({ target: context.source })),
-                AbilityDsl.actions.claimImperialFavor((context) => ({
+            .gameAction(multiple([
+                putIntoPlay((context) => ({ target: context.source })),
+                claimImperialFavor((context) => ({
                     target: context.player,
                     side: FavorType.Military
                 }))
             ]))
-            .effect('put {0} into play and claim the Imperial Favor')
+            .chatText('put {0} into play and claim the Imperial Favor')
             .location([Location.Hand]);
     }
 
@@ -36,7 +37,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                 return maxMil;
             }
 
-            const cardMil = card.getMilitarySkill();
+            const cardMil = card.militarySkill;
             return cardMil > maxMil ? cardMil : maxMil;
         }, 0);
     }

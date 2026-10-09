@@ -1,14 +1,14 @@
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 export default class CityOfTheOpenHand extends StrongholdCard {
     static id = 'city-of-the-open-hand';
 
     setupCardAbilities() {
         this.action('Gain an honor')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gainHonor();
     }
 
     //Needed for testing some cards
@@ -16,9 +16,9 @@ export default class CityOfTheOpenHand extends StrongholdCard {
         this.abilities.actions = [];
         this.declareAbilities(() => {
             this.action('Steal an honor')
-                .cost(AbilityDsl.costs.bowSelf())
+                .cost(costs.bowSelf())
                 .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
-                .gameAction(AbilityDsl.actions.takeHonor());
+                .takeHonor();
         });
     }
 }

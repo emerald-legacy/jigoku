@@ -1,5 +1,6 @@
 import { ChooseGameAction } from '../../../build/server/game/GameActions/ChooseGameAction.js';
 import { Players } from '../../../build/server/game/Constants.js';
+import { noAction } from '../../../build/server/game/GameActions/GameActions.js';
 import { buildPlayerHarness, buildGameSpy, buildGameActionSpy, lastPromptArgs, lastPromptPlayer } from '../../../build/test/server/GameActions/_helpers.js';
 
 describe('ChooseGameAction', function() {
@@ -11,24 +12,23 @@ describe('ChooseGameAction', function() {
         this.actionB = buildGameActionSpy();
     });
 
-    describe('getProperties()', function() {
-        it('should install a setDefaultTarget closure that returns the wrapped target', function() {
+    describe('targets', function() {
+        it('should pass its target to every action it offers', function() {
             const action = new ChooseGameAction({
                 target: 'tgt',
-                options: { A: { action: this.actionA } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
-            action.getProperties(this.context);
-            const installedFn = this.actionA.setDefaultTarget.calls.mostRecent().args[0];
-            expect(installedFn()).toEqual(['tgt']);
+            action.addEventsToArray([], this.context);
+            expect(this.actionA.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: ['tgt'] });
+            expect(this.actionB.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: ['tgt'] });
         });
 
-        it('should install setDefaultTarget on every option action', function() {
+        it('should pass nothing when it has no target, so each action keeps its own default', function() {
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA } }
             });
-            action.getProperties(this.context);
-            expect(this.actionA.setDefaultTarget).toHaveBeenCalled();
-            expect(this.actionB.setDefaultTarget).toHaveBeenCalled();
+            action.addEventsToArray([], this.context);
+            expect(this.actionA.hasLegalTarget).toHaveBeenCalledWith(this.context, {});
         });
     });
 
@@ -36,25 +36,25 @@ describe('ChooseGameAction', function() {
         it('should prompt the opponent when player is Players.Opponent', function() {
             const action = new ChooseGameAction({
                 player: Players.Opponent,
-                options: { A: { action: this.actionA } }
+                choices: { A: { action: this.actionA } }
             });
             action.addEventsToArray([], this.context);
             expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(this.opponent);
         });
 
-        it('should fall back to current player when player is Opponent but no opponent exists', function() {
+        it('should not prompt anyone when player is Opponent but no opponent exists', function() {
             this.player.opponent = undefined;
             const action = new ChooseGameAction({
                 player: Players.Opponent,
-                options: { A: { action: this.actionA } }
+                choices: { A: { action: this.actionA } }
             });
             action.addEventsToArray([], this.context);
-            expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(this.player);
+            expect(this.game.promptWithHandlerMenu).not.toHaveBeenCalled();
         });
 
         it('should default to the current player when player is unspecified', function() {
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA } }
+                choices: { A: { action: this.actionA } }
             });
             action.addEventsToArray([], this.context);
             expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(this.player);
@@ -64,7 +64,7 @@ describe('ChooseGameAction', function() {
             this.actionA.hasLegalTarget.and.returnValue(false);
             this.actionB.hasLegalTarget.and.returnValue(false);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             action.addEventsToArray([], this.context);
             expect(this.game.promptWithHandlerMenu).not.toHaveBeenCalled();
@@ -74,7 +74,7 @@ describe('ChooseGameAction', function() {
             this.actionA.hasLegalTarget.and.returnValue(true);
             this.actionB.hasLegalTarget.and.returnValue(false);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             action.addEventsToArray([], this.context);
             expect(lastPromptArgs(this.game.promptWithHandlerMenu).choices).toEqual(['A']);
@@ -83,40 +83,42 @@ describe('ChooseGameAction', function() {
         it('should route the chosen action through addEventsToArray when the choice handler fires', function() {
             const events = [];
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             action.addEventsToArray(events, this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('B');
             const step = this.game.queueSimpleStep.calls.mostRecent().args[0];
             step();
-            expect(this.actionB.addEventsToArray).toHaveBeenCalledWith(events, this.context);
+            expect(this.actionB.addEventsToArray).toHaveBeenCalledWith(events, this.context, {});
             expect(this.actionA.addEventsToArray).not.toHaveBeenCalled();
         });
 
         it('should add the per-choice message when one is configured', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['{0} picks {1}', ['p', 'tgt']]);
             const action = new ChooseGameAction({
                 target: 'tgt',
-                options: { A: { action: this.actionA, message: 'msg' } }
+                choices: { A: { action: this.actionA, message } }
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('A');
-            expect(this.game.addMessage).toHaveBeenCalledWith('msg', this.player, ['tgt']);
+            expect(message).toHaveBeenCalledWith(this.context, ['tgt'], this.player);
+            expect(this.game.addMessage).toHaveBeenCalledWith(['{0} picks {1}', ['p', 'tgt']]);
         });
 
-        it('should append messageArgs to the per-choice message', function() {
+        it('should take a bare game action as a choice without a message', function() {
             const action = new ChooseGameAction({
-                target: 'tgt',
-                messageArgs: ['extra1', 'extra2'],
-                options: { A: { action: this.actionA, message: 'msg' } }
+                choices: { A: noAction(), B: { action: this.actionB } }
             });
             action.addEventsToArray([], this.context);
+            expect(lastPromptArgs(this.game.promptWithHandlerMenu).choices).toEqual(['A', 'B']);
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('A');
-            expect(this.game.addMessage).toHaveBeenCalledWith('msg', this.player, ['tgt'], 'extra1', 'extra2');
+            expect(this.game.addMessage).not.toHaveBeenCalled();
+            expect(this.game.queueSimpleStep).toHaveBeenCalled();
         });
 
         it('should not add a message when the chosen option has none', function() {
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA } }
+                choices: { A: { action: this.actionA } }
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).choiceHandler('A');
@@ -129,7 +131,7 @@ describe('ChooseGameAction', function() {
             this.actionA.hasLegalTarget.and.returnValue(false);
             this.actionB.hasLegalTarget.and.returnValue(true);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             const result = action.hasLegalTarget(this.context);
             expect(result).toBe(true);
@@ -141,7 +143,7 @@ describe('ChooseGameAction', function() {
             this.actionA.hasLegalTarget.and.returnValue(false);
             this.actionB.hasLegalTarget.and.returnValue(false);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             const result = action.hasLegalTarget(this.context);
             expect(result).toBe(false);
@@ -155,18 +157,18 @@ describe('ChooseGameAction', function() {
             this.actionA.canAffect.and.returnValue(false);
             this.actionB.canAffect.and.returnValue(false);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             action.canAffect('target', this.context);
-            expect(this.actionA.canAffect).toHaveBeenCalledWith('target', this.context);
-            expect(this.actionB.canAffect).toHaveBeenCalledWith('target', this.context);
+            expect(this.actionA.canAffect).toHaveBeenCalledWith('target', this.context, {});
+            expect(this.actionB.canAffect).toHaveBeenCalledWith('target', this.context, {});
         });
 
         it('should short-circuit on the first affectable option', function() {
             this.actionA.canAffect.and.returnValue(true);
             this.actionB.canAffect.and.returnValue(true);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             action.canAffect('target', this.context);
             expect(this.actionA.canAffect.calls.count()).toBe(1);
@@ -179,7 +181,7 @@ describe('ChooseGameAction', function() {
             this.actionA.hasTargetsChosenByInitiatingPlayer.and.returnValue(false);
             this.actionB.hasTargetsChosenByInitiatingPlayer.and.returnValue(true);
             const action = new ChooseGameAction({
-                options: { A: { action: this.actionA }, B: { action: this.actionB } }
+                choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             expect(action.hasTargetsChosenByInitiatingPlayer(this.context)).toBe(true);
         });

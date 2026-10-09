@@ -1,0 +1,46 @@
+import { msg } from '../GameChat.js';
+import { EventName, Phase } from '../Constants.js';
+import type Game from '../Game.js';
+import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
+import { SimpleStep } from './SimpleStep.js';
+import type { Step } from './Step.js';
+
+export class PhaseStep extends BaseStepWithPipeline {
+    public steps: Step[] = [];
+
+    constructor(
+        game: Game,
+        private name: Phase
+    ) {
+        super(game);
+    }
+
+    initialise(steps: Step[]): void {
+        this.pipeline.initialise([new SimpleStep(this.game, () => this.createPhase())]);
+        const startStep = new SimpleStep(this.game, () => this.startPhase());
+        const endStep = new SimpleStep(this.game, () => this.endPhase());
+        this.steps = [startStep, ...steps, endStep];
+    }
+
+    createPhase(): void {
+        this.game.raiseEvent(EventName.OnPhaseCreated, { phase: this.name }, () => {
+            for(const step of this.steps) {
+                this.game.queueStep(step);
+            }
+        });
+    }
+
+    startPhase(): void {
+        this.game.raiseEvent(EventName.OnPhaseStarted, { phase: this.name }, () => {
+            this.game.currentPhase = this.name;
+            if(this.name !== Phase.Setup) {
+                this.game.addAlert('endofround', msg`Round ${this.game.roundNumber} - ${this.name} phase`);
+            }
+        });
+    }
+
+    endPhase(): void {
+        this.game.raiseEvent(EventName.OnPhaseEnded, { phase: this.name });
+        this.game.currentPhase = '';
+    }
+}

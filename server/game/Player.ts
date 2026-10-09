@@ -1,16 +1,17 @@
+import { msg } from './GameChat.js';
 import { isEnumValue } from './utils/helpers.js';
-import { shuffle } from './utils/shuffle.js';
+import { shuffle } from './utils/random.js';
 import { HonorTracker } from './HonorTracker.js';
 import { PlayerZones, type AdditionalPile, type DrawCardPile } from './PlayerZones.js';
 
 import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
-import AttachmentPrompt from './gamesteps/AttachmentPrompt.js';
+import { AttachmentPrompt } from './gamesteps/AttachmentPrompt.js';
 import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { RingEffects } from './RingEffects.js';
+import { RingAbilities } from './RingAbilities.js';
 import { PlayableLocation } from './PlayableLocation.js';
 import { PlayerCostManager } from './PlayerCostManager.js';
 import { PlayerConflictManager, type ConflictDeclarationProperties } from './PlayerConflictManager.js';
@@ -22,17 +23,18 @@ import { StrongholdCard } from './StrongholdCard.js';
 import {
     CardType,
     ConflictType,
-    Decks,
+    DeckType,
     EffectName,
+    Element,
     EventName,
     FavorType,
     Location,
     Players,
-    PlayType
+    PlayType,
+    RestrictionType
 } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type BaseCard from './BaseCard.js';
 import type { CardSummary } from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -133,7 +135,7 @@ export interface GamePlayerUser {
     settings?: GamePlayerUserSettings;
 }
 
-class Player extends GameObject {
+export class Player extends GameObject {
     user: GamePlayerUser;
     emailHash: string;
     declare id: string;
@@ -481,14 +483,7 @@ class Player extends GameObject {
     }
 
     getProvinceCards(): ProvinceCard[] {
-        const gameModeProvinceCount = this.game.gameMode === GameModes.Skirmish ? 3 : 5;
-        const locations = [
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour,
-            Location.StrongholdProvince
-        ].slice(0, gameModeProvinceCount);
+        const locations = this.game.getProvinceArray();
         return locations.flatMap((location) => this.getProvinceCardInProvince(location) ?? []);
     }
 
@@ -635,18 +630,13 @@ class Player extends GameObject {
 
     deckRanOutOfCards(deck: string): void {
         const discardPile = this.getSourceList(deck + ' discard pile');
-        const action = GameActions.loseHonor({ amount: this.game.gameMode === GameModes.Skirmish ? 3 : 5 });
-        if(action.canAffect(this, this.game.getFrameworkContext())) {
-            this.game.addMessage(
-                '{0}\'s {1} deck has run out of cards, so they lose {2} honor',
-                this,
-                deck,
-                this.game.gameMode === GameModes.Skirmish ? 3 : 5
-            );
+        const action = GameActions.loseHonor({ amount: this.game.rules.deckoutHonorLoss });
+        if(action.canAffect(this, this.game.getFrameworkContext(this))) {
+            this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards, so they lose ${this.game.rules.deckoutHonorLoss} honor`);
         } else {
-            this.game.addMessage('{0}\'s {1} deck has run out of cards', this, deck);
+            this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards`);
         }
-        action.resolve(this, this.game.getFrameworkContext());
+        action.resolve(this, this.game.getFrameworkContext(this));
         this.game.queueSimpleStep(() => {
             discardPile.forEach((card: BaseCard) => this.moveCard(card, deck + ' deck'));
             if(deck === 'dynasty') {
@@ -717,17 +707,17 @@ class Player extends GameObject {
 
     shuffleConflictDeck(): void {
         if(this.name !== 'Dummy Player') {
-            this.game.addMessage('{0} is shuffling their conflict deck', this);
+            this.game.addMessage(msg`${this} is shuffling their conflict deck`);
         }
-        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: Decks.ConflictDeck });
+        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Conflict });
         this.conflictDeck = shuffle(this.conflictDeck);
     }
 
     shuffleDynastyDeck(): void {
         if(this.name !== 'Dummy Player') {
-            this.game.addMessage('{0} is shuffling their dynasty deck', this);
+            this.game.addMessage(msg`${this} is shuffling their dynasty deck`);
         }
-        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: Decks.DynastyDeck });
+        this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Dynasty });
         this.dynastyDeck = shuffle(this.dynastyDeck);
     }
 
@@ -912,7 +902,7 @@ class Player extends GameObject {
             display = card;
         }
 
-        this.game.addMessage('{0} manually moves {1} from their {2} to their {3}', this, display, source, target);
+        this.game.addMessage(msg`${this} manually moves ${display} from their ${source} to their ${target}`);
         this.moveCard(card, target);
         this.game.checkGameState(true);
     }
@@ -1039,7 +1029,7 @@ class Player extends GameObject {
     }
 
     hasAffinity(trait: string, context?: AbilityContext): boolean {
-        if(!this.checkRestrictions('haveAffinity', context)) {
+        if(!this.checkRestrictions(RestrictionType.HaveAffinity, context ?? this.game.getFrameworkContext(this))) {
             return false;
         }
 
@@ -1067,21 +1057,21 @@ class Player extends GameObject {
         if(this.opponent) {
             this.opponent.loseImperialFavor();
         }
-        const sovereign = (this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Sanctuary) ? 'Empress\'' : 'Emperor\'s';
-        if(this.game.gameMode === GameModes.Skirmish) {
+        const sovereign = this.game.rules.imperialFavorSovereign;
+        if(!this.game.rules.imperialFavorHasSides) {
             this.imperialFavor = 'both';
-            this.game.addMessage('{0} claims the ' + sovereign + ' favor!', this);
+            this.game.addMessage(msg`${this} claims the ${sovereign} favor!`);
             return;
         }
         if(favorType && favorType !== FavorType.Both) {
             this.imperialFavor = favorType;
-            this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, favorType);
+            this.game.addMessage(msg`${this} claims the ${sovereign} ${favorType} favor!`);
             return;
         }
 
         const claim = (type: string) => () => {
             this.imperialFavor = type;
-            this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, type);
+            this.game.addMessage(msg`${this} claims the ${sovereign} ${type} favor!`);
         };
         this.game.promptWithHandlerMenu(this, {
             activePromptTitle: 'Which side of the Imperial Favor would you like to claim?',
@@ -1102,7 +1092,7 @@ class Player extends GameObject {
         this.deck = deck;
         this.deck.selected = true;
         const strongholdData = deck.stronghold?.[0]?.card;
-        if(strongholdData && this.game.gameMode !== GameModes.Skirmish) {
+        if(strongholdData && this.game.rules.setupHaveStrongholds) {
             this.stronghold = new StrongholdCard(this, strongholdData);
         }
         this.faction = deck.faction ?? {};
@@ -1191,7 +1181,7 @@ class Player extends GameObject {
     }
 
     getTotalIncome(): number {
-        return this.game.gameMode === GameModes.Skirmish ? 6 : (this.stronghold?.cardData.fate ?? 0);
+        return this.game.rules.fatePerRoundForced ?? this.stronghold?.cardData.fate ?? 0;
     }
 
     getTotalHonor(): number {
@@ -1264,7 +1254,7 @@ class Player extends GameObject {
 
     setShowBid(bid: number): void {
         this.showBid = bid;
-        this.game.addMessage('{0} reveals a bid of {1}', this, bid);
+        this.game.addMessage(msg`${this} reveals a bid of ${bid}`);
     }
 
     isTopConflictCardShown(activePlayer?: StateViewer): boolean {
@@ -1298,12 +1288,12 @@ class Player extends GameObject {
         return this.anyEffect(EffectName.ShowTopDynastyCard);
     }
 
-    resolveRingEffects(elements: string | string[], optional: boolean = true): void {
+    resolveRingEffects(elements: Element | Element[], optional: boolean = true): void {
         if(!Array.isArray(elements)) {
             elements = [elements];
         }
         optional = optional && elements.length === 1;
-        let effects = elements.map((element) => RingEffects.contextFor(this, element, optional));
+        let effects = elements.map((element) => RingAbilities.contextFor(this, element, optional));
         effects = [...effects].sort((a, b) => {
             const aVal = this.firstPlayer ? a.ability.defaultPriority : -a.ability.defaultPriority;
             const bVal = this.firstPlayer ? b.ability.defaultPriority : -b.ability.defaultPriority;
@@ -1331,7 +1321,7 @@ class Player extends GameObject {
 
     hasDeclaredConflictOfType(context: AbilityContext, conflictType: ConflictType): boolean {
         const conflicts = context.game.getConflicts(this);
-        const declaredConflicts = conflicts.filter(conflict => conflict.declaredType === conflictType);
+        const declaredConflicts = conflicts.filter((conflict) => conflict.declaredType === conflictType);
 
         return declaredConflicts.length > 0;
     }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { additionalCharactersInConflict } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class ShikshaScout extends DrawCard {
@@ -6,8 +6,8 @@ class ShikshaScout extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
-            effect: AbilityDsl.effects.additionalCharactersInConflict(1)
+            condition: (context) => context.source.isParticipating(),
+            effect: additionalCharactersInConflict(1)
         });
     }
 }

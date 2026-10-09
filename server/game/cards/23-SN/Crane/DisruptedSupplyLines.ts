@@ -1,16 +1,17 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cancel, dishonor, loseFate, removeFromGame, takeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 
 const resourcesAvailable = (context: AbilityContext) => {
-    const fateAvailable = context.game.actions.loseFate().canAffect(context.player, context);
+    const fateAvailable = loseFate().canAffect(context.player, context);
 
     const eligibleCharacters = context.player.cardsInPlay.filter(
         (card) => card.getType() === CardType.Character &&
-            context.game.actions.dishonor().canAffect(card, context)
+            dishonor().canAffect(card, context)
     );
     const freeCharacters = eligibleCharacters.filter((card) => card.hasSomeTrait('scout', 'shinobi'));
 
@@ -63,11 +64,11 @@ function disruptedSupplyLinesCost(): Cost<{ disruptedSupplyLinesCostFatePaid: bo
         payEvent(context) {
             const events: Event[] = [];
             if(context.costs.disruptedSupplyLinesCostFatePaid) {
-                const loseFateaction = context.game.actions.loseFate({ target: context.player });
+                const loseFateaction = loseFate({ target: context.player });
                 events.push(loseFateaction.getEvent(context.player, context));
             }
 
-            const dishonorAction = context.game.actions.dishonor({ target: context.costs.disruptedSupplyLinesCostDishonoredCharacter });
+            const dishonorAction = dishonor({ target: context.costs.disruptedSupplyLinesCostDishonoredCharacter });
             events.push(dishonorAction.getEvent(context.costs.disruptedSupplyLinesCostDishonoredCharacter, context));
 
             return events;
@@ -91,14 +92,14 @@ export default class DisruptedSupplyLines extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                'Remove attachment from the game': AbilityDsl.actions.cancel((context) => ({
+                'Give your opponent 1 fate': takeFate(),
+                'Remove attachment from the game': cancel((context) => ({
                     target: context.source,
-                    replacementGameAction: AbilityDsl.actions.removeFromGame({ target: context.event.card, location: Location.Any })
+                    replacementGameAction: removeFromGame({ target: context.event.card, location: Location.Any })
                 }))
             })
-            .effect('{1}{2}{3}', context => context.select === 'Give your opponent 1 fate' ?
-                ['take 1 fate from ', context.player.opponent, ''] :
-                ['remove ', context.event.card, ' from the game']);
+            .chatText((context) => context.select === 'Give your opponent 1 fate'
+                ? msg`${'take 1 fate from '}${context.player.opponent}`
+                : msg`remove ${context.event.card} from the game`);
     }
 }

@@ -1,6 +1,8 @@
-import type { MsgArg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { Players, type EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
@@ -8,22 +10,22 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
-export interface CardMenuProperties extends CardActionProperties {
+export interface CardMenuProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     options?: HandlerMenuOption[];
     targets?: boolean;
-    message?: string;
-    messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => MsgArg[];
+    /** The chat line once a card is chosen. */
+    message?: (context: C, card: DrawCard, chooser: Player) => MessageArgs;
     subActionProperties?: (card: DrawCard) => Record<string, unknown>;
     gameAction: GameAction;
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
 }
 
 export class CardMenuAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
-    CardMenuProperties,
+    CardMenuProperties<C>,
     EventName,
     C,
     'activePromptTitle' | 'targets' | 'cards' | 'subActionProperties' | 'cardCondition'
@@ -37,13 +39,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         cardCondition: () => true
     };
 
-    getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
-        return properties;
-    }
-
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.cards.some((c) =>
             properties.gameAction.canAffect(
@@ -54,7 +50,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.options) {
             return true;
@@ -70,7 +66,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cardCondition = (card: DrawCard, context: C) =>
             properties.gameAction.hasLegalTarget(
@@ -79,38 +75,39 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
             ) && properties.cardCondition(card, context);
         if(
             !this.hasLegalTarget(context, additionalProperties) ||
-            (properties.cards.length === 0 && (properties.options ?? []).length === 0) ||
-            (properties.player === Players.Opponent && !context.player.opponent)
+            properties.cards.length === 0 && (properties.options ?? []).length === 0
         ) {
             return;
         }
-        const opponent = context.player.opponent;
-        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
-        if(properties.targets && context.choosingPlayerOverride) {
-            player = context.choosingPlayerOverride;
+        const player = resolveChoosingPlayer(context, properties.player, properties.targets);
+        if(!player) {
+            return;
         }
-        const defaultProperties = {
-            context: context,
+        context.game.promptWithHandlerMenu(player, {
+            context,
+            activePromptTitle: properties.activePromptTitle,
+            cards: properties.cards,
+            options: properties.options,
+            target: properties.target,
+            cardCondition: (card: DrawCard) => cardCondition(card, context),
             cardHandler: (card: DrawCard): void => {
                 properties.gameAction.addEventsToArray(
                     events,
                     context,
                     Object.assign({}, additionalProperties, properties.subActionProperties(card))
                 );
-                if(properties.message && properties.messageArgs) {
-                    const cards = properties.cards.filter((card) => cardCondition(card, context));
-                    context.game.addMessage(properties.message, ...properties.messageArgs(card, player, cards));
+                if(properties.message) {
+                    context.game.addMessage(properties.message(context, card, player));
                 }
             }
-        };
-        context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition: (card: DrawCard) => cardCondition(card, context) });
+        });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.targets ||
-            properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
+            properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, { ...additionalProperties, target: properties.target })
         );
     }
 }

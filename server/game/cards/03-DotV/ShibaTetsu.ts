@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { modifyBothSkills } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class ShibaTetsu extends DrawCard {
     static id = 'shiba-tetsu';
@@ -9,9 +11,9 @@ class ShibaTetsu extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('spell') && this.game.isDuringConflict()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(1) }))
-            .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .cardLastingEffect({ effect: modifyBothSkills(1) })
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .limit(unlimitedPerConflict());
     }
 }
 

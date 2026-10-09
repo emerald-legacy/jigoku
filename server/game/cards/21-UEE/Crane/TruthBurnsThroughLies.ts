@@ -1,5 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType } from '../../../Constants.js';
+import { gainAbility } from '../../../effects.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TruthBurnsThroughLies extends DrawCard {
@@ -9,19 +10,16 @@ export default class TruthBurnsThroughLies extends DrawCard {
         this.attachmentConditions({ trait: ['courtier', 'magistrate'] });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Dishonor a character',
-                condition: (context) => context.source.isParticipating(),
-                target: {
+            effect: gainAbility.action('Dishonor a character', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() &&
                         (context.source.hasTrait('magistrate')
                             ? (card.printedCost ?? 0) <= (context.source.printedCost ?? 0)
-                            : (card.printedCost ?? 0) < (context.source.printedCost ?? 0)),
-                    gameAction: AbilityDsl.actions.dishonor()
-                }
-            })
+                            : (card.printedCost ?? 0) < (context.source.printedCost ?? 0))
+                }, dishonor()))
         });
     }
 }

@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
-import type { ActionEvent } from './GameAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
 
 export interface SwitchConflictTypeProperties extends RingActionProperties {
     targetConflictType?: ConflictType;
@@ -31,11 +31,11 @@ export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext>
         return context.game.currentConflict && context.game.currentConflict.conflictType;
     }
 
-    canAffect(ring: Ring, context: C, _additionalProperties = {}) {
+    canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}) {
         if(!context.game.currentConflict) {
             return false;
         }
-        const { targetConflictType } = this.getProperties(context);
+        const { targetConflictType } = this.getProperties(context, additionalProperties);
         return ring.conflictType !== targetConflictType;
     }
 

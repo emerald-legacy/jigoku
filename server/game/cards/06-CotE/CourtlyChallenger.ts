@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { DuelType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { dishonor, draw, honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class CourtlyChallenger extends DrawCard {
@@ -8,21 +10,19 @@ export default class CourtlyChallenger extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.delayedEffect({
+                delayedEffect({
                     when: {
                         afterDuel: (event, context) => event.winner?.some((card) => card === context.source) ?? false
                     },
-                    message: '{0} is honored due to winning a duel',
-                    messageArgs: (context) => [context.source],
-                    gameAction: AbilityDsl.actions.honor()
+                    message: (context) => msg`${context.source} is honored due to winning a duel`,
+                    gameAction: honor()
                 }),
-                AbilityDsl.effects.delayedEffect({
+                delayedEffect({
                     when: {
                         afterDuel: (event, context) => event.loser?.some((card) => card === context.source) ?? false
                     },
-                    message: '{0} is dishonored due to losing a duel',
-                    messageArgs: (context) => [context.source],
-                    gameAction: AbilityDsl.actions.dishonor()
+                    message: (context) => msg`${context.source} is dishonored due to losing a duel`,
+                    gameAction: dishonor()
                 })
             ]
         });
@@ -30,7 +30,7 @@ export default class CourtlyChallenger extends DrawCard {
         this.action('Initiate a Political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
-                gameAction: (duel) => AbilityDsl.actions.draw({ amount: 2, target: duel.winnerController })
+                gameAction: (duel) => draw({ amount: 2, target: duel.winnerController })
             }));
     }
 }

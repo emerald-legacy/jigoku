@@ -1,4 +1,5 @@
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -29,8 +30,8 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         return [context.player];
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', []];
         }
@@ -38,12 +39,12 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     /** The direction, or the amount when the player picks the direction. */
-    protected effectMessageTarget(context: C): MsgArg {
-        const properties = this.getProperties(context);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.direction === Direction.Prompt ? properties.amount : properties.direction;
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || (properties.direction === Direction.Decrease && player.honorBid === 0)) {
             return false;
@@ -51,7 +52,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
@@ -60,7 +61,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
             if(player.honorBid === 0) {
                 const event = this.getEvent(player, context, additionalProperties);
                 event.direction = Direction.Increase;
-                context.game.addMessage('{0} chooses to increase their honor bid', player);
+                context.game.addMessage(msg`${player} chooses to increase their honor bid`);
                 events.push(event);
             } else {
                 context.game.promptWithHandlerMenu(player, {
@@ -69,10 +70,10 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
                     choiceHandler: (choice: string) => {
                         const event = this.getEvent(player, context, additionalProperties);
                         if(choice === 'Increase honor bid') {
-                            context.game.addMessage('{0} chooses to increase their honor bid', player);
+                            context.game.addMessage(msg`${player} chooses to increase their honor bid`);
                             event.direction = Direction.Increase;
                         } else {
-                            context.game.addMessage('{0} chooses to decrease their honor bid', player);
+                            context.game.addMessage(msg`${player} chooses to decrease their honor bid`);
                             event.direction = Direction.Decrease;
                         }
                         events.push(event);
@@ -82,7 +83,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;

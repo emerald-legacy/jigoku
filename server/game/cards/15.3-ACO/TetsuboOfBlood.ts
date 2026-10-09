@@ -1,12 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { RestrictionType } from '../../Constants.js';
 
 class TetsuboOfBlood extends DrawCard {
     static id = 'tetsubo-of-blood';
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot('honor')
+            effect: cardCannot(RestrictionType.Honor)
         });
     }
 

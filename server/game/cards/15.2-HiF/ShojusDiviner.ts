@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, Location } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
+import { handler } from '../../GameActions/GameActions.js';
+import { Location } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class ShojusDiviner extends DrawCard {
@@ -8,15 +10,12 @@ class ShojusDiviner extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Divine your conflict deck',
-                printedAbility: false,
-                condition: (context) => context.player.conflictDeck.length > 0,
-                effect: 'look at the top 8 cards of their conflict deck',
-                gameAction: AbilityDsl.actions.handler({
+            effect: gainAbility.action('Divine your conflict deck', (ability) => ability
+                .condition((context) => context.player.conflictDeck.length > 0)
+                .gameAction(handler({
                     handler: (context) => this.chooseCardsToKeep(context, context.player.conflictDeck.slice(0, 8))
-                })
-            })
+                }))
+                .chatText('look at the top 8 cards of their conflict deck'))
         });
     }
 
@@ -26,11 +25,11 @@ class ShojusDiviner extends DrawCard {
 
         const finish = () => {
             if(remaining.length > 0) {
-                this.game.addMessage('{0} discards {1}', context.player, remaining);
+                this.game.addMessage(msg`${context.player} discards ${remaining}`);
                 remaining.forEach((card) => context.player.moveCard(card, Location.ConflictDiscardPile));
             }
             if(chosen.length > 0) {
-                this.game.addMessage('{0} places {1} card{2} on top of their deck', context.player, chosen.length, chosen.length > 1 ? 's' : '');
+                this.game.addMessage(msg`${context.player} places ${chosen.length} card${chosen.length > 1 ? 's' : ''} on top of their deck`);
                 context.player.conflictDeck.splice(0, chosen.length, ...chosen);
             }
         };

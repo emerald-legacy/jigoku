@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { injure } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class EmbraceDeath extends DrawCard {
@@ -13,18 +14,14 @@ class EmbraceDeath extends DrawCard {
                     context.player.isAttackingPlayer() &&
                     event.conflict.getAttackers().some((card) => card.hasTrait('bushi'))
             })
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.isAttacking()
             }))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.conditional({
-                condition: (context) => (context.target?.getFate() ?? 0) > 0,
-                trueGameAction: AbilityDsl.actions.removeFate(),
-                falseGameAction: AbilityDsl.actions.discardFromPlay()
-            }));
+            }, injure());
     }
 }
 

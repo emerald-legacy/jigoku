@@ -1,5 +1,5 @@
 import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfFire extends DrawCard {
@@ -13,10 +13,10 @@ export default class MantraOfFire extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card =>
+                cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
-            }, AbilityDsl.actions.placeFate())
-            .gameAction(AbilityDsl.actions.draw())
-            .effect('add a fate to {0} and draw a card');
+            }, placeFate())
+            .draw()
+            .chatText('add a fate to {0} and draw a card');
     }
 }

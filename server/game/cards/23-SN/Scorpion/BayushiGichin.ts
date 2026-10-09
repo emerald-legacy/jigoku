@@ -1,6 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, DuelType, Players, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { attach, noAction, selectCard, sequentialContext, takeHonor } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 
@@ -9,12 +11,12 @@ export default class BayushiGichin extends DrawCard {
 
     setupCardAbilities() {
         this.duelStrike('Poison a character', (duel, context) => duel.participants.includes(context.source))
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 let character: BaseCard | undefined;
                 let poison: DrawCard | undefined;
                 return {
                     gameActions: [
-                        AbilityDsl.actions.selectCard({
+                        selectCard({
                             activePromptTitle: 'Choose a duel participant',
                             cardType: CardType.Character,
                             controller: Players.Opponent,
@@ -23,35 +25,29 @@ export default class BayushiGichin extends DrawCard {
                                     return false;
                                 }
                                 const poisons = this.getPoisons(context);
-                                return poisons.some(p => AbilityDsl.actions.attach().canAffect(card, context, { attachment: p }));
+                                return poisons.some((p) => attach().canAffect(card, context, { attachment: p }));
                             },
-                            message: '{0} poisons {1}',
-                            messageArgs: (cards) => {
-                                return [context.player, cards];
-                            },
+                            message: (context, cards) => msg`${context.player} poisons ${cards}`,
                             subActionProperties: (card) => {
                                 character = Array.isArray(card) ? undefined : card;
                                 return { target: card };
                             },
-                            gameAction: AbilityDsl.actions.noAction()
+                            gameAction: noAction()
                         }),
-                        AbilityDsl.actions.selectCard({
+                        selectCard({
                             activePromptTitle: 'Choose a poison attachment',
                             cardType: CardType.Attachment,
                             controller: Players.Self,
                             location: [Location.Hand, Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                            cardCondition: (card) => card.hasTrait('poison') && !!character && AbilityDsl.actions.attach().canAffect(character, context, { attachment: card }),
-                            message: '{0} attaches {1}',
-                            messageArgs: (cards) => {
-                                return [context.player, cards];
-                            },
+                            cardCondition: (card) => card.hasTrait('poison') && !!character && attach().canAffect(character, context, { attachment: card }),
+                            message: (context, cards) => msg`${context.player} attaches ${cards}`,
                             subActionProperties: (card) => {
                                 poison = !Array.isArray(card) && card.isDrawCard() ? card : undefined;
                                 return { attachment: card };
                             },
-                            gameAction: AbilityDsl.actions.noAction()
+                            gameAction: noAction()
                         }),
-                        AbilityDsl.actions.attach(() => {
+                        attach(() => {
                             return {
                                 target: character,
                                 attachment: poison
@@ -60,24 +56,24 @@ export default class BayushiGichin extends DrawCard {
                     ]
                 };
             }))
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .limit(unlimitedPerConflict());
 
         this.conflictAction('Military duel to steal honor')
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel, context) => {
                     if(context.source.isDrawCard() && duel.winner?.includes(context.source)) {
-                        return AbilityDsl.actions.takeHonor({ target: duel.loserController });
+                        return takeHonor({ target: duel.loserController });
                     }
-                    return AbilityDsl.actions.noAction();
+                    return noAction();
                 }
             }));
     }
 
     private getPoisons(context: AbilityContext) {
         const player = context.player;
-        const inDiscard = player.conflictDiscardPile.filter(card => card.hasTrait('poison'));
-        const inHand = player.hand.filter(card => card.hasTrait('poison'));
+        const inDiscard = player.conflictDiscardPile.filter((card) => card.hasTrait('poison'));
+        const inHand = player.hand.filter((card) => card.hasTrait('poison'));
 
         return [...inDiscard, ...inHand];
     }

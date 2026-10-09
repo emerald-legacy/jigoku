@@ -1,9 +1,11 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { customFatePhaseFateRemoval } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { Event } from '../../Events/Event.js';
 import type Ring from '../../Ring.js';
+import { placeFateOnRing } from '../../GameActions/GameActions.js';
 
 type RingFate = { ring: Ring; fate: number };
 
@@ -12,20 +14,20 @@ class ReveredBonsho extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.customFatePhaseFateRemoval((player, fate) => {
-                const context = this.game.getFrameworkContext();
+            effect: customFatePhaseFateRemoval((player, fate) => {
+                const context = this.game.getGameContext();
                 const ringsBase = [this.game.rings.air, this.game.rings.earth, this.game.rings.fire, this.game.rings.void, this.game.rings.water];
-                let rings = ringsBase.filter(a => a.isUnclaimed());
+                let rings = ringsBase.filter((a) => a.isUnclaimed());
                 if(rings.length <= 0) {
                     return;
                 }
-                const ringFate: RingFate[] = rings.map(ring => ({
+                const ringFate: RingFate[] = rings.map((ring) => ({
                     ring: ring,
                     fate: 0
                 }));
 
                 while(fate >= rings.length) {
-                    ringFate.forEach(a => a.fate++);
+                    ringFate.forEach((a) => a.fate++);
                     fate = fate - rings.length;
                 }
 
@@ -40,13 +42,13 @@ class ReveredBonsho extends DrawCard {
                         context: context,
                         ringCondition: (ring) => rings.includes(ring),
                         onSelect: (_player, ring) => {
-                            const obj = ringFate.find(a => a.ring === ring);
+                            const obj = ringFate.find((a) => a.ring === ring);
                             if(!obj) {
                                 return true;
                             }
                             obj.fate++;
                             fate--;
-                            rings = rings.filter(a => a !== ring);
+                            rings = rings.filter((a) => a !== ring);
                             if(fate > 0) {
                                 promptForRing();
                             }
@@ -66,8 +68,8 @@ class ReveredBonsho extends DrawCard {
         const moveEvents: Event[] = [];
         ringFate.forEach((obj) => {
             if(obj.fate > 0) {
-                context.game.actions.placeFateOnRing({ target: obj.ring, amount: obj.fate }).addEventsToArray(moveEvents, context);
-                context.game.addMessage('{0} places {1} fate on the {2} due to the effects of {3}', targetPlayer, obj.fate, obj.ring, this);
+                placeFateOnRing({ target: obj.ring, amount: obj.fate }).addEventsToArray(moveEvents, context);
+                context.game.addMessage(msg`${targetPlayer} places ${obj.fate} fate on the ${obj.ring} due to the effects of ${this}`);
             }
         });
         context.game.openThenEventWindow(moveEvents);

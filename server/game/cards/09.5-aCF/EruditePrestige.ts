@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class EruditePrestige extends DrawCard {
     static id = 'erudite-prestige';
@@ -13,12 +15,12 @@ class EruditePrestige extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player && context.source.parentCharacter.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
-                effect: AbilityDsl.effects.modifyPoliticalSkill(1)
-            })))
-            .effect('give +1{1} to {2}', context => ['political', context.source.parentCharacter])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+                effect: modifyPoliticalSkill(1)
+            }))
+            .chatText((context) => msg`give +1${'political'} to ${context.source.parentCharacter}`)
+            .limit(unlimitedPerConflict());
     }
 }
 

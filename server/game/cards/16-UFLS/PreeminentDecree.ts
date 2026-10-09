@@ -1,24 +1,25 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class PreeminentDecree extends DrawCard {
     static id = 'preeminent-decree';
 
     setupCardAbilities() {
-        this.action('Give all participating characters a political penalty')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Give all participating characters a political penalty')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating() && card.glory > 0;
                 }
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants().filter((a) => a !== context.target) ?? [],
-                effect: AbilityDsl.effects.modifyPoliticalSkill(-1 * ((context.target && context.target.glory) || 0))
+                effect: modifyPoliticalSkill(-1 * ((context.target && context.target.glory) || 0))
             })))
-            .effect('give all participating characters except {0} -{1}{2}', context => [context.target.glory, 'political']);
+            .chatText((context) => msg`give all participating characters except ${context.chatTarget()} -${context.target.glory}${'political'}`);
     }
 }
 

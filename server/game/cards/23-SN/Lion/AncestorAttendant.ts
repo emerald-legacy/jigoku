@@ -1,6 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardCard, dishonor, multipleContext } from '../../../GameActions/GameActions.js';
 
 export default class AncestorAttendant extends DrawCard {
     static id = 'ancestor-attendant';
@@ -13,14 +14,14 @@ export default class AncestorAttendant extends DrawCard {
                     (card.printedCost ?? 0) > 0 &&
                     context.player.dynastyDeck.length >= (card.printedCost ?? 0),
                 cardType: CardType.Character
-            }, AbilityDsl.actions.multipleContext((context) => ({
+            }, multipleContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.discardCard((discardContext) => ({
+                    discardCard((discardContext) => ({
                         target: discardContext.player.dynastyDeck.slice(0, context.target.printedCost || 0)
                     })),
-                    AbilityDsl.actions.dishonor()
+                    dishonor()
                 ]
             })))
-            .effect('dishonor {0} and discard the top {1} cards of their dynasty deck', (context) => [context.target.printedCost]);
+            .chatText((context) => msg`dishonor ${context.chatTarget()} and discard the top ${context.target.printedCost} cards of their dynasty deck`);
     }
 }

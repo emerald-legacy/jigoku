@@ -1,11 +1,11 @@
-import StatModifier from './StatModifier.js';
+import { StatModifier } from './StatModifier.js';
 import { EffectName } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';
-import type { EffectBase } from './Effects/EffectBase.js';
-import type { DashSkillType } from './Effects/EffectValueMap.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
+import { SkillType } from './Constants.js';
 
-export type Exclusions = EffectName[] | ((effect: EffectBase) => boolean);
+export type Exclusions = EffectName[] | ((effect: EffectApplier) => boolean);
 
 const skillEffectNames = {
     military: {
@@ -191,7 +191,7 @@ export class SkillCalculator {
         };
     }
 
-    getSkillModifiers(type: DashSkillType, exclusions: Exclusions = []): StatModifier[] {
+    getSkillModifiers(type: SkillType, exclusions: Exclusions = []): StatModifier[] {
         const names = skillEffectNames[type];
         const baseSkillModifiers = this.getBaseSkillModifiers();
         const baseSkill = type === 'military' ? baseSkillModifiers.baseMilitarySkill : baseSkillModifiers.basePoliticalSkill;

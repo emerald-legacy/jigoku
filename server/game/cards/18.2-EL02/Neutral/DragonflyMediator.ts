@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reveal } from '../../../GameActions/GameActions.js';
 
 class DragonflyMediator extends DrawCard {
     static id = 'dragonfly-mediator';
@@ -12,17 +12,17 @@ class DragonflyMediator extends DrawCard {
                 activePromptTitle: 'Choose a card to reveal',
                 location: Location.Hand,
                 controller: Players.Self
-            }, AbilityDsl.actions.reveal({ chatMessage: true }))
+            }, reveal({ chatMessage: true }))
             .targetCards({
                 name: 'oppCard',
                 activePromptTitle: 'Choose three cards to reveal',
                 mode: TargetMode.ExactlyVariable,
-                numCardsFunc: context => Math.min(3, context.player.opponent?.hand.length ?? 0),
+                numCardsFunc: (context) => Math.min(3, context.player.opponent?.hand.length ?? 0),
                 player: Players.Opponent,
                 location: Location.Hand,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent })))
-            .effect('have each player reveal cards from their hand');
+            }, reveal((context) => ({ chatMessage: true, player: context.player.opponent })))
+            .chatText('have each player reveal cards from their hand');
     }
 }
 

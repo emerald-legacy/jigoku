@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
@@ -14,7 +14,7 @@ class BattleMaidenRecruit extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            effect: modifyMilitarySkill(2)
         });
     }
 

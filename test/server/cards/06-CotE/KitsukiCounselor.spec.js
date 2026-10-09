@@ -11,12 +11,12 @@ describe('Kitsuki Counselor', function() {
         });
 
         it('should correctly modify both skills', function() {
-            expect(this.counselor.getMilitarySkill()).toBe(1);
-            expect(this.counselor.getPoliticalSkill()).toBe(1);
+            expect(this.counselor.militarySkill).toBe(1);
+            expect(this.counselor.politicalSkill).toBe(1);
             this.player1.clickPrompt('1');
             this.player2.clickPrompt('3');
-            expect(this.counselor.getMilitarySkill()).toBe(2);
-            expect(this.counselor.getPoliticalSkill()).toBe(2);
+            expect(this.counselor.militarySkill).toBe(2);
+            expect(this.counselor.politicalSkill).toBe(2);
         });
     });
 });

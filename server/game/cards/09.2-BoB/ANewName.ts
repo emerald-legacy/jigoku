@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait } from '../../effects.js';
 
 class ANewName extends DrawCard {
     static id = 'a-new-name';
@@ -7,8 +7,8 @@ class ANewName extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addTrait('courtier'),
-                AbilityDsl.effects.addTrait('bushi')
+                addTrait('courtier'),
+                addTrait('bushi')
             ]
         });
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
 
 import { Duration, Players } from '../../Constants.js';
 
@@ -8,15 +8,15 @@ class CourtMusician extends DrawCard {
 
     setupCardAbilities() {
         this.action('Decrease cost to play cards')
-            .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
+            .condition((context) => context.source.isParticipating())
+            .playerLastingEffect({
                 targetController: Players.Any,
                 duration: Duration.UntilNextPassPriority,
-                effect: AbilityDsl.effects.reduceCost({
+                effect: reduceCost({
                     amount: 1
                 })
-            }))
-            .effect('decrease the cost of cards played by 1 for each player\'s next action opportunity');
+            })
+            .chatText('decrease the cost of cards played by 1 for each player\'s next action opportunity');
     }
 }
 

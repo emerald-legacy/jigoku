@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { Location, CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { canBeSeenWhenFacedown } from '../../effects.js';
+import { chooseAction, discardCard, moveCard, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsahinaTakako extends DrawCard {
@@ -9,7 +11,7 @@ export default class AsahinaTakako extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFacedown(),
-            effect: AbilityDsl.effects.canBeSeenWhenFacedown()
+            effect: canBeSeenWhenFacedown()
         });
 
         this.action('Discard a card or switch with another card')
@@ -17,38 +19,26 @@ export default class AsahinaTakako extends DrawCard {
                 cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.chooseAction((context) => ({
-                options: {
-                    Discard: {
-                        action: AbilityDsl.actions.discardCard({ target: context.target })
-                    },
+            }, chooseAction((context) => ({
+                choices: {
+                    Discard: discardCard({ target: context.target }),
                     'Switch with another card': {
-                        action: AbilityDsl.actions.selectCard({
+                        action: selectCard({
                             activePromptTitle: 'Choose a card to switch with',
                             cardType: [CardType.Character, CardType.Holding, CardType.Event],
                             location: Location.Provinces,
                             controller: Players.Self,
-                            message: '{0} switches {1} in {2} and {3} in {4}',
-                            messageArgs: (card) => [
-                                context.player,
-                                context.target?.isFacedown() ? 'a facedown card' : context.target ?? '',
-                                context.target?.location ?? '',
-                                card.isFacedown() ? 'a facedown card' : card,
-                                card.location
-                            ],
-                            gameAction: AbilityDsl.actions.moveCard({
+                            message: (context, card) => msg`${context.player} switches ${context.target?.isFacedown() ? 'a facedown card' : context.target ?? ''} in ${context.target?.location ?? ''} and ${card.isFacedown() ? 'a facedown card' : card} in ${card.location}`,
+                            gameAction: moveCard({
                                 destination: context.target?.location,
                                 switch: true,
                                 switchTarget: context.target
                             })
                         }),
-                        message: '{0} chooses to discard {1}'
+                        message: (_context, target, player) => msg`${player} chooses to discard ${target}`
                     }
                 }
             })))
-            .effect('switch or discard {1} in {2}', (context) => [
-                context.target.isFacedown() ? 'a facedown card' : context.target,
-                context.target.location
-            ]);
+            .chatText((context) => msg`switch or discard ${context.target.isFacedown() ? 'a facedown card' : context.target} in ${context.target.location}`);
     }
 }

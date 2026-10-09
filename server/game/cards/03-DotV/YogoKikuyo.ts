@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { Location, CardType } from '../../Constants.js';
 
 class YogoKikuyo extends DrawCard {
@@ -12,8 +12,8 @@ class YogoKikuyo extends DrawCard {
                     this.game.isDuringConflict() && event.card.type === CardType.Event &&
                     event.card.hasTrait('spell') && event.card.controller === context.player.opponent
             })
-            .cost(AbilityDsl.costs.putSelfIntoPlay())
-            .gameAction(AbilityDsl.actions.cancel())
+            .cost(costs.putSelfIntoPlay())
+            .cancel()
             .location(Location.Hand);
     }
 }

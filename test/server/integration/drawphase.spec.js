@@ -50,7 +50,7 @@ describe('(2) Draw Phase', function() {
 
             it('should wait for both players to choose a bid, (player 1 chooses first)', function() {
                 this.player1.clickPrompt('1');
-                expect(this.chat).not.toHaveBeenCalledWith('{0} reveals a bid of {1}', this.player1.player, 1);
+                expect(this.chat).not.toHaveBeenCalledWith(['{0} reveals a bid of {1}', [this.player1.player, 1]]);
                 expect(this.player2).toHavePrompt('Honor Bid');
                 expect(this.player2).toHavePromptButton('1');
                 expect(this.player2).toHavePromptButton('2');
@@ -62,7 +62,7 @@ describe('(2) Draw Phase', function() {
 
             it('should wait for both players to choose a bid, (player 2 chooses first)', function() {
                 this.player2.clickPrompt('1');
-                expect(this.chat).not.toHaveBeenCalledWith('{0} reveals a bid of {1}', this.player2.player, 1);
+                expect(this.chat).not.toHaveBeenCalledWith(['{0} reveals a bid of {1}', [this.player2.player, 1]]);
                 expect(this.player1).toHavePrompt('Honor Bid');
                 expect(this.player1).toHavePromptButton('1');
                 expect(this.player1).toHavePromptButton('2');
@@ -80,8 +80,8 @@ describe('(2) Draw Phase', function() {
             });
 
             it('should declare each bid in the chat', function() {
-                expect(this.chat).toHaveBeenCalledWith('{0} reveals a bid of {1}', this.player1.player, 2);
-                expect(this.chat).toHaveBeenCalledWith('{0} reveals a bid of {1}', this.player2.player, 3);
+                expect(this.chat).toHaveBeenCalledWith(['{0} reveals a bid of {1}', [this.player1.player, 2]]);
+                expect(this.chat).toHaveBeenCalledWith(['{0} reveals a bid of {1}', [this.player2.player, 3]]);
             });
 
             it('should set honor dials to new values', function() {

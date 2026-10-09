@@ -1,6 +1,7 @@
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 const elementKey = 'honor-s-reward-fire';
 
@@ -13,10 +14,10 @@ export default class HonorsReward extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
-                effect: AbilityDsl.effects.modifyGlory(3)
+            }, cardLastingEffect(() => ({
+                effect: modifyGlory(3)
             })))
-            .effect('give {0} +3 glory')
+            .chatText('give {0} +3 glory')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 

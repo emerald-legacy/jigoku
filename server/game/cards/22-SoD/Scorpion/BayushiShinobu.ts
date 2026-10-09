@@ -1,4 +1,13 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { delayedEffect, entersPlayWithStatus, takeControl } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    handler,
+    loseHonor,
+    multiple,
+    playerLastingEffect
+} from '../../../GameActions/GameActions.js';
 import { CardType, CharacterStatus, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,16 +18,16 @@ export default class BayushiShinobu extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,
-            effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Dishonored)
+            effect: entersPlayWithStatus(CharacterStatus.Dishonored)
         });
 
         // entersPlayWithStatus only covers playing it; put into play by an effect, it is dishonored afterwards
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 when: {
                     onCharacterEntersPlay: (event, context) => event.card === context.source && !context.source.isDishonored
                 },
-                gameAction: AbilityDsl.actions.handler({
+                gameAction: handler({
                     handler: (context) => {
                         context.source.dishonor();
                     }
@@ -28,34 +37,33 @@ export default class BayushiShinobu extends DrawCard {
         });
 
         this.action('Take control of a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.isDishonored && !card.isUnique()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.takeControl(context.player),
+            }, multiple([
+                cardLastingEffect((context) => ({
+                    effect: takeControl(context.player),
                     duration: Duration.UntilEndOfPhase
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                playerLastingEffect((context) => ({
                     target: context.player,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onCardLeavesPlay: (event) => event.card === context.target
                         },
                         onlyRemoveOnSuccess: true,
-                        gameAction: AbilityDsl.actions.loseHonor({
+                        gameAction: loseHonor({
                             amount: 2,
                             target: context.player
                         }),
-                        message: '{0} loses 2 honor due to the delayed effect of {1}',
-                        messageArgs: [context.player, context.source]
+                        message: () => msg`${context.player} loses 2 honor due to the delayed effect of ${context.source}`
                     }),
                     duration: Duration.UntilEndOfPhase
                 }))
             ]))
-            .effect('take control of {0}');
+            .chatText('take control of {0}');
     }
 }
 

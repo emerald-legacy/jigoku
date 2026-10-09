@@ -1,9 +1,11 @@
-import { GameModes } from '../GameModes.js';
-import { CardType, EffectName, EventName, Phases, Players } from './Constants.js';
+import { msg } from './GameChat.js';
+import { CardType, EffectName, EventName, Phase, Players, Blocker, RestrictionType } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { PlayIntoLocation } from './PlayCharacterAction.js';
 import { AbilityContext } from './AbilityContext.js';
 import Player from './Player.js';
 import type { Cost, Result } from './costs/Cost.js';
@@ -15,7 +17,7 @@ function chosenCharacter(context: AbilityContext): DrawCard | undefined {
     return card instanceof BaseCard && card.isDrawCard() ? card : undefined;
 }
 
-function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
+function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {
     return {
         canPay(context: AbilityContext<DrawCard>) {
             return context.player.cardsInPlay.some((card) =>
@@ -54,7 +56,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
         );
         const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
         return (
-            context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions('spendFate', context))
+            context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
         );
     }
 
@@ -67,77 +69,56 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
     }
 }
 
-export enum PlayDisguisedCharacterIntoLocation {
-    Any,
-    Conflict,
-    Home
-}
-
 export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     public title = 'Play this character with Disguise';
 
     constructor(
         card: DrawCard,
-        private intoLocation = PlayDisguisedCharacterIntoLocation.Any
+        private intoLocation = PlayIntoLocation.Any
     ) {
         super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Conflict) {
-            return 'phase';
+    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Conflict) {
+            return Blocker.WrongPhase;
         } else if(
-            !ignoredRequirements.includes('location') &&
+            !ignoredBlockers.includes(Blocker.WrongLocation) &&
             !context.player.isCardInPlayableLocation(context.source, context.playType)
         ) {
-            return 'location';
+            return Blocker.WrongLocation;
         } else if(
-            !ignoredRequirements.includes('cannotTrigger') &&
+            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
             !context.source.canPlay(context, context.playType)
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         } else if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
-        } else if(!context.player.checkRestrictions('enterPlay', context)) {
-            return 'restriction';
+            return Blocker.DuplicateUnique;
+        } else if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
+            return Blocker.CannotPlaceFate;
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     public executeHandler(context: AbilityContext<DrawCard>) {
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const events: Event[] = [
-            context.game.getEvent(EventName.OnCardPlayed, {
-                player: context.player,
-                card: context.source,
-                context: context,
-                originalLocation: context.source.location,
-                originallyOnTopOfConflictDeck:
-                    context.player &&
-                    context.player.conflictDeck &&
-                    context.player.conflictDeck[0] === context.source,
-                onPlayCardSource: context.onPlayCardSource,
-                playedFromOutOfPlaySource: context.source.fromOutOfPlaySource?.slice(),
-                playType: context.playType
-            })
-        ];
+        const events: Event[] = [createCardPlayedEvent(context, context.source, context.playType)];
         const replacedCharacter = chosenCharacter(context);
         if(!replacedCharacter) {
             return;
         }
-        const frameworkKeepsDisguisedInCurrentLocation =
-            context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
+        const frameworkKeepsDisguisedInCurrentLocation = context.game.rules.disguiseKeepsCharactersInSameLocation;
         const conflictOnly =
-            this.intoLocation === PlayDisguisedCharacterIntoLocation.Conflict ||
+            this.intoLocation === PlayIntoLocation.Conflict ||
             (frameworkKeepsDisguisedInCurrentLocation && replacedCharacter.isParticipating());
 
-        let intoConflict = conflictOnly && this.intoLocation !== PlayDisguisedCharacterIntoLocation.Home;
+        let intoConflict = conflictOnly && this.intoLocation !== PlayIntoLocation.Home;
         if(replacedCharacter.inConflict && !conflictOnly) {
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
@@ -146,13 +127,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
             });
         }
         context.game.queueSimpleStep(() => {
-            context.game.addMessage(
-                '{0} plays {1}{2} using Disguised, choosing to replace {3}',
-                context.player,
-                context.source,
-                intoConflict ? ' into the conflict' : '',
-                replacedCharacter
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source}${intoConflict ? ' into the conflict' : ''} using Disguised, choosing to replace ${replacedCharacter}`);
             const gameAction = intoConflict
                 ? context.game.actions.putIntoConflict({ target: context.source, fate: extraFate, status })
                 : context.game.actions.putIntoPlay({ target: context.source, fate: extraFate, status });

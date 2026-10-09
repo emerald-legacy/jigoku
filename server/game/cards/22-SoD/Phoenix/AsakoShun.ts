@@ -1,14 +1,16 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 function penalty(context: AbilityContext): number {
     const conflict = context.game.currentConflict;
     if(!conflict) {
         return 0;
     }
-    const scholars = conflict.getNumberOfParticipantsFor(context.player, card => card.hasTrait('scholar'));
+    const scholars = conflict.getNumberOfParticipantsFor(context.player, (card) => card.hasTrait('scholar'));
     return -2 * scholars;
 }
 
@@ -16,24 +18,20 @@ export default class AsakoShun extends DrawCard {
     static id = 'asako-shun';
 
     setupCardAbilities() {
-        this.action('Give a skill penalty to a participating character')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Give a skill penalty to a participating character')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(penalty(context))
             })))
-            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target])
-            .then((context) => ({
-                thenCondition: () => {
-                    const conflict = context.game.currentConflict;
-                    return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
-                },
-                gameAction: AbilityDsl.actions.gainHonor(),
-                message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
-                messageArgs: () => [context.target, context.player]
-            }));
+            .chatText((context) => msg`give ${context.target} ${penalty(context)}${'military'} and ${penalty(context)}${'political'}`)
+            .thenIf((context) => {
+                const conflict = context.game.currentConflict;
+                return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
+            })
+            .gainHonor(1)
+            .message((context) => msg`${context.player} gains 1 honor because ${context.target} is not contributing skill to the current conflict`);
     }
 }

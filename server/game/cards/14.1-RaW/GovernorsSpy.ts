@@ -1,8 +1,9 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -14,10 +15,10 @@ class GovernorsSpy extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .selectFrom({
                 targets: true
-            }, (context) => playerChoices(context.player, (player) => AbilityDsl.actions.handler({
+            }, (context) => playerChoices(context.player, (player) => handler({
                 handler: (handlerContext) => this.rearrange(handlerContext, player)
             })))
-            .effect('turn facedown and rearrange all of {1}\'s dynasty cards', (context) => (context.select === context.player.name ? context.player : context.player.opponent));
+            .chatText((context) => msg`turn facedown and rearrange all of ${(context.select === context.player.name ? context.player : context.player.opponent)}'s dynasty cards`);
     }
 
     private rearrange(context: AbilityContext, targetPlayer: Player) {
@@ -48,7 +49,7 @@ class GovernorsSpy extends DrawCard {
                     card.location !== Location.StrongholdProvince &&
                     (unplacedCards.length > emptyProvinces().length || emptyProvinces().includes(card.location)),
                 onSelect: (player, card) => {
-                    this.game.addMessage('{0} places a card', player);
+                    this.game.addMessage(msg`${player} places a card`);
                     unplacedCards = unplacedCards.filter((a) => a !== currentCard);
                     destinations.set(currentCard, card.location);
                     if(unplacedCards.length > 0) {
@@ -70,7 +71,7 @@ class GovernorsSpy extends DrawCard {
             emptyProvinces().forEach((location) => {
                 context.refillProvince(targetPlayer, location);
             });
-            this.game.addMessage('{0} has finished placing cards', context.player);
+            this.game.addMessage(msg`${context.player} has finished placing cards`);
         });
     }
 }

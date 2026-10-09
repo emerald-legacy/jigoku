@@ -1,26 +1,23 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
+import { RemainingCards } from '../../../Constants.js';
 
 class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';
 
     setupCardAbilities() {
-        this.action('Search your conflict deck')
-            .condition(context => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: 4,
+        this.conflictAction('Search your conflict deck', { evenFromHome: true })
+            .deckSearch({
+                cardsToLookAt: 4,
                 reveal: false,
-                placeOnBottomInRandomOrder: true,
-                shuffle: false,
-                message: '{0} puts a card underneath {1}',
-                messageArgs: context => {
-                    return [context.player, context.source];
-                },
-                gameAction: AbilityDsl.actions.placeCardUnderneath({
+                remainingCards: RemainingCards.BottomRandom,
+                message: (context) => msg`${context.player} puts a card underneath ${context.source}`,
+                gameAction: placeCardUnderneath({
                     destination: this
                 })
-            }));
+            });
 
         this.persistentEffect(playableFromUnderneath(this));
     }

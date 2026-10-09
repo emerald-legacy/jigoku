@@ -1,11 +1,12 @@
+import { msg } from '../GameChat.js';
 import * as AbilityLimit from '../AbilityLimit.js';
 import { AbilityType, EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import TriggeredAbility from '../TriggeredAbility.js';
+import { TriggeredAbility } from '../TriggeredAbility.js';
 
 import type { EventPayload } from '../Events/EventPayloads.js';
-export default class PrideAbility extends TriggeredAbility<DrawCard> {
+export class PrideAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
             when: {
@@ -18,8 +19,9 @@ export default class PrideAbility extends TriggeredAbility<DrawCard> {
             },
             title: card.name + '\'s Pride',
             printedAbility: false,
-            message: '{0} is {1}honored due to their Pride',
-            messageArgs: (context: TriggeredAbilityContext) => [context.source, context.event.conflict?.winner === context.player ? '' : 'dis'],
+            message: (context: TriggeredAbilityContext) => context.event.conflict?.winner === context.player
+                ? msg`${context.source} is honored due to their Pride`
+                : msg`${context.source} is dishonored due to their Pride`,
             limit: AbilityLimit.perConflict(1),
             handler: (context: TriggeredAbilityContext) => {
                 const conflict = context.event.conflict;

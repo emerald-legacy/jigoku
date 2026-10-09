@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class ShinjoTrailblazer extends DrawCard {
@@ -9,8 +10,8 @@ class ShinjoTrailblazer extends DrawCard {
             .when({
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(2) }))
-            .effect('give {0} +2{1}, +2{2}', () => ['military', 'political']);
+            .cardLastingEffect({ effect: modifyBothSkills(2) })
+            .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}, +2${'political'}`);
     }
 }
 

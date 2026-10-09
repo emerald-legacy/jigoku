@@ -1,8 +1,10 @@
-import ActionWindow from '../ActionWindow.js';
+import { msg } from '../../GameChat.js';
+import { ActionWindow } from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import type AbilityResolver from '../AbilityResolver.js';
+import type { AbilityResolver } from '../AbilityResolver.js';
 import type { Conflict } from '../../Conflict.js';
+import { RestrictionType } from '../../Constants.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',
@@ -14,7 +16,7 @@ const capitalize: Record<string, string> = {
     void: 'Void'
 };
 
-class ConflictActionWindow extends ActionWindow {
+export class ConflictActionWindow extends ActionWindow {
     conflict: Conflict;
     displayTotals: boolean;
 
@@ -28,7 +30,7 @@ class ConflictActionWindow extends ActionWindow {
         const completed = super.continue();
         if(!completed && this.displayTotals) {
             const conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
-            this.game.addMessage('{0} - Attacker: {1} Defender: {2}', conflictText, this.conflict.attackerSkill, this.conflict.defenderSkill);
+            this.game.addMessage(msg`${conflictText} - Attacker: ${this.conflict.attackerSkill} Defender: ${this.conflict.defenderSkill}`);
             let winnerText = 'Attacker is winning the conflict';
             const breakingProvinces: ProvinceCard[] = [];
             if(this.conflict.attackerSkill === 0 && this.conflict.defenderSkill === 0) {
@@ -38,7 +40,7 @@ class ConflictActionWindow extends ActionWindow {
             } else {
                 const provinces = this.conflict.getConflictProvinces();
                 provinces.forEach((province: ProvinceCard) => {
-                    if(!province.isBroken && province.checkRestrictions('break', this.game.getFrameworkContext()) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
+                    if(!province.isBroken && province.checkRestrictions(RestrictionType.Break, this.game.getFrameworkContext(this.conflict.attackingPlayer)) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
                         breakingProvinces.push(province);
                     }
                 });
@@ -74,4 +76,3 @@ class ConflictActionWindow extends ActionWindow {
     }
 }
 
-export default ConflictActionWindow;

@@ -1,5 +1,14 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import {
+    chooseAction,
+    dishonor,
+    sacrifice,
+    selectCard,
+    sendHome,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -7,8 +16,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
     static id = 'chronicler-of-calamities';
 
     setupCardAbilities() {
-        this.action('Dishonor or move home a character')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Dishonor or move home a character')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
@@ -17,41 +25,40 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     card.controller !== context.player &&
                     (context.game.currentConflict?.getCharacters(context.player) ?? [])
                         .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
-            }, AbilityDsl.actions.chooseAction((context) => ({
+            }, chooseAction((context) => ({
                 activePromptTitle: 'Select one',
-                options: {
+                choices: {
                     'Dishonor it': {
-                        action: AbilityDsl.actions.dishonor({ target: context.target }),
-                        message: '{0} chooses to dishonor {1}'
+                        action: dishonor({ target: context.target }),
+                        message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                     },
                     'Move it home': {
-                        action: AbilityDsl.actions.sendHome({ target: context.target }),
-                        message: '{0} chooses to send {1} home'
+                        action: sendHome({ target: context.target }),
+                        message: (_context, target, player) => msg`${player} chooses to send ${target} home`
                     },
                     'Sacrifice a character to perform both': {
-                        action: AbilityDsl.actions.sequentialContext((context) => {
-                            const gameActions: GameAction[] = [AbilityDsl.actions.sendHome()];
+                        action: sequentialContext((context) => {
+                            const gameActions: GameAction[] = [sendHome()];
                             gameActions.push(
-                                AbilityDsl.actions.selectCard({
+                                selectCard({
                                     activePromptTitle: 'Select a character to sacrifice',
                                     cardType: CardType.Character,
                                     controller: Players.Self,
-                                    message: '{0} chooses to sacrifice {1}',
-                                    messageArgs: (card) => [context.player, card],
+                                    message: (context, card) => msg`${context.player} chooses to sacrifice ${card}`,
                                     subActionProperties: (card) => ({ target: card, cannotBeCancelled: true }),
-                                    gameAction: AbilityDsl.actions.sacrifice()
+                                    gameAction: sacrifice()
                                 })
                             );
-                            gameActions.push(AbilityDsl.actions.dishonor({ target: context.target }));
-                            gameActions.push(AbilityDsl.actions.sendHome({ target: context.target }));
+                            gameActions.push(dishonor({ target: context.target }));
+                            gameActions.push(sendHome({ target: context.target }));
 
                             return { gameActions };
                         }),
-                        message: '{0} chooses to sacrifice a character to both dishonor and send {1} home'
+                        message: (_context, target, player) => msg`${player} chooses to sacrifice a character to both dishonor and send ${target} home`
                     }
                 }
             })))
-            .effect('dishonor or send home {0}')
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText('dishonor or send home {0}')
+            .max(perConflict(1));
     }
 }

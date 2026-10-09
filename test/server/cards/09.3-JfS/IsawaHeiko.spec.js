@@ -70,8 +70,8 @@ describe('Isawa Heiko', function () {
                 this.player1.clickCard(this.heiko);
                 this.player1.clickCard(this.heiko);
                 this.player1.clickCard(this.makoto);
-                expect(this.makoto.getMilitarySkill()).toBe(1);
-                expect(this.makoto.getPoliticalSkill()).toBe(4);
+                expect(this.makoto.militarySkill).toBe(1);
+                expect(this.makoto.politicalSkill).toBe(4);
             });
 
             it('should target characters at home', function() {
@@ -96,7 +96,7 @@ describe('Isawa Heiko', function () {
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 this.player1.clickCard(this.heiko);
                 this.player1.clickCard(this.heiko);
-                expect(this.heiko.getMilitarySkill()).toBe(5);
+                expect(this.heiko.militarySkill).toBe(5);
             });
         });
     });

@@ -68,11 +68,11 @@ describe('Defiance', function() {
             expect(this.player2).toBeAbleToSelect(this.daidojiUji);
             expect(this.player2).toBeAbleToSelect(this.dojiWhisperer);
 
-            const mil = this.daidojiUji.getMilitarySkill();
-            const pol = this.daidojiUji.getPoliticalSkill();
+            const mil = this.daidojiUji.militarySkill;
+            const pol = this.daidojiUji.politicalSkill;
             this.player2.clickCard(this.daidojiUji);
-            expect(this.daidojiUji.getMilitarySkill()).toBe(mil + 3);
-            expect(this.daidojiUji.getPoliticalSkill()).toBe(pol + 3);
+            expect(this.daidojiUji.militarySkill).toBe(mil + 3);
+            expect(this.daidojiUji.politicalSkill).toBe(pol + 3);
             expect(this.getChatLogs(5)).toContain('player2 plays Defiance to give Daidoji Uji +3military/+3political');
         });
 
@@ -90,11 +90,11 @@ describe('Defiance', function() {
             expect(this.player1).toBeAbleToSelect(this.daidojiUji);
             expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
 
-            const mil = this.daidojiUji.getMilitarySkill();
-            const pol = this.daidojiUji.getPoliticalSkill();
+            const mil = this.daidojiUji.militarySkill;
+            const pol = this.daidojiUji.politicalSkill;
             this.player1.clickCard(this.daidojiUji);
-            expect(this.daidojiUji.getMilitarySkill()).toBe(mil + 5);
-            expect(this.daidojiUji.getPoliticalSkill()).toBe(pol + 5);
+            expect(this.daidojiUji.militarySkill).toBe(mil + 5);
+            expect(this.daidojiUji.politicalSkill).toBe(pol + 5);
             expect(this.getChatLogs(5)).toContain('player1 plays Defiance to give Daidoji Uji +5military/+5political');
         });
     });

@@ -2,14 +2,15 @@ import type BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotTriggerAbilities, changeType, gainAllAbilitiesDynamic } from '../../../effects.js';
+import { attach, cardLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
 
 export default class LaughingThunder extends DrawCard {
     static id = 'laughing-thunder';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.gainAllAbilitiesDynamic(
+            effect: gainAllAbilitiesDynamic(
                 (card) => {
                     return card.attachments.filter((a) => a.hasTrait('kiho') && a.printedType === CardType.Event);
                 },
@@ -23,34 +24,34 @@ export default class LaughingThunder extends DrawCard {
                 controller: Players.Self,
                 location: Location.Hand,
                 cardCondition: (card, context) => card.hasTrait('kiho') &&
-                    context.game.actions.attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
+                    attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const gameActions: GameAction[] = [];
 
-                gameActions.push(AbilityDsl.actions.cardLastingEffect({
+                gameActions.push(cardLastingEffect({
                     target: context.target,
                     duration: Duration.Custom,
                     targetLocation: Location.Any,
                     canChangeZoneOnce: true,
                     until: {
-                        onCardDetached: event => event.card === context.target,
-                        onCardLeavesPlay: event => event.card === context.target
+                        onCardDetached: (event) => event.card === context.target,
+                        onCardLeavesPlay: (event) => event.card === context.target
                     },
                     effect: [
-                        AbilityDsl.effects.cannotTriggerAbilities(),
-                        AbilityDsl.effects.changeType(CardType.Attachment)
+                        cannotTriggerAbilities(),
+                        changeType(CardType.Attachment)
                     ]
                 }));
 
-                gameActions.push(AbilityDsl.actions.attach({
+                gameActions.push(attach({
                     attachment: context.target,
                     target: context.source
                 }));
 
                 return { gameActions };
             }))
-            .effect('claim the effects of {0} as its own');
+            .chatText('claim the effects of {0} as its own');
     }
 
 

@@ -1,26 +1,27 @@
-import { Location } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { Location, RemainingCards } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 export default class ShiroGisu extends StrongholdCard {
     static id = 'shiro-gisu';
 
     setupCardAbilities() {
         this.action('Draw a card')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => !!(this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0))
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: (context) => this.getCharactersWithoutFate(context),
+            .deckSearch({
+                cardsToLookAt: (context) => this.getCharactersWithoutFate(context),
                 activePromptTitle: 'Choose a card to put in your hand',
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
-            }))
-            .effect('look at the top {1} cards of their conflict deck', (context) => this.getCharactersWithoutFate(context));
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
+            })
+            .chatText((context) => msg`look at the top ${this.getCharactersWithoutFate(context)} cards of their conflict deck`);
     }
 
     private getCharactersWithoutFate(context: AbilityContext) {

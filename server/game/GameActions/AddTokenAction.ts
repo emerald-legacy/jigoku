@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -19,8 +20,8 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
         tokenType: TokenType.Honor
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['add a {1} token to {0}', [this.getProperties(context).tokenType]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['add a {1} token to {0}', [this.getProperties(context, additionalProperties).tokenType]];
     }
 
     canAffect(card: BaseCard, context: C): boolean {
@@ -28,7 +29,7 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
             return false;
         }
         if([CardType.Holding, CardType.Province].includes(card.type)) {
-            if(!card.location.includes('province')) {
+            if(!card.isInProvince()) {
                 return false;
             }
         } else if(card.location !== Location.PlayArea) {
@@ -37,7 +38,7 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnAddTokenToCard, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnAddTokenToCard, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { tokenType } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.tokenType = tokenType;

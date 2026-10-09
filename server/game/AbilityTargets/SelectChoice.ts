@@ -1,7 +1,8 @@
 import { TargetMode } from '../Constants.js';
 
-export class SelectChoice {
-    constructor(public choice: string) {}
+/** A chosen select label; `L` is the select's labels where the builder knows them. */
+export class SelectChoice<L extends string = string> {
+    constructor(public choice: L) {}
 
     getShortSummary() {
         return {

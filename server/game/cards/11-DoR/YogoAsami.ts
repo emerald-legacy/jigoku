@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { Players, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class YogoAsami extends DrawCard {
     static id = 'yogo-asami';
@@ -9,20 +11,20 @@ class YogoAsami extends DrawCard {
         this.persistentEffect({
             match: (card) => card.name === 'Bayushi Kachiko',
             targetController: Players.Any,
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'target',
-                restricts: 'abilitiesTriggeredByOpponents'
+            effect: cardCannot({
+                cannot: RestrictionType.Target,
+                appliesTo: RestrictionScope.AbilitiesTriggeredByOpponents
             })
         });
         this.action('Give a character -2/-0')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyMilitarySkill(-2) }))
-            .effect('reduce {0}\'s military skill by 2');
+            }, cardLastingEffect({ effect: modifyMilitarySkill(-2) }))
+            .chatText('reduce {0}\'s military skill by 2');
     }
 }
 

@@ -1,20 +1,22 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { cardMenu, discardCard, lookAt, multipleContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';
 
     public setupCardAbilities() {
         this.action('Remove discarded characters to discard a card')
-            .cost(AbilityDsl.costs.removeFromGame({
+            .cost(costs.removeFromGame({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 mode: TargetMode.Unlimited
             }))
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const removed = context.costs.removeFromGame;
                 const cards =
                     context.player.opponent && removed
@@ -22,23 +24,22 @@ export default class IsawaTadaka2 extends DrawCard {
                         : [context.source];
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt(() => ({
+                        lookAt(() => ({
                             target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
                         })),
-                        AbilityDsl.actions.cardMenu((context) => ({
+                        cardMenu({
                             cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             targets: true,
-                            message: '{0} chooses {1} to be discarded',
-                            messageArgs: (card) => [context.player, card],
-                            gameAction: AbilityDsl.actions.discardCard()
-                        }))
+                            message: (context, card) => msg`${context.player} chooses ${card} to be discarded`,
+                            gameAction: discardCard()
+                        })
                     ]
                 };
             }))
-            .effect('look at {1} random card{3} in {2}\'s hand', (context) => {
+            .chatText((context) => {
                 const removed = context.costs.removeFromGame ?? [];
                 const amount = Array.isArray(removed) ? removed.length : 1;
-                return [amount, context.player.opponent, amount === 1 ? '' : 's'];
+                return msg`look at ${amount} random card${amount === 1 ? '' : 's'} in ${context.player.opponent}'s hand`;
             });
     }
 }

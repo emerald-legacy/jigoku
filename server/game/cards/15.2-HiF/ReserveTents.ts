@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -11,8 +12,8 @@ class ReserveTents extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 player: Players.Self
-            }, AbilityDsl.actions.moveToConflict())
-            .limit(AbilityDsl.limit.perRound(2));
+            }, moveToConflict())
+            .limit(perRound(2));
     }
 }
 

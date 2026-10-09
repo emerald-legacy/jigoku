@@ -1,15 +1,15 @@
+import { msg } from '../GameChat.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
-import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
+import { TakeHonorAction } from '../GameActions/TakeHonorAction.js';
 import { EventName, EffectName } from '../Constants.js';
-import { GameModes } from '../../GameModes.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type { Duel } from '../Duel.js';
 
 type HonorBidCostHandler = (prompt: HonorBidPrompt) => void;
 
-class HonorBidPrompt extends AllPlayerPrompt {
+export class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;
     costHandler?: HonorBidCostHandler;
     prohibitedBids: Record<string, string[]>;
@@ -41,11 +41,11 @@ class HonorBidPrompt extends AllPlayerPrompt {
         if(completed) {
             const isHonorBid = typeof this.costHandler !== 'function';
             const revealDials = () => {
-                for(const player of this.game.getPlayers()) {
+                for(const player of this.game.getPlayersInFirstPlayerOrder()) {
                     player.honorBidModifier = 0;
                     this.game.actions
                         .setHonorDial({ value: this.bid[player.uuid] })
-                        .resolve(player, this.game.getFrameworkContext());
+                        .resolve(player, this.game.getFrameworkContext(player));
                 }
             };
             if(this.raiseEvent) {
@@ -67,7 +67,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
         return completed;
     }
 
-    transferHonorAfterBid(context = this.game.getFrameworkContext()) {
+    transferHonorAfterBid(context = this.game.getGameContext()) {
         const firstPlayer = this.game.getFirstPlayer();
         if(!firstPlayer || !firstPlayer.opponent) {
             return;
@@ -88,23 +88,20 @@ class HonorBidPrompt extends AllPlayerPrompt {
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
         var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);
-        this.game.addMessage('{0} gives {1} {2} honor', givingPlayer, receivingPlayer, amountToTransfer);
-        const gameAction = new TransferHonorAction({ amount: Math.abs(difference), afterBid: true });
+        this.game.addMessage(msg`${givingPlayer} gives ${receivingPlayer} ${amountToTransfer} honor`);
+        const gameAction = new TakeHonorAction({ amount: Math.abs(difference), afterBid: true });
         gameAction.resolve(givingPlayer, context);
     }
 
     activePrompt(player: Player) {
-        let buttons = ['1', '2', '3', '4', '5'];
-        if(this.game.gameMode === GameModes.Skirmish) {
-            buttons = ['1', '2', '3'];
-        }
+        let buttons = [...this.game.rules.honorBidValues];
 
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
-        buttons = buttons.filter(num => !prohibitedBids.includes(num));
+        buttons = buttons.filter((num) => !prohibitedBids.includes(num));
         return {
             promptTitle: 'Honor Bid',
             menuTitle: this.menuTitle,
-            buttons: buttons.map(num => ({ text: num, arg: num }))
+            buttons: buttons.map((num) => ({ text: num, arg: num }))
         };
     }
 
@@ -113,7 +110,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 
     menuCommand(player: Player, bid: string): boolean {
-        this.game.addMessage('{0} has chosen a bid.', player);
+        this.game.addMessage(msg`${player} has chosen a bid.`);
 
         this.bid[player.uuid] = parseInt(bid);
 
@@ -121,4 +118,3 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 }
 
-export default HonorBidPrompt;

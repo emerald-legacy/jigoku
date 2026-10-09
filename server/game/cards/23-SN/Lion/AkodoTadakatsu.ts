@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
+import { bow, injure } from '../../../GameActions/GameActions.js';
 import Ring from '../../../Ring.js';
 
 export default class AkodoTadakatsu extends DrawCard {
@@ -10,7 +10,7 @@ export default class AkodoTadakatsu extends DrawCard {
         this.reaction('Injure a character')
             .when({
                 onMoveFate: (event, context) => {
-                    if(context.game.currentPhase === Phases.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {
+                    if(context.game.currentPhase === Phase.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {
                         return false;
                     }
                     const cause = event.context;
@@ -21,7 +21,7 @@ export default class AkodoTadakatsu extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.injure());
+            }, injure());
 
         this.reaction('Injure or bow a character')
             .when({
@@ -32,15 +32,15 @@ export default class AkodoTadakatsu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
-                cardCondition: card => card.isDefending()
+                cardCondition: (card) => card.isDefending()
             })
             .select({
                 name: 'select',
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Injure this character': AbilityDsl.actions.injure((context) => ({ target: context.targets.character })),
-                'Bow this character': AbilityDsl.actions.bow((context) => ({ target: context.targets.character }))
+                'Injure this character': injure((context) => ({ target: context.targets.character })),
+                'Bow this character': bow((context) => ({ target: context.targets.character }))
             });
     }
 }

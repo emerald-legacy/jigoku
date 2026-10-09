@@ -1,9 +1,11 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, EventName, Players } from '../../../Constants.js';
+import { cardCannot, modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, multiple, onAffinity } from '../../../GameActions/GameActions.js';
+import { CardType, EventName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import { msg } from '../../../GameChat.js';
 
 const controlledBy = (player: Player) => (character: DrawCard) => character.controller === player;
 
@@ -38,24 +40,24 @@ export default class SanctifiedEarth extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Self,
                 cardCondition: (card, context) => Object.entries(trigger).find(([name]) => name === context.event.name)?.[1].cardCondition(card, context) ?? false
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyBothSkills(2)
+            }, multiple([
+                cardLastingEffect({
+                    effect: modifyBothSkills(2)
                 }),
 
-                AbilityDsl.actions.onAffinity({
+                onAffinity({
                     trait: 'earth',
-                    effect: 'make {0} invulnerable to opponent\'s send home',
-                    effectArgs: (context) => [context.target],
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                    chatText: 'make {0} invulnerable to opponent\'s send home',
+                    chatTextArgs: (context) => [context.target],
+                    gameAction: cardLastingEffect((context) => ({
                         target: context.target,
-                        effect: AbilityDsl.effects.cardCannot({
-                            cannot: 'sendHome',
-                            restricts: 'opponentsCardEffects'
+                        effect: cardCannot({
+                            cannot: RestrictionType.SendHome,
+                            appliesTo: RestrictionScope.OpponentsCardEffects
                         })
                     }))
                 })
             ]))
-            .effect('give +2{1} and +2{2} to {3}', (context) => ['military', 'political', context.target]);
+            .chatText((context) => msg`give +2${'military'} and +2${'political'} to ${context.target}`);
     }
 }

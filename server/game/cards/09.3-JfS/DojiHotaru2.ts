@@ -1,16 +1,18 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class DojiHotaru2 extends DrawCard {
     static id = 'doji-hotaru-2';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition: (context) => !!context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan'),
-                message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context) => [context.source, context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')],
-                gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
+                message: (context) => msg`${context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')} is discarded from play as its controller controls ${context.source}`,
+                gameAction: discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')
                 }))
             })
@@ -22,9 +24,9 @@ class DojiHotaru2 extends DrawCard {
                         event.player === context.player.opponent;
                 }
             })
-            .gameAction(AbilityDsl.actions.gainHonor())
-            .effect('gain 1 honor')
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .gainHonor()
+            .chatText('gain 1 honor')
+            .limit(unlimitedPerConflict());
     }
 }
 

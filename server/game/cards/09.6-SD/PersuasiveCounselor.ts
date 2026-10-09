@@ -1,17 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { eventsCannotBeCancelled } from '../../effects.js';
 
 class PersuasiveCounselor extends DrawCard {
     static id = 'persuasive-counselor';
 
     setupCardAbilities() {
         this.action('Prevent your events from being cancelled')
-            .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .condition((context) => context.source.isParticipating())
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.eventsCannotBeCancelled()
-            })))
-            .effect('prevent their events from being cancelled this conflict');
+                effect: eventsCannotBeCancelled()
+            }))
+            .chatText('prevent their events from being cancelled this conflict');
     }
 }
 

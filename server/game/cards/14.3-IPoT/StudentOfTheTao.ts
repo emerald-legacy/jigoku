@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Element, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 const elementKey = 'student-of-the-tao-void';
 
@@ -9,11 +9,11 @@ class StudentOfTheTao extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move in/out the conflict')
-            .condition(context => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
+            .condition((context) => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 
     getPrintedElementSymbols() {

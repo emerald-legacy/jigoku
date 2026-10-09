@@ -1,4 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { cannotDeclareRing } from '../../../effects.js';
+import { chosenDiscard, draw, ringLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
 import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -34,20 +37,20 @@ export default class DayOfBrotherHorse extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
+            .gameAction(sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.ringLastingEffect({
+                    ringLastingEffect({
                         duration: Duration.UntilEndOfPhase,
                         target: context.ring.getElements().map((element) => context.game.rings[element]),
-                        effect: AbilityDsl.effects.cannotDeclareRing(
+                        effect: cannotDeclareRing(
                             (player) => player === context.player.opponent
                         )
                     }),
-                    AbilityDsl.actions.draw({ target: context.player, amount: 3 }),
-                    AbilityDsl.actions.chosenDiscard({ target: context.player })
+                    draw({ target: context.player, amount: 3 }),
+                    chosenDiscard({ target: context.player })
                 ]
             })))
-            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff(context.ring.element)])
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring ${context.chatTarget()} conflicts, draw 3 cards, and discard 1 card - ${fluff(context.ring.element)}`)
+            .max(perRound(1));
     }
 }

@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -24,22 +26,22 @@ export default class AgashaJianyu extends DrawCard {
     static id = 'agasha-jianyu';
 
     public setupCardAbilities() {
-        this.action('Empower a character with the combined strength of the elements')
+        this.conflictAction('Empower a character with the combined strength of the elements', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => {
+            }, cardLastingEffect((context) => {
                 const bonus = bonusBase(context);
                 return {
                     effect: [
-                        AbilityDsl.effects.modifyMilitarySkill(2 * bonus),
-                        AbilityDsl.effects.modifyPoliticalSkill(1 * bonus)
+                        modifyMilitarySkill(2 * bonus),
+                        modifyPoliticalSkill(1 * bonus)
                     ]
                 };
             }))
-            .effect('give {0} +{1}{2}/+{3}{4}', (context) => {
+            .chatText((context) => {
                 const bonus = bonusBase(context);
-                return [2 * bonus, 'military', 1 * bonus, 'political'];
+                return msg`give ${context.chatTarget()} +${2 * bonus}${'military'}/+${bonus}${'political'}`;
             });
     }
 }

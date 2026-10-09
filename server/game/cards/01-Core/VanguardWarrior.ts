@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -7,10 +8,10 @@ class VanguardWarrior extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice to put fate on one character')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.placeFate());
+            }, placeFate());
     }
 }
 

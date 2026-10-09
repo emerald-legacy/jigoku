@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Location, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class ShosuroMiyako2 extends DrawCard {
@@ -9,9 +10,9 @@ class ShosuroMiyako2 extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'playCharacter',
-                restricts: 'source'
+            effect: playerCannot({
+                cannot: RestrictionType.PlayCharacter,
+                appliesTo: RestrictionScope.Source
             })
         });
 
@@ -22,8 +23,8 @@ class ShosuroMiyako2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => !card.isUnique()
-            }, AbilityDsl.actions.dishonor());
+                cardCondition: (card) => !card.isUnique()
+            }, dishonor());
     }
 
     canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean) {

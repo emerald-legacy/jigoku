@@ -1,13 +1,14 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Location, CardType, Players, TargetMode, Decks } from '../../Constants.js';
+import { deckSearch } from '../../GameActions/GameActions.js';
+import { Location, CardType, Players, TargetMode, DeckType } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
     static id = 'the-western-wind';
 
     setupCardAbilities() {
         this.action('Look at your dynasty deck')
-            .condition(context => !!context.player.opponent &&
+            .condition((context) => !!context.player.opponent &&
                 context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince) > 0 &&
                 context.player.dynastyDeck.length > 0)
             .target({
@@ -15,25 +16,25 @@ class TheWesternWind extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.deckSearch({
+            }, deckSearch({
                 cardCondition: (card) => card.type === CardType.Character,
-                targetMode: TargetMode.UpToVariable,
+                mode: TargetMode.UpToVariable,
                 numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
-                amount: 8,
-                deck: Decks.DynastyDeck,
+                cardsToLookAt: 8,
+                deck: DeckType.Dynasty,
                 selectedCardsHandler: (context, event, cards) => {
                     const target = context.target;
                     if(!target) {
                         return;
                     }
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1} and puts {2} into {3}', event.player, cards, cards.length > 1 ? 'them' : 'it', target.facedown ? target.location : target);
+                        this.game.addMessage(msg`${event.player} selects ${cards} and puts ${cards.length > 1 ? 'them' : 'it'} into ${target.facedown ? target.location : target}`);
                         cards.forEach((card) => {
                             event.player.moveCard(card, target.location);
                             card.facedown = false;
                         });
                     } else {
-                        this.game.addMessage('{0} selects no characters', event.player);
+                        this.game.addMessage(msg`${event.player} selects no characters`);
                     }
                 }
             }));

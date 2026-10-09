@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { deckChoiceName } from '../deckChoiceName.js';
 
 class SlovenlyScavenger extends DrawCard {
@@ -11,8 +12,8 @@ class SlovenlyScavenger extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .selectIf({
+            .cost(costs.sacrificeSelf())
+            .select({
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:'
             }, {
@@ -21,34 +22,34 @@ class SlovenlyScavenger extends DrawCard {
                 [deckChoiceName(this.owner, 'OppDynasty')]: () => !!this.owner.opponent && this.owner.opponent.dynastyDiscardPile.length > 0,
                 [deckChoiceName(this.owner, 'OppConflict')]: () => !!this.owner.opponent && this.owner.opponent.conflictDiscardPile.length > 0
             })
-            .handler(context => {
+            .handler((context) => {
                 if(context.select === deckChoiceName(this.owner, 'MyDynasty')) {
-                    this.owner.dynastyDiscardPile.forEach(card => {
+                    this.owner.dynastyDiscardPile.forEach((card) => {
                         this.owner.moveCard(card, Location.DynastyDeck);
                     });
                     this.owner.shuffleDynastyDeck();
                 }
                 if(context.select === deckChoiceName(this.owner, 'MyConflict')) {
-                    this.owner.conflictDiscardPile.forEach(card => {
+                    this.owner.conflictDiscardPile.forEach((card) => {
                         this.owner.moveCard(card, Location.ConflictDeck);
                     });
                     this.owner.shuffleConflictDeck();
                 }
                 const opponent = this.owner.opponent;
                 if(opponent && context.select === deckChoiceName(this.owner, 'OppDynasty')) {
-                    opponent.dynastyDiscardPile.forEach(card => {
+                    opponent.dynastyDiscardPile.forEach((card) => {
                         opponent.moveCard(card, Location.DynastyDeck);
                     });
                     opponent.shuffleDynastyDeck();
                 }
                 if(opponent && context.select === deckChoiceName(this.owner, 'OppConflict')) {
-                    opponent.conflictDiscardPile.forEach(card => {
+                    opponent.conflictDiscardPile.forEach((card) => {
                         opponent.moveCard(card, Location.ConflictDeck);
                     });
                     opponent.shuffleConflictDeck();
                 }
             })
-            .effect('shuffle {1} into their deck', context => this.getEffectArg(context.select));
+            .chatText((context) => msg`shuffle ${this.getEffectArg(context.select)} into their deck`);
     }
 
     getEffectArg(selection: string) {

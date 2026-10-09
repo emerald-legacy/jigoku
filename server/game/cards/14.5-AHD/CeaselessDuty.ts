@@ -1,5 +1,5 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { Location } from '../../Constants.js';
 
 class CeaselessDuty extends DrawCard {
@@ -8,10 +8,10 @@ class CeaselessDuty extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
-                onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces(a => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
+                onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces((a) => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('prevent {1} from leaving play', context => context.event.card)
+            .cancel()
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`)
             .cannotBeMirrored();
     }
 }

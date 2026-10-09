@@ -1,18 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';
 
     setupCardAbilities() {
-        this.action('Honor or dishonor a character')
-            .condition(() => this.game.isDuringConflict(ConflictType.Political))
+        this.conflictAction('Honor or dishonor a character', { conflictType: ConflictType.Political })
             .tokenTarget({
                 name: 'token',
                 activePromptTitle: 'Choose a token',
                 cardType: CardType.Character,
-                tokenCondition: token => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
+                tokenCondition: (token) => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
             })
             .target({
                 name: 'character',
@@ -20,11 +18,11 @@ class AGameOfLetters extends DrawCard {
                 dependsOn: 'token',
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.controller !== context.tokens.token[0].card?.controller && card.isParticipating()
-            }, AbilityDsl.actions.conditional((context) => ({
-                condition: context.tokens.token[0].grantedStatus === CharacterStatus.Honored,
-                trueGameAction: AbilityDsl.actions.honor(),
-                falseGameAction: AbilityDsl.actions.dishonor()
-            })));
+            })
+            .if((context) => context.tokens.token[0].grantedStatus === CharacterStatus.Honored)
+            .honor()
+            .otherwise()
+            .dishonor();
     }
 }
 

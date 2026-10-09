@@ -1,6 +1,8 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class HirumaHarrower extends DrawCard {
     static id = 'hiruma-harrower';
@@ -10,10 +12,10 @@ export default class HirumaHarrower extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
-            }))
-            .effect('give itself +2{1}', () => ['military'])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .cardLastingEffect({
+                effect: modifyMilitarySkill(2)
+            })
+            .chatText(() => msg`give itself +2${'military'}`)
+            .limit(unlimitedPerConflict());
     }
 }

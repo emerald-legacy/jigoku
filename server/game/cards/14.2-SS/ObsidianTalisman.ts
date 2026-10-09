@@ -1,22 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { discardStatusToken, selectToken } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ObsidianTalisman extends DrawCard {
     static id = 'obsidian-talisman';
 
     setupCardAbilities() {
         this.action('Discard attached character\'s token')
-            .cost(AbilityDsl.costs.payHonor(1))
-            .condition(context => !!context.source.parentCharacter)
-            .gameAction(AbilityDsl.actions.selectToken(context => ({
+            .cost(costs.payHonor(1))
+            .condition((context) => !!context.source.parentCharacter)
+            .gameAction(selectToken((context) => ({
                 card: context.source.parentCharacter ?? undefined,
                 activePromptTitle: 'Which token do you wish to discard?',
-                message: '{0} discards {1}',
-                messageArgs: (token, player) => [player, token],
-                gameAction: AbilityDsl.actions.discardStatusToken()
+                message: (_context, token, player) => msg`${player} discards ${token}`,
+                gameAction: discardStatusToken()
             })))
-            .effect('discard a status token from {1}', context => [context.source.parentCharacter])
-            .limit(AbilityDsl.limit.unlimited());
+            .chatText((context) => msg`discard a status token from ${context.source.parentCharacter}`)
+            .limit(unlimited());
     }
 }
 

@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, chooseAction, dishonor, duel, multiple, noAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MirumotoHitomi extends DrawCard {
@@ -14,31 +15,26 @@ export default class MirumotoHitomi extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 mode: TargetMode.UpTo,
                 numCards: 2
-            }, AbilityDsl.actions.duel((context) => ({
+            }, duel((context) => ({
                 type: DuelType.Military,
-
-                message: '{0} chooses whether to dishonor or bow {1}',
-                messageArgs: (duel) => [
-                    duel.winner?.includes(context.source) ? context.player.opponent : context.player,
-                    duel.loser
-                ],
+                chatText: (_context, duel) => msg`${duel.winner?.includes(context.source) ? context.player.opponent : context.player} chooses whether to dishonor or bow ${duel.loser}`,
                 gameAction: (duel) => {
                     if(!duel.loser) {
-                        return AbilityDsl.actions.noAction();
+                        return noAction();
                     }
-                    return AbilityDsl.actions.multiple(
+                    return multiple(
                         duel.loser.map((card) =>
-                            AbilityDsl.actions.chooseAction({
+                            chooseAction({
                                 target: card,
                                 player: context.player !== card.controller ? Players.Opponent : Players.Self,
-                                options: {
+                                choices: {
                                     'Dishonor this character': {
-                                        action: AbilityDsl.actions.dishonor(),
-                                        message: '{0} chooses to dishonor {1}'
+                                        action: dishonor(),
+                                        message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                                     },
                                     'Bow this character': {
-                                        action: AbilityDsl.actions.bow(),
-                                        message: '{0} chooses to bow {1}'
+                                        action: bow(),
+                                        message: (_context, target, player) => msg`${player} chooses to bow ${target}`
                                     }
                                 }
                             })

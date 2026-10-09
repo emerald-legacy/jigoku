@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 
 class PerfectLandBeliever extends DrawCard {
     static id = 'perfect-land-believer';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isOrdinary(),
+            condition: (context) => context.source.isOrdinary(),
             match: (card, context) => card === context?.source,
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
     }
 }

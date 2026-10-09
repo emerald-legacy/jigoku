@@ -1,14 +1,15 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import { targetList, type ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent, type ActionOverrides } from './GameAction.js';
 
 export type DishonorProvinceProperties = CardActionProperties;
 
 export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, C> {
-    name = 'dishonor';
+    name = 'dishonorProvince';
+    restriction = RestrictionType.Dishonor;
     eventName = EventName.OnCardDishonored;
     targetType = [CardType.Province];
     cost = 'dishonoring {0}';
@@ -19,14 +20,14 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
     }
 
     /** A facedown province is named by its location. */
-    protected effectMessageTarget(context: C): MsgArg {
-        return targetList(this.getProperties(context).target).map((target) => target.isFacedown() ? target.location : target);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return targetList(this.getProperties(context, additionalProperties).target).map((target) => target.isFacedown() ? target.location : target);
     }
 
     canAffect(card: BaseCard, context: C): boolean {
         if(card.type !== CardType.Province || card.isDishonored) {
             return false;
-        } else if(!card.isHonored && !card.checkRestrictions('receiveDishonorToken', context)) {
+        } else if(!card.isHonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
             return false;
         }
         return super.canAffect(card, context);

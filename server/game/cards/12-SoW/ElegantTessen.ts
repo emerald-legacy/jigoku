@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class ElegantTessen extends DrawCard {
     static id = 'elegant-tessen';
@@ -13,7 +12,7 @@ class ElegantTessen extends DrawCard {
                     event.originalLocation !== Location.PlayArea
                 )
             })
-            .gameAction(AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter ?? [] })));
+            .ready((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

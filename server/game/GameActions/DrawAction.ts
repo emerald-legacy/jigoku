@@ -1,6 +1,7 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -11,14 +12,15 @@ export interface DrawProperties extends PlayerActionProperties {
 
 export class DrawAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DrawProperties, EventName.OnCardsDrawn, C, 'amount'> {
     name = 'draw';
+    restriction = RestrictionType.Draw;
     eventName = EventName.OnCardsDrawn;
 
     defaultProperties = {
         amount: 1
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        const { amount } = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount } = this.getProperties(context, additionalProperties);
         return ['draw ' + amount + (amount > 1 ? ' cards' : ' card'), []];
     }
 
@@ -26,7 +28,7 @@ export class DrawAction<C extends AbilityContext = AbilityContext> extends Playe
         return undefined;
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount !== 0 && super.canAffect(player, context);
     }
@@ -35,7 +37,7 @@ export class DrawAction<C extends AbilityContext = AbilityContext> extends Playe
         return [context.player];
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDrawn, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDrawn, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;

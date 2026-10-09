@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Element, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Element, Players, RestrictionType } from '../../Constants.js';
+import { playerCannot, playerDelayedEffect } from '../../effects.js';
+import { loseHonor } from '../../GameActions/GameActions.js';
 
 const elementKeys = {
     air: 'hallowed-ground-air',
@@ -14,23 +16,22 @@ class HallowedGround extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'placeFateWhenPlayingCharacter'
+            condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
+            effect: playerCannot({
+                cannot: RestrictionType.PlaceFateWhenPlayingCharacter
             })
         });
 
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
-            effect: AbilityDsl.effects.playerDelayedEffect({
+            condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
+            effect: playerDelayedEffect({
                 when: {
                     afterConflict: (event, context) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
                 },
-                message: '{0} loses 1 honor due to the constant effect of {1}',
-                messageArgs: (effectContext) => [effectContext.player.opponent, effectContext.source],
+                message: (effectContext) => msg`${effectContext.player.opponent} loses 1 honor due to the constant effect of ${effectContext.source}`,
                 multipleTrigger: true,
-                gameAction: AbilityDsl.actions.loseHonor()
+                gameAction: loseHonor()
             })
         });
     }

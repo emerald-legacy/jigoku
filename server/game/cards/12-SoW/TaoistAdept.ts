@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import { DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 
@@ -10,15 +11,14 @@ export default class TaoistAdept extends DrawCard {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: 'choose whether to place a fate on a ring',
+                chatText: () => msg`choose whether to place a fate on a ring`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.selectRing((context) => ({
+                    selectRing((context) => ({
                         activePromptTitle: 'Choose a ring to receive a fate',
                         player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                        message: '{0} places a fate on the {1}',
-                        messageArgs: (ring, player) => [player, ring],
+                        message: (_context, ring, player) => msg`${player} places a fate on the ${ring}`,
                         ringCondition: (ring) => duel.winner !== undefined && ring.isUnclaimed(),
-                        gameAction: AbilityDsl.actions.placeFateOnRing(),
+                        gameAction: placeFateOnRing(),
                         optional: true,
                         onMenuCommand: (player: Player, arg: string) => {
                             if(arg === 'done') {

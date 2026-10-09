@@ -1,6 +1,7 @@
 /* eslint no-invalid-this: 0 */
 
-import { GameModes } from '../../server/GameModes.js';
+import '../../server/game/setupGameActions.js';
+import { GameMode } from '../../server/GameMode.js';
 import './objectformatters.js';
 import DeckBuilder, { fillers } from './deckbuilder.js';
 import type { PlayerDeckOptions } from './deckbuilder.js';
@@ -103,7 +104,7 @@ const customMatchers: jasmine.CustomMatcherFactories = {
             compare: function (player: PlayerInteractionWrapper, ring: unknown) {
                 let resolvedRing = ring;
                 if(typeof ring === 'string') {
-                    resolvedRing = player.player.game.rings[ring];
+                    resolvedRing = player.player.game.ringFor(ring);
                 }
                 const pass = resolvedRing instanceof Ring && player.currentActionRingTargets.includes(resolvedRing);
                 const ringElement = resolvedRing instanceof Ring ? resolvedRing.element : String(resolvedRing);
@@ -139,7 +140,7 @@ interface IntegrationDeckOptions {
 interface IntegrationSetupOptions {
     player1?: IntegrationDeckOptions;
     player2?: IntegrationDeckOptions;
-    gameMode?: GameModes;
+    gameMode?: GameMode;
     phase?: string;
     skipAutoSetup?: boolean;
     skipAutoFirstPlayer?: boolean;
@@ -169,13 +170,18 @@ globalThis.fillers = fillers;
 globalThis.integration = function (definitions: () => void): void {
     describe('integration', function (this: unknown) {
         beforeEach(function (this: Record<string, unknown>) {
-            const flow = new GameFlowWrapper();
-            this.flow = flow;
-            this.game = flow.game;
-            this.player1Object = flow.game.getPlayerByName('player1');
-            this.player2Object = flow.game.getPlayerByName('player2');
-            this.player1 = flow.player1;
-            this.player2 = flow.player2;
+            let flow = new GameFlowWrapper();
+            // a game keeps the mode it was created with, so another mode needs a new game
+            const useFlow = (next: GameFlowWrapper) => {
+                flow = next;
+                this.flow = flow;
+                this.game = flow.game;
+                this.player1Object = flow.game.getPlayerByName('player1');
+                this.player2Object = flow.game.getPlayerByName('player2');
+                this.player1 = flow.player1;
+                this.player2 = flow.player2;
+            };
+            useFlow(flow);
 
             ProxiedGameFlowWrapperMethods.forEach((method) => {
                 this[method] = (...args: unknown[]): unknown => Reflect.apply(flow[method], flow, args);
@@ -192,8 +198,10 @@ globalThis.integration = function (definitions: () => void): void {
                 if(!options.player2) {
                     options.player2 = {};
                 }
-                const gameMode = options.gameMode || GameModes.Stronghold;
-                flow.game.gameMode = gameMode;
+                const gameMode = options.gameMode || GameMode.Stronghold;
+                if(gameMode !== flow.game.gameMode) {
+                    useFlow(new GameFlowWrapper(gameMode));
+                }
 
                 flow.player1.selectDeck(deckBuilder.customDeck(options.player1, gameMode));
                 flow.player2.selectDeck(deckBuilder.customDeck(options.player2, gameMode));
@@ -211,7 +219,7 @@ globalThis.integration = function (definitions: () => void): void {
                     });
                 }
 
-                if(flow.game.gameMode === GameModes.Skirmish) {
+                if(flow.game.gameMode === GameMode.Skirmish) {
                     flow.player1.setupSkirmishProvinces();
                     flow.player2.setupSkirmishProvinces();
                 }

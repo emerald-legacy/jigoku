@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCostToAttackMilitary } from '../../effects.js';
 
 class AsahinaPeacekeeper extends DrawCard {
     static id = 'asahina-peacekeeper';
@@ -9,8 +9,8 @@ class AsahinaPeacekeeper extends DrawCard {
         this.persistentEffect({
             targetController: Players.Any,
             targetLocation: Location.PlayArea,
-            match: card => card.getType() === CardType.Character,
-            effect: AbilityDsl.effects.cardCostToAttackMilitary(1)
+            match: (card) => card.getType() === CardType.Character,
+            effect: cardCostToAttackMilitary(1)
         });
     }
 }

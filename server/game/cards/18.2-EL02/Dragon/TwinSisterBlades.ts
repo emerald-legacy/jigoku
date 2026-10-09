@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import { AbilityType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { gainAbility } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 class TwinSisterBlades extends DrawCard {
@@ -8,15 +8,12 @@ class TwinSisterBlades extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Draw cards',
-                condition: (context) => context.source.isParticipating() && context.source.hasTrait('bushi'),
-                effect: 'draw {1} card{2}',
-                effectArgs: (context) => this.getNumberOfCards(context) === 2 ? ['2', 's'] : ['a', ''],
-                gameAction: AbilityDsl.actions.draw((context) => ({
+            effect: gainAbility.action('Draw cards', (ability) => ability
+                .condition((context) => context.source.isParticipating() && context.source.hasTrait('bushi'))
+                .draw((context) => ({
                     amount: this.getNumberOfCards(context)
                 }))
-            })
+                .chatText((context) => this.getNumberOfCards(context) === 2 ? msg`draw 2 card${'s'}` : msg`draw a card`))
         });
     }
 

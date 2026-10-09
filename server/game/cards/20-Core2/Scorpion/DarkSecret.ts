@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DarkSecret extends DrawCard {
@@ -10,11 +11,11 @@ export default class DarkSecret extends DrawCard {
                 onMoveFate: (event, context) =>
                     context.source.parentCharacter && context.source.parentCharacter === event.origin && (event.fate ?? 0) > 0
             })
-            .gameAction(AbilityDsl.actions.loseHonor((context) => ({
+            .loseHonor((context) => ({
                 target: this.targetPlayer(context.source.parentCharacter)
-            })))
-            .effect('make {1} lose 1 honor - {2}', (context) => [this.targetPlayer(context.source.parentCharacter), this.quote(context.source.parentCharacter)])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            }))
+            .chatText((context) => msg`make ${this.targetPlayer(context.source.parentCharacter)} lose 1 honor - ${this.quote(context.source.parentCharacter)}`)
+            .limit(unlimitedPerConflict());
     }
 
     private targetPlayer(character: DrawCard | null) {

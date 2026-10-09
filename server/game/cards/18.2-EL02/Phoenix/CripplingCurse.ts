@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Phases } from '../../../Constants.js';
+import { discardFromPlay, multiple, removeFate } from '../../../GameActions/GameActions.js';
+import { Phase } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 function cardsInPlay(context: AbilityContext, predicate: (card: DrawCard) => boolean) {
@@ -16,19 +16,19 @@ export default class CripplingCurse extends DrawCard {
         this.forcedReaction('Discard fate and characters')
             .when({
                 onPhaseStarted: (event, context) =>
-                    event.phase === Phases.Fate &&
+                    event.phase === Phase.Fate &&
                     context.source.parentCharacter &&
                     !context.source.parentCharacter.bowed &&
                     context.source.parentCharacter.getFate() > 0
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardFromPlay((context) => ({
+            .gameAction(multiple([
+                discardFromPlay((context) => ({
                     target: cardsInPlay(context, (c) => c.getFate() === 0)
                 })),
-                AbilityDsl.actions.removeFate((context) => ({
+                removeFate((context) => ({
                     target: cardsInPlay(context, (c) => c.getFate() !== 0)
                 }))
             ]))
-            .effect('discard all characters without fate and remove 1 fate from each character with fate');
+            .chatText('discard all characters without fate and remove 1 fate from each character with fate');
     }
 }

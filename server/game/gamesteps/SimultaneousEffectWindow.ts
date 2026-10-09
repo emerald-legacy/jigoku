@@ -14,7 +14,7 @@ interface SimultaneousEffectChoice {
     handler: () => void;
 }
 
-class SimultaneousEffectWindow extends BaseStep {
+export class SimultaneousEffectWindow extends BaseStep {
     choices: SimultaneousEffectChoice[] = [];
     // unset while the first player is not chosen yet (during setup)
     currentPlayer: Player | undefined;
@@ -22,6 +22,12 @@ class SimultaneousEffectWindow extends BaseStep {
     constructor(game: Game) {
         super(game);
         this.currentPlayer = this.game.getFirstPlayer();
+    }
+
+    abort(): void {
+        if(this.game.currentAbilityWindow === this) {
+            this.game.currentAbilityWindow = null;
+        }
     }
 
     continue(): boolean {
@@ -60,14 +66,13 @@ class SimultaneousEffectWindow extends BaseStep {
             source: 'Order Simultaneous effects',
             activePromptTitle: 'Choose an effect to be resolved',
             waitingPromptTitle: 'Waiting for opponent',
-            options: choices.map(choice => ({ text: choice.title, handler: () => this.resolveEffect(choice) }))
+            options: choices.map((choice) => ({ text: choice.title, handler: () => this.resolveEffect(choice) }))
         });
     }
 
     resolveEffect(choice: SimultaneousEffectChoice): void {
-        this.choices = this.choices.filter(c => c !== choice);
+        this.choices = this.choices.filter((c) => c !== choice);
         choice.handler();
     }
 }
 
-export default SimultaneousEffectWindow;

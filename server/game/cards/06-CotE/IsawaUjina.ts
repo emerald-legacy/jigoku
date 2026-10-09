@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { removeFromGame } from '../../GameActions/GameActions.js';
 import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
 const elementSymbol = { key: 'isawa-ujina-void', element: Element.Void };
@@ -16,8 +17,8 @@ class IsawaUjina extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() === 0
-            }, AbilityDsl.actions.removeFromGame())
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            }, removeFromGame())
+            .limit(unlimitedPerConflict());
     }
 
     getPrintedElementSymbols() {

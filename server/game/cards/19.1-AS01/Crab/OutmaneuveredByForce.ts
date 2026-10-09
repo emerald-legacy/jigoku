@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { initiateConflict } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredByForce extends DrawCard {
@@ -9,11 +9,11 @@ export default class OutmaneuveredByForce extends DrawCard {
     public setupCardAbilities() {
         this.action('Declare a conflict right now')
             .condition((context) => context.game.getConflicts(Players.All).every((conflict) => conflict.passed))
-            .gameAction(AbilityDsl.actions.initiateConflict({ canPass: false }))
-            .phase(Phases.Conflict);
+            .gameAction(initiateConflict({ canPass: false }))
+            .phase(Phase.Conflict);
     }
 
-    public canPlay(context: AbilityContext, playType: string): boolean {
+    public canPlay(context: AbilityContext, playType?: PlayType): boolean {
         return (
             !context.game.isDuringConflict() &&
             this.controlsBerserkerOrBigCharacter(context) &&

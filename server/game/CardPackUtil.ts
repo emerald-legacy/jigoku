@@ -1,6 +1,6 @@
-import { GameModes } from '../GameModes.js';
+import { GameMode } from '../GameMode.js';
 
-const communityFormats = new Set<string | undefined>([GameModes.Emerald, GameModes.Sanctuary, GameModes.Obsidian]);
+const communityFormats = new Set<string | undefined>([GameMode.Emerald, GameMode.Sanctuary, GameMode.Obsidian]);
 
 /**
  * Pick the preferred pack_id from a card's versions array based on game format.

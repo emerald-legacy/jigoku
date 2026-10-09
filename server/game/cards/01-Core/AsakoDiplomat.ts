@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chooseAction, dishonor, honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsakoDiplomat extends DrawCard {
@@ -14,15 +15,15 @@ export default class AsakoDiplomat extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.chooseAction({
-                options: {
+            }, chooseAction({
+                choices: {
                     'Honor this character': {
-                        action: AbilityDsl.actions.honor(),
-                        message: '{0} chooses to honor {1}'
+                        action: honor(),
+                        message: (_context, target, player) => msg`${player} chooses to honor ${target}`
                     },
                     'Dishonor this character': {
-                        action: AbilityDsl.actions.dishonor(),
-                        message: '{0} chooses to dishonor {1}'
+                        action: dishonor(),
+                        message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
                     }
                 }
             }));

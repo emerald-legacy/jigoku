@@ -1,17 +1,17 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class ChrysanthemumSteward extends DrawCard {
     static id = 'chrysanthemum-steward';
 
     setupCardAbilities() {
         this.action('put a conflict card on top')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.moveCard({ destination: Location.ConflictDeck }));
+            }, moveCard({ destination: Location.ConflictDeck }));
     }
 }
 

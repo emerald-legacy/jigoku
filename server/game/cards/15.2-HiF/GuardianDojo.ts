@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Location, CharacterStatus, CardType } from '../../Constants.js';
+import { entersPlayWithStatus, playerCannot } from '../../effects.js';
+import { Location, CharacterStatus, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';
@@ -12,15 +12,15 @@ class GuardianDojo extends DrawCard {
                 && card.isFaceup()
                 && !!context && context.player.areLocationsAdjacent(context.source.location, card.location),
             effect: [
-                AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Honored)
+                entersPlayWithStatus(CharacterStatus.Honored)
             ]
         });
 
         this.persistentEffect({
             targetLocation: Location.Any,
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'placeFateWhenPlayingCharacterFromProvince',
-                restricts: 'adjacentCharacters'
+            effect: playerCannot({
+                cannot: RestrictionType.PlaceFateWhenPlayingCharacterFromProvince,
+                appliesTo: RestrictionScope.AdjacentCharacters
             })
         });
     }

@@ -1,31 +1,32 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class TheStrengthOfTheMountain extends DrawCard {
     static id = 'the-strength-of-the-mountain';
 
     setupCardAbilities() {
-        this.action('Defending characters do not bow')
-            .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+        this.conflictAction('Defending characters do not bow')
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getDefenders(),
-                effect: AbilityDsl.effects.doesNotBow()
-            })), AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: doesNotBow()
+            }))
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getDefenders(),
                 effect: [
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'sendHome',
-                        restricts: 'opponentsCardEffects',
+                    cardCannot({
+                        cannot: RestrictionType.SendHome,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'bow',
-                        restricts: 'opponentsCardEffects',
+                    cardCannot({
+                        cannot: RestrictionType.Bow,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     })
                 ]
-            })))
-            .effect('prevent opponents\' actions from bowing or moving home defending characters, and stop them bowing at the end of the conflict');
+            }))
+            .chatText('prevent opponents\' actions from bowing or moving home defending characters, and stop them bowing at the end of the conflict');
     }
 }
 

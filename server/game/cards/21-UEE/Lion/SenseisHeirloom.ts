@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,10 +12,10 @@ export default class SenseisHeirloom extends DrawCard {
             .when({
                 onCardAttached: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.deckSearch((context) => ({
+            .deckSearch((context) => ({
                 reveal: false,
-                amount: 2 * (context.source.parentCharacter?.printedGlory ?? 0),
-                gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
-            })));
+                cardsToLookAt: 2 * (context.source.parentCharacter?.printedGlory ?? 0),
+                gameAction: moveCard({ destination: Location.Hand })
+            }));
     }
 }

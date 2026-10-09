@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
 class KaitoTempleProtector extends DrawCard {
@@ -8,23 +9,23 @@ class KaitoTempleProtector extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDefending(),
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'sendHome',
-                restricts: 'opponentsCardEffects'
+            condition: (context) => context.source.isDefending(),
+            effect: cardCannot({
+                cannot: RestrictionType.SendHome,
+                appliesTo: RestrictionScope.OpponentsCardEffects
             })
         });
 
         this.action('Change base skills to match another character\'s')
-            .condition(context => context.source.isDefending())
+            .condition((context) => context.source.isDefending())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: context.source,
                 effect: copyBaseSkillEffects(context.target)
             })))
-            .effect('change his base skills to equal {0}\'s current skills');
+            .chatText('change his base skills to equal {0}\'s current skills');
     }
 }
 

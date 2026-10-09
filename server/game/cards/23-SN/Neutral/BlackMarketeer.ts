@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location, PlayType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { playCard } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 export default class BlackMarketeer extends DrawCard {
     static id = 'black-marketeer';
@@ -11,12 +12,12 @@ export default class BlackMarketeer extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
                 location: Location.ConflictDiscardPile
-            }, AbilityDsl.actions.playCard({
+            }, playCard({
                 resetOnCancel: true,
                 source: this,
                 playType: PlayType.PlayFromHand,
                 payFateToOpponent: true
             }))
-            .effect('buy an attachment from {1}\'s discard pile', context => [context.player.opponent]);
+            .chatText((context) => msg`buy an attachment from ${context.player.opponent}'s discard pile`);
     }
 }

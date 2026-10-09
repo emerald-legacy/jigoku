@@ -1,4 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { discardFromPlay, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +16,7 @@ export default class BrokenBlades extends DrawCard {
                     event.conflict.winner === context.player &&
                     event.conflict.conflictType === ConflictType.Military
             })
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('berserker')
             }))
@@ -21,19 +24,19 @@ export default class BrokenBlades extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.removeFate((context) => ({
+            }, sequential([
+                removeFate((context) => ({
                     amount: context.target.getFate(),
                     recipient: context.target.owner
                 })),
-                AbilityDsl.actions.discardFromPlay()
+                discardFromPlay()
             ]))
-            .effect('ensure {0} is gone!{1}{2}{3}', (context) => {
+            .chatText((context) => {
                 const target = context.target;
                 return target.fate < 1
-                    ? []
-                    : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
+                    ? msg`ensure ${context.chatTarget()} is gone!`
+                    : msg`ensure ${context.chatTarget()} is gone! (${target.owner} recovers ${target.fate} fate)`;
             })
-            .max(AbilityDsl.limit.perConflict(1));
+            .max(perConflict(1));
     }
 }

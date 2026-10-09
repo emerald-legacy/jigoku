@@ -1,8 +1,10 @@
+import { msg } from '../../GameChat.js';
 import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
 import type { Event } from '../../Events/Event.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
+import { Phase } from '../../Constants.js';
+import { resolveRingEffect } from '../../GameActions/GameActions.js';
 
 class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';
@@ -10,7 +12,7 @@ class ShibaTsukune extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Resolve 2 rings')
             .when({
-                onPhaseEnded: (event) => event.phase === Phases.Conflict
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
             })
             .handler((context) => this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',
@@ -31,9 +33,9 @@ class ShibaTsukune extends DrawCard {
                             return true;
                         },
                         onSelect: (player, secondRing) => {
-                            this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
+                            this.game.addMessage(msg`${player} resolves ${[firstRing, secondRing]}`);
                             const events: Event[] = [];
-                            this.game.actions.resolveRingEffect({ target: [firstRing, secondRing] })
+                            resolveRingEffect({ target: [firstRing, secondRing] })
                                 .addEventsToArray(events, this.game.getFrameworkContext(player));
                             this.game.openThenEventWindow(events);
                             return true;
@@ -42,12 +44,12 @@ class ShibaTsukune extends DrawCard {
                     return true;
                 }
             }))
-            .effect('resolve up to 2 ring effects');
+            .chatText('resolve up to 2 ring effects');
     }
 
     private resolveRing(player: Player, ring: Ring) {
-        this.game.addMessage('{0} resolves {1}', player, ring);
-        this.game.openThenEventWindow(this.game.actions.resolveRingEffect().getEvent(ring, this.game.getFrameworkContext(player)));
+        this.game.addMessage(msg`${player} resolves ${ring}`);
+        this.game.openThenEventWindow(resolveRingEffect().getEvent(ring, this.game.getFrameworkContext(player)));
     }
 }
 

@@ -1,29 +1,19 @@
 import { AttachmentManager } from './AttachmentManager.js';
 import type DrawCard from './DrawCard.js';
-import AbilityDsl from './abilitydsl.js';
-import Effects from './effects.js';
-import EffectSource from './EffectSource.js';
+import { addKeyword, cardCannot, legendaryFate, playerCannot } from './effects.js';
+import { Effects } from './effects.js';
+import { EffectSource } from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
-import CardAbility from './CardAbility.js';
-import TriggeredAbility from './TriggeredAbility.js';
+import { CardAbility } from './CardAbility.js';
+import { TriggeredAbility } from './TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
-import type BaseCardAbility from './BaseCardAbility.js';
+import type { BaseCardAbility } from './BaseCardAbility.js';
 import Game from './Game.js';
 
-import { type ActionContext, AbilityBuilder, TriggerBuilder, actionProperties, aggregateProperties, createDraft, holdsTriggerEvent, holdsTriggerEvents, triggeredProperties } from './AbilityBuilder.js';
+import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import {
-    AbilityType,
-    CardType,
-    CharacterStatus,
-    Duration,
-    EffectName,
-    type Element,
-    EventName,
-    Location,
-    Players
-} from './Constants.js';
+import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, type PlayType, Blocker, RestrictionType, RestrictionScope } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import {
     ActionProps,
@@ -35,17 +25,17 @@ import {
 import type { GameObject } from './GameObject.js';
 import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
-import type BaseAction from './BaseAction.js';
+import type { BaseAction } from './BaseAction.js';
 import Ring from './Ring.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type { StrongholdCard } from './StrongholdCard.js';
 import type { RoleCard } from './RoleCard.js';
-import type Effect from './Effects/Effect.js';
+import type { ActiveEffect } from './Effects/ActiveEffect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { AbilityLimitIncrease } from './Effects/EffectValueMap.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
-import GainAllAbilitiesDynamic from './Effects/GainAllAbilitiesDynamic.js';
+import { GainAllAbilitiesDynamic } from './Effects/GainAllAbilitiesDynamic.js';
 import { CopyCard } from './Effects/Library/copyCard.js';
 import { isPersistentGain } from './Effects/GainAbility.js';
 import type { CardData } from './types/CardData.js';
@@ -65,7 +55,7 @@ export interface StoredPersistentEffect {
     targetLocation?: TargetLocation;
     effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
-    ref?: Effect[];
+    ref?: ActiveEffect[];
     type?: EffectName;
     abilityType?: AbilityType;
     isKeywordEffect?: boolean;
@@ -112,7 +102,7 @@ export interface CardSummary {
     [key: string]: unknown;
 }
 
-class BaseCard extends EffectSource {
+export class BaseCard extends EffectSource {
     controller: Player;
     declare game: Game;
 
@@ -329,7 +319,7 @@ class BaseCard extends EffectSource {
     protected actionBuilder(title: string, registrar: ActionRegistrar<this>): AbilityBuilder<ActionContext<this>> {
         this.requireSetup(title);
         const draft = createDraft(title, (context) => context.ability instanceof CardAction);
-        this.registerAbility(() => registrar.register(actionProperties<this>(draft)));
+        this.registerAbility(() => registrar.register(toActionProps<this>(draft)));
         return new AbilityBuilder(draft);
     }
 
@@ -349,12 +339,12 @@ class BaseCard extends EffectSource {
         return new TriggerBuilder<this, EventOptional>({
             when: (when) => {
                 const draft = createDraft(title, holdsTriggerEvent(when, () => this.isProvinceCard()));
-                this.registerAbility(() => this.addTriggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
+                this.registerAbility(() => this.addTriggeredAbility(abilityType, toTriggerProps<this>(draft, when)));
                 return draft;
             },
             aggregateWhen: (aggregateWhen) => {
-                const draft = createDraft(title, holdsTriggerEvents(() => this.isProvinceCard()));
-                this.registerAbility(() => this.addTriggeredAbility(abilityType, aggregateProperties<this>(draft, aggregateWhen)));
+                const draft = createDraft(title, holdsAggregateEvents(() => this.isProvinceCard()));
+                this.registerAbility(() => this.addTriggeredAbility(abilityType, toAggregateProps<this>(draft, aggregateWhen)));
                 return draft;
             }
         });
@@ -484,25 +474,25 @@ class BaseCard extends EffectSource {
             location: Location.Any,
             targetLocation: Location.Any,
             effect: [
-                AbilityDsl.effects.playerCannot({
-                    cannot: 'placeFateWhenPlayingCharacterFromProvince',
-                    restricts: 'source'
+                playerCannot({
+                    cannot: RestrictionType.PlaceFateWhenPlayingCharacterFromProvince,
+                    appliesTo: RestrictionScope.Source
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'putIntoPlay',
-                    restricts: 'cardEffects'
+                cardCannot({
+                    cannot: RestrictionType.PutIntoPlay,
+                    appliesTo: RestrictionScope.CardEffects
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'placeFate'
+                cardCannot({
+                    cannot: RestrictionType.PlaceFate
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'preventedFromLeavingPlay'
+                cardCannot({
+                    cannot: RestrictionType.PreventedFromLeavingPlay
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'enterPlay',
-                    restricts: 'nonDynastyPhase'
+                cardCannot({
+                    cannot: RestrictionType.EnterPlay,
+                    appliesTo: RestrictionScope.NonDynastyPhase
                 }),
-                AbilityDsl.effects.legendaryFate(fate)
+                legendaryFate(fate)
             ]
         });
     }
@@ -575,7 +565,7 @@ class BaseCard extends EffectSource {
         const cardFaction = copiedCard ? copiedCard.printedFaction : this.printedFaction;
         const addedFactions = this.getEffects(EffectName.AddFaction);
         const lostFactions = this.getEffects(EffectName.LoseFaction);
-        const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction));
+        const factionArray = [...addedFactions, cardFaction].filter((faction) => !lostFactions.includes(faction));
 
         return new Set(factionArray);
     }
@@ -734,16 +724,16 @@ class BaseCard extends EffectSource {
         this.game.emitEvent(EventName.OnCardMoved, { card: this, originalLocation, newLocation: targetLocation });
     }
 
-    canTriggerAbilities(context: AbilityContext, ignoredRequirements: string[] = []): boolean {
+    canTriggerAbilities(context: AbilityContext, ignoredBlockers: Blocker[] = []): boolean {
         return (
             this.isFaceup() &&
-            (ignoredRequirements.includes('triggeringRestrictions') ||
-                this.checkRestrictions('triggerAbilities', context))
+            (ignoredBlockers.includes(Blocker.TriggeringRestricted) ||
+                this.checkRestrictions(RestrictionType.TriggerAbilities, context))
         );
     }
 
     canInitiateKeywords(context: AbilityContext): boolean {
-        return this.isFaceup() && this.checkRestrictions('initiateKeywords', context);
+        return this.isFaceup() && this.checkRestrictions(RestrictionType.InitiateKeywords, context);
     }
 
     getModifiedLimitMax(player: Player, ability: CardAbility, max: number): number {
@@ -823,7 +813,7 @@ class BaseCard extends EffectSource {
         return this.printedFaction;
     }
 
-    checkRestrictions(actionType: string, context: AbilityContext): boolean {
+    checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext): boolean {
         const player = context?.player || this.controller;
         const conflict = context?.game?.currentConflict;
         return (
@@ -893,7 +883,7 @@ class BaseCard extends EffectSource {
         this.allowedAttachmentTraits = parsed.allowedAttachmentTraits;
 
         for(const keyword of this.printedKeywords) {
-            this.persistentEffect({ effect: AbilityDsl.effects.addKeyword(keyword) });
+            this.persistentEffect({ effect: addKeyword(keyword) });
         }
     }
 

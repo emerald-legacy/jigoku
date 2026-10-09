@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class JadePrison extends DrawCard {
@@ -12,7 +12,7 @@ export default class JadePrison extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             condition: (context) => context.player.hasAffinity('earth', context),
-            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card, source) => card === source })
+            effect: reduceCost({ amount: 1, match: (card, source) => card === source })
         });
 
         this.reaction('Bow a character that just readied')
@@ -21,10 +21,10 @@ export default class JadePrison extends DrawCard {
                     event.card.type === CardType.Character && event.card.controller === context.player.opponent &&
                     (event.card.hasSomeTrait('corrupt', 'shadowlands') || event.card.isTainted)
             })
-            .gameAction(AbilityDsl.actions.bow((context) => ({ target: context.event.card })));
+            .bow((context) => ({ target: context.event.card }));
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         if(!controlsShugenja(context.player)) {
             return false;
         }

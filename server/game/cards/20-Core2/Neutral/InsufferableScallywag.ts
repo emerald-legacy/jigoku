@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { dishonor, sendHome } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -13,9 +14,8 @@ export default class InsufferableScallywag extends DrawCard {
     static id = 'insufferable-scallywag';
 
     public setupCardAbilities() {
-        this.action('Dishonor or send a character home')
-            .cost(AbilityDsl.costs.removeFateFromSelf())
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Dishonor or send a character home')
+            .cost(costs.removeFateFromSelf())
             .target({
                 name: CHARACTER,
                 cardType: CardType.Character,
@@ -28,8 +28,8 @@ export default class InsufferableScallywag extends DrawCard {
                 dependsOn: CHARACTER,
                 player: Players.Opponent
             }, {
-                'Dishonor this character': AbilityDsl.actions.dishonor(theTarget),
-                'Move this character home': AbilityDsl.actions.sendHome(theTarget)
+                'Dishonor this character': dishonor(theTarget),
+                'Move this character home': sendHome(theTarget)
             });
     }
 }

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { additionalActionAfterWindowCompleted } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WaitUntilItSings extends DrawCard {
@@ -6,12 +7,12 @@ export default class WaitUntilItSings extends DrawCard {
 
     setupCardAbilities() {
         this.action('Take an action during conflict resolution')
-            .condition(context => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait('commander')) ?? false)
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
+            .condition((context) => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait('commander')) ?? false)
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.additionalActionAfterWindowCompleted(1)
-            })))
-            .effect('take an action before conflict resolution')
-            .max(AbilityDsl.limit.perConflict(1));
+                effect: additionalActionAfterWindowCompleted(1)
+            }))
+            .chatText('take an action before conflict resolution')
+            .max(perConflict(1));
     }
 }

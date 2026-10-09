@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect, chooseAction, playerLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MapmakerApprentice extends DrawCard {
@@ -11,8 +13,8 @@ export default class MapmakerApprentice extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Any
-            }, AbilityDsl.actions.playerLastingEffect((context) => ({
-                effect: AbilityDsl.effects.delayedEffect({
+            }, playerLastingEffect((context) => ({
+                effect: delayedEffect({
                     when: {
                         onCardPlayed: (event, eventContext) => {
                             if(!eventContext.game.currentConflict) {
@@ -28,10 +30,9 @@ export default class MapmakerApprentice extends DrawCard {
                             return eventsPlayed <= 1;
                         }
                     },
-                    message: '{0} changes the province strength of an attacked province due to the delayed effect of {1}',
-                    messageArgs: () => [context.player, context.source],
+                    message: () => msg`${context.player} changes the province strength of an attacked province due to the delayed effect of ${context.source}`,
                     multipleTrigger: true,
-                    gameAction: AbilityDsl.actions.selectCard((context) => ({
+                    gameAction: selectCard((context) => ({
                         activePromptTitle: 'Choose an attacked province',
                         hidePromptIfSingleCard: true,
                         cardType: CardType.Province,
@@ -41,21 +42,21 @@ export default class MapmakerApprentice extends DrawCard {
                             context.target = card;
                             return { target: card };
                         },
-                        gameAction: AbilityDsl.actions.chooseAction({
-                            options: {
+                        gameAction: chooseAction({
+                            choices: {
                                 'Raise attacked province\'s strength by 2': {
-                                    action: AbilityDsl.actions.cardLastingEffect({
+                                    action: cardLastingEffect({
                                         targetLocation: Location.Provinces,
-                                        effect: AbilityDsl.effects.modifyProvinceStrength(2)
+                                        effect: modifyProvinceStrength(2)
                                     }),
-                                    message: '{0} chooses to increase {1}\'s strength by 2'
+                                    message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 2`
                                 },
                                 'Lower attacked province\'s strength by 2': {
-                                    action: AbilityDsl.actions.cardLastingEffect({
+                                    action: cardLastingEffect({
                                         targetLocation: Location.Provinces,
-                                        effect: AbilityDsl.effects.modifyProvinceStrength(-2)
+                                        effect: modifyProvinceStrength(-2)
                                     }),
-                                    message: '{0} chooses to reduce {1}\'s strength by 2'
+                                    message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 2`
                                 }
                             }
                         })
@@ -63,6 +64,8 @@ export default class MapmakerApprentice extends DrawCard {
                 }),
                 duration: Duration.UntilEndOfRound
             })))
-            .effect('map {1}{2}{3} - the first event they play during each conflict at that province will also modify its strength', context => context.target.facedown ? [context.target.controller, '\'s ', context.target.location] : ['', '', context.target]);
+            .chatText((context) => context.target.facedown
+                ? msg`map ${context.target.controller}${'\'s '}${context.target.location} - the first event they play during each conflict at that province will also modify its strength`
+                : msg`map ${context.target} - the first event they play during each conflict at that province will also modify its strength`);
     }
 }

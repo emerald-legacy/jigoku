@@ -1,5 +1,5 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
 
 class Cursecatcher extends DrawCard {
@@ -8,11 +8,11 @@ class Cursecatcher extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel province ability')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Province &&
-                    event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFacedown())
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Province &&
+                    event.card.controller.getDynastyCardsInProvince(event.card.location).some((a) => a.isFacedown())
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
+            .cancel()
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`);
     }
 }
 

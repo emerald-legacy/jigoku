@@ -1,19 +1,18 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
-import ForcedTriggeredAbilityWindow from '../gamesteps/ForcedTriggeredAbilityWindow.js';
+import { TriggerWindow } from '../gamesteps/TriggerWindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
+import { TriggeredAbilityWindow } from '../gamesteps/TriggeredAbilityWindow.js';
 import { AbilityType } from '../Constants.js';
-import KeywordAbilityWindow from '../gamesteps/KeywordAbilityWindow.js';
+import { KeywordAbilityWindow } from '../gamesteps/KeywordAbilityWindow.js';
 import type Game from '../Game.js';
-import type Player from '../Player.js';
 import type { Event } from './Event.js';
 
 interface ThenAbilityLike {
-    createContext(player?: Player): AbilityContext;
+    createThenContext(parent: AbilityContext): AbilityContext;
 }
 
-export default class EventWindow extends BaseStepWithPipeline {
+export class EventWindow extends BaseStepWithPipeline {
     events: Event[] = [];
     thenAbilities: Array<{ ability: ThenAbilityLike; context: AbilityContext; condition: (event: Event) => boolean }> = [];
     previousEventWindow: EventWindow | null = null;
@@ -22,7 +21,7 @@ export default class EventWindow extends BaseStepWithPipeline {
     constructor(game: Game, events: Event[]) {
         super(game);
 
-        events.forEach(event => {
+        events.forEach((event) => {
             if(!event.cancelled) {
                 this.addEvent(event);
             }
@@ -60,11 +59,11 @@ export default class EventWindow extends BaseStepWithPipeline {
     }
 
     removeEvent(event: Event): Event {
-        this.events = this.events.filter(e => e !== event);
+        this.events = this.events.filter((e) => e !== event);
         return event;
     }
 
-    addThenAbility(ability: ThenAbilityLike, context: AbilityContext, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
+    addThenAbility(ability: ThenAbilityLike, context: AbilityContext, condition: (event: Event) => boolean = (event) => event.isFullyResolved()) {
         this.thenAbilities.push({ ability, context, condition });
     }
 
@@ -74,7 +73,7 @@ export default class EventWindow extends BaseStepWithPipeline {
     }
 
     checkEventCondition() {
-        this.events.forEach(event => event.checkCondition());
+        this.events.forEach((event) => event.checkCondition());
     }
 
     openWindow(abilityType: AbilityType) {
@@ -83,7 +82,7 @@ export default class EventWindow extends BaseStepWithPipeline {
         }
 
         if([AbilityType.ForcedReaction, AbilityType.ForcedInterrupt].includes(abilityType)) {
-            this.queueStep(new ForcedTriggeredAbilityWindow(this.game, abilityType, this));
+            this.queueStep(new TriggerWindow(this.game, abilityType, this));
         } else {
             this.queueStep(new TriggeredAbilityWindow(this.game, abilityType, this));
         }
@@ -92,29 +91,34 @@ export default class EventWindow extends BaseStepWithPipeline {
     // This is primarily for LeavesPlayEvents
     createContingentEvents() {
         let contingentEvents: Event[] = [];
-        this.events.forEach(event => {
+        this.events.forEach((event) => {
             contingentEvents = contingentEvents.concat(event.createContingentEvents());
         });
         if(contingentEvents.length > 0) {
             // Exclude current events from the new window, we just want to give players opportunities to respond to the contingent events
             this.queueStep(new TriggeredAbilityWindow(this.game, AbilityType.WouldInterrupt, this, this.events.slice(0)));
-            contingentEvents.forEach(event => this.addEvent(event));
+            contingentEvents.forEach((event) => this.addEvent(event));
         }
     }
 
     // This catches any persistent/delayed effect cancels
     checkForOtherEffects() {
-        this.events.forEach(event => this.game.emit(event.name + ':' + AbilityType.OtherEffects, event));
+        this.events.forEach((event) => this.game.emitTriggerWindow(event, AbilityType.OtherEffects));
     }
 
     preResolutionEffects() {
-        this.events.forEach(event => event.preResolutionEffect());
+        this.events.forEach((event) => event.preResolutionEffect());
     }
 
     executeHandler() {
+        this.executeEvents((event) => this.game.emit(event));
+    }
+
+    /** Runs the events' handlers in order; `afterEach` follows each one that ran. */
+    protected executeEvents(afterEach?: (event: Event) => void): void {
         this.eventsToExecute = [...this.events].sort((a, b) => a.order - b.order);
 
-        this.eventsToExecute.forEach(event => {
+        this.eventsToExecute.forEach((event) => {
             // need to checkCondition here to ensure the event won't fizzle due to another event's resolution (e.g. double honoring an ordinary character with YR etc.)
             event.checkCondition();
             // An event can reach a second window after it has already run -- a sequential
@@ -122,14 +126,14 @@ export default class EventWindow extends BaseStepWithPipeline {
             // later actions can inspect context.events. Executing again applies it twice.
             if(!event.cancelled && !event.resolved) {
                 event.executeHandler();
-                this.game.emit(event.name, event);
+                afterEach?.(event);
             }
         });
     }
 
     checkGameState() {
-        this.eventsToExecute = this.eventsToExecute.filter(event => !event.cancelled);
-        this.game.checkGameState(this.eventsToExecute.some(event => event.hasHandler()), this.eventsToExecute);
+        this.eventsToExecute = this.eventsToExecute.filter((event) => !event.cancelled);
+        this.game.checkGameState(this.eventsToExecute.some((event) => event.hasHandler()), this.eventsToExecute);
     }
 
     checkKeywordAbilities(abilityType: AbilityType) {
@@ -143,11 +147,15 @@ export default class EventWindow extends BaseStepWithPipeline {
     checkThenAbilities() {
         for(const thenAbility of this.thenAbilities) {
             if(thenAbility.context.events.every((event) => thenAbility.condition(event))) {
-                const thenContext = thenAbility.ability.createContext(thenAbility.context.player);
-                // a `then` continues the same triggering, so keep the link for chosenCardTargets
-                thenContext.originatingContext = thenAbility.context.triggeringContext;
-                this.game.resolveAbility(thenContext);
+                this.game.resolveAbility(thenAbility.ability.createThenContext(thenAbility.context));
             }
+        }
+    }
+
+    abort(): void {
+        super.abort();
+        if(this.game.currentEventWindow === this) {
+            this.game.currentEventWindow = this.previousEventWindow;
         }
     }
 

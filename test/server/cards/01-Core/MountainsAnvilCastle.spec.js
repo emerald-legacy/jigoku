@@ -49,13 +49,13 @@ describe('Mountain\'s Anvil Castle', function() {
                 });
                 this.player2.pass();
 
-                const mil = this.borderRider.getMilitarySkill();
-                const pol = this.borderRider.getPoliticalSkill();
+                const mil = this.borderRider.militarySkill;
+                const pol = this.borderRider.politicalSkill;
                 this.player1.clickCard(this.mountainsAnvil);
                 expect(this.player1).toBeAbleToSelect(this.borderRider);
                 this.player1.clickCard(this.borderRider);
-                expect(this.borderRider.getMilitarySkill()).toBe(mil + 1);
-                expect(this.borderRider.getPoliticalSkill()).toBe(pol + 1);
+                expect(this.borderRider.militarySkill).toBe(mil + 1);
+                expect(this.borderRider.politicalSkill).toBe(pol + 1);
                 expect(this.mountainsAnvil.bowed).toBe(true);
             });
 
@@ -73,12 +73,12 @@ describe('Mountain\'s Anvil Castle', function() {
                 });
                 this.player2.pass();
 
-                const mil = this.borderRider.getMilitarySkill();
-                const pol = this.borderRider.getPoliticalSkill();
+                const mil = this.borderRider.militarySkill;
+                const pol = this.borderRider.politicalSkill;
                 this.player1.clickCard(this.mountainsAnvil);
                 this.player1.clickCard(this.borderRider);
-                expect(this.borderRider.getMilitarySkill()).toBe(mil + 2);
-                expect(this.borderRider.getPoliticalSkill()).toBe(pol + 2);
+                expect(this.borderRider.militarySkill).toBe(mil + 2);
+                expect(this.borderRider.politicalSkill).toBe(pol + 2);
             });
         });
     });

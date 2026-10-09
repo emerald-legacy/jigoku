@@ -1,5 +1,5 @@
-import { CardType, Duration, Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Duration, Phase, RestrictionType } from '../../../Constants.js';
+import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ObstinateWitchHunter extends DrawCard {
@@ -9,7 +9,7 @@ export default class ObstinateWitchHunter extends DrawCard {
         this.forcedReaction('Can\'t be discarded or remove fate')
             .when({
                 onPhaseStarted: (event, context) =>
-                    event.phase === Phases.Fate &&
+                    event.phase === Phase.Fate &&
                     context.game.findAnyCardsInPlay(
                         (card) =>
                             card.type === CardType.Character &&
@@ -18,10 +18,10 @@ export default class ObstinateWitchHunter extends DrawCard {
                             (card.isTainted || card.hasTrait('shadowlands'))
                     ).length > 0
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
+            .cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: [AbilityDsl.effects.cardCannot('removeFate'), AbilityDsl.effects.cardCannot('discardFromPlay')]
-            }))
-            .effect('stop him being discarded or losing fate in this phase');
+                effect: [cardCannot(RestrictionType.RemoveFate), cardCannot(RestrictionType.DiscardFromPlay)]
+            })
+            .chatText('stop him being discarded or losing fate in this phase');
     }
 }

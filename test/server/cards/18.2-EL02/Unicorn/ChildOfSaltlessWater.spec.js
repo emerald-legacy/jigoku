@@ -53,7 +53,7 @@ describe('Child of Saltless Water', function () {
             this.player2.clickCard(this.garden);
             expect(this.child.location).toBe('play area');
             expect(this.child.isParticipating()).toBe(true);
-            expect(this.child.getMilitarySkill()).toBe(4);
+            expect(this.child.militarySkill).toBe(4);
 
             expect(this.getChatLogs(5)).toContain('player2 uses Child of Saltless Water to set its military to 4');
         });

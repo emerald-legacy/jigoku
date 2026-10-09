@@ -137,13 +137,13 @@ describe('Vine Tattoo', function() {
                 ring: 'void'
             });
 
-            const mil = this.sotorii.getMilitarySkill();
-            const pol = this.sotorii.getPoliticalSkill();
+            const mil = this.sotorii.militarySkill;
+            const pol = this.sotorii.politicalSkill;
 
             this.player2.pass();
             this.player1.clickCard(this.atsuko);
-            expect(this.sotorii.getMilitarySkill()).toBe(mil - 1);
-            expect(this.sotorii.getPoliticalSkill()).toBe(pol - 1);
+            expect(this.sotorii.militarySkill).toBe(mil - 1);
+            expect(this.sotorii.politicalSkill).toBe(pol - 1);
         });
 
         it('should be unable to be chosen by covert from characters with equal or higher printed cost', function() {

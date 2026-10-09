@@ -1,24 +1,27 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class WhispersOfPower extends DrawCard {
     static id = 'whispers-of-power';
 
     setupCardAbilities() {
         this.action('Gain political power according to fateless characters')
-            .cost(AbilityDsl.costs.payHonor())
+            .cost(costs.payHonor())
             .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyPoliticalSkill(
+            }, cardLastingEffect((context) => ({
+                effect: modifyPoliticalSkill(
                     this.getPoliticalPowerChange(context)
                 )
             })))
-            .effect('grant {0} +{1} {2} until the end of the conflict', (context) => [this.getPoliticalPowerChange(context), 'political']);
+            .chatText((context) => msg`grant ${context.chatTarget()} +${this.getPoliticalPowerChange(context)} ${'political'} until the end of the conflict`);
     }
 
     private getPoliticalPowerChange(context: AbilityContext) {

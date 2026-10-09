@@ -1,7 +1,8 @@
-import { EffectName, EventName, Phases } from '../Constants.js';
+import { msg } from '../GameChat.js';
+import { EffectName, EventName, Phase } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
 import { DynastyActionWindow } from './dynasty/DynastyActionWindow.js';
 
@@ -16,12 +17,12 @@ I Dynasty Phase
 1.5 Dynasty phase ends.
  */
 
-export class DynastyPhase extends Phase {
+export class DynastyPhase extends PhaseStep {
     constructor(
         game: Game,
         private gainFate = true
     ) {
-        super(game, Phases.Dynasty);
+        super(game, Phase.Dynasty);
         this.initialise([
             new SimpleStep(game, () => this.#beginDynasty()),
             new SimpleStep(game, () => this.#flipDynastyCards()),
@@ -58,7 +59,7 @@ export class DynastyPhase extends Phase {
             }
             if(revealedCards.size > 0) {
                 this.game.queueSimpleStep(() =>
-                    this.game.addMessage('{0} reveals {1}', player, Array.from(revealedCards))
+                    this.game.addMessage(msg`${player} reveals ${Array.from(revealedCards)}`)
                 );
             }
         }
@@ -86,7 +87,7 @@ export class DynastyPhase extends Phase {
                 restarted = true;
                 player.resetHonorEvents(this.game.roundNumber, this.game.currentPhase);
                 const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
-                this.game.addMessage('{0} has started a new dynasty phase!', effectSource);
+                this.game.addMessage(msg`${effectSource} has started a new dynasty phase!`);
                 const dynastyPhase = new DynastyPhase(this.game, false);
                 this.game.queueStep(dynastyPhase);
             }

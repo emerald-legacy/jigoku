@@ -1,12 +1,14 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg, type MessageArgs } from '../../../GameChat.js';
+import { modifyGlory } from '../../../effects.js';
+import { loseHonor } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 type HandlerStep = {
     activePromptTitle: string;
-    message: string;
+    message: (chosenCard: BaseCard) => MessageArgs;
     callback: (chosenCard: BaseCard) => void;
 };
 
@@ -15,7 +17,7 @@ export default class CeremonialRobes extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory((_character, context) =>
+            effect: modifyGlory((_character, context) =>
                 context.player.cardsInPlay.reduce(
                     (sum, card) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
@@ -34,7 +36,7 @@ export default class CeremonialRobes extends DrawCard {
                 const steps: HandlerStep[] = [
                     {
                         activePromptTitle: 'Select a card to put into the province faceup',
-                        message: '{0} places {1} into their province',
+                        message: (chosenCard) => msg`${context.player} places ${chosenCard} into their province`,
                         callback: (chosenCard) => {
                             context.player.moveCard(chosenCard, context.target.location);
                             chosenCard.facedown = false;
@@ -42,23 +44,17 @@ export default class CeremonialRobes extends DrawCard {
                     },
                     {
                         activePromptTitle: 'Select a card to put on the bottom of the deck',
-                        message: '{0} places a card on the bottom of the deck',
+                        message: () => msg`${context.player} places a card on the bottom of the deck`,
                         callback: (chosenCard) => context.player.moveCard(chosenCard, Location.DynastyDeck, { bottom: true })
                     },
                     {
                         activePromptTitle: 'Select a card to discard',
-                        message: '{0} discards {1}',
+                        message: (chosenCard) => msg`${context.player} discards ${chosenCard}`,
                         callback: (chosenCard) => {
                             context.player.moveCard(chosenCard, Location.DynastyDiscardPile);
                             if(chosenCard.hasTrait('spirit')) {
-                                this.game.addMessage(
-                                    '{0} was a Spirit! {1} and {2} lose 1 honor',
-                                    chosenCard,
-                                    context.player,
-                                    context.player.opponent
-                                );
-                                AbilityDsl.actions
-                                    .loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
+                                this.game.addMessage(msg`${chosenCard} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`);
+                                loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
                                     .resolve(chosenCard, context);
                             }
                         }
@@ -67,7 +63,7 @@ export default class CeremonialRobes extends DrawCard {
 
                 this.resolveSteps(context, steps, context.player.dynastyDeck.slice(0, 3));
             })
-            .effect('look at the top 3 cards of their dynasty deck')
+            .chatText('look at the top 3 cards of their dynasty deck')
             .evenDuringDynasty();
     }
 
@@ -77,7 +73,7 @@ export default class CeremonialRobes extends DrawCard {
             return;
         }
         const resolve = (card: BaseCard) => {
-            this.game.addMessage(step.message, context.player, card, context.target);
+            this.game.addMessage(step.message(card));
             step.callback(card);
         };
         if(cards.length === 1) {

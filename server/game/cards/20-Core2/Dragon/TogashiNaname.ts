@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
-import { RingEffects } from '../../../RingEffects.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { RingAbilities } from '../../../RingAbilities.js';
+import { cannotReceiveDishonorToken } from '../../../effects.js';
+import { placeFateOnRing, resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TogashiNaname extends DrawCard {
@@ -8,11 +9,10 @@ export default class TogashiNaname extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
+            effect: cannotReceiveDishonorToken()
         });
 
-        this.action('Remove fate or resolve a ring')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Remove fate or resolve a ring')
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -29,14 +29,14 @@ export default class TogashiNaname extends DrawCard {
                 dependsOn: 'ring',
                 player: Players.Opponent
             }, (context) => ({
-                [`Move a fate from ${context.targets.character?.name ?? ''} to the ${RingEffects.getRingName(
+                [`Move a fate from ${context.targets.character?.name ?? ''} to the ${RingAbilities.getRingName(
                     context.rings.ring.element
-                )}`]: AbilityDsl.actions.placeFateOnRing((context) => ({
+                )}`]: placeFateOnRing((context) => ({
                     target: context.rings.ring,
                     origin: context.targets.character
                 })),
-                [`Let Opponent Resolve the ${RingEffects.getRingName(context.rings.ring.element)}`]:
-                            AbilityDsl.actions.resolveRingEffect((context) => ({
+                [`Let Opponent Resolve the ${RingAbilities.getRingName(context.rings.ring.element)}`]:
+                            resolveRingEffect((context) => ({
                                 player: context.player,
                                 target: context.rings.ring
                             }))

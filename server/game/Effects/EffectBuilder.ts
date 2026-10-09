@@ -1,24 +1,24 @@
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import type { EffectName } from '../Constants.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
-import type Effect from './Effect.js';
-import type { EffectProperties } from './Effect.js';
-import type { EffectBase } from './EffectBase.js';
+import type { ActiveEffect } from './ActiveEffect.js';
+import type { EffectProperties } from './ActiveEffect.js';
+import type { EffectApplier } from './EffectApplier.js';
 import type { EffectValueMap, FlexibleEffectName } from './EffectValueMap.js';
-import CardEffect from './CardEffect.js';
-import ConflictEffect from './ConflictEffect.js';
-import DetachedEffect, { type DetachedValue } from './DetachedEffect.js';
-import DuelEffect from './DuelEffect.js';
-import DynamicEffect, { type DynamicValue } from './DynamicEffect.js';
-import PlayerEffect from './PlayerEffect.js';
-import RingEffect from './RingEffect.js';
-import StaticEffect, { type StaticValue } from './StaticEffect.js';
+import { CardEffect } from './CardEffect.js';
+import { ConflictEffect } from './ConflictEffect.js';
+import { DetachedEffect, type DetachedValue } from './DetachedEffect.js';
+import { DuelEffect } from './DuelEffect.js';
+import { DynamicEffect, type DynamicValue } from './DynamicEffect.js';
+import { PlayerEffect } from './PlayerEffect.js';
+import { RingEffect } from './RingEffect.js';
+import { StaticEffect, type StaticValue } from './StaticEffect.js';
 import type { Duel } from '../Duel.js';
 import type { Conflict } from '../Conflict.js';
 
@@ -26,7 +26,7 @@ export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel | Confl
 
 // Method syntax on purpose: a factory for a narrower target type is still an `EffectFactory`.
 interface Factory<T extends GameObject> {
-    create(game: Game, source: EffectSource, props: EffectProperties<T>): Effect;
+    create(game: Game, source: EffectSource, props: EffectProperties<T>): ActiveEffect;
 }
 /** `appliesTo` is never set; it records what the effect targets, so `match` can be typed by it. */
 export type EffectFactory<T extends GameObject = EffectTarget> = Factory<T>['create'] & { readonly appliesTo?: T };
@@ -38,7 +38,7 @@ function isCalculation<V, T>(value: FlexibleValue<V, T>): value is DynamicValue<
     return typeof value === 'function';
 }
 
-type Container<T extends GameObject> = new (game: Game, source: EffectSource, props: EffectProperties<T>, effect: EffectBase<EffectName, T>) => Effect<T>;
+type Container<T extends GameObject> = new (game: Game, source: EffectSource, props: EffectProperties<T>, effect: EffectApplier<EffectName, T>) => ActiveEffect<T>;
 
 /** Effect factories for one kind of target; each checks its value against `EffectValueMap`. */
 function effectsFor<T extends GameObject>(Container: Container<T>) {

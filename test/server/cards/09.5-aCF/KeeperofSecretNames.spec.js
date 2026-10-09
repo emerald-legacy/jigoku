@@ -242,8 +242,8 @@ describe('Keeper of Secret Names', function() {
                     province: this.frostbittenCrossing
                 });
 
-                const mil = this.brash.getMilitarySkill();
-                const pol = this.brash.getPoliticalSkill();
+                const mil = this.brash.militarySkill;
+                const pol = this.brash.politicalSkill;
 
                 this.player2.clickCard(this.p2Keeper);
                 expect(this.player2).toBeAbleToSelect(this.alongTheRiverOfGold);
@@ -251,8 +251,8 @@ describe('Keeper of Secret Names', function() {
                 expect(this.player2).toBeAbleToSelect(this.brash);
                 this.player2.clickCard(this.brash);
 
-                expect(this.brash.getMilitarySkill()).toBe(pol);
-                expect(this.brash.getPoliticalSkill()).toBe(mil);
+                expect(this.brash.militarySkill).toBe(pol);
+                expect(this.brash.politicalSkill).toBe(mil);
             });
 
             it('Kuroi Mori (province provides a choice, should not let opponent choose)', function() {

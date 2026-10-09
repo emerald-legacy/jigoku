@@ -1,10 +1,11 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, EventName, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import { msg } from '../../GameChat.js';
 
 export default class HonoredVeterans extends DrawCard {
     static id = 'honored-veterans';
@@ -12,7 +13,10 @@ export default class HonoredVeterans extends DrawCard {
     private charactersPlayedThisPhase = new Set<BaseCard>();
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),
+            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event)
+        });
 
         this.action('Honor characters')
             .condition(() => this.canBePlayed())
@@ -23,7 +27,7 @@ export default class HonoredVeterans extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
-            }, AbilityDsl.actions.honor())
+            }, honor())
             .target({
                 name: 'oppCharacter',
                 player: Players.Opponent,
@@ -32,8 +36,8 @@ export default class HonoredVeterans extends DrawCard {
                 optional: true,
                 hideIfNoLegalTargets: true,
                 cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
-            }, AbilityDsl.actions.honor())
-            .effect('honor {1}', (context) => [this.getCharacters(context)]);
+            }, honor())
+            .chatText((context) => msg`honor ${this.getCharacters(context)}`);
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {

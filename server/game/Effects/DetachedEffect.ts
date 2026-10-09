@@ -1,4 +1,4 @@
-import { EffectBase } from './EffectBase.js';
+import { EffectApplier } from './EffectApplier.js';
 import { EffectValue } from './EffectValue.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { EffectName } from '../Constants.js';
@@ -12,7 +12,7 @@ export interface DetachedValue<T, S = unknown> {
 }
 
 /** Runs its callbacks when applied and unapplied; its targets never hold it, so it has no value to read. */
-export default class DetachedEffect<N extends EffectName = EffectName, T extends GameObject = GameObject, S = unknown> extends EffectBase<N, T, boolean> {
+export class DetachedEffect<N extends EffectName = EffectName, T extends GameObject = GameObject, S = unknown> extends EffectApplier<N, T, boolean> {
     value = new EffectValue(true);
     detached: DetachedValue<T, S>;
     // what apply returned, until unapply; then what unapply returned, until the next apply

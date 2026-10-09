@@ -1,6 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { gainExtraFateWhenPlayed } from '../../../effects.js';
 
 export default class TheEmeraldCourt extends ProvinceCard {
     static id = 'the-emerald-court';
@@ -10,7 +10,7 @@ export default class TheEmeraldCourt extends ProvinceCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card, context) => card.type === CardType.Character && card.location === context?.source.location,
-            effect: AbilityDsl.effects.gainExtraFateWhenPlayed()
+            effect: gainExtraFateWhenPlayed()
         });
     }
 }

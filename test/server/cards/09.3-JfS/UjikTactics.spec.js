@@ -32,11 +32,11 @@ describe('Ujik Tactics', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.ujikTactics);
 
-                expect(this.borderRider.getMilitarySkill()).toBe(3);
-                expect(this.iuchiWayfinder.getMilitarySkill()).toBe(2);
-                expect(this.shinjoAmbusher.getMilitarySkill()).toBe(3);
+                expect(this.borderRider.militarySkill).toBe(3);
+                expect(this.iuchiWayfinder.militarySkill).toBe(2);
+                expect(this.shinjoAmbusher.militarySkill).toBe(3);
 
-                expect(this.motoNergui.getMilitarySkill()).toBe(2);
+                expect(this.motoNergui.militarySkill).toBe(2);
             });
         });
     });

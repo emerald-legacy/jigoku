@@ -1,6 +1,8 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { attach, cardMenu, selectCard, sequential, shuffleDeck } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 
 export default class ExcellenceAttained extends ProvinceCard {
@@ -11,8 +13,8 @@ export default class ExcellenceAttained extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source && context.player.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardMenu((context) => ({
+            .gameAction(sequential([
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
                     cardCondition: (card) => card.type === CardType.Attachment && (card.printedCost ?? 0) <= 1,
@@ -20,7 +22,7 @@ export default class ExcellenceAttained extends ProvinceCard {
                         {
                             text: 'Take nothing',
                             handler: () => {
-                                this.game.addMessage('{0} takes nothing', context.player);
+                                this.game.addMessage(msg`${context.player} takes nothing`);
                                 return true;
                             }
                         }
@@ -28,21 +30,20 @@ export default class ExcellenceAttained extends ProvinceCard {
                     // the chosen attachment reaches the message through the select's properties
                     subActionProperties: (attachment) => ({
                         attachment,
-                        messageArgs: (card: BaseCard | BaseCard[]) => [context.player, attachment, card]
+                        message: (context: AbilityContext, card: BaseCard | BaseCard[]) => msg`${context.player} chooses to attach ${attachment} to ${card}`
                     }),
-                    gameAction: AbilityDsl.actions.selectCard({
+                    gameAction: selectCard({
                         controller: Players.Any,
                         location: Location.PlayArea,
                         cardType: CardType.Character,
-                        message: '{0} chooses to attach {1} to {2}',
-                        gameAction: AbilityDsl.actions.attach()
+                        gameAction: attach()
                     })
                 })),
-                AbilityDsl.actions.shuffleDeck((context) => ({
+                shuffleDeck((context) => ({
                     deck: Location.ConflictDeck,
                     target: context.player
                 }))
             ]))
-            .effect('search the top 5 cards of their conflict deck for an attachment and put it into play');
+            .chatText('search the top 5 cards of their conflict deck for an attachment and put it into play');
     }
 }

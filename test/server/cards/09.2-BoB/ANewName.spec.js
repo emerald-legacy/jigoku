@@ -27,8 +27,8 @@ describe('A New Name', function() {
             });
 
             it('should have +1/+1', function() {
-                expect(this.artisan.getMilitarySkill()).toBe(1);
-                expect(this.artisan.getPoliticalSkill()).toBe(1);
+                expect(this.artisan.militarySkill).toBe(1);
+                expect(this.artisan.politicalSkill).toBe(1);
             });
         });
     });

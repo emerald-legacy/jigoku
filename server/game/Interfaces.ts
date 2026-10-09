@@ -1,3 +1,4 @@
+import { ConflictType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
@@ -11,14 +12,15 @@ import type BaseCard from './BaseCard.js';
 import type { Faction } from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
-import type EffectSource from './EffectSource.js';
-import type CardAbility from './CardAbility.js';
+import type { EffectSource } from './EffectSource.js';
+import type { CardAbility } from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
-import type { Players, TargetMode, CardType, Location, EventName, Phases } from './Constants.js';
+import type { Players, TargetMode, CardType, Location, EventName, Phase } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import type Player from './Player.js';
+import type { MessageArgs } from './GameChat.js';
 
 interface BaseTarget {
     activePromptTitle?: string;
@@ -50,7 +52,7 @@ export interface TargetSelect extends BaseTarget {
 export interface TargetRing extends BaseTarget {
     mode: TargetMode.Ring;
     optional?: boolean;
-    ringCondition: (ring: Ring, context?: AbilityContext) => boolean;
+    ringCondition: (ring: Ring, context: AbilityContext) => boolean;
 }
 
 export interface TargetAbility extends BaseTarget {
@@ -66,7 +68,7 @@ export interface TargetToken extends BaseTarget {
     location?: Location | Location[];
     cardType?: CardType | CardType[];
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
-    tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
+    tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
 }
 
 export interface TargetElementSymbol extends BaseTarget {
@@ -100,7 +102,7 @@ export interface TargetCardMaxStat extends BaseTargetCard {
 }
 
 export interface TargetCardSingleUnlimited extends BaseTargetCard {
-    mode?: TargetMode.Single | TargetMode.Unlimited | TargetMode.AutoSingle;
+    mode?: TargetMode.Single | TargetMode.Unlimited;
 }
 
 type TargetCard =
@@ -121,7 +123,7 @@ export interface ActionCardTarget {
 }
 
 export interface ActionRingTarget {
-    ringCondition?: (ring: Ring, context?: AbilityContext) => boolean;
+    ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
 }
 
 type ActionTarget = (TargetCard & ActionCardTarget) | (TargetRing & ActionRingTarget) | TargetSelect | TargetAbility;
@@ -172,9 +174,9 @@ interface AbilityProps<Context> {
     cannotBeMirrored?: boolean;
     printedAbility?: boolean;
     cannotTargetFirst?: boolean;
-    effect?: string;
+    chatText?: string | OwnContextCallback<[context: Context], MessageArgs>;
     evenDuringDynasty?: boolean;
-    effectArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
+    chatTextArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
     gameAction?: NoInfer<DeclaredGameAction<Context> | DeclaredGameAction<Context>[]>;
     handler?: OwnContextCallback<[context: Context], void>;
     then?: ThenAbilityProperties | OwnContextCallback<[context: Context], ThenAbilityProperties | undefined>;
@@ -182,14 +184,14 @@ interface AbilityProps<Context> {
 
 export interface ActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
     condition?: OwnContextCallback<[context: AbilityContext<Source, Target>], boolean>;
-    phase?: Phases | 'any';
+    phase?: Phase | 'any';
     anyPlayer?: boolean;
     conflictProvinceCondition?: OwnContextCallback<[province: ProvinceCard, context: AbilityContext<Source, Target>], boolean>;
     canTriggerOutsideConflict?: boolean;
 }
 
 export interface ConflictActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
-    conflictType?: 'military' | 'political';
+    conflictType?: ConflictType;
     evenFromHome?: boolean;
 }
 
@@ -198,7 +200,7 @@ interface TriggeredAbilityCardTarget {
 }
 
 interface TriggeredAbilityRingTarget {
-    ringCondition?: (ring: Ring, context?: TriggeredAbilityContext) => boolean;
+    ringCondition?: (ring: Ring, context: TriggeredAbilityContext) => boolean;
 }
 
 type TriggeredAbilityTarget =
@@ -207,7 +209,7 @@ type TriggeredAbilityTarget =
     | TargetSelect;
 
 interface TriggeredAbilityTargets {
-    [propName: string]: TriggeredAbilityTarget & SubTarget & TriggeredAbilityTarget;
+    [propName: string]: TriggeredAbilityTarget & SubTarget;
 }
 
 export type TargetPropertiesInput = (ActionTarget | TriggeredAbilityTarget) & SubTarget;
@@ -220,6 +222,7 @@ export interface TriggeredAbilityWhenProps<Source extends EffectSource = BaseCar
     when: WhenType<Source>;
     collectiveTrigger?: boolean;
     anyPlayer?: boolean;
+    condition?: (context: AbilityContext) => boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
     handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
@@ -229,6 +232,7 @@ export interface TriggeredAbilityWhenProps<Source extends EffectSource = BaseCar
 export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
     aggregateWhen: OwnContextCallback<[events: Event[], context: TriggeredAbilityContext<Source, Target, Event[]>], boolean>;
     collectiveTrigger?: boolean;
+    condition?: (context: AbilityContext) => boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
     handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;

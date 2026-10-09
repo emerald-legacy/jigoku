@@ -14,7 +14,7 @@ describe('Third Tower Guard', function() {
             });
 
             it('should give +2 military skill if you have claimed the earth ring', function() {
-                const militarySkill = this.thirdTowerGuard.getMilitarySkill();
+                const militarySkill = this.thirdTowerGuard.militarySkill;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.thirdTowerGuard],
@@ -24,11 +24,11 @@ describe('Third Tower Guard', function() {
                 });
                 this.player1.clickPrompt('Don\'t resolve');
                 expect(this.game.rings.earth.claimed).toBe(true);
-                expect(this.thirdTowerGuard.getMilitarySkill()).toBe(militarySkill + 2);
+                expect(this.thirdTowerGuard.militarySkill).toBe(militarySkill + 2);
             });
 
             it('should give +2 military skill if you have claimed the water ring', function() {
-                const militarySkill = this.thirdTowerGuard.getMilitarySkill();
+                const militarySkill = this.thirdTowerGuard.militarySkill;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.thirdTowerGuard],
@@ -38,7 +38,7 @@ describe('Third Tower Guard', function() {
                 });
                 this.player1.clickPrompt('Don\'t resolve');
                 expect(this.game.rings.water.claimed).toBe(true);
-                expect(this.thirdTowerGuard.getMilitarySkill()).toBe(militarySkill + 2);
+                expect(this.thirdTowerGuard.militarySkill).toBe(militarySkill + 2);
             });
         });
     });

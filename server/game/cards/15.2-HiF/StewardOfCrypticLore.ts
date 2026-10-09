@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Element, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill, modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 const ELEMENT = 'courteous-greeting-earth';
@@ -9,12 +11,12 @@ export default class StewardOfCrypticLore extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.modifyPoliticalSkill(3)
+            effect: modifyPoliticalSkill(3)
         });
 
         this.action('Changes the strength of the attacked province')
             .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(ELEMENT)))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -24,26 +26,26 @@ export default class StewardOfCrypticLore extends DrawCard {
                     context.target = card;
                     return { target: card };
                 },
-                gameAction: AbilityDsl.actions.chooseAction(() => ({
-                    options: {
+                gameAction: chooseAction(() => ({
+                    choices: {
                         'Raise attacked province\'s strength by 3': {
-                            action: AbilityDsl.actions.cardLastingEffect(() => ({
+                            action: cardLastingEffect(() => ({
                                 targetLocation: Location.Provinces,
-                                effect: AbilityDsl.effects.modifyProvinceStrength(3)
+                                effect: modifyProvinceStrength(3)
                             })),
-                            message: '{0} chooses to increase {1}\'s strength by 3'
+                            message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 3`
                         },
                         'Lower attacked province\'s strength by 3': {
-                            action: AbilityDsl.actions.cardLastingEffect(() => ({
+                            action: cardLastingEffect(() => ({
                                 targetLocation: Location.Provinces,
-                                effect: AbilityDsl.effects.modifyProvinceStrength(-3)
+                                effect: modifyProvinceStrength(-3)
                             })),
-                            message: '{0} chooses to reduce {1}\'s strength by 3'
+                            message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 3`
                         }
                     }
                 }))
-            })))
-            .effect('change the province strength of an attacked province');
+            }))
+            .chatText('change the province strength of an attacked province');
     }
 
     getPrintedElementSymbols() {

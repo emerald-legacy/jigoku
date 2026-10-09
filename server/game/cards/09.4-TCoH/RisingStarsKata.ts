@@ -1,5 +1,8 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
@@ -12,12 +15,12 @@ export default class RisingStarsKata extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isUnique() && card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: context.target && duelWinners.has(context.target)
-                    ? AbilityDsl.effects.modifyMilitarySkill(5)
-                    : AbilityDsl.effects.modifyMilitarySkill(3)
+                    ? modifyMilitarySkill(5)
+                    : modifyMilitarySkill(3)
             })))
-            .effect('give {0} +{1} {2} skill until the end of the conflict', (context) => [duelWinners.has(context.target) ? 5 : 3, 'military'])
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText((context) => msg`give ${context.chatTarget()} +${duelWinners.has(context.target) ? 5 : 3} ${'military'} skill until the end of the conflict`)
+            .max(perConflict(1));
     }
 }

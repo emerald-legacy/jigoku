@@ -1,5 +1,5 @@
 import type { PromptButton } from './PlayerPromptState.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 
 export class Spectator {

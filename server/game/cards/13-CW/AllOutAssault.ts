@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, Players, Phase } from '../../Constants.js';
+import { mustDeclareMaximumAttackers } from '../../effects.js';
 
 class AllOutAssault extends DrawCard {
     static id = 'all-out-assault';
@@ -8,14 +8,14 @@ class AllOutAssault extends DrawCard {
     setupCardAbilities() {
         this.reaction('Both players must attack with as many characters as they can every conflict')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect({
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.mustDeclareMaximumAttackers()
-            }))
-            .effect('force each player to attack with as many characters as they can each conflict');
+                effect: mustDeclareMaximumAttackers()
+            })
+            .chatText('force each player to attack with as many characters as they can each conflict');
     }
 }
 

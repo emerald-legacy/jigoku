@@ -2,13 +2,14 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { Location } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class MagnificentLighthouse extends DrawCard {
     static id = 'magnificent-lighthouse';
 
     setupCardAbilities() {
         this.action('Look at top 3 cards')
-            .selectIf({
+            .select({
                 activePromptTitle: 'Choose which deck to look at:'
             }, {
                 'Dynasty Deck': (context) => !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
@@ -24,7 +25,7 @@ class MagnificentLighthouse extends DrawCard {
                     this.chooseDiscard(context, opponent, topThree);
                 }
             })
-            .effect('look at the top 3 cards of {1}\'s {2}', (context) => [context.player.opponent, context.select.toLowerCase()]);
+            .chatText((context) => msg`look at the top 3 cards of ${context.player.opponent}'s ${context.select.toLowerCase()}`);
     }
 
     // With fewer than 3 cards, each step may be skipped, except the bottom card after skipping the discard of 2
@@ -35,7 +36,7 @@ class MagnificentLighthouse extends DrawCard {
             context: context,
             cards: cards,
             cardHandler: (card) => {
-                this.game.addMessage('{0} chooses to discard {1}', context.player, card);
+                this.game.addMessage(msg`${context.player} chooses to discard ${card}`);
                 opponent.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
                 this.chooseBottom(context, opponent, cards.filter((c) => c !== card), canSkip);
             },
@@ -52,7 +53,7 @@ class MagnificentLighthouse extends DrawCard {
             context: context,
             cards: cards,
             cardHandler: (card) => {
-                this.game.addMessage('{0} places a card on the bottom of the deck', context.player, card);
+                this.game.addMessage(msg`${context.player} places a card on the bottom of the deck`);
                 opponent.moveCard(card, card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
             },
             options: canSkip ? [{ text: 'None', handler: () => true }] : []

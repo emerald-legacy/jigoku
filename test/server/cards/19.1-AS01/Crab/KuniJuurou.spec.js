@@ -168,25 +168,25 @@ describe('Kuni Juurou', function () {
                 this.player1.clickCard(this.afflictionP1);
                 this.player1.clickCard(this.envoyP1);
 
-                expect(this.experimentP1.getMilitarySkill()).toBe(2);
-                expect(this.experimentP1.getPoliticalSkill()).toBe(1);
-                expect(this.experimentP2.getMilitarySkill()).toBe(2);
-                expect(this.experimentP2.getPoliticalSkill()).toBe(1);
+                expect(this.experimentP1.militarySkill).toBe(2);
+                expect(this.experimentP1.politicalSkill).toBe(1);
+                expect(this.experimentP2.militarySkill).toBe(2);
+                expect(this.experimentP2.politicalSkill).toBe(1);
 
-                expect(this.jealousP1.getMilitarySkill()).toBe(0);
-                expect(this.jealousP1.getPoliticalSkill()).toBe(0);
-                expect(this.jealousP2.getMilitarySkill()).toBe(0);
-                expect(this.jealousP2.getPoliticalSkill()).toBe(0);
+                expect(this.jealousP1.militarySkill).toBe(0);
+                expect(this.jealousP1.politicalSkill).toBe(0);
+                expect(this.jealousP2.militarySkill).toBe(0);
+                expect(this.jealousP2.politicalSkill).toBe(0);
 
-                expect(this.envoyP1.getMilitarySkill()).toBe(1);
-                expect(this.envoyP1.getPoliticalSkill()).toBe(0);
-                expect(this.envoyP2.getMilitarySkill()).toBe(1);
-                expect(this.envoyP2.getPoliticalSkill()).toBe(0);
+                expect(this.envoyP1.militarySkill).toBe(1);
+                expect(this.envoyP1.politicalSkill).toBe(0);
+                expect(this.envoyP2.militarySkill).toBe(1);
+                expect(this.envoyP2.politicalSkill).toBe(0);
 
-                expect(this.borderlandsP1.getMilitarySkill()).toBe(3);
-                expect(this.borderlandsP1.getPoliticalSkill()).toBe(3);
-                expect(this.borderlandsP2.getMilitarySkill()).toBe(3);
-                expect(this.borderlandsP2.getPoliticalSkill()).toBe(3);
+                expect(this.borderlandsP1.militarySkill).toBe(3);
+                expect(this.borderlandsP1.politicalSkill).toBe(3);
+                expect(this.borderlandsP2.militarySkill).toBe(3);
+                expect(this.borderlandsP2.politicalSkill).toBe(3);
             });
 
             it('When Juurou is not in the conflict, it gives skill penalty to shadowlands', function () {
@@ -203,25 +203,25 @@ describe('Kuni Juurou', function () {
                 this.player1.clickCard(this.afflictionP1);
                 this.player1.clickCard(this.envoyP1);
 
-                expect(this.experimentP1.getMilitarySkill()).toBe(2);
-                expect(this.experimentP1.getPoliticalSkill()).toBe(1);
-                expect(this.experimentP2.getMilitarySkill()).toBe(2);
-                expect(this.experimentP2.getPoliticalSkill()).toBe(1);
+                expect(this.experimentP1.militarySkill).toBe(2);
+                expect(this.experimentP1.politicalSkill).toBe(1);
+                expect(this.experimentP2.militarySkill).toBe(2);
+                expect(this.experimentP2.politicalSkill).toBe(1);
 
-                expect(this.jealousP1.getMilitarySkill()).toBe(0);
-                expect(this.jealousP1.getPoliticalSkill()).toBe(0);
-                expect(this.jealousP2.getMilitarySkill()).toBe(0);
-                expect(this.jealousP2.getPoliticalSkill()).toBe(0);
+                expect(this.jealousP1.militarySkill).toBe(0);
+                expect(this.jealousP1.politicalSkill).toBe(0);
+                expect(this.jealousP2.militarySkill).toBe(0);
+                expect(this.jealousP2.politicalSkill).toBe(0);
 
-                expect(this.envoyP1.getMilitarySkill()).toBe(1);
-                expect(this.envoyP1.getPoliticalSkill()).toBe(0);
-                expect(this.envoyP2.getMilitarySkill()).toBe(1);
-                expect(this.envoyP2.getPoliticalSkill()).toBe(0);
+                expect(this.envoyP1.militarySkill).toBe(1);
+                expect(this.envoyP1.politicalSkill).toBe(0);
+                expect(this.envoyP2.militarySkill).toBe(1);
+                expect(this.envoyP2.politicalSkill).toBe(0);
 
-                expect(this.borderlandsP1.getMilitarySkill()).toBe(3);
-                expect(this.borderlandsP1.getPoliticalSkill()).toBe(3);
-                expect(this.borderlandsP2.getMilitarySkill()).toBe(3);
-                expect(this.borderlandsP2.getPoliticalSkill()).toBe(3);
+                expect(this.borderlandsP1.militarySkill).toBe(3);
+                expect(this.borderlandsP1.politicalSkill).toBe(3);
+                expect(this.borderlandsP2.militarySkill).toBe(3);
+                expect(this.borderlandsP2.politicalSkill).toBe(3);
             });
         });
 

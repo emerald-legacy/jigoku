@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class TogashiInitiate extends DrawCard {
     static id = 'togashi-initiate';
 
     setupCardAbilities() {
         this.action('Honor this character')
-            .cost(AbilityDsl.costs.payFateToRing(1))
-            .condition(context => context.source.isAttacking())
-            .gameAction(AbilityDsl.actions.honor());
+            .cost(costs.payFateToRing(1))
+            .condition((context) => context.source.isAttacking())
+            .honor();
     }
 }
 

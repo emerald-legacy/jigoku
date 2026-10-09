@@ -1,4 +1,7 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
+import { setMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -7,17 +10,17 @@ class InDefenseOfRokugan extends DrawCard {
 
     setupCardAbilities() {
         this.action('Set an attacking character to 0 military skill')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.setMilitarySkill(0)
+            }, cardLastingEffect({
+                effect: setMilitarySkill(0)
             }))
-            .effect('set {0}\'s {1} skill to 0', () => 'military');
+            .chatText((context) => msg`set ${context.chatTarget()}'s ${'military'} skill to 0`);
     }
 }
 

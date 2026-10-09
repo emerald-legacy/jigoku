@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location } from '../../Constants.js';
 
 class MushinNoShin extends DrawCard {
@@ -18,7 +17,7 @@ class MushinNoShin extends DrawCard {
                             card.attachments.length >= 2
                     )
             })
-            .gameAction(AbilityDsl.actions.cancel());
+            .cancel();
     }
 }
 

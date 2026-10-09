@@ -53,7 +53,7 @@ describe('Fearless Sailor', function() {
         });
 
         it('should give the chosen character -2 mil', function() {
-            const skill = this.sailor.getMilitarySkill();
+            const skill = this.sailor.militarySkill;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -64,7 +64,7 @@ describe('Fearless Sailor', function() {
             this.player2.pass();
             this.player1.clickCard(this.sailor);
             this.player1.clickCard(this.sailor);
-            expect(this.sailor.getMilitarySkill()).toBe(skill - 2);
+            expect(this.sailor.militarySkill).toBe(skill - 2);
             expect(this.getChatLogs(5)).toContain('player1 uses Fearless Sailor to give Fearless Sailor -2military');
         });
     });

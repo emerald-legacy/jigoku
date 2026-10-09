@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyCardsDrawnInDrawPhase } from '../../effects.js';
 import { Players } from '../../Constants.js';
 
 class IwasakiPupil extends DrawCard {
@@ -8,7 +8,7 @@ class IwasakiPupil extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: AbilityDsl.effects.modifyCardsDrawnInDrawPhase(-2)
+            effect: modifyCardsDrawnInDrawPhase(-2)
         });
     }
 }

@@ -1,0 +1,195 @@
+import type { AbilityContext } from './AbilityContext.js';
+import type { CardAction } from './CardAction.js';
+import { AbilityType, Location, Phase, RestrictionType } from './Constants.js';
+import type DrawCard from './DrawCard.js';
+import type { ProvinceCard } from './ProvinceCard.js';
+import { GameMode } from '../GameMode.js';
+
+type RingChoices = Record<string, (context: AbilityContext) => boolean>;
+
+export const AIR_CHOICE = {
+    GAIN_2: 'Gain 2 Honor',
+    TAKE_1: 'Take 1 Honor from opponent',
+    SKIP: 'Don\'t resolve'
+} as const;
+
+export const EARTH_CHOICE = {
+    DRAW: 'Draw a card',
+    FORCE_DISCARD: 'Opponent discards a card',
+    DRAW_AND_FORCE_DISCARD: 'Draw a card and opponent discards',
+    SKIP: 'Don\'t resolve'
+} as const;
+
+export interface GameRules {
+    name: GameMode;
+    attachmentsMaxOneCopyPerName: boolean;
+    conflictHaveUnopposedHonorLoss: boolean;
+    conflictOneFewerOpportunity: boolean;
+    covertUnified: boolean;
+    deckoutHonorLoss: number;
+    disguiseKeepsCharactersInSameLocation: boolean;
+    duelRules: 'currentSkill' | 'printedSkill' | 'skirmish';
+    dynastyPhaseCanPlayAttachments: boolean;
+    dynastyPhaseCanPlayConflictEvents: (action: CardAction) => boolean;
+    dynastyPhaseCanPlayConflictCharacters: boolean;
+    dynastyPhaseForcedFatePerRound?: number;
+    dynastyPhasePassingFate: boolean;
+    dynastyPhaseActionsFromCardsInPlay: boolean;
+    fatePerRoundForced?: number;
+    fatePhaseForceDiscardFromBrokenProvinces: boolean;
+    fatePhasePutFateOnRings: boolean;
+    honorBidValues: string[];
+    imperialFavorHasSides: boolean;
+    /** Whose favor the Imperial Favor is, as the chat says it: "the Emperor's favor". */
+    imperialFavorSovereign: string;
+    ringAirChoices: (optional: boolean) => RingChoices;
+    ringEarthChoices: (optional: boolean) => RingChoices;
+    ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) => boolean;
+    setupFixedStartingHonor?: number;
+    setupHaveProvinceCards: boolean;
+    setupHaveRoles: boolean;
+    setupHaveStrongholds: boolean;
+    setupNonStrongholdProvinces: Location[];
+    setupStartingHandSize: number;
+    winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) => boolean;
+    winConRequiredHonorForWin: number;
+}
+
+const Stronghold: GameRules = {
+    name: GameMode.Stronghold,
+    attachmentsMaxOneCopyPerName: false,
+    conflictHaveUnopposedHonorLoss: true,
+    conflictOneFewerOpportunity: false,
+    covertUnified: false,
+    deckoutHonorLoss: 5,
+    disguiseKeepsCharactersInSameLocation: false,
+    duelRules: 'currentSkill',
+    dynastyPhaseActionsFromCardsInPlay: true,
+    dynastyPhaseCanPlayAttachments: false,
+    dynastyPhaseCanPlayConflictCharacters: false,
+    dynastyPhaseCanPlayConflictEvents: () => true,
+    dynastyPhaseForcedFatePerRound: undefined,
+    dynastyPhasePassingFate: true,
+    fatePerRoundForced: undefined,
+    fatePhaseForceDiscardFromBrokenProvinces: true,
+    fatePhasePutFateOnRings: true,
+    honorBidValues: ['1', '2', '3', '4', '5'],
+    imperialFavorHasSides: true,
+    imperialFavorSovereign: 'Emperor\'s',
+    setupFixedStartingHonor: undefined,
+    setupHaveProvinceCards: true,
+    setupHaveRoles: true,
+    setupHaveStrongholds: true,
+    setupNonStrongholdProvinces: [
+        Location.ProvinceOne,
+        Location.ProvinceTwo,
+        Location.ProvinceThree,
+        Location.ProvinceFour
+    ],
+    setupStartingHandSize: 4,
+    ringAirChoices: (optional: boolean): RingChoices => ({
+        [AIR_CHOICE.GAIN_2]: () => true,
+        [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions(RestrictionType.TakeHonor, context)),
+        [AIR_CHOICE.SKIP]: () => optional
+    }),
+    ringEarthChoices: (optional: boolean): RingChoices => ({
+        [EARTH_CHOICE.DRAW_AND_FORCE_DISCARD]: () => true,
+        [EARTH_CHOICE.SKIP]: () => optional
+    }),
+    ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
+        card.location === Location.PlayArea &&
+        (card.bowed || (card.getFate() === 0 && card.allowGameAction('bow', context))),
+    winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
+        provinceBeingBroken.location === Location.StrongholdProvince,
+    winConRequiredHonorForWin: 25
+};
+
+const Skirmish: GameRules = {
+    ...Stronghold,
+    name: GameMode.Skirmish,
+
+    conflictHaveUnopposedHonorLoss: false,
+    conflictOneFewerOpportunity: true,
+    deckoutHonorLoss: 3,
+    duelRules: 'skirmish',
+    dynastyPhaseCanPlayConflictEvents: () => false,
+    dynastyPhaseForcedFatePerRound: 6,
+    dynastyPhasePassingFate: false,
+    fatePerRoundForced: 6,
+    fatePhaseForceDiscardFromBrokenProvinces: false,
+    fatePhasePutFateOnRings: false,
+    honorBidValues: ['1', '2', '3'],
+    imperialFavorHasSides: false,
+    setupFixedStartingHonor: 6,
+    setupHaveProvinceCards: false,
+    setupHaveRoles: false,
+    setupHaveStrongholds: false,
+    setupNonStrongholdProvinces: [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree],
+    setupStartingHandSize: 3,
+    ringAirChoices: (optional: boolean): RingChoices => ({
+        [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions(RestrictionType.TakeHonor, context)),
+        [AIR_CHOICE.SKIP]: () => optional
+    }),
+    ringEarthChoices: (optional: boolean): RingChoices => ({
+        [EARTH_CHOICE.DRAW]: () => true,
+        [EARTH_CHOICE.FORCE_DISCARD]: (context: AbilityContext) => Boolean(context.player.opponent),
+        [EARTH_CHOICE.SKIP]: () => optional
+    }),
+    ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
+        card.location === Location.PlayArea &&
+        card.getFate() <= 1 &&
+        !card.isParticipating() &&
+        ((!card.bowed && card.allowGameAction('bow', context)) ||
+            (card.bowed && card.allowGameAction('ready', context))),
+    winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
+        provinceBeingBroken.controller.getProvinces((card: ProvinceCard) => card.isBroken).length > 2,
+    winConRequiredHonorForWin: 12
+};
+
+const Emerald: GameRules = {
+    ...Stronghold,
+    name: GameMode.Emerald,
+    imperialFavorSovereign: 'Empress\'',
+
+    attachmentsMaxOneCopyPerName: true,
+    covertUnified: true,
+    disguiseKeepsCharactersInSameLocation: true,
+    duelRules: 'printedSkill',
+    dynastyPhaseCanPlayAttachments: false,
+    dynastyPhaseCanPlayConflictEvents: (action) =>
+        action.abilityType !== AbilityType.Action ||
+        action.phase === Phase.Dynasty ||
+        action.card.isDynasty,
+    dynastyPhaseCanPlayConflictCharacters: false,
+    dynastyPhasePassingFate: false,
+    dynastyPhaseActionsFromCardsInPlay: false
+};
+
+const Sanctuary: GameRules = { ...Emerald, name: GameMode.Sanctuary };
+
+const Obsidian: GameRules = {
+    ...Stronghold,
+    name: GameMode.Obsidian,
+
+    attachmentsMaxOneCopyPerName: true,
+    disguiseKeepsCharactersInSameLocation: true,
+    dynastyPhaseCanPlayAttachments: true,
+    dynastyPhaseCanPlayConflictCharacters: true
+};
+
+export function rulesFor(candidateStr: string | undefined): GameRules {
+    switch(candidateStr) {
+        case 'skirmish':
+            return Skirmish;
+        case 'emerald':
+            return Emerald;
+        case 'sanctuary':
+            return Sanctuary;
+        case 'obsidian':
+            return Obsidian;
+        default:
+            return Stronghold;
+    }
+}

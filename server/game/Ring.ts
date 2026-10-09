@@ -1,11 +1,11 @@
-import EffectSource from './EffectSource.js';
+import { EffectSource } from './EffectSource.js';
 import { ConflictType, EffectName, Element } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
 import type { StateViewer } from './types/StateViewer.js';
 
-class Ring extends EffectSource {
+export class Ring extends EffectSource {
     menu = [
         { command: 'flip', text: 'Flip' },
         { command: 'claim', text: 'Claim' },

@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler } from '../../GameActions/GameActions.js';
 
 class FieldTactician extends DrawCard {
     static id = 'field-tactician';
@@ -15,8 +16,8 @@ class FieldTactician extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Any
-            }, AbilityDsl.actions.handler({
-                handler: context => {
+            }, handler({
+                handler: (context) => {
                     const card = context.target;
                     const player = card.owner;
                     player.moveCard(card, Location.ConflictDeck);
@@ -27,7 +28,7 @@ class FieldTactician extends DrawCard {
                     player.conflictDeck.splice(0, 2, ...orderedCards);
                 }
             }))
-            .effect('return {0} to {1}\'s conflict deck', context => [context.target.owner]);
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s conflict deck`);
     }
 }
 

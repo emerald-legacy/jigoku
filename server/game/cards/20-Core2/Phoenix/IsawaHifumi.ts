@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { unlimited } from '../../../AbilityLimit.js';
+import { playCard } from '../../../GameActions/GameActions.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
@@ -70,28 +72,31 @@ export default class IsawaHifumi extends DrawCard {
     setupCardAbilities() {
         const hifumiCost = new HifumiCost(false);
         this.hifumiCost = hifumiCost;
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
         this.action('Play an event from discard')
             .cost(hifumiCost)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.ConflictDiscardPile,
-                gameAction: AbilityDsl.actions.playCard({
+                gameAction: playCard({
                     resetOnCancel: true,
                     source: this,
                     playType: PlayType.PlayFromHand,
                     postHandler: (eventContext) => {
                         const card = eventContext.source;
-                        context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
+                        context.game.addMessage(msg`${card} is removed from the game by ${context.source}'s ability`);
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })
-            })))
-            .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [hifumiCost.currentCost(context.player), context.player])
-            .limit(AbilityDsl.limit.unlimited())
+            }))
+            .chatText((context) => msg`play an event from their discard pile (the next time it is used this round will cost ${hifumiCost.currentCost(context.player)} fate from ${context.player} characters)`)
+            .limit(unlimited())
             .cannotTargetFirst();
     }
 

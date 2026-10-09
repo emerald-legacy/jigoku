@@ -76,7 +76,7 @@ describe('Marvelous Beings', function () {
                 this.player1.clickCard(this.guardianKami);
 
                 expect(this.guardianKami.isParticipating()).toBe(true);
-                expect(this.guardianKami.getPoliticalSkill()).toBe(1);
+                expect(this.guardianKami.politicalSkill).toBe(1);
 
                 expect(this.getChatLogs(5)).toContain(
                     'player1 plays Marvelous Beings, moving Guardian Kami into the conflict to entrance the court, giving their side an extra 2political this conflict'
@@ -97,7 +97,7 @@ describe('Marvelous Beings', function () {
                 this.player1.clickCard(this.aranat);
 
                 expect(this.aranat.isParticipating()).toBe(true);
-                expect(this.aranat.getPoliticalSkill()).toBe(6);
+                expect(this.aranat.politicalSkill).toBe(6);
 
                 expect(this.getChatLogs(5)).toContain(
                     'player1 plays Marvelous Beings, moving Aranat into the conflict to entrance the court, giving their side an extra 3political this conflict'

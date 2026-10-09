@@ -1,6 +1,7 @@
 import { CardType, Players, Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { additionalAction } from '../../../effects.js';
+import { moveToConflict, multiple, playerLastingEffect, ready } from '../../../GameActions/GameActions.js';
 
 export default class ShatteredBladePass extends ProvinceCard {
     static id = 'shattered-blade-pass';
@@ -11,15 +12,15 @@ export default class ShatteredBladePass extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.moveToConflict(),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+            }, multiple([
+                ready(),
+                moveToConflict(),
+                playerLastingEffect((context) => ({
                     targetController: context.player,
                     duration: Duration.UntilPassPriority,
-                    effect: AbilityDsl.effects.additionalAction()
+                    effect: additionalAction()
                 }))
             ]))
-            .effect('ready {0} and move it into the conflict, taking an additional action');
+            .chatText('ready {0} and move it into the conflict, taking an additional action');
     }
 }

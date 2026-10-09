@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
 import { Location } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
@@ -5,7 +6,7 @@ import type DrawCard from '../../DrawCard.js';
 import type Game from '../../Game.js';
 import type Player from '../../Player.js';
 
-class MulliganDynastyPrompt extends AllPlayerPrompt {
+export class MulliganDynastyPrompt extends AllPlayerPrompt {
     selectedCards: Record<string, DrawCard[]>;
     selectableCards: Record<string, DrawCard[]>;
 
@@ -58,7 +59,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
         if(!this.selectedCards[player.name].includes(card)) {
             this.selectedCards[player.name].push(card);
         } else {
-            this.selectedCards[player.name] = this.selectedCards[player.name].filter(c => c !== card);
+            this.selectedCards[player.name] = this.selectedCards[player.name].filter((c) => c !== card);
         }
         player.setSelectedCards(this.selectedCards[player.name]);
 
@@ -89,9 +90,9 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
                     player.replaceDynastyCard(location);
                 }
                 player.shuffleDynastyDeck();
-                this.game.addMessage('{0} has mulliganed {1} cards from the dynasty deck', player, this.selectedCards[player.name].length);
+                this.game.addMessage(msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the dynasty deck`);
             } else {
-                this.game.addMessage('{0} has kept all dynasty cards', player);
+                this.game.addMessage(msg`${player} has kept all dynasty cards`);
             }
             player.clearSelectedCards();
             player.clearSelectableCards();
@@ -102,4 +103,3 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
     }
 }
 
-export default MulliganDynastyPrompt;

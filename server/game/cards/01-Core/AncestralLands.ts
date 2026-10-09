@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
 import { ConflictType } from '../../Constants.js';
 
 export default class AncestralLands extends ProvinceCard {
@@ -8,7 +8,7 @@ export default class AncestralLands extends ProvinceCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(ConflictType.Political),
-            effect: AbilityDsl.effects.modifyProvinceStrength(5)
+            effect: modifyProvinceStrength(5)
         });
     }
 }

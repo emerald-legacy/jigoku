@@ -1,27 +1,27 @@
 import { CardType, EventName, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import Ring from '../../../Ring.js';
+import { msg } from '../../../GameChat.js';
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
 
     setupCardAbilities() {
         this.duelStrike('Place a fate on a character', (duel, context) => duel.winnerController === context.player)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => context.event.duel.isInvolved(card),
-                message: '{0} places a fate from their fate pool on {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.placeFate((context) => ({
+                message: (context, cards) => msg`${context.player} places a fate from their fate pool on ${cards}`,
+                gameAction: placeFate((context) => ({
                     origin: context.player
                 }))
-            })));
+            }));
 
         this.wouldInterrupt('Cancel a ring effect')
             .when({
@@ -35,8 +35,8 @@ export default class DestinyRevealed extends DrawCard {
                 onCardBowed: targetedByOpponentRingEffect,
                 onCardReadied: targetedByOpponentRingEffect
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of the {1}', (context) => [context.event.context?.source]);
+            .cancel()
+            .chatText((context) => msg`cancel the effects of the ${context.event.context?.source}`);
     }
 }
 

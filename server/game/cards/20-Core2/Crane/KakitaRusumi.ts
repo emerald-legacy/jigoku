@@ -1,5 +1,7 @@
-import { CardType, Decks, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, DeckType, Duration } from '../../../Constants.js';
+import { delayedEffect } from '../../../effects.js';
+import { discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -11,36 +13,32 @@ export default class KakitaRusumi extends DrawCard {
     static id = 'kakita-rusumi';
 
     setupCardAbilities() {
-        this.action('Put a character into play')
+        this.conflictAction('Put a character into play', { evenFromHome: true })
             .condition((context) => context.player.isDefendingPlayer())
-            .gameAction(AbilityDsl.actions.deckSearch({
+            .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
-                amount: 4,
-                deck: Decks.DynastyDeck,
+                cardsToLookAt: 4,
+                deck: DeckType.Dynasty,
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),
-                message: '{0} puts {1} into play {2}',
-                messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
-                shuffle: true,
-                gameAction: AbilityDsl.actions.putIntoConflict((context) => ({ status: statusOfIntern(context) }))
-            }))
-            .effect('search their dynasty deck for a character to put into play')
-            .then((context) => ({
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => {
-                    const target = context.deckSearchSelected[0] ?? [];
-                    return {
-                        target: target,
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.delayedEffect({
-                            when: {
-                                onConflictFinished: () => true
-                            },
-                            message: '{0} is discarded from play due to {1}\'s effect',
-                            messageArgs: [target, context.source],
-                            gameAction: AbilityDsl.actions.discardFromPlay()
-                        })
-                    };
-                })
-            }));
+                message: (context, cards) => msg`${context.player} puts ${cards} into play ${statusOfIntern(context)}`,
+                gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
+            })
+            .chatText('search their dynasty deck for a character to put into play')
+            .then()
+            .cardLastingEffect((context) => {
+                const target = context.deckSearchSelected[0] ?? [];
+                return {
+                    target: target,
+                    duration: Duration.UntilEndOfPhase,
+                    effect: delayedEffect({
+                        when: {
+                            onConflictFinished: () => true
+                        },
+                        message: () => msg`${target} is discarded from play due to ${context.source}'s effect`,
+                        gameAction: discardFromPlay()
+                    })
+                };
+            });
     }
 }

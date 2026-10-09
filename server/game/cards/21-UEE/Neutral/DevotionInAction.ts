@@ -1,5 +1,5 @@
 import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DevotionInAction extends DrawCard {
@@ -14,7 +14,7 @@ export default class DevotionInAction extends DrawCard {
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3
-            }, AbilityDsl.actions.putIntoConflict((context) => ({
+            }, putIntoConflict((context) => ({
                 status: context.target.hasTrait('yojimbo') ? 'honored' : 'ordinary'
             })));
     }

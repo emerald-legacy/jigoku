@@ -1,6 +1,7 @@
 import { TokenType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { addToken } from '../../GameActions/GameActions.js';
 
 export default class FortifiedAssembly extends ProvinceCard {
     static id = 'fortified-assembly';
@@ -10,10 +11,10 @@ export default class FortifiedAssembly extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(AbilityDsl.actions.addToken())
-            .effect('put an honor token on {0}', (context) => context.source);
+            .gameAction(addToken())
+            .chatText('put an honor token on {0}');
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor) * 2)
+            effect: modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor) * 2)
         });
     }
 

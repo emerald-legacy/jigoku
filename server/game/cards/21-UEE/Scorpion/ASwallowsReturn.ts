@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { Location, PlayType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { cardMenu, discardCard, playCard, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CARD_COUNT = 3;
@@ -9,13 +11,13 @@ export default class ASwallowsReturn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
-            .cost(AbilityDsl.costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
+            .cost(costs.revealCardsOf((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
             .condition((context) =>
                 context.game.currentConflict !== null &&
         context.player.opponent !== undefined &&
         context.player.opponent.conflictDeck.length >= CARD_COUNT)
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardMenu((context) => ({
+            .gameAction(sequential([
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to play',
                     cards: context.costs.reveal ?? [],
                     cardCondition: (card) =>
@@ -26,23 +28,22 @@ export default class ASwallowsReturn extends DrawCard {
                         {
                             text: 'Play nothing',
                             handler: () => {
-                                this.game.addMessage('{0} takes nothing', context.player);
+                                this.game.addMessage(msg`${context.player} takes nothing`);
                                 return true;
                             }
                         }
                     ],
-                    gameAction: AbilityDsl.actions.playCard({
+                    gameAction: playCard({
                         playType: PlayType.PlayFromHand,
                         source: context.source
                     }),
-                    message: '{0} chooses to play {1} and discard {2}',
-                    messageArgs: (card, player) => [player, card.name, context.costs.reveal?.filter((c) => c !== card)]
+                    message: (context, card, player) => msg`${player} chooses to play ${card.name} and discard ${context.costs.reveal?.filter((c) => c !== card)}`
                 })),
-                AbilityDsl.actions.discardCard((context) => ({
+                discardCard((context) => ({
                     target: (context.costs.reveal ?? []).filter((card) => card.location === Location.ConflictDeck)
                 }))
             ]))
-            .effect('choose one of those to play')
+            .chatText('choose one of those to play')
             .cannotBeMirrored();
     }
 }

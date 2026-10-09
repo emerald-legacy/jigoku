@@ -1,7 +1,15 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { additionalConflict, cannotBeDeclaredAsAttacker, mustBeDeclaredAsAttacker } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    initiateConflict,
+    playerLastingEffect,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
+import { msg } from '../../../GameChat.js';
 
 function brokenProvinceCountForPlayer(player: Player): number {
     return player.getProvinceCards().reduce((sum, province) => (province.isBroken ? sum + 1 : sum), 0);
@@ -32,31 +40,31 @@ export default class Retribution extends DrawCard {
                         (ring) =>
                             ring.canDeclare(context.player) && card.canDeclareAsAttacker(ConflictType.Military, ring)
                     )
-            }, AbilityDsl.actions.sequentialContext((context) => ({
+            }, sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.mustBeDeclaredAsAttacker(),
+                    cardLastingEffect({
+                        effect: mustBeDeclaredAsAttacker(),
                         target: context.target
                     }),
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker(),
+                    cardLastingEffect({
+                        effect: cannotBeDeclaredAsAttacker(),
                         target: context.player.cardsInPlay.filter(
                             (card) => card.getType() === CardType.Character && card !== context.target
                         )
                     }),
-                    AbilityDsl.actions.playerLastingEffect({
+                    playerLastingEffect({
                         targetController: context.player,
                         duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.additionalConflict(ConflictType.Military)
+                        effect: additionalConflict(ConflictType.Military)
                     }),
-                    AbilityDsl.actions.initiateConflict({
+                    initiateConflict({
                         target: context.player,
                         canPass: false,
                         forcedDeclaredType: ConflictType.Military
                     })
                 ]
             })))
-            .effect('declare a military conflict, attacking with {1}', (context) => [context.target])
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText((context) => msg`declare a military conflict, attacking with ${context.target}`)
+            .max(perRound(1));
     }
 }

@@ -1,5 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Duration } from '../../Constants.js';
 
 class StudentOfAnatomies extends DrawCard {
@@ -7,16 +10,16 @@ class StudentOfAnatomies extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice a character to blank an enemy')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Character
             }))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.cardLastingEffect({
+            }, cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.blank()
+                effect: blank()
             }))
-            .effect('treat {1} as if its printed text box were blank until the end of the phase', (context) => context.target);
+            .chatText((context) => msg`treat ${context.target} as if its printed text box were blank until the end of the phase`);
     }
 }
 

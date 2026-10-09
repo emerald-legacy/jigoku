@@ -1,14 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerCannot } from '../../effects.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class ChukanNobue extends DrawCard {
     static id = 'chukan-nobue';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'discard',
-                restricts: 'opponentsTriggeredAbilities'
+            effect: playerCannot({
+                cannot: RestrictionType.Discard,
+                appliesTo: RestrictionScope.OpponentsTriggeredAbilities
             })
         });
     }

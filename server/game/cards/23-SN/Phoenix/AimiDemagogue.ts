@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect, multipleContext } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -11,23 +13,23 @@ export default class AimiDemagogue extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.multipleContext((context) => {
+                cardCondition: (card) => card.isParticipating()
+            }, multipleContext((context) => {
                 const gameActions: GameAction[] = [];
 
-                gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.addKeyword('pride'),
+                gameActions.push(cardLastingEffect({
+                    effect: addKeyword('pride'),
                     target: context.target
                 }));
 
                 if(context.target.controller !== context.player) {
-                    gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.addKeyword('pride'),
+                    gameActions.push(cardLastingEffect({
+                        effect: addKeyword('pride'),
                         target: context.source
                     }));
                 }
                 return { gameActions };
             }))
-            .effect('give {1}{0} pride until the end of the conflict', (context) => [context.target.controller !== context.player ? 'itself and ' : '']);
+            .chatText((context) => msg`give ${context.target.controller !== context.player ? 'itself and ' : ''}${context.chatTarget()} pride until the end of the conflict`);
     }
 }

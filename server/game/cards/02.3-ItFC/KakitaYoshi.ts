@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -7,16 +8,17 @@ class KakitaYoshi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Draw 3 cards')
-            .cost(AbilityDsl.costs.discardImperialFavor())
-            .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.draw({ amount: 3 }), AbilityDsl.actions.playerLastingEffect((context) => ({
+            .cost(costs.discardImperialFavor())
+            .condition((context) => context.source.isParticipating())
+            .draw(3)
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceCost({
+                effect: reduceCost({
                     amount: 2,
                     match: (card) => card.type === CardType.Event
                 })
-            })))
-            .effect('draw 3 cards, and reduce the cost of events this conflict');
+            }))
+            .chatText('draw 3 cards, and reduce the cost of events this conflict');
     }
 }
 

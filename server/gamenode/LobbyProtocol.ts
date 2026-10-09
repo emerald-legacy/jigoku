@@ -8,15 +8,6 @@ export const PROTOCOL_VERSION = 1;
 
 // ----- Shared DTOs (wire shapes — both repos must mirror) -----
 
-export interface LobbyUser {
-    username: string;
-    id?: string;
-    emailHash?: string;
-    settings?: unknown;
-    blockList?: string[];
-    [key: string]: unknown;
-}
-
 // Minimal user identity carried on the wire — name + gravatar hash, nothing sensitive.
 export interface UserIdentity {
     username: string;
@@ -230,7 +221,6 @@ export const InboundMessageSchema = z.discriminatedUnion('command', [
     })
 ]);
 export type InboundMessage = z.infer<typeof InboundMessageSchema>;
-export type InboundCommand = InboundMessage['command'];
 
 // ----- Outbound (game node → lobby) -----
 
@@ -279,5 +269,3 @@ export type OutboundMessage =
     | { command: 'GAMECLOSED'; arg: GameClosedPayload }
     | { command: 'GAMEWIN'; arg: GameWinPayload }
     | { command: 'PLAYERLEFT'; arg: PlayerLeftPayload };
-
-export type OutboundCommand = OutboundMessage['command'];

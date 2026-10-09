@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, Duration, FavorType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyDuelSkill } from '../../../effects.js';
+import { bow, claimImperialFavor, duelLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SeppunRyo extends DrawCard {
@@ -9,24 +11,23 @@ export default class SeppunRyo extends DrawCard {
         this.duelFocus('Help a character with a duel', (duel, context) =>
             context.player.imperialFavor !== '' && duel.participants.includes(context.source)
         )
-            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
+            .gameAction(duelLastingEffect((context) => ({
                 target: context.event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
+                effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add 1 to their duel total');
+            .chatText('add 1 to their duel total');
 
-        this.action('Initiate a military duel to bow')
+        this.conflictAction('Initiate a military duel to bow')
             .initiateDuel((context) => {
                 const opponentFavor = context.player.opponent?.imperialFavor;
                 return {
                     type: DuelType.Military,
                     refuseGameAction: opponentFavor !== ''
-                        ? AbilityDsl.actions.claimImperialFavor({ target: context.player, side: this.getFavorSide(opponentFavor) })
+                        ? claimImperialFavor({ target: context.player, side: this.getFavorSide(opponentFavor) })
                         : undefined,
-                    refusalMessage: '{0} chooses to refuse the duel and give the imperial favor to {1}',
-                    refusalMessageArgs: (context) => [context.player.opponent, context.player],
-                    gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser })
+                    refusalMessage: (context, refuser) => msg`${refuser} chooses to refuse the duel and give the imperial favor to ${context.player}`,
+                    gameAction: (duel) => bow({ target: duel.loser })
                 };
             });
     }

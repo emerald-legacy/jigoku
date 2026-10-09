@@ -1,4 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { gainAllAbilities, reduceCost } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { Location, Players } from '../../../Constants.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -11,7 +14,7 @@ export default class SpiritOfValor extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (_, player) => controlsShugenja(player) ? 1 : 0,
                 match: (card, source) => card === source
             })
@@ -19,16 +22,16 @@ export default class SpiritOfValor extends DrawCard {
 
         this.action('Gain abilities from a character in your discard pile')
             .cost(captureParentCost())
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .target({
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
                 cardCondition: (card) => card.isFaction('lion')
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: capturedParent(context) ?? [],
-                effect: context.target ? AbilityDsl.effects.gainAllAbilities(context.target) : []
+                effect: context.target ? gainAllAbilities(context.target) : []
             })))
-            .effect('copy {0}\'s abilities onto {1}', (context) => [capturedParent(context)]);
+            .chatText((context) => msg`copy ${context.chatTarget()}'s abilities onto ${capturedParent(context)}`);
     }
 }

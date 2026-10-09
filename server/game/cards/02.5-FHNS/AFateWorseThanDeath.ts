@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { blank } from '../../effects.js';
+import { bow, cardLastingEffect, dishonor, removeFate, sendHome } from '../../GameActions/GameActions.js';
 
 class AFateWorseThanDeath extends DrawCard {
     static id = 'a-fate-worse-than-death';
@@ -9,12 +10,12 @@ class AFateWorseThanDeath extends DrawCard {
         this.action('Bow, move home, dishonor, remove a fate and blank a character')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor(), AbilityDsl.actions.removeFate(), AbilityDsl.actions.sendHome(), AbilityDsl.actions.cardLastingEffect({
+                cardCondition: (card) => card.isParticipating()
+            }, bow(), dishonor(), removeFate(), sendHome(), cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.blank()
+                effect: blank()
             }))
-            .effect('bow, dishonor, blank, move home, and remove a fate from {0}');
+            .chatText('bow, dishonor, blank, move home, and remove a fate from {0}');
     }
 }
 

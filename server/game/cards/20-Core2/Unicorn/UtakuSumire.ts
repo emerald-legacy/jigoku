@@ -1,5 +1,7 @@
-import { CardType, PlayType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, PlayType, Players, TargetMode, RestrictionScope } from '../../../Constants.js';
+import { delayedEffect, playerCannot } from '../../../effects.js';
+import { multiple, placeFate, playerLastingEffect, selectCards } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class UtakuSumire extends DrawCard {
@@ -10,36 +12,32 @@ export default class UtakuSumire extends DrawCard {
             .when({
                 onConflictStarted: (_, context) => context.source.isAttacking()
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.playerLastingEffect({
+            .gameAction(multiple([
+                playerLastingEffect({
                     targetController: Players.Self,
-                    effect: AbilityDsl.effects.playerCannot({
+                    effect: playerCannot({
                         cannot: PlayType.PlayFromHand,
-                        restricts: 'actionEvents'
+                        appliesTo: RestrictionScope.ActionEvents
                     })
                 }),
-                AbilityDsl.actions.playerLastingEffect({
+                playerLastingEffect({
                     targetController: Players.Self,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             afterConflict: (event, context) => event.conflict.winner === context.player
                         },
-                        gameAction: AbilityDsl.actions.selectCards({
+                        gameAction: selectCards({
                             cardType: CardType.Character,
                             controller: Players.Self,
                             player: Players.Self,
                             mode: TargetMode.UpTo,
                             numCards: 2,
-                            gameAction: AbilityDsl.actions.placeFate(),
-                            message: '{0} encourages her troops and places {1} on {2}',
-                            messageArgs: (cards) => {
-                                const named = cards.map((c) => (c === this ? 'herself' : c));
-                                return [this, 'fate', named];
-                            }
+                            gameAction: placeFate(),
+                            message: (_context, cards) => msg`${this} encourages her troops and places ${'fate'} on ${cards.map((c) => (c === this ? 'herself' : c))}`
                         })
                     })
                 })
             ]))
-            .effect('charge into battle under the devout silence of the Utaku - during this conflict, {1} refuses to play Action events. If they win the conflict, their warriors will have their confidence renewed', (context) => [context.player]);
+            .chatText((context) => msg`charge into battle under the devout silence of the Utaku - during this conflict, ${context.player} refuses to play Action events. If they win the conflict, their warriors will have their confidence renewed`);
     }
 }

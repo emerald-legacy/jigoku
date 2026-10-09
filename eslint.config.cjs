@@ -3,7 +3,6 @@ const jasmine = require('eslint-plugin-jasmine');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsparser = require('@typescript-eslint/parser');
 const globals = require('globals');
-const declaredTargetNames = require('./eslint/declared-target-names.cjs');
 
 module.exports = [
     {
@@ -80,8 +79,7 @@ module.exports = [
         files: ['server/**/*.ts'],
         plugins: {
             '@typescript-eslint': tseslint,
-            jasmine,
-            local: { rules: { 'declared-target-names': declaredTargetNames } }
+            jasmine
         },
         languageOptions: {
             ecmaVersion: 2024,
@@ -116,7 +114,6 @@ module.exports = [
             '@typescript-eslint/no-unused-expressions': 'error',
             '@typescript-eslint/no-this-alias': 'error',
             '@typescript-eslint/no-useless-constructor': 'error',
-            'local/declared-target-names': 'error',
             'no-redeclare': 'off',
 
             // Jasmine rules
@@ -127,7 +124,8 @@ module.exports = [
             'jasmine/prefer-toHaveBeenCalledWith': 'off',
 
             // Code style rules
-            'indent': ['error', 4, { SwitchCase: 1 }],
+            // builder chains indent their if() / otherwise() branches one level deeper
+            'indent': ['error', 4, { SwitchCase: 1, ignoredNodes: ['MemberExpression:has(CallExpression[callee.property.name="if"])'] }],
             'quotes': ['error', 'single'],
             'brace-style': ['error', '1tbs'],
             'no-sparse-arrays': 'error',
@@ -157,7 +155,20 @@ module.exports = [
                     catch: { after: false }
                 }
             }],
-            'no-trailing-spaces': 'error'
+            'no-trailing-spaces': 'error',
+            'arrow-parens': ['error', 'always']
+        }
+    },
+    // Card files: game actions and effects come from named imports
+    {
+        files: ['server/game/cards/**/*.ts'],
+        rules: {
+            'no-restricted-syntax': ['error',
+                {
+                    selector: 'MemberExpression[property.name=\'actions\'][object.type=\'MemberExpression\'][object.property.name=\'game\']',
+                    message: 'Import game actions from GameActions/GameActions.js.'
+                }
+            ]
         }
     },
     // TypeScript test files (without type checking project)

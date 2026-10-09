@@ -1,10 +1,10 @@
 import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
-import BaseAbility from './BaseAbility.js';
+import { BaseAbility } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
-import type CardAbility from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 import type DrawCard from './DrawCard.js';
 import { Location, PlayType, Stage } from './Constants.js';
-import EffectSource from './EffectSource.js';
+import { EffectSource } from './EffectSource.js';
 import type { ElementSymbol } from './ElementSymbol.js';
 import type { Event } from './Events/Event.js';
 import type Game from './Game.js';
@@ -22,10 +22,10 @@ export interface AbilityContextProperties {
     targets?: Record<string, BaseCard | BaseCard[]>;
     rings?: Record<string, Ring | Ring[]>;
     selects?: Record<string, SelectChoice>;
-    tokens?: Record<string, StatusToken | StatusToken[]>;
+    tokens?: Record<string, StatusToken[]>;
     elements?: Record<string, ElementSymbol>;
     stage?: Stage;
-    targetAbility?: CardAbility | null;
+    targetAbility?: CardAbility;
 }
 
 /**
@@ -38,8 +38,9 @@ export interface AbilityContextProperties {
  * and must not be a multi-card mode; either leaves `target` unset. Today no card
  * combines either with a `context.target` read from a property factory.
  *
- * Annotate a property factory with this ONLY from inside such an ability:
- *   target: { cardType: ..., gameAction: AbilityDsl.actions.x(
+ * Builder abilities type their targets themselves. Annotate a property factory with this
+ * ONLY from inside such an ability in object form (a gained ability):
+ *   target: { cardType: ..., gameAction: injure(
  *       (context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ ... })) }
  */
 export type ResolvedAbilityContext<S extends EffectSource = BaseCard, T extends BaseCard = BaseCard> =
@@ -57,18 +58,20 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     targets: Record<string, BaseCard | BaseCard[]>;
     rings: Record<string, Ring | Ring[]>;
     selects: Record<string, SelectChoice>;
-    tokens: Record<string, StatusToken | StatusToken[]>;
+    tokens: Record<string, StatusToken[]>;
     elements: Record<string, ElementSymbol>;
     deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
+    /** In a `then` step that inherits targets: the events of the step before. */
+    previousEvents: Event[] = [];
     stage: Stage;
-    targetAbility: CardAbility | null = null;
+    targetAbility: CardAbility | undefined;
     /** Set by `AbilityTargetCard` when one card is chosen for a target named `'target'`; several cards stay in `targets.target`. */
     target: T | undefined;
-    select: string = '';
+    select: string | undefined;
     ring: Ring | undefined;
-    token: StatusToken | StatusToken[] | undefined;
-    element: ElementSymbol | null = null;
+    token: StatusToken[] | undefined;
+    element: ElementSymbol | undefined;
     elementCard: BaseCard | undefined;
     provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;
@@ -92,6 +95,11 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         const chosen = this.targets.target;
         return Array.isArray(chosen) ? chosen : this.target;
     }
+
+    /** What a chat text string's `{0}` names: the target, else the ring, else the source. */
+    chatTarget(): T | BaseCard[] | Ring | S {
+        return this.messageTarget() || this.ring || this.source;
+    }
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
         // a framework context's source is a plain EffectSource and its player may be missing
@@ -107,7 +115,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         this.tokens = properties.tokens || {};
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stage.Effect;
-        this.targetAbility = properties.targetAbility ?? null;
+        this.targetAbility = properties.targetAbility;
         const source: EffectSource = this.source;
         this.playType = this.player && source.isCard() ? this.player.findPlayType(source) : undefined;
     }
@@ -135,6 +143,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         copy.choosingPlayerOverride = this.choosingPlayerOverride;
         copy.gameActionsResolutionChain = this.gameActionsResolutionChain;
         copy.playType = this.playType;
+        copy.previousEvents = this.previousEvents;
         return copy;
     }
 

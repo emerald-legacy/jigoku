@@ -1,36 +1,39 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, Phase, PlayType } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
+import { msg } from '../../../GameChat.js';
+import { randomItem } from '../../../utils/random.js';
 
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
 
     public setupCardAbilities() {
         this.whileAttached({
-            effect: [AbilityDsl.effects.cannotParticipateAsAttacker(), AbilityDsl.effects.cannotParticipateAsDefender()]
+            effect: [cannotParticipateAsAttacker(), cannotParticipateAsDefender()]
         });
 
         this.persistentEffect({
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
         this.action('Gain honor')
             .cost(captureParentCost())
-            .cost(AbilityDsl.costs.removeSelfFromGame())
+            .cost(costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
-            .gameAction(AbilityDsl.actions.gainHonor((context) => ({
-                amount: capturedParent(context)?.getGlory() ?? 0
-            })))
-            .effect('gain {1} honor', (context) => [capturedParent(context)?.getGlory() ?? 0])
-            .then((context) => {
+            .gainHonor((context) => ({
+                amount: capturedParent(context)?.glory ?? 0
+            }))
+            .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`)
+            .onResolve((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
                 context.game.addMessage('>>>> Matsuo Bashō <<<<');
             })
-            .phase(Phases.Fate);
+            .phase(Phase.Fate);
     }
 
     public canAttach(card: BaseCard): boolean {
@@ -42,8 +45,8 @@ export default class DevelopingMasterpiece extends DrawCard {
         );
     }
 
-    public canPlay(context: AbilityContext, playType: string): boolean {
-        return context.game.currentPhase === Phases.Draw && super.canPlay(context, playType);
+    public canPlay(context: AbilityContext, playType?: PlayType): boolean {
+        return context.game.currentPhase === Phase.Draw && super.canPlay(context, playType);
     }
 }
 
@@ -77,5 +80,5 @@ const haikus = [
     ['The summer grasses—', 'Of the brave soldiers\' dreams', 'The aftermath.']
 ];
 function randomHaiku(): string[] {
-    return haikus[Math.floor(haikus.length * Math.random())];
+    return randomItem(haikus) ?? [];
 }

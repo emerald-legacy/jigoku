@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AbilityType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
@@ -7,12 +8,8 @@ export default class Pilgrimage extends ProvinceCard {
     static id = 'pilgrimage';
 
     public setupCardAbilities() {
-        const eventRegistrar = new EventRegistrar(this.game, this);
-        eventRegistrar.register([
-            {
-                [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
-            }
-        ]);
+        const eventRegistrar = new EventRegistrar(this.game);
+        eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
     }
 
     public cancelRingEffect(event: GameEvent<EventName.OnResolveRingElement>) {
@@ -24,7 +21,7 @@ export default class Pilgrimage extends ProvinceCard {
             !event.cancelled
         ) {
             event.cancel();
-            this.game.addMessage('{0} cancels the ring effect', this);
+            this.game.addMessage(msg`${this} cancels the ring effect`);
         }
     }
 }

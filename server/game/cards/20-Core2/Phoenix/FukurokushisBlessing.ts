@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -10,8 +11,8 @@ export default class FukurokushisBlessing extends DrawCard {
             .when({
                 onInitiateAbilityEffects: ({ card }) => card instanceof ProvinceCard
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', (context) => context.event.card)
-            .max(AbilityDsl.limit.perRound(1));
+            .cancel()
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`)
+            .max(perRound(1));
     }
 }

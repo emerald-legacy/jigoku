@@ -1,5 +1,7 @@
-import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { cardCannot, modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { DuelsThisConflict } from '../DuelsThisConflict.js';
 
@@ -8,22 +10,21 @@ export default class MagnificentTriumph extends DrawCard {
 
     public setupCardAbilities() {
         const duelWinners = DuelsThisConflict.winners(this.game);
-        this.action('Give a character +2/+2')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Give a character +2/+2')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => duelWinners.has(card)
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.modifyBothSkills(2),
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'target',
-                        restricts: 'opponentsEvents',
+                    modifyBothSkills(2),
+                    cardCannot({
+                        cannot: RestrictionType.Target,
+                        appliesTo: RestrictionScope.OpponentsEvents,
                         applyingPlayer: context.player
                     })
                 ]
             })))
-            .effect('give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent\'s events', () => ['military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}, +2${'political'}, and prevent them from being targeted by opponent's events`);
     }
 }

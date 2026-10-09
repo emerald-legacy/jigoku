@@ -1,5 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { cardCannot, mustBeDeclaredAsAttacker } from '../../../effects.js';
+import { cardLastingEffect, initiateConflict, ready, sequentialContext } from '../../../GameActions/GameActions.js';
+import { CardType, Location, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ScoutsSteed extends DrawCard {
@@ -17,20 +19,20 @@ export default class ScoutsSteed extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player
             })
-            .gameAction(AbilityDsl.actions.sequentialContext(
+            .gameAction(sequentialContext(
                 ({ player, target: province, source: { parentCharacter: character } }) => ({
                     gameActions: [
-                        AbilityDsl.actions.ready({ target: character ?? [] }),
-                        AbilityDsl.actions.cardLastingEffect({
+                        ready({ target: character ?? [] }),
+                        cardLastingEffect({
                             target: character ?? [],
-                            effect: AbilityDsl.effects.mustBeDeclaredAsAttacker()
+                            effect: mustBeDeclaredAsAttacker()
                         }),
-                        AbilityDsl.actions.cardLastingEffect({
+                        cardLastingEffect({
                             target: province,
                             targetLocation: Location.Provinces,
-                            effect: AbilityDsl.effects.cardCannot('break')
+                            effect: cardCannot(RestrictionType.Break)
                         }),
-                        AbilityDsl.actions.initiateConflict({
+                        initiateConflict({
                             target: player,
                             forceProvinceTarget: province,
                             canPass: false
@@ -38,12 +40,9 @@ export default class ScoutsSteed extends DrawCard {
                     ]
                 })
             ))
-            .effect('ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now', (context) => {
+            .chatText((context) => {
                 const target = context.target;
-                return [
-                    context.source.parentCharacter,
-                    target.isFacedown() ? target.location : target
-                ];
+                return msg`ready ${context.source.parentCharacter} and send them on a journey! ${target.isFacedown() ? target.location : target} cannot be broken during this conflict - it's just exploration for now`;
             });
     }
 }

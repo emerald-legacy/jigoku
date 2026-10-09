@@ -1,79 +1,37 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type { Cost } from '../../../costs/Cost.js';
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, type PlayType } from '../../../Constants.js';
+import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
+import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
-
-function resourcesAvailable(context: AbilityContext) {
-    return {
-        honorAvailable: context.game.actions.loseHonor().canAffect(context.player, context),
-        fateAvailable: context.game.actions.loseFate().canAffect(context.player, context)
-    };
-}
-
-function eyesOfTheSerpentCost(): Cost<{ serpentCostPaid: 'honor' | 'fate' }> {
-    return {
-        getCostMessage(context) {
-            return ['paying 1 {1}', context.costs.serpentCostPaid];
-        },
-        getActionName(_context) {
-            return 'eyesOfTheSerpentCost';
-        },
-        canPay(context) {
-            const { honorAvailable, fateAvailable } = resourcesAvailable(context);
-            return honorAvailable || fateAvailable;
-        },
-        resolve(context) {
-            const { honorAvailable, fateAvailable } = resourcesAvailable(context);
-            if(honorAvailable && fateAvailable) {
-                context.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Spend 1 honor or 1 fate?',
-                    source: context.source,
-                    options: [
-                        { text: 'Spend 1 honor', handler: () => context.costs.serpentCostPaid = 'honor' },
-                        { text: 'Spend 1 fate', handler: () => context.costs.serpentCostPaid = 'fate' }
-                    ]
-                });
-            } else if(honorAvailable) {
-                context.costs.serpentCostPaid = 'honor';
-            } else if(fateAvailable) {
-                context.costs.serpentCostPaid = 'fate';
-            }
-        },
-        payEvent(context) {
-            const action = context.costs.serpentCostPaid === 'honor'
-                ? context.game.actions.loseHonor()
-                : context.game.actions.loseFate();
-            return [action.getEvent(context.player, context)];
-        },
-        promptsPlayer: true
-    };
-}
+import { msg } from '../../../GameChat.js';
 
 export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
     setupCardAbilities() {
         this.action('Taint a character')
-            .cost(eyesOfTheSerpentCost())
+            .cost(costs.chooseOne({
+                'Spend 1 honor': costs.payHonor(1),
+                'Spend 1 fate': costs.payFate(1)
+            }))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.taint(),
-                AbilityDsl.actions.onAffinity({
+            }, multiple([
+                taint(),
+                onAffinity({
                     trait: 'air',
-                    gameAction: AbilityDsl.actions.gainHonor(context => ({
+                    gameAction: gainHonor((context) => ({
                         target: context.player
                     })),
-                    effect: 'gain 1 honor'
+                    chatText: 'gain 1 honor'
                 })
             ]))
-            .effect('taint {1}', (context) => [context.target]);
+            .chatText((context) => msg`taint ${context.target}`);
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

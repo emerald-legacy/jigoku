@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, PlayType } from '../../Constants.js';
 
@@ -7,12 +7,12 @@ class TogashiMitsu extends DrawCard {
 
     setupCardAbilities() {
         this.action('Play a monk, kiho or tattoo card from discard')
-            .condition(context => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
             .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('monk') || card.hasTrait('kiho') || card.hasTrait('tattoo')
-            }, AbilityDsl.actions.playCard({
+                cardCondition: (card) => card.hasTrait('monk') || card.hasTrait('kiho') || card.hasTrait('tattoo')
+            }, playCard({
                 source: this,
                 playType: PlayType.PlayFromHand,
                 destination: Location.ConflictDeck,

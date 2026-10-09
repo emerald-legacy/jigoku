@@ -1,7 +1,7 @@
 import type BaseCard from '../BaseCard.js';
-import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
-class UpToXCardSelector extends BaseCardSelector {
+export class UpToXCardSelector extends BaseCardSelector {
     numCards: number;
 
     constructor(numCards: number, properties: BaseCardSelectorProperties) {
@@ -22,4 +22,3 @@ class UpToXCardSelector extends BaseCardSelector {
     }
 }
 
-export default UpToXCardSelector;

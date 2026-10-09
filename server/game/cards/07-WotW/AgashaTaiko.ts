@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Duration, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeAttacked } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class AgashaTaiko extends DrawCard {
     static id = 'agasha-taiko';
@@ -13,17 +15,13 @@ class AgashaTaiko extends DrawCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.cardLastingEffect({
+                cardCondition: (card) => card.location !== Location.StrongholdProvince
+            }, cardLastingEffect({
                 targetLocation: Location.Provinces,
                 duration: Duration.UntilEndOfRound,
-                effect: AbilityDsl.effects.cannotBeAttacked()
+                effect: cannotBeAttacked()
             }))
-            .effect('prevent {1}\'s {2} in {3} from being attacked this round', context => [
-                context.target.controller,
-                context.target.isFacedown() ? 'hidden province' : context.target,
-                context.target.location
-            ]);
+            .chatText((context) => msg`prevent ${context.target.controller}'s ${context.target.isFacedown() ? 'hidden province' : context.target} in ${context.target.location} from being attacked this round`);
     }
 }
 

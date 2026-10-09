@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBid } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class BayushiManipulator extends DrawCard {
@@ -7,7 +7,7 @@ export default class BayushiManipulator extends DrawCard {
     public setupCardAbilities() {
         this.reaction('Increase bid by 1')
             .when({ onHonorDialsRevealed: (event) => event.isHonorBid })
-            .gameAction(AbilityDsl.actions.modifyBid())
-            .effect('increase their bid by 1');
+            .gameAction(modifyBid())
+            .chatText('increase their bid by 1');
     }
 }

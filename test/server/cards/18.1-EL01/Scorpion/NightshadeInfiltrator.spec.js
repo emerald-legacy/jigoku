@@ -24,8 +24,8 @@ describe('Nightshade Infiltrator', function() {
         });
 
         it('should dishonor to choose a participating character and give them -3/-3', function() {
-            const mil = this.kuwanan.getMilitarySkill();
-            const pol = this.kuwanan.getPoliticalSkill();
+            const mil = this.kuwanan.militarySkill;
+            const pol = this.kuwanan.politicalSkill;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -38,8 +38,8 @@ describe('Nightshade Infiltrator', function() {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             expect(this.player2).not.toBeAbleToSelect(this.rider);
             this.player2.clickCard(this.kuwanan);
-            expect(this.kuwanan.getMilitarySkill()).toBe(mil - 3);
-            expect(this.kuwanan.getPoliticalSkill()).toBe(pol - 3);
+            expect(this.kuwanan.militarySkill).toBe(mil - 3);
+            expect(this.kuwanan.politicalSkill).toBe(pol - 3);
             expect(this.nightshade.isDishonored).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player2 uses Nightshade Infiltrator, dishonoring Nightshade Infiltrator to give Doji Kuwanan -3military/-3political');

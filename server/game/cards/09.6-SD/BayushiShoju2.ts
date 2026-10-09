@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, Players, RestrictionType } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { draw, loseHonor, multiple } from '../../GameActions/GameActions.js';
 
 class BayushiShoju2 extends DrawCard {
     static id = 'bayushi-shoju-2';
@@ -8,23 +9,23 @@ class BayushiShoju2 extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot('haveImperialFavor')
+            effect: playerCannot(RestrictionType.HaveImperialFavor)
         });
 
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor(context => ({
+            .gameAction(multiple([
+                loseHonor((context) => ({
                     target: context.game.getPlayers()
                 })),
-                AbilityDsl.actions.draw(context => ({
+                draw((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 }))
             ]))
-            .effect('have each player lose an honor and draw two cards');
+            .chatText('have each player lose an honor and draw two cards');
     }
 }
 

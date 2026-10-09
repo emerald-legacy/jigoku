@@ -1,11 +1,12 @@
-import CardAbility from '../../../server/game/CardAbility.js';
-import AbilityDsl from '../../../server/game/abilitydsl.js';
+import { CardAbility } from '../../../server/game/CardAbility.js';
+import { discardFromPlay, takeHonor } from '../../../server/game/GameActions/GameActions.js';
+import * as costs from '../../../server/game/costs/index.js';
 import { AbilityContext } from '../../../server/game/AbilityContext.js';
 import { TriggeredAbilityContext } from '../../../server/game/TriggeredAbilityContext.js';
 import DrawCard from '../../../server/game/DrawCard.js';
 import { StrongholdCard } from '../../../server/game/StrongholdCard.js';
 import { Event } from '../../../server/game/Events/Event.js';
-import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
+import { TriggeredAbility } from '../../../server/game/TriggeredAbility.js';
 import { AbilityType, CardType, EventName } from '../../../server/game/Constants.js';
 import type Game from '../../../server/game/Game.js';
 import type Player from '../../../server/game/Player.js';
@@ -45,10 +46,10 @@ describe('CardAbility displayMessage', function () {
         beforeEach(function () {
             source = new DrawCard(player, { id: 'assassination', name: 'Assassination', type: CardType.Event });
             target = createTestCharacter(game, 'Target');
-            const discard = AbilityDsl.actions.discardFromPlay();
+            const discard = discardFromPlay();
             spyOn(discard, 'canAffect').and.returnValue(true);
             const ability = new CardAbility(source, {
-                cost: AbilityDsl.costs.payHonor(3),
+                cost: costs.payHonor(3),
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card: DrawCard) => (card.getCost() ?? 0) <= 2,
@@ -119,9 +120,9 @@ describe('CardAbility displayMessage', function () {
             eventToCancel = new DrawCard(testPlayer(game, 'player2'), { id: 'event-to-cancel', name: 'Event To Cancel', type: CardType.Event });
             const ability = new TriggeredAbility(source, AbilityType.WouldInterrupt, {
                 when: { onCardAbilityInitiated: () => true },
-                cost: AbilityDsl.costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
-                effect: 'cancel {1}',
-                effectArgs: (context) => context.event.card
+                cost: costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
+                chatText: 'cancel {1}',
+                chatTextArgs: (context) => context.event.card
             });
             const context = new TriggeredAbilityContext({
                 game,
@@ -186,8 +187,8 @@ describe('CardAbility displayMessage', function () {
             opponent.opponent = player;
             source = new StrongholdCard(player, { id: 'city-of-the-open-hand', name: 'City of the Open Hand', type: CardType.Stronghold });
             const ability = new CardAbility(source, {
-                cost: AbilityDsl.costs.bowSelf(),
-                gameAction: AbilityDsl.actions.takeHonor()
+                cost: costs.bowSelf(),
+                gameAction: takeHonor()
             });
             const context = new AbilityContext({
                 game,

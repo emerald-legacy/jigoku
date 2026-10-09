@@ -1,7 +1,7 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Stage } from '../Constants.js';
+import { CardType, EventName, type RestrictionType, Stage } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameObject } from '../GameObject.js';
@@ -43,7 +43,18 @@ function fillDefaults<T extends object>(properties: Partial<T>, defaults: Partia
     }
 }
 
+/** What a caller adds to an action's properties when it resolves or checks it, such as a composite's target. Never mutated. */
+export type ActionOverrides = Readonly<Record<string, unknown>>;
+
+/** A game action with what its holder passes it: a target's actions get what was chosen for the target. */
+export interface HeldAction {
+    action: GameAction;
+    overrides: ActionOverrides;
+}
+
 const baseDefaults = { cannotBeCancelled: false, optional: false };
+
+const hasTarget = (properties: object | undefined) => !!properties && 'target' in properties;
 
 /** `D` names the properties `defaultProperties` supplies, which `getProperties` returns as non-optional. */
 export class GameAction<
@@ -56,11 +67,12 @@ export class GameAction<
     targetType: string[] = [];
     eventName = EventName.Unnamed;
     name = '';
+    /** What a restriction names to forbid this action; without one, only restrictions that name no type apply. */
+    restriction?: RestrictionType;
     cost = '';
     effect = '';
     isNoAction?: boolean;
     defaultProperties?: Partial<P> & Defaults<P, D>;
-    #defaultTargetsOverride?: (context: AbilityContext) => TargetValue;
     // Method syntax keeps an action for a narrower context assignable to GameAction.
     readonly #own: { resolve(context: C): P };
 
@@ -77,18 +89,32 @@ export class GameAction<
         return [];
     }
 
-    getDefaultTargets(context: C): TargetValue {
-        return this.#defaultTargetsOverride ? this.#defaultTargetsOverride(context) : this.defaultTargets(context);
+    getProperties(context: C, additionalProperties: ActionOverrides = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+        return this.#resolveProperties(context, additionalProperties).properties;
     }
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<P, D | 'cannotBeCancelled' | 'optional'> {
+    /**
+     * A composite's properties and what it passes the actions it holds, from one evaluation: its caller's overrides,
+     * plus its target when it was given one (by its own properties or its caller). Without one, each keeps its own default target.
+     */
+    protected getCompositeProperties(
+        context: C,
+        additionalProperties: ActionOverrides = {}
+    ): { properties: WithDefaults<P, D | 'cannotBeCancelled' | 'optional'>; overrides: ActionOverrides } {
+        const { properties, targetGiven } = this.#resolveProperties(context, additionalProperties);
+        const overrides: ActionOverrides = targetGiven ? { ...additionalProperties, target: properties.target } : additionalProperties;
+        return { properties, overrides };
+    }
+
+    #resolveProperties(context: C, additionalProperties: ActionOverrides) {
         const defaults = this.defaultProperties;
+        const own = this.#own.resolve(context);
         const properties = Object.assign(
-            { target: this.getDefaultTargets(context) },
+            { target: this.defaultTargets(context) },
             baseDefaults,
             defaults,
             additionalProperties,
-            this.#own.resolve(context)
+            own
         );
         fillDefaults<GameActionProperties>(properties, baseDefaults);
         if(defaults) {
@@ -96,7 +122,8 @@ export class GameAction<
         }
         const rawTarget: GameActionTarget | GameActionTarget[] | undefined = properties.target;
         const targets = (Array.isArray(rawTarget) ? rawTarget : [rawTarget]).filter((target) => !!target);
-        return Object.assign(properties, { target: targets });
+        const targetGiven = hasTarget(additionalProperties) || hasTarget(own);
+        return { properties: Object.assign(properties, { target: targets }), targetGiven };
     }
 
     getCostMessage(_context: C): undefined | MessageArgs {
@@ -104,7 +131,7 @@ export class GameAction<
     }
 
     /** The effect message with `effectMessageTarget` as `{0}`, in front of `effectMessage`'s arguments. */
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const [format, args] = this.effectMessage(context, additionalProperties);
         return [format, [this.effectMessageTarget(context, additionalProperties), ...args]];
     }
@@ -115,28 +142,24 @@ export class GameAction<
     }
 
     /** `{0}` of the effect message: `undefined` for a message without one. */
-    protected effectMessageTarget(context: C, additionalProperties = {}): MsgArg {
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return this.getProperties(context, additionalProperties).target;
     }
 
-    setDefaultTarget(func: (context: AbilityContext) => TargetValue): void {
-        this.#defaultTargetsOverride = func;
-    }
-
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         return (
             this.targetType.includes(target.type) &&
             !context.gameActionsResolutionChain.some((action) => action === this) &&
-            ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.name, context))
+            ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.restriction, context))
         );
     }
 
-    #targets(context: C, additionalProperties = {}): GameActionTarget[] {
+    #targets(context: C, additionalProperties: ActionOverrides = {}): GameActionTarget[] {
         return targetList(this.getProperties(context, additionalProperties).target);
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         for(const candidateTarget of this.#targets(context, additionalProperties)) {
             if(this.canAffect(candidateTarget, context, additionalProperties)) {
                 return true;
@@ -145,7 +168,7 @@ export class GameAction<
         return false;
     }
 
-    allTargetsLegal(context: C, additionalProperties = {}): boolean {
+    allTargetsLegal(context: C, additionalProperties: ActionOverrides = {}): boolean {
         for(const candidateTarget of this.#targets(context, additionalProperties)) {
             if(!this.canAffect(candidateTarget, context, additionalProperties)) {
                 return false;
@@ -154,7 +177,7 @@ export class GameAction<
         return true;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         for(const target of this.#targets(context, additionalProperties)) {
             if(this.canAffect(target, context, additionalProperties)) {
                 events.push(this.getEvent(target, context, additionalProperties));
@@ -162,20 +185,20 @@ export class GameAction<
         }
     }
 
-    getEvent(target: TargetValue, context: C, additionalProperties = {}): ActionEvent<N, C> {
+    getEvent(target: TargetValue, context: C, additionalProperties: ActionOverrides = {}): ActionEvent<N, C> {
         const event = this.createEvent(target, context, additionalProperties);
         this.updateEvent(event, target, context, additionalProperties);
         return event;
     }
 
-    updateEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, additionalProperties = {}): void {
+    updateEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, additionalProperties: ActionOverrides = {}): void {
         event.name = this.eventName;
         this.addPropertiesToEvent(event, target, context, additionalProperties);
         event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         event.condition = () => this.checkEventCondition(event, additionalProperties);
     }
 
-    createEvent(target: TargetValue, context: C, additionalProperties: Record<string, unknown> = {}): ActionEvent<N, C> {
+    createEvent(target: TargetValue, context: C, additionalProperties: ActionOverrides = {}): ActionEvent<N, C> {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- filled in by addPropertiesToEvent; checkEventCondition cancels a wrong kind
         const event = new Event(EventName.Unnamed, { cannotBeCancelled, context }) as ActionEvent<N, C>;
@@ -188,15 +211,12 @@ export class GameAction<
         target: undefined | GameActionTarget | GameActionTarget[],
         context: C
     ): void {
-        if(target) {
-            this.setDefaultTarget(() => target);
-        }
         const events: Event[] = [];
-        this.addEventsToArray(events, context);
+        this.addEventsToArray(events, context, target ? { target } : {});
         context.game.queueSimpleStep(() => context.game.openEventWindow(events));
     }
 
-    getEventArray(context: C, additionalProperties = {}): Event[] {
+    getEventArray(context: C, additionalProperties: ActionOverrides = {}): Event[] {
         const events: Event[] = [];
         this.addEventsToArray(events, context, additionalProperties);
         return events;
@@ -217,7 +237,7 @@ export class GameAction<
         return !event.cancelled && event.name === this.eventName;
     }
 
-    isOptional(context: C, additionalProperties = {}): boolean {
+    isOptional(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.getProperties(context, additionalProperties).optional;
     }
 

@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Duration, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect, modifyBaseMilitarySkillMultiplier } from '../../effects.js';
+import { cardLastingEffect, multiple, sacrifice } from '../../GameActions/GameActions.js';
 
 class FuryOfTheDamned extends DrawCard {
     static id = 'fury-of-the-damned';
@@ -12,24 +14,23 @@ class FuryOfTheDamned extends DrawCard {
                 mode: TargetMode.Unlimited,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('bushi') && card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2)
+                cardCondition: (card) => card.hasTrait('bushi') && card.isParticipating()
+            }, multiple([
+                cardLastingEffect({
+                    effect: modifyBaseMilitarySkillMultiplier(2)
                 }),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onConflictFinished: () => true
                         },
-                        message: '{1} {2} sacrificed due to {0}\'s delayed effect',
-                        messageArgs: [context.source, context.targets.target, (Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'],
-                        gameAction: AbilityDsl.actions.sacrifice()
+                        message: () => msg`${context.targets.target} ${(Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'} sacrificed due to ${context.source}'s delayed effect`,
+                        gameAction: sacrifice()
                     })
                 }))
             ]))
-            .effect('double the base {1} skill of {0} and sacrifice them at the end of the conflict', () => (['military']));
+            .chatText((context) => msg`double the base ${'military'} skill of ${context.chatTarget()} and sacrifice them at the end of the conflict`);
     }
 }
 

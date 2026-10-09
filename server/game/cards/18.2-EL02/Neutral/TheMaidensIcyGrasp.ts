@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotContribute } from '../../../effects.js';
+import { cardLastingEffect, onAffinity, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
@@ -16,15 +17,15 @@ export default class TheMaidensIcyGrasp extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => charactersEntered.has(card)
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)]
+            }, sequential([
+                cardLastingEffect((context) => ({
+                    effect: [cannotContribute(() => (card) => card === context.target)]
                 })),
-                AbilityDsl.actions.onAffinity({
+                onAffinity({
                     trait: 'water',
-                    gameAction: AbilityDsl.actions.removeFate((context) => ({ target: context.target }))
+                    gameAction: removeFate((context) => ({ target: context.target }))
                 })
             ]))
-            .effect('prevent {0} from contributing to resolution of this conflict');
+            .chatText('prevent {0} from contributing to resolution of this conflict');
     }
 }

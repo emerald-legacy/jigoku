@@ -1,7 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Players, Phases, Location, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players, Phase, Location, TargetMode } from '../../Constants.js';
+import { conditional, lookAt, moveCard, selectCards, sequential } from '../../GameActions/GameActions.js';
 
 class Reconnaissance extends DrawCard {
     static id = 'reconnaissance';
@@ -9,7 +10,7 @@ class Reconnaissance extends DrawCard {
     setupCardAbilities() {
         this.reaction('Look at provinces')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .targetCards({
                 mode: TargetMode.Exactly,
@@ -18,11 +19,11 @@ class Reconnaissance extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Any
-            }, AbilityDsl.actions.conditional({
-                condition: context => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
-                trueGameAction: AbilityDsl.actions.sequential([
+            }, conditional({
+                condition: (context) => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
+                trueGameAction: sequential([
                     this.getLookAtAction(),
-                    AbilityDsl.actions.selectCards(context => {
+                    selectCards((context) => {
                         let target: BaseCard | BaseCard[] | undefined = context.targets.target;
                         if(!Array.isArray(target)) {
                             target = target ? [target] : [];
@@ -36,48 +37,30 @@ class Reconnaissance extends DrawCard {
                             location: [Location.Provinces],
                             controller: Players.Any,
                             cardCondition: (card) => locations.includes(card.location),
-                            message: '{0} chooses to discard {1}',
-                            messageArgs: (cards) => [context.player, cards],
-                            gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
+                            message: (_context, cards) => msg`${context.player} chooses to discard ${cards}`,
+                            gameAction: moveCard({ destination: Location.DynastyDiscardPile })
                         });
                     })
                 ]),
                 falseGameAction: this.getLookAtAction()
             }))
-            .effect('look at 3 provinces');
+            .chatText('look at 3 provinces');
     }
 
     getLookAtAction() {
-        return AbilityDsl.actions.lookAt(context => ({
-            message: context => {
-                let target: BaseCard | BaseCard[] | undefined = context.targets.target;
-                if(!Array.isArray(target)) {
-                    target = target ? [target] : [];
+        return lookAt({
+            message: (context) => {
+                const target: BaseCard | BaseCard[] | undefined = context.targets.target;
+                const provinces = Array.isArray(target) ? target : target ? [target] : [];
+                const [first, second, third] = provinces;
+                if(provinces.length === 1) {
+                    return msg`${context.source} sees ${first} in ${first.location}`;
+                } else if(provinces.length === 2) {
+                    return msg`${context.source} sees ${first} in ${first.location} and ${second} in ${second.location}`;
                 }
-
-                if(target.length === 1) {
-                    return '{0} sees {1} in {2}';
-                } else if(target.length === 2) {
-                    return '{0} sees {1} in {2} and {3} in {4}';
-                }
-                return '{0} sees {1} in {2}, {3} in {4}, and {5} in {6}';
-
-            },
-            messageArgs: () => {
-                let target: BaseCard | BaseCard[] | undefined = context.targets.target;
-                if(!Array.isArray(target)) {
-                    target = target ? [target] : [];
-                }
-
-                if(target.length === 1) {
-                    return [context.source, target[0], target[0].location];
-                } else if(target.length === 2) {
-                    return [context.source, target[0], target[0].location, target[1], target[1].location];
-                }
-                return [context.source, target[0], target[0].location, target[1], target[1].location, target[2], target[2].location];
-
+                return msg`${context.source} sees ${first} in ${first.location}, ${second} in ${second.location}, and ${third} in ${third.location}`;
             }
-        }));
+        });
     }
 }
 

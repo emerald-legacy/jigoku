@@ -1,0 +1,190 @@
+import { Location, Duration } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type { BaseAbility } from '../BaseAbility.js';
+import type { EffectSource } from '../EffectSource.js';
+import type BaseCard from '../BaseCard.js';
+import type Game from '../Game.js';
+import type { GameObject } from '../GameObject.js';
+import type { EventName } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
+import type { EffectApplier } from './EffectApplier.js';
+import type Player from '../Player.js';
+import type { TargetLocation } from '../Interfaces.js';
+
+// Method syntax on purpose: a match function may take a narrower target type than its effect's targets.
+interface Matcher<T> {
+    match(target: T, context?: AbilityContext): boolean;
+}
+export type EffectMatchFn<T extends GameObject = GameObject> = Matcher<T>['match'];
+export type EffectMatch<T extends GameObject = GameObject> = EffectMatchFn<T> | T;
+
+// Method syntax on purpose: cards narrow the event type.
+interface UntilCallback<N extends EventName> {
+    ends(event: GameEvent<N>): unknown;
+}
+/** Ends a custom-duration effect when one of these events happens and its callback returns true. */
+export type EffectUntil = { [N in EventName]?: UntilCallback<N>['ends'] };
+
+export interface EffectProperties<T extends GameObject = GameObject> {
+    match?: EffectMatch<T>;
+    duration?: Duration;
+    until?: EffectUntil;
+    condition?: (context: AbilityContext) => boolean;
+    location?: Location;
+    canChangeZoneOnce?: boolean;
+    canChangeZoneNTimes?: number;
+    ability?: BaseAbility;
+    endingMessage?: string;
+    // a player, or which players relative to the source's controller
+    targetController?: string | Player;
+    targetLocation?: TargetLocation;
+    target?: GameObject | GameObject[];
+}
+
+/**
+ * An effect while it is active: which targets it reaches, for how long and under what condition;
+ * its `effect` (an `EffectApplier`) applies it to each of them.
+ *
+ * Properties:
+ * match            - function that takes a card/player/ring and context object
+ *                    and returns a boolean about whether the passed object should
+ *                    have the effect applied. Alternatively, a card/player/ring can
+ *                    be passed as the match property to match that single object.
+ *                    Doesn't apply to conflict effects.
+ * duration         - string representing how long the effect lasts.
+ * condition        - function that returns a boolean determining whether the
+ *                    effect can be applied. Use with cards that have a
+ *                    condition that must be met before applying a persistent
+ *                    effect (e.g. "during a conflict").
+ * location         - location where the source of this effect needs to be for
+ *                    the effect to be active. Defaults to 'play area'.
+ * targetController - string that determines which player's cards are targeted.
+ *                    Can be 'self' (default), 'opponent' or 'any'. For player
+ *                    effects it determines which player(s) are affected.
+ * targetLocation   - string that determines the location of cards that can be
+ *                    applied by the effect. Can be 'play area' (default),
+ *                    'province', or a specific location (e.g. 'stronghold province'
+ *                    or 'hand'). This has no effect if a specific card is passed
+ *                    to match.  Card effects only.
+ * effect           - object representing the effect to be applied.
+ */
+export class ActiveEffect<T extends GameObject = GameObject> {
+    game: Game;
+    source: EffectSource;
+    match: EffectMatch<T>;
+    duration: Duration | undefined;
+    until: EffectUntil;
+    condition: (context: AbilityContext) => boolean;
+    location: Location;
+    canChangeZoneOnce: boolean;
+    canChangeZoneNTimes: number;
+    effect: EffectApplier<EffectName, T>;
+    ability: BaseAbility | undefined;
+    targets: T[];
+    context!: AbilityContext;
+    endingMessage: string | undefined;
+
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<T>, effect: EffectApplier<EffectName, T>) {
+        this.game = game;
+        this.source = source;
+        this.match = properties.match || (() => true);
+        this.duration = properties.duration;
+        this.until = properties.until || {};
+        this.condition = properties.condition || (() => true);
+        this.location = properties.location || Location.PlayArea;
+        this.canChangeZoneOnce = !!properties.canChangeZoneOnce;
+        this.canChangeZoneNTimes = properties.canChangeZoneNTimes || 0;
+        this.effect = effect;
+        this.ability = properties.ability;
+        this.targets = [];
+        this.refreshContext();
+        this.effect.duration = this.duration;
+        this.endingMessage = properties.endingMessage || undefined;
+    }
+
+    refreshContext() {
+        const controller = this.source.getEffectController();
+        this.context = controller ? this.game.getFrameworkContext(controller) : this.game.getGameContext();
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- an effect's source need not be a card (framework context)
+        this.context.source = this.source as BaseCard;
+        if(this.ability) {
+            this.context.ability = this.ability;
+        }
+        this.effect.setContext(this.context);
+    }
+
+    isValidTarget(_target: T): boolean {
+        return true;
+    }
+
+    getTargets(_matchFn: EffectMatchFn<T>): T[] {
+        return [];
+    }
+
+    addTarget(target: T) {
+        this.targets.push(target);
+        this.effect.apply(target);
+    }
+
+    removeTargets(targets: T[]) {
+        targets.forEach((target) => this.effect.unapply(target));
+        this.targets = this.targets.filter((t) => !targets.includes(t));
+    }
+
+    cancel() {
+        this.targets.forEach((target) => this.effect.unapply(target));
+        this.targets = [];
+    }
+
+    isEffectActive(): boolean {
+        if(this.duration !== Duration.Persistent) {
+            return true;
+        }
+        const effectOnSource = this.source.getPersistentEffectRecords().some((effect) => effect.ref && effect.ref.includes(this));
+        return !this.source.facedown && effectOnSource;
+    }
+
+    checkCondition(stateChanged: boolean): boolean {
+        if(!this.condition(this.context) || !this.isEffectActive()) {
+            stateChanged = this.targets.length > 0 || stateChanged;
+            this.cancel();
+            return stateChanged;
+        } else if(typeof this.match === 'function') {
+            const matchFn = this.match;
+            // Get any targets which are no longer valid
+            const invalidTargets = this.targets.filter((target) => !matchFn(target, this.context) || !this.isValidTarget(target));
+            // Remove invalid targets
+            this.removeTargets(invalidTargets);
+            stateChanged = stateChanged || invalidTargets.length > 0;
+            // Recalculate the effect for valid targets
+            this.targets.forEach((target) => stateChanged = this.effect.recalculate(target) || stateChanged);
+            // Check for new targets
+            const newTargets = this.getTargets(matchFn).filter((target) => !this.targets.includes(target) && this.isValidTarget(target));
+            // Apply the effect to new targets
+            newTargets.forEach((target) => this.addTarget(target));
+            return stateChanged || newTargets.length > 0;
+        } else if(this.targets.includes(this.match)) {
+            if(!this.isValidTarget(this.match)) {
+                this.cancel();
+                return true;
+            }
+            return this.effect.recalculate(this.match) || stateChanged;
+        } else if(!this.targets.includes(this.match) && this.isValidTarget(this.match)) {
+            this.addTarget(this.match);
+            return true;
+        }
+        return stateChanged;
+    }
+
+    getDebugInfo() {
+        return {
+            source: this.source.name,
+            targets: this.targets.map((target) => target.name).join(','),
+            active: this.isEffectActive(),
+            condition: this.condition(this.context),
+            effect: this.effect.getDebugInfo()
+        };
+    }
+}
+

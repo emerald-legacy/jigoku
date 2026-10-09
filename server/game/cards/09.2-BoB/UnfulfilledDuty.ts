@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType } from '../../Constants.js';
 
 class UnfulfilledDuty extends DrawCard {
@@ -15,7 +15,7 @@ class UnfulfilledDuty extends DrawCard {
                 numCards: 0,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() === 0
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

@@ -1,0 +1,40 @@
+import { msg } from '../GameChat.js';
+import { AbilityContext } from '../AbilityContext.js';
+import { CardType } from '../Constants.js';
+import { BaseAbility } from '../BaseAbility.js';
+import DrawCard from '../DrawCard.js';
+
+export class VoidRingAbility extends BaseAbility {
+    public title = 'Void Ring Effect';
+    public cannotTargetFirst = true;
+    public defaultPriority = 2; // Default resolution priority when players have ordering switched off
+
+    constructor(
+        optional: boolean,
+        private onResolution = (_resolved: boolean) => {}
+    ) {
+        super({
+            target: {
+                activePromptTitle: 'Choose character to remove fate from',
+                source: 'Void Ring',
+                buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : [],
+                cardType: CardType.Character,
+
+                cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
+                    card.allowGameAction('removeFate', context)
+            }
+        });
+    }
+
+    public executeHandler(context: AbilityContext): void {
+        if(context.target) {
+            context.game.addMessage(msg`${context.player} resolves the ${'void'} ring, removing a fate from ${context.target}`);
+            this.onResolution(true);
+            context.game.addAnimation({ type: 'void', targetUuid: context.target.uuid, effect: 'remove-fate' });
+            context.game.applyGameAction(context, { removeFate: context.target });
+        } else {
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'void'} ring`);
+            this.onResolution(false);
+        }
+    }
+}

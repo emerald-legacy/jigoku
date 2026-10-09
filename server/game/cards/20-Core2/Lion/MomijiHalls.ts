@@ -1,5 +1,5 @@
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { ConflictType } from '../../../Constants.js';
 
 export default class MomijiHalls extends StrongholdCard {
@@ -7,9 +7,9 @@ export default class MomijiHalls extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Draw 2 cards')
-            .cost(AbilityDsl.costs.bowSelf())
-            .cost(AbilityDsl.costs.discardCard())
+            .cost(costs.bowSelf())
+            .cost(costs.discardCard())
             .condition((context) => context.player.cardsInPlay.some((card) => card.isAttacking(ConflictType.Military)))
-            .gameAction(AbilityDsl.actions.draw({ amount: 2 }));
+            .draw(2);
     }
 }

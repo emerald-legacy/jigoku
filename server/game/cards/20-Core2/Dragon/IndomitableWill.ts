@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IndomitableWill extends DrawCard {
@@ -11,11 +12,11 @@ export default class IndomitableWill extends DrawCard {
                     event.conflict.winner === context.player &&
                     event.conflict.getNumberOfParticipantsFor(context.player) === 1
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.event.conflict.getCharacters(context.player),
-                effect: AbilityDsl.effects.doesNotBow()
-            })))
-            .effect('prevent {1} from bowing as a result of the conflict\'s resolution', (context) => context.player.cardsInPlay.find((card) => card.isParticipating()))
+                effect: doesNotBow()
+            }))
+            .chatText((context) => msg`prevent ${context.player.cardsInPlay.find((card) => card.isParticipating())} from bowing as a result of the conflict's resolution`)
             .cannotBeMirrored();
     }
 }

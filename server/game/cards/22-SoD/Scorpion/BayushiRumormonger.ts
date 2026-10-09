@@ -1,20 +1,20 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BayushiRumormonger extends DrawCard {
     static id = 'bayushi-rumormonger';
 
     public setupCardAbilities() {
-        this.action('Discard cards from opponent\'s conflict deck')
-            .condition(context => context.source.isParticipating() && Boolean(context.player.opponent))
-            .gameAction(AbilityDsl.actions.discardCard(context => ({
+        this.conflictAction('Discard cards from opponent\'s conflict deck')
+            .condition((context) => Boolean(context.player.opponent))
+            .gameAction(discardCard((context) => ({
                 target: context.player.opponent?.conflictDeck.slice(0, this.getHighestNumberOfParticipants(context)) ?? []
             })))
-            .effect('discard {1} card{2} from {3}\'s conflict deck', context => {
+            .chatText((context) => {
                 const x = this.getHighestNumberOfParticipants(context);
-                const opponent = context.player.opponent;
-                return [x, x === 1 ? '' : 's', opponent ?? ''];
+                return msg`discard ${x} card${x === 1 ? '' : 's'} from ${context.player.opponent}'s conflict deck`;
             });
     }
 

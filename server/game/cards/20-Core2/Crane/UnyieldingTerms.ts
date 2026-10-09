@@ -1,6 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
 import type { Duel } from '../../../Duel.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { bow, chosenDiscard, multiple, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class UnyieldingTerms extends DrawCard {
@@ -11,25 +13,21 @@ export default class UnyieldingTerms extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 requiresConflict: false,
-                refuseGameAction: AbilityDsl.actions.chosenDiscard((context) => ({
+                refuseGameAction: chosenDiscard((context) => ({
                     targets: false,
                     target: context.player.opponent,
                     amount: Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
                 })),
-                refusalMessage: '{0} chooses to refuse the duel and discard {1} cards from their hand',
-                refusalMessageArgs: (context) => [
-                    context.player.opponent,
-                    Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
-                ],
+                refusalMessage: (_context, refuser) =>
+                    msg`${refuser} chooses to refuse the duel and discard ${Math.floor(refuser.hand.length / 2)} cards from their hand`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.bow({ target: duel.loser }),
-                        AbilityDsl.actions.removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
+                    multiple([
+                        bow({ target: duel.loser }),
+                        removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ]),
-                message: 'bow{1} {0}',
-                messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : '']
+                chatText: (_context, duel) => msg`bow${this.wonByDuelist(duel) ? ' and remove 1 fate from' : ''} ${duel.loser}`
             }))
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 
     wonByDuelist(duel: Duel): boolean {

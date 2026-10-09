@@ -1,7 +1,8 @@
 import { CardType, Players } from '../../Constants.js';
 import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { modifyRestrictedAttachmentAmount, reduceNextPlayedCardCost } from '../../effects.js';
 
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';
@@ -10,7 +11,7 @@ export default class IronMountainCastle extends StrongholdCard {
         this.persistentEffect({
             match: (card) => card.isFaction('dragon'),
             targetController: Players.Self,
-            effect: AbilityDsl.effects.modifyRestrictedAttachmentAmount(1)
+            effect: modifyRestrictedAttachmentAmount(1)
         });
 
         this.interrupt('Reduce cost of next attachment')
@@ -33,14 +34,14 @@ export default class IronMountainCastle extends StrongholdCard {
                     );
                 }
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .cost(costs.bowSelf())
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.context?.source
                 )
-            })))
-            .effect('reduce the cost of their next attachment by 1');
+            }))
+            .chatText('reduce the cost of their next attachment by 1');
     }
 }

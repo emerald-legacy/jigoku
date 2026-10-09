@@ -1,62 +1,30 @@
-import { Duration, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { gainActionPhasePriority } from '../../../effects.js';
+import { playerLastingEffect, sequential, setAside } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { shuffle } from '../../../utils/random.js';
 
 export default class SneakAttack extends DrawCard {
     static id = 'sneak-attack';
-
-    private setAsideCards: DrawCard[] = [];
 
     public setupCardAbilities() {
         this.reaction('The attacker gets the first action opportunity')
             .when({
                 onConflictStarted: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .cost(AbilityDsl.costs.payHonor(1))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.handler({
-                    handler: (context) => {
-                        const opponent = context.player.opponent;
-                        if(!opponent || opponent.hand.length === 0) {
-                            return;
-                        }
-
-                        this.setAsideCards = shuffle(opponent.hand).slice(0, 2);
-                        this.game.addMessage('{0} sets aside {1}', opponent, this.setAsideCards);
-                        for(const card of this.setAsideCards) {
-                            opponent.moveCard(card, Location.RemovedFromGame);
-                        }
-                    }
-                }),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfRound,
-                    targetController: context.player.opponent,
-                    effect: AbilityDsl.effects.playerDelayedEffect({
-                        when: { onConflictFinished: () => true },
-                        gameAction: AbilityDsl.actions.handler({
-                            handler: (context) => {
-                                if(this.setAsideCards.length === 0) {
-                                    return;
-                                }
-                                const opponent = this.setAsideCards[0].owner;
-                                context.game.addMessage('{0} picks back their cards', opponent);
-                                for(const card of this.setAsideCards) {
-                                    opponent.moveCard(card, Location.Hand);
-                                }
-                                this.setAsideCards = [];
-                            }
-                        })
-                    })
+            .cost(costs.payHonor(1))
+            .gameAction(sequential([
+                setAside((context) => ({
+                    target: shuffle(context.player.opponent?.hand ?? []).slice(0, 2),
+                    returnAtEndOfConflict: true,
+                    message: (context, cards) => msg`${context.player.opponent} sets aside ${cards}`
                 })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
+                playerLastingEffect((context) => ({
                     targetController: context.player,
-                    effect: AbilityDsl.effects.gainActionPhasePriority()
+                    effect: gainActionPhasePriority()
                 }))
             ]))
-            .effect('give {1} the first action in this conflict{2}', (context) => [
-                context.player,
-                (context.player.opponent?.hand.length ?? 0) > 0 ? ' and set aside opponent\'s cards' : ''
-            ]);
+            .chatText((context) => msg`give ${context.player} the first action in this conflict${(context.player.opponent?.hand.length ?? 0) > 0 ? ' and set aside opponent\'s cards' : ''}`);
     }
 }

@@ -1,7 +1,8 @@
-import { CardType, Duration, Location, Phases, Players } from '../../../Constants.js';
+import { CardType, Duration, Location, Phase, Players } from '../../../Constants.js';
 import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword, canBeSeenWhenFacedown, gainPlayAction } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class DaidojiHiroteru extends DrawCard {
     static id = 'daidoji-hiroteru';
@@ -11,29 +12,29 @@ export default class DaidojiHiroteru extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card) => card.isDynasty && card.isFacedown(),
-            effect: AbilityDsl.effects.canBeSeenWhenFacedown()
+            effect: canBeSeenWhenFacedown()
         });
 
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card) => card.isDynasty && card.type === CardType.Character,
-            effect: AbilityDsl.effects.gainPlayAction(PlayFacedownCharacterAsIfFromHand)
+            effect: gainPlayAction(PlayFacedownCharacterAsIfFromHand)
         });
 
         this.reaction('Give a Scout or Shinobi covert')
             .when({
                 onCardPlayed: (event, context) =>
-                    context.game.currentPhase === Phases.Conflict &&
+                    context.game.currentPhase === Phase.Conflict &&
                     event.player === context.player &&
                     event.card.type === CardType.Character &&
                     event.card.hasSomeTrait('scout', 'shinobi')
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.event.card,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.addKeyword('covert')
-            })))
-            .effect('give {1} covert until the end of the phase', (context) => [context.event.card]);
+                effect: addKeyword('covert')
+            }))
+            .chatText((context) => msg`give ${context.event.card} covert until the end of the phase`);
     }
 }

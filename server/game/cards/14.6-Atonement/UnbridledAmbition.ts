@@ -1,6 +1,6 @@
 import { Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotContribute } from '../../effects.js';
 
 export default class UnbridledAmbition extends ProvinceCard {
     static id = 'unbridled-ambition';
@@ -9,7 +9,7 @@ export default class UnbridledAmbition extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Any,
-            effect: AbilityDsl.effects.cannotContribute(() => (card) => card.isDishonored)
+            effect: cannotContribute(() => (card) => card.isDishonored)
         });
     }
 

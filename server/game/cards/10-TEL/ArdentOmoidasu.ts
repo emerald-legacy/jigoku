@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
 import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 
@@ -13,9 +12,9 @@ class ArdentOmoidasu extends DrawCard {
                     event.card.type === CardType.Character && event.card.controller === context.player &&
                     isOpponentsRingOrCardEffect(context.player, event.context)
             })
-            .gameAction(AbilityDsl.actions.takeHonor({
+            .takeHonor({
                 amount: 2
-            }));
+            });
     }
 }
 

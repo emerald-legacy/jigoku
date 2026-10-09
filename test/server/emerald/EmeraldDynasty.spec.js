@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Dynasty - Emerald', function () {
     integration(function () {
@@ -14,7 +14,7 @@ describe('Dynasty - Emerald', function () {
                     inPlay: ['hantei-sotorii'],
                     hand: ['fine-katana']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.swordsmith = this.player1.findCardByName('agasha-swordsmith');

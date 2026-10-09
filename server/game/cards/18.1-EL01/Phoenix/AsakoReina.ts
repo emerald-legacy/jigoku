@@ -1,8 +1,18 @@
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Element } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import {
+    conditional,
+    draw,
+    gainFate,
+    gainHonor,
+    honor,
+    multiple,
+    ready,
+    selectCard
+} from '../../../GameActions/GameActions.js';
 import { hasClaimedRing } from '../../claimedRings.js';
+import { msg } from '../../../GameChat.js';
 
 const elementKeys = {
     air: 'asako-reina-air',
@@ -17,46 +27,44 @@ class AsakoReina extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain boons based on your currently claimed rings')
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.gainHonor(context => ({
+            .gameAction(multiple([
+                gainHonor((context) => ({
                     target: context.player,
                     amount: hasClaimedRing(this, elementKeys.air, context.player) ? 1 : 0
                 })),
-                AbilityDsl.actions.draw(context => ({
+                draw((context) => ({
                     target: context.player,
                     amount: hasClaimedRing(this, elementKeys.earth, context.player) ? 1 : 0
                 })),
-                AbilityDsl.actions.gainFate(context => ({
+                gainFate((context) => ({
                     target: context.player,
                     amount: hasClaimedRing(this, elementKeys.void, context.player) ? 1 : 0
                 })),
-                AbilityDsl.actions.conditional({
-                    condition: context => hasClaimedRing(this, elementKeys.water, context.player),
-                    trueGameAction: AbilityDsl.actions.selectCard(context => ({
+                conditional({
+                    condition: (context) => hasClaimedRing(this, elementKeys.water, context.player),
+                    trueGameAction: selectCard({
                         activePromptTitle: 'Choose a 2 cost or lower character to ready',
-                        cardCondition: card => card.isCharacter() && card.costLessThan(3),
+                        cardCondition: (card) => card.isCharacter() && card.costLessThan(3),
                         cardType: CardType.Character,
-                        gameAction: AbilityDsl.actions.ready(),
+                        gameAction: ready(),
                         targets: false,
-                        message: '{0} chooses to ready {1} with {2}\'s effect',
-                        messageArgs: (card, player) => [player, card, context.source]
-                    })),
-                    falseGameAction: AbilityDsl.actions.draw(() => ({ amount: 0 }))
+                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`
+                    }),
+                    falseGameAction: draw(() => ({ amount: 0 }))
                 }),
-                AbilityDsl.actions.conditional({
-                    condition: context => hasClaimedRing(this, elementKeys.fire, context.player),
-                    trueGameAction: AbilityDsl.actions.selectCard(context => ({
+                conditional({
+                    condition: (context) => hasClaimedRing(this, elementKeys.fire, context.player),
+                    trueGameAction: selectCard({
                         activePromptTitle: 'Choose a character to honor',
                         cardType: CardType.Character,
-                        gameAction: AbilityDsl.actions.honor(),
+                        gameAction: honor(),
                         targets: false,
-                        message: '{0} chooses to honor {1} with {2}\'s effect',
-                        messageArgs: (card, player) => [player, card, context.source]
-                    })),
-                    falseGameAction: AbilityDsl.actions.draw(() => ({ amount: 0 }))
+                        message: (context, card, player) => msg`${player} chooses to honor ${card} with ${context.source}'s effect`
+                    }),
+                    falseGameAction: draw(() => ({ amount: 0 }))
                 })
             ]))
-            .effect('{1}', context => [this.createEffectMessage(context)]);
+            .chatText((context) => msg`${this.createEffectMessage(context)}`);
     }
 
     private createEffectMessage(context: AbilityContext) {

@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { additionalConflict } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TheSunWillRiseAgain extends DrawCard {
@@ -13,12 +15,12 @@ export default class TheSunWillRiseAgain extends DrawCard {
                     event.conflict.winner === context.player.opponent &&
                     (event.conflict.skillDifference ?? 0) >= 4
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(context.event.conflict.conflictType)
-            })))
-            .effect('gain an additional {1} conflict this round. They will not forget this defeat', (context) => [context.event.conflict.conflictType])
-            .max(AbilityDsl.limit.perConflict(1));
+                effect: additionalConflict(context.event.conflict.conflictType)
+            }))
+            .chatText((context) => msg`gain an additional ${context.event.conflict.conflictType} conflict this round. They will not forget this defeat`)
+            .max(perConflict(1));
     }
 }

@@ -1,18 +1,20 @@
-import { CardType, Location, Phases, PlayType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { CardType, Location, Phase, PlayType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { cardMenu, moveCard, multiple, playCard, sequentialContext } from '../../GameActions/GameActions.js';
 
 export default class KyudenHida extends StrongholdCard {
     static id = 'kyuden-hida';
 
     setupCardAbilities() {
         this.action('Play a Character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition((context) => context.player.dynastyDeck.length > 0)
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const topCards = context.player.dynastyDeck.slice(0, 3);
                 return {
-                    gameActions: [AbilityDsl.actions.cardMenu({
+                    gameActions: [cardMenu({
                         activePromptTitle: 'Choose a character',
                         cards: topCards,
                         cardCondition: (card) => card.type === CardType.Character,
@@ -23,14 +25,14 @@ export default class KyudenHida extends StrongholdCard {
                                     topCards.forEach((card) => {
                                         context.player.moveCard(card, Location.DynastyDiscardPile);
                                     });
-                                    this.game.addMessage('{0} chooses not to play a character', context.player);
-                                    this.game.addMessage('{0} discards {1}', context.player, topCards);
+                                    this.game.addMessage(msg`${context.player} chooses not to play a character`);
+                                    this.game.addMessage(msg`${context.player} discards ${topCards}`);
                                     return true;
                                 }
                             }
                         ],
-                        gameAction: AbilityDsl.actions.multiple([
-                            AbilityDsl.actions.playCard({
+                        gameAction: multiple([
+                            playCard({
                                 source: this,
                                 resetOnCancel: false,
                                 playType: PlayType.PlayFromProvince,
@@ -38,14 +40,14 @@ export default class KyudenHida extends StrongholdCard {
                                     const card = hidaContext.source;
                                     let discardedCards = topCards;
                                     if(card.location !== Location.PlayArea) {
-                                        this.game.addMessage('{0} chooses not to play a character', context.player);
+                                        this.game.addMessage(msg`${context.player} chooses not to play a character`);
                                     } else {
                                         discardedCards = topCards.filter((a) => a !== card);
                                     }
-                                    this.game.addMessage('{0} discards {1}', context.player, discardedCards);
+                                    this.game.addMessage(msg`${context.player} discards ${discardedCards}`);
                                 }
                             }),
-                            AbilityDsl.actions.moveCard((context) => ({
+                            moveCard((context) => ({
                                 target: topCards.filter((a) => a !== context.target),
                                 destination: Location.DynastyDiscardPile
                             }))
@@ -53,7 +55,7 @@ export default class KyudenHida extends StrongholdCard {
                     })]
                 };
             }))
-            .effect('look at the top three cards of their dynasty deck')
-            .phase(Phases.Dynasty);
+            .chatText('look at the top three cards of their dynasty deck')
+            .phase(Phase.Dynasty);
     }
 }

@@ -1,17 +1,16 @@
+import { msg } from '../../../GameChat.js';
 import { ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { switchConflictType } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DiplomatOfTheSteppes extends DrawCard {
     static id = 'diplomat-of-the-steppes';
 
     setupCardAbilities() {
-        this.action('Change the conflict to military')
-            .cost(AbilityDsl.costs.payHonor(1))
+        this.conflictAction('Change the conflict to military', { conflictType: ConflictType.Political })
+            .cost(costs.payHonor(1))
             .condition((context) => {
-                if(!context.source.isParticipating(ConflictType.Political)) {
-                    return false;
-                }
                 const conflict = this.game.currentConflict;
                 if(!conflict) {
                     return false;
@@ -19,7 +18,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 const diff = conflict.attackerSkill - conflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
             })
-            .gameAction(AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictType.Military }))
-            .effect('switch the conflict type to {1}', () => 'military');
+            .gameAction(switchConflictType({ targetConflictType: ConflictType.Military }))
+            .chatText(() => msg`switch the conflict type to ${'military'}`);
     }
 }

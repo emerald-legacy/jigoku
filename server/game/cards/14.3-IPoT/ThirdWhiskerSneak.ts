@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { immunity } from '../../effects.js';
+import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ThirdWhiskerSneak extends DrawCard {
     static id = 'third-whisker-sneak';
@@ -8,11 +10,11 @@ class ThirdWhiskerSneak extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({
-                    restricts: 'maho'
+                immunity({
+                    appliesTo: { trait: 'maho' }
                 }),
-                AbilityDsl.effects.immunity({
-                    restricts: 'shadowlands'
+                immunity({
+                    appliesTo: { trait: 'shadowlands' }
                 })]
         });
 
@@ -20,14 +22,14 @@ class ThirdWhiskerSneak extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && event.conflict.conflictUnopposed && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: (context) => context.player.getProvinces(a => !a.isBroken).length,
+            .deckSearch({
+                cardsToLookAt: (context) => context.player.getProvinces((a) => !a.isBroken).length,
                 reveal: false,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
-            .effect('look at the top {1} cards of their conflict deck', context => [context.player.getProvinces(a => !a.isBroken).length]);
+            })
+            .chatText((context) => msg`look at the top ${context.player.getProvinces((a) => !a.isBroken).length} cards of their conflict deck`);
     }
 }
 

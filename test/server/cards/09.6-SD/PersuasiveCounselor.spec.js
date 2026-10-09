@@ -118,7 +118,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('character abilities should cancel as normal', function() {
-                const pol = this.tadaka.getPoliticalSkill();
+                const pol = this.tadaka.politicalSkill;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.shoju);
@@ -127,11 +127,11 @@ describe('Persuasive Counselor', function() {
                 expect(this.player1).toBeAbleToSelect(this.yojimbo);
                 this.player1.clickCard(this.yojimbo);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.tadaka.getPoliticalSkill()).toBe(pol);
+                expect(this.tadaka.politicalSkill).toBe(pol);
             });
 
             it('character abilities should cancel as normal (Shoju interaction)', function() {
-                const pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.politicalSkill;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.shoju);
@@ -140,7 +140,7 @@ describe('Persuasive Counselor', function() {
                 expect(this.player1).toBeAbleToSelect(this.finger);
                 this.player1.clickCard(this.finger);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol);
+                expect(this.whisperer.politicalSkill).toBe(pol);
             });
 
             it('attachment abilities should cancel as normal', function() {

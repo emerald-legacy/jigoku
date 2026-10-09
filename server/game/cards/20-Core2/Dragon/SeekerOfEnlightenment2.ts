@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SeekerOfEnlightenment2 extends DrawCard {
@@ -6,7 +6,7 @@ export default class SeekerOfEnlightenment2 extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills(() => this.getFateOnRings())
+            effect: modifyBothSkills(() => this.getFateOnRings())
         });
     }
 

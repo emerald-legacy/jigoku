@@ -1,30 +1,30 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { attach, discardFromPlay, ifAble, selectCard } from '../../GameActions/GameActions.js';
 
 class UnquestionedHeritage extends DrawCard {
     static id = 'unquestioned-heritage';
 
     setupCardAbilities() {
         this.action('Move an attachment')
-            .condition(context => context.game.rings.air.isConsideredClaimed(context.player))
+            .condition((context) => context.game.rings.air.isConsideredClaimed(context.player))
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Any,
                 cardCondition: (card, context) => Boolean(card.parentCharacter?.controller === context.player)
-            }, AbilityDsl.actions.selectCard((context) => ({
+            }, selectCard((context) => ({
                 cardType: CardType.Character,
-                cardCondition: card => card !== context.target.parentCharacter,
-                message: '{0} moves {1} to {2}',
-                messageArgs: card => [context.player, context.target, card],
-                gameAction: AbilityDsl.actions.ifAble({
-                    ifAbleAction: AbilityDsl.actions.attach({
+                cardCondition: (card) => card !== context.target.parentCharacter,
+                message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
+                gameAction: ifAble({
+                    ifAbleAction: attach({
                         attachment: context.target
                     }),
-                    otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.target })
+                    otherwiseAction: discardFromPlay({ target: context.target })
                 })
             })))
-            .effect('move {0} to another character');
+            .chatText('move {0} to another character');
     }
 }
 

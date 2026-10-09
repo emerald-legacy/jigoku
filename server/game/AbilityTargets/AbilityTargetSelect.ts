@@ -1,12 +1,12 @@
+import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { SelectChoice } from './SelectChoice.js';
 import { Stage, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type Player from '../Player.js';
-import type { GameAction } from '../GameActions/GameAction.js';
+import type { GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
-import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { TargetResults } from '../BaseAbility.js';
 import { waitingPromptTitle } from './TargetPrompt.js';
 
 type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
@@ -21,29 +21,7 @@ interface AbilityTargetSelectProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetSelect {
-    name: string;
-    properties: AbilityTargetSelectProperties;
-    dependentTarget: DependentTarget | null;
-    dependentCost: { canPay(context: AbilityContext): boolean } | null;
-
-    constructor(name: string, properties: AbilityTargetSelectProperties, ability: OwningAbility) {
-        this.name = name;
-        this.properties = properties;
-        this.dependentTarget = null;
-        this.dependentCost = null;
-        if(this.properties.dependsOn) {
-            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
-            if(dependsOnTarget) {
-                dependsOnTarget.dependentTarget = this;
-            }
-        }
-    }
-
-    canResolve(context: AbilityContext): boolean {
-        return !!this.properties.dependsOn || this.hasLegalTarget(context);
-    }
-
+export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectProperties> {
     hasLegalTarget(context: AbilityContext): boolean {
         const keys = Object.keys(this.getChoices(context));
         return keys.some((key) => this.isChoiceLegal(key, context));
@@ -79,13 +57,13 @@ class AbilityTargetSelect {
         return (Array.isArray(choice) ? choice : [choice]).some((action) => action.hasLegalTarget(contextCopy));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
+    getGameAction(context: AbilityContext): HeldAction[] {
         if(!context.selects[this.name]) {
             return [];
         }
         const choice: ChoiceValue = this.getChoices(context)[context.selects[this.name].choice];
         if(typeof choice !== 'function') {
-            return Array.isArray(choice) ? choice : [choice];
+            return (Array.isArray(choice) ? choice : [choice]).map((action) => ({ action, overrides: {} }));
         }
         return [];
     }
@@ -95,18 +73,14 @@ class AbilityTargetSelect {
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
-            return;
-        }
         if(this.properties.condition && !this.properties.condition(context)) {
             return;
         }
-
-        const player = (this.properties.targets && context.choosingPlayerOverride) || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
-            targetResults.delayTargeting = this;
+        const chooser = this.chooserNow(context, targetResults, this.properties.targets ? context.choosingPlayerOverride : null);
+        if(!chooser) {
             return;
         }
+        const { player } = chooser;
         const promptTitle = this.properties.activePromptTitle || 'Select one';
         const options: HandlerMenuOption[] = Object.keys(this.getChoices(context))
             .filter((key) => this.isChoiceLegal(key, context))
@@ -151,13 +125,6 @@ class AbilityTargetSelect {
         return !!context.selects[this.name] && this.isChoiceLegal(context.selects[this.name].choice, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player | undefined {
-        let playerProp = this.properties.player;
-        if(typeof playerProp === 'function') {
-            playerProp = playerProp(context);
-        }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
-    }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
         if(this.properties.targets) {
@@ -168,4 +135,3 @@ class AbilityTargetSelect {
     }
 }
 
-export default AbilityTargetSelect;

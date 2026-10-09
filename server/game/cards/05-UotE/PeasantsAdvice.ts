@@ -1,39 +1,39 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Location, Phases, CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { lookAt, moveCard, selectCard, sequential } from '../../GameActions/GameActions.js';
+import { Location, Phase, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';
 
     setupCardAbilities() {
         this.action('look at a province and return its dynasty card to deck')
-            .cost(AbilityDsl.costs.dishonor())
+            .cost(costs.dishonor())
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt(context => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                })),
-                AbilityDsl.actions.selectCard(context => ({
+            }, sequential([
+                lookAt({
+                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                }),
+                selectCard((context) => ({
                     activePromptTitle: 'Choose a faceup card to return to its owner\'s deck',
-                    cardCondition: card =>
+                    cardCondition: (card) =>
                         card.location === context.target?.location &&
                             card.controller === context.target?.controller &&
                             card.isDynasty && !card.facedown,
                     location: Location.Provinces,
                     optional: true,
-                    message: '{0} chooses to shuffle {1} into its owner\'s deck',
-                    messageArgs: card => [context.player, card],
-                    gameAction: AbilityDsl.actions.moveCard({
+                    message: (context, card) => msg`${context.player} chooses to shuffle ${card} into its owner's deck`,
+                    gameAction: moveCard({
                         destination: Location.DynastyDeck,
                         shuffle: true
                     })
                 }))
             ]))
-            .effect('look at {1}\'s {2}', context => [context.target.controller, context.target.location])
-            .phase(Phases.Conflict);
+            .chatText((context) => msg`look at ${context.target.controller}'s ${context.target.location}`)
+            .phase(Phase.Conflict);
     }
 }
 

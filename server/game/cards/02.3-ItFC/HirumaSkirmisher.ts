@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class HirumaSkirmisher extends DrawCard {
     static id = 'hiruma-skirmisher';
@@ -10,11 +10,11 @@ class HirumaSkirmisher extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
+            .cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.addKeyword('covert')
-            }))
-            .effect('give itself Covert until the end of the phase');
+                effect: addKeyword('covert')
+            })
+            .chatText('give itself Covert until the end of the phase');
     }
 }
 

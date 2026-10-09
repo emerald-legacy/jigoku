@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { lookAt, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 
@@ -11,24 +13,21 @@ export default class LoyalAttendant extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.attachments.filter(a => a.controller === context.player).length > 0
+                cardCondition: (card, context) => card.isParticipating() && card.attachments.filter((a) => a.controller === context.player).length > 0
             })
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multipleContext((context) => {
                 const cardNumber = context.target.attachments.length;
                 const cards = cardNumber ? randomHandCards(context.player.opponent, cardNumber) : [context.source];
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt(() => ({
+                        lookAt(() => ({
                             target: cards
                         })),
                         chooseCardToDiscard(cards)
                     ]
                 };
             }))
-            .effect('look at {2} random cards in {1}\'s hand and discard one of them', (context) => [
-                context.player.opponent,
-                context.target.attachments.length
-            ])
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText((context) => msg`look at ${context.target.attachments.length} random cards in ${context.player.opponent}'s hand and discard one of them`)
+            .max(perConflict(1));
     }
 }

@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
+import type { PlayType } from '../../../Constants.js';
 
 export default class ThereAreNoSecrets extends DrawCard {
     static id = 'there-are-no-secrets';
@@ -12,10 +12,10 @@ export default class ThereAreNoSecrets extends DrawCard {
                 onMoveFate: (event, context) =>
                     context.source.parentCharacter && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0
             })
-            .gameAction(AbilityDsl.actions.gainFate());
+            .gainFate();
     }
 
-    canPlay(context: AbilityContext, playType: string) {
+    canPlay(context: AbilityContext, playType?: PlayType) {
         return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

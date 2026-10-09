@@ -1,6 +1,8 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { cardCannot, delayedEffect, modifyMilitarySkill, setGlory } from '../../../effects.js';
+import { sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType } from '../../../Constants.js';
+import { ConflictType, RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
@@ -9,21 +11,20 @@ export default class DeadEyes extends DrawCard {
         this.attachmentConditions({ trait: 'berserker' });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.setGlory(0)
+            effect: setGlory(0)
         });
 
-        this.action('Increase a character\'s military skill')
-            .condition(context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter))
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
+            .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(2),
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'sendHome',
-                        restricts: 'opponentsCardEffects',
+                    modifyMilitarySkill(2),
+                    cardCannot({
+                        cannot: RestrictionType.SendHome,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.delayedEffect({
+                    delayedEffect({
                         when: {
                             afterConflict: (event) => {
                                 if(!context.source.parentCharacter) {
@@ -38,12 +39,11 @@ export default class DeadEyes extends DrawCard {
                                 return mySkill <= opponentSkill * 2;
                             }
                         },
-                        gameAction: AbilityDsl.actions.sacrifice(),
-                        message: '{0} is sacrificed due to the delayed effect of {1}',
-                        messageArgs: [context.source.parentCharacter, context.source]
+                        gameAction: sacrifice(),
+                        message: () => msg`${context.source.parentCharacter} is sacrificed due to the delayed effect of ${context.source}`
                     })
                 ]
-            })))
-            .effect('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
+            }))
+            .chatText((context) => msg`grant +2${'military'} to ${context.source.parentCharacter ?? ''}, prevent them from being moved home. They will be sacrificed if they don't win the conflict by enough skill`);
     }
 }

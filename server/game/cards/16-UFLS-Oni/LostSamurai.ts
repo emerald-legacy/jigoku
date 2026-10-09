@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 
 export default class LostSamurai extends BaseOni {
     static id = 'lost-samurai';
@@ -16,6 +16,6 @@ export default class LostSamurai extends BaseOni {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.isFaction('shadowlands')
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }

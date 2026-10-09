@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoScout extends DrawCard {
     static id = 'shinjo-scout';
@@ -9,7 +8,7 @@ class ShinjoScout extends DrawCard {
             .when({
                 onPassDuringDynasty: (event, context) => event.player === context.player && event.firstToPass
             })
-            .gameAction(AbilityDsl.actions.gainFate());
+            .gainFate();
     }
 }
 

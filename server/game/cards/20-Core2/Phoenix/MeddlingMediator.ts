@@ -1,5 +1,5 @@
-import { Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { Phase } from '../../../Constants.js';
+import { takeFate, takeHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MeddlingMediator extends DrawCard {
@@ -11,9 +11,9 @@ export default class MeddlingMediator extends DrawCard {
                 context.player.opponent !== undefined &&
                 this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
             .select({}, {
-                'Take 1 fate': AbilityDsl.actions.takeFate(),
-                'Take 1 honor': AbilityDsl.actions.takeHonor()
+                'Take 1 fate': takeFate(),
+                'Take 1 honor': takeHonor()
             })
-            .phase(Phases.Conflict);
+            .phase(Phase.Conflict);
     }
 }

@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { modifyBothSkills } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class HidaTsuru extends DrawCard {
     static id = 'hida-tsuru';
@@ -9,17 +11,17 @@ class HidaTsuru extends DrawCard {
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(1) }))
-            .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .cardLastingEffect({ effect: modifyBothSkills(1) })
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .limit(unlimitedPerConflict());
 
         this.reaction('Give this character +1/+1')
             .when({
                 onCardPlayed: (event, context) => event.card.isParticipating() && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(1) }))
-            .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .cardLastingEffect({ effect: modifyBothSkills(1) })
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .limit(unlimitedPerConflict());
     }
 }
 

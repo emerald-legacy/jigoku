@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { shuffle } from '../../utils/shuffle.js';
+import * as costs from '../../costs/index.js';
+import { discardMatching, lookAt, multipleContext } from '../../GameActions/GameActions.js';
+import { shuffle } from '../../utils/random.js';
 
 class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';
@@ -11,25 +13,25 @@ class KitsukiChiari extends DrawCard {
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player &&
                     context.player.opponent && context.player.opponent.hand.length > 0
             })
-            .cost(AbilityDsl.costs.nameCard())
-            .gameAction(AbilityDsl.actions.multipleContext(context => {
+            .cost(costs.nameCard())
+            .gameAction(multipleContext((context) => {
                 const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({
                     gameActions: [
-                        AbilityDsl.actions.lookAt(() => ({
+                        lookAt(() => ({
                             target: cards
                         })),
-                        AbilityDsl.actions.discardMatching(context => ({
+                        discardMatching((context) => ({
                             target: context.player.opponent,
                             cards: cards,
                             amount: -1, //all
                             reveal: false,
-                            match: (context, card) => card.name === context.costs.nameCardCost
+                            match: (context, card) => card.name === context.costs.namedCard
                         }))
                     ]
                 });
             }))
-            .effect('look at 4 random cards in {1}\'s hand and discard all cards named {2}', context => [context.player.opponent, context.costs.nameCardCost]);
+            .chatText((context) => msg`look at 4 random cards in ${context.player.opponent}'s hand and discard all cards named ${context.costs.namedCard}`);
     }
 
 

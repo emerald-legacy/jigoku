@@ -66,17 +66,17 @@ describe('Attentive Guardsman', function () {
                 defenders: []
             });
 
-            const mil = this.guard2.getMilitarySkill();
-            const pol = this.guard2.getPoliticalSkill();
+            const mil = this.guard2.militarySkill;
+            const pol = this.guard2.politicalSkill;
 
             this.player2.clickCard(this.ground2);
             this.player2.clickCard(this.guard2);
             expect(this.guard2.isParticipating()).toBe(true);
-            expect(this.guard2.getMilitarySkill()).toBe(mil + 1);
-            expect(this.guard2.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.guard2.militarySkill).toBe(mil + 1);
+            expect(this.guard2.politicalSkill).toBe(pol + 1);
 
-            const mil1 = this.guard1.getMilitarySkill();
-            const pol1 = this.guard1.getPoliticalSkill();
+            const mil1 = this.guard1.militarySkill;
+            const pol1 = this.guard1.politicalSkill;
 
             this.player1.clickCard(this.ground);
             expect(this.player1).toBeAbleToSelect(this.challenger);
@@ -84,8 +84,8 @@ describe('Attentive Guardsman', function () {
             this.player1.clickCard(this.guard1);
 
             expect(this.guard1.isParticipating()).toBe(true);
-            expect(this.guard1.getMilitarySkill()).toBe(mil1);
-            expect(this.guard1.getPoliticalSkill()).toBe(pol1);
+            expect(this.guard1.militarySkill).toBe(mil1);
+            expect(this.guard1.politicalSkill).toBe(pol1);
 
         });
     });

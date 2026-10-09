@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 
@@ -10,8 +10,8 @@ class SneakyShinjo extends DrawCard {
             .when({
                 onPassDuringDynasty: (event, context) => event.player === context.player
             })
-            .gameAction(AbilityDsl.actions.playCard({ location: Location.ProvinceOne, source: this }))
-            .effect('play {0}')
+            .gameAction(playCard({ location: Location.ProvinceOne, source: this }))
+            .chatText('play {0}')
             .location(Location.Provinces);
     }
 }

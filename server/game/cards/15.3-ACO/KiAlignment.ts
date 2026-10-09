@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class KiAlignment extends DrawCard {
     static id = 'ki-alignment';
@@ -11,17 +11,17 @@ class KiAlignment extends DrawCard {
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers?.some((card) => card.hasTrait('monk')) ?? false),
                 onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && event.defenders.some((card) => card.hasTrait('monk'))
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                targetMode: TargetMode.UpTo,
-                amount: 8,
+            .deckSearch({
+                mode: TargetMode.UpTo,
+                cardsToLookAt: 8,
                 numCards: 2,
                 uniqueNames: true,
                 cardCondition: (card) => card.hasTrait('kiho'),
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
-            .effect('look at the top eight cards of their deck for up to two kihos');
+            })
+            .chatText('look at the top eight cards of their deck for up to two kihos');
     }
 }
 

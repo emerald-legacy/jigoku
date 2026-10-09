@@ -43,8 +43,8 @@ describe('Banzai!', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.banzai);
                 this.player1.clickCard(this.miyaMystic);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(3);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(3);
+                expect(this.miyaMystic.politicalSkill).toBe(1);
             });
 
             it('should allow player to spend an honor', function() {
@@ -88,8 +88,8 @@ describe('Banzai!', function() {
                 this.player1.clickPrompt('Lose 1 honor to resolve this ability again');
                 this.player1.clickCard(this.miyaMystic);
                 this.player1.clickPrompt('Done');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(5);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(5);
+                expect(this.miyaMystic.politicalSkill).toBe(1);
                 expect(this.player1.player.honor).toBe(9);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
@@ -107,8 +107,8 @@ describe('Banzai!', function() {
                 this.player1.clickCard(this.miyaMystic);
                 expect(this.player1).toHavePromptButton('Lose 1 honor for no effect');
                 this.player1.clickPrompt('Lose 1 honor for no effect');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(5);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(5);
+                expect(this.miyaMystic.politicalSkill).toBe(1);
                 expect(this.player1.player.honor).toBe(8);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
@@ -144,8 +144,8 @@ describe('Banzai!', function() {
                 this.player2.clickCard('forged-edict');
                 this.player2.clickCard(this.bayushiLiar);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(1);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(1);
+                expect(this.miyaMystic.politicalSkill).toBe(1);
             });
 
             it('should allow cancelling at second prompt', function() {
@@ -166,8 +166,8 @@ describe('Banzai!', function() {
                 this.player2.clickCard('forged-edict');
                 this.player2.clickCard(this.bayushiLiar);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(3);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(3);
+                expect(this.miyaMystic.politicalSkill).toBe(1);
                 expect(this.player1.player.honor).toBe(9);
             });
         });
@@ -209,10 +209,10 @@ describe('Banzai!', function() {
                 expect(this.player2).toBeAbleToSelect(this.miyaMystic);
                 expect(this.player2).toBeAbleToSelect(this.seppunGuardsman);
                 expect(this.player2).toBeAbleToSelect(this.manipulator);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(1);
 
                 this.player2.clickCard(this.manipulator);
-                expect(this.manipulator.getMilitarySkill()).toBe(3);
+                expect(this.manipulator.militarySkill).toBe(3);
 
                 this.player1.clickPrompt('Lose 1 honor to resolve this ability again');
 
@@ -221,7 +221,7 @@ describe('Banzai!', function() {
                 expect(this.player2).toBeAbleToSelect(this.seppunGuardsman);
                 expect(this.player2).toBeAbleToSelect(this.manipulator);
                 this.player2.clickCard(this.manipulator);
-                expect(this.manipulator.getMilitarySkill()).toBe(5);
+                expect(this.manipulator.militarySkill).toBe(5);
             });
         });
     });

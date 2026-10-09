@@ -1,10 +1,11 @@
-import CardSelector from '../CardSelector.js';
+import { AbilityTargetBase } from './AbilityTargetBase.js';
+import { CardSelector } from '../CardSelector.js';
 import { CardType, Stage, Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
+import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
 
@@ -16,29 +17,13 @@ interface AbilityTargetElementSymbolProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetElementSymbol {
-    name: string;
-    properties: AbilityTargetElementSymbolProperties;
+export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetElementSymbolProperties> {
     selector: CardSelectorInstance;
-    dependentTarget: DependentTarget | null;
-    dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetElementSymbolProperties, ability: OwningAbility) {
-        this.name = name;
-        this.properties = properties;
+        super(name, properties, ability);
         this.properties.location = this.properties.location || Location.PlayArea;
         this.selector = this.getSelector(properties);
-        for(const gameAction of this.properties.gameAction) {
-            gameAction.setDefaultTarget((context: AbilityContext) => context.elements[name]);
-        }
-        this.dependentTarget = null;
-        this.dependentCost = null;
-        if(this.properties.dependsOn) {
-            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
-            if(dependsOnTarget) {
-                dependsOnTarget.dependentTarget = this;
-            }
-        }
     }
 
     getSelector(properties: AbilityTargetElementSymbolProperties): CardSelectorInstance {
@@ -50,26 +35,10 @@ class AbilityTargetElementSymbol {
             if(elements.length === 0) {
                 return false;
             }
-            return true; // cheating, this is only used for Twin Soul Temple and the action is always valid if it has an element
-
-            // let contextCopy = context.copy();
-            // contextCopy.elements[this.name] = elements;
-            // if(this.name === 'target') {
-            //     contextCopy.element = elements;
-            // }
-            // if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
-            //     return false;
-            // }
-
-            // return (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-            //         (properties.gameAction.length === 0 || properties.gameAction.some(gameAction => gameAction.hasLegalTarget(contextCopy)));
+            return true; // only Twin Soul Temple uses this, and its action is valid whenever the card has an element
         };
         const cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
-    }
-
-    canResolve(context: AbilityContext): boolean {
-        return !!this.properties.dependsOn || this.hasLegalTarget(context);
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
@@ -80,19 +49,23 @@ class AbilityTargetElementSymbol {
         return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
-        return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
+    getGameAction(context: AbilityContext): HeldAction[] {
+        const overrides = this.actionOverrides(context);
+        return this.properties.gameAction
+            .filter((action) => action.hasLegalTarget(context, overrides))
+            .map((action) => ({ action, overrides }));
+    }
+
+    protected actionOverrides(context: AbilityContext): ActionOverrides {
+        return { target: context.elements[this.name] };
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
+        const chooser = this.chooserNow(context, targetResults);
+        if(!chooser) {
             return;
         }
-        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
-            targetResults.delayTargeting = this;
-            return;
-        }
+        const { player } = chooser;
         const buttons: PromptButton[] = [];
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
@@ -150,20 +123,11 @@ class AbilityTargetElementSymbol {
         return this.selector.canTarget(context.elementCard, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player | undefined {
-        let playerProp = this.properties.player;
-        if(typeof playerProp === 'function') {
-            playerProp = playerProp(context);
-        }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
-    }
-
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context))) {
+        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context)))) {
             return true;
         }
         return this.getChoosingPlayer(context) === context.player;
     }
 }
 
-export default AbilityTargetElementSymbol;

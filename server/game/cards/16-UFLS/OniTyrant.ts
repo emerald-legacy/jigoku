@@ -1,6 +1,7 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { handler, putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
 
@@ -11,7 +12,7 @@ const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | unde
         },
         resolve(context, result) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter((card) => (card.printedCost ?? 0) <= 2 && context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card) => (card.printedCost ?? 0) <= 2 && putIntoConflict().canAffect(card, context));
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a creature to summon',
                 source: context.source,
@@ -35,7 +36,7 @@ const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | unde
             if(context.costs.oniTyrantCostCreature) {
                 context.costs.oniTyrantCostCreature = createSummonedCopy(context, context.costs.oniTyrantCostCreature);
 
-                const action = context.game.actions.handler({ handler: () => true }); //this is a do-nothing event since the cost isn't really a cost
+                const action = handler({ handler: () => true }); //this is a do-nothing event since the cost isn't really a cost
                 return action.getEvent(context.player, context);
             }
             return [];
@@ -49,13 +50,13 @@ class OniTyrant extends DrawCard {
 
     setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .cost(oniTyrantCost())
-            .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
+            .condition((context) => context.source.isParticipating())
+            .gameAction(putIntoConflict((context) => ({
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .effect(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
+            .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
     }
 }
 

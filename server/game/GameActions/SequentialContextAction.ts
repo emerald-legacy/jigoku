@@ -1,45 +1,31 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { EventName } from '../Constants.js';
 
 export interface SequentialContextProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class SequentialContextAction<C extends AbilityContext = AbilityContext> extends GameAction<SequentialContextProperties, EventName, C> {
-    getEffectMessage(context: C): MessageArgs {
-        const properties = super.getProperties(context);
-        return properties.gameActions[0].getEffectMessage(context);
+export class SequentialContextAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<SequentialContextProperties, C> {
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return properties.gameActions[0].getEffectMessage(context, overrides);
     }
 
-    getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        for(const gameAction of properties.gameActions) {
-            gameAction.setDefaultTarget(() => properties.target);
-        }
-        return properties;
+    protected children(properties: SequentialContextProperties) {
+        return properties.gameActions;
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
-        const { gameActions } = this.getProperties(context, additionalProperties);
-        return gameActions.some((gameAction) => gameAction.hasLegalTarget(context));
-    }
-
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context));
-    }
-
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
-                if(gameAction.hasLegalTarget(context, additionalProperties)) {
+                if(gameAction.hasLegalTarget(context, overrides)) {
                     const eventsForThisAction: Event[] = [];
-                    gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
+                    gameAction.addEventsToArray(eventsForThisAction, context, overrides);
                     context.game.queueSimpleStep(() => {
                         for(const event of eventsForThisAction) {
                             events.push(event);
@@ -51,12 +37,5 @@ export class SequentialContextAction<C extends AbilityContext = AbilityContext> 
                 }
             });
         }
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) =>
-            gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
-        );
     }
 }

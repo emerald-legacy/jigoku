@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { cardMenu, dishonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InsultToInjury extends DrawCard {
@@ -12,27 +13,20 @@ export default class InsultToInjury extends DrawCard {
                         (card) => card.controller === context.player && card.hasTrait('duelist')
                     ) ?? false
             })
-            .gameAction(AbilityDsl.actions.conditional((context) => {
-                const losers = context.event.loser ?? [];
-                return {
-                    condition: losers.length > 1,
-                    trueGameAction: AbilityDsl.actions.cardMenu({
-                        activePromptTitle: 'Choose a character to dishonor',
-                        cards: losers,
-                        gameAction: AbilityDsl.actions.dishonor(),
-                        message: '{0} chooses to dishonor {1}',
-                        messageArgs: (card, player) => [player, card]
-                    }),
-                    falseGameAction: AbilityDsl.actions.dishonor({ target: losers[0] })
-                };
-            }))
-            .effect('{1}', (context) => {
+            .chatText((context) => {
                 const loser = context.event.loser;
-                return [
-                    (loser?.length ?? 0) > 1
-                        ? 'choose to dishonor a loser of the duel'
-                        : ['dishonor {0}', loser ?? []]
-                ];
-            });
+                return (loser?.length ?? 0) > 1
+                    ? msg`choose to dishonor a loser of the duel`
+                    : msg`dishonor ${loser ?? []}`;
+            })
+            .if((context) => (context.event.loser ?? []).length > 1)
+                .gameAction(cardMenu((context) => ({
+                    activePromptTitle: 'Choose a character to dishonor',
+                    cards: context.event.loser ?? [],
+                    gameAction: dishonor(),
+                    message: (_context, card, player) => msg`${player} chooses to dishonor ${card}`
+                })))
+            .otherwise()
+                .dishonor((context) => ({ target: context.event.loser?.[0] }));
     }
 }

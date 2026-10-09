@@ -1,11 +1,12 @@
 import { AbilityContext } from './AbilityContext.js';
-import { PlayType } from './Constants.js';
-import { PlayDisguisedCharacterAction, PlayDisguisedCharacterIntoLocation } from './PlayDisguisedCharacterAction.js';
+import { PlayType, Blocker } from './Constants.js';
+import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
+import { PlayIntoLocation } from './PlayCharacterAction.js';
 import DrawCard from './DrawCard.js';
 import Player from './Player.js';
 
 export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard, intoLocation = PlayDisguisedCharacterIntoLocation.Any) {
+    constructor(card: DrawCard, intoLocation = PlayIntoLocation.Any) {
         super(card, intoLocation);
     }
 
@@ -15,23 +16,23 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        const newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
+            ? ignoredBlockers
+            : ignoredBlockers.concat(Blocker.WrongLocation);
+        return super.meetsRequirements(context, newIgnoredBlockers);
     }
 }
 
 export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayDisguisedCharacterIntoLocation.Conflict);
+        super(card, PlayIntoLocation.Conflict);
     }
 }
 
 export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayDisguisedCharacterIntoLocation.Home);
+        super(card, PlayIntoLocation.Home);
     }
 }
 

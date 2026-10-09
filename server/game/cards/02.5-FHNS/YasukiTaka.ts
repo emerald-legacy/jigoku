@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
+import { Phase, CardType, Location } from '../../Constants.js';
 
 class YasukiTaka extends DrawCard {
     static id = 'yasuki-taka';
@@ -8,14 +8,14 @@ class YasukiTaka extends DrawCard {
     setupCardAbilities() {
         this.reaction('Gain fate')
             .when({
-                onCardLeavesPlay: event => {
+                onCardLeavesPlay: (event) => {
                     const state = event.cardStateWhenLeftPlay;
-                    return this.game.currentPhase === Phases.Conflict && !!state && state.isFaction('crab') &&
+                    return this.game.currentPhase === Phase.Conflict && !!state && state.isFaction('crab') &&
                         state.type === CardType.Character && state.location === Location.PlayArea;
                 }
             })
-            .gameAction(AbilityDsl.actions.gainFate())
-            .limit(AbilityDsl.limit.unlimited());
+            .gainFate()
+            .limit(unlimited());
     }
 }
 

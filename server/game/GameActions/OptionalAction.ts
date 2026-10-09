@@ -1,81 +1,63 @@
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
-import { Derivable, derive } from '../utils/helpers.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
+import type { Players } from '../Constants.js';
+import type Player from '../Player.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { EventName } from '../Constants.js';
 
-export interface OptionalActionProperties extends GameActionProperties {
+export interface OptionalProperties extends GameActionProperties {
     gameAction: GameAction;
-    effect?: string;
-    effectArgs?: Derivable<MsgArg[], AbilityContext>;
-    promptTitleForConfirming: string;
-    showMessageOnNo?: boolean;
+    prompt: string;
+    /** Who decides: the ability's player (default) or their opponent. */
+    player?: Players.Self | Players.Opponent;
+    /** The chat line when they do. */
+    acceptMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
+    /** The chat line when they don't. */
+    declineMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
 }
 
-export class OptionalAction<C extends AbilityContext = AbilityContext> extends GameAction<OptionalActionProperties, EventName, C> {
-    getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
-        return properties;
+/** A player may resolve its game action; a `then()` step after it runs only if they did and it resolved. */
+export class OptionalAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<OptionalProperties, C> {
+    protected children(properties: OptionalProperties) {
+        return [properties.gameAction];
     }
 
-    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameAction.getEffectMessage(context);
+    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return properties.gameAction.getEffectMessage(context, overrides);
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameAction.hasLegalTarget(context, additionalProperties);
-    }
-
-    canAffect(target: GameObject, context: C, additionalProperties = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameAction.canAffect(target, context, additionalProperties);
-    }
-
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
-
-        context.player.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: properties.promptTitleForConfirming,
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const chooser = resolveChoosingPlayer(context, properties.player);
+        if(!chooser) {
+            return;
+        }
+        context.game.promptWithHandlerMenu(chooser, {
+            activePromptTitle: properties.prompt,
             source: context.source,
             options: [
-                { text: 'Yes', handler: () => this.resolveAction(properties, events, context, additionalProperties) },
-                { text: 'No', handler: () => this.skipAction(properties, context) }
+                {
+                    text: 'Yes',
+                    handler: () => {
+                        properties.gameAction.addEventsToArray(events, context, overrides);
+                        if(properties.acceptMessage) {
+                            context.game.addMessage(properties.acceptMessage(context, chooser));
+                        }
+                    }
+                },
+                {
+                    text: 'No',
+                    handler: () => {
+                        if(properties.declineMessage) {
+                            context.game.addMessage(properties.declineMessage(context, chooser));
+                        }
+                    }
+                }
             ]
         });
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
-    }
-
-    resolveAction(
-        properties: OptionalActionProperties,
-        events: Event[],
-        context: C,
-        additionalProperties = {}
-    ) {
-        properties.gameAction.addEventsToArray(events, context, additionalProperties);
-        const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
-        const nextArg = args.length;
-        const msg = `{${nextArg}} chooses to ${properties.effect ?? ''}`;
-        context.game.addMessage(msg, ...args, context.player);
-    }
-
-    skipAction(
-        properties: OptionalActionProperties,
-        context: C
-    ) {
-        if(properties.showMessageOnNo) {
-            const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
-            const nextArg = args.length;
-            const msg = `{${nextArg}} chooses not to ${properties.effect ?? ''}`;
-            context.game.addMessage(msg, ...args, context.player);
-        }
     }
 }

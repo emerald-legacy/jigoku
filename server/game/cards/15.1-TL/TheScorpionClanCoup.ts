@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 
 export default class TheScorpionClanCoup extends ProvinceCard {
     static id = 'the-scorpion-clan-coup';
@@ -14,7 +14,7 @@ export default class TheScorpionClanCoup extends ProvinceCard {
                 ),
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),
-            effect: AbilityDsl.effects.modifyBothSkills(-1)
+            effect: modifyBothSkills(-1)
         });
     }
 }

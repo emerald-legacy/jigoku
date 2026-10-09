@@ -1,8 +1,8 @@
-import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
+import { TriggerWindow } from './TriggerWindow.js';
 import { Event } from '../Events/Event.js';
 import type { TriggerChoice } from '../TriggeredAbility.js';
 
-class KeywordAbilityWindow extends ForcedTriggeredAbilityWindow {
+export class KeywordAbilityWindow extends TriggerWindow {
     addChoice(context: TriggerChoice): void {
         if(!(context.event instanceof Event && context.event.cancelled) && !this.hasAbilityBeenTriggered(context) && context.ability && context.ability.isKeywordAbility()) {
             this.choices.push(context);
@@ -10,4 +10,3 @@ class KeywordAbilityWindow extends ForcedTriggeredAbilityWindow {
     }
 }
 
-export default KeywordAbilityWindow;

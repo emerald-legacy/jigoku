@@ -1,6 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, Players, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, chooseAction, takeHonor } from '../../../GameActions/GameActions.js';
 
 export default class IkomaUjio extends DrawCard {
     static id = 'ikoma-ujio';
@@ -9,21 +10,20 @@ export default class IkomaUjio extends DrawCard {
         this.conflictAction('Military duel to bow', { conflictType: ConflictType.Political })
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: '{0} chooses whether to bow {1} or give 1 honor to {2}',
-                messageArgs: duel => [duel.loserController, duel.loser, duel.winnerController],
-                gameAction: (duel, context) => AbilityDsl.actions.chooseAction({
+                chatText: (_context, duel) => msg`${duel.loserController} chooses whether to bow ${duel.loser} or give 1 honor to ${duel.winnerController}`,
+                gameAction: (duel, context) => chooseAction({
                     target: duel.loser,
                     player: duel.loserController !== context.source.controller ? Players.Opponent : Players.Self,
-                    options: {
+                    choices: {
                         'Give opponent 1 honor': {
-                            action: AbilityDsl.actions.takeHonor({
+                            action: takeHonor({
                                 target: duel.loserController
                             }),
-                            message: '{0} chooses to give 1 honor to their opponent'
+                            message: (_context, _target, player) => msg`${player} chooses to give 1 honor to their opponent`
                         },
                         'Bow duel loser': {
-                            action: AbilityDsl.actions.bow(),
-                            message: '{0} chooses to bow {1}'
+                            action: bow(),
+                            message: (_context, target, player) => msg`${player} chooses to bow ${target}`
                         }
                     }
                 })

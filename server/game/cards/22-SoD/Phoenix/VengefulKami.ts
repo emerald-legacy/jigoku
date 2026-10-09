@@ -1,6 +1,9 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { cardCannot } from '../../../effects.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
+import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
@@ -8,9 +11,8 @@ export default class VengefulKami extends DrawCard {
     public setupCardAbilities() {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
-        this.action('Resolve Ring Effect')
-            .condition(context => context.game.isDuringConflict() &&
-                context.player.isDefendingPlayer() &&
+        this.conflictAction('Resolve Ring Effect', { evenFromHome: true })
+            .condition((context) => context.player.isDefendingPlayer() &&
                 context.game.requireConflict()
                     .getConflictProvinces()
                     .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))
@@ -20,14 +22,14 @@ export default class VengefulKami extends DrawCard {
                     context.game.requireConflict()
                         .getConflictProvinces()
                         .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict) && province.getElement().includes(ring.element))
-            }, AbilityDsl.actions.resolveRingEffect())
-            .effect('resolve the {0} effect')
-            .max(AbilityDsl.limit.perConflict(1));
+            }, resolveRingEffect())
+            .chatText('resolve the {0} effect')
+            .max(perConflict(1));
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'applyCovert',
-                restricts: 'opponentsCardEffects'
+            effect: cardCannot({
+                cannot: RestrictionType.ApplyCovert,
+                appliesTo: RestrictionScope.OpponentsCardEffects
             })
         });
     }

@@ -92,8 +92,8 @@ describe('Scholar of Old Rempet', function() {
 
             // unaffected by non-targeted effects from events
             this.player1.clickCard(this.unleashTheDjinn);
-            expect(this.rempet.getPoliticalSkill()).toBe(0);
-            expect(this.adeptOfTheWaves.getPoliticalSkill()).toBe(3);
+            expect(this.rempet.politicalSkill).toBe(0);
+            expect(this.adeptOfTheWaves.politicalSkill).toBe(3);
         });
 
         it('immunity should expire at the end of the conflict', function() {

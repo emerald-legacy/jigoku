@@ -186,7 +186,7 @@ describe('Mirumoto Rikitaro', function () {
                     defenders: [this.initiate]
                 });
 
-                const mil = this.rikitaro.getMilitarySkill();
+                const mil = this.rikitaro.militarySkill;
 
                 expect(this.katana.parent).toBe(this.initiate);
 
@@ -200,7 +200,7 @@ describe('Mirumoto Rikitaro', function () {
 
                 this.player1.clickCard(this.katana);
 
-                expect(this.rikitaro.getMilitarySkill()).toBe(mil + 2);
+                expect(this.rikitaro.militarySkill).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Mirumoto Rikitaro to discard Fine Katana');
                 expect(this.getChatLogs(5)).toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon');
@@ -213,7 +213,7 @@ describe('Mirumoto Rikitaro', function () {
                     defenders: [this.initiate]
                 });
 
-                const mil = this.rikitaro.getMilitarySkill();
+                const mil = this.rikitaro.militarySkill;
 
                 expect(this.katana.parent).toBe(this.initiate);
 
@@ -227,7 +227,7 @@ describe('Mirumoto Rikitaro', function () {
 
                 this.player1.clickCard(this.fan);
 
-                expect(this.rikitaro.getMilitarySkill()).toBe(mil);
+                expect(this.rikitaro.militarySkill).toBe(mil);
 
                 expect(this.getChatLogs(5)).not.toContain('Mirumoto Rikitaro gains +2military due to discarding a weapon');
             });

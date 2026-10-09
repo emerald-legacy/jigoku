@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 
@@ -9,7 +9,7 @@ class InquisitiveIshika extends DrawCard {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(),
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({ match: (card) => this.game.currentConflict?.elements.some((element) => card.hasTrait(element)) ?? false })
+            effect: reduceCost({ match: (card) => this.game.currentConflict?.elements.some((element) => card.hasTrait(element)) ?? false })
         });
     }
 }

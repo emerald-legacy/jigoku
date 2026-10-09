@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 
 class FourTemplesAdvisor extends DrawCard {
     static id = 'four-temples-advisor';
@@ -9,9 +9,9 @@ class FourTemplesAdvisor extends DrawCard {
             .when({
                 onMoveFate: (event, context) => event.origin && event.origin.type === 'ring' && event.recipient === context.player
             })
-            .gameAction(AbilityDsl.actions.draw())
-            .effect('draw a card')
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .draw()
+            .chatText('draw a card')
+            .limit(unlimitedPerConflict());
     }
 }
 

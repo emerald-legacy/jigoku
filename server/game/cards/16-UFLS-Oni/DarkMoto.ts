@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
+import { cardLastingEffect, multiple, placeFate } from '../../GameActions/GameActions.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class DarkMoto extends BaseOni {
@@ -11,16 +12,16 @@ export default class DarkMoto extends BaseOni {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.placeFate((context) => ({
+            .gameAction(multiple([
+                placeFate((context) => ({
                     target: context.source,
                     origin: context.player
                 })),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+                cardLastingEffect((context) => ({
                     target: context.source,
-                    effect: AbilityDsl.effects.doesNotBow()
+                    effect: doesNotBow()
                 }))
             ]))
-            .effect('place a fate on and prevent {0} from bowing as a result of conflict resolution');
+            .chatText('place a fate on and prevent {0} from bowing as a result of conflict resolution');
     }
 }

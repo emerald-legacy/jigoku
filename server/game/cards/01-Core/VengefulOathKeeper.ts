@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 
 class VengefulOathkeeper extends DrawCard {
     static id = 'vengeful-oathkeeper';
@@ -11,7 +11,7 @@ class VengefulOathkeeper extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
-            .gameAction(AbilityDsl.actions.putIntoPlay())
+            .gameAction(putIntoPlay())
             .location(Location.Hand);
     }
 }

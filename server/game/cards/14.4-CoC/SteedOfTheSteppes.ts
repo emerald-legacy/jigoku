@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { addTrait } from '../../effects.js';
 import { captureParentCost } from '../captureParentCost.js';
 
 class SteedOfTheSteppes extends DrawCard {
@@ -7,16 +8,16 @@ class SteedOfTheSteppes extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('cavalry')
+            effect: addTrait('cavalry')
         });
 
         this.action('Ready attached character')
             .cost(captureParentCost())
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .condition(context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
+            .cost(costs.sacrificeSelf())
+            .condition((context) => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
             //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.captureParentCost is for the actual stand
 
-            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) })));
+            .ready((context) => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) }));
     }
 }
 

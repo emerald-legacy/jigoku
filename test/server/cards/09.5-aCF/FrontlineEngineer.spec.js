@@ -66,7 +66,7 @@ describe('Frontline Engineer', function() {
                     },
                     player2: {
                         inPlay: ['frontline-engineer'],
-                        dynastyDiscard: ['wandering-ronin', 'doji-challenger', 'kitsu-spiritcaller', 'akodo-toturi', 'iron-mine', 'matsu-tsuko'],
+                        dynastyDiscard: ['wandering-ronin', 'doji-challenger', 'kitsu-spiritcaller', 'akodo-toturi', 'iron-mine', 'matsu-tsuko', 'imperial-storehouse'],
                         dynastyDeckSize: 4
                     }
                 });
@@ -74,6 +74,8 @@ describe('Frontline Engineer', function() {
                 this.frontlineEngineerAttacker = this.player1.findCardByName('frontline-engineer');
                 this.frontlineEngineerDefender = this.player2.findCardByName('frontline-engineer');
                 this.matsuTsuko = this.player2.placeCardInProvince('matsu-tsuko', 'province 1');
+                // Imperial Storehouse is the 6th card, below the 5 Frontline Engineer searches
+                this.storehouse = this.player2.moveCard('imperial-storehouse', 'dynasty deck');
                 this.player2.moveCard('wandering-ronin', 'dynasty deck');
                 this.player2.moveCard('doji-challenger', 'dynasty deck');
                 this.player2.moveCard('kitsu-spiritcaller', 'dynasty deck');
@@ -105,6 +107,7 @@ describe('Frontline Engineer', function() {
                 expect(this.player2).toHaveDisabledPromptButton('Kitsu Spiritcaller');
                 expect(this.player2).toHaveDisabledPromptButton('Akodo Toturi');
                 expect(this.player2).toHavePromptButton('Iron Mine');
+                expect(this.player2).not.toHavePromptButton('Imperial Storehouse');
             });
 
             it('should put the chosen holding face up in the defending province and discard the card there', function () {
@@ -117,6 +120,7 @@ describe('Frontline Engineer', function() {
                 expect(this.getChatLogs(5)).toContain('player2 uses Frontline Engineer to look at the top five cards of their dynasty deck');
                 expect(this.getChatLogs(4)).toContain('player2 discards Matsu Tsuko, replacing it with Iron Mine');
                 expect(this.getChatLogs(3)).toContain('player2 is shuffling their dynasty deck');
+                expect(this.storehouse.location).toBe('dynasty deck');
             });
         });
 
@@ -168,6 +172,7 @@ describe('Frontline Engineer', function() {
                 expect(this.player2).toHaveDisabledPromptButton('Kitsu Spiritcaller');
                 expect(this.player2).toHaveDisabledPromptButton('Akodo Toturi');
                 expect(this.player2).toHavePromptButton('Iron Mine');
+                expect(this.player2).not.toHavePromptButton('Imperial Storehouse');
             });
 
             it('should put the chosen holding face up in the defending province and discard all cards there', function () {

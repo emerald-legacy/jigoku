@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Location, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { breakProvince } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class RazeToTheGround extends DrawCard {
@@ -11,18 +13,17 @@ export default class RazeToTheGround extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military
             })
-            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
-            .cost(AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
+            .cost(costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
-                message: '{0} breaks {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.breakProvince()
-            })))
-            .effect('break an attacked province');
+                message: (context, cards) => msg`${context.player} breaks ${cards}`,
+                gameAction: breakProvince()
+            })
+            .chatText('break an attacked province');
     }
 }

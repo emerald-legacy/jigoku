@@ -1,21 +1,23 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 class UnleashTheDjinn extends DrawCard {
     static id = 'unleash-the-djinn';
 
     setupCardAbilities() {
         this.action('Make all participating characters 3/3')
-            .cost(AbilityDsl.costs.payHonor(3))
+            .cost(costs.payHonor(3))
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants(),
                 effect: [
-                    AbilityDsl.effects.setMilitarySkill(3),
-                    AbilityDsl.effects.setPoliticalSkill(3)
+                    setMilitarySkill(3),
+                    setPoliticalSkill(3)
                 ]
-            })))
-            .effect('make all participating characters 3{1}/3{2}', () => ['military', 'political']);
+            }))
+            .chatText(() => msg`make all participating characters 3${'military'}/3${'political'}`);
     }
 }
 

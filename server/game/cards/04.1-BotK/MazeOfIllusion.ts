@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, dishonor, setHonorDial } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,7 +16,7 @@ export default class MazeOfIllusion extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
+            }, bow(), dishonor())
             .handler((context) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a value to set your honor dial at',
@@ -23,7 +24,7 @@ export default class MazeOfIllusion extends DrawCard {
                     options: [1, 2, 3, 4, 5].map((value) => ({ text: value.toString(), handler: () => this.opponentGuess(value, context) }))
                 });
             })
-            .effect('bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd', (context) => context.player.opponent);
+            .chatText((context) => msg`bow and dishonor ${context.chatTarget()} if ${context.player.opponent} can't guess whether their dial is even or odd`);
     }
 
     private opponentGuess(value: number, context: AbilityContext) {
@@ -40,8 +41,8 @@ export default class MazeOfIllusion extends DrawCard {
     }
 
     private resolveAbility(choice: Choice, value: number, context: AbilityContext) {
-        this.game.addMessage('{0} guesses {1}', context.player.opponent, choice);
-        this.game.actions.setHonorDial({ value }).resolve(context.player, context);
+        this.game.addMessage(msg`${context.player.opponent} guesses ${choice}`);
+        setHonorDial({ value }).resolve(context.player, context);
         if((choice === 'Odd') === (value % 2 === 0)) {
             context.game.applyGameAction(context, { bow: context.target, dishonor: context.target });
         }

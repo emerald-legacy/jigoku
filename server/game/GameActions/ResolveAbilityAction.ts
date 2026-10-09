@@ -1,12 +1,13 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type CardAbility from '../CardAbility.js';
-import { EventName } from '../Constants.js';
+import type { CardAbility } from '../CardAbility.js';
+import { EventName, Blocker } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
+import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/AbilityResolver.js';
+import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -93,31 +94,31 @@ class ResolveAbilityActionResolver extends AbilityResolver {
 export interface ResolveAbilityProperties extends CardActionProperties {
     ability: CardAbility;
     subResolution?: boolean;
-    ignoredRequirements?: string[];
+    ignoredBlockers?: Blocker[];
     player?: Player;
     event?: Event;
     choosingPlayerOverride?: Player | null;
 }
 
-export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, C, 'ignoredRequirements' | 'subResolution'> {
+export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, C, 'ignoredBlockers' | 'subResolution'> {
     name = 'resolveAbility';
     defaultProperties = {
-        ignoredRequirements: [],
+        ignoredBlockers: [],
         subResolution: false
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        return ['resolve {0}\'s {1} ability', [this.getProperties(context).ability.title]];
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             super.canAffect(card, context) &&
             canResolveAbility(
                 properties,
                 context,
-                properties.ignoredRequirements.concat('player', 'location', 'limit', 'triggeringRestrictions')
+                properties.ignoredBlockers.concat(Blocker.WrongPlayer, Blocker.WrongLocation, Blocker.LimitReached, Blocker.TriggeringRestricted)
             )
         );
     }
@@ -137,13 +138,13 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
                 event.context.game,
                 newContext,
                 properties.ability,
-                properties.ignoredRequirements.includes('cost')
+                properties.ignoredBlockers.includes(Blocker.CannotPayCost)
             )
         );
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C): boolean {
-        const properties = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         return properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context));
     }
 }

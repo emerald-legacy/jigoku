@@ -1,47 +1,57 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import {
+    cardLastingEffect,
+    honor,
+    joint,
+    menuPrompt,
+    removeFate,
+    resolveAbility,
+    sequential
+} from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
-import CardAbility from '../../CardAbility.js';
+import { CardAbility } from '../../CardAbility.js';
 
 class CaptivatingStory extends DrawCard {
     static id = 'captivating-story';
 
     setupCardAbilities() {
         this.action('Give a character +X pol')
-            .condition(context => (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
+            .condition((context) => (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && (context.player.getNumberOfFaceupProvinces() > 0 || card.allowGameAction('removeFate', context))
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
+            }, sequential([
+                cardLastingEffect((context) => ({
+                    effect: modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
                 })),
-                AbilityDsl.actions.menuPrompt((context) => ({
+                menuPrompt((context) => ({
                     activePromptTitle: 'Remove 1 fate from ' + context.target.name + ' to honor them?',
                     choices: ['Yes'].concat(context.player.getNumberOfFaceupProvinces() > 0 ? ['No'] : []),
                     choiceHandler: (choice, displayMessage) => {
                         if(displayMessage) {
-                            context.game.addMessage('{0} chooses {1}to remove a fate from {2} to honor them', context.player, choice === 'No' ? 'not ' : '', context.target);
+                            context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to remove a fate from ${context.target} to honor them`);
                         }
                         return { amount: choice === 'Yes' ? 1 : 0 };
                     },
-                    gameAction: AbilityDsl.actions.joint([
-                        AbilityDsl.actions.removeFate((context) => ({
+                    gameAction: joint([
+                        removeFate((context) => ({
                             target: context.target
                         })),
-                        AbilityDsl.actions.resolveAbility({
+                        resolveAbility({
                             target: context.source,
                             subResolution: true,
                             ability: new CardAbility(context.source, {
                                 title: 'Honor this character',
-                                gameAction: AbilityDsl.actions.honor({ target: context.target })
+                                gameAction: honor({ target: context.target })
                             })
                         })
                     ])
                 }))
             ]))
-            .effect('give {0} +1{1} for each faceup province they control (+{2}{1})', context => ['political', context.player.getNumberOfFaceupProvinces()]);
+            .chatText((context) => msg`give ${context.chatTarget()} +1${'political'} for each faceup province they control (+${context.player.getNumberOfFaceupProvinces()}${'political'})`);
     }
 }
 

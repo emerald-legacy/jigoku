@@ -1,16 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { modifyBothSkills } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class WanderingRonin extends DrawCard {
     static id = 'wandering-ronin';
 
     setupCardAbilities() {
         this.action('Give this character +2/+2')
-            .cost(AbilityDsl.costs.removeFateFromSelf())
+            .cost(costs.removeFateFromSelf())
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.modifyBothSkills(2) }))
-            .effect('give himself +2{1}/+2{2}', () => ['military', 'political'])
-            .limit(AbilityDsl.limit.perConflict(2));
+            .cardLastingEffect({ effect: modifyBothSkills(2) })
+            .chatText(() => msg`give himself +2${'military'}/+2${'political'}`)
+            .limit(perConflict(2));
     }
 }
 

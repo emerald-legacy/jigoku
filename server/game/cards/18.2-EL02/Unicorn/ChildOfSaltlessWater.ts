@@ -1,17 +1,18 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, setMilitarySkill } from '../../../effects.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class ChildOfSaltlessWater extends DrawCard {
     static id = 'child-of-saltless-water';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition: (context) => context.source.isDrawCard() && !context.source.isParticipating(),
-                message: '{0} is discarded from play as it is at home',
-                messageArgs: (context) => [context.source],
-                gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
+                message: (context) => msg`${context.source} is discarded from play as it is at home`,
+                gameAction: discardFromPlay((context) => ({
                     target: context.source
                 }))
             })
@@ -26,9 +27,9 @@ export default class ChildOfSaltlessWater extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isConflictProvince()
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.setMilitarySkill(context.target.printedStrength)
-            })))
-            .effect('set its {1} to {2}', (context) => ['military', context.target.printedStrength]);
+            .cardLastingEffect((context) => ({
+                effect: setMilitarySkill(context.target.printedStrength)
+            }))
+            .chatText((context) => msg`set its ${'military'} to ${context.target.printedStrength}`);
     }
 }

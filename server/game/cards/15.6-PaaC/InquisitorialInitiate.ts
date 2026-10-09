@@ -1,6 +1,7 @@
 import { Location, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardMenu, discardCard, lookAt, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
@@ -21,16 +22,19 @@ export default class InquisitorialInitiate extends DrawCard {
                 mode: TargetMode.ExactlyVariable,
                 location: Location.Hand
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.lookAt((context) => ({
+            .gameAction(multiple([
+                lookAt((context) => ({
                     target: context.targets.target
                 })),
-                AbilityDsl.actions.cardMenu((context) => ({
+                cardMenu((context) => ({
                     cards: context.targets.target.filter((card) => card.isDrawCard()),
-                    gameAction: AbilityDsl.actions.discardCard(),
-                    message: '{0} chooses {1} to be discarded',
-                    messageArgs: (card, player) => [player, card]
+                    gameAction: discardCard(),
+                    message: (_context, card, player) => msg`${player} chooses ${card} to be discarded`
                 }))
-            ]));
+            ]))
+            .chatText((context) => {
+                const count = context.targets.target.length;
+                return msg`make ${context.player.opponent} reveal ${count} card${count === 1 ? '' : 's'} and discard ${count === 1 ? 'it' : 'one of them'}`;
+            });
     }
 }

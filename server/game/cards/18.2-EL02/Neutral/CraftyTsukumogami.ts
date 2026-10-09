@@ -1,9 +1,16 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { RingAttachment } from '../../RingAttachment.js';
 import type Ring from '../../../Ring.js';
-import { CardType, AbilityType, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { GameModes } from '../../../../GameModes.js';
+import { CardType, Duration } from '../../../Constants.js';
+import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { changeType, gainAbility } from '../../../effects.js';
+import {
+    attachToRing,
+    cardLastingEffect,
+    chosenDiscard,
+    handler,
+    sequential
+} from '../../../GameActions/GameActions.js';
 
 class CraftyTsukumogami extends RingAttachment {
     static id = 'crafty-tsukumogami';
@@ -13,44 +20,39 @@ class CraftyTsukumogami extends RingAttachment {
             .ringTarget({
                 activePromptTitle: 'Choose a ring to attach to',
                 ringCondition: (ring, context) => this.checkRingCondition(ring, context)
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect(context => ({
+            }, sequential([
+                cardLastingEffect((context) => ({
                     canChangeZoneOnce: true,
                     duration: Duration.Custom,
                     target: context.source,
                     effect: [
-                        AbilityDsl.effects.changeType(CardType.Attachment),
-                        AbilityDsl.effects.gainAbility(AbilityType.ForcedReaction, {
-                            title: 'Discard a card',
-                            limit: AbilityDsl.limit.unlimitedPerConflict(),
-                            when: {
-                                onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
-                            },
-                            printedAbility: false,
-                            gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
+                        changeType(CardType.Attachment),
+                        gainAbility.forcedReaction('Discard a card', {
+                            onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
+                        }, (ability) => ability
+                            .gameAction(chosenDiscard((context) => ({
                                 target: context.game.currentConflict?.attackingPlayer
-                            }))
-                        })
+                            })))
+                            .limit(unlimitedPerConflict()))
                     ]
                 })),
-                AbilityDsl.actions.attachToRing((context) => ({
+                attachToRing((context) => ({
                     attachment: context.source
                 })),
-                AbilityDsl.actions.handler({
-                    handler: context => {
-                        const card = context.source;
-                        card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card), 1);
+                handler({
+                    handler: (context) => {
+                        // attachToRing already took it out of the cards in play
                         if(context.game.currentConflict) {
-                            context.game.currentConflict.removeFromConflict(card);
+                            context.game.currentConflict.removeFromConflict(context.source);
                         }
                     }
                 })
             ]))
-            .effect('attach itself to the {0}');
+            .chatText('attach itself to the {0}');
     }
 
     private checkRingCondition(ring: Ring, context: AbilityContext) {
-        const frameworkLimitsAttachmentsWithRepeatedNames = context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
+        const frameworkLimitsAttachmentsWithRepeatedNames = context.game.rules.attachmentsMaxOneCopyPerName;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             const attachment = context.source;
             if(ring.attachments.filter((a) => !a.allowDuplicatesOfAttachment).some((a) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {

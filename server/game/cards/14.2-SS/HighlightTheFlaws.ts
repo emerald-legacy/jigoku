@@ -1,5 +1,5 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
 
 class HighlightTheFlaws extends DrawCard {
@@ -8,10 +8,10 @@ class HighlightTheFlaws extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel conflict province ability')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Province
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Province
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
+            .cancel()
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`);
     }
 }
 

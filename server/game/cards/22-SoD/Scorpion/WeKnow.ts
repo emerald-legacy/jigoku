@@ -1,15 +1,17 @@
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { discardStatusToken, draw, gainStatusToken, joint, loseHonor } from '../../../GameActions/GameActions.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class WeKnow extends DrawCard {
     static id = 'we-know';
 
     setupCardAbilities() {
         this.action('Choose an honored status token')
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('courtier')
             }))
@@ -17,7 +19,7 @@ export default class WeKnow extends DrawCard {
                 name: 'token',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                tokenCondition: token => {
+                tokenCondition: (token) => {
                     return token.grantedStatus === CharacterStatus.Honored;
                 }
             })
@@ -30,41 +32,23 @@ export default class WeKnow extends DrawCard {
                 const targetCard = targetToken.card;
                 const choices: Record<string, GameAction> = {};
                 if(targetCard instanceof DrawCard) {
-                    choices[`Dishonor ${targetCard.name}`] = AbilityDsl.actions.joint([
-                        AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                        AbilityDsl.actions.gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })
+                    choices[`Dishonor ${targetCard.name}`] = joint([
+                        discardStatusToken({ target: targetToken }),
+                        gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })
                     ]);
-                    choices['Lose honor and let opponent draw cards'] = AbilityDsl.actions.joint([
-                        AbilityDsl.actions.loseHonor({ target: context.player.opponent }),
-                        AbilityDsl.actions.draw({ target: context.player, amount: 2 })
+                    choices['Lose honor and let opponent draw cards'] = joint([
+                        loseHonor({ target: context.player.opponent }),
+                        draw({ target: context.player, amount: 2 })
                     ]);
                 }
                 return choices;
             })
-            .effect('{1}{2}{3}', (context) => {
-                if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
-                    return [
-                        'draw two cards and cause ',
-                        context.player.opponent,
-                        ' to lose 1 honor'
-                    ];
-                }
-                return [
-                    'replace ',
-                    context.tokens.token[0].card,
-                    ' honored status token with a dishonored status token'
-                ];
-
-            })
-            .then(context => ({
-                thenCondition: () => !!context.player.opponent && context.player.honor > context.player.opponent.honor,
-                gameAction: AbilityDsl.actions.loseHonor({
-                    target: context.player,
-                    amount: 2
-                }),
-                message: '{3} loses 2 honor',
-                messageArgs: () => [context.player]
-            }))
-            .cannotTargetFirst();
+            .chatText((context) => context.selects.select.choice === 'Lose honor and let opponent draw cards'
+                ? msg`${'draw two cards and cause '}${context.player.opponent}${' to lose 1 honor'}`
+                : msg`replace ${context.tokens.token[0].card} honored status token with a dishonored status token`)
+            .cannotTargetFirst()
+            .thenIf((context) => !!context.player.opponent && context.player.honor > context.player.opponent.honor)
+            .loseHonor(2)
+            .message((context) => msg`${context.player} loses 2 honor`);
     }
 }

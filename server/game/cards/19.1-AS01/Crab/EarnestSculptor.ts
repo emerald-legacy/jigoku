@@ -1,21 +1,23 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
+import { msg } from '../../../GameChat.js';
 
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
 
     public setupCardAbilities() {
         this.action('Search top 8 card for a spell')
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: 8,
+            .deckSearch({
+                cardsToLookAt: 8,
                 cardCondition: (card) => card.hasTrait('spell'),
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }))
-            .effect('look at the top 8 cards of their deck');
+            })
+            .chatText('look at the top 8 cards of their deck');
 
         this.interrupt('Reduce cost of next Jade card')
             .when({
@@ -33,14 +35,14 @@ export default class EarnestSculptor extends DrawCard {
                     event.context.source.hasTrait('jade') &&
                     event.context.ability.getReducedCost(event.context) > 0
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                effect: reduceNextPlayedCardCost(
                     1,
                     (card) =>
                         card === context.event.card || card === context.event.context.source
                 )
-            })))
-            .effect('reduce the cost of {1} by 1', (context) => [context.event.context.source]);
+            }))
+            .chatText((context) => msg`reduce the cost of ${context.event.context.source} by 1`);
     }
 }

@@ -1,7 +1,8 @@
-import { CardType, Duration, Location } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { lookAt, sequentialContext, setAside } from '../../../GameActions/GameActions.js';
+import { shuffle } from '../../../utils/random.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
     static id = 'eagle-s-rest-peak';
@@ -14,46 +15,22 @@ export default class EaglesRestPeak extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending() && (card.getCost() ?? 0) > 0
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
+            .gameAction(sequentialContext((context) => {
                 const opponent = context.player.opponent;
                 const setAsideCards = shuffle(opponent?.hand ?? [])
                     .slice(0, context.target.getCost() ?? 0);
 
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt({ target: setAsideCards }),
-
-                        AbilityDsl.actions.handler({
-                            handler: () => {
-                                this.game.addMessage('{0} sets aside {1}', opponent, setAsideCards);
-                                if(opponent) {
-                                    for(const card of setAsideCards) {
-                                        opponent.moveCard(card, Location.RemovedFromGame);
-                                    }
-                                }
-                            }
-                        }),
-
-                        AbilityDsl.actions.playerLastingEffect({
-                            duration: Duration.UntilEndOfRound,
-                            targetController: opponent,
-                            effect: AbilityDsl.effects.playerDelayedEffect({
-                                when: { onConflictFinished: () => true },
-                                gameAction: AbilityDsl.actions.handler({
-                                    handler: (context) => {
-                                        context.game.addMessage('{0} picks back their cards', opponent);
-                                        if(opponent) {
-                                            for(const card of setAsideCards) {
-                                                opponent.moveCard(card, Location.Hand);
-                                            }
-                                        }
-                                    }
-                                })
-                            })
+                        lookAt({ target: setAsideCards }),
+                        setAside({
+                            target: setAsideCards,
+                            returnAtEndOfConflict: true,
+                            message: (_context, cards) => msg`${opponent} sets aside ${cards}`
                         })
                     ]
                 };
             }))
-            .effect('use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand', context => [context.target.getCost() ?? 0, context.player.opponent]);
+            .chatText((context) => msg`use the insight of ${context.chatTarget()}, revealing and setting aside ${context.target.getCost() ?? 0} cards from ${context.player.opponent}'s hand`);
     }
 }

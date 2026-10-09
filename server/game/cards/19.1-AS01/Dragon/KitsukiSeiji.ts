@@ -1,4 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
+import { joint, noAction, placeFate, placeFateOnRing } from '../../../GameActions/GameActions.js';
 import { Element, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -14,11 +16,11 @@ export default class KitsukiSeiji extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.showBid % 2 === 1,
-            effect: [AbilityDsl.effects.modifyMilitarySkill(+2), AbilityDsl.effects.modifyPoliticalSkill(-2)]
+            effect: [modifyMilitarySkill(+2), modifyPoliticalSkill(-2)]
         });
         this.persistentEffect({
             condition: (context) => context.player.showBid % 2 === 0,
-            effect: [AbilityDsl.effects.modifyMilitarySkill(-2), AbilityDsl.effects.modifyPoliticalSkill(+2)]
+            effect: [modifyMilitarySkill(-2), modifyPoliticalSkill(+2)]
         });
 
         this.wouldInterrupt('Put fate on this character')
@@ -27,7 +29,7 @@ export default class KitsukiSeiji extends DrawCard {
                 onPlaceFateOnUnclaimedRings: (event) =>
                     event.recipients.some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => {
+            .cancel((context) => {
                 const event = context.event;
                 switch(event.name) {
                     case EventName.OnPlaceFateOnUnclaimedRings:
@@ -35,10 +37,10 @@ export default class KitsukiSeiji extends DrawCard {
                     case EventName.OnMoveFate:
                         return { replacementGameAction: this.replacementForMoveFate(event, context.source) };
                     default:
-                        return { replacementGameAction: AbilityDsl.actions.noAction() };
+                        return { replacementGameAction: noAction() };
                 }
-            }))
-            .effect('put the fate that would go on the {1} ring on {0} instead', () => [this.getCurrentElementSymbol(ELEMENT_KEY)]);
+            })
+            .chatText((context) => msg`put the fate that would go on the ${this.getCurrentElementSymbol(ELEMENT_KEY)} ring on ${context.chatTarget()} instead`);
     }
 
     public getPrintedElementSymbols() {
@@ -58,7 +60,7 @@ export default class KitsukiSeiji extends DrawCard {
     }
 
     private replacementForMoveFate(event: GameEvent<EventName.OnMoveFate>, source: BaseCard) {
-        return AbilityDsl.actions.placeFate({
+        return placeFate({
             origin: event.origin,
             target: source,
             amount: event.fate
@@ -66,16 +68,16 @@ export default class KitsukiSeiji extends DrawCard {
     }
 
     private replacementForPlaceFateOnUnclaimedRings(event: GameEvent<EventName.OnPlaceFateOnUnclaimedRings>, source: BaseCard) {
-        return AbilityDsl.actions.joint(
+        return joint(
             event.recipients.map((recipient) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
-                    return AbilityDsl.actions.placeFate({
+                    return placeFate({
                         target: source,
                         amount: recipient.amount
                     });
                 }
-                return AbilityDsl.actions.placeFateOnRing({
+                return placeFateOnRing({
                     amount: recipient.amount,
                     target: recipient.ring
                 });

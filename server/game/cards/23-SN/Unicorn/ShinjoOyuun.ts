@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 
@@ -16,6 +16,6 @@ export default class ShinjoOyuun extends DrawCard {
                     }
                     return card.printedCost !== null && card.printedCost <= context.player.opponent.getNumberOfFaceupProvinces();
                 }
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }

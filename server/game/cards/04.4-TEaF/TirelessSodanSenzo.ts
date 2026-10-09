@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class TirelessSodanSenzo extends DrawCard {
@@ -10,7 +10,7 @@ class TirelessSodanSenzo extends DrawCard {
                 const conflict = this.game.currentConflict;
                 return context.source.isParticipating() && conflict !== null && conflict.loser === context.player;
             },
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

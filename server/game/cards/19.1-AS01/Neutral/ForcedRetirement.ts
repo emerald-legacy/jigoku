@@ -1,4 +1,12 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import {
+    discardFromPlay,
+    discardStatusToken,
+    gainHonor,
+    multiple,
+    removeFate,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,37 +20,34 @@ export default class ForcedRetirement extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
+            .gameAction(sequentialContext((context) => ({
                 gameActions: [
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.discardStatusToken({
+                    multiple([
+                        discardStatusToken({
                             target: context.target.statusTokens.filter(
                                 (t) =>
                                     t.grantedStatus === CharacterStatus.Dishonored ||
                                     t.grantedStatus === CharacterStatus.Tainted
                             )
                         }),
-                        AbilityDsl.actions.removeFate({
+                        removeFate({
                             target: context.target,
                             amount: context.target.getFate(),
                             recipient: context.target.owner
                         })
                     ]),
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.discardFromPlay({
+                    multiple([
+                        discardFromPlay({
                             target: context.target
                         }),
-                        AbilityDsl.actions.gainHonor({
+                        gainHonor({
                             target: context.player
                         })
                     ])
                 ]
             })))
-            .effect('expiate {0}\'s misdeeds by retiring them to the nearest monastery{1}. Let them contemplate their sins', (context) => {
-                const target = context.target;
-                return [
-                    target.fate > 0 ? ', recovering their ' + target.fate + ' fate' : ''
-                ];
-            });
+            .chatText((context) => context.target.fate > 0
+                ? msg`expiate ${context.chatTarget()}'s misdeeds by retiring them to the nearest monastery, recovering their ${context.target.fate} fate. Let them contemplate their sins`
+                : msg`expiate ${context.chatTarget()}'s misdeeds by retiring them to the nearest monastery. Let them contemplate their sins`);
     }
 }

@@ -1,6 +1,9 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { handler } from '../../../GameActions/GameActions.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
@@ -12,7 +15,7 @@ export default class MiokosSong extends StrongholdCard {
                 card.type === CardType.Character &&
                 card.isDishonored &&
                 card.isFaction('crane'),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
 
         this.reaction('Sabotage the opponent\'s resources')
@@ -22,13 +25,13 @@ export default class MiokosSong extends StrongholdCard {
                     event.player === context.player &&
                     event.card.type === CardType.Character
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .cost(AbilityDsl.costs.dishonor({ cardCondition: (card, context) => card === context.event.card }))
+            .cost(costs.bowSelf())
+            .cost(costs.dishonor({ cardCondition: (card, context) => card === context.event.card }))
             .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: CardType.Province
-            }, AbilityDsl.actions.handler({
+            }, handler({
                 handler: (context) => {
                     const opponent = context.player.opponent;
                     if(!opponent) {
@@ -51,13 +54,7 @@ export default class MiokosSong extends StrongholdCard {
                                 opponent.moveCard(goToBottom, Location.DynastyDeck, { bottom: true });
                             }
 
-                            context.game.addMessage(
-                                '{0} puts {1} into {2}, discarding {3}',
-                                context.player,
-                                selectedCard,
-                                province.isFacedown() ? province.location : province,
-                                cardsFromProvince
-                            );
+                            context.game.addMessage(msg`${context.player} puts ${selectedCard} into ${province.isFacedown() ? province.location : province}, discarding ${cardsFromProvince}`);
                         }
                     });
                 }

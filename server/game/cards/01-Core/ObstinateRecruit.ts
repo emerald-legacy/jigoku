@@ -1,16 +1,17 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class ObstinateRecruit extends DrawCard {
     static id = 'obstinate-recruit';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
+            effect: delayedEffect({
                 condition:  (context) => context.player.opponent && context.player.opponent.isMoreHonorable(),
-                message: '{0} is discarded from play as its controller has less honor',
-                messageArgs: (context) => [context.source],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+                message: (context) => msg`${context.source} is discarded from play as its controller has less honor`,
+                gameAction: discardFromPlay()
             })
         });
     }

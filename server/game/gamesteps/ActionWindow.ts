@@ -1,12 +1,13 @@
+import { msg } from '../GameChat.js';
 import { UiPrompt } from './UiPrompt.js';
-import { EventName, Location, Players, EffectName } from '../Constants.js';
+import { EventName, Location, Players, EffectName, Blocker } from '../Constants.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type AbilityResolver from './AbilityResolver.js';
+import type { AbilityResolver } from './AbilityResolver.js';
 
-class ActionWindow extends UiPrompt {
+export class ActionWindow extends UiPrompt {
     title: string;
     windowName: string;
     currentPlayer: Player;
@@ -45,7 +46,7 @@ class ActionWindow extends UiPrompt {
 
         const actions = card.getActions();
 
-        const legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === '');
+        const legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === Blocker.None);
 
         if(legalActions.length === 0) {
             return false;
@@ -114,6 +115,12 @@ class ActionWindow extends UiPrompt {
         return completed;
     }
 
+    abort(): void {
+        if(this.game.currentActionWindow === this) {
+            this.game.currentActionWindow = null;
+        }
+    }
+
     activePrompt() {
         const buttons: Array<{ text: string; arg: string }> = [
             { text: 'Pass', arg: 'pass' }
@@ -141,7 +148,7 @@ class ActionWindow extends UiPrompt {
                 controller: Players.Self,
                 cardCondition: (card: BaseCard) => card.isFaceup(),
                 onSelect: (player: Player, card: BaseCard) => {
-                    this.game.addMessage('{0} uses {1}\'s ability', player, card);
+                    this.game.addMessage(msg`${player} uses ${card}'s ability`);
                     this.prevPlayerPassed = false;
                     this.nextPlayer();
                     return true;
@@ -181,7 +188,7 @@ class ActionWindow extends UiPrompt {
     }
 
     pass() {
-        this.game.addMessage('{0} passes', this.currentPlayer);
+        this.game.addMessage(msg`${this.currentPlayer} passes`);
 
         if(this.prevPlayerPassed || !this.currentPlayer.opponent) {
             this.attemptComplete();
@@ -227,7 +234,7 @@ class ActionWindow extends UiPrompt {
 
         if(p1.actionCount > 0) {
             if(!p1.actionsTaken) {
-                this.game.addMessage('{0} has a bonus action during resolution!', player1);
+                this.game.addMessage(msg`${player1} has a bonus action during resolution!`);
                 this.prevPlayerPassed = false;
                 // Set the current player to player1
                 if(this.currentPlayer !== player1) {
@@ -239,7 +246,7 @@ class ActionWindow extends UiPrompt {
         }
         if(p2.actionCount > 0) {
             if(!p2.actionsTaken) {
-                this.game.addMessage('{0} has a bonus action during resolution!', player2);
+                this.game.addMessage(msg`${player2} has a bonus action during resolution!`);
                 this.prevPlayerPassed = false;
                 // Set the current player to player1
                 if(this.currentPlayer !== player2) {
@@ -288,7 +295,7 @@ class ActionWindow extends UiPrompt {
     }
 
     nextPlayer() {
-        const otherPlayer = this.game.getOtherPlayer(this.currentPlayer);
+        const otherPlayer = this.currentPlayer.opponent;
 
         this.currentPlayer.actionPhasePriority = false;
 
@@ -311,4 +318,3 @@ class ActionWindow extends UiPrompt {
     }
 }
 
-export default ActionWindow;

@@ -1,6 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location, Players, Phases, Duration } from '../../../Constants.js';
+import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
+import { conditional, gainHonor, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { CardType, Location, Players, Phase, Duration } from '../../../Constants.js';
 
 export default class ShaperOfStone extends DrawCard {
     static id = 'shaper-of-stone';
@@ -10,41 +12,41 @@ export default class ShaperOfStone extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player,
-            effect: AbilityDsl.effects.modifyProvinceStrength(1)
+            effect: modifyProvinceStrength(1)
         });
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Opponent,
             match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(-1)
+            effect: modifyProvinceStrength(-1)
         });
 
         this.reaction('Mark a province')
             .when({
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.playerLastingEffect((context) => ({
-                effect: AbilityDsl.effects.delayedEffect({
+                cardCondition: (card) => card.location !== Location.StrongholdProvince
+            }, playerLastingEffect((context) => ({
+                effect: delayedEffect({
                     when: {
-                        onPhaseEnded: (event) => event.phase === Phases.Conflict
+                        onPhaseEnded: (event) => event.phase === Phase.Conflict
                     },
-                    message: '{0}{1}{2}',
-                    messageArgs: () => context.target.isBroken ? ['', '', ''] : [context.player, ' gains 1 honor due to the delayed effect of ', context.source],
-                    gameAction: AbilityDsl.actions.conditional({
+                    message: () => context.target.isBroken ? msg`` : msg`${context.player}${' gains 1 honor due to the delayed effect of '}${context.source}`,
+                    gameAction: conditional({
                         condition: () => !context.target.isBroken,
-                        trueGameAction: AbilityDsl.actions.gainHonor({
+                        trueGameAction: gainHonor({
                             target: context.player
-                        }),
-                        falseGameAction: AbilityDsl.actions.noAction()
+                        })
                     })
                 }),
                 duration: Duration.UntilEndOfRound
             })))
-            .effect('mark {1} - they will gain 1 honor if the province remains unbroken at the end of the phase', context => context.target.facedown ? [context.target.location] : [context.target]);
+            .chatText((context) => context.target.facedown
+                ? msg`mark ${context.target.location} - they will gain 1 honor if the province remains unbroken at the end of the phase`
+                : msg`mark ${context.target} - they will gain 1 honor if the province remains unbroken at the end of the phase`);
     }
 }

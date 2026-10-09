@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
 import DrawCard from '../../DrawCard.js';
 
 class IgnobleEnforcers extends DrawCard {
@@ -9,9 +10,9 @@ class IgnobleEnforcers extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .cost(AbilityDsl.costs.variableHonorCost(() => 3))
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({ amount: context.costs.variableHonorCost })))
-            .effect('place {1} fate on {0}', (context) => context.costs.variableHonorCost);
+            .cost(costs.payVariableHonor(() => 3))
+            .placeFate((context) => ({ amount: context.costs.honorPaid }))
+            .chatText((context) => msg`place ${context.costs.honorPaid} fate on ${context.chatTarget()}`);
     }
 }
 

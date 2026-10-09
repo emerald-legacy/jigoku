@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, putIntoPlay } from '../../GameActions/GameActions.js';
 
 class Leniency extends DrawCard {
     static id = 'leniency';
@@ -14,11 +14,11 @@ class Leniency extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => (card.printedCost ?? 0) < 3
-            }, AbilityDsl.actions.cancel({
-                replacementGameAction: AbilityDsl.actions.putIntoPlay()
+                cardCondition: (card) => (card.printedCost ?? 0) < 3
+            }, cancel({
+                replacementGameAction: putIntoPlay()
             }))
-            .effect('put {0} into play instead of resolving the ring effect')
+            .chatText('put {0} into play instead of resolving the ring effect')
             .cannotBeMirrored();
     }
 }

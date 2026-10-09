@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class KitsukiJusai extends DrawCard {
     static id = 'kitsuki-jusai';
@@ -12,14 +13,13 @@ class KitsukiJusai extends DrawCard {
                     context.player.honorBid === context.player.opponent.honorBid &&
                     context.player.opponent.fate > 0
             })
-            .gameAction(AbilityDsl.actions.selectRing(context => ({
+            .gameAction(selectRing((context) => ({
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
-                ringCondition: ring => ring.isUnclaimed(),
-                message: '{0} moves a fate from {1}\'s fate pool to the {2}',
-                messageArgs: ring => [context.player, context.player.opponent, ring],
-                gameAction: AbilityDsl.actions.placeFateOnRing({ origin: context.player.opponent })
+                ringCondition: (ring) => ring.isUnclaimed(),
+                message: (context, ring) => msg`${context.player} moves a fate from ${context.player.opponent}'s fate pool to the ${ring}`,
+                gameAction: placeFateOnRing({ origin: context.player.opponent })
             })))
-            .effect('move 1 fate from {1}\'s fate pool to an unclaimed ring', context => [context.player.opponent ?? context.player]);
+            .chatText((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);
     }
 }
 

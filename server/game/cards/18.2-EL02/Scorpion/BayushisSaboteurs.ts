@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardCard, refillFaceup, sequential, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -29,11 +30,11 @@ export default class BayushisSaboteurs extends DrawCard {
                 player: (context) =>
                     context.player !== context.game.currentConflict?.defendingPlayer ? Players.Opponent : Players.Self
             }, {
-                [DISCARD]: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.discardCard((context) => ({
+                [DISCARD]: sequential([
+                    discardCard((context) => ({
                         target: defender(context).getDynastyCardsInProvince(Location.Provinces)
                     })),
-                    AbilityDsl.actions.refillFaceup((context) => ({
+                    refillFaceup((context) => ({
                         target: defender(context),
                         location: [
                             Location.StrongholdProvince,
@@ -44,10 +45,10 @@ export default class BayushisSaboteurs extends DrawCard {
                         ]
                     }))
                 ]),
-                [FLIP]: AbilityDsl.actions.turnFacedown((context) => ({
+                [FLIP]: turnFacedown((context) => ({
                     target: defender(context).getDynastyCardsInProvince(Location.Provinces)
                 }))
             })
-            .effect('{1} all of {2}\'s dynasty cards', (context) => [context.select === DISCARD ? 'discard' : 'flip facedown', defender(context)]);
+            .chatText((context) => msg`${context.select === DISCARD ? 'discard' : 'flip facedown'} all of ${defender(context)}'s dynasty cards`);
     }
 }

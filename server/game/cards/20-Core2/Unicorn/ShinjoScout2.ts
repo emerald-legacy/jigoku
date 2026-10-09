@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotTriggerAbilities } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoScout2 extends DrawCard {
@@ -11,19 +13,18 @@ export default class ShinjoScout2 extends DrawCard {
                 onCardRevealed: (event, context) =>
                     event.card.type === CardType.Province && context.source.isAttacking()
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} prevents {1} from triggering its abilities during this conflict',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                message: (context, cards) => msg`${context.player} prevents ${cards} from triggering its abilities during this conflict`,
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cannotTriggerAbilities()
+                    effect: cannotTriggerAbilities()
                 })
-            })))
-            .effect('avoid the dangers of their exploration');
+            })
+            .chatText('avoid the dangers of their exploration');
     }
 }

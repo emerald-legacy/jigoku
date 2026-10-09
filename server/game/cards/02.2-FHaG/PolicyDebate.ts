@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { CardType, DuelType, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardMenu, discardCard, duel, lookAt, sequential } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class PolicyDebate extends DrawCard {
@@ -20,26 +21,23 @@ export default class PolicyDebate extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.duel((context) => ({
+            }, duel((context) => ({
                 type: DuelType.Political,
                 challenger: context.targets.challenger,
-                message: '{0} sees {1}\'s hand and chooses a card to discard',
-                messageArgs: (duel) => [duel.loserController?.opponent ?? '', duel.loserController ?? ''],
+                chatText: (_context, duel) => msg`${duel.loserController?.opponent ?? ''} sees ${duel.loserController ?? ''}'s hand and chooses a card to discard`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.lookAt({
+                    sequential([
+                        lookAt({
                             target: this.losersHand(duel),
-                            message: '{0} reveals their hand: {1}',
-                            messageArgs: (cards) => [duel.loserController, cards]
+                            message: (_context, cards) => msg`${duel.loserController} reveals their hand: ${cards}`
                         }),
-                        AbilityDsl.actions.cardMenu({
+                        cardMenu({
                             activePromptTitle: 'Choose card to discard',
                             player: duel.loserController === context.player ? Players.Opponent : Players.Self,
                             cards: this.losersHand(duel),
                             targets: true,
-                            message: '{0} chooses {1} to be discarded',
-                            messageArgs: (card) => [duel.loserController?.opponent ?? '', card],
-                            gameAction: AbilityDsl.actions.discardCard()
+                            message: (_context, card) => msg`${duel.loserController?.opponent ?? ''} chooses ${card} to be discarded`,
+                            gameAction: discardCard()
                         })
                     ])
             })));

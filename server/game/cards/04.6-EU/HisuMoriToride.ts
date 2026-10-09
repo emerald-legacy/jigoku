@@ -1,6 +1,8 @@
 import { CardType, Duration, ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { additionalConflict } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 export default class HisuMoriToride extends StrongholdCard {
     static id = 'hisu-mori-toride-unicorn';
@@ -14,16 +16,16 @@ export default class HisuMoriToride extends StrongholdCard {
                     !!context.game.currentConflict &&
                     context.game.currentConflict.hasMoreParticipants(context.player)
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.bowSelf())
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('cavalry')
             }))
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
+            .playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict('military')
-            })))
-            .effect('allow {1} to declare an additional military conflict this phase', (context) => [context.player]);
+                effect: additionalConflict('military')
+            }))
+            .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

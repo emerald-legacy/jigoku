@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, EventName } from '../../Constants.js';
+import { Phase, EventName } from '../../Constants.js';
 
 class SeizeTheDay extends DrawCard {
     static id = 'seize-the-day';
@@ -7,19 +7,19 @@ class SeizeTheDay extends DrawCard {
     setupCardAbilities() {
         this.reaction('Become first player')
             .when({
-                onPhaseStarted: (event, context) => event.phase === Phases.Conflict && this.game.getFirstPlayer() !== context.player
+                onPhaseStarted: (event, context) => event.phase === Phase.Conflict && this.game.getFirstPlayer() !== context.player
             })
             .handler(() => {
                 const firstPlayer = this.game.getFirstPlayer();
                 if(!firstPlayer) {
                     return;
                 }
-                const otherPlayer = this.game.getOtherPlayer(firstPlayer);
+                const otherPlayer = firstPlayer.opponent;
                 if(otherPlayer) {
                     this.game.raiseEvent(EventName.OnPassFirstPlayer, { player: otherPlayer }, () => this.game.setFirstPlayer(otherPlayer));
                 }
             })
-            .effect('become first player');
+            .chatText('become first player');
     }
 }
 

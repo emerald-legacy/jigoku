@@ -31,7 +31,7 @@ class AttackerInfo {
     }
 }
 
-class AttackersMatrix {
+export class AttackersMatrix {
     player: Player;
     characters: DrawCard[];
     attackers: Record<string, Record<string, Record<string, AttackerInfo>>>;
@@ -64,7 +64,7 @@ class AttackersMatrix {
             return false;
         }
 
-        const max = province ? this.attackers[ring.name][conflictType][String(province)].getMaximumAvailableAttackers() : Math.max(...Object.values(this.attackers[ring.name][conflictType]).map(a => a.getMaximumAvailableAttackers()));
+        const max = province ? this.attackers[ring.name][conflictType][String(province)].getMaximumAvailableAttackers() : Math.max(...Object.values(this.attackers[ring.name][conflictType]).map((a) => a.getMaximumAvailableAttackers()));
         const enoughAttackers = this.requiredNumberOfAttackers <= max;
         if(this.requiredNumberOfAttackers > 0) {
             return enoughAttackers;
@@ -74,7 +74,7 @@ class AttackersMatrix {
         if(province) {
             return this.attackers[ring.name][conflictType][String(province)].getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers;
         }
-        return Object.values(this.attackers[ring.name][conflictType]).some(a => a.getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers);
+        return Object.values(this.attackers[ring.name][conflictType]).some((a) => a.getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers);
     }
 
     buildMatrix(game: Game): void {
@@ -87,7 +87,7 @@ class AttackersMatrix {
         this.defaultType = ConflictType.Military;
         rings.forEach((ring: Ring) => {
             this.attackers[ring.name] = {};
-            conflictTypes.forEach(type => {
+            conflictTypes.forEach((type) => {
                 this.attackers[ring.name][type] = {};
                 provinces.forEach((province: ProvinceCard) => {
                     if(province.canDeclare(type, ring)) {
@@ -118,7 +118,7 @@ class AttackersMatrix {
 
         const cards = this.characters;
         const availableAttackers: DrawCard[] = [];
-        cards.forEach(card => {
+        cards.forEach((card) => {
             if(card.canDeclareAsAttacker(conflictType, ring, province, availableAttackers)) {
                 availableAttackers.push(card);
             }
@@ -148,7 +148,7 @@ class AttackersMatrix {
         if(this.player.getEffects(EffectName.MustDeclareMaximumAttackers).some((effect) => effect === 'both' || effect === conflictType)) {
             const cards = this.characters;
             const forcedAttackers: DrawCard[] = [];
-            cards.forEach(card => {
+            cards.forEach((card) => {
                 if(card.canDeclareAsAttacker(conflictType, ring, province, forcedAttackers)) {
                     forcedAttackers.push(card);
                 }
@@ -159,7 +159,7 @@ class AttackersMatrix {
             return forcedAttackers;
         }
 
-        return this.characters.filter(card =>
+        return this.characters.filter((card) =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
             card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect) => effect === 'both' || effect === conflictType));
     }
@@ -169,7 +169,7 @@ class AttackersMatrix {
         if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
-        return this.characters.filter(card =>
+        return this.characters.filter((card) =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
             card.getEffects(EffectName.MustBeDeclaredAsAttackerIfType).some((effect) => effect === 'both' || effect === conflictType));
     }
@@ -178,10 +178,9 @@ class AttackersMatrix {
         if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
-        return this.characters.filter(card =>
+        return this.characters.filter((card) =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
             card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect) => effect === 'both' || effect === conflictType));
     }
 }
 
-export default AttackersMatrix;

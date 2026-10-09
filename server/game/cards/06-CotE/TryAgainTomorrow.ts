@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -13,7 +13,7 @@ class TryAgainTomorrow extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.sendHome())
+            }, sendHome())
             .cannotBeMirrored();
     }
 }

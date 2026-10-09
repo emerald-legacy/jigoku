@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class FallenInBattle extends DrawCard {
     static id = 'fallen-in-battle';
@@ -13,9 +14,9 @@ class FallenInBattle extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.discardFromPlay())
-            .max(AbilityDsl.limit.perConflict(1));
+                cardCondition: (card) => card.isParticipating()
+            }, discardFromPlay())
+            .max(perConflict(1));
     }
 }
 

@@ -1,21 +1,22 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, reduceCost } from '../../../effects.js';
 import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import Ring from '../../../Ring.js';
+import { msg } from '../../../GameChat.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true, trait: 'monk' });
 
-        this.whileAttached({ effect: AbilityDsl.effects.addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait('tattooed') });
 
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 1,
                 targetCondition: (target) => target.isCharacter() && (target.printedCost ?? 0) <= 3,
                 match: (card, source) => card === source
@@ -30,15 +31,10 @@ export default class BambooTattoo extends DrawCard {
                     !(event.context?.source instanceof Ring) &&
                     event.context?.source.name !== 'Framework effect'
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready((context) => ({ target: context.source.parentCharacter ?? [] })),
-                AbilityDsl.actions.conditional({
-                    condition: (context) => this.isSelfTrigger(context),
-                    trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
-                    falseGameAction: AbilityDsl.actions.noAction()
-                })
-            ]))
-            .effect('ready{1} {2}', (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter]);
+            .ready((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .if((context) => this.isSelfTrigger(context))
+            .dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .chatText((context) => msg`ready${this.isSelfTrigger(context) ? ' and dishonor' : ''} ${context.source.parentCharacter}`);
     }
 
     private isSelfTrigger(context: TriggeredAbilityContext) {

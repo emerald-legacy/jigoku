@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
 
 const elementKey = 'isawa-masahiro-fire';
@@ -9,12 +10,12 @@ class IsawaMasahiro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow to discard an enemy character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.costLessThan(3) && card.isParticipating()
-            }, AbilityDsl.actions.discardFromPlay());
+                cardCondition: (card) => card.costLessThan(3) && card.isParticipating()
+            }, discardFromPlay());
     }
 
     getPrintedElementSymbols() {

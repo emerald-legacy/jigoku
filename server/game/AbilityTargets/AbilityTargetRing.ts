@@ -1,9 +1,10 @@
+import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { Stage, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import type Player from '../Player.js';
-import type { GameAction } from '../GameActions/GameAction.js';
-import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
+import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
+import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { waitingPromptTitle } from './TargetPrompt.js';
 
@@ -15,16 +16,11 @@ interface AbilityTargetRingProperties {
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-class AbilityTargetRing {
-    name: string;
-    properties: AbilityTargetRingProperties;
+export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProperties> {
     ringCondition: (ring: Ring, context: AbilityContext) => boolean;
-    dependentTarget: DependentTarget | null;
-    dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetRingProperties, ability: OwningAbility) {
-        this.name = name;
-        this.properties = properties;
+        super(name, properties, ability);
         this.ringCondition = (ring: Ring, context: AbilityContext) => {
             const contextCopy = context.copy({});
             contextCopy.rings[this.name] = ring;
@@ -34,32 +30,24 @@ class AbilityTargetRing {
             if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                 return false;
             }
-            return (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy))) &&
+            return (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy)))) &&
                    properties.ringCondition(ring, contextCopy) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy));
         };
-        for(const gameAction of this.properties.gameAction) {
-            gameAction.setDefaultTarget((context: AbilityContext) => context.rings[name]);
-        }
-        this.dependentTarget = null;
-        this.dependentCost = null;
-        if(this.properties.dependsOn) {
-            const dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
-            if(dependsOnTarget) {
-                dependsOnTarget.dependentTarget = this;
-            }
-        }
-    }
-
-    canResolve(context: AbilityContext): boolean {
-        return !!this.properties.dependsOn || this.hasLegalTarget(context);
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
         return Object.values(context.game.rings).some((ring) => this.properties.optional || this.ringCondition(ring, context));
     }
 
-    getGameAction(context: AbilityContext): GameAction[] {
-        return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
+    getGameAction(context: AbilityContext): HeldAction[] {
+        const overrides = this.actionOverrides(context);
+        return this.properties.gameAction
+            .filter((action) => action.hasLegalTarget(context, overrides))
+            .map((action) => ({ action, overrides }));
+    }
+
+    protected actionOverrides(context: AbilityContext): ActionOverrides {
+        return { target: context.rings[this.name] };
     }
 
     getAllLegalTargets(context: AbilityContext): Ring[] {
@@ -67,14 +55,11 @@ class AbilityTargetRing {
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
+        const chooser = this.chooserNow(context, targetResults);
+        if(!chooser) {
             return;
         }
-        const player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
-            targetResults.delayTargeting = this;
-            return;
-        }
+        const { player } = chooser;
         const buttons: PromptButton[] = [];
         if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
@@ -122,20 +107,11 @@ class AbilityTargetRing {
         return this.properties.ringCondition(selected, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player | undefined {
-        let playerProp = this.properties.player;
-        if(typeof playerProp === 'function') {
-            playerProp = playerProp(context);
-        }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
-    }
-
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context))) {
+        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context)))) {
             return true;
         }
         return this.getChoosingPlayer(context) === context.player;
     }
 }
 
-export default AbilityTargetRing;

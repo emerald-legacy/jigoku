@@ -1,18 +1,19 @@
+import type { EntersPlayStatus } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type ActionWindow from '../gamesteps/ActionWindow.js';
-import type AttackersMatrix from '../gamesteps/conflict/AttackersMatrix.js';
-import type BaseAbility from '../BaseAbility.js';
-import type CardAbility from '../CardAbility.js';
-import type AbilityResolver from '../gamesteps/AbilityResolver.js';
+import type { ActionWindow } from '../gamesteps/ActionWindow.js';
+import type { AttackersMatrix } from '../gamesteps/conflict/AttackersMatrix.js';
+import type { BaseAbility } from '../BaseAbility.js';
+import type { CardAbility } from '../CardAbility.js';
+import type { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
-import type { CharacterStatus, ConflictType, Decks, DuelType, EventName, Location, Phases, Players, PlayType, TokenType } from '../Constants.js';
+import type { CharacterStatus, ConflictType, DeckType, DuelType, EventName, Location, Phase, Players, PlayType, TokenType } from '../Constants.js';
 import type { Direction } from '../GameActions/ModifyBidAction.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
-import type { EffectMatch } from '../Effects/Effect.js';
+import type { EffectMatch } from '../Effects/ActiveEffect.js';
 import type { Event } from './Event.js';
-import type { MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -36,8 +37,7 @@ interface EventPayloadMap {
         ring?: Ring;
         cardStateWhenMoved?: DrawCard;
         postBidAction?: GameAction;
-        message?: string;
-        messageArgs?: (context: AbilityContext) => MsgArg[];
+        message?: (context: AbilityContext) => MessageArgs;
         duel?: Duel | null;
         isHonorBid?: boolean;
     };
@@ -52,10 +52,8 @@ interface EventPayloadMap {
         /** The cards whose effects made it playable from out of play, as it was played. */
         playedFromOutOfPlaySource?: BaseCard[];
         resolver?: AbilityResolver;
-        /** Stamped by the card whose limited-use ability let it be played (Master Tactician). */
-        sourceOfCardPlayedFromConflictDeck?: BaseCard;
-        /** Likewise, Bayushi Kachiko (Atonement). */
-        sourceOfCardPlayedFromConflictDiscard?: BaseCard;
+        /** Stamped by the card whose limited-use permission let it be played (Master Tactician, Bayushi Kachiko). */
+        limitedPlaySource?: BaseCard;
     };
     [EventName.OnAbilityResolverInitiated]: BaseEventPayload & {
         card?: BaseCard;
@@ -85,7 +83,7 @@ interface EventPayloadMap {
         card: DrawCard;
         originalLocation: Location;
         fate?: number;
-        status?: 'honored' | 'ordinary' | 'dishonored';
+        status?: EntersPlayStatus;
         controller?: Players;
         intoConflict: boolean;
         side: Player;
@@ -126,8 +124,8 @@ interface EventPayloadMap {
         ring: Ring;
         conflict?: Conflict;
     };
-    [EventName.OnPhaseStarted]: BaseEventPayload & { phase: Phases | 'setup' };
-    [EventName.OnPhaseEnded]: BaseEventPayload & { phase: Phases | 'setup' };
+    [EventName.OnPhaseStarted]: BaseEventPayload & { phase: Phase | 'setup' };
+    [EventName.OnPhaseEnded]: BaseEventPayload & { phase: Phase | 'setup' };
     [EventName.OnInitiateAbilityEffects]: BaseEventPayload & {
         context: AbilityContext;
         card: BaseCard;
@@ -142,7 +140,7 @@ interface EventPayloadMap {
         consecutiveActions: number;
         actionWindow: ActionWindow;
     };
-    [EventName.OnDeckShuffled]: BaseEventPayload & { player: Player; deck: Decks };
+    [EventName.OnDeckShuffled]: BaseEventPayload & { player: Player; deck: DeckType };
     [EventName.OnCardAttached]: BaseEventPayload & {
         card: DrawCard;
         parent: BaseCard | Ring;
@@ -254,8 +252,7 @@ interface EventPayloadMap {
         prohibitedBids?: number[];
         players?: Players;
         postBidAction?: GameAction;
-        message?: string;
-        messageArgs?: (context: AbilityContext) => MsgArg[];
+        message?: (context: AbilityContext) => MessageArgs;
     };
     [EventName.OnModifyBid]: BaseEventPayload & {
         player: Player;
@@ -326,7 +323,7 @@ interface EventPayloadMap {
         isHonorBid: boolean;
         duel: Duel | null;
     };
-    [EventName.OnPhaseCreated]: BaseEventPayload & { phase: Phases | 'setup' };
+    [EventName.OnPhaseCreated]: BaseEventPayload & { phase: Phase | 'setup' };
     [EventName.OnPassDuringDynasty]: BaseEventPayload & { player: Player; firstToPass: boolean };
     [EventName.OnCardDetached]: BaseEventPayload & { card: DrawCard };
     [EventName.OnSendHome]: BaseEventPayload & { card: DrawCard };

@@ -1,4 +1,4 @@
-import { GameChat } from '../../../build/server/game/GameChat.js';
+import { GameChat, msg } from '../../../build/server/game/GameChat.js';
 
 describe('GameChat', function () {
     beforeEach(function () {
@@ -118,6 +118,16 @@ describe('GameChat', function () {
                     });
                 });
             });
+        });
+    });
+
+    describe('msg', function () {
+        it('turns a template into a format with numbered arguments', function () {
+            expect(msg`take 1 ${'fate'} from ${this.bar}${''}`).toEqual(['take 1 {0} from {1}{2}', ['fate', this.bar, '']]);
+        });
+
+        it('keeps a template without values as the format', function () {
+            expect(msg`draw 1 card`).toEqual(['draw 1 card', []]);
         });
     });
 });

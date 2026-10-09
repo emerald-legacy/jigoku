@@ -1,7 +1,8 @@
+import { msg } from '../../GameChat.js';
 import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { StatusToken } from '../../StatusToken.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { handler } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class DiscipleOfDeception extends DrawCard {
@@ -10,7 +11,9 @@ export default class DiscipleOfDeception extends DrawCard {
     private tokensChanged: StatusToken[] = [];
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnConflictFinished]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished()
+        });
 
         this.action('Treat a status token as a different token')
             .condition((context) => context.game.isDuringConflict())
@@ -28,7 +31,7 @@ export default class DiscipleOfDeception extends DrawCard {
                     card !== context.tokens.first[0].card &&
                         !card.hasStatusToken(context.tokens.first[0].grantedStatus),
                 tokenCondition: (token, context) => token.grantedStatus !== context.tokens.first[0].grantedStatus
-            }, AbilityDsl.actions.handler({
+            }, handler({
                 handler: (context) => {
                     const targetToken = context.tokens.second[0];
                     const newStatus = context.tokens.first[0].grantedStatus;
@@ -41,11 +44,7 @@ export default class DiscipleOfDeception extends DrawCard {
                     targetCard.updateStatusTokenEffects();
                 }
             }))
-            .effect('replace {1}\'s {2} with {3} until the end of the conflict', (context) => [
-                context.tokens.second[0].card,
-                context.tokens.second,
-                context.tokens.first
-            ]);
+            .chatText((context) => msg`replace ${context.tokens.second[0].card}'s ${context.tokens.second} with ${context.tokens.first} until the end of the conflict`);
     }
 
     public onConflictFinished() {

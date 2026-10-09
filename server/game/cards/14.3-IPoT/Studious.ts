@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType } from '../../Constants.js';
+import { addKeyword, gainAbility } from '../../effects.js';
 
 class Studious extends DrawCard {
     static id = 'studious';
@@ -11,18 +10,14 @@ class Studious extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addKeyword('sincerity')
+            effect: addKeyword('sincerity')
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
-                title: 'Draw a card',
-                when: {
-                    afterConflict: (event, context) =>
-                        event.conflict.winner === context.source.controller && context.source.isParticipating()
-                },
-                gameAction: AbilityDsl.actions.draw()
-            })
+            effect: gainAbility.reaction('Draw a card', {
+                afterConflict: (event, context) =>
+                    event.conflict.winner === context.source.controller && context.source.isParticipating()
+            }, (ability) => ability.draw())
         });
     }
 }

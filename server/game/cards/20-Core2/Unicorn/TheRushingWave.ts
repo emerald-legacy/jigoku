@@ -1,8 +1,10 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { setProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect, onAffinity } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
+import { msg } from '../../../GameChat.js';
 
 function provinceLog(province: ProvinceCard) {
     return province.facedown ? province.location : province;
@@ -25,9 +27,9 @@ export default class TheRushingWave extends DrawCard {
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
-            }, AbilityDsl.actions.onAffinity({
+            }, onAffinity({
                 trait: 'water',
-                gameAction: AbilityDsl.actions.cardLastingEffect(({ target }) => ({
+                gameAction: cardLastingEffect(({ target }) => ({
                     target: target?.isProvinceCard()
                         ? target.controller.getProvinces(
                             (province) =>
@@ -37,16 +39,16 @@ export default class TheRushingWave extends DrawCard {
                         : [],
                     targetLocation: Location.Provinces,
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.setProvinceStrength(0)
+                    effect: setProvinceStrength(0)
                 })),
-                noAffinityGameAction: AbilityDsl.actions.cardLastingEffect({
+                noAffinityGameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.setProvinceStrength(0)
+                    effect: setProvinceStrength(0)
                 }),
-                effect: 'also set the strength of {0} to 0',
-                effectArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
+                chatText: 'also set the strength of {0} to 0',
+                chatTextArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
             }))
-            .effect('set {1}\'s strength to 0 until the end of the phase', (context) => [provinceLog(context.target)]);
+            .chatText((context) => msg`set ${provinceLog(context.target)}'s strength to 0 until the end of the phase`);
     }
 }

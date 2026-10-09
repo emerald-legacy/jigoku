@@ -31,14 +31,14 @@ describe('Arrows from the Woods', function () {
                 defenders: [this.yoshi, this.adept]
             });
             this.player2.clickCard(this.arrows);
-            expect(this.diplomat.getMilitarySkill()).toBe(0);
-            expect(this.diplomat.getPoliticalSkill()).toBe(1);
-            expect(this.brash.getMilitarySkill()).toBe(2);
-            expect(this.brash.getPoliticalSkill()).toBe(1);
-            expect(this.tadaka.getMilitarySkill()).toBe(3);
-            expect(this.tadaka.getPoliticalSkill()).toBe(3);
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.diplomat.militarySkill).toBe(0);
+            expect(this.diplomat.politicalSkill).toBe(1);
+            expect(this.brash.militarySkill).toBe(2);
+            expect(this.brash.politicalSkill).toBe(1);
+            expect(this.tadaka.militarySkill).toBe(3);
+            expect(this.tadaka.politicalSkill).toBe(3);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
 
             expect(this.getChatLogs(10)).toContain(
                 'player2 plays Arrows from the Woods to give player1\'s participating characters -2military'
@@ -52,10 +52,10 @@ describe('Arrows from the Woods', function () {
                 defenders: [this.yoshi, this.challenger, this.scout]
             });
             this.player2.clickCard(this.arrows);
-            expect(this.diplomat.getMilitarySkill()).toBe(0);
-            expect(this.brash.getMilitarySkill()).toBe(2);
-            expect(this.tadaka.getMilitarySkill()).toBe(3);
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
+            expect(this.diplomat.militarySkill).toBe(0);
+            expect(this.brash.militarySkill).toBe(2);
+            expect(this.tadaka.militarySkill).toBe(3);
+            expect(this.yoshi.militarySkill).toBe(2);
 
             expect(this.getChatLogs(10)).toContain(
                 'player2 plays Arrows from the Woods to give player1\'s participating characters -2military'
@@ -69,10 +69,10 @@ describe('Arrows from the Woods', function () {
                 defenders: [this.yoshi, this.challenger]
             });
             this.player2.clickCard(this.arrows);
-            expect(this.diplomat.getMilitarySkill()).toBe(0);
-            expect(this.brash.getMilitarySkill()).toBe(1);
-            expect(this.tadaka.getMilitarySkill()).toBe(4);
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
+            expect(this.diplomat.militarySkill).toBe(0);
+            expect(this.brash.militarySkill).toBe(1);
+            expect(this.tadaka.militarySkill).toBe(4);
+            expect(this.yoshi.militarySkill).toBe(2);
 
             expect(this.getChatLogs(10)).toContain(
                 'player2 plays Arrows from the Woods to give player1\'s participating characters -1military'

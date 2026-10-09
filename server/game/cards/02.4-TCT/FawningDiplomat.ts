@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { claimImperialFavor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 class FawningDiplomat extends DrawCard {
@@ -9,10 +9,10 @@ class FawningDiplomat extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.claimImperialFavor(context => ({
+            .gameAction(claimImperialFavor((context) => ({
                 target: context.player
             })))
-            .effect('claim the Emperor\'s favor as she leaves play');
+            .chatText('claim the Emperor\'s favor as she leaves play');
     }
 }
 

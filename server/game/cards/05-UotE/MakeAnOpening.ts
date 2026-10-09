@@ -1,4 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
@@ -8,7 +10,7 @@ class MakeAnOpening extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give -X/-X to opposing character, where X is the difference between current honor dial bid values')
-            .condition(context => {
+            .condition((context) => {
                 const conflict = this.game.currentConflict;
                 const opponent = context.player.opponent;
                 return !!opponent &&
@@ -24,10 +26,10 @@ class MakeAnOpening extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) =>
                     card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyBothSkills(-this.getHonorDialDifference(context))
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(-this.getHonorDialDifference(context))
             })))
-            .effect('give {0} -{1}{2}/-{1}{3}', context => [this.getHonorDialDifference(context), 'military', 'political']);
+            .chatText((context) => msg`give ${context.chatTarget()} -${this.getHonorDialDifference(context)}${'military'}/-${this.getHonorDialDifference(context)}${'political'}`);
     }
 
     private getHonorDialDifference(context: AbilityContext) {

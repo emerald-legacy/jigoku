@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class BorderlandsFortifications extends DrawCard {
     static id = 'borderlands-fortifications';
@@ -10,17 +12,13 @@ class BorderlandsFortifications extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isDynasty && card !== context.source
-            })
-            .handler((context) => {
-                const location = context.source.location;
-                context.player.removeCardFromPile(context.source);
-                context.player.removeCardFromPile(context.target);
-                context.source.moveTo(context.target.location);
-                context.target.moveTo(location);
-                context.player.getSourceList(location).push(context.target);
-                context.player.getSourceList(context.source.location).push(context.source);
-            })
-            .effect('swap it with {1}', (context) => context.target.isFacedown() ? 'a facedown card' : context.target);
+            }, moveCard((context) => ({
+                target: context.source,
+                destination: context.target.location,
+                switch: true,
+                switchTarget: context.target.isDrawCard() ? context.target : undefined
+            })))
+            .chatText((context) => msg`swap it with ${context.target.isFacedown() ? 'a facedown card' : context.target}`);
     }
 }
 

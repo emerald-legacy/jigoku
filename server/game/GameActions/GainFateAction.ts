@@ -1,6 +1,7 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -13,6 +14,8 @@ export class GainFateAction<C extends AbilityContext = AbilityContext> extends P
     defaultProperties = { amount: 1 };
 
     name = 'gainFate';
+
+    restriction = RestrictionType.GainFate;
     eventName = EventName.OnModifyFate;
 
     defaultTargets(context: C): Player[] {
@@ -23,16 +26,16 @@ export class GainFateAction<C extends AbilityContext = AbilityContext> extends P
         return ['gain {0} fate', []];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        return this.getProperties(context).amount;
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).amount;
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;

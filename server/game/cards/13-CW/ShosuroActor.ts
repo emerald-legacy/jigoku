@@ -1,6 +1,8 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { copyCard } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShosuroActor extends DrawCard {
     static id = 'shosuro-actor';
@@ -13,10 +15,10 @@ export default class ShosuroActor extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.isUnique()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 target: context.source,
-                effect: context.target ? AbilityDsl.effects.copyCard(context.target) : []
+                effect: context.target ? copyCard(context.target) : []
             })))
-            .effect('become a copy of {1}', (context) => [context.target]);
+            .chatText((context) => msg`become a copy of ${context.target}`);
     }
 }

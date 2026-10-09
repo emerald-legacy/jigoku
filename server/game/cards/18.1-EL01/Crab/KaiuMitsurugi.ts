@@ -1,6 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { Location, Players, CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { addKeyword } from '../../../effects.js';
+import { draw, gainFate, sequential } from '../../../GameActions/GameActions.js';
 
 class KaiuMitsurugi extends DrawCard {
     static id = 'kaiu-mitsurugi';
@@ -8,24 +10,24 @@ class KaiuMitsurugi extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Self,
-            match: card => card.type === CardType.Holding,
+            match: (card) => card.type === CardType.Holding,
             targetLocation: Location.Any,
-            effect: AbilityDsl.effects.addKeyword('rally')
+            effect: addKeyword('rally')
         });
 
         this.action('Draw a card and gain a fate')
-            .cost(AbilityDsl.costs.sacrifice({
+            .cost(costs.sacrifice({
                 cardType: CardType.Holding
             }))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.gainFate(context => ({
+            .gameAction(sequential([
+                gainFate((context) => ({
                     target: context.player
                 })),
-                AbilityDsl.actions.draw(context => ({
+                draw((context) => ({
                     target: context.player
                 }))
             ]))
-            .effect('gain 1 fate and draw 1 card');
+            .chatText('gain 1 fate and draw 1 card');
     }
 }
 

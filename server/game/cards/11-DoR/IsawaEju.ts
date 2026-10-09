@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -10,26 +12,19 @@ class IsawaEju extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard all cards in a province and refill it faceup')
-            .condition(context => hasClaimedRing(this, elementSymbol.key, context.player))
+            .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(AbilityDsl.actions.moveCard(context => ({
+            .gameAction(moveCard((context) => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
             })))
-            .effect('discard {1} and refill the province faceup', context => [context.target.controller.getDynastyCardsInProvince(context.target.location)])
-            .then(context => {
-                const target = context.target;
-                return {
-                    gameAction: AbilityDsl.actions.refillFaceup(() => ({
-                        target: target.controller,
-                        location: target.location
-                    }))
-                };
-            })
-            .limit(AbilityDsl.limit.perRound(3));
+            .chatText((context) => msg`discard ${context.target.controller.getDynastyCardsInProvince(context.target.location)} and refill the province faceup`)
+            .limit(perRound(3))
+            .then()
+            .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));
     }
 
     getPrintedElementSymbols() {

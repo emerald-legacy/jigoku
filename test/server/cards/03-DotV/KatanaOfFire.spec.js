@@ -26,12 +26,12 @@ describe('Katana of Fire', function() {
                 });
 
                 it('should boost adept\'s military skill by at least 1 (counting itself)', function() {
-                    expect(this.adept.getMilitarySkill()).toBe(this.adept.getBaseMilitarySkill() + 1);
+                    expect(this.adept.militarySkill).toBe(this.adept.getBaseMilitarySkill() + 1);
                 });
 
                 describe('and another fire card is added to play', function() {
                     beforeEach(function() {
-                        this.skillBeforeMove = this.adept.getMilitarySkill();
+                        this.skillBeforeMove = this.adept.militarySkill;
                         this.noMoreActions();
                         this.initiateConflict({
                             type: 'military',
@@ -45,13 +45,13 @@ describe('Katana of Fire', function() {
 
                     it('should boost adept\'s military skill by 1', function() {
                         expect(this.doomedShugenja.location).toBe('play area');
-                        expect(this.adept.getMilitarySkill()).toBe(this.skillBeforeMove + 1);
+                        expect(this.adept.militarySkill).toBe(this.skillBeforeMove + 1);
                     });
                 });
 
                 describe('and the fire ring is in your pool', function() {
                     beforeEach(function() {
-                        this.skillBeforeClaim = this.adept.getMilitarySkill();
+                        this.skillBeforeClaim = this.adept.militarySkill;
                         this.player1.claimRing('fire');
                     });
 
@@ -59,7 +59,7 @@ describe('Katana of Fire', function() {
                         expect(this.game.rings.fire.isConsideredClaimed(this.player1.player)).toBe(true);
                         expect(this.katana.controllerHasFireRing()).toBe(true);
                         expect(this.katana.totalKatanaModifier()).toBe(3);
-                        expect(this.adept.getMilitarySkill()).toBe(this.skillBeforeClaim + 2);
+                        expect(this.adept.militarySkill).toBe(this.skillBeforeClaim + 2);
                     });
                 });
             });

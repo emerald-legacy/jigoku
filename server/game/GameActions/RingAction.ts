@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
@@ -19,11 +20,11 @@ export class RingAction<
         return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
-    checkEventCondition(event: RingEvent<N, C>, additionalProperties = {}): boolean {
+    checkEventCondition(event: RingEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.ring, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: RingEvent<N, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: RingEvent<N, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.ring = ring;
     }

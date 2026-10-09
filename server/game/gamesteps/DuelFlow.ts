@@ -1,9 +1,10 @@
+import { msg } from '../GameChat.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Duel } from '../Duel.js';
 import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
-import type HonorBidPrompt from './HonorBidPrompt.js';
+import type { HonorBidPrompt } from './HonorBidPrompt.js';
 
 /**
 D. Duel Timing
@@ -84,7 +85,7 @@ export class DuelFlow extends BaseStepWithPipeline {
 
     #announceResult() {
         if(this.duel.challenger.mostRecentEffect(EffectName.WinDuel) === this.duel) {
-            this.game.addMessage('{0} wins the duel vs {1}', this.duel.challenger, this.duel.targets);
+            this.game.addMessage(msg`${this.duel.challenger} wins the duel vs ${this.duel.targets}`);
         } else {
             this.game.addMessage(this.duel.getTotalsForDisplay());
         }
@@ -102,6 +103,13 @@ export class DuelFlow extends BaseStepWithPipeline {
 
     #applyDuelResults() {
         this.game.raiseEvent(EventName.OnDuelResolution, { duel: this.duel }, () => this.resolutionHandler(this.duel));
+    }
+
+    abort(): void {
+        super.abort();
+        if(this.game.currentDuel === this.duel) {
+            this.game.currentDuel = this.duel.previousDuel ?? null;
+        }
     }
 
     #cleanUpDuel() {

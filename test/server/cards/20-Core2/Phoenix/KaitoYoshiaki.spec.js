@@ -47,7 +47,7 @@ describe('Kaito Yoshiaki', function () {
             this.player2.clickCard(this.brash);
             this.player1.clickCard(this.kaitoYoshiaki);
             this.player1.clickCard(this.brash);
-            expect(this.brash.getMilitarySkill()).toBe(2);
+            expect(this.brash.militarySkill).toBe(2);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Kaito Yoshiaki to set the base skills of Brash Samurai to 0military/0political'
             );
@@ -62,8 +62,8 @@ describe('Kaito Yoshiaki', function () {
             this.player2.clickCard(this.brash);
             this.player1.clickCard(this.kaitoYoshiaki);
             this.player1.clickCard(this.brash);
-            expect(this.brash.getMilitarySkill()).toBe(4); // honored and tainted
-            expect(this.brash.getPoliticalSkill()).toBe(4); // honored and tainted
+            expect(this.brash.militarySkill).toBe(4); // honored and tainted
+            expect(this.brash.politicalSkill).toBe(4); // honored and tainted
             expect(this.brash.fate).toBe(1);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Kaito Yoshiaki to remove a fate from and set the base skills of Brash Samurai to 0military/0political'
@@ -85,7 +85,7 @@ describe('Kaito Yoshiaki', function () {
 
             this.player1.clickCard(this.kaitoYoshiaki);
             this.player1.clickCard(this.brash);
-            expect(this.brash.getMilitarySkill()).toBe(2);
+            expect(this.brash.militarySkill).toBe(2);
             expect(this.brash.fate).toBe(1);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Kaito Yoshiaki to remove a fate from and set the base skills of Brash Samurai to 0military/0political'

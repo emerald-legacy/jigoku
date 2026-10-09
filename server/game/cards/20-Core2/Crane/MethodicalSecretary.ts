@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MethodicalSecretary extends DrawCard {
@@ -12,6 +12,6 @@ export default class MethodicalSecretary extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

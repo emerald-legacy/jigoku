@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType, Players } from '../../Constants.js';
 
 class EleganceAndGrace extends DrawCard {
@@ -16,7 +16,7 @@ class EleganceAndGrace extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isHonored
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

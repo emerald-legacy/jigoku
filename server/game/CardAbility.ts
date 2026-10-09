@@ -1,16 +1,15 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import type { AbilityLimit as IAbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
-import ThenAbility from './ThenAbility.js';
+import { ThenAbility } from './ThenAbility.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
-import { Location, CardType, EffectName } from './Constants.js';
+import { Location, CardType, EffectName, Phase, Blocker } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import BaseCard from './BaseCard.js';
-import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
-import type { MsgArg } from './GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
@@ -24,9 +23,11 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     max?: IAbilityLimit;
     abilityIdentifier?: string;
     origin?: BaseCard;
+    condition?: (context: AbilityContext) => boolean;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
-    effect?: string;
-    effectArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
+    /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
+    chatText?: string | OwnContextCallback<[context: C], MessageArgs>;
+    chatTextArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
 }
 
 /** Cost results are open-ended; only those the chat can format are passed to it. */
@@ -52,7 +53,16 @@ const DefaultLocationForType: Record<string, Location> = {
     stronghold: Location.StrongholdProvince
 };
 
-class CardAbility extends ThenAbility {
+const printedAbilityCounts = new WeakMap<BaseCard, number>();
+
+/** Numbers a card's printed abilities in the order they are created: the same for every copy of the card. */
+function nextPrintedAbilityNumber(card: BaseCard): number {
+    const number = (printedAbilityCounts.get(card) ?? 0) + 1;
+    printedAbilityCounts.set(card, number);
+    return number;
+}
+
+export class CardAbility extends ThenAbility {
     declare properties: CardAbilityProperties;
     title?: string;
     limit: IAbilityLimit;
@@ -66,12 +76,15 @@ class CardAbility extends ThenAbility {
     abilityIdentifier: string;
     maxIdentifier: string;
     origin?: BaseCard;
+    /** With a duel, its challenger check is part of it. */
+    condition?: (context: AbilityContext) => boolean;
 
     constructor(card: BaseCard, properties: CardAbilityProperties) {
-        if(properties.initiateDuel) {
-            initiateDuel(card, properties);
-        }
-        super(card, properties);
+        // a duel's condition and targets go on a copy, so a copy of this ability starts from the properties as written
+        const withDuel = initiateDuel(card, properties);
+        super(card, withDuel);
+        this.properties = properties;
+        this.condition = withDuel.condition;
 
         this.title = properties.title;
         this.limit = properties.limit || AbilityLimit.perRound(1);
@@ -87,12 +100,15 @@ class CardAbility extends ThenAbility {
         this.abilityIdentifier = properties.abilityIdentifier || '';
         this.origin = properties.origin;
         if(!this.abilityIdentifier) {
-            this.abilityIdentifier = this.printedAbility ? this.card.id + '1' : '';
+            this.abilityIdentifier = this.printedAbility ? this.card.id + nextPrintedAbilityNumber(this.card) : '';
         }
         this.maxIdentifier = this.card.name + this.abilityIdentifier;
 
         if(this.max) {
-            this.card.owner.registerAbilityMax(this.maxIdentifier, this.max);
+            // a max is per player, across all copies by title, whoever owns the copy they use
+            for(const player of this.game.getPlayers()) {
+                player.registerAbilityMax(this.maxIdentifier, player === this.card.owner ? this.max : this.max.clone());
+            }
         }
 
         if(card.getType() === CardType.Event && !this.isKeywordAbility()) {
@@ -115,45 +131,45 @@ class CardAbility extends ThenAbility {
         return defaultedLocation;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         if(this.card.isBlank() && this.printedAbility) {
-            return 'blank';
+            return Blocker.Blanked;
         }
 
         if(
-            (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
+            (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredBlockers)) ||
             (this.card.type === CardType.Event && this.card.isDrawCard() && !this.card.canPlay(context, context.playType))
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
 
         if(this.isKeywordAbility() && !this.card.canInitiateKeywords(context)) {
-            return 'cannotInitiate';
+            return Blocker.CannotInitiate;
         }
 
-        if(!ignoredRequirements.includes('limit') && this.limit.isAtMax(context.player)) {
-            return 'limit';
+        if(!ignoredBlockers.includes(Blocker.LimitReached) && this.limit.isAtMax(context.player)) {
+            return Blocker.LimitReached;
         }
 
-        if(!ignoredRequirements.includes('max') && this.max && context.player.isAbilityAtMax(this.maxIdentifier)) {
-            return 'max';
+        if(!ignoredBlockers.includes(Blocker.MaxReached) && this.max && context.player.isAbilityAtMax(this.maxIdentifier)) {
+            return Blocker.MaxReached;
         }
 
-        if(this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
-            return 'limited';
+        if(this.breaksLimitedRule(context)) {
+            return Blocker.LimitedAlreadyPlayed;
         }
 
         if(
-            !ignoredRequirements.includes('phase') &&
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
             !this.isKeywordAbility() &&
             this.card.isDynasty &&
             this.card.type === CardType.Event &&
-            context.game.currentPhase !== 'dynasty'
+            context.game.currentPhase !== Phase.Dynasty
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
 
-        return super.meetsRequirements(context, ignoredRequirements);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
     getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {
@@ -180,12 +196,7 @@ class CardAbility extends ThenAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        for(const cost of this.cost) {
-            if(cost.getReducedCost) {
-                return cost.getReducedCost(context);
-            }
-        }
-        return 0;
+        return this.reducedFateCost(context);
     }
 
     isInValidLocation(context: AbilityContext): boolean {
@@ -213,27 +224,14 @@ class CardAbility extends ThenAbility {
             context.source.location !== Location.Hand &&
             context.source.location !== Location.BeingPlayed
         ) {
-            this.game.addMessage(
-                '{0} plays {1} from {2} {3}',
-                context.player,
-                context.source,
-                context.source.controller === context.player ? 'their' : 'their opponent\'s',
-                this.getLocationMessage(context.source.location, context)
-            );
+            this.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.controller === context.player ? 'their' : 'their opponent\'s'} ${this.getLocationMessage(context.source.location, context)}`);
         }
 
         if(this.properties.message) {
-            let messageArgs = this.properties.messageArgs;
-            if(typeof messageArgs === 'function') {
-                messageArgs = messageArgs(context);
+            const message = this.properties.message(context);
+            if(message) {
+                this.game.addMessage(message);
             }
-            if(!Array.isArray(messageArgs)) {
-                messageArgs = [messageArgs];
-            }
-            const message = typeof this.properties.message === 'function'
-                ? this.properties.message(context)
-                : this.properties.message;
-            this.game.addMessage(message, ...messageArgs);
             return;
         }
         let origin = context.ability && context.ability.origin;
@@ -267,18 +265,22 @@ class CardAbility extends ThenAbility {
         } else {
             messageArgs.push('', '');
         }
-        let effectMessage = this.properties.effect;
+        const effect = this.properties.chatText;
+        let effectMessage = typeof effect === 'function' ? undefined : effect;
         let effectArgs: MsgArg[] = [];
         let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
-        if(!effectMessage) {
-            const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
+        if(typeof effect === 'function') {
+            [effectMessage, effectArgs] = effect(context);
+        } else if(!effectMessage) {
+            const gameActions = this.getGameActions(context).filter(({ action, overrides }) => action.hasLegalTarget(context, overrides));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
-                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
+                const { action, overrides } = gameActions[0];
+                [effectMessage, extraArgs] = action.getEffectMessage(context, overrides);
             }
         } else {
-            effectArgs.push(context.messageTarget() || context.ring || context.source);
-            extraArgs = this.properties.effectArgs;
+            effectArgs.push(context.chatTarget());
+            extraArgs = this.properties.chatTextArgs;
         }
 
         if(extraArgs) {
@@ -314,4 +316,3 @@ class CardAbility extends ThenAbility {
     }
 }
 
-export default CardAbility;

@@ -1,5 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, putIntoPlay, removeFromGame, sequential } from '../../GameActions/GameActions.js';
 import {CardType, Duration, Location} from '../../Constants.js';
 
 class ChampionsOfYomi extends DrawCard {
@@ -12,27 +15,26 @@ class ChampionsOfYomi extends DrawCard {
                     && event.conflict.defendingPlayer !== context.player
                     && event.conflict.getAttackers().length !== 0
             })
-            .cost(AbilityDsl.costs.bow({
+            .cost(costs.bow({
                 cardType: CardType.Stronghold
             }))
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.putIntoPlay(context => ({
+            .gameAction(sequential([
+                putIntoPlay((context) => ({
                     target: context.source
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                cardLastingEffect((context) => ({
                     target: context.source,
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when: {
                             onPhaseEnded: () => true
                         },
-                        message: '{0} is removed from the game due to its delayed effect',
-                        messageArgs: (context) => [context.source],
-                        gameAction: AbilityDsl.actions.removeFromGame()
+                        message: (context) => msg`${context.source} is removed from the game due to its delayed effect`,
+                        gameAction: removeFromGame()
                     })
                 }))
             ]))
-            .effect('put {0} into play and remove {0} from the game at the end of the phase')
+            .chatText('put {0} into play and remove {0} from the game at the end of the phase')
             .location(Location.DynastyDiscardPile);
     }
 }

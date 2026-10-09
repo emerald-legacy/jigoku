@@ -1,5 +1,31 @@
 describe('Miya Satoshi', function() {
     integration(function() {
+        describe('With a card in the stronghold province', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        inPlay: ['miya-satoshi'],
+                        dynastyDeck: ['kanjo-district', 'shiba-tsukune']
+                    }
+                });
+                // Breaking In, for one, can put a character there
+                this.shibaTsukune = this.player1.findCardByName('shiba-tsukune');
+                this.player1.player.moveCard(this.shibaTsukune, 'stronghold province');
+                this.shibaTsukune.facedown = false;
+                this.kanjoDistrict = this.player1.findCardByName('kanjo-district');
+                if(this.kanjoDistrict.location !== 'dynasty deck') {
+                    this.player1.player.moveCard(this.kanjoDistrict, 'dynasty deck');
+                }
+                this.player1.clickCard('miya-satoshi');
+            });
+
+            it('should not allow the player to choose it: only non-stronghold provinces', function() {
+                expect(this.player1).toHavePrompt('Choose a card to discard');
+                expect(this.player1).not.toBeAbleToSelect(this.shibaTsukune);
+            });
+        });
+
         describe('When using his ability', function() {
             beforeEach(function() {
                 this.setupTest({

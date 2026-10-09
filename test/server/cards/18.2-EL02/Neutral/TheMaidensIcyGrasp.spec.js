@@ -97,15 +97,15 @@ describe('The Maidens Icy Grasp', function () {
                     'player2 plays The Maiden\'s Icy Grasp to prevent Village Dōshin from contributing to resolution of this conflict'
                 );
                 expect(this.getChatLogs(10)).toContain(`Military Air conflict - Attacker: ${
-                    this.mystic.getMilitarySkill()
-            + this.mystic.getPoliticalSkill()
+                    this.mystic.militarySkill
+            + this.mystic.politicalSkill
                 } Defender: ${
-                    this.uji.getMilitarySkill()
-            + this.uji.getPoliticalSkill()
-            + this.spiritcaller.getMilitarySkill()
-            + this.spiritcaller.getPoliticalSkill()
-            + this.ryuu.getMilitarySkill()
-            + this.ryuu.getPoliticalSkill()
+                    this.uji.militarySkill
+            + this.uji.politicalSkill
+            + this.spiritcaller.militarySkill
+            + this.spiritcaller.politicalSkill
+            + this.ryuu.militarySkill
+            + this.ryuu.politicalSkill
                 }`);
 
                 this.noMoreActions();

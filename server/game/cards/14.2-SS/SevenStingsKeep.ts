@@ -1,7 +1,10 @@
 import { EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { defendersChosenFirstDuringConflict } from '../../effects.js';
+import { menuPrompt, playerLastingEffect } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class SevenStingsKeep extends StrongholdCard {
     static id = 'seven-stings-keep';
@@ -11,27 +14,22 @@ export default class SevenStingsKeep extends StrongholdCard {
             .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
+            .cost(costs.bowSelf())
+            .gameAction(menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context.event),
-                gameAction: AbilityDsl.actions.playerLastingEffect({}),
+                gameAction: playerLastingEffect({}),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
                     if(displayMessage) {
-                        this.game.addMessage(
-                            '{0} will attack with {1} character{2}',
-                            context.player,
-                            choice,
-                            choice === '1' ? '' : 's'
-                        );
+                        this.game.addMessage(msg`${context.player} will attack with ${choice} character${choice === '1' ? '' : 's'}`);
                     }
                     return {
-                        effect: AbilityDsl.effects.defendersChosenFirstDuringConflict(amount)
+                        effect: defendersChosenFirstDuringConflict(amount)
                     };
                 }
             })))
-            .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
+            .chatText((context) => msg`force ${context.player.opponent} to declare defenders before attackers are chosen this conflict`);
     }
 
     private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {

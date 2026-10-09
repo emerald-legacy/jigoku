@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { returnToHand } from '../../GameActions/GameActions.js';
 
 class SharpenedTsuruhashi extends DrawCard {
     static id = 'sharpened-tsuruhashi';
@@ -9,8 +9,8 @@ class SharpenedTsuruhashi extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source.parentCharacter
             })
-            .gameAction(AbilityDsl.actions.returnToHand())
-            .effect('return it to their hand');
+            .gameAction(returnToHand())
+            .chatText('return it to their hand');
     }
 }
 

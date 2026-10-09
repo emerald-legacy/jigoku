@@ -1,8 +1,8 @@
 import type { DeckDTO, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import type { CardLibrary } from './types/CardClass.js';
-import ChatCommands from './ChatCommands.js';
-import { GameChat } from './GameChat.js';
-import type { MsgArg } from './GameChat.js';
+import { ChatCommands } from './ChatCommands.js';
+import { msg, GameChat } from './GameChat.js';
+import type { MessageArgs, MsgArg } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
 import type { ClockConfig } from './Clocks/ClockSelector.js';
@@ -15,28 +15,28 @@ import { ConflictPhase } from './gamesteps/ConflictPhase.js';
 import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
-import GameWonPrompt from './gamesteps/GameWonPrompt.js';
+import { GameWonPrompt } from './gamesteps/GameWonPrompt.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { Event } from './Events/Event.js';
 import type { EventParams, GameEvent } from './Events/EventPayloads.js';
-import EventWindow from './Events/EventWindow.js';
-import ThenEventWindow from './Events/ThenEventWindow.js';
-import AbilityResolver from './gamesteps/AbilityResolver.js';
-import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
+import { EventWindow } from './Events/EventWindow.js';
+import { ThenEventWindow } from './Events/ThenEventWindow.js';
+import { AbilityResolver } from './gamesteps/AbilityResolver.js';
+import { SimultaneousEffectWindow } from './gamesteps/SimultaneousEffectWindow.js';
 import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
-import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
-import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import type MenuPrompt from './gamesteps/MenuPrompt.js';
+import type { TriggerWindow } from './gamesteps/TriggerWindow.js';
+import type { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
+import type { MenuHandlers, MenuPromptProperties } from './gamesteps/MenuPrompt.js';
 import type { HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
 import type { CardsChoice, OptionalCardChoice, SelectCardPromptProperties, SelectorChoice, SingleCardChoice } from './gamesteps/SelectCardPrompt.js';
 import type { CardTypes } from './types/CardOfType.js';
-import type SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
-import type ActionWindow from './gamesteps/ActionWindow.js';
+import type { SelectRingPrompt } from './gamesteps/SelectRingPrompt.js';
+import type { ActionWindow } from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
 import { Duel } from './Duel.js';
-import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
+import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
 import type { FormattedDeck } from './GameStateSerializer.js';
@@ -46,16 +46,16 @@ import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectName, EventName, Location, ConflictType, Element, Players } from './Constants.js';
+import { AbilityType, EventName, Location, ConflictType, Element, Players, Phase, RestrictionType } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
-import { type EventHandler } from './GameEventBus.js';
+import type { ChoiceWindow } from './TriggeredAbility.js';
+import { rulesFor, type GameRules } from './GameRules.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
-import { isOwnKey } from './utils/helpers.js';
-import { GameModes } from '../GameModes.js';
+import { isEnumValue, isOwnKey } from './utils/helpers.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
@@ -127,7 +127,7 @@ type GameActionRequest = Partial<
     { [K in keyof typeof APPLY_PLAYER_ACTIONS]: ApplyGameActionPlayerTarget }
 >;
 
-class Game {
+export class Game {
     private readonly events = new GameEventManager(this);
 
     effectEngine: EffectEngine;
@@ -145,14 +145,18 @@ class Game {
     createdAt: Date;
     savedGameId?: string;
     gameType?: string;
-    currentAbilityWindow: ForcedTriggeredAbilityWindow | SimultaneousEffectWindow | null;
+    currentAbilityWindow: TriggerWindow | SimultaneousEffectWindow | null;
     currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
     currentDuel: Duel | null;
     manualMode: boolean;
-    gameMode?: string;
-    currentPhase: string;
+    /** Set when the game is created; a game keeps its mode. */
+    readonly gameMode?: string;
+    /** The rules of `gameMode`. */
+    readonly rules: GameRules;
+    /** Between phases: `''`. */
+    currentPhase: Phase | '';
     password?: string;
     roundNumber: number;
     initialFirstPlayer: string | null;
@@ -161,7 +165,7 @@ class Game {
     private readonly input: GameInputHandler;
     private readonly serializer: GameStateSerializer;
     private readonly connections: GameConnectionManager;
-    rings: Record<string, Ring>;
+    rings: Record<Element, Ring>;
     shortCardData: ShortCardData[];
     cardLibrary: CardLibrary;
     router?: GameRouter;
@@ -200,6 +204,7 @@ class Game {
         this.currentDuel = null;
         this.manualMode = false;
         this.gameMode = details.gameMode;
+        this.rules = rulesFor(details.gameMode);
         this.currentPhase = '';
         this.password = details.password;
         this.roundNumber = 0;
@@ -263,18 +268,26 @@ class Game {
         this.pendingAnimations = [];
     }
 
-    /**
-     * Adds a message to the in-game chat e.g 'Jadiel draws 1 card'
-     */
-    addMessage(message: string, ...args: MsgArg[]): void {
-        this.gameChat.addMessage(message, ...args);
+    /** Adds a message to the in-game chat, e.g. `msg\`${player} draws 1 card\``, or a format with its arguments. */
+    addMessage(message: MessageArgs): void;
+    addMessage(format: string, ...args: MsgArg[]): void;
+    addMessage(message: string | MessageArgs, ...args: MsgArg[]): void {
+        if(typeof message === 'string') {
+            this.gameChat.addMessage(message, ...args);
+        } else {
+            this.gameChat.addMessage(message);
+        }
     }
 
-    /**
-     * Adds a message to in-game chat with a graphical icon
-     */
-    addAlert(type: string, message: string, ...args: MsgArg[]): void {
-        this.gameChat.addAlert(type, message, ...args);
+    /** Adds a message to the in-game chat with a graphical icon. */
+    addAlert(type: string, message: MessageArgs): void;
+    addAlert(type: string, format: string, ...args: MsgArg[]): void;
+    addAlert(type: string, message: string | MessageArgs, ...args: MsgArg[]): void {
+        if(typeof message === 'string') {
+            this.gameChat.addAlert(type, message, ...args);
+        } else {
+            this.gameChat.addAlert(type, message);
+        }
     }
 
     get messages(): GameChat['messages'] {
@@ -318,7 +331,7 @@ class Game {
      * Get all players (not spectators) with the first player at index 0
      */
     getPlayersInFirstPlayerOrder(): Player[] {
-        return this.getPlayers().sort((a) => (a.firstPlayer ? -1 : 1));
+        return [...this.getPlayers()].sort((a, b) => Number(!!b.firstPlayer) - Number(!!a.firstPlayer));
     }
 
     /**
@@ -408,17 +421,14 @@ class Game {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
 
+    /** The ring of an element named by a string; `undefined` for any other name (one from the client may be anything). */
+    ringFor(element: string): Ring | undefined {
+        return isEnumValue(Element, element) ? this.rings[element] : undefined;
+    }
+
     getProvinceArray(includeStronghold: boolean = true): Location[] {
-        if(this.gameMode === GameModes.Skirmish) {
-            return [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
-        }
-        const array: Location[] = [
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour
-        ];
-        if(includeStronghold) {
+        const array = [...this.rules.setupNonStrongholdProvinces];
+        if(includeStronghold && this.rules.setupHaveStrongholds) {
             array.push(Location.StrongholdProvince);
         }
         return array;
@@ -447,7 +457,8 @@ class Game {
         return this.currentConflict;
     }
 
-    isDuringConflict(types: string | string[] | null = null): boolean {
+    /** Whether a conflict is going on, of every type and element given. */
+    isDuringConflict(types: ConflictType | Element | Array<ConflictType | Element> | null = null): boolean {
         const conflict = this.currentConflict;
         if(!conflict) {
             return false;
@@ -525,7 +536,7 @@ class Game {
      * function doesn't check to see if a conquest victory has been achieved)
      */
     checkWinCondition(): void {
-        const honorRequiredToWin = this.gameMode === GameModes.Skirmish ? 12 : 25;
+        const honorRequiredToWin = this.rules.winConRequiredHonorForWin;
         for(const player of this.getPlayersInFirstPlayerOrder()) {
             if(player.honor >= honorRequiredToWin) {
                 this.recordWinner(player, 'honor');
@@ -544,7 +555,7 @@ class Game {
             return;
         }
 
-        this.addMessage('{0} has won the game', winner);
+        this.addMessage(msg`${winner} has won the game`);
 
         this.winner = winner;
         this.finishedAt = new Date();
@@ -604,8 +615,13 @@ class Game {
         this.input.shuffleDynastyDeck(playerName);
     }
 
-    promptWithMenu(player: Player, contextObj: ConstructorParameters<typeof MenuPrompt>[2], properties: ConstructorParameters<typeof MenuPrompt>[3]): void {
-        this.prompts.promptWithMenu(player, contextObj, properties);
+    promptWithMenu(player: Player, handlers: MenuHandlers, properties: MenuPromptProperties): void {
+        this.prompts.promptWithMenu(player, handlers, properties);
+    }
+
+    /** "Name a card": the player types a card name, and `onName` gets it. */
+    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle?: string): void {
+        this.prompts.promptForCardName(player, onName, menuTitle);
     }
 
     promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {
@@ -671,7 +687,7 @@ class Game {
 
         for(const player of this.getPlayers()) {
             player.initialise();
-            if(this.gameMode !== GameModes.Skirmish && !player.stronghold) {
+            if(this.rules.setupHaveStrongholds && !player.stronghold) {
                 playerWithNoStronghold = player;
             }
         }
@@ -685,13 +701,10 @@ class Game {
         }
         this.provinceCards = this.allCards.filter((card) => card.isProvince);
 
-        if(this.gameMode !== GameModes.Skirmish) {
+        if(this.rules.setupHaveStrongholds) {
             if(playerWithNoStronghold) {
                 this.queueSimpleStep(() => {
-                    this.addMessage(
-                        'Invalid Deck Detected: {0} does not have a stronghold in their decklist',
-                        playerWithNoStronghold
-                    );
+                    this.addMessage(msg`Invalid Deck Detected: ${playerWithNoStronghold} does not have a stronghold in their decklist`);
                     return false;
                 });
                 this.continue();
@@ -702,7 +715,7 @@ class Game {
                 const numProvinces = this.provinceCards.filter((a) => a.controller === player);
                 if(numProvinces.length !== 5) {
                     this.queueSimpleStep(() => {
-                        this.addMessage('Invalid Deck Detected: {0} has {1} provinces', player, numProvinces.length);
+                        this.addMessage(msg`Invalid Deck Detected: ${player} has ${numProvinces.length} provinces`);
                         return false;
                     });
                     this.continue();
@@ -791,20 +804,51 @@ class Game {
         this.events.emitEvent(eventName, params);
     }
 
-    emit(eventName: string, ...args: unknown[]): void {
-        this.events.emit(eventName, ...args);
+    /** Tells the listeners to a game event that it happened. */
+    emit(event: Event): void {
+        this.events.emit(event);
     }
 
-    on(eventName: string, handler: EventHandler): void {
+    on<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
         this.events.on(eventName, handler);
     }
 
-    once(eventName: string, handler: EventHandler): void {
+    once<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
         this.events.once(eventName, handler);
     }
 
-    removeListener(eventName: string, handler: EventHandler): void {
-        this.events.removeListener(eventName, handler);
+    off<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
+        this.events.off(eventName, handler);
+    }
+
+    /** Called for each event of an `abilityType` trigger window, with the window to offer abilities to (none for other effects). */
+    onTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+        this.events.onTriggerWindow(eventName, abilityType, handler);
+    }
+
+    onceTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+        this.events.onceTriggerWindow(eventName, abilityType, handler);
+    }
+
+    offTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+        this.events.offTriggerWindow(eventName, abilityType, handler);
+    }
+
+    emitTriggerWindow(event: Event, abilityType: AbilityType, window?: ChoiceWindow): void {
+        this.events.emitTriggerWindow(event, abilityType, window);
+    }
+
+    /** Called once per `abilityType` trigger window, with all of its events. */
+    onAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.events.onAggregateWindow(abilityType, handler);
+    }
+
+    offAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.events.offAggregateWindow(abilityType, handler);
+    }
+
+    emitAggregateWindow(events: Event[], abilityType: AbilityType, window: ChoiceWindow): void {
+        this.events.emitAggregateWindow(events, abilityType, window);
     }
 
     /**
@@ -824,7 +868,7 @@ class Game {
      * cards, and performs it on all legal targets.
      */
     applyGameAction(context: AbilityContext | null, actions: GameActionRequest): Event[] {
-        const resolvedContext = context ?? this.getFrameworkContext();
+        const resolvedContext = context ?? this.getGameContext();
         const events: Event[] = [];
         for(const action of Object.keys(actions)) {
             if(isOwnKey(APPLY_CARD_ACTIONS, action)) {
@@ -839,15 +883,24 @@ class Game {
                 }
             }
         }
-        if(events.length > 0) {
-            this.openEventWindow(events);
-            this.queueSimpleStep(() => resolvedContext.refill());
-        }
+        // an action may still add its event in a queued step (after an "unless" cost), so the window opens after those
+        this.queueSimpleStep(() => {
+            if(events.length > 0) {
+                this.openEventWindow(events);
+                this.queueSimpleStep(() => resolvedContext.refill());
+            }
+        });
         return events;
     }
 
-    getFrameworkContext(player: Player | null = null): AbilityContext {
-        return new AbilityContext({ game: this, player: player ?? undefined });
+    /** A context for the game's own rules acting for `player`, outside any card ability. */
+    getFrameworkContext(player: Player): AbilityContext {
+        return new AbilityContext({ game: this, player });
+    }
+
+    /** A context for game-level rules that act for no player (the fate phase, the end of a conflict); its `player` is missing. */
+    getGameContext(): AbilityContext {
+        return new AbilityContext({ game: this });
     }
 
     initiateConflict(
@@ -879,7 +932,7 @@ class Game {
     takeControl(player: Player, card: DrawCard): void {
         if(
             card.controller === player ||
-            !card.checkRestrictions(EffectName.TakeControl, this.getFrameworkContext())
+            !card.checkRestrictions(RestrictionType.TakeControl, this.getFrameworkContext(player))
         ) {
             return;
         }
@@ -970,8 +1023,8 @@ class Game {
                     }
                 });
 
-                if(!player.checkRestrictions('haveImperialFavor') && player.imperialFavor !== '') {
-                    this.addMessage('The imperial favor is discarded as {0} cannot have it', player.name);
+                if(!player.checkRestrictions(RestrictionType.HaveImperialFavor, this.getFrameworkContext(player)) && player.imperialFavor !== '') {
+                    this.addMessage(msg`The imperial favor is discarded as ${player.name} cannot have it`);
                     player.loseImperialFavor();
                 }
             }

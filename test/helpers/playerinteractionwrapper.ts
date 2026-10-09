@@ -1,6 +1,6 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
-import { GameModes } from '../../server/GameModes.js';
+import { GameMode } from '../../server/GameMode.js';
 import { Location } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/Player.js';
@@ -519,10 +519,11 @@ class PlayerInteractionWrapper {
         if(!element) {
             return;
         }
-        if(!['fire', 'earth', 'water', 'air', 'void'].includes(element)) {
+        const ring = this.game.ringFor(element);
+        if(!ring) {
             throw new Error(`${element} is not a valid ring selection`);
         }
-        this.game.rings[element].claimRing(this.player);
+        ring.claimRing(this.player);
         this.game.checkGameState(true);
         this.game.continue();
     }
@@ -553,7 +554,7 @@ class PlayerInteractionWrapper {
     }
 
     selectStrongholdProvince(card: string): void {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(this.game.gameMode === GameMode.Skirmish) {
             return;
         }
         if(!this.hasPrompt('Select stronghold province')) {

@@ -13,7 +13,7 @@ describe('GameObject', function() {
     beforeEach(function() {
         game = createTestGame();
         frameworkContext = new AbilityContext({ game });
-        spyOn(game, 'getFrameworkContext').and.returnValue(frameworkContext);
+        spyOn(game, 'getGameContext').and.returnValue(frameworkContext);
         gameObject = new GameObject(game, 'test object');
     });
 

@@ -1,3 +1,5 @@
+import { msg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName, Location } from '../Constants.js';
@@ -24,22 +26,17 @@ export class RevealAction<C extends AbilityContext = AbilityContext> extends Car
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardRevealed, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardRevealed, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { onDeclaration } = this.getProperties(context, additionalProperties);
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardRevealed, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCardRevealed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         if(properties.chatMessage) {
-            context.game.addMessage(
-                '{0} reveals {1} due to {2}',
-                properties.player || context.player,
-                event.card,
-                context.source
-            );
+            context.game.addMessage(msg`${properties.player || context.player} reveals ${event.card} due to ${context.source}`);
         }
         event.card.facedown = false;
     }

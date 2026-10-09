@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class FingerOfJade extends DrawCard {
     static id = 'finger-of-jade';
@@ -11,10 +11,10 @@ class FingerOfJade extends DrawCard {
 
         this.wouldInterrupt('Cancel an ability')
             .when({
-                onInitiateAbilityEffects: (event, context) => event.cardTargets.some(card => card === context.source.parentCharacter)
+                onInitiateAbilityEffects: (event, context) => event.cardTargets.some((card) => card === context.source.parentCharacter)
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.cancel());
+            .cost(costs.sacrificeSelf())
+            .cancel();
     }
 }
 

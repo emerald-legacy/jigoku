@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';
@@ -10,7 +11,7 @@ class ShrineMaiden extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .cost(AbilityDsl.costs.reveal((context) => context.player.conflictDeck.slice(0, 3)))
+            .cost(costs.revealCardsOf((context) => context.player.conflictDeck.slice(0, 3)))
             .handler((context) => {
                 const cards = context.player.conflictDeck.slice(0, 3);
                 const toHand = cards.filter((card) => card.hasTrait('kiho') || card.hasTrait('spell'));
@@ -25,14 +26,14 @@ class ShrineMaiden extends DrawCard {
                 });
 
                 if(toHand.length && toDiscard.length) {
-                    this.game.addMessage('{0} adds {1} to their hand and discards {2}', context.player, toHand, toDiscard);
+                    this.game.addMessage(msg`${context.player} adds ${toHand} to their hand and discards ${toDiscard}`);
                 } else if(toHand.length) {
-                    this.game.addMessage('{0} adds {1} to their hand', context.player, toHand);
+                    this.game.addMessage(msg`${context.player} adds ${toHand} to their hand`);
                 } else {
-                    this.game.addMessage('{0} discards {1}', context.player, toDiscard);
+                    this.game.addMessage(msg`${context.player} discards ${toDiscard}`);
                 }
             })
-            .effect('take any revealed spells into their hand');
+            .chatText('take any revealed spells into their hand');
     }
 }
 

@@ -1,22 +1,22 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType } from '../../Constants.js';
+import { Phase, CardType } from '../../Constants.js';
 
 class KuniLaboratory extends DrawCard {
     static id = 'kuni-laboratory';
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardType.Character,
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            match: (card) => card.getType() === CardType.Character,
+            effect: modifyBothSkills(1)
         });
 
         this.forcedReaction('After the conflict phase begins')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(AbilityDsl.actions.loseHonor(context => ({ target: context.player })))
-            .effect('lose an honor');
+            .loseHonor((context) => ({ target: context.player }))
+            .chatText('lose an honor');
     }
 }
 

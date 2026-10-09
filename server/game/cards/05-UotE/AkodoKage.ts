@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { setHonorDial } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AkodoKage extends DrawCard {
@@ -13,6 +13,6 @@ export default class AkodoKage extends DrawCard {
                     context.player.honorBid < context.player.opponent.honorBid &&
                     context.player.isMoreHonorable()
             })
-            .gameAction(AbilityDsl.actions.setHonorDial((context) => ({ value: context.player.showBid })));
+            .gameAction(setHonorDial((context) => ({ value: context.player.showBid })));
     }
 }

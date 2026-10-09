@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { increaseCost } from '../../../effects.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -6,32 +7,22 @@ export default class IntoTheStorm extends DrawCard {
     static id = 'into-the-storm';
 
     public setupCardAbilities() {
-        this.action('Increase the cost to play events')
-            .condition(context => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.playerLastingEffect((context) => ({
-                    targetController: Players.Any,
-                    effect: AbilityDsl.effects.increaseCost({
-                        amount: 1,
-                        match: (card) => card.type === CardType.Event
-                    }),
-                    duration: Duration.Custom,
-                    until: {
-                        onCardPlayed: event => event.player === context.player && event.card.type === CardType.Event && event.card !== context.source,
-                        onConflictFinished: () => true
-                    },
-                    endingMessage: 'The storm abates, events no longer cost 1 more'
-                })),
-                AbilityDsl.actions.conditional(context => ({
-                    condition: context => context.player.isCharacterTraitInPlay('scout'),
-                    trueGameAction: AbilityDsl.actions.gainFate({
-                        target: context.player
-                    }),
-                    falseGameAction: AbilityDsl.actions.noAction()
-                }))
-            ]))
-            .effect('increase the cost of events this conflict by 1{1}', context => [
-                context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''
-            ]);
+        this.conflictAction('Increase the cost to play events')
+            .playerLastingEffect((context) => ({
+                targetController: Players.Any,
+                effect: increaseCost({
+                    amount: 1,
+                    match: (card) => card.type === CardType.Event
+                }),
+                duration: Duration.Custom,
+                until: {
+                    onCardPlayed: (event) => event.player === context.player && event.card.type === CardType.Event && event.card !== context.source,
+                    onConflictFinished: () => true
+                },
+                endingMessage: 'The storm abates, events no longer cost 1 more'
+            }))
+            .if((context) => context.player.isCharacterTraitInPlay('scout'))
+            .gainFate((context) => ({ target: context.player }))
+            .chatText((context) => msg`increase the cost of events this conflict by 1${context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''}`);
     }
 }

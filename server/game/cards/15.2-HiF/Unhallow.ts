@@ -1,4 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { costToDeclareAnyParticipants, modifyProvinceStrength } from '../../effects.js';
+import { loseHonor } from '../../GameActions/GameActions.js';
 import { Location, Players } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
@@ -14,17 +16,17 @@ class Unhallow extends ProvinceAttachment {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(3)
+            effect: modifyProvinceStrength(3)
         });
 
         this.persistentEffect({
             condition: (context) => !!context.source.parentProvince?.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.costToDeclareAnyParticipants({
+            effect: costToDeclareAnyParticipants({
                 type: 'defenders',
-                message: 'loses 1 honor',
-                cost: (player: Player) => AbilityDsl.actions.loseHonor({
+                chatText: () => msg`loses 1 honor`,
+                cost: (player: Player) => loseHonor({
                     target: player
                 })
             })

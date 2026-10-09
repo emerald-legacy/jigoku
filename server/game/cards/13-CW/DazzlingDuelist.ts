@@ -1,5 +1,7 @@
-import { DuelType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { DuelType, RestrictionType } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class DazzlingDuelist extends DrawCard {
@@ -10,12 +12,11 @@ export default class DazzlingDuelist extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                message: 'prevent {0} from claiming rings this conflict',
-                messageArgs: (duel) => [duel.loserController ?? ''],
+                chatText: (_context, duel) => msg`prevent ${duel.loserController ?? ''} from claiming rings this conflict`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.playerLastingEffect({
+                    playerLastingEffect({
                         targetController: duel.loserController,
-                        effect: duel.loser ? AbilityDsl.effects.playerCannot('claimRings') : []
+                        effect: duel.loser ? playerCannot(RestrictionType.ClaimRings) : []
                     })
             }));
     }

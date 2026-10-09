@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 
 class MediatorOfHostilities extends DrawCard {
     static id = 'mediator-of-hostilities';
@@ -9,8 +9,8 @@ class MediatorOfHostilities extends DrawCard {
             .when({
                 onConflictPass: () => true
             })
-            .gameAction(AbilityDsl.actions.draw())
-            .limit(AbilityDsl.limit.perRound(2));
+            .draw()
+            .limit(perRound(2));
     }
 }
 

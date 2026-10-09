@@ -1,4 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { delayedEffect } from '../../../effects.js';
+import { discardFromPlay, draw, gainHonor, honor, multiple, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { attacksAloneWithTrait } from '../../attacksAlone.js';
 
@@ -10,7 +13,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'bushi')
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => {
+            .cardLastingEffect((context) => {
                 const target = context.game.requireConflict().getParticipants(
                     (participant) => participant.controller === context.player
                 )[0];
@@ -18,33 +21,30 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                 return {
                     target,
                     effect: [
-                        AbilityDsl.effects.delayedEffect({
+                        delayedEffect({
                             when: {
                                 afterConflict: (event) =>
-                                    event.conflict.winner !== target.controller && target.isParticipating()
+                                    event.conflict.winner !== target.controller || !target.isParticipating()
                             },
-                            gameAction: AbilityDsl.actions.discardFromPlay(),
-                            message: '{0} is discarded from play due to failing at {1}',
-                            messageArgs: (context) => [target, context.source]
+                            gameAction: discardFromPlay(),
+                            message: (context) => msg`${target} is discarded from play due to failing at ${context.source}`
                         }),
-                        AbilityDsl.effects.delayedEffect({
+                        delayedEffect({
                             when: {
                                 afterConflict: (event) =>
                                     event.conflict.winner === target.controller && target.isParticipating()
                             },
-                            gameAction: AbilityDsl.actions.multiple([
-                                AbilityDsl.actions.honor(),
-                                AbilityDsl.actions.placeFate(),
-                                AbilityDsl.actions.gainHonor({ target: context.source.controller }),
-                                AbilityDsl.actions.draw({ target: context.source.controller })
+                            gameAction: multiple([
+                                honor(),
+                                placeFate(),
+                                gainHonor({ target: context.source.controller }),
+                                draw({ target: context.source.controller })
                             ]),
-                            message:
-                                '{0} is honored and receives 1 fate, and {1} gains 1 honor and draws 1 card due to {0} succeeding at {2}',
-                            messageArgs: (context) => [target, context.source.controller, context.source]
+                            message: (context) => msg`${target} is honored and receives 1 fate, and ${context.source.controller} gains 1 honor and draws 1 card due to ${target} succeeding at ${context.source}`
                         })
                     ]
                 };
-            }))
-            .max(AbilityDsl.limit.perConflict(1));
+            })
+            .max(perConflict(1));
     }
 }

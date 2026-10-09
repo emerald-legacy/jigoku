@@ -36,20 +36,20 @@ describe('Hiruma\'s Eyes', function () {
                 province: this.p3_2
             });
 
-            const brashMil = this.brash.getMilitarySkill();
-            const riderMil = this.rider.getMilitarySkill();
-            const challengerMil = this.challenger.getMilitarySkill();
-            const yoshiMil = this.yoshi.getMilitarySkill();
+            const brashMil = this.brash.militarySkill;
+            const riderMil = this.rider.militarySkill;
+            const challengerMil = this.challenger.militarySkill;
+            const yoshiMil = this.yoshi.militarySkill;
 
             this.player2.pass();
             this.player1.clickCard(this.eyes);
             expect(this.player1).toBeAbleToSelect(this.toshimoko);
             this.player1.clickCard(this.toshimoko);
             this.player1.clickPrompt('Give -2');
-            expect(this.brash.getMilitarySkill()).toBe(brashMil);
-            expect(this.rider.getMilitarySkill()).toBe(riderMil - 2);
-            expect(this.challenger.getMilitarySkill()).toBe(challengerMil - 2);
-            expect(this.yoshi.getMilitarySkill()).toBe(yoshiMil);
+            expect(this.brash.militarySkill).toBe(brashMil);
+            expect(this.rider.militarySkill).toBe(riderMil - 2);
+            expect(this.challenger.militarySkill).toBe(challengerMil - 2);
+            expect(this.yoshi.militarySkill).toBe(yoshiMil);
             expect(this.getChatLogs(5)).toContain('player1 plays Hiruma\'s Eyes to give Doji Challenger and Border Rider -2military until the end of the conflict');
         });
 
@@ -62,20 +62,20 @@ describe('Hiruma\'s Eyes', function () {
                 province: this.p3_2
             });
 
-            const brashMil = this.brash.getMilitarySkill();
-            const riderMil = this.rider.getMilitarySkill();
-            const challengerMil = this.challenger.getMilitarySkill();
-            const yoshiMil = this.yoshi.getMilitarySkill();
+            const brashMil = this.brash.militarySkill;
+            const riderMil = this.rider.militarySkill;
+            const challengerMil = this.challenger.militarySkill;
+            const yoshiMil = this.yoshi.militarySkill;
 
             this.player2.pass();
             this.player1.clickCard(this.eyes);
             expect(this.player1).toBeAbleToSelect(this.toshimoko);
             this.player1.clickCard(this.toshimoko);
             this.player1.clickPrompt('Give +2');
-            expect(this.brash.getMilitarySkill()).toBe(brashMil);
-            expect(this.rider.getMilitarySkill()).toBe(riderMil + 2);
-            expect(this.challenger.getMilitarySkill()).toBe(challengerMil + 2);
-            expect(this.yoshi.getMilitarySkill()).toBe(yoshiMil);
+            expect(this.brash.militarySkill).toBe(brashMil);
+            expect(this.rider.militarySkill).toBe(riderMil + 2);
+            expect(this.challenger.militarySkill).toBe(challengerMil + 2);
+            expect(this.yoshi.militarySkill).toBe(yoshiMil);
             expect(this.getChatLogs(5)).toContain('player1 plays Hiruma\'s Eyes to give Doji Challenger and Border Rider +2military until the end of the conflict');
         });
 

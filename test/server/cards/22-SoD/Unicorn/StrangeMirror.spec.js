@@ -88,6 +88,7 @@ describe('Strange Mirror', function () {
                 expect(leavesPlayEvent).toBeDefined();
                 expect(leavesPlayEvent.isSacrifice).toBe(true);
                 expect(this.getChatLogs(5)).toContain('player1 sacrifices Strange Mirror');
+                expect(this.getChatLogs(10)).toContain('player1 uses Strange Mirror to play an event from underneath Shinjo Outrider');
             });
 
             it('resolves the replayed event\'s ability', function () {
@@ -96,7 +97,7 @@ describe('Strange Mirror', function () {
                 this.player1.clickCard(this.outrider);
                 this.player1.clickPrompt('Done');
                 this.player1.clickPrompt('Sacrifice Strange Mirror');
-                expect(this.outrider.getMilitarySkill()).toBe(this.outrider.printedMilitarySkill + 2);
+                expect(this.outrider.militarySkill).toBe(this.outrider.printedMilitarySkill + 2);
             });
 
             it('returns the event to its owner\'s conflict discard pile', function () {
@@ -127,6 +128,58 @@ describe('Strange Mirror', function () {
             it('is not available when nothing is underneath attached character', function () {
                 this.player1.clickCard(this.banzai);
                 expect(this.player1).not.toHavePrompt('Choose an event to play');
+            });
+        });
+    });
+});
+
+describe('Strange Mirror without an event it can play', function () {
+    integration(function () {
+        describe('the action', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shinjo-outrider', 'doji-whisperer'],
+                        hand: ['strange-mirror', 'assassination'],
+                        fate: 10
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger', 'brash-samurai'],
+                        hand: ['assassination'],
+                        fate: 10
+                    }
+                });
+                this.outrider = this.player1.findCardByName('shinjo-outrider');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.mirror = this.player1.findCardByName('strange-mirror');
+                this.ownAssassination = this.player1.findCardByName('assassination', 'hand');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.brash = this.player2.findCardByName('brash-samurai');
+                this.stolen = this.player2.findCardByName('assassination');
+
+                this.player1.playAttachment(this.mirror, this.outrider);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.outrider],
+                    defenders: [this.challenger]
+                });
+            });
+
+            it('cannot be used, so its cost isn\'t paid for nothing', function () {
+                this.player2.pass();
+                this.player1.clickCard(this.ownAssassination);
+                this.player1.clickCard(this.brash);
+                this.player2.clickCard(this.stolen);
+                this.player2.clickCard(this.whisperer);
+                this.player1.clickCard(this.mirror);
+                expect(this.stolen.location).toBe(this.outrider.uuid);
+
+                this.player1.clickCard(this.mirror);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.mirror.location).toBe('play area');
+                expect(this.stolen.location).toBe(this.outrider.uuid);
             });
         });
     });

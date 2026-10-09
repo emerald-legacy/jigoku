@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { PlayType, DuelType, AbilityType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility, increaseCost } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class CivilDiscourse extends DrawCard {
     static id = 'civil-discourse';
@@ -10,13 +12,12 @@ class CivilDiscourse extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: '{0} gains \'Increase the cost to play each card in your hand by 1.\'',
-                messageArgs: duel => duel.loser,
-                gameAction: duel => AbilityDsl.actions.cardLastingEffect({
+                chatText: (_context, duel) => msg`${duel.loser?.[0]} gains 'Increase the cost to play each card in your hand by 1.'`,
+                gameAction: (duel) => cardLastingEffect({
                     target: duel.loser,
-                    effect: AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+                    effect: gainAbility(AbilityType.Persistent, {
                         targetController: Players.Self,
-                        effect: AbilityDsl.effects.increaseCost({
+                        effect: increaseCost({
                             amount: 1,
                             playingTypes: PlayType.PlayFromHand
                         })

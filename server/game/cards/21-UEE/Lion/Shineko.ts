@@ -1,5 +1,5 @@
-import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, Players, RestrictionScope } from '../../../Constants.js';
+import { mustBeChosen, reduceCost } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Shineko extends DrawCard {
@@ -9,7 +9,7 @@ export default class Shineko extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (_, player) =>
                     player.cardsInPlay.some(
                         (card) => card.getType() === CardType.Character && card.hasSomeTrait('scout', 'beastmaster')
@@ -22,7 +22,7 @@ export default class Shineko extends DrawCard {
 
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
-            effect: AbilityDsl.effects.mustBeChosen({ restricts: 'opponentsTriggeredActionAbilities' })
+            effect: mustBeChosen({ appliesTo: RestrictionScope.OpponentsTriggeredActionAbilities })
         });
     }
 }

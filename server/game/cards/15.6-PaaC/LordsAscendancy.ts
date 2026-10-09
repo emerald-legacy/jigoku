@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 
 export default class LordsAscendancy extends ProvinceCard {
     static id = 'lord-s-ascendancy';
@@ -10,9 +11,9 @@ export default class LordsAscendancy extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.placeFate((context) => ({
+            }, placeFate((context) => ({
                 origin: context.target.controller
             })))
-            .effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller]);
+            .chatText((context) => msg`place a fate from ${context.target.controller}'s fate pool on ${context.chatTarget()}`);
     }
 }

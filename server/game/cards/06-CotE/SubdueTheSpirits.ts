@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class SubdueTheSpirits extends DrawCard {
     static id = 'subdue-the-spirits';
@@ -7,11 +8,11 @@ class SubdueTheSpirits extends DrawCard {
     setupCardAbilities() {
         this.action('Add glory to both skills')
             .condition((context) => this.game.isDuringConflict() && context.player.isMoreHonorable())
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: context.game.requireConflict().getCharacters(context.player),
-                effect: AbilityDsl.effects.modifyBothSkills((card) => card.glory)
-            })))
-            .effect('add glory to {1} and {2} skills on participating characters they control', () => ['military', 'political']);
+                effect: modifyBothSkills((card) => card.glory)
+            }))
+            .chatText(() => msg`add glory to ${'military'} and ${'political'} skills on participating characters they control`);
     }
 }
 

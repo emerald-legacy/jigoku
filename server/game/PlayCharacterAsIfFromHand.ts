@@ -1,11 +1,11 @@
 import { AbilityContext } from './AbilityContext.js';
-import { PlayType } from './Constants.js';
-import { PlayCharacterAction, PlayCharacterIntoLocation } from './PlayCharacterAction.js';
+import { PlayType, Blocker } from './Constants.js';
+import { PlayCharacterAction, PlayIntoLocation } from './PlayCharacterAction.js';
 import DrawCard from './DrawCard.js';
 import Player from './Player.js';
 
 export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
-    constructor(card: DrawCard, intoLocation = PlayCharacterIntoLocation.Any) {
+    constructor(card: DrawCard, intoLocation = PlayIntoLocation.Any) {
         super(card, intoLocation);
     }
 
@@ -15,23 +15,23 @@ export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
         return context;
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        const newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
+            ? ignoredBlockers
+            : ignoredBlockers.concat(Blocker.WrongLocation);
+        return super.meetsRequirements(context, newIgnoredBlockers);
     }
 }
 
 export class PlayCharacterAsIfFromHandIntoConflict extends PlayCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayCharacterIntoLocation.Conflict);
+        super(card, PlayIntoLocation.Conflict);
     }
 }
 
 export class PlayCharacterAsIfFromHandAtHome extends PlayCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayCharacterIntoLocation.Home);
+        super(card, PlayIntoLocation.Home);
     }
 }
 

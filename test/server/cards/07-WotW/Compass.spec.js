@@ -33,6 +33,9 @@ describe('Compass', function() {
                 this.player1.moveCard(this.fineKatana, 'conflict deck');
                 this.player1.moveCard(this.ornateFan, 'conflict deck');
                 this.player1.moveCard(this.iuchiWayfinder, 'conflict deck');
+                // the 4th card of each deck, below the 3 Compass looks at
+                this.dynastyFourth = this.player1.dynastyDeck[3];
+                this.conflictFourth = this.player1.conflictDeck[3];
 
                 this.player1.clickCard(this.compass);
                 this.player1.clickCard(this.shinjoOutrider);
@@ -84,9 +87,9 @@ describe('Compass', function() {
                 expect(this.player1).toHavePromptButton(this.imperialStorehouse.name);
                 expect(this.player1).toHavePromptButton(this.favorableGround.name);
                 expect(this.player1).toHavePromptButton(this.motoYouth.name);
+                expect(this.player1).not.toHavePromptButton(this.dynastyFourth.name);
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt(this.favorableGround.name);
-                expect(this.getChatLogs(1)).toContain('player1 places a card on the bottom of their dynasty deck');
                 expect(this.player1).toHavePrompt('Choose a card to place on the bottom of your deck');
                 expect(this.player1).toHavePromptButton(this.imperialStorehouse.name);
                 expect(this.player1).not.toHavePromptButton(this.favorableGround.name);
@@ -100,6 +103,8 @@ describe('Compass', function() {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt(this.imperialStorehouse.name);
                 expect(this.player1).not.toHavePrompt('Choose a card to place on the bottom of your deck');
+                expect(this.getChatLogs(3)).toContain('player1 places 3 cards on the bottom of their dynasty deck');
+                expect(this.player1.dynastyDeck[0]).toBe(this.dynastyFourth);
                 const deckLength = this.player1.dynastyDeck.length;
                 expect(this.player1.dynastyDeck[deckLength - 1]).toBe(this.imperialStorehouse);
                 expect(this.player1.dynastyDeck[deckLength - 2]).toBe(this.motoYouth);
@@ -120,22 +125,24 @@ describe('Compass', function() {
                 expect(this.player1).toHavePromptButton(this.iuchiWayfinder.name);
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Done');
-                expect(this.player1).toHavePrompt('Choose a card to place on the top of your deck');
+                expect(this.player1).toHavePrompt('Which card do you want to be on top?');
                 expect(this.player1).toHavePromptButton(this.fineKatana.name);
                 expect(this.player1).toHavePromptButton(this.ornateFan.name);
                 expect(this.player1).toHavePromptButton(this.iuchiWayfinder.name);
+                expect(this.player1).not.toHavePromptButton(this.conflictFourth.name);
                 expect(this.player1).not.toHavePromptButton('Done');
                 this.player1.clickPrompt(this.iuchiWayfinder.name);
-                expect(this.getChatLogs(1)).toContain('player1 places a card on the top of their conflict deck');
-                expect(this.player1).toHavePrompt('Choose a card to place on the top of your deck');
+                expect(this.player1).toHavePrompt('Which card do you want to be the second card?');
                 expect(this.player1).toHavePromptButton(this.fineKatana.name);
                 expect(this.player1).toHavePromptButton(this.ornateFan.name);
                 expect(this.player1).not.toHavePromptButton(this.iuchiWayfinder.name);
                 this.player1.clickPrompt(this.fineKatana.name);
                 expect(this.player2).toHavePrompt('Choose defenders');
-                expect(this.player1.conflictDeck[0]).toBe(this.ornateFan);
+                expect(this.getChatLogs(3)).toContain('player1 places 3 cards on top of their conflict deck');
+                expect(this.player1.conflictDeck[0]).toBe(this.iuchiWayfinder);
                 expect(this.player1.conflictDeck[1]).toBe(this.fineKatana);
-                expect(this.player1.conflictDeck[2]).toBe(this.iuchiWayfinder);
+                expect(this.player1.conflictDeck[2]).toBe(this.ornateFan);
+                expect(this.player1.conflictDeck[3]).toBe(this.conflictFourth);
             });
 
             it('should handle less than 3 cards in the deck', function() {

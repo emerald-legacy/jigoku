@@ -19,7 +19,7 @@ export interface BaseCardSelectorProperties {
     sameDiscardPile?: boolean;
 }
 
-class BaseCardSelector {
+export class BaseCardSelector {
     cardCondition: (card: BaseCard, context: AbilityContext) => boolean = () => true;
     // a selector built without a card type holds [undefined], which matches nothing
     cardType: (CardType | undefined)[];
@@ -192,4 +192,3 @@ class BaseCardSelector {
     }
 }
 
-export default BaseCardSelector;

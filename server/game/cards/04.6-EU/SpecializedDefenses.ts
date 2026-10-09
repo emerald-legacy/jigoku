@@ -1,15 +1,16 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrengthMultiplier } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { isEnumValue } from '../../utils/helpers.js';
 
 class SpecializedDefenses extends DrawCard {
     static id = 'specialized-defenses';
 
     setupCardAbilities() {
-        this.action('Double province strength')
-            .condition((context) => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+        this.conflictAction('Double province strength')
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -18,17 +19,16 @@ class SpecializedDefenses extends DrawCard {
                     if(element === 'all') {
                         return true;
                     }
-                    return this.game.rings[element].isConsideredClaimed(context.player) ||
+                    return this.game.ringFor(element)?.isConsideredClaimed(context.player) ||
                            (isEnumValue(Element, element) && (this.game.currentConflict?.ring?.getElements().includes(element) ?? false));
                 }),
-                message: '{0} doubles the province strength of {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
+                message: (context, cards) => msg`${context.player} doubles the province strength of ${cards}`,
+                gameAction: cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrengthMultiplier(2)
+                    effect: modifyProvinceStrengthMultiplier(2)
                 })
-            })))
-            .effect('double the province strength of an attacked province');
+            }))
+            .chatText('double the province strength of an attacked province');
     }
 }
 

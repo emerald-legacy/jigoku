@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { changePlayerSkillModifier } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CantorOfGales extends DrawCard {
@@ -9,7 +9,7 @@ export default class CantorOfGales extends DrawCard {
             condition: (context) =>
                 context.source.isAtHome() &&
                 context.player.cardsInPlay.some((card) => card.isParticipating() && card.isHonored),
-            effect: AbilityDsl.effects.changePlayerSkillModifier(2)
+            effect: changePlayerSkillModifier(2)
         });
     }
 }

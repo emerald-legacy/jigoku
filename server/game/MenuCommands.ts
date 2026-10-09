@@ -1,8 +1,9 @@
+import { msg } from './GameChat.js';
 import { Location } from './Constants.js';
 import { Conflict } from './Conflict.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
-import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
+import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
 import type Player from './Player.js';
 import type Ring from './Ring.js';
 
@@ -17,27 +18,27 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
     switch(menuItem.command) {
         case 'bow':
             if(card.bowed) {
-                game.addMessage('{0} readies {1}', player, card);
+                game.addMessage(msg`${player} readies ${card}`);
                 card.ready();
             } else {
-                game.addMessage('{0} bows {1}', player, card);
+                game.addMessage(msg`${player} bows ${card}`);
                 card.bow();
             }
             return;
         case 'honor':
-            game.addMessage('{0} honors {1}', player, card);
+            game.addMessage(msg`${player} honors ${card}`);
             card.honor();
             return;
         case 'dishonor':
-            game.addMessage('{0} dishonors {1}', player, card);
+            game.addMessage(msg`${player} dishonors ${card}`);
             card.dishonor();
             return;
         case 'taint':
             if(card.isTainted) {
-                game.addMessage('{0} cleanses {1}', player, card);
+                game.addMessage(msg`${player} cleanses ${card}`);
                 card.untaint();
             } else {
-                game.addMessage('{0} taints {1}', player, card);
+                game.addMessage(msg`${player} taints ${card}`);
                 card.taint();
             }
             return;
@@ -45,23 +46,23 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             if(!card.isDrawCard()) {
                 return;
             }
-            game.addMessage('{0} adds a fate to {1}', player, card);
+            game.addMessage(msg`${player} adds a fate to ${card}`);
             card.modifyFate(1);
             return;
         case 'remfate':
             if(!card.isDrawCard()) {
                 return;
             }
-            game.addMessage('{0} removes a fate from {1}', player, card);
+            game.addMessage(msg`${player} removes a fate from ${card}`);
             card.modifyFate(-1);
             return;
         case 'move':
             if(game.currentConflict && card.isDrawCard()) {
                 if(card.isParticipating()) {
-                    game.addMessage('{0} moves {1} out of the conflict', player, card);
+                    game.addMessage(msg`${player} moves ${card} out of the conflict`);
                     game.currentConflict.removeFromConflict(card);
                 } else {
-                    game.addMessage('{0} moves {1} into the conflict', player, card);
+                    game.addMessage(msg`${player} moves ${card} into the conflict`);
                     if(card.controller.isAttackingPlayer()) {
                         game.currentConflict.addAttacker(card);
                     } else if(card.controller.isDefendingPlayer()) {
@@ -72,7 +73,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             return;
         case 'control':
             if(player.opponent && card.isDrawCard()) {
-                game.addMessage('{0} gives {1} control of {2}', player, player.opponent, card);
+                game.addMessage(msg`${player} gives ${player.opponent} control of ${card}`);
                 card.setDefaultController(player.opponent);
             }
             return;
@@ -80,21 +81,21 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             if(card.controller !== player) {
                 return;
             }
-            game.addMessage('{0} reveals {1}', player, card);
+            game.addMessage(msg`${player} reveals ${card}`);
             card.facedown = false;
             return;
         case 'hide':
             if(card.controller !== player) {
                 return;
             }
-            game.addMessage('{0} flips {1} facedown', player, card);
+            game.addMessage(msg`${player} flips ${card} facedown`);
             card.facedown = true;
             return;
         case 'break':
             if(!card.isProvinceCard()) {
                 return;
             }
-            game.addMessage('{0} {1} {2}', player, card.isBroken ? 'unbreaks' : 'breaks', card);
+            game.addMessage(msg`${player} ${card.isBroken ? 'unbreaks' : 'breaks'} ${card}`);
             card.isBroken = card.isBroken ? false : true;
             if(card.location === Location.StrongholdProvince && card.isBroken && player.opponent) {
                 game.recordWinner(player.opponent, 'conquest');
@@ -104,7 +105,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             if(!card.isProvinceCard()) {
                 return;
             }
-            game.addMessage('{0} moves the conflict to {1}', player, card);
+            game.addMessage(msg`${player} moves the conflict to ${card}`);
             card.inConflict = true;
             if(game.currentConflict?.conflictProvince) {
                 game.currentConflict.conflictProvince.inConflict = false;
@@ -113,7 +114,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             card.facedown = false;
             return;
         case 'refill':
-            game.addMessage('{0} refills {1}', player, card.isFacedown() ? card.location : card);
+            game.addMessage(msg`${player} refills ${card.isFacedown() ? card.location : card}`);
             card.controller.replaceDynastyCard(card.location);
             return;
     }
@@ -123,59 +124,52 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
     switch(menuItem.command) {
         case 'flip':
             if(game.currentConflict && game.currentConflict.ring) {
-                game.addMessage('{0} switches the conflict type', player);
+                game.addMessage(msg`${player} switches the conflict type`);
                 game.currentConflict.switchType();
             } else {
                 ring.flipConflictType();
             }
             return;
         case 'claim':
-            game.addMessage('{0} claims the {1} ring', player, ring.element);
+            game.addMessage(msg`${player} claims the ${ring.element} ring`);
             ring.claimRing(player);
             return;
         case 'unclaimed':
-            game.addMessage('{0} sets the {1} ring to unclaimed', player, ring.element);
+            game.addMessage(msg`${player} sets the ${ring.element} ring to unclaimed`);
             ring.resetRing();
             return;
         case 'contested':
             if(game.currentConflict) {
                 if(!ring.claimed) {
-                    game.addMessage('{0} switches the conflict to contest the {1} ring', player, ring.element);
+                    game.addMessage(msg`${player} switches the conflict to contest the ${ring.element} ring`);
                     game.currentConflict.switchElement(ring.element);
                 } else {
-                    game.addMessage(
-                        '{0} tried to switch the conflict to contest the {1} ring, but it\'s already claimed',
-                        player,
-                        ring.element
-                    );
+                    game.addMessage(msg`${player} tried to switch the conflict to contest the ${ring.element} ring, but it's already claimed`);
                 }
             }
             return;
         case 'addfate':
-            game.addMessage('{0} adds a fate to the {1} ring', player, ring.element);
+            game.addMessage(msg`${player} adds a fate to the ${ring.element} ring`);
             ring.modifyFate(1);
             return;
         case 'remfate':
-            game.addMessage('{0} removes a fate from the {1} ring', player, ring.element);
+            game.addMessage(msg`${player} removes a fate from the ${ring.element} ring`);
             ring.modifyFate(-1);
             return;
         case 'takefate':
-            game.addMessage('{0} takes all the fate from the {1} ring and adds it to their pool', player, ring.element);
+            game.addMessage(msg`${player} takes all the fate from the ${ring.element} ring and adds it to their pool`);
             player.modifyFate(ring.fate);
             ring.fate = 0;
             return;
         case 'conflict':
             if(game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {
-                game.addMessage('{0} initiates a conflict', player);
+                game.addMessage(msg`${player} initiates a conflict`);
                 const conflict = new Conflict(game, player, player.opponent, ring);
                 game.currentConflict = conflict;
                 game.queueStep(new ConflictFlow(game, conflict));
                 game.queueSimpleStep(() => (game.currentConflict = null));
             } else {
-                game.addMessage(
-                    '{0} tried to initiate a conflict, but game can only be done in a pre-conflict action window',
-                    player
-                );
+                game.addMessage(msg`${player} tried to initiate a conflict, but game can only be done in a pre-conflict action window`);
             }
             return;
     }

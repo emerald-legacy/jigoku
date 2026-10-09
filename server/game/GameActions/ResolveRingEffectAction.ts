@@ -1,0 +1,86 @@
+import { msg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EffectName, EventName } from '../Constants.js';
+import { Event } from '../Events/Event.js';
+import type Player from '../Player.js';
+import Ring from '../Ring.js';
+import { RingAbilities } from '../RingAbilities.js';
+import { RingAction, type RingActionProperties } from './RingAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
+
+export interface ResolveElementProperties extends RingActionProperties {
+    physicalRing?: Ring;
+    player?: Player;
+    enforceOrderedResolution?: boolean;
+}
+
+export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, C> {
+    name = 'resolveRingEffect';
+    eventName = EventName.OnResolveRingElement;
+    effect = 'resolve {0} effect';
+
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
+        const rings = targetList(properties.target).flatMap((element) => {
+            if(typeof element === 'string') {
+                const ring = context.game.rings[element];
+                return ring ? [ring] : [];
+            }
+            if(element instanceof Ring) {
+                return [element];
+            }
+            return [];
+        });
+
+        if(rings.length === 1) {
+            events.push(this.getEvent(rings[0], context, additionalProperties));
+            return;
+        }
+
+        if(rings.length > 1) {
+            const sortedRings = properties.enforceOrderedResolution
+                ? rings
+                : rings.sort(
+                    (a, b) =>
+                        (context.player.firstPlayer ? 1 : -1) *
+                          (RingAbilities.contextFor(context.player, a.element).ability.defaultPriority -
+                              RingAbilities.contextFor(context.player, b.element).ability.defaultPriority)
+                );
+            const ringProperties = { ...additionalProperties, optional: false };
+            const effectObjects = sortedRings.map((ring) => ({
+                title: RingAbilities.getRingName(ring.element) + ' Effect',
+                handler: () => context.game.openEventWindow(this.getEvent(ring, context, ringProperties))
+            }));
+            events.push(
+                new Event(EventName.Unnamed, {}, () => context.game.openSimultaneousEffectWindow(effectObjects))
+            );
+        }
+    }
+
+    addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown>): void {
+        const { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
+        super.addPropertiesToEvent(event, ring, context, additionalProperties);
+        event.player = player || context.player;
+        event.physicalRing = physicalRing;
+        event.optional = optional;
+        event.effectivellyResolvedEffect = false;
+    }
+
+    eventHandler(event: ActionEvent<EventName.OnResolveRingElement, C>): void {
+        const context = event.context;
+        const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
+
+        if(cannotResolveRingEffects.length) {
+            context.game.addMessage(msg`${context.player}'s ring effect is cancelled.`);
+            event.cancel();
+            return;
+        }
+
+        context.game.resolveAbility(
+            RingAbilities.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
+                event.effectivellyResolvedEffect = resolved;
+            })
+        );
+    }
+}

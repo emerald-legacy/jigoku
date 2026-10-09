@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { DuelType, Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyDuelSkill } from '../../../effects.js';
+import { dishonor, duelLastingEffect, injure, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -8,33 +10,32 @@ export default class IsawaHouseGuard extends DrawCard {
 
     public setupCardAbilities() {
         this.duelFocus('Help a character with a duel', (duel, context) => duel.participants.includes(context.source) && context.source.isHonored)
-            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
+            .gameAction(duelLastingEffect((context) => ({
                 target: context.event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
+                effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             })))
-            .effect('add 1 to their duel total');
+            .chatText('add 1 to their duel total');
 
-        this.action('Initiate a military duel to dishonor')
+        this.conflictAction('Initiate a military duel to dishonor')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: (duel) => AbilityDsl.actions.multipleContext(() => {
+                gameAction: (duel) => multipleContext(() => {
                     const gameActions: GameAction[] = [];
 
-                    gameActions.push(AbilityDsl.actions.dishonor({
+                    gameActions.push(dishonor({
                         target: duel.loser
                     }));
-                    duel.loser?.forEach(card => {
+                    duel.loser?.forEach((card) => {
                         if(card.isTainted) {
-                            gameActions.push(AbilityDsl.actions.injure({
+                            gameActions.push(injure({
                                 target: card
                             }));
                         }
                     });
                     return { gameActions };
                 }),
-                message: '{0} is dishonored and injured if tainted',
-                messageArgs: duel => [duel.loser]
+                chatText: (_context, duel) => msg`${duel.loser} is dishonored and injured if tainted`
             }));
     }
 }

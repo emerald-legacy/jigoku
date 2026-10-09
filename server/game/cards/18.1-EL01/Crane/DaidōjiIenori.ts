@@ -1,32 +1,39 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import {
+    cannotReceiveDishonorToken,
+    cannotReceiveHonorToken,
+    cannotReceiveTaintedToken,
+    setMilitarySkill,
+    setPoliticalSkill
+} from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 
 class DaidojiIenori extends DrawCard {
     static id = 'daidoji-ienori';
 
     setupCardAbilities() {
-        this.action('Set a participating character to 3/3')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Set a participating character to 3/3')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(context => {
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => {
                 const effect = [
-                    AbilityDsl.effects.setMilitarySkill(3),
-                    AbilityDsl.effects.setPoliticalSkill(3)
+                    setMilitarySkill(3),
+                    setPoliticalSkill(3)
                 ];
                 if(context.source.isHonored) {
-                    effect.push(AbilityDsl.effects.cannotReceiveDishonorToken());
-                    effect.push(AbilityDsl.effects.cannotReceiveHonorToken());
-                    effect.push(AbilityDsl.effects.cannotReceiveTaintedToken());
+                    effect.push(cannotReceiveDishonorToken());
+                    effect.push(cannotReceiveHonorToken());
+                    effect.push(cannotReceiveTaintedToken());
                 }
                 return {
                     effect: effect
                 };
             }))
-            .effect('set the skills of {0} to 3{1}/3{2}{3}', context => ['military', 'political', context.source.isHonored ? ' and prevent them from receiving status tokens' : '']);
+            .chatText((context) => msg`set the skills of ${context.chatTarget()} to 3${'military'}/3${'political'}${context.source.isHonored ? ' and prevent them from receiving status tokens' : ''}`);
     }
 }
 

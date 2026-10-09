@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { selectRing, switchConflictElement } from '../../GameActions/GameActions.js';
 
 
 class ShinjoKyora extends DrawCard {
@@ -7,14 +8,13 @@ class ShinjoKyora extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch the contested ring')
-            .condition(context => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.selectRing({
-                message: '{0} switches the contested ring with {1}',
-                ringCondition: ring => ring.isUnclaimed(),
-                messageArgs: (ring, player) => [player, ring],
-                gameAction: AbilityDsl.actions.switchConflictElement()
+            .condition((context) => context.source.isParticipating())
+            .gameAction(selectRing({
+                message: (_context, ring, player) => msg`${player} switches the contested ring with ${ring}`,
+                ringCondition: (ring) => ring.isUnclaimed(),
+                gameAction: switchConflictElement()
             }))
-            .effect('switch the contested ring with an unclaimed one');
+            .chatText('switch the contested ring with an unclaimed one');
     }
 }
 

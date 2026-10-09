@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { attach, discardFromPlay, ifAble, selectCard } from '../../GameActions/GameActions.js';
 
 class IuchiRimei extends DrawCard {
     static id = 'iuchi-rimei';
@@ -10,20 +11,19 @@ class IuchiRimei extends DrawCard {
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
-                cardCondition: card => Boolean(card.costLessThan(2) && card.parentCharacter)
-            }, AbilityDsl.actions.selectCard(context => ({
-                cardCondition: card => card !== context.target?.parentCharacter && card.controller === context.target?.parentCharacter?.controller && card.type === CardType.Character,
-                message: '{0} moves {1} to {2}',
-                messageArgs: card => [context.player, context.target, card],
-                gameAction: AbilityDsl.actions.ifAble({
-                    ifAbleAction: AbilityDsl.actions.attach({
+                cardCondition: (card) => Boolean(card.costLessThan(2) && card.parentCharacter)
+            }, selectCard((context) => ({
+                cardCondition: (card) => card !== context.target?.parentCharacter && card.controller === context.target?.parentCharacter?.controller && card.type === CardType.Character,
+                message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
+                gameAction: ifAble({
+                    ifAbleAction: attach({
                         attachment: context.target,
                         ignoreUniqueness: true
                     }),
-                    otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.target })
+                    otherwiseAction: discardFromPlay({ target: context.target })
                 })
             })))
-            .effect('move {0} to another character');
+            .chatText('move {0} to another character');
     }
 }
 

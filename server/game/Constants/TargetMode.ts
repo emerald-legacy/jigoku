@@ -4,7 +4,6 @@ export enum TargetMode {
     Ability = 'ability',
     Token = 'token',
     ElementSymbol = 'elementSymbol',
-    AutoSingle = 'autoSingle',
     Exactly = 'exactly',
     ExactlyVariable = 'exactlyVariable',
     MaxStat = 'maxStat',

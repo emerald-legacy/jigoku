@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { removeFate } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ParanoidHososhi extends DrawCard {
@@ -10,16 +11,16 @@ export default class ParanoidHososhi extends DrawCard {
         this.legendary(2);
 
         this.action('Steal fate from a character')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context)
-            }, AbilityDsl.actions.removeFate((context) => ({
+            }, removeFate((context) => ({
                 recipient: context.player
             })))
-            .effect('take 1 fate from {0} — evil begone')
-            .phase(Phases.Conflict);
+            .chatText('take 1 fate from {0} — evil begone')
+            .phase(Phase.Conflict);
     }
 
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {

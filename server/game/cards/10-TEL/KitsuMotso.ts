@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
 class KitsuMotso extends DrawCard {
@@ -14,7 +14,7 @@ class KitsuMotso extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }
 

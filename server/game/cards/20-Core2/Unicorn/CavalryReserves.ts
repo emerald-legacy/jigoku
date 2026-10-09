@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -6,8 +6,7 @@ export default class CavalryReserves extends DrawCard {
     static id = 'cavalry-reserves';
 
     setupCardAbilities() {
-        this.action('Put Cavalry into play from your discard')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Put Cavalry into play from your discard', { conflictType: ConflictType.Military })
             .targetCards({
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',
@@ -18,6 +17,6 @@ export default class CavalryReserves extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('cavalry')
-            }, AbilityDsl.actions.putIntoConflict());
+            }, putIntoConflict());
     }
 }

@@ -1,6 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { chooseAction, conditional, discardAtRandom, discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function shinobiCount(context: AbilityContext): number {
@@ -16,46 +18,45 @@ export default class SpiderwebPassage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a participating character with 0 skill')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition((context) => shinobiCount(context) > 0)
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) =>
                     card.isParticipating() &&
-                    ((!card.hasDash('political') && card.getPoliticalSkill() === 0) ||
-                        (!card.hasDash('military') && card.getMilitarySkill() === 0))
+                    ((!card.hasDash('political') && card.politicalSkill === 0) ||
+                        (!card.hasDash('military') && card.militarySkill === 0))
             })
-            .gameAction(AbilityDsl.actions.conditional(context => {
+            .gameAction(conditional((context) => {
                 const discardCount = shinobiCount(context);
-                const discardFromHandAction = AbilityDsl.actions.discardAtRandom({
+                const discardFromHandAction = discardAtRandom({
                     amount: discardCount,
                     target: context.player.opponent
                 });
-                const killAction = AbilityDsl.actions.discardFromPlay({ target: context.target });
+                const killAction = discardFromPlay({ target: context.target });
 
                 return {
                     condition: () =>
                         (context.player.opponent?.hand.length ?? 0) >= discardCount &&
                         !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
-                    trueGameAction: AbilityDsl.actions.chooseAction(context => ({
+                    trueGameAction: chooseAction((context) => ({
                         player: Players.Opponent,
                         activePromptTitle: 'Select one',
-                        options: {
+                        choices: {
                             [`Discard ${discardCount} random cards from hand`]: {
                                 action: discardFromHandAction,
-                                message: '{0} distracts the Shinobi'
+                                message: (_context, _target, player) => msg`${player} distracts the Shinobi`
                             },
                             [`Discard ${context.target?.name}`]: {
                                 action: killAction,
-                                message: `{0} refuses to discard ${discardCount} cards. {2} is discarded`
+                                message: (context, _target, player) => msg`${player} refuses to discard ${discardCount} cards. ${context.target} is discarded`
                             }
-                        },
-                        messageArgs: [context.target]
+                        }
                     }))
                 };
             }))
-            .effect('ambush {1}', (context) => context.target);
+            .chatText((context) => msg`ambush ${context.target}`);
     }
 }

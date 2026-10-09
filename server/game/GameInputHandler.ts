@@ -1,6 +1,7 @@
+import { msg } from './GameChat.js';
 import * as MenuCommands from './MenuCommands.js';
 import type { MenuItem } from './MenuCommands.js';
-import { Phases } from './Constants.js';
+import { Phase } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
 import type BaseCard from './BaseCard.js';
@@ -71,7 +72,7 @@ export class GameInputHandler {
     }
 
     ringClicked(sourcePlayer: string, ringindex: string): void {
-        const ring = this.game.rings[ringindex];
+        const ring = this.game.ringFor(ringindex);
         const player = this.game.getPlayerByName(sourcePlayer);
 
         if(!player || !ring) {
@@ -84,7 +85,7 @@ export class GameInputHandler {
         }
 
         // If it's not the conflict phase and the ring hasn't been claimed, flip it
-        if(this.game.currentPhase !== Phases.Conflict && !ring.claimed) {
+        if(this.game.currentPhase !== Phase.Conflict && !ring.claimed) {
             ring.flipConflictType();
         }
     }
@@ -111,7 +112,7 @@ export class GameInputHandler {
 
     ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
-        const ring = this.game.rings[sourceRing.element];
+        const ring = this.game.ringFor(sourceRing.element);
         if(!player || !ring) {
             return;
         }
@@ -134,11 +135,11 @@ export class GameInputHandler {
         if(!player.showConflict) {
             player.showConflictDeck();
 
-            this.game.addMessage('{0} is looking at their conflict deck', player);
+            this.game.addMessage(msg`${player} is looking at their conflict deck`);
         } else {
             player.showConflict = false;
 
-            this.game.addMessage('{0} stops looking at their conflict deck', player);
+            this.game.addMessage(msg`${player} stops looking at their conflict deck`);
         }
     }
 
@@ -152,11 +153,11 @@ export class GameInputHandler {
         if(!player.showDynasty) {
             player.showDynastyDeck();
 
-            this.game.addMessage('{0} is looking at their dynasty deck', player);
+            this.game.addMessage(msg`${player} is looking at their dynasty deck`);
         } else {
             player.showDynasty = false;
 
-            this.game.addMessage('{0} stops looking at their dynasty deck', player);
+            this.game.addMessage(msg`${player} stops looking at their dynasty deck`);
         }
     }
 
@@ -187,7 +188,7 @@ export class GameInputHandler {
         if(player[stat] < 0) {
             player[stat] = 0;
         } else {
-            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, player[stat], (value > 0 ? '+' : '') + value);
+            this.game.addMessage(msg`${player} sets ${stat} to ${player[stat]} (${(value > 0 ? '+' : '') + value})`);
         }
     }
 
@@ -230,7 +231,7 @@ export class GameInputHandler {
             return;
         }
 
-        this.game.addMessage('{0} concedes', player);
+        this.game.addMessage(msg`${player} concedes`);
 
         const otherPlayer = this.game.getOtherPlayer(player);
 

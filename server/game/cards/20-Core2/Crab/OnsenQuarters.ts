@@ -1,6 +1,7 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../../effects.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import type Ring from '../../../Ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -13,7 +14,7 @@ export default class OnsenQuarters extends ProvinceCard {
             targetController: Players.Self,
             match: (card, context) =>
                 !!context && card.type === CardType.Province && card !== context.source && card.controller === context.player,
-            effect: AbilityDsl.effects.modifyProvinceStrength(1)
+            effect: modifyProvinceStrength(1)
         });
 
         this.reaction('Resolve the ring effect')
@@ -22,7 +23,7 @@ export default class OnsenQuarters extends ProvinceCard {
                     event.conflict.winner === context.player &&
                     event.conflict.getConflictProvinces().some((a) => a === context.source)
             })
-            .gameAction(AbilityDsl.actions.resolveRingEffect((context) => ({
+            .gameAction(resolveRingEffect((context) => ({
                 target: this.ringForRole(context),
                 player: context.player
             })));
@@ -34,8 +35,9 @@ export default class OnsenQuarters extends ProvinceCard {
             return undefined;
         }
         for(const trait of role.traits) {
-            if(trait in context.game.rings) {
-                return context.game.rings[trait];
+            const ring = context.game.ringFor(trait);
+            if(ring) {
+                return ring;
             }
         }
         return undefined;

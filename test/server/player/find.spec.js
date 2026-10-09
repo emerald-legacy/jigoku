@@ -1,8 +1,10 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 
 describe('the Player', function() {
     beforeEach(function() {
         this.game = jasmine.createSpyObj('game', ['getOtherPlayer', 'playerDecked', 'emitEvent', 'addMessage']);
+        this.game.rules = rulesFor('stronghold');
         this.player = new Player('1', {username: 'Player 1', settings: {}}, true, this.game);
         this.attachment = { id: '1', label: 'Attachment', uuid: '1111', type: 'attachment' };
         this.cardWithNoAttachments = { id: '2', label: 'Character', type: 'character', uuid: '2222' };

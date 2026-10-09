@@ -1,5 +1,11 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import {
+    cannotBeDeclaredAsAttacker,
+    cannotBeDeclaredAsDefender,
+    modifyBothSkills,
+    playerCannot
+} from '../../../effects.js';
+import { taint } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
@@ -11,7 +17,7 @@ export default class KuniJuurou extends DrawCard {
         this.persistentEffect({
             targetController: Players.Any,
             match: (card) => card.type === CardType.Character && (card.isTainted || card.hasTrait('shadowlands')),
-            effect: AbilityDsl.effects.modifyBothSkills(-2)
+            effect: modifyBothSkills(-2)
         });
 
         this.action('Taint a character')
@@ -19,14 +25,14 @@ export default class KuniJuurou extends DrawCard {
                 !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length))
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.taint())
-            .effect('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted')
-            .phase(Phases.Conflict);
+            }, taint())
+            .chatText('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted')
+            .phase(Phase.Conflict);
     }
 
     private controllerCannotPayHonorCostsEffect() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })
+            effect: playerCannot({ cannot: RestrictionType.LoseHonor, appliesTo: RestrictionScope.LoseHonorAsCost })
         });
 
         /**
@@ -36,11 +42,11 @@ export default class KuniJuurou extends DrawCard {
          */
         this.persistentEffect({
             match: (card) => card.controller === this.controller && card.isTainted,
-            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
+            effect: cannotBeDeclaredAsAttacker()
         });
         this.persistentEffect({
             match: (card) => card.controller === this.controller && card.isTainted,
-            effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
+            effect: cannotBeDeclaredAsDefender()
         });
     }
 }

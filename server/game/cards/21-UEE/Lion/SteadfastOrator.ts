@@ -1,37 +1,23 @@
-import type { AbilityLimit } from '../../../AbilityLimit.js';
 import { CardType } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SteadfastOrator extends DrawCard {
     static id = 'steadfast-orator';
 
     setupCardAbilities() {
-        const limit = AbilityDsl.limit.perRound(1);
-        abilityWithCost(
-            this,
-            limit,
-            AbilityDsl.costs.discardCard(),
-            'Discard a card to move the character back to the conflict'
-        );
-        abilityWithCost(
-            this,
-            limit,
-            AbilityDsl.costs.discardImperialFavor(),
-            'Discard the imperial favor to move the character back to the conflict'
-        );
+        this.reaction('Move the character back to the conflict')
+            .when({
+                onSendHome: (event, context) =>
+                    event.card.type === CardType.Character && event.card.controller === context.player
+            })
+            .cost(costs.chooseOne({
+                'Discard a card from your hand': costs.discardCard(),
+                'Discard the Imperial Favor': costs.discardImperialFavor()
+            }))
+            .cannotBeMirrored()
+            .moveToConflict((context) => ({ target: context.event.card }))
+            .limit(perRound(1));
     }
-}
-
-function abilityWithCost(self: SteadfastOrator, limit: AbilityLimit, cost: Cost, title: string) {
-    self.reaction(title)
-        .when({
-            onSendHome: (event, context) =>
-                event.card.type === CardType.Character && event.card.controller === context.player
-        })
-        .cost(cost)
-        .cannotBeMirrored()
-        .gameAction(AbilityDsl.actions.moveToConflict((context) => ({ target: context.event.card })))
-        .limit(limit);
 }

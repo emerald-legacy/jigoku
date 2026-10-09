@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { selectRing, switchConflictElement, switchConflictType } from '../../GameActions/GameActions.js';
 
 export default class KuroiMori extends ProvinceCard {
     static id = 'kuroi-mori';
@@ -7,16 +8,15 @@ export default class KuroiMori extends ProvinceCard {
     setupCardAbilities() {
         this.action('Switch the conflict type or ring')
             .select({}, {
-                'Switch the contested ring': AbilityDsl.actions.selectRing({
+                'Switch the contested ring': selectRing({
                     activePromptTitle: 'Choose a ring to switch with the contested ring',
-                    message: '{0} switches the contested ring with {1}',
+                    message: (_context, ring, player) => msg`${player} switches the contested ring with ${ring}`,
                     ringCondition: (ring) => ring.isUnclaimed(),
-                    messageArgs: (ring, player) => [player, ring],
-                    gameAction: AbilityDsl.actions.switchConflictElement()
+                    gameAction: switchConflictElement()
                 }),
-                'Switch the conflict type': AbilityDsl.actions.switchConflictType()
+                'Switch the conflict type': switchConflictType()
             })
-            .effect('{1}', (context) => context.select.toLowerCase());
+            .chatText((context) => msg`${context.select.toLowerCase()}`);
     }
 
     cannotBeStrongholdProvince() {

@@ -1,31 +1,31 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Decks, Phases, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, DeckType, Phase, Duration } from '../../Constants.js';
+import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
 
 class ArtisanAcademy extends DrawCard {
     static id = 'artisan-academy';
 
     setupCardAbilities() {
         this.action('Make top card of conflict deck playable')
-            .condition(context => context.player.conflictDeck.length > 0)
-            .gameAction(AbilityDsl.actions.playerLastingEffect(context => {
+            .condition((context) => context.player.conflictDeck.length > 0)
+            .playerLastingEffect((context) => {
                 const topCard = context.player.conflictDeck[0];
                 return {
                     targetController: context.player,
                     duration: Duration.Custom,
                     until: {
-                        onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
+                        onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                         onPhaseEnded: () => true,
-                        onDeckShuffled: event => event.player === context.player && event.deck === Decks.ConflictDeck
+                        onDeckShuffled: (event) => event.player === context.player && event.deck === DeckType.Conflict
                     },
                     effect: [
-                        AbilityDsl.effects.showTopConflictCard(),
-                        AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
+                        showTopConflictCard(),
+                        canPlayFromOwn(Location.ConflictDeck, [topCard], this)
                     ]
                 };
-            }))
-            .effect('reveal the top card of their conflict deck')
-            .phase(Phases.Conflict);
+            })
+            .chatText('reveal the top card of their conflict deck')
+            .phase(Phase.Conflict);
     }
 }
 

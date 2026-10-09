@@ -1,5 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { cannotDeclareRing } from '../../../effects.js';
+import { ringLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ReligiousConclave extends DrawCard {
@@ -7,16 +10,16 @@ export default class ReligiousConclave extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Prevent an opponent contesting a ring')
-            .cost(AbilityDsl.costs.sacrificeSelf())
+            .cost(costs.sacrificeSelf())
             .condition((context) => context.player.opponent !== undefined)
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(AbilityDsl.actions.ringLastingEffect((context) => ({
+            .gameAction(ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.ring.getElements().map((element) => context.game.rings[element]),
-                effect: AbilityDsl.effects.cannotDeclareRing((player) => player === context.player.opponent)
+                effect: cannotDeclareRing((player) => player === context.player.opponent)
             })))
-            .effect('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent);
+            .chatText((context) => msg`prevent ${context.player.opponent} from declaring a conflict with ${context.chatTarget()}`);
     }
 }

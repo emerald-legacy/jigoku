@@ -17,7 +17,6 @@ describe('Scene of the Crime', function() {
                 this.aLegionOfOne = this.player1.findCardByName('a-legion-of-one');
                 this.banzai = this.player1.findCardByName('banzai');
                 this.sceneOfTheCrime = this.player2.findCardByName('scene-of-the-crime');
-                this.spy = spyOn(this.game, 'addMessage');
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -32,7 +31,7 @@ describe('Scene of the Crime', function() {
 
             it('should show the opponent\'s hand in the chatlog', function () {
                 this.player2.clickCard(this.sceneOfTheCrime);
-                expect(this.spy).toHaveBeenCalledWith('{0} sees {1}', this.sceneOfTheCrime, [this.aLegionOfOne, this.banzai, this.wayOfTheLion]);
+                expect(this.getChatLogs(5)).toContain('Scene of the Crime sees A Legion of One, Banzai! and Way of the Lion');
             });
         });
 

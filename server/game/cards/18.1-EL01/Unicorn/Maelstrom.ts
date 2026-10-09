@@ -1,8 +1,18 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Element, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    chosenDiscard,
+    discardCard,
+    handler,
+    honor,
+    moveToConflict,
+    multipleContext
+} from '../../../GameActions/GameActions.js';
 
 function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
     return {
@@ -20,7 +30,7 @@ function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: Draw
         },
         resolve(context, result) {
             context.costs.maelstromCostPaid = false;
-            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
+            if(!chosenDiscard().canAffect(context.player, context)) {
                 return;
             }
             context.game.promptWithHandlerMenu(context.player, {
@@ -55,14 +65,14 @@ function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: Draw
         },
         payEvent(context) {
             if(context.costs.maelstromCostPaid) {
-                const discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
+                const discardAction = discardCard({ target: context.costs.maelstromCost });
                 const event = discardAction.getEvent(context.costs.maelstromCost, context);
-                context.game.addMessage('{0} chooses to discard a card', context.player);
+                context.game.addMessage(msg`${context.player} chooses to discard a card`);
                 return [event];
             }
 
             //this is a do-nothing event to allow you to opt out and not scuttle the event
-            const noop = context.game.actions.handler({ handler: () => {} });
+            const noop = handler({ handler: () => {} });
             return noop.getEvent(context.player, context);
         },
         promptsPlayer: true
@@ -81,33 +91,33 @@ export default class Maelstrom extends ProvinceCard {
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     context.costs.maelstromCostPaid ? true : card.controller === context.player
-            }, AbilityDsl.actions.multipleContext((context) => {
+            }, multipleContext((context) => {
                 const target = context.target;
                 // the triggering player, not always the controller (Contested Countryside)
                 const triggeringPlayer = context.player;
                 return {
                     gameActions: [
-                        AbilityDsl.actions.moveToConflict(),
-                        AbilityDsl.actions.cardLastingEffect({
+                        moveToConflict(),
+                        cardLastingEffect({
                             target: target,
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.delayedEffect({
+                            effect: delayedEffect({
                                 when: {
                                     afterConflict: (event) =>
                                         event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === triggeringPlayer
                                 },
-                                message: '{0} is honored due to {1}\'s effect',
-                                messageArgs: [target, context.source],
-                                gameAction: AbilityDsl.actions.honor()
+                                message: () => msg`${target} is honored due to ${context.source}'s effect`,
+                                gameAction: honor()
                             })
                         })
                     ]
                 };
             }))
-            .effect('move {0} into the conflict{1}', (context) =>
-                context.target.controller === context.player ? ['. It will be honored if it wins the conflict'] : [''])
+            .chatText((context) => context.target.controller === context.player
+                ? msg`move ${context.chatTarget()} into the conflict. It will be honored if it wins the conflict`
+                : msg`move ${context.chatTarget()} into the conflict`)
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .cannotTargetFirst();
     }

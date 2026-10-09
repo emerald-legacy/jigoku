@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, CardType, Location } from '../../Constants.js';
+import { moveCard, multiple, restoreProvince } from '../../GameActions/GameActions.js';
 
 class EtherealAlignment extends DrawCard {
     static id = 'ethereal-alignment';
@@ -8,7 +8,7 @@ class EtherealAlignment extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Restore a province')
             .when({
-                onPhaseEnded: event => event.phase === Phases.Conflict
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
             })
             .target({
                 location: Location.Provinces,
@@ -18,17 +18,17 @@ class EtherealAlignment extends DrawCard {
                         if(element === 'all') {
                             return true;
                         }
-                        return this.game.rings[element].isConsideredClaimed(context.player);
+                        return this.game.ringFor(element)?.isConsideredClaimed(context.player) ?? false;
                     });
                 }
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.restoreProvince(),
-                AbilityDsl.actions.moveCard(context => ({
+            }, multiple([
+                restoreProvince(),
+                moveCard((context) => ({
                     target: context.source,
                     destination: Location.RemovedFromGame
                 }))
             ]))
-            .effect('restore {0}');
+            .chatText('restore {0}');
     }
 }
 

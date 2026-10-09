@@ -1,5 +1,7 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 class MaraudingOni extends DrawCard {
     static id = 'marauding-oni';
@@ -7,8 +9,8 @@ class MaraudingOni extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.cardCannot('honor'),
-                AbilityDsl.effects.cardCannot('dishonor')
+                cardCannot(RestrictionType.Honor),
+                cardCannot(RestrictionType.Dishonor)
             ]
         });
 
@@ -17,9 +19,9 @@ class MaraudingOni extends DrawCard {
                 onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source),
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source)
             })
-            .gameAction(AbilityDsl.actions.loseHonor((context) => ({ target: context.player })))
-            .effect('lose an honor')
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .loseHonor((context) => ({ target: context.player }))
+            .chatText('lose an honor')
+            .limit(unlimitedPerConflict());
     }
 }
 

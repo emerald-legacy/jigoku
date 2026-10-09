@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,15 +19,14 @@ export default class AkodoAsuka extends DrawCard {
                     context.source.isParticipating() &&
                     context.player.conflictDeck.length > 0
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: (context) => charactersOnYourSide(context),
+            .deckSearch({
+                cardsToLookAt: (context) => charactersOnYourSide(context),
                 activePromptTitle: 'Choose a card to put in your hand',
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: true,
                 reveal: false
-            }))
-            .effect('look at the top {1} cards of their conflict deck', (context) => charactersOnYourSide(context));
+            })
+            .chatText((context) => msg`look at the top ${charactersOnYourSide(context)} cards of their conflict deck`);
     }
 }

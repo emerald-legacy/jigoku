@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { CardType, PlayType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class Censure extends DrawCard {
@@ -9,13 +8,13 @@ class Censure extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
-                onInitiateAbilityEffects: event => event.card.type === CardType.Event
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
-            .gameAction(AbilityDsl.actions.cancel())
+            .cancel()
             .cannotBeMirrored();
     }
 
-    canPlay(context: AbilityContext, playType = 'play'): boolean {
+    canPlay(context: AbilityContext, playType?: PlayType): boolean {
         if(context.player.imperialFavor !== '') {
             return super.canPlay(context, playType);
         }

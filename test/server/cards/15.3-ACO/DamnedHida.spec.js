@@ -19,13 +19,13 @@ describe('Damned Hida', function() {
 
 
         it('should get +3 military skill when dire', function() {
-            expect(this.hida.getMilitarySkill()).toBe(this.hida.printedMilitarySkill + 3);
+            expect(this.hida.militarySkill).toBe(this.hida.printedMilitarySkill + 3);
         });
 
         it('should not get +3 military skill when dire', function() {
             expect(this.hida2.fate).toBe(1);
             this.game.checkGameState(true);
-            expect(this.hida2.getMilitarySkill()).toBe(this.hida2.printedMilitarySkill);
+            expect(this.hida2.militarySkill).toBe(this.hida2.printedMilitarySkill);
         });
 
     });

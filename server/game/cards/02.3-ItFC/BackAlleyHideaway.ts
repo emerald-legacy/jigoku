@@ -1,13 +1,14 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Location, Phases, PlayType, EventName, CardType } from '../../Constants.js';
+import { Location, Phase, PlayType, EventName, CardType, Blocker } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
-import ThenAbility from '../../ThenAbility.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ThenAbility } from '../../ThenAbility.js';
+import { customDetachedCard } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import DynastyCardAction from '../../DynastyCardAction.js';
+import { DynastyCardAction } from '../../DynastyCardAction.js';
 import type BaseCard from '../../BaseCard.js';
 import type { Event } from '../../Events/Event.js';
-import type { AbilityLimit } from '../../AbilityLimit.js';
+import { perRound, type AbilityLimit } from '../../AbilityLimit.js';
 import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 
 const backAlleyPersistentEffect = {
@@ -53,32 +54,26 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
     }
 
     meetsRequirements(context = this.createContext()) {
-        if(context.game.currentPhase !== Phases.Dynasty) {
-            return 'phase';
+        if(context.game.currentPhase !== Phase.Dynasty) {
+            return Blocker.WrongPhase;
         }
         if(context.source.location !== this.backAlleyCard.uuid) {
-            return 'location';
+            return Blocker.WrongLocation;
         }
         if(
             !(context.source.isDrawCard() && context.source.canPlay(context, PlayType.PlayFromProvince)) ||
             !(context.source.parent instanceof DrawCard && context.source.parent.canTriggerAbilities(context))
         ) {
-            return 'cannotTrigger';
+            return Blocker.CannotTrigger;
         }
         if(!this.canPayCosts(context)) {
-            return 'cost';
+            return Blocker.CannotPayCost;
         }
-        return '';
+        return Blocker.None;
     }
 
     executeHandler(context: AbilityContext & { chooseFate: number }) {
-        context.game.addMessage(
-            '{0} plays {1} from {2} with {3} additional fate',
-            context.player,
-            context.source,
-            context.source.parent,
-            context.chooseFate
-        );
+        context.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.parent} with ${context.chooseFate} additional fate`);
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
             (action) => action.title !== 'Play this character from Back-Alley Hideaway'
         );
@@ -114,11 +109,11 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
 export default class BackAlleyHideaway extends DrawCard {
     static id = 'back-alley-hideaway';
 
-    backAlleyActionLimit = AbilityDsl.limit.perRound(1);
+    backAlleyActionLimit = perRound(1);
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.customDetachedCard(backAlleyPersistentEffect)
+            effect: customDetachedCard(backAlleyPersistentEffect)
         });
         this.interrupt('Place character in Hideaway')
             .when({
@@ -141,6 +136,6 @@ export default class BackAlleyHideaway extends DrawCard {
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });
             })
-            .effect('move {1} into hiding', (context) => context.event.card);
+            .chatText((context) => msg`move ${context.event.card} into hiding`);
     }
 }

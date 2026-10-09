@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
 
 class IuchiWayfinder extends DrawCard {
@@ -10,17 +11,16 @@ class IuchiWayfinder extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.selectCard({
+            .selectCard({
                 activePromptTitle: 'Choose a province to look at',
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.lookAt(context => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                }))
-            }))
-            .effect('look at a province');
+                gameAction: lookAt({
+                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                })
+            })
+            .chatText('look at a province');
     }
 }
 

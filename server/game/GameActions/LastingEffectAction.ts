@@ -1,7 +1,8 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../BaseAbility.js';
+import type { BaseAbility } from '../BaseAbility.js';
 import { Duration, EventName, Players } from '../Constants.js';
-import type { EffectUntil } from '../Effects/Effect.js';
+import type { EffectUntil } from '../Effects/ActiveEffect.js';
 import type Player from '../Player.js';
 import { GameAction, type ActionEvent, type GameActionProperties } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
@@ -13,7 +14,6 @@ export interface LastingEffectFields {
     condition?: (context: AbilityContext) => boolean;
     until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
-    message?: string;
     ability?: BaseAbility;
 }
 
@@ -39,12 +39,12 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
         duration: Duration.UntilEndOfConflict
     };
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.effect.length > 0;
     }
@@ -60,6 +60,6 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration, () => properties);
+        event.context.source.applyDurationEffect(properties.duration, properties);
     }
 }

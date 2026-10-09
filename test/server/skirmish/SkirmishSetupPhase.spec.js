@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Setup Phase', function() {
     integration(function() {
@@ -11,7 +11,7 @@ describe('Skirmish Setup Phase', function() {
                 player2: {
                     inPlay: []
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
         });
 

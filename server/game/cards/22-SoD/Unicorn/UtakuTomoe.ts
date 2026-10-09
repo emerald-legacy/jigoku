@@ -1,4 +1,3 @@
-import AbilityDsl from '../../../abilitydsl.js';
 import { EventName } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,7 +8,10 @@ export default class UtakuTomoe extends DrawCard {
     private defendingAtConflictResolution = false;
 
     setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.AfterConflict, EventName.OnConflictDeclared]);
+        new EventRegistrar(this.game).register({
+            [EventName.AfterConflict]: () => this.afterConflict(),
+            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
+        });
 
         // "After the resolution of a conflict" is onConflictFinished, not onReturnHome:
         // until-end-of-conflict effects (e.g. Palm Strike's cannot-ready) expire only
@@ -18,11 +20,10 @@ export default class UtakuTomoe extends DrawCard {
             .when({
                 onConflictFinished: () => this.defendingAtConflictResolution
             })
-            .gameAction(AbilityDsl.actions.conditional((context) => ({
-                condition: context.event.conflict.winner === context.source.controller,
-                trueGameAction: AbilityDsl.actions.gainHonor({ target: context.player, amount: 2 }),
-                falseGameAction: AbilityDsl.actions.ready({ target: context.source })
-            })));
+            .if((context) => context.event.conflict.winner === context.source.controller)
+                .gainHonor(2)
+            .otherwise()
+                .ready((context) => ({ target: context.source }));
     }
 
     public afterConflict() {

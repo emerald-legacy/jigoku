@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, noAction } from '../../GameActions/GameActions.js';
 import { CardType, DuelType } from '../../Constants.js';
 
 class DefendYourHonor extends DrawCard {
@@ -15,7 +15,7 @@ class DefendYourHonor extends DrawCard {
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel) => (duel.winner && duel.winningPlayer === context.player) ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()
+                gameAction: (duel) => (duel.winner && duel.winningPlayer === context.player) ? cancel() : noAction()
             }));
     }
 }

@@ -1,5 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, Duration, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, multiple, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CHARACTER = 'character';
@@ -8,8 +11,7 @@ export default class ForDeathAndGlory extends DrawCard {
     static id = 'for-death-and-glory-';
 
     setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 name: CHARACTER,
                 controller: Players.Self,
@@ -20,24 +22,23 @@ export default class ForDeathAndGlory extends DrawCard {
                 name: 'select',
                 dependsOn: CHARACTER
             }, {
-                'Gain +2 skill': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Gain +2 skill': cardLastingEffect((context) => ({
                     target: context.targets[CHARACTER],
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                    effect: modifyMilitarySkill(2)
                 })),
-                'Gain +4 skill, and get discarded when the conflict ends': AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Gain +4 skill, and get discarded when the conflict ends': multiple([
+                    cardLastingEffect((context) => ({
                         target: context.targets[CHARACTER],
-                        effect: AbilityDsl.effects.modifyMilitarySkill(4)
+                        effect: modifyMilitarySkill(4)
                     })),
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                    cardLastingEffect((context) => ({
                         target: context.targets[CHARACTER],
                         duration: Duration.UntilEndOfPhase,
                         effect: [
-                            AbilityDsl.effects.delayedEffect({
+                            delayedEffect({
                                 when: { onConflictFinished: () => true },
-                                message: '{1} is discarded from play due to the delayed effect of {0}',
-                                messageArgs: [context.source, context.targets[CHARACTER]],
-                                gameAction: AbilityDsl.actions.sacrifice({
+                                message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
+                                gameAction: sacrifice({
                                     target: context.targets[CHARACTER]
                                 })
                             })
@@ -45,16 +46,9 @@ export default class ForDeathAndGlory extends DrawCard {
                     }))
                 ])
             })
-            .effect('{1}{2}{3}', (context) => {
-                if(context.selects.select.choice === 'Gain +2 skill') {
-                    return ['grant 2 military skill to ', context.targets[CHARACTER], ''];
-                }
-                return [
-                    'grant 4 military skill to ',
-                    context.targets[CHARACTER],
-                    ', sacrificing them at the end of the conflict'
-                ];
-            })
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText((context) => context.selects.select.choice === 'Gain +2 skill'
+                ? msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
+                : msg`${'grant 4 military skill to '}${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`)
+            .max(perConflict(1));
     }
 }

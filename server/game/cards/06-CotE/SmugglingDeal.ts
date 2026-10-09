@@ -1,25 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { increaseLimitOnAbilities } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players, Duration } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class SmugglingDeal extends DrawCard {
     static id = 'smuggling-deal';
 
     setupCardAbilities() {
         this.action('Increase an ability\'s limit')
-            .cost(AbilityDsl.costs.giveHonorToOpponent())
+            .cost(costs.giveHonorToOpponent())
             .abilityTarget({
                 activePromptTitle: 'Select an ability to increase limits on',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
+            }, cardLastingEffect((context) => ({
                 target: context.targetAbility?.card,
                 duration: Duration.UntilEndOfRound,
-                effect: AbilityDsl.effects.increaseLimitOnAbilities({
+                effect: increaseLimitOnAbilities({
                     targetAbility: context.targetAbility
                 })
             })))
-            .effect('increase the limit on {1}\'s \'{2}\' ability', context => [context.targetAbility.card, context.targetAbility.title]);
+            .chatText((context) => msg`increase the limit on ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

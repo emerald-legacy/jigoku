@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
 
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
@@ -11,22 +11,18 @@ class HirumaOutpost extends DrawCard {
                 const province = context.player.getProvinceCardInProvince(context.source.location);
                 return !!province && !province.isBroken;
             },
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
-                title: 'Make opponent lose an honor',
-                when: {
-                    onConflictDeclared: (event, context) => {
-                        if(event.conflict.attackingPlayer === context.player) {
-                            return false;
-                        }
-                        if(!event.conflict.declaredProvince) {
-                            return false;
-                        }
-                        const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                        return !cards.some(card => card.isFaceup() && card.type === CardType.Holding);
+            effect: gainAbility.reaction('Make opponent lose an honor', {
+                onConflictDeclared: (event, context) => {
+                    if(event.conflict.attackingPlayer === context.player) {
+                        return false;
                     }
-                },
-                gameAction: AbilityDsl.actions.loseHonor()
-            })
+                    if(!event.conflict.declaredProvince) {
+                        return false;
+                    }
+                    const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
+                    return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding);
+                }
+            }, (ability) => ability.loseHonor((context) => ({ target: context.player.opponent })))
         });
     }
 }

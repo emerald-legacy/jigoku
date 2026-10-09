@@ -1,3 +1,5 @@
+import { msg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import { EventName, Location } from '../Constants.js';
@@ -15,11 +17,12 @@ export class LeavesPlayAction<
     D extends keyof P = never
 > extends CardGameAction<P, EventName.OnCardLeavesPlay, C, D> {
     eventName = EventName.OnCardLeavesPlay;
+    isSacrifice = false;
 
     updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
-        event.isSacrifice = this.name === 'sacrifice';
+        event.isSacrifice = this.isSacrifice;
         event.destination = typeof destination === 'string' && isEnumValue(Location, destination)
             ? destination
             : card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
@@ -28,11 +31,7 @@ export class LeavesPlayAction<
             event.cardStateWhenLeftPlay = evCard.createSnapshot();
             if(evCard.isAncestral() && event.isContingent) {
                 event.destination = Location.Hand;
-                context.game.addMessage(
-                    '{0} returns to {1}\'s hand due to its Ancestral keyword',
-                    evCard,
-                    evCard.owner
-                );
+                context.game.addMessage(msg`${evCard} returns to ${evCard.owner}'s hand due to its Ancestral keyword`);
             }
         };
         event.createContingentEvents = () => {
@@ -45,7 +44,7 @@ export class LeavesPlayAction<
                 if(attachment.location === Location.PlayArea) {
                     const attachmentEvent = context.game.actions
                         .discardFromPlay()
-                        .getEvent(attachment, context.game.getFrameworkContext());
+                        .getEvent(attachment, context.game.getGameContext());
                     attachmentEvent.order = event.order - 1;
                     const previousCondition = attachmentEvent.condition;
                     attachmentEvent.condition = (attachmentEvent) =>
@@ -56,10 +55,10 @@ export class LeavesPlayAction<
             }
 
             // Add an imminent triggering condition for removing fate
-            if(evCard.allowGameAction('removeFate', context.game.getFrameworkContext())) {
+            if(evCard.allowGameAction('removeFate', context.game.getGameContext())) {
                 const fateEvent = context.game.actions
                     .removeFate({ amount: evCard.getFate() })
-                    .getEvent(evCard, context.game.getFrameworkContext());
+                    .getEvent(evCard, context.game.getGameContext());
                 fateEvent.order = event.order - 1;
                 fateEvent.isContingent = true;
                 contingentEvents.push(fateEvent);
@@ -68,15 +67,11 @@ export class LeavesPlayAction<
         };
     }
 
-    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {
-            card.game.addMessage(
-                '{0} is not a legal location for {1} and it is discarded',
-                event.destination,
-                card
-            );
+            card.game.addMessage(msg`${event.destination} is not a legal location for ${card} and it is discarded`);
             event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
         }
         card.owner.moveCard(card, event.destination, event.options || {});

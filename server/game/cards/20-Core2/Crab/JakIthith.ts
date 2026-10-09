@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotReceiveTaintedToken, immunity } from '../../../effects.js';
+import { attach, discardFromPlay, ifAble } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ATTACHMENT = 'attachment';
@@ -11,9 +12,9 @@ export default class JakIthith extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({ restricts: 'maho' }),
-                AbilityDsl.effects.immunity({ restricts: 'shadowlands' }),
-                AbilityDsl.effects.cannotReceiveTaintedToken()
+                immunity({ appliesTo: { trait: 'maho' } }),
+                immunity({ appliesTo: { trait: 'shadowlands' } }),
+                cannotReceiveTaintedToken()
             ]
         });
 
@@ -25,9 +26,9 @@ export default class JakIthith extends DrawCard {
             .target({
                 name: ATTACHMENT,
                 cardType: CardType.Attachment,
-                controller: Players.Opponent,
-                cardCondition: (card) =>
-                    Boolean(card.parentCharacter?.isParticipating())
+                controller: Players.Any,
+                cardCondition: (card, context) =>
+                    !!card.parentCharacter?.isParticipating() && card.parentCharacter.controller !== context.player
             })
             .target({
                 name: RECEIVER,
@@ -35,13 +36,13 @@ export default class JakIthith extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.ifAble((context) => ({
-                ifAbleAction: AbilityDsl.actions.attach({
+            }, ifAble((context) => ({
+                ifAbleAction: attach({
                     attachment: context.targets[ATTACHMENT],
                     target: context.targets[RECEIVER],
                     takeControl: true
                 }),
-                otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.targets[ATTACHMENT] })
+                otherwiseAction: discardFromPlay({ target: context.targets[ATTACHMENT] })
             })));
     }
 }

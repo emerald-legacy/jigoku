@@ -1,6 +1,8 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBasePoliticalSkillMultiplier } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { hasMoreParticipatingGlory } from '../participatingGlory.js';
 
 class AsakoMaezawa extends DrawCard {
@@ -12,10 +14,10 @@ class AsakoMaezawa extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyBasePoliticalSkillMultiplier(2)
+            }, cardLastingEffect({
+                effect: modifyBasePoliticalSkillMultiplier(2)
             }))
-            .effect('double {0}\'s base {1} skill', () => ['political']);
+            .chatText((context) => msg`double ${context.chatTarget()}'s base ${'political'} skill`);
     }
 }
 

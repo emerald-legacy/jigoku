@@ -1,6 +1,6 @@
-import { Location } from '../../Constants.js';
+import { Location, RestrictionType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, gainExtraFateWhenPlayed } from '../../effects.js';
 
 export default class ToshiRanbo extends ProvinceCard {
     static id = 'toshi-ranbo';
@@ -9,13 +9,13 @@ export default class ToshiRanbo extends ProvinceCard {
         this.facedown = false;
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot('turnFacedown')
+            effect: cardCannot(RestrictionType.TurnFacedown)
         });
 
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card, context) => card.isDynasty && card.location === context?.source.location,
-            effect: AbilityDsl.effects.gainExtraFateWhenPlayed()
+            effect: gainExtraFateWhenPlayed()
         });
     }
 

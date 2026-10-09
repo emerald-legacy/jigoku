@@ -1,5 +1,14 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { delayedEffect, doesNotBow } from '../../../effects.js';
+import {
+    cardLastingEffect,
+    discardStatusToken,
+    joint,
+    loseFate,
+    menuPrompt,
+    sequentialContext
+} from '../../../GameActions/GameActions.js';
 import { CardType, Players, Duration } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
@@ -11,24 +20,18 @@ class SurgingWave extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.sequentialContext((context) => {
+            }, sequentialContext((context) => {
                 const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                 const gameActions = [];
                 gameActions.push(
-                    AbilityDsl.actions.cardLastingEffect(() => ({
+                    cardLastingEffect(() => ({
                         duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.delayedEffect({
+                        effect: delayedEffect({
                             when: {
                                 onConflictFinished: () => true
                             },
-                            message: '{0} {3} removed from {1} due to the delayed effect of {2}',
-                            messageArgs: [
-                                context.target.statusTokens,
-                                context.target,
-                                context.source,
-                                context.target.statusTokens.length > 1 ? 'are' : 'is'
-                            ],
-                            gameAction: AbilityDsl.actions.discardStatusToken(() => ({
+                            message: () => msg`${context.target.statusTokens} ${context.target.statusTokens.length > 1 ? 'are' : 'is'} removed from ${context.target} due to the delayed effect of ${context.source}`,
+                            gameAction: discardStatusToken(() => ({
                                 target: context.target.statusTokens
                             }))
                         })
@@ -36,7 +39,7 @@ class SurgingWave extends DrawCard {
                 );
                 if(kihoPlayed) {
                     gameActions.push(
-                        AbilityDsl.actions.menuPrompt(() => ({
+                        menuPrompt(() => ({
                             activePromptTitle:
                                     'Spend 1 fate to prevent ' +
                                     context.target.name +
@@ -44,19 +47,14 @@ class SurgingWave extends DrawCard {
                             choices: ['Yes', 'No'],
                             choiceHandler: (choice, displayMessage) => {
                                 if(displayMessage) {
-                                    context.game.addMessage(
-                                        '{0} chooses {1}to spend a fate to prevent {2} from bowing during conflict resolution',
-                                        context.player,
-                                        choice === 'No' ? 'not ' : '',
-                                        context.target
-                                    );
+                                    context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to spend a fate to prevent ${context.target} from bowing during conflict resolution`);
                                 }
                                 return { amount: choice === 'Yes' ? 1 : 0 };
                             },
-                            gameAction: AbilityDsl.actions.joint([
-                                AbilityDsl.actions.loseFate({ target: context.player }),
-                                AbilityDsl.actions.cardLastingEffect(() => ({
-                                    effect: AbilityDsl.effects.doesNotBow(),
+                            gameAction: joint([
+                                loseFate({ target: context.player }),
+                                cardLastingEffect(() => ({
+                                    effect: doesNotBow(),
                                     target: context.target
                                 }))
                             ])
@@ -68,7 +66,7 @@ class SurgingWave extends DrawCard {
                     gameActions: gameActions
                 };
             }))
-            .effect('discard all status tokens from {0} at the end of the conflict');
+            .chatText('discard all status tokens from {0} at the end of the conflict');
     }
 }
 

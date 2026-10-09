@@ -1,4 +1,5 @@
-import type { CardType, ConflictType, Element, EventName, Players, PlayType } from '../Constants.js';
+import type { EntersPlayStatus } from '../Constants.js';
+import type { CardType, ConflictType, Element, EventName, Players, PlayType, RestrictionType, SkillType } from '../Constants.js';
 import { EffectName } from '../Constants.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -10,20 +11,20 @@ import type { ProvinceCard } from '../ProvinceCard.js';
 import type { Cost } from '../costs/Cost.js';
 import type { Conflict } from '../Conflict.js';
 import type { Faction } from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { Duel } from '../Duel.js';
 import type { ElementSymbolInfo } from '../ElementSymbol.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { MsgArg } from '../GameChat.js';
-import type { EffectBase } from './EffectBase.js';
+import type { MessageArgs } from '../GameChat.js';
+import type { EffectApplier } from './EffectApplier.js';
 import type { GainedAbilityValue } from './GainAbility.js';
 import type { DynamicMatch } from './GainAllAbilitiesDynamic.js';
 
 // Structural view of Restriction (consumers only call `.isMatch`); `card?: GameObject` so the
 // base GameObject.checkRestrictions can pass `this` without a downcast (isMatch's method params
 // are bivariant, so a real Restriction still satisfies this).
-type RestrictionLike = { isMatch(type: string, context: AbilityContext | undefined, card?: GameObject): boolean };
+type RestrictionLike = { isMatch(type: RestrictionType | PlayType | undefined, context: AbilityContext, card?: GameObject): boolean };
 
 export type FatePool = DrawCard | Ring;
 
@@ -36,16 +37,16 @@ interface TargetingCallbacks {
 export interface ParticipantCostEffect {
     type: string;
     cost: GameAction | ((player: Player) => GameAction);
-    message?: string;
+    /** What the player did, in "<player> <chatText> in order to declare …"; without it, the cost's own text. */
+    chatText?: (context: AbilityContext) => MessageArgs;
 }
 
-export type DashSkillType = 'military' | 'political';
 
 // Method syntax on purpose: cards narrow the context and event types.
 interface DelayedEffectCallbacks<N extends EventName, S extends BaseCard> {
     condition(context: AbilityContext<S>): unknown;
     trigger(event: GameEvent<N>, context: AbilityContext<S>): unknown;
-    messageArgs(context: AbilityContext<S>, targets: GameObject[]): MsgArg[];
+    message(context: AbilityContext<S>, targets: GameObject[]): MessageArgs;
 }
 
 /** `S` is the card whose effect it is, like a trigger's `WhenType<S>`. */
@@ -57,8 +58,8 @@ export type DelayedEffectValue<S extends BaseCard = BaseCard> = {
     multipleTrigger?: boolean;
     onlyRemoveOnSuccess?: boolean;
     gameAction: GameAction;
-    message?: string;
-    messageArgs?: MsgArg[] | DelayedEffectCallbacks<EventName, S>['messageArgs'];
+    /** The chat line when it fires; `targets` are what it affects. */
+    message?: DelayedEffectCallbacks<EventName, S>['message'];
 };
 
 // Method syntax on purpose: cards narrow the card type.
@@ -106,7 +107,7 @@ export interface EffectValueMap {
     [EffectName.CanBeTriggeredByOpponent]: boolean;
     [EffectName.CanOnlyBeDeclaredAsAttackerWithElement]: Element;
     [EffectName.CanOnlyBeDeclaredAsAttackerWithCondition]: (props: ICanOnlyBeDeclaredAsAttackerWithCondition) => boolean;
-    [EffectName.CannotApplyLastingEffects]: (effect: EffectBase<EffectName, GameObject, unknown>) => boolean;
+    [EffectName.CannotApplyLastingEffects]: (effect: EffectApplier<EffectName, GameObject, unknown>) => boolean;
     [EffectName.CannotBeAttacked]: boolean;
     [EffectName.CannotHaveConflictsDeclaredOfType]: string;
     [EffectName.CannotHaveOtherRestrictedAttachments]: BaseCard;
@@ -122,7 +123,7 @@ export interface EffectValueMap {
     [EffectName.DelayedEffect]: DelayedEffectValue;
     [EffectName.DoesNotBow]: boolean;
     [EffectName.DoesNotReady]: boolean;
-    [EffectName.EntersPlayWithStatus]: 'honored' | 'ordinary' | 'dishonored';
+    [EffectName.EntersPlayWithStatus]: EntersPlayStatus;
     [EffectName.EntersPlayForOpponent]: boolean;
     [EffectName.FateCostToAttack]: number;
     [EffectName.HonorCostToDeclare]: { amount: number, dueToStatusToken?: boolean };
@@ -165,7 +166,7 @@ export interface EffectValueMap {
     [EffectName.MustBeDeclaredAsAttackerIfType]: string;
     [EffectName.MustBeDeclaredAsDefender]: string;
     [EffectName.SetApparentFate]: number;
-    [EffectName.SetBaseDash]: DashSkillType;
+    [EffectName.SetBaseDash]: SkillType;
     [EffectName.SetBaseMilitarySkill]: number;
     [EffectName.SetBasePoliticalSkill]: number;
     [EffectName.SetBaseProvinceStrength]: number;
@@ -174,14 +175,14 @@ export interface EffectValueMap {
     [EffectName.ProvideConflictDeclarationType]: ConflictType;
     [EffectName.ForceConflictDeclarationType]: ConflictType;
     [EffectName.SetConflictTotalSkill]: number;
-    [EffectName.SetDash]: DashSkillType;
+    [EffectName.SetDash]: SkillType;
     [EffectName.SetGlory]: number;
     [EffectName.SetMilitarySkill]: number;
     [EffectName.SetPoliticalSkill]: number;
     [EffectName.SetProvinceStrengthBonus]: number;
     [EffectName.SetProvinceStrength]: number;
     [EffectName.SwitchBaseSkills]: boolean;
-    [EffectName.SuppressEffects]: EffectBase<EffectName, GameObject, unknown>[];
+    [EffectName.SuppressEffects]: EffectApplier<EffectName, GameObject, unknown>[];
     [EffectName.TakeControl]: Player | undefined;
     [EffectName.UnlessActionCost]: UnlessActionCostValue;
     [EffectName.AddElement]: Element | Element[];

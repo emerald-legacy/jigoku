@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class IuchiShahai extends DrawCard {
@@ -6,7 +6,7 @@ class IuchiShahai extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 match: (card) => card.hasTrait('meishodo'),
                 targetCondition: (target, source) => target === source || target.isFaction('neutral')
             })

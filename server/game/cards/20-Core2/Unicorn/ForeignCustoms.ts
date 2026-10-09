@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, CharacterStatus, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoConflict, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ForeignCustoms extends DrawCard {
@@ -7,16 +8,15 @@ export default class ForeignCustoms extends DrawCard {
 
     setupCardAbilities() {
         this.duelStrike('Put a character into play', (duel, context) => duel.loserController === context.player)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                message: '{0} puts into the conflict {1} - they challenge the traditions of the empire',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.putIntoConflict({ status: CharacterStatus.Dishonored })
-            })));
+                message: (context, cards) => msg`${context.player} puts into the conflict ${cards} - they challenge the traditions of the empire`,
+                gameAction: putIntoConflict({ status: CharacterStatus.Dishonored })
+            });
 
         this.action('Ready a non-unicorn character')
             .condition((context) =>
@@ -29,6 +29,6 @@ export default class ForeignCustoms extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin'))
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

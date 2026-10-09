@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { customRefillProvince } from '../../effects.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -11,10 +12,10 @@ class EducatedHeimin extends ProvinceAttachment {
         });
 
         this.persistentEffect({
-            condition: context => !!context?.source.parent,
+            condition: (context) => !!context?.source.parent,
             targetLocation: Location.Provinces,
             match: (card, context) => !!context && card === context.source.parent,
-            effect: AbilityDsl.effects.customRefillProvince((player, province) => {
+            effect: customRefillProvince((player, province) => {
                 const cards = player.dynastyDeck.slice(0, province.isFacedown() ? 4 : 2);
                 this.game.promptWithHandlerMenu(player, {
                     activePromptTitle: 'Choose a card to refill the province with',
@@ -26,7 +27,7 @@ class EducatedHeimin extends ProvinceAttachment {
                         discarded.forEach((card) => {
                             player.moveCard(card, Location.DynastyDiscardPile);
                         });
-                        this.game.addMessage('{0} chooses a card to put into {1} and discards {2} from the constant effect of Educated Heimin', player, province.isFacedown() ? 'a facedown province' : province.name, discarded);
+                        this.game.addMessage(msg`${player} chooses a card to put into ${province.isFacedown() ? 'a facedown province' : province.name} and discards ${discarded} from the constant effect of Educated Heimin`);
                     }
                 });
             })

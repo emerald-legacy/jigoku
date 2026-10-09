@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaBlade extends DrawCard {
@@ -7,13 +7,13 @@ export default class KakitaBlade extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: () => !!this.parentCharacter && (this.game.currentDuel?.isInvolvedInAnyDuel(this.parentCharacter) ?? false),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            effect: modifyPoliticalSkill(2)
         });
 
         this.reaction('Gain honor on duel win')
             .when({
                 afterDuel: (event, context) => event.winner?.some((card) => card === context.source.parentCharacter) ?? false
             })
-            .gameAction(AbilityDsl.actions.gainHonor());
+            .gainHonor();
     }
 }

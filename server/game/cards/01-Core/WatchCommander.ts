@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimitedPerConflict } from '../../AbilityLimit.js';
 
 class WatchCommander extends DrawCard {
     static id = 'watch-commander';
@@ -14,8 +14,8 @@ class WatchCommander extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player.opponent && context.source.parentCharacter.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.loseHonor())
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .loseHonor((context) => ({ target: context.player.opponent }))
+            .limit(unlimitedPerConflict());
     }
 }
 

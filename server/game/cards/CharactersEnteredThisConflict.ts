@@ -8,7 +8,10 @@ export class CharactersEnteredThisConflict {
     private characters = new WeakSet<BaseCard>();
 
     constructor(game: Game) {
-        new EventRegistrar(game, this).register([EventName.OnConflictStarted, EventName.OnCharacterEntersPlay]);
+        new EventRegistrar(game).register({
+            [EventName.OnConflictStarted]: () => this.onConflictStarted(),
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
+        });
     }
 
     public has(card: BaseCard): boolean {

@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase } from '../../Constants.js';
+import { reveal } from '../../GameActions/GameActions.js';
 
 class DaidojiMarketplace extends DrawCard {
     static id = 'daidoji-marketplace';
@@ -8,12 +9,12 @@ class DaidojiMarketplace extends DrawCard {
     setupCardAbilities() {
         this.reaction('Reveal this holding\'s province')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Conflict
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(AbilityDsl.actions.reveal(context => ({
+            .gameAction(reveal((context) => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })))
-            .effect('reveal {1}', context => context.player.getProvinceCardInProvince(context.source.location));
+            .chatText((context) => msg`reveal ${context.player.getProvinceCardInProvince(context.source.location)}`);
     }
 }
 

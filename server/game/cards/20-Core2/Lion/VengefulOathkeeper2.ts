@@ -1,5 +1,5 @@
 import { Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class VengefulOathkeeper2 extends DrawCard {
@@ -12,7 +12,7 @@ export default class VengefulOathkeeper2 extends DrawCard {
                     event.conflict.attackingPlayer === context.player.opponent &&
                     event.conflict.winner === context.player.opponent
             })
-            .gameAction(AbilityDsl.actions.putIntoPlay())
+            .gameAction(putIntoPlay())
             .location(Location.Hand);
     }
 }

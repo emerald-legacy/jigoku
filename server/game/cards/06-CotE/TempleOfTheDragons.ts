@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { resolveConflictRing } from '../../GameActions/GameActions.js';
 
 export default class TempleOfTheDragons extends ProvinceCard {
     static id = 'temple-of-the-dragons';
@@ -9,6 +9,6 @@ export default class TempleOfTheDragons extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.resolveConflictRing());
+            .gameAction(resolveConflictRing());
     }
 }

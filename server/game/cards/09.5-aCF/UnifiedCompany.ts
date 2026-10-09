@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location } from '../../Constants.js';
 
 class UnifiedCompany extends DrawCard {
@@ -15,7 +15,7 @@ class UnifiedCompany extends DrawCard {
                         context.player.hand.length < context.player.opponent.hand.length;
                 }
             })
-            .gameAction(AbilityDsl.actions.selectCard(() => ({
+            .selectCard(() => ({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
@@ -24,8 +24,8 @@ class UnifiedCompany extends DrawCard {
                         card.costLessThan(3) &&
                         !card.isUnique();
                 },
-                gameAction: AbilityDsl.actions.putIntoPlay()
-            })));
+                gameAction: putIntoPlay()
+            }));
     }
 }
 

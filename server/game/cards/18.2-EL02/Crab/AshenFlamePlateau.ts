@@ -1,5 +1,8 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { charactersCannot } from '../../../effects.js';
+import { conflictLastingEffect } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
+import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
@@ -9,20 +12,20 @@ export default class AshenFlamePlateau extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(AbilityDsl.actions.conflictLastingEffect((context) => ({
+            .gameAction(conflictLastingEffect((context) => ({
                 effect: [
-                    AbilityDsl.effects.charactersCannot({
-                        cannot: 'triggerAbilities',
-                        restricts: 'opponentsCharacters',
+                    charactersCannot({
+                        cannot: RestrictionType.TriggerAbilities,
+                        appliesTo: RestrictionScope.OpponentsCharacters,
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.charactersCannot({
-                        cannot: 'initiateKeywords',
-                        restricts: 'opponentsCharacters',
+                    charactersCannot({
+                        cannot: RestrictionType.InitiateKeywords,
+                        appliesTo: RestrictionScope.OpponentsCharacters,
                         applyingPlayer: context.player
                     })
                 ]
             })))
-            .effect('prevent {1} from triggering character abilities this conflict', (context) => [context.player.opponent]);
+            .chatText((context) => msg`prevent ${context.player.opponent} from triggering character abilities this conflict`);
     }
 }

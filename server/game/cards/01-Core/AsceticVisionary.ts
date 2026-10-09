@@ -1,5 +1,6 @@
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsceticVisionary extends DrawCard {
@@ -7,12 +8,12 @@ export default class AsceticVisionary extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .cost(AbilityDsl.costs.payFateToRing(1))
+            .cost(costs.payFateToRing(1))
             .condition((context) => context.source.isAttacking())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

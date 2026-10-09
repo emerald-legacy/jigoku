@@ -1,9 +1,11 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 function skillBonus(card: DrawCard) {
-    return card.getMilitarySkill();
+    return card.militarySkill;
 }
 
 export default class MotoOktai extends DrawCard {
@@ -15,18 +17,17 @@ export default class MotoOktai extends DrawCard {
                 onCardLeavesPlay: ({ card }, _context) =>
                     card.location === Location.PlayArea && card.type === CardType.Character
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus(context.event.card))
-            })))
-            .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy', (context) => [skillBonus(context.event.card), 'military']);
+                effect: modifyMilitarySkill(skillBonus(context.event.card))
+            }))
+            .chatText((context) => msg`get +${skillBonus(context.event.card)} ${'military'} for this phase - he is emboldened by justice, but unburdened by mercy`);
 
-        this.action('Discard a character from play')
-            .condition((context) => context.source.isParticipatingFor(context.player))
+        this.conflictAction('Discard a character from play')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.discardFromPlay())
-            .effect('discard {1} - purge the weak', (context) => [context.target]);
+            }, discardFromPlay())
+            .chatText((context) => msg`discard ${context.target} - purge the weak`);
     }
 }

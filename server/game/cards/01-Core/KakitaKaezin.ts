@@ -1,5 +1,5 @@
 import { CardType, DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { duel, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaKaezin extends DrawCard {
@@ -14,10 +14,10 @@ export default class KakitaKaezin extends DrawCard {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.duel((context) => ({
+            }, duel((context) => ({
                 type: DuelType.Military,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.sendHome({
+                    sendHome({
                         target:
                                 duel.winner?.includes(context.source) ?? false
                                     ? context.game.currentConflict?.getParticipants(

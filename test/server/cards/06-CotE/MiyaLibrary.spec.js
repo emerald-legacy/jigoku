@@ -5,7 +5,7 @@ describe('Miya Library', function () {
                 this.setupTest({
                     phase: 'dynasty',
                     player1: {
-                        inPlay: ['miya-library', 'kanjo-district', 'miya-satoshi', 'adept-of-the-waves', 'kudaka', 'naive-student'],
+                        inPlay: ['miya-library', 'kanjo-district', 'miya-satoshi', 'adept-of-the-waves', 'kudaka', 'naive-student', 'seppun-guardsman'],
                         dynastyDeck: []
                     },
                     player2: {
@@ -18,6 +18,9 @@ describe('Miya Library', function () {
                 this.kanjo = this.player1.findCardByName('kanjo-district');
                 this.naiveStudent = this.player1.findCardByName('naive-student');
                 this.player1.placeCardInProvince(this.miyaLibrary, 'province 1');
+                // an Imperial character 5th, below the 4 Miya Library looks at
+                this.guardsman = this.player1.findCardByName('seppun-guardsman');
+                this.player1.moveCard(this.guardsman, 'dynasty deck');
                 this.player1.moveCard(this.miyaSatoshi, 'dynasty deck');
                 this.player1.moveCard(this.kanjo, 'dynasty deck');
                 this.player1.moveCard(this.adept, 'dynasty deck');
@@ -29,6 +32,7 @@ describe('Miya Library', function () {
                 this.player1.clickCard(this.miyaLibrary);
                 expect(this.getChatLogs(1)).toContain('player1 uses Miya Library to search the top four cards of their dynasty deck for an Imperial character');
                 expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.player1).not.toHavePromptButton('Seppun Guardsman');
                 this.player1.clickPrompt('Miya Satoshi');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
                 this.player1.clickPrompt('Kanjo District');
@@ -36,6 +40,7 @@ describe('Miya Library', function () {
                 this.player1.clickPrompt('Adept of the Waves');
                 expect(this.player1).toHavePrompt('Which card do you want to be the third card?');
                 this.player1.clickPrompt('Kudaka');
+                expect(this.player1.dynastyDeck[4]).toBe(this.guardsman);
                 expect(this.player2).toHavePrompt('Play cards from provinces');
                 expect(this.miyaSatoshi.location).toBe('province 1');
                 expect(this.miyaLibrary.location).toBe('dynasty deck');

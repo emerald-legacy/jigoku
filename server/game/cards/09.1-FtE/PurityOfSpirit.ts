@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, discardStatusToken, honor, multiple } from '../../GameActions/GameActions.js';
 import { Duration, CardType } from '../../Constants.js';
 
 class PurityOfSpirit extends DrawCard {
@@ -9,22 +11,21 @@ class PurityOfSpirit extends DrawCard {
         this.action('Choose a bushi character to honor')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('bushi') && card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.honor(),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+                cardCondition: (card) => card.hasTrait('bushi') && card.isParticipating()
+            }, multiple([
+                honor(),
+                cardLastingEffect((context) => ({
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.delayedEffect({
+                    effect: delayedEffect({
                         when : {
                             onConflictFinished: () => true
                         },
-                        message: '{0} {3} removed from {1} due to the delayed effect of {2}',
-                        messageArgs: [context.target.statusTokens, context.target, context.source, context.target.statusTokens.length > 1 ? 'are' : 'is'],
-                        gameAction: AbilityDsl.actions.discardStatusToken(() => ({ target: context.target.statusTokens }))
+                        message: () => msg`${context.target.statusTokens} ${context.target.statusTokens.length > 1 ? 'are' : 'is'} removed from ${context.target} due to the delayed effect of ${context.source}`,
+                        gameAction: discardStatusToken(() => ({ target: context.target.statusTokens }))
                     })
                 }))
             ]))
-            .effect('honor {0}. Their status token will be discarded at the end of the conflict');
+            .chatText('honor {0}. Their status token will be discarded at the end of the conflict');
     }
 }
 
