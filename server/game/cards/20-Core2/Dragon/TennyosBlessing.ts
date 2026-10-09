@@ -17,7 +17,6 @@ export default class TennyosBlessing extends DrawCard {
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 cardsToLookAt: 4,
-                shuffle: true,
                 deck: DeckType.Dynasty,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {

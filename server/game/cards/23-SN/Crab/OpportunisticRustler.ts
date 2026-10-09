@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, moveCard, multipleContext, noAction } from '../../../GameActions/GameActions.js';
-import { ConflictType, DeckType, Location } from '../../../Constants.js';
+import { ConflictType, DeckType, Location, RemainingCards } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { msg } from '../../../GameChat.js';
 
@@ -18,8 +18,7 @@ export default class OpportunisticRustler extends DrawCard {
                 player: context.player.opponent,
                 choosingPlayer: context.player,
                 deck: DeckType.Dynasty,
-                placeOnBottomInRandomOrder: true,
-                shuffle: false,
+                remainingCards: RemainingCards.BottomRandom,
                 message: (context, cards) => cards[0].hasTrait('cavalry')
                     ? msg`${context.player} removes ${cards} from the game and gives ${context.source} +${cards[0].getTraits().size}${'military'}`
                     : msg`${context.player} puts ${cards} faceup into the attacked province and gives ${context.source} +${cards[0].getTraits().size}${'military'}`,

@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
-import { CardType, DeckType } from '../../Constants.js';
+import { CardType, DeckType, RemainingCards } from '../../Constants.js';
 
 class GuardiansOfRokugan extends DrawCard {
     static id = 'guardians-of-rokugan';
@@ -17,7 +17,9 @@ class GuardiansOfRokugan extends DrawCard {
                 deck: DeckType.Dynasty,
                 cardCondition: (card, ctx) => card.type === CardType.Character && putIntoPlay().canAffect(card, ctx) && card.costLessThan((ctx.game.currentConflict?.skillDifference ?? 0) + 1),
                 gameAction: putIntoPlay(),
-                shuffle: (ctx) => (ctx.game.currentConflict?.skillDifference ?? 0) >= ctx.player.dynastyDeck.length
+                remainingCards: (ctx) => (ctx.game.currentConflict?.skillDifference ?? 0) >= ctx.player.dynastyDeck.length
+                    ? RemainingCards.Shuffle
+                    : RemainingCards.Top
             })
             .chatText((context) => msg`look at the top ${context.game.currentConflict?.skillDifference ?? 0} cards of their deck for a character costing ${context.game.currentConflict?.skillDifference ?? 0} or less to put into play`);
     }

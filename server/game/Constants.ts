@@ -20,3 +20,4 @@ export { SkillType } from './Constants/SkillType.js';
 export { Blocker } from './Constants/Blocker.js';
 export { RestrictionType } from './Constants/RestrictionType.js';
 export { RestrictionScope } from './Constants/RestrictionScope.js';
+export { RemainingCards } from './Constants/RemainingCards.js';

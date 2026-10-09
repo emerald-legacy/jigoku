@@ -25,7 +25,6 @@ export default class AkodoAsuka extends DrawCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: true,
                 reveal: false
             })
             .chatText((context) => msg`look at the top ${charactersOnYourSide(context)} cards of their conflict deck`);

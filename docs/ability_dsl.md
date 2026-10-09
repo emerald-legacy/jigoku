@@ -614,13 +614,15 @@ deckSearch({
     gameAction: moveCard({ destination: Location.Hand }),
     takesNothingGameAction: draw(),
     message: (context, cards, chooser) => msg`${chooser} takes ${cards}`,   // default: "<chooser> takes <cards>" (or "… takes 1 card" unrevealed)
-    shuffle: true,                 // shuffle deck afterwards (default true)
+    remainingCards: RemainingCards.Shuffle, // the looked-at cards not taken (default Shuffle)
     reveal: true,                  // reveal selected cards to all
     uniqueNames: false             // prevent selecting two cards with same name
 })
 ```
 
 `takesNothingGameAction` fires when the player picks nothing (chooses "Take nothing").
+
+`remainingCards` decides what happens to the looked-at cards that weren't taken: `Shuffle` (the deck), `Discard`, `Top` (back on top, same order), `TopAnyOrder` (the player orders them) or `BottomRandom`. They are handled right after the choice; with a `selectedCardsHandler`, after any prompt the handler opens (Breaking In chooses a province first, then shuffles). `remainingCardsHandler` replaces it with custom code.
 
 ---
 

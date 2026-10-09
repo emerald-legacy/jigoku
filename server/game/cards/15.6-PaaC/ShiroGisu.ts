@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { Location } from '../../Constants.js';
+import { Location, RemainingCards } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -18,9 +18,8 @@ export default class ShiroGisu extends StrongholdCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
             })
             .chatText((context) => msg`look at the top ${this.getCharactersWithoutFate(context)} cards of their conflict deck`);
     }

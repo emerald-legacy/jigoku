@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Location } from '../../../Constants.js';
+import { Location, RemainingCards } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 
@@ -14,8 +14,7 @@ class MoveAsOne extends DrawCard {
             })
             .deckSearch({
                 cardsToLookAt: 8,
-                shuffle: false,
-                placeOnBottomInRandomOrder: true,
+                remainingCards: RemainingCards.BottomRandom,
                 cardCondition: (card) => card.hasTrait('kiho'),
                 gameAction: moveCard({
                     destination: Location.Hand

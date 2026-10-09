@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, RemainingCards } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class ShrewdYasuki extends DrawCard {
@@ -14,9 +14,8 @@ class ShrewdYasuki extends DrawCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
             })
             .chatText('look at the top two cards of their conflict deck');
     }

@@ -2,6 +2,7 @@ import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { placeCardUnderneath } from '../../../GameActions/GameActions.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
+import { RemainingCards } from '../../../Constants.js';
 
 class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';
@@ -11,8 +12,7 @@ class KakitaTaneharu extends DrawCard {
             .deckSearch({
                 cardsToLookAt: 4,
                 reveal: false,
-                placeOnBottomInRandomOrder: true,
-                shuffle: false,
+                remainingCards: RemainingCards.BottomRandom,
                 message: (context) => msg`${context.player} puts a card underneath ${context.source}`,
                 gameAction: placeCardUnderneath({
                     destination: this

@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { PlayType, DeckType, CardType, EventName, Location } from '../../Constants.js';
+import { PlayType, DeckType, CardType, EventName, Location, RemainingCards } from '../../Constants.js';
 import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
@@ -26,7 +26,7 @@ export default class ShinjoGunso extends DrawCard {
                             cardsToLookAt: 5,
                             deck: DeckType.Dynasty,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
-                            shuffle: false,
+                            remainingCards: RemainingCards.Top,
                             message: (context, cards) => {
                                 const discards = topFive.filter((a) => !cards.includes(a));
                                 return discards.length > 0

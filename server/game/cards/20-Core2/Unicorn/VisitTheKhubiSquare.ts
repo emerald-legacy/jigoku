@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, Location, EventName } from '../../../Constants.js';
+import { CardType, DeckType, Location, EventName, RemainingCards } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../../GameActions/GameActions.js';
 
@@ -20,7 +20,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                             cardsToLookAt: 5,
                             deck: DeckType.Dynasty,
                             cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
-                            shuffle: false,
+                            remainingCards: RemainingCards.Top,
                             message: (context, cards) => {
                                 const discards = topFive.filter((a) => !cards.includes(a));
                                 return discards.length > 0

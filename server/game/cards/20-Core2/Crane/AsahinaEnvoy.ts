@@ -21,7 +21,6 @@ export default class AsahinaEnvoy extends DrawCard {
                     card.type === CardType.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
                 cardsToLookAt: 6,
                 deck: DeckType.Dynasty,
-                shuffle: true,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length === 0) {
                         return this.game.addMessage(msg`${event.player} selects no characters`);

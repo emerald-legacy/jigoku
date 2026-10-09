@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, Duration, Location, PlayType, Blocker } from '../../../Constants.js';
+import { CardType, DeckType, Duration, Location, PlayType, Blocker, RemainingCards } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
@@ -27,7 +27,7 @@ export default class AshalanLantern extends DrawCard {
                     deck: DeckType.Dynasty,
                     player: context.player.opponent,
                     choosingPlayer: context.player,
-                    shuffle: false,
+                    remainingCards: RemainingCards.Top,
                     cardCondition: (card) => card.type === CardType.Character && !card.isUnique(),
                     gameAction: playCard((deckSearchContext) => {
                         const target = deckSearchContext.deckSearchSelected[0];

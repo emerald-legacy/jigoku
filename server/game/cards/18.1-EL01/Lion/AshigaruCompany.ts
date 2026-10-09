@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Location } from '../../../Constants.js';
+import { CardType, Location, RemainingCards } from '../../../Constants.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 
 class AshigaruCompany extends DrawCard {
@@ -16,8 +16,7 @@ class AshigaruCompany extends DrawCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom
             })
             .chatText('look at the top five cards of their deck');
     }

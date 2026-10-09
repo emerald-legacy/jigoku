@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
+import { Location, RemainingCards } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class AlibiArtist extends DrawCard {
@@ -13,9 +13,8 @@ class AlibiArtist extends DrawCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
             })
             .chatText('look at the top two cards of their conflict deck');
     }

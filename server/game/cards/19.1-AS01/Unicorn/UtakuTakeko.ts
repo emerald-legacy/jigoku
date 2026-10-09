@@ -36,8 +36,6 @@ export default class UtakuTakeko extends DrawCard {
                         ignoredBlockers: [Blocker.WrongPhase]
                     };
                 }),
-
-                shuffle: true,
                 message: (context, cards) => msg`${context.source} recalls a ${this.msgDistance(cards[0])} relative who is ${this.msgArticle(cards[0])} ${cards[0]}`
             }));
     }

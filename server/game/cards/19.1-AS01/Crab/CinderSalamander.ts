@@ -31,7 +31,6 @@ export default class CinderSalamander extends DrawCard {
                     mode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
-                    shuffle: true,
                     gameAction: putIntoPlay(),
                     message: (context, cards) => msg`${context.player} finds ${this.salamanderCountToText(cards.length)} in their deck`
                 }),

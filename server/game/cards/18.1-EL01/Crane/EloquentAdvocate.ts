@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { ConflictType, Location } from '../../../Constants.js';
+import { ConflictType, Location, RemainingCards } from '../../../Constants.js';
 
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
@@ -16,9 +16,8 @@ class EloquentAdvocate extends DrawCard {
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
             })
             .chatText('look at the top two cards of their conflict deck');
     }

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Location, Players } from '../../../Constants.js';
+import { Location, Players, RemainingCards } from '../../../Constants.js';
 import {
     chooseAction,
     deckSearch,
@@ -33,7 +33,7 @@ export default class SandRoadMerchant extends DrawCard {
                         gameAction: placeCardUnderneath({
                             destination: this
                         }),
-                        shuffle: false,
+                        remainingCards: RemainingCards.Top,
                         reveal: true
                     }),
                     chooseAction(() => {

@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, Location, DeckType } from '../../Constants.js';
+import { CardType, Players, Location, DeckType, RemainingCards } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class UnyieldingSensei extends DrawCard {
@@ -19,7 +19,7 @@ class UnyieldingSensei extends DrawCard {
                 cardsToLookAt: 2,
                 deck: DeckType.Dynasty,
                 cardCondition: (card) => card.type === CardType.Character,
-                shuffle: false,
+                remainingCards: RemainingCards.Top,
                 message: (context, cards) => {
                     const province = context.target;
                     return msg`${context.player} puts ${cards} into ${province?.isFacedown() ? 'a facedown province' : province?.name}`;

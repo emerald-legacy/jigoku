@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { DeckType, EventName, Location, TargetMode } from '../Constants.js';
+import { DeckType, EventName, Location, RemainingCards, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameAction, ActionEvent, WithDefaults } from './GameAction.js';
@@ -10,6 +10,7 @@ import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import { derive, type Derivable } from '../utils/helpers.js';
+import { RearrangeDeckAction } from './RearrangeDeckAction.js';
 
 export interface DeckSearchProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     mode?: TargetMode;
@@ -18,14 +19,14 @@ export interface DeckSearchProperties<C extends AbilityContext = AbilityContext>
     numCards?: Derivable<number, AbilityContext>;
     reveal?: boolean;
     deck?: DeckType;
-    shuffle?: Derivable<boolean, AbilityContext>;
+    /** What happens to the looked-at cards not taken, once the taken ones are dealt with; `remainingCardsHandler` replaces it. */
+    remainingCards?: Derivable<RemainingCards, AbilityContext>;
     gameAction?: GameAction;
     /** The chat line once cards are taken; without it, "<chooser> takes <cards>". */
     message?: (context: C, cards: DrawCard[], chooser: Player) => MessageArgs;
     uniqueNames?: boolean;
     player?: Player;
     choosingPlayer?: Player;
-    placeOnBottomInRandomOrder?: boolean;
     selectedCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     remainingCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
@@ -37,10 +38,9 @@ type DeckSearchDefaults =
     | 'numCards'
     | 'mode'
     | 'deck'
-    | 'shuffle'
+    | 'remainingCards'
     | 'reveal'
     | 'uniqueNames'
-    | 'placeOnBottomInRandomOrder'
     | 'cardCondition';
 
 type ResolvedDeckSearchProperties<C extends AbilityContext> = WithDefaults<DeckSearchProperties<C>, DeckSearchDefaults>;
@@ -54,10 +54,9 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         numCards: 1,
         mode: TargetMode.Single,
         deck: DeckType.Conflict,
-        shuffle: true,
+        remainingCards: RemainingCards.Shuffle,
         reveal: true,
         uniqueNames: false,
-        placeOnBottomInRandomOrder: false,
         cardCondition: () => true
     };
 
@@ -153,7 +152,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
             }
         }
 
-        if(derive(properties.shuffle, context)) {
+        if(derive(properties.remainingCards, context) === RemainingCards.Shuffle) {
             cards.sort((a, b) => a.name.localeCompare(b.name));
         }
 
@@ -191,49 +190,57 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     ): void {
         event.selectedCards = Array.from(selectedCards);
         context.deckSearchSelected = Array.from(selectedCards);
+        const remaining = allCards.filter((card) => !selectedCards.has(card));
+        const handleRemaining = () => properties.remainingCardsHandler
+            ? properties.remainingCardsHandler(context, event, remaining)
+            : this.#handleRemaining(properties, context, event, remaining);
         if(!properties.selectedCardsHandler) {
             this.#defaultHandleDone(properties, context, event, selectedCards);
-        } else {
-            properties.selectedCardsHandler(context, event, Array.from(selectedCards));
+            handleRemaining();
+            return;
         }
-
-        if(typeof properties.remainingCardsHandler === 'function') {
-            const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
-            properties.remainingCardsHandler(context, event, cardsToMove);
-        } else {
-            this.#defaultRemainingCardsHandler(properties, context, event, selectedCards, allCards);
-        }
+        properties.selectedCardsHandler(context, event, Array.from(selectedCards));
+        // after any prompt the handler opened to place the taken cards
+        context.game.queueSimpleStep(() => {
+            handleRemaining();
+            return true;
+        });
     }
 
-    #defaultRemainingCardsHandler(
+    #handleRemaining(
         properties: ResolvedDeckSearchProperties<C>,
         context: C,
         event: GameEvent<EventName.OnDeckSearch>,
-        selectedCards: Set<DrawCard>,
-        allCards: DrawCard[]
+        remaining: DrawCard[]
     ): void {
         const player = event.player;
-        if(derive(properties.shuffle, context)) {
-            switch(properties.deck) {
-                case DeckType.Conflict:
-                    return player.shuffleConflictDeck();
-                case DeckType.Dynasty:
-                    return player.shuffleDynastyDeck();
-                default:
-                    return;
-            }
-        }
-
-        if(properties.placeOnBottomInRandomOrder) {
-            const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
-            if(cardsToMove.length > 0) {
-                const isDynasty = properties.deck === DeckType.Dynasty;
-                const deckLocation = isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
-                for(const card of shuffle(cardsToMove)) {
-                    player.moveCard(card, deckLocation, { bottom: true });
+        const isDynasty = properties.deck === DeckType.Dynasty;
+        switch(derive(properties.remainingCards, context)) {
+            case RemainingCards.Shuffle:
+                return isDynasty ? player.shuffleDynastyDeck() : player.shuffleConflictDeck();
+            case RemainingCards.Discard:
+                if(remaining.length > 0) {
+                    context.game.addMessage(msg`${player} discards ${remaining}`);
+                    for(const card of remaining) {
+                        player.moveCard(card, isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+                    }
                 }
-                context.game.addMessage(msg`${player} puts ${cardsToMove.length} card${cardsToMove.length > 1 ? 's' : ''} on the bottom of their ${isDynasty ? 'dynasty' : 'conflict'} deck`);
-            }
+                return;
+            case RemainingCards.TopAnyOrder:
+                if(remaining.length > 1) {
+                    new RearrangeDeckAction({ cards: remaining, deck: properties.deck }).resolve(player, context);
+                }
+                return;
+            case RemainingCards.BottomRandom:
+                if(remaining.length > 0) {
+                    for(const card of shuffle(remaining)) {
+                        player.moveCard(card, isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
+                    }
+                    context.game.addMessage(msg`${player} puts ${remaining.length} card${remaining.length > 1 ? 's' : ''} on the bottom of their ${isDynasty ? 'dynasty' : 'conflict'} deck`);
+                }
+                return;
+            case RemainingCards.Top:
+                return;
         }
     }
 
