@@ -1,6 +1,6 @@
 import type Player from './Player.js';
 import type Game from './Game.js';
-import { MenuPrompt } from './gamesteps/MenuPrompt.js';
+import { MenuPrompt, type MenuHandlers, type MenuPromptProperties } from './gamesteps/MenuPrompt.js';
 import { HandlerMenuPrompt, type HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
 import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
 import { SelectCardPrompt, type SelectCardPromptProperties } from './gamesteps/SelectCardPrompt.js';
@@ -11,8 +11,23 @@ import type BaseCard from './BaseCard.js';
 export class GamePromptHelper {
     constructor(private game: Game) {}
 
-    promptWithMenu(player: Player, contextObj: ConstructorParameters<typeof MenuPrompt>[2], properties: ConstructorParameters<typeof MenuPrompt>[3]): void {
-        this.game.queueStep(new MenuPrompt(this.game, player, contextObj, properties));
+    promptWithMenu(player: Player, handlers: MenuHandlers, properties: MenuPromptProperties): void {
+        this.game.queueStep(new MenuPrompt(this.game, player, handlers, properties));
+    }
+
+    /** "Name a card": the player types a card name, and `onName` gets it. */
+    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle = 'Name a card'): void {
+        this.promptWithMenu(player, {
+            selectCardName: (namingPlayer, cardName) => {
+                onName(namingPlayer, cardName);
+                return true;
+            }
+        }, {
+            activePrompt: {
+                menuTitle,
+                controls: [{ type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }]
+            }
+        });
     }
 
     promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {

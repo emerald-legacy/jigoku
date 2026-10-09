@@ -26,7 +26,7 @@ import { SimultaneousEffectWindow } from './gamesteps/SimultaneousEffectWindow.j
 import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
 import type { ForcedTriggeredAbilityWindow } from './gamesteps/ForcedTriggeredAbilityWindow.js';
 import type { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
-import type { MenuPrompt } from './gamesteps/MenuPrompt.js';
+import type { MenuHandlers, MenuPromptProperties } from './gamesteps/MenuPrompt.js';
 import type { HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
 import type { CardsChoice, OptionalCardChoice, SelectCardPromptProperties, SelectorChoice, SingleCardChoice } from './gamesteps/SelectCardPrompt.js';
 import type { CardTypes } from './types/CardOfType.js';
@@ -615,8 +615,13 @@ export class Game {
         this.input.shuffleDynastyDeck(playerName);
     }
 
-    promptWithMenu(player: Player, contextObj: ConstructorParameters<typeof MenuPrompt>[2], properties: ConstructorParameters<typeof MenuPrompt>[3]): void {
-        this.prompts.promptWithMenu(player, contextObj, properties);
+    promptWithMenu(player: Player, handlers: MenuHandlers, properties: MenuPromptProperties): void {
+        this.prompts.promptWithMenu(player, handlers, properties);
+    }
+
+    /** "Name a card": the player types a card name, and `onName` gets it. */
+    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle?: string): void {
+        this.prompts.promptForCardName(player, onName, menuTitle);
     }
 
     promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {

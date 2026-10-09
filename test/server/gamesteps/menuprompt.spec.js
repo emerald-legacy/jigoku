@@ -15,20 +15,12 @@ describe('the MenuPrompt', function() {
         game.playersAndSpectators[this.player.name] = this.player;
         game.playersAndSpectators[this.otherPlayer.name] = this.otherPlayer;
 
-        this.contextObj = {
-            doIt: function() {
-                return true;
-            },
-            forbiddenMethod: function() {
-                return true;
-            }
+        this.handlers = {
+            doIt: jasmine.createSpy('doIt'),
+            forbiddenMethod: jasmine.createSpy('forbiddenMethod')
         };
-        spyOn(this.contextObj, 'doIt');
-        spyOn(this.contextObj, 'forbiddenMethod');
 
-        this.context = { name: 'context' };
         this.properties = {
-            context: this.context,
             activePrompt: {
                 buttons: [{ command: 'menuButton', text: 'Do it!', method: 'doIt' }]
             }
@@ -36,7 +28,7 @@ describe('the MenuPrompt', function() {
 
         this.arg = 123;
 
-        this.prompt = new MenuPrompt(game, this.player, this.contextObj, this.properties);
+        this.prompt = new MenuPrompt(game, this.player, this.handlers, this.properties);
     });
 
     describe('the onMenuCommand() function', function() {
@@ -62,16 +54,31 @@ describe('the MenuPrompt', function() {
             });
         });
 
+        describe('when a handler exists that no button names', function() {
+            it('should not call it', function() {
+                expect(this.prompt.onMenuCommand(this.player, this.arg, this.prompt.uuid, 'forbiddenMethod')).toBe(false);
+                expect(this.handlers.forbiddenMethod).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('when the method is only inherited by the handlers object', function() {
+            it('should return false', function() {
+                this.properties.activePrompt.buttons.push({ command: 'menuButton', text: 'Odd', method: 'toString' });
+                expect(this.prompt.onMenuCommand(this.player, this.arg, this.prompt.uuid, 'toString')).toBe(false);
+                expect(this.prompt.isComplete()).toBe(false);
+            });
+        });
+
         describe('when the method exists', function() {
             describe('when the method has a corresponding button', function() {
-                it('should call the specified method on the context object', function() {
+                it('should call the handler with the player and the arg', function() {
                     this.prompt.onMenuCommand(this.player, this.arg, this.prompt.uuid, 'doIt');
-                    expect(this.contextObj.doIt).toHaveBeenCalledWith(this.player, this.arg, this.context);
+                    expect(this.handlers.doIt).toHaveBeenCalledWith(this.player, this.arg);
                 });
 
                 describe('when the method returns false', function() {
                     beforeEach(function() {
-                        this.contextObj.doIt.and.returnValue(false);
+                        this.handlers.doIt.and.returnValue(false);
                     });
 
                     it('should not complete the prompt', function() {
@@ -86,7 +93,7 @@ describe('the MenuPrompt', function() {
 
                 describe('when the method returns true', function() {
                     beforeEach(function() {
-                        this.contextObj.doIt.and.returnValue(true);
+                        this.handlers.doIt.and.returnValue(true);
                     });
 
                     it('should complete the prompt', function() {

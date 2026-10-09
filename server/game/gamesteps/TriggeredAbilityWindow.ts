@@ -33,7 +33,7 @@ export class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     }
 
     promptWithBluffPrompt(player: Player): void {
-        this.game.promptWithMenu(player, this, {
+        this.game.promptWithMenu(player, { pass: (passingPlayer, arg) => this.pass(passingPlayer, arg) }, {
             source: 'Triggered Abilities',
             waitingPromptTitle: 'Waiting for opponent',
             activePrompt: {

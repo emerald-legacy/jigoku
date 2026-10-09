@@ -3,7 +3,6 @@ import DrawCard from '../../DrawCard.js';
 import { chooseAction, conditional, lookAt, multiple, noAction, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../Player.js';
 
 class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
@@ -21,20 +20,9 @@ class EmissaryOfLies extends DrawCard {
                 if(!opponent) {
                     return;
                 }
-                this.game.promptWithMenu(opponent, {
-                    selectCardName: (player: Player, cardName: string) => {
-                        this.game.addMessage(msg`${player} names ${cardName} - ${context.player} must choose if they want to reveal their hand`);
-                        this.offerToRevealHand(context, context.target, cardName);
-                        return true;
-                    }
-                }, {
-                    context: context,
-                    activePrompt: {
-                        menuTitle: 'Name a card',
-                        controls: [
-                            { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                        ]
-                    }
+                this.game.promptForCardName(opponent, (player, cardName) => {
+                    this.game.addMessage(msg`${player} names ${cardName} - ${context.player} must choose if they want to reveal their hand`);
+                    this.offerToRevealHand(context, context.target, cardName);
                 });
             });
     }

@@ -667,7 +667,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         if(this.game.manualMode && !this.conflict.isSinglePlayer) {
-            this.game.promptWithMenu(this.conflict.attackingPlayer, this, {
+            this.game.promptWithMenu(this.conflict.attackingPlayer, {
+                manuallyDetermineWinner: (player, choice) => this.manuallyDetermineWinner(player, choice)
+            }, {
                 activePrompt: {
                     promptTitle: 'Conflict Result',
                     menuTitle: 'How did the conflict resolve?',

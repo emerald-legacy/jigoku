@@ -504,21 +504,8 @@ export function nameCard(): Cost<{ namedCard: string }> {
             return true;
         },
         resolve(context) {
-            const dummyObject = {
-                selectCardName: (_player: Player, cardName: string, context: AbilityContext) => {
-                    context.costs.namedCard = cardName;
-                    return true;
-                }
-            };
-
-            context.game.promptWithMenu(context.player, dummyObject, {
-                context: context,
-                activePrompt: {
-                    menuTitle: 'Name a card',
-                    controls: [
-                        { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                    ]
-                }
+            context.game.promptForCardName(context.player, (_player, cardName) => {
+                context.costs.namedCard = cardName;
             });
         },
         pay() { }

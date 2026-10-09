@@ -14,21 +14,13 @@ class BayushisWhisperers extends DrawCard {
             .gameAction(sequential([
                 lookAt((context) => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
                 handler({
-                    handler: (context) => this.game.promptWithMenu(context.player, this, {
-                        context: context,
-                        activePrompt: {
-                            menuTitle: 'Name a card',
-                            controls: [
-                                { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                            ]
-                        }
-                    })
+                    handler: (context) => this.game.promptForCardName(context.player, (player, cardName) => this.forbidCopies(player, cardName, context))
                 })
             ]))
             .chatText((context) => msg`look at ${context.player.opponent}'s hand, then name a card`);
     }
 
-    selectCardName(player: Player, cardName: string, context: AbilityContext) {
+    private forbidCopies(player: Player, cardName: string, context: AbilityContext): void {
         this.game.addMessage(msg`${player} names ${cardName} - ${player.opponent} cannot play copies of this card this phase`);
         context.source.untilEndOfPhase({
             targetController: context.player.opponent,
@@ -38,7 +30,6 @@ class BayushisWhisperers extends DrawCard {
                 params: cardName
             })
         });
-        return true;
     }
 }
 
