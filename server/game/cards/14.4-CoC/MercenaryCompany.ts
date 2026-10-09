@@ -1,8 +1,8 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Players } from '../../Constants.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
 import { takeControl } from '../../effects.js';
-import { handler, loseFate, placeFate } from '../../GameActions/GameActions.js';
+import { loseFate, optional, placeFate } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class MercenaryCompany extends DrawCard {
@@ -15,42 +15,21 @@ class MercenaryCompany extends DrawCard {
                     && loseFate().canAffect(context.player.opponent, context)
                     && placeFate().canAffect(context.source, context)
             })
-            .gameAction(handler({
-                handler: (context) => {
-                    const opponent = context.player.opponent;
-                    const source = context.source;
-                    if(!opponent || !source.isDrawCard()) {
-                        return;
-                    }
-                    context.game.promptWithHandlerMenu(opponent, {
-                        activePromptTitle: 'Place a fate on Mercenary Company to take control of it?',
-                        source: context.source,
-                        options: [
-                            {
-                                text: 'Yes',
-                                handler: () => {
-                                    placeFate({ origin: opponent }).resolve(source, context);
-                                    context.game.queueSimpleStep(() => {
-                                        context.source.lastingEffect({
-                                            duration: Duration.Custom,
-                                            effect: takeControl(opponent)
-                                        });
-                                        this.game.addMessage(msg`${opponent} places a fate on and takes control of ${context.source}`);
-                                    });
-                                }
-                            },
-                            {
-                                text: 'No',
-                                handler: () => {
-                                    this.game.addMessage(msg`${opponent} chooses not to hire ${context.source}`);
-                                }
-                            }
-                        ]
-                    });
-                }
-            }))
+            .gameAction(optional((context) => ({
+                player: Players.Opponent,
+                prompt: 'Place a fate on Mercenary Company to take control of it?',
+                gameAction: placeFate({ origin: context.player.opponent }),
+                declineMessage: (context, chooser) => msg`${chooser} chooses not to hire ${context.source}`
+            })))
             .chatText((context) => msg`let ${context.player.opponent} hire their services`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimitedPerConflict())
+            // "If they do": only once the fate is really placed
+            .then()
+            .cardLastingEffect((context) => ({
+                duration: Duration.Custom,
+                effect: takeControl(context.player.opponent)
+            }))
+            .message((context) => msg`${context.player.opponent} places a fate on and takes control of ${context.source}`);
     }
 
 }
