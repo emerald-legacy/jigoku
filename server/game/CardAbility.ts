@@ -23,6 +23,7 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     max?: IAbilityLimit;
     abilityIdentifier?: string;
     origin?: BaseCard;
+    condition?: (context: AbilityContext) => boolean;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
     chatText?: string | OwnContextCallback<[context: C], MessageArgs>;
@@ -75,12 +76,15 @@ export class CardAbility extends ThenAbility {
     abilityIdentifier: string;
     maxIdentifier: string;
     origin?: BaseCard;
+    /** With a duel, its challenger check is part of it. */
+    condition?: (context: AbilityContext) => boolean;
 
     constructor(card: BaseCard, properties: CardAbilityProperties) {
-        if(properties.initiateDuel) {
-            initiateDuel(card, properties);
-        }
-        super(card, properties);
+        // a duel's condition and targets go on a copy, so a copy of this ability starts from the properties as written
+        const withDuel = initiateDuel(card, properties);
+        super(card, withDuel);
+        this.properties = properties;
+        this.condition = withDuel.condition;
 
         this.title = properties.title;
         this.limit = properties.limit || AbilityLimit.perRound(1);

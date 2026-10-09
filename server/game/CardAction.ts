@@ -15,15 +15,12 @@ export class CardAction extends CardAbility {
     phase: Phase | 'any';
     evenDuringDynasty: boolean;
 
-    condition?: (context: AbilityContext) => boolean;
-
     constructor(card: BaseCard, properties: ActionProps) {
         super(card, properties);
 
         this.phase = properties.phase ?? 'any';
         this.evenDuringDynasty = properties.evenDuringDynasty ?? false;
         this.anyPlayer = properties.anyPlayer ?? false;
-        this.condition = properties.condition;
         this.conflictProvinceCondition = properties.conflictProvinceCondition ?? ((province) => province === this.card);
         this.canTriggerOutsideConflict = !!properties.canTriggerOutsideConflict;
     }
