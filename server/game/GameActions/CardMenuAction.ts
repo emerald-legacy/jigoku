@@ -90,8 +90,13 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
-        const defaultProperties = {
-            context: context,
+        context.game.promptWithHandlerMenu(player, {
+            context,
+            activePromptTitle: properties.activePromptTitle,
+            cards: properties.cards,
+            options: properties.options,
+            target: properties.target,
+            cardCondition: (card: DrawCard) => cardCondition(card, context),
             cardHandler: (card: DrawCard): void => {
                 properties.gameAction.addEventsToArray(
                     events,
@@ -102,8 +107,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
                     context.game.addMessage(properties.message(context, card, player));
                 }
             }
-        };
-        context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition: (card: DrawCard) => cardCondition(card, context) });
+        });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {

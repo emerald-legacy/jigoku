@@ -194,8 +194,10 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         if(!properties.selector.hasEnoughTargets(context, player)) {
             return;
         }
-        const defaultProperties = {
-            context: context,
+        const promptProperties = {
+            context,
+            activePromptTitle: properties.activePromptTitle,
+            gameAction: properties.gameAction,
             selector: properties.selector,
             mustSelect: mustSelect,
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
@@ -216,15 +218,14 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
                 return true;
             }
         };
-        const finalProperties = { ...defaultProperties, ...properties };
         if(properties.hidePromptIfSingleCard) {
             const cards = properties.selector.getAllLegalTargets(context);
             if(cards.length === 1) {
-                finalProperties.onSelect(player, cards[0]);
+                promptProperties.onSelect(player, cards[0]);
                 return;
             }
         }
-        context.game.promptForSelect(player, finalProperties);
+        context.game.promptForSelect(player, promptProperties);
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {

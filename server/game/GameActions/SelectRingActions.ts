@@ -14,6 +14,8 @@ export interface SelectRingProperties<C extends AbilityContext = AbilityContext>
     targets?: boolean;
     ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
     cancelHandler?: () => void;
+    /** A button besides the rings (with `optional`, "Done"); returning true closes the prompt. */
+    onMenuCommand?: (player: Player, arg: string) => boolean;
     subActionProperties?: (ring: Ring) => Record<string, unknown>;
     /** The chat line once a ring is chosen. */
     message?: (context: C, ring: Ring, chooser: Player) => MessageArgs;
@@ -67,8 +69,11 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
-        const defaultProperties = {
-            context: context,
+        context.game.promptForRingSelect(player, {
+            context,
+            activePromptTitle: properties.activePromptTitle,
+            optional: properties.optional,
+            onMenuCommand: properties.onMenuCommand,
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
             onCancel: properties.cancelHandler,
             onSelect: (selectingPlayer: Player, ring: Ring) => {
@@ -81,21 +86,14 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
                     Object.assign({}, additionalProperties, properties.subActionProperties(ring))
                 );
                 return true;
-            }
-        };
-        context.game.promptForRingSelect(
-            player,
-            {
-                ...defaultProperties,
-                ...properties,
-                ringCondition: (ring: Ring, ringContext: AbilityContext) =>
-                    properties.ringCondition(ring, ringContext) &&
-                    properties.gameAction.hasLegalTarget(
-                        ringContext,
-                        Object.assign({}, additionalProperties, properties.subActionProperties(ring))
-                    )
-            }
-        );
+            },
+            ringCondition: (ring: Ring, ringContext: AbilityContext) =>
+                properties.ringCondition(ring, ringContext) &&
+                properties.gameAction.hasLegalTarget(
+                    ringContext,
+                    Object.assign({}, additionalProperties, properties.subActionProperties(ring))
+                )
+        });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
