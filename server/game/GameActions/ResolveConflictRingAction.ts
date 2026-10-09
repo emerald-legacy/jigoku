@@ -10,7 +10,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 
 export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, C> {
-    name = 'resolveRing';
+    name = 'resolveConflictRing';
     eventName = EventName.OnResolveConflictRing;
 
     protected effectMessage(): MessageArgs {

@@ -21,7 +21,9 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
             return [chatText, []];
         }
         if(replacementGameAction) {
-            return ['{1} {0} instead of {2}', [replacementGameAction.name, context.event?.card]];
+            // the replacement's target is this action's, so its `{0}` stays ours
+            const [format, [, ...args]] = replacementGameAction.getEffectMessage(context);
+            return [`${format} instead of {${args.length + 1}}`, [...args, context.event?.card]];
         }
         return ['cancel the effects of {0}', []];
     }

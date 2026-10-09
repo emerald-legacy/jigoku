@@ -17,11 +17,12 @@ export class LeavesPlayAction<
     D extends keyof P = never
 > extends CardGameAction<P, EventName.OnCardLeavesPlay, C, D> {
     eventName = EventName.OnCardLeavesPlay;
+    isSacrifice = false;
 
     updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
-        event.isSacrifice = this.name === 'sacrifice';
+        event.isSacrifice = this.isSacrifice;
         event.destination = typeof destination === 'string' && isEnumValue(Location, destination)
             ? destination
             : card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;

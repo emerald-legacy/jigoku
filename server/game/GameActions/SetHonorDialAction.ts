@@ -13,7 +13,7 @@ export interface SetDialProperties extends PlayerActionProperties {
 export class SetHonorDialAction<C extends AbilityContext = AbilityContext> extends PlayerAction<SetDialProperties, EventName.OnSetHonorDial, C, 'value'> {
     defaultProperties = { value: 0 };
 
-    name = 'setDial';
+    name = 'setHonorDial';
     eventName = EventName.OnSetHonorDial;
     protected effectMessage(context: C): MessageArgs {
         return ['set {0}\'s dial to {1}', [this.getProperties(context).value]];

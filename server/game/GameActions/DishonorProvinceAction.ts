@@ -8,7 +8,7 @@ import { targetList, type ActionEvent } from './GameAction.js';
 export type DishonorProvinceProperties = CardActionProperties;
 
 export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, C> {
-    name = 'dishonor';
+    name = 'dishonorProvince';
     restriction = RestrictionType.Dishonor;
     eventName = EventName.OnCardDishonored;
     targetType = [CardType.Province];

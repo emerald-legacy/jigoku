@@ -11,7 +11,7 @@ export interface GainStatusTokenProperties extends CardActionProperties {
 }
 
 export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName.OnStatusTokenGained, C, 'token'> {
-    name = 'gainStatus';
+    name = 'gainStatusToken';
     eventName = EventName.OnStatusTokenGained;
     defaultProperties = {
         token: CharacterStatus.Honored

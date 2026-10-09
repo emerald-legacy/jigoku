@@ -10,7 +10,7 @@ export interface RefillFaceupProperties extends PlayerActionProperties {
 }
 
 export class RefillFaceupAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RefillFaceupProperties, EventName.Unnamed, C> {
-    name = 'refill';
+    name = 'refillFaceup';
     effect = 'refill its province faceup';
 
     defaultTargets(context: C): Player[] {

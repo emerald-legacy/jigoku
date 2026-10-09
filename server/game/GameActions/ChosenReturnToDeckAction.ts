@@ -23,7 +23,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         shuffle: false,
         bottom: false
     };
-    name = 'returnToDeck';
+    name = 'chosenReturnToDeck';
     restriction = RestrictionType.ReturnToDeck;
     eventName = EventName.OnCardMoved;
 

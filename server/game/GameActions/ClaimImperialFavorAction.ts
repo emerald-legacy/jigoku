@@ -10,7 +10,7 @@ export interface ClaimFavorProperties extends PlayerActionProperties {
 }
 
 export class ClaimImperialFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ClaimFavorProperties, EventName.OnClaimFavor, C> {
-    name = 'claimFavor';
+    name = 'claimImperialFavor';
     eventName = EventName.OnClaimFavor;
     effect = 'claim the Emperor\'s favor';
 

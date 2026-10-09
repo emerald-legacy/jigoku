@@ -12,7 +12,7 @@ export interface DuelAddParticipantProperties extends CardActionProperties {
 }
 
 export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant, C> {
-    name = 'onAddDuelParticipant';
+    name = 'duelAddParticipant';
     eventName = EventName.OnAddDuelParticipant;
 
     protected effectMessage(): MessageArgs {

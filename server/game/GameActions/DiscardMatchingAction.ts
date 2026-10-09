@@ -27,7 +27,7 @@ export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> ex
         match: () => true
     };
 
-    name = 'discard';
+    name = 'discardMatching';
 
     restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;

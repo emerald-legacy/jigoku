@@ -22,7 +22,7 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
     C,
     'switch' | 'faceup' | 'changePlayer' | 'discardDestinationCards'
 > {
-    name = 'putInProvince';
+    name = 'putIntoProvince';
     eventName = EventName.OnCardLeavesPlay;
     targetType = [CardType.Character, CardType.Attachment];
     defaultProperties = {

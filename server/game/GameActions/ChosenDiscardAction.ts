@@ -20,7 +20,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
         targets: true,
         cardCondition: () => true
     };
-    name = 'discard';
+    name = 'chosenDiscard';
     restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;
 

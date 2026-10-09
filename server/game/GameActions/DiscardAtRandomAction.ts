@@ -17,7 +17,7 @@ type RandomDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCard
 export class DiscardAtRandomAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount'> {
     defaultProperties = { amount: 1 };
 
-    name = 'discard';
+    name = 'discardAtRandom';
 
     restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;

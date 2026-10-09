@@ -7,7 +7,7 @@ import type { ActionEvent } from './GameAction.js';
 export type FlipFavorProperties = PlayerActionProperties;
 
 export class FlipImperialFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FlipFavorProperties, EventName.OnFlipFavor, C> {
-    name = 'flipFavor';
+    name = 'flipImperialFavor';
     eventName = EventName.OnFlipFavor;
     effect = 'flip the Imperial favor';
 

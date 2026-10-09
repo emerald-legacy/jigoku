@@ -13,7 +13,7 @@ export interface FillProvinceProperties extends PlayerActionProperties {
 
 export class FillProvinceAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName.Unnamed, C, 'location' | 'fillTo' | 'faceup'> {
     defaultProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
-    name = 'fill';
+    name = 'fillProvince';
     effect = 'fills {0} with more cards';
 
     defaultTargets(context: C): Player[] {

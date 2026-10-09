@@ -11,7 +11,7 @@ export interface LoseFateProperties extends PlayerActionProperties {
 }
 
 export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C, 'amount'> {
-    name = 'spendFate';
+    name = 'loseFate';
     restriction = RestrictionType.SpendFate;
     eventName = EventName.OnModifyFate;
     defaultProperties = { amount: 1 };

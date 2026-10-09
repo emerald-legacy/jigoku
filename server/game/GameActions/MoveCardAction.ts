@@ -24,7 +24,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
     C,
     'switch' | 'shuffle' | 'faceup' | 'bottom' | 'changePlayer' | 'discardDestinationCards'
 > {
-    name = 'move';
+    name = 'moveCard';
     restriction = RestrictionType.Move;
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties = {

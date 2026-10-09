@@ -8,7 +8,7 @@ import { targetList, type ActionEvent } from './GameAction.js';
 export type FlipDynastyProperties = CardActionProperties;
 
 export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName.OnCardRevealed, C> {
-    name = 'reveal';
+    name = 'flipDynasty';
     eventName = EventName.OnCardRevealed;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
 

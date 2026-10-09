@@ -8,7 +8,7 @@ import type { ActionEvent } from './GameAction.js';
 export type BreakProperties = CardActionProperties;
 
 export class BreakProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BreakProperties, EventName.OnBreakProvince, C> {
-    name = 'break';
+    name = 'breakProvince';
     restriction = RestrictionType.Break;
     eventName = EventName.OnBreakProvince;
     targetType = [CardType.Province];

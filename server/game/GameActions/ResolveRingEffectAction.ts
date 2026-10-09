@@ -16,7 +16,7 @@ export interface ResolveElementProperties extends RingActionProperties {
 }
 
 export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, C> {
-    name = 'resolveElement';
+    name = 'resolveRingEffect';
     eventName = EventName.OnResolveRingElement;
     effect = 'resolve {0} effect';
 

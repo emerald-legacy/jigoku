@@ -18,7 +18,7 @@ class Rebuild extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
             }, moveCard((context) => ({
-                destination: context.costs.moveStateWhenChosen instanceof DrawCard ? context.costs.moveStateWhenChosen.location : Location.ProvinceOne,
+                destination: context.costs.moveCardStateWhenChosen instanceof DrawCard ? context.costs.moveCardStateWhenChosen.location : Location.ProvinceOne,
                 facedown: false
             })))
             .chatText('replace it with {0}')

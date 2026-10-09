@@ -22,7 +22,7 @@ export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> 
     C,
     'duration' | 'canChangeZoneOnce' | 'canChangeZoneNTimes'
 > {
-    name = 'applyLastingEffect';
+    name = 'cardLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect to {0}';
     defaultProperties = {

@@ -11,7 +11,7 @@ export interface GloryCountProperties extends GameActionProperties {
 }
 
 export class PerformGloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName.OnGloryCount, C> {
-    name = 'gloryCount';
+    name = 'performGloryCount';
     eventName = EventName.OnGloryCount;
 
     hasLegalTarget(_context: C): boolean {

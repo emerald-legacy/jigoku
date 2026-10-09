@@ -15,7 +15,7 @@ export interface PlaceFateRingProperties extends RingActionProperties {
 }
 
 export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
-    name = 'placeFate';
+    name = 'placeFateOnRing';
     restriction = RestrictionType.PlaceFate;
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1 };

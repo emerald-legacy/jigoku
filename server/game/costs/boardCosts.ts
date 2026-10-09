@@ -82,9 +82,9 @@ export function returnSelfToHand(): Cost {
  * Cost that will shuffle a selected card into the relevant deck which matches the passed
  * condition.
  */
-export function shuffleIntoDeck<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'move', K, M>> {
+export function shuffleIntoDeck<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'moveCard', K, M>> {
     return getSelectCost(
-        'move',
+        'moveCard',
         GameActions.moveCard({ destination: Location.DynastyDeck, shuffle: true }),
         properties,
         'Select card to shuffle into deck'
@@ -235,8 +235,8 @@ export function breakSelf(): Cost {
 /**
  * Cost that requires breaking a province selected by the player
  */
-export function breakProvince<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'break', K, M>> {
-    return getSelectCost('break', GameActions.breakProvince(), properties, 'Select a province to break');
+export function breakProvince<const K extends CardTypes = undefined, const M extends TargetMode | undefined = undefined>(properties: TypedSelectCostProperties<K, M>): Cost<SelectCostResult<'breakProvince', K, M>> {
+    return getSelectCost('breakProvince', GameActions.breakProvince(), properties, 'Select a province to break');
 }
 
 /**
@@ -306,11 +306,12 @@ export function dishonorAndSacrifice<const K extends CardTypes = undefined, cons
         GameActions.dishonor(),
         GameActions.sacrifice()
     ]);
-    gameAction.name = 'dishonorAndSacrifice';
 
-    const actionCost = new MetaActionCost(new SelectCardAction(eraseSelectCardsProperties({ gameAction, ...properties })), 'Choose a card to dishonor and sacrifice');
-
-    actionCost.getActionName = () => 'dishonorAndSacrifice';
+    const actionCost = new MetaActionCost(
+        new SelectCardAction(eraseSelectCardsProperties({ gameAction, ...properties })),
+        'Choose a card to dishonor and sacrifice',
+        'dishonorAndSacrifice'
+    );
     actionCost.getCostMessage = (context: CostContext<{ dishonorAndSacrifice: BaseCard }>): MessageArgs => {
         return ['dishonoring and sacrificing {1}', [context.costs.dishonorAndSacrifice]];
     };

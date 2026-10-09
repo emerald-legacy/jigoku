@@ -18,16 +18,17 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
         if(isSacrifice) {
             this.name = 'sacrifice';
             this.restriction = RestrictionType.Sacrifice;
+            this.isSacrifice = true;
         }
     }
 
     protected effectMessage(): MessageArgs {
-        return [this.name === 'sacrifice' ? 'sacrifice {0}' : 'discard {0}', []];
+        return [this.isSacrifice ? 'sacrifice {0}' : 'discard {0}', []];
     }
 
     canAffect(card: BaseCard, context: C): boolean {
         if(card.type === CardType.Holding) {
-            if(this.name === 'sacrifice' && card.facedown) {
+            if(this.isSacrifice && card.facedown) {
                 return false;
             }
             if(!card.isInProvince()) {
