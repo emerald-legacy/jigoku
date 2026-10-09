@@ -1,12 +1,11 @@
+import { CompositeGameAction } from './CompositeGameAction.js';
 import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
 import { Derivable, derive } from '../utils/helpers.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { EventName } from '../Constants.js';
 
 export interface AffinityProperties extends GameActionProperties {
     gameAction: GameAction;
@@ -17,9 +16,16 @@ export interface AffinityProperties extends GameActionProperties {
     prompt?: string;
 }
 
-export class AffinityAction<C extends AbilityContext = AbilityContext> extends GameAction<AffinityProperties, EventName, C> {
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
-        return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.gameAction, properties.noAffinityGameAction]);
+export class AffinityAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<AffinityProperties, C> {
+    protected children(properties: AffinityProperties) {
+        return [properties.gameAction, properties.noAffinityGameAction];
+    }
+
+    /** With the affinity its game action, without it the other one (if any). */
+    protected resolving(context: C, additionalProperties: ActionOverrides = {}): GameAction[] {
+        const properties = this.getProperties(context, additionalProperties);
+        const action = context.player.hasAffinity(properties.trait, context) ? properties.gameAction : properties.noAffinityGameAction;
+        return action ? [action] : [];
     }
 
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
@@ -29,24 +35,6 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
         }
 
         return properties.noAffinityGameAction?.getEffectMessage(context) ?? ['', []];
-    }
-
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.hasLegalTarget(context, additionalProperties);
-        }
-
-        return properties.noAffinityGameAction?.hasLegalTarget(context, additionalProperties) ?? false;
-    }
-
-    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.canAffect(target, context, additionalProperties);
-        }
-
-        return properties.noAffinityGameAction?.canAffect(target, context, additionalProperties) ?? false;
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
@@ -67,16 +55,6 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends G
                 { text: 'No', handler: () => {} }
             ]
         });
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
-        const properties = this.getProperties(context, additionalProperties);
-        if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
-        }
-        return (
-            properties.noAffinityGameAction?.hasTargetsChosenByInitiatingPlayer(context, additionalProperties) ?? false
-        );
     }
 
     #resolveAffinity(

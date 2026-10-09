@@ -161,8 +161,8 @@ describe('ChooseGameAction', function() {
                 choices: { A: { action: this.actionA }, B: { action: this.actionB } }
             });
             action.canAffect('target', this.context);
-            expect(this.actionA.canAffect).toHaveBeenCalledWith('target', this.context);
-            expect(this.actionB.canAffect).toHaveBeenCalledWith('target', this.context);
+            expect(this.actionA.canAffect).toHaveBeenCalledWith('target', this.context, {});
+            expect(this.actionB.canAffect).toHaveBeenCalledWith('target', this.context, {});
         });
 
         it('should short-circuit on the first affectable option', function() {

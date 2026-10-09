@@ -2,15 +2,14 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { EventName } from '../Constants.js';
 
 export interface MultipleContextProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleContextProperties, EventName, C> {
+export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<MultipleContextProperties, C> {
     getEffectMessage(context: C): MessageArgs {
         const { gameActions } = this.getProperties(context);
         const legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
@@ -22,23 +21,8 @@ export class MultipleContextGameAction<C extends AbilityContext = AbilityContext
         return [message, legalGameActions.map((action) => context.game.gameChat.nested(action.getEffectMessage(context)))];
     }
 
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
-        return this.getCompositeProperties(context, additionalProperties, (properties) => properties.gameActions);
-    }
-
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
-    }
-
-    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context, additionalProperties));
-    }
-
-    allTargetsLegal(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
+    protected children(properties: MultipleContextProperties) {
+        return properties.gameActions;
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
@@ -50,10 +34,5 @@ export class MultipleContextGameAction<C extends AbilityContext = AbilityContext
                 }
             });
         }
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: C) {
-        const properties = this.getProperties(context);
-        return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

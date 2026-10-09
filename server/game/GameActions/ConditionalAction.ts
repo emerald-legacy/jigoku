@@ -2,10 +2,9 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import { noAction } from './HandlerAction.js';
-import type { EventName } from '../Constants.js';
 
 export interface ConditionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     condition: ((context: C, properties: ConditionalProperties<C>) => boolean) | boolean;
@@ -14,11 +13,16 @@ export interface ConditionalProperties<C extends AbilityContext = AbilityContext
     falseGameAction?: GameAction;
 }
 
-export class ConditionalAction<C extends AbilityContext = AbilityContext> extends GameAction<ConditionalProperties<C>, EventName, C, 'falseGameAction'> {
+export class ConditionalAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<ConditionalProperties<C>, C, 'falseGameAction'> {
     defaultProperties = { falseGameAction: noAction() };
 
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
-        return this.getCompositeProperties(context, additionalProperties, (properties) => [properties.trueGameAction, properties.falseGameAction]);
+    protected children(properties: ConditionalProperties<C>) {
+        return [properties.trueGameAction, properties.falseGameAction];
+    }
+
+    /** Only the branch the condition picks. */
+    protected resolving(context: C, additionalProperties: ActionOverrides = {}): GameAction[] {
+        return [this.getGameAction(context, additionalProperties)];
     }
 
     getGameAction(context: C, additionalProperties: ActionOverrides = {}): GameAction {
@@ -34,22 +38,7 @@ export class ConditionalAction<C extends AbilityContext = AbilityContext> extend
         return this.getGameAction(context).getEffectMessage(context);
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        return this.getGameAction(context, additionalProperties).canAffect(target, context, additionalProperties);
-    }
-
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        return this.getGameAction(context, additionalProperties).hasLegalTarget(context, additionalProperties);
-    }
-
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         this.getGameAction(context, additionalProperties).addEventsToArray(events, context, additionalProperties);
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
-        return this.getGameAction(context, additionalProperties).hasTargetsChosenByInitiatingPlayer(
-            context,
-            additionalProperties
-        );
     }
 }
