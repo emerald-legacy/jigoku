@@ -31,6 +31,7 @@ export default class AshigaruEncampment extends DrawCard {
 
     setupCardAbilities() {
         this.action('Recruit a fresh Ashigaru')
+            .condition((context) => context.player.dynastyDeck.length > 0)
             .gameAction(handler({ handler: putAshigaruTokenIntoPlay }))
             .chatText(() => msg`recruit ${recruitInChat}`);
     }

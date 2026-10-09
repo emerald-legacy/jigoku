@@ -17,7 +17,7 @@ class NobleVanguard extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
+                controller: Players.Any,
                 cardCondition: (card, context) => canAttachSoldier(card, context)
             }, handler({
                 handler: (context) => attachTopConflictCardAsSoldier(context, context.target)

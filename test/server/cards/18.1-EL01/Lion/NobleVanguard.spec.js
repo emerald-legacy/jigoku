@@ -21,6 +21,20 @@ describe('Noble Vanguard', function () {
             this.player1.placeCardInProvince(this.vanguard, 'province 1');
         });
 
+        it('should let you choose an opponent\'s character too', function () {
+            this.player1.moveCard(this.katana, 'conflict deck');
+
+            this.player1.clickCard(this.vanguard);
+            this.player1.clickPrompt('1');
+            this.player1.clickCard(this.vanguard);
+            expect(this.player1).toBeAbleToSelect(this.kuwanan);
+            this.player1.clickCard(this.kuwanan);
+
+            expect(this.kuwanan.attachments.length).toBe(1);
+            expect(this.kuwanan.attachments[0].controller).toBe(this.player1.player);
+            expect(this.kuwanan.militarySkill).toBe(this.kuwanan.baseMilitarySkill + 1);
+        });
+
         it('should put the top card of your deck into a +1/+1 attachment', function () {
             this.player1.moveCard(this.katana, 'conflict deck');
 

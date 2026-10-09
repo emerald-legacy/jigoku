@@ -1,6 +1,6 @@
 import * as costs from '../../../costs/index.js';
 import { handler } from '../../../GameActions/GameActions.js';
-import { Location } from '../../../Constants.js';
+import { Location, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ACTIVE_LOCATIONS = [Location.Hand, Location.PlayArea];
@@ -15,7 +15,8 @@ export default class LuckyCoin extends DrawCard {
                     const totalCost = context.player
                         .getDynastyCardsInProvince(Location.Provinces)
                         .reduce((totalCost, card) => {
-                            const cost = !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
+                            const isCharacter = card.type === CardType.Character;
+                            const cost = isCharacter && !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
                             return totalCost + cost;
                         }, 0);
                     return totalCost < 6 || totalCost > 12;

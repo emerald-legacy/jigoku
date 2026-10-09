@@ -24,7 +24,7 @@ class MiyaSatoshi extends DrawCard {
                     context: context,
                     location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: (card) => card.isDynasty,
+                    cardCondition: (card) => card.isDynasty && card.location !== Location.StrongholdProvince,
                     onSelect: (player, card) => {
                         this.game.addMessage(msg`${player} chooses to discard ${card}, and puts ${firstImperial} faceup in its place`);
                         context.player.moveCard(firstImperial, card.location);

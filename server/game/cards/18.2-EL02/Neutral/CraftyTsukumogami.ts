@@ -41,10 +41,9 @@ class CraftyTsukumogami extends RingAttachment {
                 })),
                 handler({
                     handler: (context) => {
-                        const card = context.source;
-                        card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card), 1);
+                        // attachToRing already took it out of the cards in play
                         if(context.game.currentConflict) {
-                            context.game.currentConflict.removeFromConflict(card);
+                            context.game.currentConflict.removeFromConflict(context.source);
                         }
                     }
                 })
