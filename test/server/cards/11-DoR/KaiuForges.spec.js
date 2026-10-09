@@ -5,7 +5,7 @@ describe('Kaiu Forges', function() {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        dynastyDiscard: ['kaiu-forges', 'imperial-storehouse', 'seventh-tower', 'watchtower-of-valor' ,'favorable-ground', 'ancestral-armory', 'ancestral-shrine', 'hida-kisada', 'artisan-academy', 'forgotten-library', 'hall-of-victories'],
+                        dynastyDiscard: ['kaiu-forges', 'imperial-storehouse', 'seventh-tower', 'watchtower-of-valor' ,'favorable-ground', 'ancestral-armory', 'ancestral-shrine', 'hida-kisada', 'artisan-academy', 'forgotten-library', 'hall-of-victories', 'bustling-academy', 'iron-mine'],
                         dynastyDeckSize: 4
                     }
                 });
@@ -21,6 +21,10 @@ describe('Kaiu Forges', function() {
                 this.artisanAcademy = this.player1.findCardByName('artisan-academy');
                 this.forgottenLibrary = this.player1.findCardByName('forgotten-library');
                 this.hallOfVictories = this.player1.findCardByName('hall-of-victories');
+                // 11 cards: Iron Mine is below the 10 Kaiu Forges searches
+                this.player1.reduceDeckToNumber('dynasty deck', 0);
+                this.ironMine = this.player1.moveCard('iron-mine', 'dynasty deck');
+                this.player1.moveCard('bustling-academy', 'dynasty deck');
                 this.player1.moveCard(this.storehouse, 'dynasty deck');
                 this.player1.moveCard(this.favorableGround, 'dynasty deck');
                 this.player1.moveCard(this.ancestralArmory, 'dynasty deck');
@@ -68,6 +72,8 @@ describe('Kaiu Forges', function() {
                 expect(this.player1).toHavePromptButton('Artisan Academy');
                 expect(this.player1).toHavePromptButton('Forgotten Library');
                 expect(this.player1).toHavePromptButton('Hall of Victories');
+                expect(this.player1).toHavePromptButton('Bustling Academy');
+                expect(this.player1).not.toHavePromptButton('Iron Mine');
                 expect(this.player1).toHavePromptButton('Take nothing');
             });
 
