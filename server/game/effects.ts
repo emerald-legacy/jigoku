@@ -222,6 +222,7 @@ export const Effects = {
     considerRingAsClaimed: (match: (player: Player) => boolean) => EffectBuilder.ring.static(EffectName.ConsiderRingAsClaimed, match),
     // Player effects
     additionalAction: (amount: number = 1) => EffectBuilder.player.static(EffectName.AdditionalAction, amount),
+    addPlayerFlag: (flag: string) => EffectBuilder.player.static(EffectName.AddFlag, flag),
     additionalCardPlayed: (amount: FlexibleValue<number, Player> = 1) => EffectBuilder.player.flexible(EffectName.AdditionalCardPlayed, amount),
     additionalCharactersInConflict: (amount: FlexibleValue<number, Player>) =>
         EffectBuilder.player.flexible(EffectName.AdditionalCharactersInConflict, amount),
@@ -385,7 +386,7 @@ export const {
     setPoliticalSkill, setProvinceStrength, setProvinceStrengthBonus, provinceCannotHaveSkillIncreased,
     switchBaseSkills, suppressEffects, takeControl, participatesFromHome, unlessActionCost, replacePrintedElement,
     winDuel, winDuelTies, ignoreDuelSkill, addElement, cannotBidInDuels, cannotDeclareRing, considerRingAsClaimed,
-    additionalAction, additionalCardPlayed, additionalCharactersInConflict, additionalConflict,
+    additionalAction, addPlayerFlag, additionalCardPlayed, additionalCharactersInConflict, additionalConflict,
     additionalTriggerCost, additionalPlayCost, alternateFatePool, cannotDeclareConflictsOfType,
     canPlayFromOpponents, limitHonorGainPerPhase, modifyHonorTransferGiven, modifyHonorTransferReceived,
     cannotResolveRings, changePlayerSkillModifier, customDetachedPlayer, gainActionPhasePriority, increaseCost,
