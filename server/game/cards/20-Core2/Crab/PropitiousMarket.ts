@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location, Phase, Players, TokenType } from '../../../Constants.js';
 import { modifyProvinceStrength } from '../../../effects.js';
-import { addToken, sacrifice } from '../../../GameActions/GameActions.js';
+import { sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { msg } from '../../../GameChat.js';
@@ -24,7 +24,7 @@ export default class PropitiousMarket extends DrawCard {
         });
 
         this.action('Place an honor token')
-            .gameAction(addToken())
+            .addToken()
             .phase(Phase.Conflict)
             .then()
             .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {

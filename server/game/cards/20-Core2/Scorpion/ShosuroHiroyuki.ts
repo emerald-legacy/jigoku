@@ -1,5 +1,4 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import { discardAtRandom } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroHiroyuki extends DrawCard {
@@ -14,7 +13,7 @@ export default class ShosuroHiroyuki extends DrawCard {
                     card.isParticipating() && card.politicalSkill < context.source.politicalSkill
             })
             .if((context) => context.target.isDishonored)
-                .gameAction(discardAtRandom((context) => ({ target: context.target.controller })))
+                .discardAtRandom((context) => ({ target: context.target.controller }))
             .otherwise()
                 .dishonor();
     }

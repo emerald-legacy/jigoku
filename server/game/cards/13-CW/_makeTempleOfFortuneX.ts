@@ -1,7 +1,6 @@
 import type { Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { placeFateOnRing } from '../../GameActions/GameActions.js';
 import { isRingClaimed } from '../claimedRings.js';
 
 export function makeTempleOfFortuneX(id: string, element: Element) {
@@ -22,9 +21,9 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
                         event.conflict.declaredProvince === context.source &&
                         context.game.rings[this.getCurrentElementSymbol(elementKeys[1])].isUnclaimed()
                 })
-                .gameAction(placeFateOnRing((context) => ({
+                .placeFateOnRing((context) => ({
                     target: context.game.rings[this.getCurrentElementSymbol(elementKeys[1])]
-                })));
+                }));
         }
 
         getPrintedElementSymbols() {

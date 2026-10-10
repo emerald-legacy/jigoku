@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { discardAtRandom } from '../../GameActions/GameActions.js';
 
 class RideAtDawn extends DrawCard {
     static id = 'ride-at-dawn';
@@ -9,7 +8,7 @@ class RideAtDawn extends DrawCard {
             .when({
                 onPassDuringDynasty: (event, context) => event.player === context.player && context.player.opponent && !context.player.opponent.passedDynasty
             })
-            .gameAction(discardAtRandom());
+            .discardAtRandom();
     }
 }
 

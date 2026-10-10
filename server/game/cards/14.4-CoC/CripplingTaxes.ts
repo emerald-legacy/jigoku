@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -12,10 +11,10 @@ class CripplingTaxes extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(moveCard((context) => ({
+            .moveCard((context) => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location)
-            })))
+            }))
             .chatText((context) => msg`discard ${context.target.controller.getDynastyCardsInProvince(context.target.location)}`);
     }
 }

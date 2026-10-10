@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { chosenDiscard } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class LetterFromTheDaimyo extends DrawCard {
@@ -18,7 +17,7 @@ class LetterFromTheDaimyo extends DrawCard {
                                                    event.conflict.conflictType === ConflictType.Political
             })
             .cost(costs.sacrificeSelf())
-            .gameAction(chosenDiscard({ amount: 2 }));
+            .chosenDiscard({ amount: 2 });
     }
 }
 

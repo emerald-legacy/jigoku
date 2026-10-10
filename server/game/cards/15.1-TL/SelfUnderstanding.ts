@@ -1,5 +1,4 @@
 import { cardCannot, gainAbility } from '../../effects.js';
-import { resolveRingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
@@ -20,10 +19,10 @@ export default class SelfUnderstanding extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             }, (ability) => ability
-                .gameAction(resolveRingEffect((context) => ({
+                .resolveRingEffect((context) => ({
                     player: context.player,
                     target: context.player.getClaimedRings()
-                })))
+                }))
                 .chatText('resolve all their claimed ring effects'))
         });
     }

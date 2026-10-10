@@ -130,11 +130,11 @@ this.action('...')
 // WRONG — condition is redundant
 this.action('Move this character into the conflict')
     .condition(() => this.game.isDuringConflict())
-    .gameAction(moveToConflict(...));
+    .moveToConflict(...);
 
 // CORRECT
 this.action('Move this character into the conflict')
-    .gameAction(moveToConflict(...));
+    .moveToConflict(...);
 ```
 
 Keep the condition when it serves a distinct purpose beyond the presence of a conflict (e.g. conflict type, player state, card counts):
@@ -660,7 +660,7 @@ this.reaction('Place a fate on this character')
     .when({
         onCharacterEntersPlay: (event, context) => event.card === context.source
     })
-    .gameAction(placeFate());
+    .placeFate();
 
 this.wouldInterrupt('Cancel an event')
     .when({

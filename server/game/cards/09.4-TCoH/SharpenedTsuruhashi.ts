@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { returnToHand } from '../../GameActions/GameActions.js';
 
 class SharpenedTsuruhashi extends DrawCard {
     static id = 'sharpened-tsuruhashi';
@@ -9,7 +8,7 @@ class SharpenedTsuruhashi extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source.parentCharacter
             })
-            .gameAction(returnToHand())
+            .returnToHand()
             .chatText('return it to their hand');
     }
 }

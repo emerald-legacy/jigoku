@@ -1,5 +1,4 @@
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
-import { discardCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
@@ -14,7 +13,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
 
         moveHoldingAction(this)
             .thenIf((context) => otherHoldingsInSameProvince(context).length > 0)
-            .gameAction(discardCard((context) => ({ target: otherHoldingsInSameProvince(context) })))
+            .discardCard((context) => ({ target: otherHoldingsInSameProvince(context) }))
             .message((context) => msg`${context.source} discards the other holdings in the province`);
 
         this.reaction('Gain honor')

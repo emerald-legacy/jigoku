@@ -4,7 +4,7 @@ import { CardType, Duration, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { additionalAction, delayedEffect, modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, modifyBid, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KakitaTechnique extends DrawCard {
@@ -12,13 +12,13 @@ export default class KakitaTechnique extends DrawCard {
 
     setupCardAbilities() {
         this.duelFocus('Set bid to 0')
-            .gameAction(modifyBid((context) => {
+            .modifyBid((context) => {
                 const currentBid = context.player.honorBid;
                 return {
                     amount: currentBid,
                     direction: Direction.Decrease
                 };
-            }));
+            });
 
         this.action('Give character +1/+1')
             .target({

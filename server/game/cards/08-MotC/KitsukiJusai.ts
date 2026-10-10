@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
+import { placeFateOnRing } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class KitsukiJusai extends DrawCard {
@@ -13,12 +13,12 @@ class KitsukiJusai extends DrawCard {
                     context.player.honorBid === context.player.opponent.honorBid &&
                     context.player.opponent.fate > 0
             })
-            .gameAction(selectRing((context) => ({
+            .selectRing((context) => ({
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
                 ringCondition: (ring) => ring.isUnclaimed(),
                 message: (context, ring) => msg`${context.player} moves a fate from ${context.player.opponent}'s fate pool to the ${ring}`,
                 gameAction: placeFateOnRing({ origin: context.player.opponent })
-            })))
+            }))
             .chatText((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);
     }
 }

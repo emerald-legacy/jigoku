@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { resolveConflictRing } from '../../GameActions/GameActions.js';
 import { ConflictType } from '../../Constants.js';
 
 class DojiHotaru extends DrawCard {
@@ -11,7 +10,7 @@ class DojiHotaru extends DrawCard {
                 onClaimRing: (event, context) => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating() &&
                                                  event.player === context.player
             })
-            .gameAction(resolveConflictRing());
+            .resolveConflictRing();
     }
 }
 

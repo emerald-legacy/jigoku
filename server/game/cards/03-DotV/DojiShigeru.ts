@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
-import { chosenDiscard } from '../../GameActions/GameActions.js';
 
 class DojiShigeru extends DrawCard {
     static id = 'doji-shigeru';
@@ -12,7 +11,7 @@ class DojiShigeru extends DrawCard {
                 onCardPlayed: (event, context) => event.player === context.player.opponent && event.card.type === CardType.Event &&
                                                   context.source.isParticipating()
             })
-            .gameAction(chosenDiscard())
+            .chosenDiscard()
             .limit(unlimitedPerConflict());
     }
 }

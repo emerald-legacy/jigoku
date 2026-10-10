@@ -1,6 +1,5 @@
 import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import { lookAt } from '../../GameActions/GameActions.js';
 
 export default class SceneOfTheCrime extends ProvinceCard {
     static id = 'scene-of-the-crime';
@@ -11,10 +10,10 @@ export default class SceneOfTheCrime extends ProvinceCard {
                 onCardRevealed: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .gameAction(lookAt((context) => ({
+            .lookAt((context) => ({
                 target: (context.player.opponent?.hand ?? []).slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true
-            })))
+            }))
             .chatText((context) => msg`look at ${context.player.opponent ?? ''}'s hand`);
     }
 }

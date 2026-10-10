@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { perConflict } from '../../AbilityLimit.js';
-import { resolveConflictRing } from '../../GameActions/GameActions.js';
 
 class GuardianKami extends DrawCard {
     static id = 'guardian-kami';
@@ -10,7 +9,7 @@ class GuardianKami extends DrawCard {
         this.action('Resolve ring effect')
             .cost(costs.sacrificeSelf())
             .condition((context) => context.source.isDefending())
-            .gameAction(resolveConflictRing())
+            .resolveConflictRing()
             .max(perConflict(1));
     }
 }

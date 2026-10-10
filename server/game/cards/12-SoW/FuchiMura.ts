@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import { placeFateOnRing } from '../../GameActions/GameActions.js';
 
 export default class FuchiMura extends ProvinceCard {
     static id = 'fuchi-mura';
@@ -9,8 +8,8 @@ export default class FuchiMura extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(placeFateOnRing((context) => ({
+            .placeFateOnRing((context) => ({
                 target: Object.values(context.game.rings).filter((ring) => ring.isUnclaimed())
-            })));
+            }));
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
-import { addToken, sacrifice } from '../../GameActions/GameActions.js';
+import { sacrifice } from '../../GameActions/GameActions.js';
 import { TokenType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { msg } from '../../GameChat.js';
@@ -27,7 +27,7 @@ class DistinguishedDojo extends DrawCard {
                     return event.winningPlayer === context.player;
                 }
             })
-            .gameAction(addToken())
+            .addToken()
             .limit(perRound(3))
             .then()
             .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {

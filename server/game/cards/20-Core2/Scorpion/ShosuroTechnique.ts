@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import { duelIgnorePrintedSkill, setMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, duelLastingEffect, multiple } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroTechnique extends DrawCard {
@@ -9,11 +9,11 @@ export default class ShosuroTechnique extends DrawCard {
 
     setupCardAbilities() {
         this.duelChallenge('Apply status tokens to the duel', (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player)
-            .gameAction(duelLastingEffect((context) => ({
+            .duelLastingEffect((context) => ({
                 target: context.event.duel,
                 effect: duelIgnorePrintedSkill(),
                 duration: Duration.UntilEndOfDuel
-            })))
+            }))
             .chatText('ignore printed skill when resolving this duel');
 
         this.conflictAction('Set shinobi\'s skills to that of an enemy', { conflictType: ConflictType.Military })

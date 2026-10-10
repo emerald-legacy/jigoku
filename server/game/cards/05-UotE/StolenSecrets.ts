@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType, RemainingCards, TargetMode } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { deckSearch, setAside } from '../../GameActions/GameActions.js';
+import { setAside } from '../../GameActions/GameActions.js';
 
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
@@ -15,7 +15,7 @@ class StolenSecrets extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }))
             .condition((context) => this.game.isDuringConflict(ConflictType.Political) && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
-            .gameAction(deckSearch((context) => ({
+            .deckSearch((context) => ({
                 activePromptTitle: 'Choose a card to remove from the game',
                 player: context.player.opponent,
                 choosingPlayer: context.player,
@@ -24,7 +24,7 @@ class StolenSecrets extends DrawCard {
                 numCards: 1,
                 remainingCards: RemainingCards.TopAnyOrder,
                 selectedCardsHandler: (context, _event, [card]) => card && this.stealCard(card, context)
-            })))
+            }))
             .chatText((context) => msg`look at the top 4 cards of ${context.player.opponent}'s conflict deck and remove one from the game`);
     }
 

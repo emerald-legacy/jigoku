@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
-import { discardCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class LicensedQuarter extends DrawCard {
@@ -11,9 +10,9 @@ class LicensedQuarter extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player
             })
-            .gameAction(discardCard((context) => ({
+            .discardCard((context) => ({
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
-            })))
+            }))
             .chatText((context) => msg`discard the top card of ${context.player.opponent}'s conflict deck`)
             .limit(unlimitedPerConflict());
     }

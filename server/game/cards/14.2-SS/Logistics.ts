@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import { attach, draw, moveCard } from '../../GameActions/GameActions.js';
+import { attach, draw } from '../../GameActions/GameActions.js';
 
 class Logistics extends DrawCard {
     static id = 'logistics';
@@ -41,10 +41,10 @@ class Logistics extends DrawCard {
                 attachment: context.targets.cardInProvince
             })))
             .otherwise()
-            .gameAction(moveCard((context) => ({
+            .moveCard((context) => ({
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
-            })))
+            }))
             .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}${context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''}`);
     }
 }

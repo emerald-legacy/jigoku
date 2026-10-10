@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { unlimitedPerConflict } from '../../AbilityLimit.js';
-import { addToken, chosenReturnToDeck, draw, sequential } from '../../GameActions/GameActions.js';
+import { chosenReturnToDeck, draw, sequential } from '../../GameActions/GameActions.js';
 import { EventName, TokenType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -12,7 +12,7 @@ class EndlessArchives extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .gameAction(addToken())
+            .addToken()
             .chatText((context) => msg`place an honor token on ${context.source} and exchange cards from their hand`)
             .limit(unlimitedPerConflict())
             .anyPlayer()

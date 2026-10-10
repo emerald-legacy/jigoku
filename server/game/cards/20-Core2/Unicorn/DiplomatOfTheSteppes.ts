@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { ConflictType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { switchConflictType } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DiplomatOfTheSteppes extends DrawCard {
@@ -18,7 +17,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 const diff = conflict.attackerSkill - conflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
             })
-            .gameAction(switchConflictType({ targetConflictType: ConflictType.Military }))
+            .switchConflictType({ targetConflictType: ConflictType.Military })
             .chatText(() => msg`switch the conflict type to ${'military'}`);
     }
 }

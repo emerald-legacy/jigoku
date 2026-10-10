@@ -1,7 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
-import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -17,10 +16,10 @@ class IsawaEju extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(moveCard((context) => ({
+            .moveCard((context) => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
-            })))
+            }))
             .chatText((context) => msg`discard ${context.target.controller.getDynastyCardsInProvince(context.target.location)} and refill the province faceup`)
             .limit(perRound(3))
             .then()

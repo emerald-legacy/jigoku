@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { selectRing, takeRing } from '../../GameActions/GameActions.js';
+import { takeRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class RovingMichibiku extends DrawCard {
@@ -13,11 +13,11 @@ export default class RovingMichibiku extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             })
-            .gameAction(selectRing((context) => ({
+            .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to take',
                 ringCondition: (ring) => ring.claimedBy === context.player.opponent?.name,
                 message: (context, ring) => msg`${context.player} takes ${ring}`,
                 gameAction: takeRing()
-            })));
+            }));
     }
 }

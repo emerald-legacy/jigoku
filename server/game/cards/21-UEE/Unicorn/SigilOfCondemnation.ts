@@ -1,5 +1,4 @@
 import { ConflictType } from '../../../Constants.js';
-import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SigilOfCondemnation extends DrawCard {
@@ -11,6 +10,6 @@ export default class SigilOfCondemnation extends DrawCard {
                 !!(context.source.parentCharacter &&
                 context.source.parentCharacter.controller.opponent &&
                 context.game.currentConflict?.hasMoreParticipants(context.source.parentCharacter.controller.opponent, () => true)))
-            .gameAction(injure((context) => ({ target: context.source.parentCharacter ?? [] })));
+            .injure((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }

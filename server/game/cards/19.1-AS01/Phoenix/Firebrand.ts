@@ -1,5 +1,4 @@
 import * as costs from '../../../costs/index.js';
-import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import { Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -15,10 +14,10 @@ export default class Firebrand extends DrawCard {
             .cost(costs.returnRings(1, (ring) =>
                 ring.hasElement(this.getCurrentElementSymbol(ELEMENT_TO_RETURN))
             ))
-            .gameAction(resolveRingEffect((context) => ({
+            .resolveRingEffect((context) => ({
                 player: context.player,
                 target: context.game.rings[this.getCurrentElementSymbol(ELEMENT_TO_RESOLVE)]
-            })))
+            }))
             .chatText((context) => msg`resolve the ${context.game.rings.fire} effect`);
     }
 

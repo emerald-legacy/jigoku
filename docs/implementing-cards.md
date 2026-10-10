@@ -224,7 +224,7 @@ The title is what will be displayed in the menu players see when clicking on the
 class BorderRider extends DrawCard {
     setupCardAbilities() {
         this.action('Ready this character')
-            .gameAction(ready());
+            .ready();
     }
 }
 ```
@@ -236,7 +236,7 @@ A titled ability can only be started inside `setupCardAbilities`. To add one lat
 ```typescript
 card.declareAbilities(() => {
     card.action('Steal an honor')
-        .gameAction(takeHonor());
+        .takeHonor();
 });
 ```
 
@@ -288,7 +288,7 @@ this.action('Switch a character\'s M and P skill')
 // Action: While this character is defending in a [political] conflict... take 1 honor from your opponent.
 this.conflictAction('Take 1 honor', { conflictType: ConflictType.Political })
     .condition((context) => context.source.isDefending())
-    .gameAction(takeHonor());
+    .takeHonor();
 ```
 
 ```typescript
@@ -516,7 +516,7 @@ Actions (and other triggered abilities) often use game actions.  Available game 
 // Action: During a conflict, bow this attachment – move attached character to the conflict.
 this.action('Move this character into the conflict')
     .cost(costs.bowSelf())
-    .gameAction(moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] })));
+    .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }));
 ```
 
 ```typescript
@@ -525,7 +525,7 @@ this.reaction('Steal a fate')
     .when({
         onCharacterEntersPlay: (event, context) => event.card === context.source
     })
-    .gameAction(placeFate((context) => ({ origin: context.player.opponent })));
+    .placeFate((context) => ({ origin: context.player.opponent }));
 ```
 
 Effects that can't be expressed as game actions go in a `handler`, which takes the context. Prefer game actions where possible: the engine can only check a game action for legality. A handler replaces the step's resolution, so setup throws when it is combined with game actions, `if()`, `onAffinity()` or a following step. Game actions on the target still decide which cards can be chosen, and the handler can resolve them itself (Maze of Illusion). For code that runs as one action among others, use `gameAction(handler({ handler }))`.
@@ -602,16 +602,16 @@ Card text such as "...then do X" or "if you do, X" is implemented with `then()`:
 this.reaction('Put this into play')
     .when({ onClaimRing: (event, context) => event.player === context.player && claimsRoleElement(context.player, event) })
     .location([Location.Provinces, Location.DynastyDiscardPile])
-    .gameAction(putIntoPlay())
+    .putIntoPlay()
     .then()
-    .gameAction(placeFate());
+    .placeFate();
 ```
 
 ```typescript
 // Conflict Action: Choose an item attachment on an enemy participating character – discard it. Then, if it was a weapon, this character gets +2 military.
 .target({ cardType: CardType.Attachment, cardCondition: … }, discardFromPlay())
 .thenIf((context) => context.target.hasTrait('weapon'))
-.gameAction(cardLastingEffect({ effect: modifyMilitarySkill(2) }))
+.cardLastingEffect({ effect: modifyMilitarySkill(2) })
 .message((context) => msg`${context.source} gains +2${'military'} due to discarding a weapon`);
 ```
 
@@ -635,9 +635,9 @@ Right after a card target, the branches belong to that target: their actions res
 // Shosuro Hiroyuki: … Choose a participating character with lower political skill than this character - if that character is dishonored, its controller discards a random card from their hand. Otherwise, dishonor that character.
 .target({ cardType: CardType.Character, cardCondition: (card, context) => card.isParticipating() && card.politicalSkill < context.source.politicalSkill })
 .if((context) => context.target.isDishonored)
-    .gameAction(discardAtRandom((context) => ({ target: context.target.controller })))
+    .discardAtRandom((context) => ({ target: context.target.controller }))
 .otherwise()
-    .gameAction(dishonor());
+    .dishonor();
 ```
 
 Elsewhere, a game action in a branch targets what it would target on its own: the source card for card actions, the player for player actions. The same holds inside `multiple`, `conditional`, `onAffinity` and the other composite actions when they have no target of their own; under a target, they pass the chosen target on.
@@ -659,11 +659,11 @@ Abilities that trigger during a duel are declared with `duelChallenge`, `duelFoc
 
 ```typescript
 this.duelFocus('Help a character with a duel', (duel, context) => duel.participants.includes(context.source))
-    .gameAction(duelLastingEffect((context) => ({
+    .duelLastingEffect((context) => ({
         target: context.event.duel,
         effect: modifyDuelSkill({ amount: 1, player: context.player }),
         duration: Duration.UntilEndOfDuel
-    })))
+    }))
     .chatText('add 1 to their duel total');
 ```
 
@@ -691,10 +691,10 @@ To apply an effect to last until the end of the current phase, use `Duration.Unt
 // Action: Reduce the cost of the next event you play this phase by 1.
 this.action('Reduce cost of next event by 1')
     .chatText('reduce the cost of their next event by 1')
-    .gameAction(playerLastingEffect({
+    .playerLastingEffect({
         duration: Duration.UntilEndOfPhase,
         effect: reduceNextPlayedCardCost(1, (card) => card.type === CardType.Event)
-    }));
+    });
 ```
 
 To apply an effect to last until the end of the round, use `Duration.UntilEndOfRound`:
@@ -760,7 +760,7 @@ this.reaction('Honor this character')
     .when({
         onCharacterEntersPlay: (event, context) => event.card === context.source
     })
-    .gameAction(honor());
+    .honor();
 ```
 
 In rare cases, there may be multiple triggering conditions for the same ability. For example, [Ikoma Prodigy](https://fiveringsdb.com/card/ikoma-prodigy) gains an honor when fate is placed on her while playing her, or while she is in play. In these cases, just define an additional event on the `when` object.
@@ -789,13 +789,13 @@ this.forcedReaction('Can\'t be discarded or remove fate')
                                             context.player.honor >= context.player.opponent.honor + 5
     })
     .chatText('stop him being discarded or losing fate in this phase')
-    .gameAction(cardLastingEffect({
+    .cardLastingEffect({
         duration: Duration.UntilEndOfPhase,
         effect: [
             cardCannot(RestrictionType.RemoveFate),
             cardCannot(RestrictionType.DiscardFromPlay)
         ]
-    }));
+    });
 ```
 
 To declare a forced interrupt, use the `forcedInterrupt` method.
@@ -834,7 +834,7 @@ this.reaction('Put this into play')
         afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === ConflictType.Military
     })
     .location(Location.Hand)
-    .gameAction(putIntoPlay());
+    .putIntoPlay();
 ```
 
 ### Gained abilities

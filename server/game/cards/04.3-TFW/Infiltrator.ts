@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import { PlayType } from '../../Constants.js';
-import { chooseAction, discardCard, playCard } from '../../GameActions/GameActions.js';
+import { discardCard, playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -10,7 +10,7 @@ export default class Infiltrator extends DrawCard {
     setupCardAbilities() {
         this.action('Look at the top card of an opponent\'s deck and play or discard it')
             .condition(() => this.game.isDuringConflict())
-            .gameAction(chooseAction((context) => {
+            .chooseAction((context) => {
                 const topCard = context.player.opponent?.conflictDeck[0];
                 return {
                     activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
@@ -26,7 +26,7 @@ export default class Infiltrator extends DrawCard {
                         }
                     }
                 };
-            }))
+            })
             .chatText('look at the top card of an opponent\'s deck and play or discard it');
     }
 

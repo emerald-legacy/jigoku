@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { deckSearch, moveCard, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
+import { deckSearch, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
@@ -16,10 +16,10 @@ export default class CinderSalamander extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .gameAction(moveCard({
+            .moveCard({
                 destination: Location.DynastyDeck,
                 shuffle: true
-            }))
+            })
             .location(Location.DynastyDiscardPile);
 
         this.action('Search other copies of this character and put them into play')

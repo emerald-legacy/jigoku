@@ -7,7 +7,6 @@ import { changeType, gainAbility } from '../../../effects.js';
 import {
     attachToRing,
     cardLastingEffect,
-    chosenDiscard,
     sequential
 } from '../../../GameActions/GameActions.js';
 
@@ -29,9 +28,9 @@ class CraftyTsukumogami extends RingAttachment {
                         gainAbility.forcedReaction('Discard a card', {
                             onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
                         }, (ability) => ability
-                            .gameAction(chosenDiscard((context) => ({
+                            .chosenDiscard((context) => ({
                                 target: context.game.currentConflict?.attackingPlayer
-                            })))
+                            }))
                             .limit(unlimitedPerConflict()))
                     ]
                 })),

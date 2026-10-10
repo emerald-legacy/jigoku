@@ -1,5 +1,4 @@
 import { perRound } from '../../../AbilityLimit.js';
-import { returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WarriorOfTheOpenHand extends DrawCard {
@@ -12,7 +11,7 @@ export default class WarriorOfTheOpenHand extends DrawCard {
                 context.player.opponent &&
                 context.game.currentConflict &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent) > 0))
-            .gameAction(returnToHand())
+            .returnToHand()
             .max(perRound(1));
     }
 }

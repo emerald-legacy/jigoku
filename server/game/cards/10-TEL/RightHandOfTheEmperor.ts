@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOwn } from '../../effects.js';
-import { moveCard, ready } from '../../GameActions/GameActions.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { Location, PlayType, TargetMode, CardType, Players } from '../../Constants.js';
 
 class RightHandOfTheEmperor extends DrawCard {
@@ -25,11 +25,11 @@ class RightHandOfTheEmperor extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('bushi')
             }, ready())
-            .gameAction(moveCard((context) => ({
+            .moveCard((context) => ({
                 target: context.source,
                 destination: Location.ConflictDeck,
                 bottom: true
-            })))
+            }))
             .chatText((context) => msg`ready ${context.chatTarget()}${context.targets.target.length > 0 ? '' : 'no one'}. ${context.source} is placed on the bottom of ${context.source.owner}'s conflict deck`);
     }
 }

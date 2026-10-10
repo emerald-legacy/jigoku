@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { attach, discardCard } from '../../GameActions/GameActions.js';
+import { attach } from '../../GameActions/GameActions.js';
 import { Location, DuelType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -20,7 +20,7 @@ class DaimyosGunbai extends DrawCard {
             }))
             .location(Location.Hand)
             .afterwards()
-            .gameAction(discardCard((context) => ({ target: context.source.location === Location.Hand ? context.source : [] })))
+            .discardCard((context) => ({ target: context.source.location === Location.Hand ? context.source : [] }))
             .message((context) => context.source.location === Location.Hand ? msg`${context.player} discards ${context.source}` : undefined);
     }
 }

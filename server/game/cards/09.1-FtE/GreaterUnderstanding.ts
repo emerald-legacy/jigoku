@@ -1,4 +1,3 @@
-import { resolveRingEffect } from '../../GameActions/GameActions.js';
 import Ring from '../../Ring.js';
 import { RingAttachment } from '../RingAttachment.js';
 
@@ -11,7 +10,7 @@ class GreaterUnderstanding extends RingAttachment {
                 onMoveFate: (event) => event.recipient === this.parent,
                 onPlaceFateOnUnclaimedRings: () => this.parent instanceof Ring && this.parent.isUnclaimed()
             })
-            .gameAction(resolveRingEffect((context) => ({ target: context.source.parent ?? [] })));
+            .resolveRingEffect((context) => ({ target: context.source.parent ?? [] }));
     }
 }
 

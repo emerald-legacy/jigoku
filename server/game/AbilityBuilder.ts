@@ -10,6 +10,9 @@ import type Player from './Player.js';
 import * as GameActions from './GameActions/GameActions.js';
 import type { SelectCardProperties } from './GameActions/SelectCardAction.js';
 import type { CancellingContext } from './GameActions/CancelAction.js';
+import type { CardMenuProperties } from './GameActions/CardMenuAction.js';
+import type { ChooseActionProperties } from './GameActions/ChooseGameAction.js';
+import type { SelectRingProperties } from './GameActions/SelectRingActions.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
@@ -122,6 +125,9 @@ type SelectEntry = TargetSelect & SubTarget;
 type TargetEntry = SingleCardEntry | MultiCardEntry | TokenEntry | AbilityEntry | ElementEntry | RingEntry | SelectEntry;
 
 /** The properties a game action factory takes, or a function of the builder's context returning them. */
+/** Properties whose callbacks see the builder's context (the factory types them with a context parameter), or a function of that context returning them. */
+type ContextProps<P, Context> = P | ((context: Context) => P);
+
 type FactoryProperties<K extends keyof typeof GameActions, Context> =
     (typeof GameActions)[K] extends (factory: infer F) => unknown
         ? Exclude<NonNullable<F>, (...args: never[]) => unknown> | ((context: Context) => Exclude<NonNullable<F>, (...args: never[]) => unknown>)
@@ -860,6 +866,96 @@ export class AbilityBuilder<
     /** Searches a deck: look at its top cards, choose some, and resolve `gameAction` on them. */
     deckSearch(properties: FactoryProperties<'deckSearch', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.deckSearch(properties));
+    }
+
+    /** Discards random cards from the hand of the target (the opponent by default). */
+    discardAtRandom(properties: FactoryProperties<'discardAtRandom', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.discardAtRandom(properties));
+    }
+
+    /** Discards the target cards (the source by default) from a hand, deck or province. */
+    discardCard(properties: FactoryProperties<'discardCard', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.discardCard(properties));
+    }
+
+    /** The target player (the opponent by default) chooses cards in their hand to discard. */
+    chosenDiscard(properties: FactoryProperties<'chosenDiscard', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.chosenDiscard(properties));
+    }
+
+    /** Moves the target cards (the source by default) to `destination`. */
+    moveCard(properties: FactoryProperties<'moveCard', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.moveCard(properties));
+    }
+
+    /** Returns the target (the source by default) to its owner's hand. */
+    returnToHand(properties: FactoryProperties<'returnToHand', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.returnToHand(properties));
+    }
+
+    /** Puts the target (the source by default) into play. */
+    putIntoPlay(properties: FactoryProperties<'putIntoPlay', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.putIntoPlay(properties));
+    }
+
+    /** Resolves the conflict ring's effect. */
+    resolveConflictRing(properties: FactoryProperties<'resolveConflictRing', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.resolveConflictRing(properties));
+    }
+
+    /** A ring is chosen while the ability resolves, and `gameAction` resolves on it. */
+    selectRing(properties: ContextProps<SelectRingProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.selectRing(properties));
+    }
+
+    /** Switches the type of the current conflict. */
+    switchConflictType(properties: FactoryProperties<'switchConflictType', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.switchConflictType(properties));
+    }
+
+    /** Resolves the target ring's effect. */
+    resolveRingEffect(properties: FactoryProperties<'resolveRingEffect', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.resolveRingEffect(properties));
+    }
+
+    /** Places fate on the target ring. */
+    placeFateOnRing(properties: FactoryProperties<'placeFateOnRing', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.placeFateOnRing(properties));
+    }
+
+    /** A lasting effect on the current duel. */
+    duelLastingEffect(properties: FactoryProperties<'duelLastingEffect', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.duelLastingEffect(properties));
+    }
+
+    /** The player looks at the target cards (the source by default). */
+    lookAt(properties: FactoryProperties<'lookAt', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.lookAt(properties));
+    }
+
+    /** Removes a fate from the target character, or discards it if it has none (the source by default). */
+    injure(properties: FactoryProperties<'injure', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.injure(properties));
+    }
+
+    /** Adds a token to the target (the source by default). */
+    addToken(properties: FactoryProperties<'addToken', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.addToken(properties));
+    }
+
+    /** Changes the target player's honor bid. */
+    modifyBid(properties: FactoryProperties<'modifyBid', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.modifyBid(properties));
+    }
+
+    /** One of `cards` is chosen from card buttons while the ability resolves, and `gameAction` resolves on it. */
+    cardMenu(properties: ContextProps<CardMenuProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.cardMenu(properties));
+    }
+
+    /** A choice between game actions while the ability resolves (a selection after the dash). */
+    chooseAction(properties: ContextProps<ChooseActionProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.chooseAction(properties));
     }
 
     /** Cancels the triggering event (interrupts only), optionally replacing it with `replacementGameAction`. */

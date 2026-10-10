@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
-import { resolveConflictRing } from '../../GameActions/GameActions.js';
 
 class StaunchHida extends DrawCard {
     static id = 'staunch-hida';
@@ -10,7 +9,7 @@ class StaunchHida extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             })
-            .gameAction(resolveConflictRing())
+            .resolveConflictRing()
             .max(perConflict(1));
     }
 }

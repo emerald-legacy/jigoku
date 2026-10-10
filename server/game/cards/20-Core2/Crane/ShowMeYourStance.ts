@@ -1,6 +1,6 @@
 import { CardType, Duration } from '../../../Constants.js';
 import { applyStatusTokensToDuel } from '../../../effects.js';
-import { duelLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShowMeYourStance extends DrawCard {
@@ -8,11 +8,11 @@ export default class ShowMeYourStance extends DrawCard {
 
     setupCardAbilities() {
         this.duelChallenge('Apply status tokens to the duel')
-            .gameAction(duelLastingEffect((context) => ({
+            .duelLastingEffect((context) => ({
                 target: context.event.duel,
                 effect: applyStatusTokensToDuel(),
                 duration: Duration.UntilEndOfDuel
-            })))
+            }))
             .chatText('have status tokens count when resolving this duel');
 
         this.action('Send a character home')

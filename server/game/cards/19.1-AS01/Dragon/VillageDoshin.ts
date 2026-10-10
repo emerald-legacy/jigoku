@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
-import { cancel, chooseAction, discardAtRandom } from '../../../GameActions/GameActions.js';
+import { cancel, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,7 +30,7 @@ export default class VillageDoshin extends DrawCard {
                     .canAffect(context.player.opponent, context);
                 return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
             })
-                .gameAction(chooseAction((context) => ({
+                .chooseAction((context) => ({
                     player: Players.Opponent,
                     activePromptTitle: 'Select one',
                     choices: {
@@ -46,7 +46,7 @@ export default class VillageDoshin extends DrawCard {
                             message: (context, _target, player) => msg`${player} refuses to discard ${DOSHIN_TAX} cards. The effects of ${context.event.card} are canceled`
                         }
                     }
-                })))
+                }))
             .otherwise()
                 .cancel();
     }

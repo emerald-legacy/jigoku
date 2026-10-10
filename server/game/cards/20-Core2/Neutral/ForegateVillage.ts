@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { switchConflictType } from '../../../GameActions/GameActions.js';
 
 export default class ForegateVillage extends ProvinceCard {
     static id = 'foregate-village';
@@ -9,7 +8,7 @@ export default class ForegateVillage extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(switchConflictType())
+            .switchConflictType()
             .chatText('switch the conflict type');
     }
 

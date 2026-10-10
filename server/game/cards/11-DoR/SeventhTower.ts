@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import { resolveConflictRing } from '../../GameActions/GameActions.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
 
 class SeventhTower extends DrawCard {
@@ -10,7 +9,7 @@ class SeventhTower extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && defendingAtKaiuWall(context.player, event.conflict)
             })
-            .gameAction(resolveConflictRing());
+            .resolveConflictRing();
     }
 }
 

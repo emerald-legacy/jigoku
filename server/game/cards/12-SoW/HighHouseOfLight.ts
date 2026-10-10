@@ -5,8 +5,7 @@ import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
 import {
     cardLastingEffect,
-    placeFate,
-    selectRing
+    placeFate
 } from '../../GameActions/GameActions.js';
 
 export default class HighHouseOfLight extends StrongholdCard {
@@ -28,13 +27,13 @@ export default class HighHouseOfLight extends StrongholdCard {
                 })
             })))
             .if((context) => (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 5)
-            .gameAction(selectRing((context) => ({
+            .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to take a fate from',
                 message: (context, ring) => msg`${context.player} moves a fate from the ${ring} to ${context.target}`,
                 ringCondition: (ring) => ring.fate >= 1,
                 subActionProperties: (ring) => ({ origin: ring }),
                 gameAction: placeFate({ target: context.target })
-            })))
+            }))
             .chatText('make {0} unable to be targeted by opponent\'s events');
     }
 }

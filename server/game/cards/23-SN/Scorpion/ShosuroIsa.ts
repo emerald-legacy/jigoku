@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { EventName, Players, Duration, Location } from '../../../Constants.js';
 import { addTrait, setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
-import { cardLastingEffect, handler, putIntoPlay } from '../../../GameActions/GameActions.js';
+import { handler, putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -26,21 +26,19 @@ export default class ShosuroIsa extends DrawCard {
             }, putIntoPlay())
             .chatText('manifest a shadow of {0}')
             .afterwardsIf((context) => context.target.location === Location.PlayArea)
-            .gameAction(
-                cardLastingEffect((context) => ({
-                    target: context.target,
-                    duration: Duration.Custom,
-                    until: {
-                        onCardLeavesPlay: (event) => event.card === context.target
-                    },
-                    effect: [setBaseMilitarySkill(0), setBasePoliticalSkill(0), addTrait('shadow')]
-                })),
-                handler({
-                    handler: (context) => {
-                        this.shadows.push(context.target);
-                    }
-                })
-            );
+            .cardLastingEffect((context) => ({
+                target: context.target,
+                duration: Duration.Custom,
+                until: {
+                    onCardLeavesPlay: (event) => event.card === context.target
+                },
+                effect: [setBaseMilitarySkill(0), setBasePoliticalSkill(0), addTrait('shadow')]
+            }))
+            .gameAction(handler({
+                handler: (context) => {
+                    this.shadows.push(context.target);
+                }
+            }));
     }
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {

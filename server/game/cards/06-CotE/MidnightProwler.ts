@@ -1,6 +1,6 @@
 import { Location, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import { cardMenu, moveCard } from '../../GameActions/GameActions.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 export default class MidnightProwler extends DrawCard {
@@ -15,13 +15,13 @@ export default class MidnightProwler extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             })
-            .gameAction(cardMenu((context) => ({
+            .cardMenu((context) => ({
                 activePromptTitle: 'Which card do you want to discard?',
                 cards: context.player.opponent?.conflictDeck.slice(0, 2) ?? [],
                 options: [{ text: 'Do not discard either card', handler: () => true }],
                 gameAction: moveCard({ destination: Location.ConflictDiscardPile }),
                 message: (_context, card, player) => msg`${player} chooses to discard ${card}`
-            })))
+            }))
             .chatText((context) => msg`look at the top two cards of ${context.player.opponent}'s conflict deck`);
     }
 }

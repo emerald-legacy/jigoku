@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { resolveRingEffect } from '../../GameActions/GameActions.js';
 
 class KansenHaunt extends DrawCard {
     static id = 'kansen-haunt';
@@ -15,10 +14,10 @@ class KansenHaunt extends DrawCard {
                     event.player === context.player
             })
             .cost(costs.payHonor(2))
-            .gameAction(resolveRingEffect((context) => ({
+            .resolveRingEffect((context) => ({
                 player: context.player,
                 target: context.event.ring
-            })));
+            }));
     }
 }
 

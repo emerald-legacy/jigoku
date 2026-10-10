@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { RemainingCards, TargetMode } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
-import { deckSearch, rearrangeDeck, setAside } from '../../../GameActions/GameActions.js';
+import { rearrangeDeck, setAside } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 export default class ShachihokoBay extends ProvinceCard {
@@ -14,7 +14,7 @@ export default class ShachihokoBay extends ProvinceCard {
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.game.currentConflict && Boolean(context.player.opponent)
             })
-            .gameAction(deckSearch((context) => ({
+            .deckSearch((context) => ({
                 activePromptTitle: 'Select up to 3 cards to take',
                 player: context.player.opponent,
                 choosingPlayer: context.player,
@@ -24,7 +24,7 @@ export default class ShachihokoBay extends ProvinceCard {
                 remainingCards: RemainingCards.TopAnyOrder,
                 selectedCardsHandler: (context, _event, cards) => this.steal(context, cards),
                 remainingCardsHandler: (context, _event, cards) => this.returnToTop(context, cards)
-            })));
+            }));
     }
 
     private steal(context: AbilityContext, cards: DrawCard[]): void {

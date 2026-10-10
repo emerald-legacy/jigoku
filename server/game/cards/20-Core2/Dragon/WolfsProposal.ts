@@ -1,5 +1,5 @@
 import { modifyGlory } from '../../../effects.js';
-import { cardLastingEffect, chooseAction } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class WolfsProposal extends DrawCard {
 
     setupCardAbilities() {
         this.action('Adjust glory')
-            .gameAction(chooseAction({
+            .chooseAction({
                 choices: {
                     'Increase glory': cardLastingEffect((context) => ({
                         target: context.source.parentCharacter ?? [],
@@ -21,6 +21,6 @@ export default class WolfsProposal extends DrawCard {
                         effect: modifyGlory(-2)
                     }))
                 }
-            }));
+            });
     }
 }

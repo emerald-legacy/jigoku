@@ -1,6 +1,5 @@
 import { perRound } from '../../AbilityLimit.js';
 import { gainAbility } from '../../effects.js';
-import { chosenDiscard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class SturdyTetsubo extends DrawCard {
@@ -14,7 +13,7 @@ export default class SturdyTetsubo extends DrawCard {
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller
             }, (ability) => ability
-                .gameAction(chosenDiscard())
+                .chosenDiscard()
                 .limit(perRound(2)))
         });
     }

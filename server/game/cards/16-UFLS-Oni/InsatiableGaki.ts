@@ -1,4 +1,3 @@
-import { chosenDiscard } from '../../GameActions/GameActions.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class InsatiableGaki extends BaseOni {
@@ -11,6 +10,6 @@ export default class InsatiableGaki extends BaseOni {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .gameAction(chosenDiscard());
+            .chosenDiscard();
     }
 }

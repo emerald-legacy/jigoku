@@ -3,14 +3,14 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location, ConflictType } from '../../Constants.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, discardAtRandom } from '../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
 
     setupCardAbilities() {
         this.conflictAction('Discard a card at random from your opponent\'s hand', { conflictType: ConflictType.Political })
-            .gameAction(discardAtRandom())
+            .discardAtRandom()
             .then()
             .selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',

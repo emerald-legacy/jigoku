@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -40,7 +39,7 @@ export default class TheHundredHandStrike extends DrawCard {
             .afterwardsIf((context) => context.targets.puncher.hasTrait('tattooed') &&
                 context.game.currentConflict !== null &&
                 context.game.currentConflict.calculateSkillFor([context.targets.punchee]) === 0)
-            .gameAction(injure((context) => ({ target: context.targets.punchee })))
+            .injure((context) => ({ target: context.targets.punchee }))
             .message((context) => msg`${context.targets.punchee} is injured because it is not contributing skill to the current conflict`);
     }
 }

@@ -2,7 +2,6 @@ import { msg } from '../../../GameChat.js';
 import { CardType, EventName, Location } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import * as costs from '../../../costs/index.js';
-import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -16,7 +15,7 @@ export default class BloodthirstyOnryo extends DrawCard {
 
         this.action('Put this into play')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
-            .gameAction(putIntoPlay())
+            .putIntoPlay()
             .location([Location.Provinces, Location.DynastyDiscardPile]);
     }
 

@@ -1,5 +1,4 @@
 import { reduceCost } from '../../effects.js';
-import { discardCard } from '../../GameActions/GameActions.js';
 import { Location, Phase, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
@@ -23,10 +22,10 @@ export default class FieldOfRuin extends BattlefieldAttachment {
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(discardCard((context) => ({
+            .discardCard((context) => ({
                 target:
                     context.source.parentProvince?.controller.getDynastyCardsInProvince(context.source.parentProvince.location) ?? []
-            })))
+            }))
             .chatText('discard each card in the attached province');
     }
 

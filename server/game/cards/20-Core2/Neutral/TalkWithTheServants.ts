@@ -1,7 +1,6 @@
 import { CardType, ConflictType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import { chosenDiscard, discardAtRandom } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TalkWithTheServants extends DrawCard {
@@ -19,9 +18,9 @@ export default class TalkWithTheServants extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }))
             .if((context) => context.costs.dishonor instanceof DrawCard)
-                .gameAction(discardAtRandom((context) => ({ amount: 2, target: context.player.opponent })))
+                .discardAtRandom((context) => ({ amount: 2, target: context.player.opponent }))
             .otherwise()
-                .gameAction(chosenDiscard((context) => ({ amount: 2, target: context.player.opponent })))
+                .chosenDiscard((context) => ({ amount: 2, target: context.player.opponent }))
             .max(perConflict(1));
     }
 }

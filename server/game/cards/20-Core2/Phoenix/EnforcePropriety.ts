@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import { cancel, chooseAction, takeFate } from '../../../GameActions/GameActions.js';
+import { cancel, takeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -22,7 +22,7 @@ export default class EnforcePropriety extends DrawCard {
                     context.player.opponent &&
                     countReadyShugenja(context.player) > countReadyShugenja(context.player.opponent)
             })
-            .gameAction(chooseAction((context) => ({
+            .chooseAction((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Select one',
                 choices: {
@@ -35,7 +35,7 @@ export default class EnforcePropriety extends DrawCard {
                         message: (context, _target, player) => msg`${player} refuses to appease the fortunes - the effects of ${context.event.card} are canceled`
                     }
                 }
-            })))
+            }))
             .chatText('enforce the proper protocol');
     }
 }

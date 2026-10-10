@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { returnRing, selectRing } from '../../GameActions/GameActions.js';
+import { returnRing } from '../../GameActions/GameActions.js';
 import { Players } from '../../Constants.js';
 
 class KuniSilencer extends DrawCard {
@@ -11,13 +11,13 @@ class KuniSilencer extends DrawCard {
             .when({
                 afterConflict: (event, context) => context.player.opponent && event.conflict.winner === context.source.controller && context.source.isDefending()
             })
-            .gameAction(selectRing((context) => ({
+            .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to return',
                 player: Players.Opponent,
                 ringCondition: (ring) => ring.claimedBy !== undefined && ring.claimedBy === context.player.opponent?.name,
                 message: (context, ring) => msg`${context.player.opponent} returns ${ring}`,
                 gameAction: returnRing()
-            })));
+            }));
     }
 }
 

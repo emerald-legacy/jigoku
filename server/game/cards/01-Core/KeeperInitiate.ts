@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { claimsRoleElement } from '../claimedRings.js';
 
 class KeeperInitiate extends DrawCard {
@@ -12,7 +11,7 @@ class KeeperInitiate extends DrawCard {
                 onClaimRing: (event, context) => event.player === context.player && claimsRoleElement(context.player, event)
             })
             .location([Location.Provinces, Location.DynastyDiscardPile])
-            .gameAction(putIntoPlay())
+            .putIntoPlay()
             .then()
             .placeFate();
     }

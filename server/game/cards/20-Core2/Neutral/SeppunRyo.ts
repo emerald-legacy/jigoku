@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType, Duration, FavorType } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
-import { bow, claimImperialFavor, duelLastingEffect } from '../../../GameActions/GameActions.js';
+import { bow, claimImperialFavor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SeppunRyo extends DrawCard {
@@ -11,11 +11,11 @@ export default class SeppunRyo extends DrawCard {
         this.duelFocus('Help a character with a duel', (duel, context) =>
             context.player.imperialFavor !== '' && duel.participants.includes(context.source)
         )
-            .gameAction(duelLastingEffect((context) => ({
+            .duelLastingEffect((context) => ({
                 target: context.event.duel,
                 effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
-            })))
+            }))
             .chatText('add 1 to their duel total');
 
         this.conflictAction('Initiate a military duel to bow')

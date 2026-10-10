@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
-import { discardAtRandom } from '../../GameActions/GameActions.js';
 
 class Kikyo extends DrawCard {
     static id = 'kikyo';
@@ -17,7 +16,7 @@ class Kikyo extends DrawCard {
                 onCardsDrawn: (event, context) => {
                     return context.player.opponent && event.player === context.player && context.source.isParticipating();
                 }
-            }, (ability) => ability.gameAction(discardAtRandom()))
+            }, (ability) => ability.discardAtRandom())
         });
     }
 }

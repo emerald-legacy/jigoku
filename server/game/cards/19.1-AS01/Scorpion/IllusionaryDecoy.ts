@@ -6,7 +6,6 @@ import {
     multiple,
     noAction,
     putIntoConflict,
-    returnToHand,
     selectCard,
     sendHome
 } from '../../../GameActions/GameActions.js';
@@ -53,6 +52,6 @@ export default class IllusionaryDecoy extends DrawCard {
                 );
                 return matchShugenjaElementWithClaimedRing;
             })
-            .gameAction(returnToHand());
+            .returnToHand();
     }
 }

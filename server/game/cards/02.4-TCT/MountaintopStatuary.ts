@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
-import { moveCard, sendHome } from '../../GameActions/GameActions.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class MountaintopStatuary extends DrawCard {
     static id = 'mountaintop-statuary';
@@ -11,7 +11,7 @@ class MountaintopStatuary extends DrawCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(moveCard({ destination: Location.StrongholdProvince }))
+            .moveCard({ destination: Location.StrongholdProvince })
             .chatText('move it to their stronghold province');
         this.action('Send a 2 or lower cost character home')
             .cost(costs.sacrificeSelf())

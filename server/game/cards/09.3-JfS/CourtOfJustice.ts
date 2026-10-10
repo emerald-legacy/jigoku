@@ -1,4 +1,3 @@
-import { lookAt } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/random.js';
 import { ConflictType } from '../../Constants.js';
@@ -15,10 +14,10 @@ export default class CourtOfJustice extends DrawCard {
                     event.conflict.conflictType === ConflictType.Political &&
                     context.player.opponent !== undefined
             })
-            .gameAction(lookAt((context) => ({
+            .lookAt((context) => ({
                 target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
                 message: (context, cards) => msg`reveals ${cards} from ${context.player.opponent}'s hand`
-            })))
+            }))
             .chatText((context) => msg`look at 3 random cards from ${context.player.opponent}'s hand`);
     }
 }

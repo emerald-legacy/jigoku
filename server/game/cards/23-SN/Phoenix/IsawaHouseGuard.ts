@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType, Duration } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
-import { dishonor, duelLastingEffect, injure, multipleContext } from '../../../GameActions/GameActions.js';
+import { dishonor, injure, multipleContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -10,11 +10,11 @@ export default class IsawaHouseGuard extends DrawCard {
 
     public setupCardAbilities() {
         this.duelFocus('Help a character with a duel', (duel, context) => duel.participants.includes(context.source) && context.source.isHonored)
-            .gameAction(duelLastingEffect((context) => ({
+            .duelLastingEffect((context) => ({
                 target: context.event.duel,
                 effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
-            })))
+            }))
             .chatText('add 1 to their duel total');
 
         this.conflictAction('Initiate a military duel to dishonor')

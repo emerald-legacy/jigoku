@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { cardMenu, dishonor } from '../../GameActions/GameActions.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InsultToInjury extends DrawCard {
@@ -20,12 +20,12 @@ export default class InsultToInjury extends DrawCard {
                     : msg`dishonor ${loser ?? []}`;
             })
             .if((context) => (context.event.loser ?? []).length > 1)
-                .gameAction(cardMenu((context) => ({
+                .cardMenu((context) => ({
                     activePromptTitle: 'Choose a character to dishonor',
                     cards: context.event.loser ?? [],
                     gameAction: dishonor(),
                     message: (_context, card, player) => msg`${player} chooses to dishonor ${card}`
-                })))
+                }))
             .otherwise()
                 .dishonor((context) => ({ target: context.event.loser?.[0] }));
     }

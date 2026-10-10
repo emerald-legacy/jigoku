@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { chooseAction, setHonorDial } from '../../GameActions/GameActions.js';
+import { setHonorDial } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class IdeNegotiator extends DrawCard {
@@ -8,7 +8,7 @@ export default class IdeNegotiator extends DrawCard {
     setupCardAbilities() {
         this.reaction('Modify honor dial')
             .when({ onHonorDialsRevealed: () => true })
-            .gameAction(chooseAction((context) => ({
+            .chooseAction((context) => ({
                 choices: {
                     'Increase bid by 1': {
                         action: setHonorDial({
@@ -25,7 +25,7 @@ export default class IdeNegotiator extends DrawCard {
                         message: (_context, _target, player) => msg`${player} chooses to decrease their honor bid by 1`
                     }
                 }
-            })))
+            }))
             .chatText('modify their honor dial');
     }
 }

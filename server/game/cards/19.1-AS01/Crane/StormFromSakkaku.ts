@@ -1,4 +1,3 @@
-import { discardCard } from '../../../GameActions/GameActions.js';
 import { EventName, AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -14,7 +13,7 @@ export default class StormFromSakkaku extends DrawCard {
 
         moveHoldingAction(this)
             .then()
-            .gameAction(discardCard((context) => ({ target: otherHoldingsInSameProvince(context) })))
+            .discardCard((context) => ({ target: otherHoldingsInSameProvince(context) }))
             .message((context) => {
                 const mood = otherHoldingsInSameProvince(context).length > 0
                     ? 'is angry and discards the holdings that they find in the province'

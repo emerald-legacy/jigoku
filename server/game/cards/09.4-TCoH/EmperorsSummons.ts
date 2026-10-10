@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { msg } from '../../GameChat.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import { cardMenu, moveCard, selectCard } from '../../GameActions/GameActions.js';
+import { moveCard, selectCard } from '../../GameActions/GameActions.js';
 
 export default class EmperorsSummons extends ProvinceCard {
     static id = 'emperor-s-summons';
@@ -13,7 +13,7 @@ export default class EmperorsSummons extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(cardMenu((context) => ({
+            .cardMenu((context) => ({
                 cards: context.player.dynastyDeck.filter((card) => card.type === CardType.Character),
                 options: [
                     { text: 'Select nothing', handler: () => this.game.addMessage(msg`${context.player} selects nothing from their deck`) }
@@ -32,7 +32,7 @@ export default class EmperorsSummons extends ProvinceCard {
                     subActionProperties: (card) => ({ destination: card.location }),
                     gameAction: moveCard({ discardDestinationCards: true, faceup: true })
                 })
-            })))
+            }))
             .chatText('choose a character to place in a province');
     }
 }

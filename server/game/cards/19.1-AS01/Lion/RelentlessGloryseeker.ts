@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { EventName, Location, Phase } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -25,7 +24,7 @@ export default class RelentlessGloryseeker extends DrawCard {
                     context.game.currentPhase === Phase.Conflict &&
                     this.ressurrectionsThisRound < MAXIMUM_RESSURRECTIONS
             })
-            .gameAction(putIntoPlay())
+            .putIntoPlay()
             .chatText('return to play - {0} is ready for more')
             .location(Location.DynastyDiscardPile)
             .onResolve(() => {
