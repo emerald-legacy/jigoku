@@ -52,7 +52,7 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
         if(!player || !this.activeCondition(player) || !card) {
             return false;
         }
-        if(!this.cardCondition(card)) {
+        if(!this.cardCondition(card) || !this.selectableCards[player.name]?.includes(card)) {
             return false;
         }
 

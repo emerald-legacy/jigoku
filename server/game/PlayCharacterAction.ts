@@ -78,7 +78,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         const intoConflictHandler = () => {
             context.game.addMessage(msg`${context.player} plays ${context.source} into the conflict with ${context.chooseFate} additional fate`);
             context.game.openEventWindow([
-                putIntoConflict({ fate: context.chooseFate }).getEvent(context.source, context),
+                putIntoConflict({ fate: context.chooseFate + extraFate }).getEvent(context.source, context),
                 cardPlayedEvent
             ]);
         };

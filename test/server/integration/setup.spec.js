@@ -148,6 +148,14 @@ describe('setup phase', function() {
                 });
             });
 
+            it('should not let a player mulligan the opponent\'s cards', function() {
+                const opponentCard = this.player2.findCardByName('Otomo Courtier', 'province 1');
+                this.player1.clickCard(opponentCard);
+                expect(this.player1.player.selectedCards).not.toContain(opponentCard);
+                this.player1.clickPrompt('Done');
+                expect(opponentCard.location).toBe('province 1');
+            });
+
             describe('if the player chooses to mulligan a card', function() {
                 beforeEach(function() {
                     this.oldCard = this.player1.findCardByName('Otomo Courtier', 'province 1');

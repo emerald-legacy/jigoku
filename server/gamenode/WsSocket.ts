@@ -168,30 +168,34 @@ export class WsSocket {
 
         this.registered = true;
 
-        switch(message.command) {
-            case 'PING':
-                this.send('PONG');
-                break;
-            case 'REGISTER':
-                logger.info('Lobby requested re-registration');
-                this.registered = false;
-                this.handlers.onGameSync((games) => this.onGameSync(games));
-                break;
-            case 'STARTGAME':
-                this.handlers.onStartGame(message.arg);
-                break;
-            case 'SPECTATOR':
-                this.handlers.onSpectator(message.arg.game, message.arg.user);
-                break;
-            case 'CONNECTFAILED':
-                this.handlers.onFailedConnect(message.arg.gameId, message.arg.username);
-                break;
-            case 'CLOSEGAME':
-                this.handlers.onCloseGame(message.arg.gameId);
-                break;
-            case 'CARDDATA':
-                this.handlers.onCardData(message.arg);
-                break;
+        try {
+            switch(message.command) {
+                case 'PING':
+                    this.send('PONG');
+                    break;
+                case 'REGISTER':
+                    logger.info('Lobby requested re-registration');
+                    this.registered = false;
+                    this.handlers.onGameSync((games) => this.onGameSync(games));
+                    break;
+                case 'STARTGAME':
+                    this.handlers.onStartGame(message.arg);
+                    break;
+                case 'SPECTATOR':
+                    this.handlers.onSpectator(message.arg.game, message.arg.user);
+                    break;
+                case 'CONNECTFAILED':
+                    this.handlers.onFailedConnect(message.arg.gameId, message.arg.username);
+                    break;
+                case 'CLOSEGAME':
+                    this.handlers.onCloseGame(message.arg.gameId);
+                    break;
+                case 'CARDDATA':
+                    this.handlers.onCardData(message.arg);
+                    break;
+            }
+        } catch(e) {
+            logger.error(`${env.gameNodeName} failed to handle ${message.command}: ${e instanceof Error ? e.stack : e}`);
         }
     }
 

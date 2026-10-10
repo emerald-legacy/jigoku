@@ -338,18 +338,29 @@ export class GameServer implements GameRouter, LobbyHandlers {
     onStartGame(pendingGame: PendingGameDTO): void {
         const playerNames = Object.values(pendingGame.players).map((p) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
-        const game = new Game(pendingGame, { router: this, shortCardData: this.shortCardData, cardLibrary });
-        this.games.set(pendingGame.id, game);
-        this.registerUsersForGame(game);
+        let game: Game | undefined;
+        try {
+            game = new Game(pendingGame, { router: this, shortCardData: this.shortCardData, cardLibrary });
+            this.games.set(pendingGame.id, game);
+            this.registerUsersForGame(game);
 
-        game.started = true;
-        for(const player of Object.values(pendingGame.players)) {
-            if(player.deck) {
-                game.selectDeck(player.name, player.deck);
+            game.started = true;
+            for(const player of Object.values(pendingGame.players)) {
+                if(player.deck) {
+                    game.selectDeck(player.name, player.deck);
+                }
+            }
+
+            game.initialise();
+        } catch(e) {
+            const error = e instanceof Error ? e : new Error(String(e));
+            logger.error(`Could not start game ${pendingGame.id}: ${error.message}\n${error.stack}`);
+            if(game) {
+                this.notifyAndCloseGame(game);
+            } else {
+                this.wsSocket.send('GAMECLOSED', { game: pendingGame.id });
             }
         }
-
-        game.initialise();
     }
 
     onSpectator(pendingGame: { id: string }, user: UserIdentity) {

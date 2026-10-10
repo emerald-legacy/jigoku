@@ -620,7 +620,11 @@ export class Player extends GameObject {
                     this.moveCard(card, Location.Hand);
                 }
             });
-            this.game.queueSimpleStep(() => this.drawCardsToHand(remainingCards));
+            this.game.queueSimpleStep(() => {
+                if(this.conflictDeck.length > 0) {
+                    this.drawCardsToHand(remainingCards);
+                }
+            });
         } else {
             for(const card of this.conflictDeck.slice(0, numCards)) {
                 this.moveCard(card, Location.Hand);
@@ -655,7 +659,11 @@ export class Player extends GameObject {
         }
         if(this.dynastyDeck.length === 0) {
             this.deckRanOutOfCards('dynasty');
-            this.game.queueSimpleStep(() => this.replaceDynastyCard(location));
+            this.game.queueSimpleStep(() => {
+                if(this.dynastyDeck.length > 0) {
+                    this.replaceDynastyCard(location);
+                }
+            });
         } else {
             let refillAmount = 1;
             if(province) {
@@ -673,7 +681,11 @@ export class Player extends GameObject {
     putTopDynastyCardInProvince(location: string, facedown: boolean = false): boolean {
         if(this.dynastyDeck.length === 0) {
             this.deckRanOutOfCards('dynasty');
-            this.game.queueSimpleStep(() => this.putTopDynastyCardInProvince(location, facedown));
+            this.game.queueSimpleStep(() => {
+                if(this.dynastyDeck.length > 0) {
+                    this.putTopDynastyCardInProvince(location, facedown);
+                }
+            });
         } else {
             const cardFromDeck = this.dynastyDeck[0];
             this.moveCard(cardFromDeck, location);
@@ -690,7 +702,11 @@ export class Player extends GameObject {
 
         if(this.dynastyDeck.length === 0) {
             this.deckRanOutOfCards('dynasty');
-            this.game.queueSimpleStep(() => this.refillProvince(location, refillAmount));
+            this.game.queueSimpleStep(() => {
+                if(this.dynastyDeck.length > 0) {
+                    this.refillProvince(location, refillAmount);
+                }
+            });
             return true;
         }
         const province = this.getProvinceCardInProvince(location);
@@ -1099,11 +1115,15 @@ export class Player extends GameObject {
     }
 
     moveCard(card: BaseCard, targetLocation: string, options: MoveCardOptions = {}): void {
+        // creates the pile underneath a card on first use, which makes it a legal location
+        this.getSourceList(targetLocation);
+        if(!this.isLegalLocationForCard(card, targetLocation)) {
+            return;
+        }
         this.removeCardFromPile(card);
 
         const targetPile = this.getSourceList(targetLocation);
-
-        if(!this.isLegalLocationForCard(card, targetLocation) || targetPile.includes(card)) {
+        if(targetPile.includes(card)) {
             return;
         }
 
