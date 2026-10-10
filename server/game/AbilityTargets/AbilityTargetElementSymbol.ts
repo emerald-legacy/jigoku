@@ -68,6 +68,7 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
         const { player } = chooser;
         const buttons: PromptButton[] = [];
         if(context.stage === Stage.PreTarget) {
+            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }
         const promptProperties = {
@@ -107,7 +108,12 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
                 targetResults.cancelled = true;
                 return true;
             },
-            onMenuCommand: () => true
+            onMenuCommand: (_player: Player, arg: string) => {
+                if(arg === 'costsFirst') {
+                    targetResults.payCostsFirst = true;
+                }
+                return true;
+            }
         };
         if(!player) {
             // a solo game has no opponent to choose
