@@ -33,6 +33,10 @@ export interface DeckSearchProperties<C extends AbilityContext = AbilityContext>
     takesNothingGameAction?: GameAction;
     /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */
     doneButtonText?: string;
+    /** No prompt while none of the looked-at cards can be taken. */
+    hideIfNoLegalTargets?: boolean;
+    /** Replaces "<chooser> takes nothing"; `undefined` for no chat line. */
+    takesNothingMessage?: (context: C, chooser: Player) => MessageArgs | undefined;
 }
 
 type DeckSearchDefaults =
@@ -157,14 +161,20 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
             cards.sort((a, b) => a.name.localeCompare(b.name));
         }
 
+        const cardCondition = (card: DrawCard) =>
+            properties.cardCondition(card, context) &&
+            (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
+            (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties));
+        if(properties.hideIfNoLegalTargets && canCancel && !cards.some(cardCondition)) {
+            this.#handleDone(properties, context, event, selectedCards, cards);
+            return;
+        }
+
         context.game.promptWithHandlerMenu(choosingPlayer, {
             activePromptTitle: title,
             context: context,
             cards: cards,
-            cardCondition: (card) =>
-                properties.cardCondition(card, context) &&
-                (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
-                (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties)),
+            cardCondition,
             options: canCancel ? [{ text: properties.doneButtonText ?? (selectedCards.size > 0 ? 'Done' : 'Take nothing'), handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
             cardHandler: (card: DrawCard) => {
                 const newSelectedCards = new Set(selectedCards);
@@ -289,7 +299,10 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     #takesNothing(properties: ResolvedDeckSearchProperties<C>, context: C, event: GameEvent<EventName.OnDeckSearch>): void {
         const choosingPlayer = (properties.choosingPlayer || event.player);
-        context.game.addMessage(msg`${choosingPlayer} takes nothing`);
+        const message = properties.takesNothingMessage ? properties.takesNothingMessage(context, choosingPlayer) : msg`${choosingPlayer} takes nothing`;
+        if(message) {
+            context.game.addMessage(message);
+        }
         if(properties.takesNothingGameAction) {
             const action = properties.takesNothingGameAction;
             context.game.queueSimpleStep(() => {

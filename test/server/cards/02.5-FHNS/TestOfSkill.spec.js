@@ -33,19 +33,19 @@ describe('Test of Skill', function() {
                 expect(this.player1).toHavePrompt('Select a card');
                 expect(this.player1).toHavePromptButton('Ornate Fan');
                 expect(this.player1).toHavePromptButton('Fine Katana');
-                expect(this.player1).not.toHavePromptButton('Banzai!');
+                expect(this.player1).toHaveDisabledPromptButton('Banzai!');
                 expect(this.player1).toHavePromptButton('Done');
 
                 this.player1.clickPrompt('Ornate Fan');
-                expect(this.fan.location).toBe('hand');
-                expect(this.getChatLogs(1)).toContain('player1 adds Ornate Fan to their hand');
                 expect(this.player1).toHavePrompt('Select a card');
                 expect(this.player1).not.toHavePromptButton('Ornate Fan');
 
                 this.player1.clickPrompt('Fine Katana');
+                expect(this.fan.location).toBe('hand');
                 expect(this.katana.location).toBe('hand');
                 expect(this.banzai.location).toBe('conflict discard pile');
                 expect(this.letGo.location).toBe('conflict deck');
+                expect(this.getChatLogs(2)).toContain('player1 adds Ornate Fan and Fine Katana to their hand');
                 expect(this.getChatLogs(2)).toContain('player1 discards Banzai!');
                 expect(this.player1).not.toHavePrompt('Select a card');
             });

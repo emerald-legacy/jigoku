@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { Players, CardType, RestrictionType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
-import { injure, placeFate } from '../../../GameActions/GameActions.js';
+import { handler, placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const MAX_FATE = 3;
@@ -17,14 +17,14 @@ export default class AppeasingTheRestless extends DrawCard {
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))
             .condition((context) => this.canMoveFate(context) && context.player.cardsInPlay.some((card) => this.canReceiveFate(card, context)))
-            .handler((context) => {
-                this.moveFate(context, MAX_FATE);
-                context.game.queueSimpleStep(() => this.injure(context, context.costs.bow));
-            })
+            .cannotTargetFirst()
+            .gameAction(handler({ handler: (context) => this.moveFate(context, MAX_FATE) }))
             .chatText((context) => context.player.hasAffinity('void', context)
                 ? msg`move up to 3 fate onto Spirit characters`
                 : msg`move up to 3 fate onto Spirit characters and injure ${context.costs.bow}`)
-            .cannotTargetFirst();
+            .afterwards()
+            .if((context) => !context.player.hasAffinity('void', context))
+            .injure((context) => ({ target: context.costs.bow }));
     }
 
     private canMoveFate(context: AbilityContext) {
@@ -55,12 +55,5 @@ export default class AppeasingTheRestless extends DrawCard {
                 return true;
             }
         });
-    }
-
-    private injure(context: AbilityContext, bowed: DrawCard | undefined) {
-        if(!bowed || context.player.hasAffinity('void', context)) {
-            return;
-        }
-        injure().resolve(bowed, context);
     }
 }

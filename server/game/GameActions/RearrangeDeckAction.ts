@@ -9,7 +9,7 @@ import { derive, type Derivable } from '../utils/helpers.js';
 import { targetList } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
-const ORDINALS = ['first', 'second', 'third'];
+const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth'];
 
 export interface RearrangeDeckProperties extends PlayerActionProperties {
     /** How many cards from the top of the deck. */
