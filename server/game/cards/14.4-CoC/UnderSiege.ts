@@ -56,7 +56,6 @@ class UnderSiege extends DrawCard {
                             hidden: true,
                             message: () => msg`${defender} sets their hand aside and draws 5 cards`
                         }),
-                        // "If they do"
                         conditional({
                             condition: hand.length > 0,
                             trueGameAction: draw({ target: defender, amount: 5 }),

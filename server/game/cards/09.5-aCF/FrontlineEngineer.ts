@@ -35,7 +35,6 @@ class FrontlineEngineer extends DrawCard {
             .chatText('look at the top five cards of their dynasty deck');
     }
 
-    /** The holding replaces the dynasty cards in the province, which are discarded; the deck search shuffles afterwards. */
     private replaceProvinceCards(context: AbilityContext, province: GameActionTarget | undefined, cardFromDeck: DrawCard | undefined): void {
         if(!cardFromDeck) {
             this.game.addMessage(msg`${context.player} takes nothing`);

@@ -23,7 +23,6 @@ class MiyaLibrary extends DrawCard {
                         context.player.moveCard(context.source, Location.DynastyDeck);
                     }
                 },
-                // like RemainingCards.TopAnyOrder, with Miya Library among the cards once it is switched into the deck
                 remainingCardsHandler: (context, _event, cards) => rearrangeDeck({
                     cards: this.location === Location.DynastyDeck ? [this, ...cards] : cards,
                     deck: DeckType.Dynasty,

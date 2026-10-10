@@ -30,7 +30,6 @@ describe('a character becoming an attachment', function() {
                 this.game.queueSimpleStep(() => action.resolve(target, context));
                 this.game.continue();
             };
-            // as the cards do: it becomes an attachment, then is attached
             this.resolve(cardLastingEffect({
                 canChangeZoneOnce: true,
                 duration: Duration.Custom,

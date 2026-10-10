@@ -21,7 +21,6 @@ describe('Kaiu Forges', function() {
                 this.artisanAcademy = this.player1.findCardByName('artisan-academy');
                 this.forgottenLibrary = this.player1.findCardByName('forgotten-library');
                 this.hallOfVictories = this.player1.findCardByName('hall-of-victories');
-                // 11 cards: Iron Mine is below the 10 Kaiu Forges searches
                 this.player1.reduceDeckToNumber('dynasty deck', 0);
                 this.ironMine = this.player1.moveCard('iron-mine', 'dynasty deck');
                 this.player1.moveCard('bustling-academy', 'dynasty deck');

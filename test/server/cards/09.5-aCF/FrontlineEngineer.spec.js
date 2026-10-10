@@ -74,7 +74,6 @@ describe('Frontline Engineer', function() {
                 this.frontlineEngineerAttacker = this.player1.findCardByName('frontline-engineer');
                 this.frontlineEngineerDefender = this.player2.findCardByName('frontline-engineer');
                 this.matsuTsuko = this.player2.placeCardInProvince('matsu-tsuko', 'province 1');
-                // Imperial Storehouse is the 6th card, below the 5 Frontline Engineer searches
                 this.storehouse = this.player2.moveCard('imperial-storehouse', 'dynasty deck');
                 this.player2.moveCard('wandering-ronin', 'dynasty deck');
                 this.player2.moveCard('doji-challenger', 'dynasty deck');

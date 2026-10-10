@@ -16,7 +16,6 @@ describe('composite game actions and default targets', function() {
             this.brash = this.player1.findCardByName('brash-samurai');
             this.context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
 
-            // the targets each action gets when the composite asks the actions it would resolve
             this.targetsPassed = (composite, actions, overrides = {}) => {
                 const spies = actions.map((action) => spyOn(action, 'hasTargetsChosenByInitiatingPlayer').and.callThrough());
                 composite.hasTargetsChosenByInitiatingPlayer(this.context, overrides);

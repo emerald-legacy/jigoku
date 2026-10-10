@@ -11,7 +11,6 @@ describe('Walking the Way', function() {
             });
             this.walkingTheWay = this.player1.findCardByName('walking-the-way');
             this.toshimoko = this.player1.placeCardInProvince('kakita-toshimoko', 'province 1');
-            // 4 cards: Iron Mine is below the 3 Walking the Way looks at
             this.player1.reduceDeckToNumber('dynasty deck', 0);
             this.ironMine = this.player1.moveCard('iron-mine', 'dynasty deck');
             this.gunso = this.player1.moveCard('akodo-gunso', 'dynasty deck');

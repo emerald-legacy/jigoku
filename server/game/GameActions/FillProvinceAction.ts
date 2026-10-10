@@ -7,7 +7,10 @@ import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './P
 
 export interface FillProvinceProperties extends PlayerActionProperties {
     location: Location;
+    /** Refills the province until it holds this many cards. */
     fillTo?: number;
+    /** Instead: fills it this many times, each time with the top card of the dynasty deck ("fill a province"). */
+    amount?: number;
     faceup?: boolean;
 }
 
@@ -21,7 +24,8 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
     }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return ['fills {0} to {1} cards!', [this.getProperties(context, additionalProperties).fillTo]];
+        const { fillTo, amount } = this.getProperties(context, additionalProperties);
+        return amount === undefined ? ['fills {0} to {1} cards!', [fillTo]] : ['fills {0} with {1} cards', [amount]];
     }
 
     protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
@@ -32,6 +36,12 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         const player = event.player;
+        if(properties.amount !== undefined) {
+            for(let i = 0; i < properties.amount; i++) {
+                context.game.queueSimpleStep(() => player.putTopDynastyCardInProvince(properties.location, !properties.faceup));
+            }
+            return;
+        }
         const currentCards = player.getDynastyCardsInProvince(properties.location).length;
         player.refillProvince(properties.location, properties.fillTo - currentCards);
 

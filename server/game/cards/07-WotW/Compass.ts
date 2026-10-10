@@ -55,7 +55,6 @@ class Compass extends DrawCard {
         this.game.addMessage(msg`${context.player} places ${cards.length} card${cards.length > 1 ? 's' : ''} on the bottom of their ${location}`);
     }
 
-    /** Like `RemainingCards.TopAnyOrder`, with a chat line. */
     private placeOnTop(context: AbilityContext, cards: DrawCard[], deck: DeckType, location: Location): void {
         if(cards.length < 2) {
             return;

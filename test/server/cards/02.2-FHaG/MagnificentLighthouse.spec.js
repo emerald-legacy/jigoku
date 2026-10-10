@@ -22,7 +22,6 @@ describe('Magnificent Lighthouse', function() {
 
         describe('with 4 cards in the deck', function() {
             beforeEach(function() {
-                // Let Go is the 4th card, below the 3 Magnificent Lighthouse looks at
                 this.letGo = this.player2.moveCard('let-go', 'conflict deck');
                 this.player2.moveCard(this.banzai, 'conflict deck');
                 this.player2.moveCard(this.charge, 'conflict deck');

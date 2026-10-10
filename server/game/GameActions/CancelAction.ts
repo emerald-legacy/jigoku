@@ -6,9 +6,12 @@ import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { AnyEvent, TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
+import { ThenAbility } from '../ThenAbility.js';
 
 export interface CancelProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
+    /** "Instead, X. Then, Y": resolves once the replacement has fully resolved. */
+    thenGameAction?: GameAction;
     chatText?: string;
 }
 
@@ -36,7 +39,6 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         return replacementGameAction ? context.target : context.event?.card;
     }
 
-    /** The replacement targets what this targets. */
     #replacementOverrides(context: C, additionalProperties: ActionOverrides = {}): ActionOverrides {
         return { ...additionalProperties, target: this.getProperties(context, additionalProperties).target };
     }
@@ -81,7 +83,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         if(!cancelled) {
             return;
         }
-        const { replacementGameAction } = this.getProperties(context, additionalProperties);
+        const { replacementGameAction, thenGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
             const events: Event[] = [];
             const eventWindow = cancelled.window;
@@ -96,6 +98,11 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
                 }
                 for(const newEvent of events) {
                     eventWindow?.addEvent(newEvent);
+                }
+                if(thenGameAction && eventWindow && events.length > 0) {
+                    const thenContext = context.copy({});
+                    thenContext.events = events;
+                    eventWindow.addThenAbility(new ThenAbility(context.source, { gameAction: thenGameAction }), thenContext);
                 }
             });
         }

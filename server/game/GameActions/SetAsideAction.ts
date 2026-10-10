@@ -18,11 +18,9 @@ export interface SetAsideProperties extends CardActionProperties {
     returnAtEndOfConflict?: boolean;
     /** Controls the cards and may play them as if they were in their hand while they are set aside. */
     playableBy?: Player;
-    /** The chat line, once for all the cards. */
     message?: (context: AbilityContext, cards: DrawCard[]) => MessageArgs;
 }
 
-/** Sets cards aside, out of play (the removed-from-game pile). */
 export class SetAsideAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SetAsideProperties, EventName.Unnamed, C, 'hidden' | 'returnAtEndOfConflict'> {
     name = 'setAside';
     effect = 'set aside {0}';
@@ -82,7 +80,6 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    /** Each owner takes back their cards still set aside when the conflict ends. */
     #returnAtEndOfConflict(context: C, cards: DrawCard[]): void {
         for(const owner of new Set(cards.map((card) => card.owner))) {
             const own = cards.filter((card) => card.owner === owner);

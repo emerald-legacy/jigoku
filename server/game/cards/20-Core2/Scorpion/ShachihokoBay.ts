@@ -35,7 +35,6 @@ export default class ShachihokoBay extends ProvinceCard {
         }).resolve(cards, context);
     }
 
-    /** Like `RemainingCards.TopAnyOrder`, with a chat line. */
     private returnToTop(context: AbilityContext, cards: DrawCard[]): void {
         const opponent = context.player.opponent;
         if(cards.length === 0 || !opponent) {

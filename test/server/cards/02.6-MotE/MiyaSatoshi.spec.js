@@ -9,7 +9,6 @@ describe('Miya Satoshi', function() {
                         dynastyDeck: ['kanjo-district', 'shiba-tsukune']
                     }
                 });
-                // Breaking In, for one, can put a character there
                 this.shibaTsukune = this.player1.findCardByName('shiba-tsukune');
                 this.player1.player.moveCard(this.shibaTsukune, 'stronghold province');
                 this.shibaTsukune.facedown = false;

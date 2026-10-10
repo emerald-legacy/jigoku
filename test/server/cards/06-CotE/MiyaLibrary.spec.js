@@ -18,7 +18,6 @@ describe('Miya Library', function () {
                 this.kanjo = this.player1.findCardByName('kanjo-district');
                 this.naiveStudent = this.player1.findCardByName('naive-student');
                 this.player1.placeCardInProvince(this.miyaLibrary, 'province 1');
-                // an Imperial character 5th, below the 4 Miya Library looks at
                 this.guardsman = this.player1.findCardByName('seppun-guardsman');
                 this.player1.moveCard(this.guardsman, 'dynasty deck');
                 this.player1.moveCard(this.miyaSatoshi, 'dynasty deck');

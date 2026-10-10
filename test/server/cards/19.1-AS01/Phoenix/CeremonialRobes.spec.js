@@ -32,7 +32,6 @@ describe('Ceremonial Robes', function () {
             this.player1.player.moveCard(this.kami, 'dynasty deck');
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
-            // the 4th card, below the 3 Ceremonial Robes looks at
             const fourth = this.player1.player.dynastyDeck[3];
 
             const p1InitialHonor = this.player1.honor;

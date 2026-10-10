@@ -12,7 +12,6 @@ export interface PlaceInProvinceProperties extends CardActionProperties {
     faceup?: boolean;
 }
 
-/** Puts a dynasty card from out of play (a deck, a discard pile, under the stronghold) into a province. */
 export class PlaceInProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceInProvinceProperties, EventName.Unnamed, C, 'faceup'> {
     name = 'placeInProvince';
     effect = 'put {0} into a province';

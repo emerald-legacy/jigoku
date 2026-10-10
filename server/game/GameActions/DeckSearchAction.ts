@@ -74,7 +74,6 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { cardsToLookAt, player } = this.getProperties(context, additionalProperties);
         const amount = derive(cardsToLookAt, context);
-        // another player's deck is named
         const deck = player && player !== context.player ? '{1}\'s deck' : 'their deck';
         const message = amount > 0 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of ${deck}` : `search ${deck}`;
         return [message, player && player !== context.player ? [player] : []];

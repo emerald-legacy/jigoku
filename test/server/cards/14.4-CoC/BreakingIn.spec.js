@@ -22,7 +22,6 @@ describe('Breaking In', function() {
             this.tattooedWanderer = this.player2.findCardByName('tattooed-wanderer');
             this.breaking = this.player2.findCardByName('breaking-in');
             this.shamefulDisplay = this.player2.findCardByName('shameful-display', 'province 2');
-            // 9 cards: the 9th (Kakita Toshimoko) is below the 8 Breaking In searches
             this.player2.reduceDeckToNumber('dynasty deck', 0);
             this.toshimoko = this.player2.moveCard('kakita-toshimoko', 'dynasty deck');
             for(const card of ['imperial-storehouse', 'favorable-ground', 'mirumoto-raitsugu', 'moto-chagatai', 'akodo-gunso', 'border-rider', 'hida-guardian', 'kitsu-spiritcaller']) {

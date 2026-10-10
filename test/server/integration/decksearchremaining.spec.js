@@ -13,7 +13,6 @@ describe('a deck search\'s remaining cards', function() {
                 }
             });
             this.whisperer = this.player1.findCardByName('doji-whisperer');
-            // 5 cards; the search looks at the top 4, so Let Go stays below them
             this.player1.reduceDeckToNumber('conflict deck', 0);
             this.letGo = this.player1.moveCard('let-go', 'conflict deck');
             this.katana = this.player1.moveCard('fine-katana', 'conflict deck');

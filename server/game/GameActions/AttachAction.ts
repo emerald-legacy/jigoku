@@ -113,7 +113,6 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
             card.parent.removeAttachment(card);
         } else {
             if(card.location === Location.PlayArea) {
-                // a character becoming an attachment leaves the conflict
                 context.game.currentConflict?.removeFromConflict(card);
             }
             card.controller.removeCardFromPile(card);

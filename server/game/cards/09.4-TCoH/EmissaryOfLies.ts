@@ -1,8 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { chooseAction, conditional, lookAt, multiple, noAction, sendHome } from '../../GameActions/GameActions.js';
+import { chooseAction, conditional, lookAt, multiple, nameCard, noAction, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 
 class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
@@ -15,35 +14,26 @@ class EmissaryOfLies extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             })
-            .handler((context) => {
-                const opponent = context.player.opponent;
-                if(!opponent) {
-                    return;
-                }
-                this.game.promptForCardName(opponent, (player, cardName) => {
-                    this.game.addMessage(msg`${player} names ${cardName} - ${context.player} must choose if they want to reveal their hand`);
-                    this.offerToRevealHand(context, context.target, cardName);
-                });
-            });
-    }
-
-    private offerToRevealHand(context: AbilityContext, character: DrawCard, cardName: string) {
-        chooseAction({
-            activePromptTitle: 'Do you want to reveal your hand?',
-            waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not',
-            choices: {
-                'Yes': multiple([
-                    lookAt({
-                        target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
-                    }),
-                    conditional({
-                        condition: () => !context.player.hand.some((card) => card.name === cardName),
-                        trueGameAction: sendHome({ target: character })
-                    })
-                ]),
-                'No': noAction()
-            }
-        }).resolve(undefined, context);
+            .gameAction(nameCard((context) => ({
+                player: Players.Opponent,
+                message: (_context, cardName, player) => msg`${player} names ${cardName} - ${context.player} must choose if they want to reveal their hand`,
+                gameAction: (cardName) => chooseAction({
+                    activePromptTitle: 'Do you want to reveal your hand?',
+                    waitingPromptTitle: 'Waiting for opponent to choose to reveal their hand or not',
+                    choices: {
+                        'Yes': multiple([
+                            lookAt({
+                                target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
+                            }),
+                            conditional({
+                                condition: () => !context.player.hand.some((card) => card.name === cardName),
+                                trueGameAction: sendHome({ target: context.target })
+                            })
+                        ]),
+                        'No': noAction()
+                    }
+                })
+            })));
     }
 }
 

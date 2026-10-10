@@ -23,7 +23,6 @@ class MercenaryCompany extends DrawCard {
             })))
             .chatText((context) => msg`let ${context.player.opponent} hire their services`)
             .limit(unlimitedPerConflict())
-            // "If they do": only once the fate is really placed
             .then()
             .cardLastingEffect((context) => ({
                 duration: Duration.Custom,

@@ -2,7 +2,6 @@
 export enum RemainingCards {
     Shuffle = 'shuffle',
     Discard = 'discard',
-    /** Back on top, in the same order. */
     Top = 'top',
     TopAnyOrder = 'topAnyOrder',
     BottomRandom = 'bottomRandom'

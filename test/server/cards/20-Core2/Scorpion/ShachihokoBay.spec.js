@@ -19,7 +19,6 @@ describe('Shachihoko Bay', function () {
             this.tattooedWanderer = this.player1.findCardByName('tattooed-wanderer', 'hand');
             this.fingerOfJade = this.player1.findCardByName('finger-of-jade', 'hand');
             this.assassination = this.player1.findCardByName('assassination', 'hand');
-            // Banzai! is the 7th card, below the 6 Shachihoko Bay looks at
             this.banzai = this.player1.findCardByName('banzai', 'hand');
             this.player1.player.moveCard(this.banzai, 'conflict deck');
             this.player1.player.moveCard(this.assassination, 'conflict deck');

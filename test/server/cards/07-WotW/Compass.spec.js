@@ -33,7 +33,6 @@ describe('Compass', function() {
                 this.player1.moveCard(this.fineKatana, 'conflict deck');
                 this.player1.moveCard(this.ornateFan, 'conflict deck');
                 this.player1.moveCard(this.iuchiWayfinder, 'conflict deck');
-                // the 4th card of each deck, below the 3 Compass looks at
                 this.dynastyFourth = this.player1.dynastyDeck[3];
                 this.conflictFourth = this.player1.conflictDeck[3];
 

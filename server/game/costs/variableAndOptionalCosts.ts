@@ -282,6 +282,33 @@ export function optional(cost: Cost): Cost {
     };
 }
 
+/** "Pay X unless …": no cost while `condition` holds (decided when the costs are paid). */
+export function unless(condition: (context: AbilityContext) => boolean, cost: Cost): Cost {
+    const skipped = new WeakMap<AbilityContext, boolean>();
+    return {
+        canPay: (context) => condition(context) || cost.canPay(context),
+        getActionName: (context) => cost.getActionName?.(context) ?? '',
+        getCostMessage: (context) => (skipped.get(context) ?? condition(context)) ? [] : (cost.getCostMessage?.(context) ?? []),
+        resolve: (context, result) => {
+            skipped.set(context, condition(context));
+            if(!skipped.get(context) && !cost.addEventsToArray) {
+                cost.resolve?.(context, result);
+            }
+        },
+        payEvent: (context) => {
+            if(skipped.get(context)) {
+                return new HandlerAction({}).getEvent(context.player, context);
+            }
+            if(cost.addEventsToArray) {
+                const events: Event[] = [];
+                cost.addEventsToArray(events, context, {});
+                return events;
+            }
+            return cost.payEvent ? cost.payEvent(context) : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
+        }
+    };
+}
+
 /** "Pay X or Y": the player picks one of the payable costs, without a question when only one can be paid. */
 export function chooseOne(options: Record<string, Cost>): Cost<{ chosenCostLabel: string }> {
     const chosen = (context: AbilityContext) => {

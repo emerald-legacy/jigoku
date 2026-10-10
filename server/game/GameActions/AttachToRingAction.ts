@@ -61,7 +61,6 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
             card.parent.removeAttachment(card);
         } else {
             if(card.location === Location.PlayArea) {
-                // a character becoming an attachment leaves the conflict
                 event.context.game.currentConflict?.removeFromConflict(card);
             }
             card.controller.removeCardFromPile(card);

@@ -12,7 +12,6 @@ export interface DeckChoiceOptions {
 
 interface Pile {
     label: string;
-    /** For chat: "conflict deck". */
     name: string;
     player: Player;
     deck: DeckType;
@@ -26,7 +25,6 @@ interface Pile {
 export class DeckChoice {
     constructor(private readonly options: DeckChoiceOptions) {}
 
-    /** One choice per pile, each resolving `action` for that player and deck. */
     choices<A>(action: (player: Player, deck: DeckType) => A): (context: AbilityContext) => Record<string, A> {
         return (context) => Object.fromEntries(
             this.#piles(context)

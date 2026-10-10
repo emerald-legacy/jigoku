@@ -5,8 +5,8 @@ import { Location, CardType, EventName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import {
+    chatMessage,
     discardFromPlay,
-    handler,
     lookAt,
     multiple,
     opponentPutIntoPlay,
@@ -51,24 +51,8 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         target: this.getBrotherhoodCards(context, context.player.opponent).characters
                     }))
                 ]),
-                handler({
-                    //just for the display message
-                    handler: (context) => {
-                        //Identify who actually entered play
-                        const enteredPlay = context.events
-                            .filter((a) => a.is(EventName.OnCharacterEntersPlay) && !a.cancelled)
-                            .map((a) => a.card)
-                            .filter((a) => !!a);
-                        const myEnter = enteredPlay.filter((a) => a.controller === context.player);
-                        const oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
-                        if(myEnter.length > 0) {
-                            this.game.addMessage(msg`${context.player} puts ${myEnter} into play`);
-                        }
-                        if(oppEnter.length > 0) {
-                            this.game.addMessage(msg`${context.player.opponent} puts ${oppEnter} into play`);
-                        }
-                    }
-                }),
+                chatMessage((context) => this.enteredPlayMessage(context, context.player)),
+                chatMessage((context) => this.enteredPlayMessage(context, context.player.opponent)),
                 multiple([
                     shuffleDeck((context) => ({
                         deck: Location.DynastyDeck,
@@ -102,5 +86,13 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             }
         }
         return { revealed, characters };
+    }
+
+    private enteredPlayMessage(context: AbilityContext, player: Player | undefined) {
+        const entered = context.events
+            .filter((event) => event.is(EventName.OnCharacterEntersPlay) && !event.cancelled)
+            .map((event) => event.card)
+            .filter((card) => !!card && card.controller === player);
+        return player && entered.length > 0 ? msg`${player} puts ${entered} into play` : undefined;
     }
 }

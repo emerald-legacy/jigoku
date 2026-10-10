@@ -1,52 +1,16 @@
 import { msg } from '../../GameChat.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import { modifyGlory, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
-import { bow, cardLastingEffect, handler } from '../../GameActions/GameActions.js';
-import type { Cost } from '../../costs/Cost.js';
-
-function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
-    return {
-        getActionName(_context) {
-            return 'conduitOfHeroesCost';
-        },
-        getCostMessage(context) {
-            if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
-                return [];
-            }
-            return ['bowing {0}'];
-        },
-        canPay(context) {
-            return context.player.opponent && context.player.honor >= context.player.opponent.honor + 5 ||
-                bow().canAffect(context.source, context);
-        },
-        resolve(context) {
-            context.costs.conduitOfHeroesCost = context.source;
-            context.costs.skipConduitCost = context.player.opponent && context.player.honor >= context.player.opponent.honor + 5;
-        },
-        payEvent(context) {
-            if(!context.costs.skipConduitCost) {
-                const events = [];
-
-                const bowAction = bow({ target: context.source });
-                events.push(bowAction.getEvent(context.source, context));
-                return events;
-            }
-
-            const action = handler({ handler: () => true }); //this is a do-nothing event to allow you to "pay" a non-payment cost
-            return action.getEvent(context.player, context);
-
-        }
-    };
-}
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import * as costs from '../../costs/index.js';
 
 class ConduitOfHeroes extends DrawCard {
     static id = 'conduit-of-heroes';
 
     setupCardAbilities() {
         this.action('Give a character +3/+1/+1')
-            .cost(conduitOfHeroesCost())
+            .cost(costs.unless((context) => !!context.player.opponent && context.player.honor >= context.player.opponent.honor + 5, costs.bowSelf()))
             .condition(() => this.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,

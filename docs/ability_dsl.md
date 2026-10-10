@@ -449,6 +449,7 @@ These prompt the player to pick a card, then perform the action as the cost.
 | `costs.returnRings(amount, condition)` | Return one or more claimed rings |
 | `costs.discardTopCardsFromDeck({ amount, deck })` | Discard N cards from top of a deck |
 | `costs.optional(cost)` | Wraps any cost to make it optional (Yes/No prompt) |
+| `costs.unless(condition, cost)` | "Pay X unless …": no cost while `condition(context)` holds (Conduit of Heroes) |
 | `costs.optionalOpponentLoseHonor(prompt)` | Opponent is asked to lose 1 honor |
 | `costs.discardImperialFavor()` | Discard the Imperial Favor |
 | `costs.chooseOne({ label: cost, … })` | "Pay X or Y": the player picks one of the payable costs by its label (no question when only one can be paid) |
@@ -558,7 +559,7 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 | `discardMatching()` | Discard matching card(s) |
 | `deckSearch({ ... })` | Search deck (see [Deck Search](#deck-search)) |
 | `shuffleDeck()` | Shuffle a deck |
-| `fillProvince()` | Refill a province |
+| `fillProvince({ location, fillTo?, amount?, faceup? })` | `fillTo`: refill the province until it holds that many cards; `amount`: fill it that many times ("fill a province" in the RRG: top dynasty card, even onto other cards) |
 | `honorBid()` | Initiate an honor bid |
 | `initiateConflict()` | Initiate a conflict |
 | `playerLastingEffect({ effect, duration?, targetController? })` | Lasting effect on player |
@@ -595,8 +596,10 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 | `assignRoles({ roles, player?, pick?, pickOrder?, activePromptTitle?, message?, messages? })` | Two cards, two roles (`{ Honor: honor(), Dishonor: dishonor() }`): the chooser gives each card a role, by role then card, or with `pick` by picking that role's card from card buttons; each role's action resolves on its card, in this action's window. `message(context, assigned, chooser)` returns a `msg` template With `pickOrder`, any number of cards ("top 3: discard one, one to the bottom, one stays on top"): the chooser picks a card for each listed role from card buttons in that order ("Select a card to <role>"), each pick resolves at once, and the cards left take the one unlisted role; while there are fewer cards than roles left, a role may be skipped ("None"). `messages` gives a line per role. For the deck to choose, see `DeckChoice` (`cards/DeckChoice.ts`) |
 | `selectCard({ cardCondition?, gameAction, ... })` | Prompt to select one card, then apply `gameAction`; `message: (context, card, chooser) => msg\`…\`` and `subActionProperties` get that card |
 | `selectCards({ mode, cardCondition?, gameAction, ... })` | Several cards, by `mode`; `message: (context, cards, chooser)` gets the chosen cards, `subActionProperties` one candidate or all of them |
-| `cancel()` | Cancel the triggering event (for interrupts) |
+| `cancel({ replacementGameAction?, thenGameAction? })` | Cancel the triggering event (for interrupts); `replacementGameAction` resolves instead ("instead, X"), and `thenGameAction` once that has fully resolved ("Then, Y", Kitsuki Shomon) |
 | `handler({ handler })` | Run arbitrary code as an action |
+| `chatMessage((context) => msg\`…\`)` | A chat line as a step of its own (or nothing, when the function returns `undefined`) |
+| `nameCard({ gameAction, player?, message? })` | The chooser (default the ability's player, or `Players.Opponent`) names a card while the ability resolves; then `gameAction(cardName)` resolves. `message: (context, cardName, chooser) => msg\`…\`` |
 | `noAction()` | No-op |
 | `duel({ ... })` | Initiate a duel (see [Duels](#duels)) |
 | `conflictLastingEffect({ ... })` | Lasting effect scoped to conflict |

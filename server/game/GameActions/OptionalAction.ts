@@ -13,9 +13,7 @@ export interface OptionalProperties extends GameActionProperties {
     prompt: string;
     /** Who decides: the ability's player (default) or their opponent. */
     player?: Players.Self | Players.Opponent;
-    /** The chat line when they do. */
     acceptMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
-    /** The chat line when they don't. */
     declineMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
 }
 

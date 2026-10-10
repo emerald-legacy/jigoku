@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
@@ -95,6 +96,7 @@ import { SequentialContextAction, SequentialContextProperties } from './Sequenti
 import { SetHonorDialAction, SetDialProperties } from './SetHonorDialAction.js';
 import { SetAsideAction, SetAsideProperties } from './SetAsideAction.js';
 import { PlaceInProvinceAction, PlaceInProvinceProperties } from './PlaceInProvinceAction.js';
+import { NameCardAction, NameCardProperties } from './NameCardAction.js';
 import { ShuffleDeckAction, ShuffleDeckProperties } from './ShuffleDeckAction.js';
 import { SwitchConflictElementAction, SwitchConflictElementProperties } from './SwitchConflictElementAction.js';
 import { SwitchConflictTypeAction, SwitchConflictTypeProperties } from './SwitchConflictTypeAction.js';
@@ -380,6 +382,10 @@ export function setHonorDial<C extends AbilityContext = AbilityContext>(property
 export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ShuffleDeckProperties, C>): ShuffleDeckAction<C> {
     return new ShuffleDeckAction<C>(propertyFactory);
 }
+/** "Name a card": the chooser names a card, then `gameAction(cardName)` resolves. */
+export function nameCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<NameCardProperties, C>): NameCardAction<C> {
+    return new NameCardAction<C>(propertyFactory);
+}
 /** Puts a dynasty card from out of play into a province, faceup by default, optionally discarding the cards there first. */
 export function placeInProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceInProvinceProperties, C> = {}): PlaceInProvinceAction<C> {
     return new PlaceInProvinceAction<C>(propertyFactory);
@@ -456,6 +462,17 @@ export function cancel<C extends CancellingContext = TriggeredAbilityContext>(pr
 }
 export function handler<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, C> = {}): HandlerAction<C> {
     return new HandlerAction<C>(propertyFactory);
+}
+/** A chat line as a step of its own: a `msg` template, or nothing. */
+export function chatMessage<C extends AbilityContext = AbilityContext>(message: (context: C) => MessageArgs | undefined): HandlerAction<C> {
+    return new HandlerAction<C>({
+        handler: (context) => {
+            const line = message(context);
+            if(line) {
+                context.game.addMessage(line);
+            }
+        }
+    });
 }
 export { noAction } from './HandlerAction.js';
 

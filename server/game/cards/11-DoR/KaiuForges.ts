@@ -23,7 +23,6 @@ class KaiuForges extends DrawCard {
             .chatText('look at the top ten cards of their dynasty deck');
     }
 
-    /** The holding goes into the chosen province and a Kaiu Wall there into the deck; the deck search shuffles afterwards. */
     private swapWithKaiuWall(context: AbilityContext, cardFromDeck: DrawCard | undefined): void {
         if(!cardFromDeck) {
             this.game.addMessage(msg`${context.player} takes nothing`);
