@@ -17,6 +17,14 @@ export interface AssignRolesProperties<R extends string = string> extends CardAc
     player?: Players.Self | Players.Opponent;
     /** The chooser picks this role's card from card buttons, and the other card gets the other role. */
     pick?: NoInfer<R>;
+    /**
+     * Any number of cards: the chooser picks one card for each of these roles from card buttons, in this order
+     * ("Select a card to <role>"), and each pick resolves at once; the cards left take the one role not listed.
+     * While there are fewer cards than roles left, a role may be skipped ("None").
+     */
+    pickOrder?: NoInfer<R>[];
+    /** With `pickOrder`: a chat line when a role is given. */
+    messages?: Partial<Record<NoInfer<R>, (context: AbilityContext, card: BaseCard, chooser: Player) => MessageArgs>>;
     activePromptTitle?: string;
     /** Printed once each card has its role. Method syntax, so a card's narrower role names fit. */
     message?(context: AbilityContext, assigned: Record<NoInfer<R>, BaseCard>, chooser: Player): MessageArgs;
@@ -49,6 +57,12 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         const cards = targetList(properties.target).filter((target) => target instanceof BaseCard);
         const [first, second] = Object.keys(properties.roles);
         const chooser = this.#chooser(context, additionalProperties);
+        if(properties.pickOrder && chooser) {
+            const pickOrder = properties.pickOrder;
+            const last = Object.keys(properties.roles).find((role) => !pickOrder.includes(role));
+            this.#pickInOrder(cards, pickOrder, last, chooser, context, additionalProperties);
+            return;
+        }
         if(cards.length !== 2 || first === undefined || second === undefined || !chooser) {
             return;
         }
@@ -76,6 +90,42 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
             return;
         }
         this.#chooseRole(cards, [first, second], chooser, assign, context, additionalProperties);
+    }
+
+    #pickInOrder(cards: BaseCard[], [role, ...later]: string[], last: string | undefined, chooser: Player, context: C, additionalProperties: ActionOverrides): void {
+        const properties = this.getProperties(context, additionalProperties);
+        const give = (role: string, card: BaseCard) => {
+            const message = properties.messages?.[role];
+            if(message) {
+                context.game.addMessage(message(context, card, chooser));
+            }
+            if(!properties.roles[role].isNoAction) {
+                properties.roles[role].resolve(card, context);
+            }
+        };
+        if(role === undefined) {
+            if(last !== undefined) {
+                for(const card of cards) {
+                    give(last, card);
+                }
+            }
+            return;
+        }
+        const next = (rest: BaseCard[]) => this.#pickInOrder(rest, later, last, chooser, context, additionalProperties);
+        if(cards.length === 0) {
+            return;
+        }
+        const rolesLeft = later.length + 1 + (last !== undefined ? 1 : 0);
+        context.game.promptWithHandlerMenu(chooser, {
+            activePromptTitle: `Select a card to ${role}`,
+            context,
+            cards: cards.filter((card) => this.#canTake(role, card, context, additionalProperties)),
+            cardHandler: (card: BaseCard) => {
+                give(role, card);
+                next(cards.filter((other) => other !== card));
+            },
+            options: cards.length < rolesLeft ? [{ text: 'None', handler: () => next(cards) }] : []
+        });
     }
 
     #chooseRole(cards: BaseCard[], roles: string[], chooser: Player, assign: (role: string, card: BaseCard) => void, context: C, additionalProperties: ActionOverrides): void {

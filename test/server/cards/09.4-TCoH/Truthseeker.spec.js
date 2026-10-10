@@ -36,17 +36,18 @@ describe('Truthseeker', function() {
 
                 this.player1.clickCard(this.truthseeker);
                 expect(this.player1).toHavePrompt('Choose which deck to look at:');
-                expect(this.player1).toHavePromptButton('player1\'s Dynasty');
-                expect(this.player1).toHavePromptButton('player1\'s Conflict');
-                expect(this.player1).toHavePromptButton('player2\'s Dynasty');
-                expect(this.player1).toHavePromptButton('player2\'s Conflict');
+                expect(this.player1).toHavePromptButton('player1\'s Dynasty Deck');
+                expect(this.player1).toHavePromptButton('player1\'s Conflict Deck');
+                expect(this.player1).toHavePromptButton('player2\'s Dynasty Deck');
+                expect(this.player1).toHavePromptButton('player2\'s Conflict Deck');
             });
 
             it('should let you order the top 3 cards', function () {
+                const fourth = this.player1.conflictDeck[3];
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
-                this.player1.clickPrompt('player1\'s Conflict');
+                this.player1.clickPrompt('player1\'s Conflict Deck');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck');
                 expect(this.player1).toHavePromptButton('Assassination');
                 expect(this.player1).toHavePromptButton('Ornate Fan');
@@ -62,13 +63,14 @@ describe('Truthseeker', function() {
                 expect(topCards[0]).toBe(this.fineKatana);
                 expect(topCards[1]).toBe(this.ornateFan);
                 expect(topCards[2]).toBe(this.assassination);
+                expect(this.player1.conflictDeck[3]).toBe(fourth);
             });
 
             it('should name the deck and ask for the second card', function () {
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
-                this.player1.clickPrompt('player1\'s Conflict');
+                this.player1.clickPrompt('player1\'s Conflict Deck');
                 expect(this.getChatLogs(3)).toContain('player1 uses Truthseeker to look at the top 3 cards of player1\'s conflict deck');
                 this.player1.clickPrompt('Assassination');
                 expect(this.player1).toHavePrompt('Which card do you want to be the second card?');
@@ -82,7 +84,7 @@ describe('Truthseeker', function() {
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
-                this.player1.clickPrompt('player2\'s Conflict');
+                this.player1.clickPrompt('player2\'s Conflict Deck');
                 expect(this.getChatLogs(3)).toContain('player1 uses Truthseeker to look at the top 3 cards of player2\'s conflict deck');
                 expect(this.player1).toHavePromptButton('Way of the Crane');
                 expect(this.player1).toHavePromptButton('Banzai!');
@@ -102,7 +104,7 @@ describe('Truthseeker', function() {
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
-                this.player1.clickPrompt('player1\'s Conflict');
+                this.player1.clickPrompt('player1\'s Conflict Deck');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck');
                 this.player1.clickPrompt('Fine Katana');
                 expect(this.player1.conflictDeck.length).toBe(1);

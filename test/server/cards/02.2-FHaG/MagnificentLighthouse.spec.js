@@ -7,7 +7,7 @@ describe('Magnificent Lighthouse', function() {
                     dynastyDiscard: ['magnificent-lighthouse']
                 },
                 player2: {
-                    conflictDiscard: ['assassination', 'charge', 'banzai'],
+                    conflictDiscard: ['assassination', 'charge', 'banzai', 'let-go'],
                     dynastyDiscard: ['doji-whisperer', 'shiba-tsukune']
                 }
             });
@@ -20,13 +20,15 @@ describe('Magnificent Lighthouse', function() {
             this.player2.reduceDeckToNumber('conflict deck', 0);
         });
 
-        describe('with 3 cards in the deck', function() {
+        describe('with 4 cards in the deck', function() {
             beforeEach(function() {
+                // Let Go is the 4th card, below the 3 Magnificent Lighthouse looks at
+                this.letGo = this.player2.moveCard('let-go', 'conflict deck');
                 this.player2.moveCard(this.banzai, 'conflict deck');
                 this.player2.moveCard(this.charge, 'conflict deck');
                 this.player2.moveCard(this.assassination, 'conflict deck');
                 this.player1.clickCard(this.lighthouse);
-                this.player1.clickPrompt('Conflict Deck');
+                this.player1.clickPrompt('player2\'s Conflict Deck');
             });
 
             it('should discard one, put one on the bottom and leave the other on top', function() {
@@ -34,6 +36,7 @@ describe('Magnificent Lighthouse', function() {
                 expect(this.player1).toHavePromptButton('Assassination');
                 expect(this.player1).toHavePromptButton('Charge!');
                 expect(this.player1).toHavePromptButton('Banzai!');
+                expect(this.player1).not.toHavePromptButton('Let Go');
                 expect(this.player1).not.toHavePromptButton('None');
                 this.player1.clickPrompt('Charge!');
                 expect(this.charge.location).toBe('conflict discard pile');
@@ -41,7 +44,7 @@ describe('Magnificent Lighthouse', function() {
                 expect(this.player1).not.toHavePromptButton('Charge!');
                 expect(this.player1).not.toHavePromptButton('None');
                 this.player1.clickPrompt('Assassination');
-                expect(this.player2.conflictDeck).toEqual([this.banzai, this.assassination]);
+                expect(this.player2.conflictDeck).toEqual([this.banzai, this.letGo, this.assassination]);
                 expect(this.player2).toHavePrompt('Action Window');
             });
 
@@ -58,7 +61,7 @@ describe('Magnificent Lighthouse', function() {
                 this.player2.moveCard(this.charge, 'conflict deck');
                 this.player2.moveCard(this.assassination, 'conflict deck');
                 this.player1.clickCard(this.lighthouse);
-                this.player1.clickPrompt('Conflict Deck');
+                this.player1.clickPrompt('player2\'s Conflict Deck');
             });
 
             it('should allow skipping the bottom card after discarding', function() {
@@ -89,7 +92,7 @@ describe('Magnificent Lighthouse', function() {
             beforeEach(function() {
                 this.player2.moveCard(this.assassination, 'conflict deck');
                 this.player1.clickCard(this.lighthouse);
-                this.player1.clickPrompt('Conflict Deck');
+                this.player1.clickPrompt('player2\'s Conflict Deck');
             });
 
             it('should end after discarding it', function() {
@@ -114,7 +117,7 @@ describe('Magnificent Lighthouse', function() {
             this.player2.moveCard(this.tsukune, 'dynasty deck');
             this.player2.moveCard(this.whisperer, 'dynasty deck');
             this.player1.clickCard(this.lighthouse);
-            this.player1.clickPrompt('Dynasty Deck');
+            this.player1.clickPrompt('player2\'s Dynasty Deck');
             this.player1.clickPrompt('Doji Whisperer');
             expect(this.whisperer.location).toBe('dynasty discard pile');
             this.player1.clickPrompt('Shiba Tsukune');
