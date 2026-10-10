@@ -94,6 +94,7 @@ import { SequentialAction } from './SequentialAction.js';
 import { SequentialContextAction, SequentialContextProperties } from './SequentialContextAction.js';
 import { SetHonorDialAction, SetDialProperties } from './SetHonorDialAction.js';
 import { SetAsideAction, SetAsideProperties } from './SetAsideAction.js';
+import { PlaceInProvinceAction, PlaceInProvinceProperties } from './PlaceInProvinceAction.js';
 import { ShuffleDeckAction, ShuffleDeckProperties } from './ShuffleDeckAction.js';
 import { SwitchConflictElementAction, SwitchConflictElementProperties } from './SwitchConflictElementAction.js';
 import { SwitchConflictTypeAction, SwitchConflictTypeProperties } from './SwitchConflictTypeAction.js';
@@ -378,6 +379,10 @@ export function setHonorDial<C extends AbilityContext = AbilityContext>(property
 } // value
 export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ShuffleDeckProperties, C>): ShuffleDeckAction<C> {
     return new ShuffleDeckAction<C>(propertyFactory);
+}
+/** Puts a dynasty card from out of play into a province, faceup by default, optionally discarding the cards there first. */
+export function placeInProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceInProvinceProperties, C> = {}): PlaceInProvinceAction<C> {
+    return new PlaceInProvinceAction<C>(propertyFactory);
 }
 /** Sets cards aside, out of play; optionally hidden, returned at the end of the conflict, or playable by a player. */
 export function setAside<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SetAsideProperties, C> = {}): SetAsideAction<C> {

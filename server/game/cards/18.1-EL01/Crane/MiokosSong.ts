@@ -3,7 +3,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { handler } from '../../../GameActions/GameActions.js';
+import { handler, placeInProvince } from '../../../GameActions/GameActions.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
@@ -45,11 +45,7 @@ export default class MiokosSong extends StrongholdCard {
                         cards: topCards,
                         cardHandler: (selectedCard) => {
                             const cardsFromProvince = province.cardsInSelf();
-                            for(const fromProvince of cardsFromProvince) {
-                                opponent.moveCard(fromProvince, Location.DynastyDiscardPile);
-                            }
-                            opponent.moveCard(selectedCard, province.location);
-                            selectedCard.facedown = false;
+                            placeInProvince({ destination: province.location, discard: 'all' }).resolve(selectedCard, context);
                             for(const goToBottom of topCards.filter((c) => c !== selectedCard)) {
                                 opponent.moveCard(goToBottom, Location.DynastyDeck, { bottom: true });
                             }

@@ -1,16 +1,9 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { msg, type MessageArgs } from '../../../GameChat.js';
+import { msg } from '../../../GameChat.js';
 import { modifyGlory } from '../../../effects.js';
-import { loseHonor } from '../../../GameActions/GameActions.js';
-import type BaseCard from '../../../BaseCard.js';
+import { assignRoles, handler, loseHonor, moveCard, placeInProvince } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-type HandlerStep = {
-    activePromptTitle: string;
-    message: (chosenCard: BaseCard) => MessageArgs;
-    callback: (chosenCard: BaseCard) => void;
-};
 
 export default class CeremonialRobes extends DrawCard {
     static id = 'ceremonial-robes';
@@ -32,63 +25,32 @@ export default class CeremonialRobes extends DrawCard {
                 cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 controller: Players.Self
             })
-            .handler((context) => {
-                const steps: HandlerStep[] = [
-                    {
-                        activePromptTitle: 'Select a card to put into the province faceup',
-                        message: (chosenCard) => msg`${context.player} places ${chosenCard} into their province`,
-                        callback: (chosenCard) => {
-                            context.player.moveCard(chosenCard, context.target.location);
-                            chosenCard.facedown = false;
-                        }
-                    },
-                    {
-                        activePromptTitle: 'Select a card to put on the bottom of the deck',
-                        message: () => msg`${context.player} places a card on the bottom of the deck`,
-                        callback: (chosenCard) => context.player.moveCard(chosenCard, Location.DynastyDeck, { bottom: true })
-                    },
-                    {
-                        activePromptTitle: 'Select a card to discard',
-                        message: (chosenCard) => msg`${context.player} discards ${chosenCard}`,
-                        callback: (chosenCard) => {
-                            context.player.moveCard(chosenCard, Location.DynastyDiscardPile);
-                            if(chosenCard.hasTrait('spirit')) {
-                                this.game.addMessage(msg`${chosenCard} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`);
-                                loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
-                                    .resolve(chosenCard, context);
+            .gameAction(assignRoles((context) => ({
+                target: context.player.dynastyDeck.slice(0, 3),
+                roles: {
+                    'put into the province faceup': placeInProvince({ destination: context.target.location }),
+                    'put on the bottom of the deck': moveCard({ destination: Location.DynastyDeck, bottom: true }),
+                    'discard': handler({
+                        handler: (context, [card]) => {
+                            if(!(card instanceof DrawCard)) {
+                                return;
+                            }
+                            context.player.moveCard(card, Location.DynastyDiscardPile);
+                            if(card.hasTrait('spirit')) {
+                                this.game.addMessage(msg`${card} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`);
+                                loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() })).resolve(card, context);
                             }
                         }
-                    }
-                ];
-
-                this.resolveSteps(context, steps, context.player.dynastyDeck.slice(0, 3));
-            })
+                    })
+                },
+                pickOrder: ['put into the province faceup', 'put on the bottom of the deck'],
+                messages: {
+                    'put into the province faceup': (context, card) => msg`${context.player} places ${card} into their province`,
+                    'put on the bottom of the deck': (context) => msg`${context.player} places a card on the bottom of the deck`,
+                    'discard': (context, card) => msg`${context.player} discards ${card}`
+                }
+            })))
             .chatText('look at the top 3 cards of their dynasty deck')
             .evenDuringDynasty();
-    }
-
-    // A step with a single card left resolves without a prompt and ends the ability
-    private resolveSteps(context: AbilityContext, [step, ...nextSteps]: HandlerStep[], cards: BaseCard[]) {
-        if(!step || cards.length === 0) {
-            return;
-        }
-        const resolve = (card: BaseCard) => {
-            this.game.addMessage(step.message(card));
-            step.callback(card);
-        };
-        if(cards.length === 1) {
-            resolve(cards[0]);
-            return;
-        }
-
-        this.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: step.activePromptTitle,
-            context: context,
-            cards: cards,
-            cardHandler: (selectedCard) => {
-                resolve(selectedCard);
-                this.resolveSteps(context, nextSteps, cards.filter((c) => c !== selectedCard));
-            }
-        });
     }
 }

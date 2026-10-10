@@ -3,6 +3,7 @@ import { GameMode } from '../../../GameMode.js';
 import { CardType, TargetMode, DeckType, Location, Players } from '../../Constants.js';
 import { hideWhenFaceUp } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { placeInProvince } from '../../GameActions/GameActions.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
@@ -57,19 +58,11 @@ export default class KaiuShihobu extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
-            .handler((context) => {
-                const holding = context.targets.first;
-                const province = context.targets.second;
-
-                const cards = context.player.getDynastyCardsInProvince(province.location);
-                if(context.player.stronghold) {
-                    context.player.stronghold.removeChildCard(holding, province.location);
-                }
-                holding.facedown = false;
-                cards.forEach((card) => {
-                    context.player.moveCard(card, Location.DynastyDiscardPile);
-                });
-            })
+            .gameAction(placeInProvince((context) => ({
+                target: context.targets.first,
+                destination: context.targets.second.location,
+                discard: 'all'
+            })))
             .chatText((context) => msg`discard ${context.player.getDynastyCardsInProvince(context.targets.second.location)}, replacing ${context.player.getDynastyCardsInProvince(context.targets.second.location).length > 1 ? 'them' : 'it'} with ${context.targets.first}`);
     }
 }

@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, DeckType } from '../../Constants.js';
 import { modifyGlory } from '../../effects.js';
-import { deckSearch, handler } from '../../GameActions/GameActions.js';
+import { deckSearch, handler, placeInProvince } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { GameActionTarget } from '../../GameActions/GameAction.js';
 
@@ -46,11 +46,7 @@ class FrontlineEngineer extends DrawCard {
         }
         const cards = context.player.getDynastyCardsInProvince(province.location);
         this.game.addMessage(msg`${context.player} discards ${cards}, replacing it with ${cardFromDeck}`);
-        context.player.moveCard(cardFromDeck, province.location);
-        cardFromDeck.facedown = false;
-        cards.forEach((element) => {
-            context.player.moveCard(element, Location.DynastyDiscardPile);
-        });
+        placeInProvince({ destination: province.location, discard: 'all' }).resolve(cardFromDeck, context);
     }
 
     getHoldingsInPlay() {

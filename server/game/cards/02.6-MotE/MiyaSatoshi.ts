@@ -1,6 +1,7 @@
 import { msg } from '../../GameChat.js';
 import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { placeInProvince } from '../../GameActions/GameActions.js';
 
 class MiyaSatoshi extends DrawCard {
     static id = 'miya-satoshi';
@@ -27,9 +28,7 @@ class MiyaSatoshi extends DrawCard {
                     cardCondition: (card) => card.isDynasty && card.location !== Location.StrongholdProvince,
                     onSelect: (player, card) => {
                         this.game.addMessage(msg`${player} chooses to discard ${card}, and puts ${firstImperial} faceup in its place`);
-                        context.player.moveCard(firstImperial, card.location);
-                        firstImperial.facedown = false;
-                        context.player.moveCard(card, Location.DynastyDiscardPile);
+                        placeInProvince({ destination: card.location, discard: [card] }).resolve(firstImperial, context);
                         return true;
                     }
                 });

@@ -32,6 +32,8 @@ describe('Ceremonial Robes', function () {
             this.player1.player.moveCard(this.kami, 'dynasty deck');
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
+            // the 4th card, below the 3 Ceremonial Robes looks at
+            const fourth = this.player1.player.dynastyDeck[3];
 
             const p1InitialHonor = this.player1.honor;
             const p2InitialHonor = this.player2.honor;
@@ -49,6 +51,7 @@ describe('Ceremonial Robes', function () {
             expect(this.player1).toHavePromptButton('Guardian Dōjō');
             expect(this.player1).toHavePromptButton('Solemn Scholar');
             expect(this.player1).toHavePromptButton('Kami of Ancient Wisdom');
+            expect(this.player1).not.toHavePromptButton(fourth.name);
 
             this.player1.clickPrompt('Guardian Dōjō');
             expect(this.dojo.location).toBe('province 1');
@@ -63,6 +66,7 @@ describe('Ceremonial Robes', function () {
             expect(this.kami.location).toBe('dynasty deck');
 
             expect(this.solemn.location).toBe('dynasty discard pile');
+            expect(this.player1.player.dynastyDeck[0]).toBe(fourth);
             expect(this.player1.honor).toBe(p1InitialHonor);
             expect(this.player2.honor).toBe(p2InitialHonor);
 
@@ -127,7 +131,7 @@ describe('Ceremonial Robes', function () {
             );
         });
 
-        it('puts the last card on the bottom without a prompt when only 2 cards are left', function () {
+        it('lets the player choose which roles to fill when only 2 cards are left', function () {
             this.player1.reduceDeckToNumber('dynasty deck', 0);
             this.player1.player.moveCard(this.solemn, 'dynasty deck');
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
@@ -135,23 +139,29 @@ describe('Ceremonial Robes', function () {
             this.player1.clickCard(this.robes);
             this.player1.clickCard(this.prov1);
             expect(this.player1).toHavePrompt('Select a card to put into the province faceup');
+            expect(this.player1).toHavePromptButton('None');
             this.player1.clickPrompt('Guardian Dōjō');
             expect(this.dojo.location).toBe('province 1');
-            expect(this.player1.player.dynastyDeck).toEqual([this.solemn]);
-            expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
-            expect(this.getChatLogs(5)).toContain('player1 places a card on the bottom of the deck');
+
+            expect(this.player1).toHavePrompt('Select a card to put on the bottom of the deck');
+            expect(this.player1).toHavePromptButton('None');
+            this.player1.clickPrompt('None');
+            expect(this.solemn.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).toContain('player1 discards Solemn Scholar');
         });
 
-        it('places a single card into the province without a prompt', function () {
+        it('lets the player put a single card on the bottom instead of into the province', function () {
             this.player1.reduceDeckToNumber('dynasty deck', 0);
             this.player1.player.moveCard(this.dojo, 'dynasty deck');
 
             this.player1.clickCard(this.robes);
             this.player1.clickCard(this.prov1);
-            expect(this.dojo.location).toBe('province 1');
-            expect(this.dojo.facedown).toBe(false);
-            expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
-            expect(this.getChatLogs(5)).toContain('player1 places Guardian Dōjō into their province');
+            expect(this.player1).toHavePrompt('Select a card to put into the province faceup');
+            this.player1.clickPrompt('None');
+            expect(this.player1).toHavePrompt('Select a card to put on the bottom of the deck');
+            this.player1.clickPrompt('Guardian Dōjō');
+            expect(this.player1.player.dynastyDeck).toEqual([this.dojo]);
+            expect(this.getChatLogs(5)).toContain('player1 places a card on the bottom of the deck');
         });
     });
 });

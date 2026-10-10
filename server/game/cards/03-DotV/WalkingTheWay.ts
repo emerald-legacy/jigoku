@@ -3,6 +3,7 @@ import { reduceCost } from '../../effects.js';
 import { Location, Players, CardType, DeckType, TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { controlsShugenja } from '../controlsShugenja.js';
+import { placeInProvince } from '../../GameActions/GameActions.js';
 
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
@@ -31,9 +32,7 @@ class WalkingTheWay extends DrawCard {
                     controller: Players.Self,
                     onSelect: (player, card) => {
                         this.game.addMessage(msg`${player} discards ${card}, replacing it with ${cardFromDeck}`);
-                        player.moveCard(cardFromDeck, card.location);
-                        cardFromDeck.facedown = false;
-                        player.moveCard(card, Location.DynastyDiscardPile);
+                        placeInProvince({ destination: card.location, discard: [card] }).resolve(cardFromDeck, context);
                         return true;
                     }
                 })
