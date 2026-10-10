@@ -1,15 +1,10 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { canPlayFromOwn, delayedEffect } from '../../effects.js';
-import {
-    cardLastingEffect,
-    handler,
-    playerLastingEffect,
-    returnToDeck,
-    selectCard,
-    sequential
-} from '../../GameActions/GameActions.js';
-import { CardType, Location, Players, Duration, ConflictType } from '../../Constants.js';
+import { canPlayFromOutOfPlay, delayedEffect, registerToPlayFromOutOfPlay } from '../../effects.js';
+import { cardLastingEffect, handler, returnToDeck, selectCard, sequential } from '../../GameActions/GameActions.js';
+import { CardType, Location, Players, ConflictType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../BaseCard.js';
 import type { Cost } from '../../costs/Cost.js';
 
 const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => ({
@@ -51,47 +46,37 @@ class ExposedCourtyard extends DrawCard {
                     activePromptTitle: 'Choose an event',
                     controller: Players.Self,
                     targets: true,
-                    subActionProperties: (card) => {
-                        context.target = card;
-                        return ({ target: card });
-                    },
+                    subActionProperties: (card) => ({ target: card, effect: this.returnAfterPlay(context, card) }),
                     gameAction: sequential([
-                        playerLastingEffect((context) => {
-                            return {
-                                targetController: context.player,
-                                duration: Duration.Custom,
-                                until: {
-                                    onCardMoved: (event) => {
-                                        return event.card === context.target && event.originalLocation === Location.ConflictDiscardPile;
-                                    },
-                                    onConflictFinished: () => true
-                                },
-                                effect: canPlayFromOwn(Location.ConflictDiscardPile, context.target?.isDrawCard() ? [context.target] : [], this)
-                            };
+                        cardLastingEffect({
+                            targetLocation: Location.ConflictDiscardPile,
+                            effect: [canPlayFromOutOfPlay((player) => player === context.player), registerToPlayFromOutOfPlay()]
                         }),
-                        cardLastingEffect((context) => ({
+                        // its effect comes from subActionProperties
+                        cardLastingEffect({
                             targetLocation: Location.Any,
-                            canChangeZoneNTimes: 2,
-                            effect: delayedEffect({
-                                when: {
-                                    onCardPlayed: (event) => {
-                                        return event.card === context.target && event.player === context.target?.controller;
-                                    }
-                                },
-                                multipleTrigger: true,
-                                message: () => msg`${context.target} returns to the bottom of the deck due to ${context.source}'s effect`,
-                                gameAction: returnToDeck({
-                                    location: Location.Any,
-                                    bottom: true
-                                })
-                            })
-                        }))
+                            canChangeZoneNTimes: 2
+                        })
                     ]),
                     message: (context, card) => msg`${context.player} can play ${card} this conflict. It will be put on the bottom of the deck if it's played this conflict`
                 }))
             ]))
             .chatText('pick an event to make playable this conflict')
             .cannotTargetFirst();
+    }
+
+    private returnAfterPlay(context: AbilityContext, event: BaseCard) {
+        return delayedEffect({
+            when: {
+                onCardPlayed: (played) => played.card === event && played.player === context.player
+            },
+            multipleTrigger: true,
+            message: () => msg`${event} returns to the bottom of the deck due to ${context.source}'s effect`,
+            gameAction: returnToDeck({
+                location: Location.Any,
+                bottom: true
+            })
+        });
     }
 }
 
