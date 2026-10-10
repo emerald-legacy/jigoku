@@ -18,14 +18,13 @@ export interface AttachProperties extends CardActionProperties {
     giveControl?: boolean;
     ignoreUniqueness?: boolean;
     viaDisguised?: boolean;
-    wasACharacter?: boolean;
 }
 
 export class AttachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
     AttachProperties,
     EventName.OnCardAttached,
     C,
-    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised' | 'wasACharacter'
+    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised'
 > {
     name = 'attach';
     eventName = EventName.OnCardAttached;
@@ -35,8 +34,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         takeControl: false,
         giveControl: false,
         ignoreUniqueness: false,
-        viaDisguised: false,
-        wasACharacter: false
+        viaDisguised: false
     };
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
@@ -111,9 +109,13 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         const properties = this.getProperties(context, additionalProperties);
         event.originalLocation = card.location;
 
-        if(card.location === Location.PlayArea && !properties.wasACharacter) {
-            card.parent?.removeAttachment(card);
+        if(card.location === Location.PlayArea && card.parent) {
+            card.parent.removeAttachment(card);
         } else {
+            if(card.location === Location.PlayArea) {
+                // a character becoming an attachment leaves the conflict
+                context.game.currentConflict?.removeFromConflict(card);
+            }
             card.controller.removeCardFromPile(card);
             card.new = true;
             card.moveTo(Location.PlayArea);

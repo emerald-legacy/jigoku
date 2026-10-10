@@ -8,7 +8,6 @@ import {
     attachToRing,
     cardLastingEffect,
     chosenDiscard,
-    handler,
     sequential
 } from '../../../GameActions/GameActions.js';
 
@@ -38,15 +37,7 @@ class CraftyTsukumogami extends RingAttachment {
                 })),
                 attachToRing((context) => ({
                     attachment: context.source
-                })),
-                handler({
-                    handler: (context) => {
-                        // attachToRing already took it out of the cards in play
-                        if(context.game.currentConflict) {
-                            context.game.currentConflict.removeFromConflict(context.source);
-                        }
-                    }
-                })
+                }))
             ]))
             .chatText('attach itself to the {0}');
     }

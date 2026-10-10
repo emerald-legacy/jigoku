@@ -1,6 +1,6 @@
 import { AbilityType, CardType, Duration, EffectName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { addFlag, blank, cardCannot, changeType, gainAbility } from '../../../effects.js';
-import { attach, cardLastingEffect, detach, handler, sequentialContext } from '../../../GameActions/GameActions.js';
+import { attach, cardLastingEffect, detach, sequentialContext } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -68,13 +68,7 @@ export default class LoyalWarhound extends DrawCard {
 
                 gameActions.push(attach({
                     attachment: this,
-                    target: context.target,
-                    wasACharacter: true
-                }));
-
-                // It is no longer a character, so it stops contributing to the conflict
-                gameActions.push(handler({
-                    handler: () => context.game.currentConflict?.removeFromConflict(context.source)
+                    target: context.target
                 }));
 
                 return { gameActions };
